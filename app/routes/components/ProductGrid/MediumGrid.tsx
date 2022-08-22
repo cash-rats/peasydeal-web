@@ -12,11 +12,6 @@ const Container = styled.div`
 	border-radius: 10px;
 	overflow: hidden;
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
-	@media ${devices.phoneOnly} {
-		max-width: 100%;
-		max-height: 380px;
-	}
-
 	@media ${devices.tabletPortraitUp} {
 		max-width: 273px;
 		max-height: 256px;
@@ -36,6 +31,17 @@ const Container = styled.div`
 const ImageContainer = styled.div`
 	width: 100%;
 	height: 100%;
+	@media ${devices.phoneOnly} {
+		&:after {
+			content: '';
+  		position: absolute;
+  		top: 0;
+  		left: 0;
+  		right: 0;
+  		bottom: 0;
+  		background: linear-gradient(to bottom, transparent 0%, black 170%);
+		}
+	}
 `
 
 const ProductDescContainer = styled.div`

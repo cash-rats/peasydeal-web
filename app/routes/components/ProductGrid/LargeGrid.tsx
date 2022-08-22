@@ -11,6 +11,17 @@ const Container = styled.div`
 	border-radius: 10px;
 	overflow: hidden;
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
+
+	@media ${devices.tabletPortraitUp} {
+		max-width: 566px;
+		max-height: 574px;
+	}
+
+	@media ${devices.normalScreen} {
+		max-width: 666px;
+		max-height: 574px;
+	}
+
 	@media ${devices.desktopUp} {
 		max-width: 727px;
 		max-height: 632px;
@@ -20,6 +31,18 @@ const Container = styled.div`
 const ImageContainer = styled.div`
 	width: 100%;
 	height: 100%;
+	position: relative;
+	@media ${devices.phoneOnly} {
+		&:after {
+			content: '';
+  		position: absolute;
+  		top: 0;
+  		left: 0;
+  		right: 0;
+  		bottom: 0;
+  		background: linear-gradient(to bottom, transparent 0%, black 170%);
+		}
+	}
 `;
 
 const ProductDescContainer = styled.div`
@@ -27,6 +50,11 @@ const ProductDescContainer = styled.div`
 	justify-content: center;
 	align-items: center;
 	padding: 11px;
+	@media ${devices.phoneOnly} {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+	}
 `;
 
 const Info = styled.div`
@@ -49,6 +77,9 @@ const Headline = styled.h2`
 `;
 
 const Desc = styled.span`
+	@media ${devices.phoneOnly} {
+		display: none;
+	}
 `;
 
 const BtnContainer = styled.div`
