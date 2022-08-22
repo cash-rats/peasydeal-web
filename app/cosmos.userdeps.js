@@ -5,18 +5,20 @@
 // because this way they become hot-reloadable.
 
 
-import fixture0 from './routes/components/MediumGrid/MediumGrid.fixture.tsx';
+import fixture0 from './routes/components/ProductGrid/LargeGrid.fixture.tsx';
+import fixture1 from './routes/components/ProductGrid/MediumGrid.fixture.tsx';
 
-import decorator0 from './routes/components/MediumGrid/cosmos.decorator.tsx';
+import decorator0 from './routes/components/ProductGrid/cosmos.decorator.tsx';
 
 export const rendererConfig = {
   "port": 5001
 };
 
 export const fixtures = {
-  'app/routes/components/MediumGrid/MediumGrid.fixture.tsx': { module: { default: fixture0 } }
+  'app/routes/components/ProductGrid/LargeGrid.fixture.tsx': { module: { default: fixture0 } },
+  'app/routes/components/ProductGrid/MediumGrid.fixture.tsx': { module: { default: fixture1 } }
 };
 
 export const decorators = {
-  'app/routes/components/MediumGrid/cosmos.decorator.tsx': decorator0
+  'app/routes/components/ProductGrid/cosmos.decorator.tsx': decorator0
 };
