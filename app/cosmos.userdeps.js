@@ -5,18 +5,18 @@
 // because this way they become hot-reloadable.
 
 
-import fixture0 from './Hello.fixture.tsx';
+import fixture0 from './routes/components/MediumGrid/MediumGrid.fixture.tsx';
 
-
+import decorator0 from './routes/components/MediumGrid/cosmos.decorator.tsx';
 
 export const rendererConfig = {
   "port": 5001
 };
 
 export const fixtures = {
-  'app/Hello.fixture.tsx': { module: { default: fixture0 } }
+  'app/routes/components/MediumGrid/MediumGrid.fixture.tsx': { module: { default: fixture0 } }
 };
 
 export const decorators = {
-
+  'app/routes/components/MediumGrid/cosmos.decorator.tsx': decorator0
 };
