@@ -5,15 +5,33 @@ import { devices } from "~/styles/breakpoints";
 import { Button } from '@chakra-ui/react';
 
 const Container = styled.div`
+	position: relative;
 	margin-top: 20px;
 	display: flex;
 	flex-direction: column;
 	flex: 1;
-	max-width: 353.33px;
-	max-height: 306px;
 	border-radius: 10px;
 	overflow: hidden;
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
+	@media ${devices.phoneOnly} {
+		max-width: 100%;
+		max-height: 380px;
+	}
+
+	@media ${devices.tabletPortraitUp} {
+		max-width: 273px;
+		max-height: 256px;
+	}
+
+	@media ${devices.normalScreen} {
+		max-width: 329px;
+		max-height: 290px;
+	}
+
+	@media ${devices.desktopUp} {
+		max-width: 353.33px;
+		max-height: 306px;
+	}
 `
 
 const ImageContainer = styled.div`
@@ -23,21 +41,55 @@ const ImageContainer = styled.div`
 
 const ProductDescContainer = styled.div`
 	display: flex;
+	justify-content: center;
+	align-items: center;
 	padding: 11px;
+	@media ${devices.phoneOnly} {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+	}
+`;
+
+const ProdInfo = styled.div`
+	p {
+		display: none;
+		color: white;
+	}
+
+	@media ${devices.phoneOnly} {
+		p {
+			display: block;
+		}
+	}
 `
 
-const LeftDesc = styled.div`
-	border: solid 1px;
-`
+const Headline = styled.h3`
+	font-size: 14px;
+	font-weight: bold;
+	margin: 0;
+	color: rgb(51, 51, 51);
+	@media ${devices.phoneOnly} {
+		color: white;
+		font-size: 16px;
+	}
+`;
 
-const RightDesc = styled.div`
-	border: solid 1px;
+const ViewBtnContainer = styled.div`
+	@media ${devices.phoneOnly} {
+		display: none;
+	}
 `
 
 // - [ ] Basic product grid. do not consider wrapper layout.
 // - [ ] breakpoint: > desktopUp, 1 row  has 3 columns
 // - [ ] Image should be as large as the grid width
 // - [ ] Do not display product description on medium grid
+// -
+//      > 0 && < 599 100%x380px, 1 grid
+//      >= 600: 273px256px, 2 grid
+//      > 1199: 353.33x306, 3 grids flex 1
+//      > 767: 323x290, 2 grids flex 1
 export default function MediumGrid() {
 	return (
 		<Container>
@@ -55,18 +107,24 @@ export default function MediumGrid() {
 
 			{/* Product Description */}
 			<ProductDescContainer>
-				<LeftDesc>
+				<ProdInfo>
 					{/* topic */}
-					<h2>
+					<Headline>
 						Pop Up Gazebo - Beige, Black, Green, or Grey!
-					</h2>
-				</LeftDesc>
-				<RightDesc>
-					<Button>
+					</Headline>
+
+					<p>
+						New deal today
+					</p>
+				</ProdInfo>
+				<ViewBtnContainer>
+					<Button colorScheme="blue">
 						View
 					</Button>
-				</RightDesc>
+				</ViewBtnContainer>
 			</ProductDescContainer>
+
+			{/* Description */}
 		</Container>
 	);
 };
