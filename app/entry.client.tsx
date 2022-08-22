@@ -1,6 +1,8 @@
 import * as React from "react";
 import { RemixBrowser } from "@remix-run/react";
-import { hydrateRoot } from "react-dom/client";
+
+// ISSUE: https://github.com/remix-run/remix/issues/2570
+ import { hydrateRoot } from "react-dom/client";
 import { CacheProvider } from '@emotion/react'
 
 import { ClientStyleContext } from './context'
@@ -26,14 +28,25 @@ function ClientCacheProvider({ children }: ClientCacheProviderProps) {
 
 function hydrate() {
   React.startTransition(() => {
-    hydrateRoot(
-      document,
-      <React.StrictMode>
-				<ClientCacheProvider>
-					<RemixBrowser />
-				</ClientCacheProvider>
-      </React.StrictMode>
-    );
+		if (process.env.NODE_ENV === 'development') {
+			require("react-dom").hydrate(
+				<React.StrictMode>
+					<ClientCacheProvider>
+						<RemixBrowser />
+					</ClientCacheProvider>
+				</React.StrictMode>,
+				document,
+			);
+		} else {
+			hydrateRoot(
+				document,
+				<React.StrictMode>
+					<ClientCacheProvider>
+						<RemixBrowser />
+					</ClientCacheProvider>
+				</React.StrictMode>,
+			)
+		}
   });
 }
 

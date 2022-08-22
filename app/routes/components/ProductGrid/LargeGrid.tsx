@@ -83,7 +83,7 @@ function LargeGrid() {
 				</Info>
 
 				<BtnContainer>
-					<Button colorScheme="blue">
+					<Button colorScheme="blue" size="lg">
 						View
 					</Button>
 				</BtnContainer>
