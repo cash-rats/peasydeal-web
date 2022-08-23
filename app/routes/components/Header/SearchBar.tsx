@@ -8,16 +8,33 @@ const OpenSearch = styled.label`
   margin: 0 15px;
   overflow: hidden;
   position: relative;
+  @media(max-width: 991px){
+    margin: 0;
+    position: static;
+    text-align: right;
+  }
+`;
+
+const OpenSearchIcon = styled.div`
+	display: none;
+	@media(max-width: 991px){
+	  display: flex;
+		justify-content: flex-end;
+	}
 `;
 
 const Search = styled.div`
-	@media(max-width: 991px){
-	  display: none;
+	@media(max-width: 991px) {
+		//display: none;
 	  position: absolute;
 	  left: 0;
-	  top: 70px;
+	  top: 100px;
 	  width: 100%;
 	  z-index: 999;
+	}
+
+	@media(min-width: 992) {
+	  top: 70px;
 	}
 `
 
@@ -50,12 +67,28 @@ const SearchButton = styled.button`
 	position: absolute;
 	right: 0px;
 	top: 0px;
+	height: 40px;
+	display: flex;
+`;
+
+
+const InputOpenSearchCheckbox = styled.input`
+	display: none;
+  &:checked ~ .search {
+   display: block;
+  }
 `;
 
 export default function SearchBar() {
 	return (
 		<>
-			<OpenSearch for="open-search">
+			<OpenSearch labelFor="open-search">
+				<OpenSearchIcon>
+					<AiOutlineSearch fontSize={25} />
+				</OpenSearchIcon>
+
+				<InputOpenSearchCheckbox id="open-search" type="checkbox" name="menu" />
+
 				<Search>
    		  	<InputSearch
 						type="text"
@@ -63,7 +96,7 @@ export default function SearchBar() {
 					/>
 
 					<SearchButton>
-						<AiOutlineSearch />
+						<AiOutlineSearch fontSize={18} />
 					</SearchButton>
 				</Search>
    		</OpenSearch>
