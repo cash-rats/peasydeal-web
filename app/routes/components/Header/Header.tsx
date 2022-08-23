@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { AiOutlineMail, AiOutlinePhone, AiFillHeart, AiOutlineSearch } from "react-icons/ai";
+import { AiOutlineMail, AiOutlinePhone, AiFillHeart } from "react-icons/ai";
+import { BiUserCircle } from "react-icons/bi";
+import { MdFavorite } from "react-icons/md";
+import { FiShoppingCart } from "react-icons/fi"
+
 
 import SearchBar from "./SearchBar";
 
@@ -54,8 +58,32 @@ const Logo = styled.strong`
 
 const SearchBarContainer = styled.div`
 	display: flex;
-	flex: 2;
+	flex: 5;
 `
+
+const NavContainer = styled.nav`
+	flex: 1;
+`;
+const NavContentList = styled.ul`
+  list-style: none;
+  padding: 0;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 15px;
+`;
+const NavContentItem = styled.li`
+	align-items: center;
+  display: flex;
+  height: 40px;
+  margin: 0 5px;
+  position: relative;
+  transition: 100ms all linear 0s;
+
+  @media (max-width: 991px) {
+     padding: 0 5px;
+   }
+`;
 
 export default function Header() {
 	return (
@@ -91,6 +119,22 @@ export default function Header() {
 				<SearchBarContainer>
 					<SearchBar />
 				</SearchBarContainer>
+
+				<NavContainer>
+					<NavContentList>
+						<NavContentItem>
+							<BiUserCircle fontSize={25} />
+						</NavContentItem>
+
+						<NavContentItem>
+							<MdFavorite fontSize={25} />
+						</NavContentItem>
+
+						<NavContentItem>
+							<FiShoppingCart fontSize={25} />
+						</NavContentItem>
+					</NavContentList>
+				</NavContainer>
 			</Container>
 		</HeaderContainer>
 	);
