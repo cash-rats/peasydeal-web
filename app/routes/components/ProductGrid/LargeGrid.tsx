@@ -86,6 +86,9 @@ const BtnContainer = styled.div`
 	flex: 1;
 	display: flex;
 	justify-content: flex-end;
+	@media ${devices.phoneOnly} {
+		display: none;
+	}
 `;
 
 // > 1200, flex:2; height

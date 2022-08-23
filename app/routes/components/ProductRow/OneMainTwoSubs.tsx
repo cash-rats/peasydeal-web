@@ -24,6 +24,7 @@ const Left = styled.div`
 
 const Right = styled.div`
 	display: flex;
+	flex-direction: column;
 
 	@media ${ranges.normalScreen} {
 		flex-direction: row;
@@ -32,13 +33,14 @@ const Right = styled.div`
 
 	@media ${ranges.tabletPortrait} {
 		flex-direction: row;
-		gap: 8px;
+		gap: 20px;
 	}
 
 	@media ${ranges.phoneOnly} {
 		flex-direction: column;
 		gap: 20px;
 	}
+
 `
 
 export default function OneMainTwoSubs() {
