@@ -5,7 +5,6 @@ import { devices } from "~/styles/breakpoints";
 
 const Container = styled.div`
 	position: relative;
-	margin-top: 20px;
 	display: flex;
 	flex-direction: column;
 	border-radius: 10px;
@@ -14,19 +13,20 @@ const Container = styled.div`
 
 	@media ${devices.tabletPortraitUp} {
 		max-width: 566px;
-		max-height: 574px;
+		height: 574px;
 	}
 
 	@media ${devices.normalScreen} {
 		max-width: 666px;
-		max-height: 574px;
+		height: 589px;
 	}
 
 	@media ${devices.desktopUp} {
 		max-width: 727px;
-		max-height: 632px;
+		height: 621px;
 	}
 `;
+
 
 const ImageContainer = styled.div`
 	width: 100%;

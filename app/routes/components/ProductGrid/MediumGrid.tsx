@@ -5,7 +5,6 @@ import { Button } from '@chakra-ui/react';
 
 const Container = styled.div`
 	position: relative;
-	margin-top: 20px;
 	display: flex;
 	flex-direction: column;
 	flex: 1;
@@ -14,17 +13,17 @@ const Container = styled.div`
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
 	@media ${devices.tabletPortraitUp} {
 		max-width: 273px;
-		max-height: 256px;
+		//max-height: 256px;
 	}
 
 	@media ${devices.normalScreen} {
 		max-width: 329px;
-		max-height: 290px;
+		//max-height: 290px;
 	}
 
 	@media ${devices.desktopUp} {
 		max-width: 353.33px;
-		max-height: 306px;
+		//max-height: 306px;
 	}
 `
 

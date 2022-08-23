@@ -10,6 +10,7 @@ import fixture1 from './routes/components/ProductGrid/MediumGrid.fixture.tsx';
 import fixture2 from './routes/components/ProductRow/OneMainTwoSubs.fixture.tsx';
 
 import decorator0 from './routes/components/ProductGrid/cosmos.decorator.tsx';
+import decorator1 from './routes/components/ProductRow/cosmos.decorator.tsx';
 
 export const rendererConfig = {
   "port": 5001
@@ -22,5 +23,6 @@ export const fixtures = {
 };
 
 export const decorators = {
-  'app/routes/components/ProductGrid/cosmos.decorator.tsx': decorator0
+  'app/routes/components/ProductGrid/cosmos.decorator.tsx': decorator0,
+  'app/routes/components/ProductRow/cosmos.decorator.tsx': decorator1
 };

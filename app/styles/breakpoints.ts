@@ -6,11 +6,12 @@ export const devices = {
   normalScreen: '(min-width:768px)',
   desktopUp: '(min-width:1200px)',
   bigDesktopUp: '(min-width:1800px)',
-}
+};
 
-//xxl, extra-large: ≥ 1400px
-//xl, extra-large: ≥ 1200px
-//lg, large: ≥ 992px
-//md, medium: ≥ 768px
-//sm, small: ≥ 576px
-//xs, extra-small: < 576px
+export const ranges = {
+  phoneOnly: '(max-width:599px)',
+  tabletPortrait: '(min-width:600px) and (max-width:767px)',
+  normalScreen: '(min-width:768px) and (max-width:1199px)',
+  desktopUp: '(min-width:1200px)',
+};
+
