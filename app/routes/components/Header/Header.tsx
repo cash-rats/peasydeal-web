@@ -1,5 +1,7 @@
 import styled from "styled-components";
-import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
+import { AiOutlineMail, AiOutlinePhone, AiFillHeart, AiOutlineSearch } from "react-icons/ai";
+
+import SearchBar from "./SearchBar";
 
 const HeaderContainer = styled.header`
 	display: flex;
@@ -35,6 +37,24 @@ const ContactContent = styled.span`
 		font-weight: bold;
 		margin-right: 5px;
 	}
+`;
+
+const Container = styled.div`
+	height: 70px;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 0 15px;
+`;
+
+const Logo = styled.strong`
+	line-height: 20px;
+	padding-right: 15px;
+`
+
+const SearchBarContainer = styled.div`
+	display: flex;
+	flex: 2;
 `
 
 export default function Header() {
@@ -63,7 +83,15 @@ export default function Header() {
 				</ContactContent>
 			</ContactContainer>
 
-			hello header
+			<Container>
+				<Logo>
+					<AiFillHeart fontSize={45} color="#555BBD" />
+				</Logo>
+
+				<SearchBarContainer>
+					<SearchBar />
+				</SearchBarContainer>
+			</Container>
 		</HeaderContainer>
 	);
 }
