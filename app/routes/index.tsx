@@ -11,10 +11,10 @@ const SomeGrid = styled.div`
 
 export default function Index() {
   return (
-		<>
+		<div>
 			<SomeGrid />
 			<main>
     	</main>
-		</>
+		</div>
   );
 }
