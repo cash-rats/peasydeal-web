@@ -167,7 +167,7 @@ export default function CategoriesNav({ categories }: CategoriesNavProps) {
 									{
 										categories.map((category) => {
 											return (
-													<CategoryListItem>
+													<CategoryListItem key={category.name}>
 														<a>
 															{ category.name }
 														</a>
@@ -187,7 +187,7 @@ export default function CategoriesNav({ categories }: CategoriesNavProps) {
 				<ul>
 				{
 					categories.map((category) => (
-						<li>
+						<li key={category.name}>
 							<a>
 								{ category.name }
 							</a>
