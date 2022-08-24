@@ -98,9 +98,11 @@ const CategoryNavContainer = styled.div`
 `
 
 const categories: Array<Category> = [
-	{ name: "apple" },
-	{ name: "galaxy"},
-	{ name: "pixel" },
+	{ name: "Home" },
+	{ name: "New Trend"},
+	{ name: "Best Seller" },
+	{ name: "Super Deal" },
+	{ name: "Halloween Season" },
 ];
 
 export default function Header() {
