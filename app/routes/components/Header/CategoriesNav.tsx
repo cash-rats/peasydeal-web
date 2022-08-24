@@ -80,7 +80,41 @@ const CategoryListItem = styled.li`
 			color: #fff;
 		}
 	}
-`
+`;
+
+const FeaturedCategoryNav = styled.nav`
+	flex: auto;
+	margin: 0 15px 0 0;
+	@media(max-width:991px) {
+		display: none;
+	}
+
+	ul {
+		list-style: none;
+		display: flex;
+		align-items: center;
+		height: 40px;
+		justify-content: space-between;
+		margin: 0;
+		padding: 0;
+
+		li {
+			flex: auto;
+			cursor: pointer;
+			transition: 100ms all linear 0s;
+			&:hover {
+				background-color: #E4E4E4;
+			}
+
+			a {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				height: 40px;
+			}
+		}
+	}
+`;
 
 export type Category = {
 	name: string;
@@ -146,6 +180,21 @@ export default function CategoriesNav({ categories }: CategoriesNavProps) {
 					}
 				</Label>
 			</AllCategoryNav>
+
+			{/* categories nav */}
+			<FeaturedCategoryNav>
+				<ul>
+				{
+					categories.map((category) => (
+						<li>
+							<a>
+								{ category.name }
+							</a>
+						</li>
+					))
+				}
+				</ul>
+			</FeaturedCategoryNav>
 		</Container>
 	);
 }
