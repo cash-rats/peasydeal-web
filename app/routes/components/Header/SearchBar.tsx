@@ -25,7 +25,7 @@ const OpenSearchIcon = styled.div`
 
 const Search = styled.div`
 	@media(max-width: 991px) {
-		//display: none;
+		display: none;
 	  position: absolute;
 	  left: 0;
 	  top: 100px;
@@ -33,9 +33,9 @@ const Search = styled.div`
 	  z-index: 999;
 	}
 
-	@media(min-width: 992) {
-	  top: 70px;
-	}
+	//@media(min-width: 992) {
+		//top: 70px;
+	//}
 `
 
 const InputSearch = styled.input`
@@ -74,7 +74,7 @@ const SearchButton = styled.button`
 
 const InputOpenSearchCheckbox = styled.input`
 	display: none;
-  &:checked ~ .search {
+  &:checked ~ ${Search} {
    display: block;
   }
 `;

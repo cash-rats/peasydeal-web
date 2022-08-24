@@ -4,8 +4,9 @@ import { BiUserCircle } from "react-icons/bi";
 import { MdFavorite } from "react-icons/md";
 import { FiShoppingCart } from "react-icons/fi"
 
-
 import SearchBar from "./SearchBar";
+import CategoriesNav from "./CategoriesNav";
+import type { Category } from "./CategoriesNav";
 
 const HeaderContainer = styled.header`
 	display: flex;
@@ -47,6 +48,9 @@ const Container = styled.div`
 	height: 70px;
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
+	margin: 0 auto;
+	max-width: 1300px;
 	width: 100%;
 	padding: 0 15px;
 `;
@@ -64,6 +68,7 @@ const SearchBarContainer = styled.div`
 const NavContainer = styled.nav`
 	flex: 1;
 `;
+
 const NavContentList = styled.ul`
   list-style: none;
   padding: 0;
@@ -72,6 +77,7 @@ const NavContentList = styled.ul`
   justify-content: space-between;
   padding: 0 15px;
 `;
+
 const NavContentItem = styled.li`
 	align-items: center;
   display: flex;
@@ -84,6 +90,18 @@ const NavContentItem = styled.li`
      padding: 0 5px;
    }
 `;
+
+const CategoryNavContainer = styled.div`
+	max-width: 1300px;
+	width: 100%;
+	margin: 0 auto;
+`
+
+const categories: Array<Category> = [
+	{ name: "apple" },
+	{ name: "galaxy"},
+	{ name: "pixel" },
+];
 
 export default function Header() {
 	return (
@@ -136,6 +154,10 @@ export default function Header() {
 					</NavContentList>
 				</NavContainer>
 			</Container>
+
+			<CategoryNavContainer>
+				<CategoriesNav categories={categories} />
+			</CategoryNavContainer>
 		</HeaderContainer>
 	);
 }
