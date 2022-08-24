@@ -1,7 +1,7 @@
-import { Button } from "@chakra-ui/react";
+//import { Button } from "@chakra-ui/react";
 import styled from "styled-components";
 
-import Header from "./components/Header";
+//import Header from "./components/Header";
 
 const SomeGrid = styled.div`
 	width: 100px;
@@ -14,9 +14,6 @@ export default function Index() {
 		<>
 			<SomeGrid />
 			<main>
-				<Button>
-					hello
-				</Button>
     	</main>
 		</>
   );
