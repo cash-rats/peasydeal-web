@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { ranges } from "~/styles/breakpoints";
 
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { BsList } from "react-icons/bs";
@@ -12,10 +13,10 @@ const Container = styled.div`
 const AllCategoryNav = styled.nav`
 	cursor: pointer;
 	position: relative;
-	max-width: 100%;
+	max-width: 300px;
 	width: 100%;
-	@media (min-width: 991px) {
-		max-width: 300px;
+	@media ${ranges.headerRwd} {
+		max-width: 100%;
 	}
 `;
 
@@ -58,7 +59,7 @@ const AllCategoryList = styled.ul`
   top: 40px;
 	width: 300px;
   z-index: 90;
-  @media(max-width: 991px) {
+  @media ${ranges.headerRwd} {
     min-width: 100%;
   }
 `;
@@ -85,7 +86,7 @@ const CategoryListItem = styled.li`
 const FeaturedCategoryNav = styled.nav`
 	flex: auto;
 	margin: 0 15px 0 0;
-	@media(max-width:991px) {
+	@media ${ranges.headerRwd} {
 		display: none;
 	}
 

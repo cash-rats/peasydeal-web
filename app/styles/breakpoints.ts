@@ -9,6 +9,7 @@ export const devices = {
 };
 
 export const ranges = {
+  headerRwd: '(max-width: 991px)',
   phoneOnly: '(max-width:599px)',
   tabletPortrait: '(min-width:600px) and (max-width:767px)',
   normalScreen: '(min-width:768px) and (max-width:1199px)',

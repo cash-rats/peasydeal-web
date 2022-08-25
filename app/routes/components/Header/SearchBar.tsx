@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { AiOutlineSearch } from "react-icons/ai";
 
+import { ranges } from "~/styles/breakpoints";
+
 
 const OpenSearch = styled.label`
 	border-radius: 3px;
@@ -8,7 +10,7 @@ const OpenSearch = styled.label`
   margin: 0 15px;
   overflow: hidden;
   position: relative;
-  @media(max-width: 991px){
+  @media ${ranges.headerRwd} {
     margin: 0;
     position: static;
     text-align: right;
@@ -17,14 +19,14 @@ const OpenSearch = styled.label`
 
 const OpenSearchIcon = styled.div`
 	display: none;
-	@media(max-width: 991px){
+  @media ${ranges.headerRwd} {
 	  display: flex;
 		justify-content: flex-end;
 	}
 `;
 
 const Search = styled.div`
-	@media(max-width: 991px) {
+  @media ${ranges.headerRwd} {
 		display: none;
 	  position: absolute;
 	  left: 0;
@@ -32,10 +34,6 @@ const Search = styled.div`
 	  width: 100%;
 	  z-index: 999;
 	}
-
-	//@media(min-width: 992) {
-		//top: 70px;
-	//}
 `
 
 const InputSearch = styled.input`
