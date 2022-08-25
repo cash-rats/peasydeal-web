@@ -1,6 +1,2 @@
-module.exports = {
-  compiler: {
-    // Enables the styled-components SWC transform
-    styledComponents: true
-  }
-}
+/** @type {import('@remix-run/dev').AppConfig} */
+module.exports = {}

@@ -4,9 +4,11 @@
   "sideEffects": false,
   "scripts": {
     "build": "run-s build:*",
+		"build:patched": "node --require @lukalabs/esbuild-inject-plugin -- ./node_modules/.bin/remix build",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
-    "dev": "NODE_ENV=development run-p dev:*",
+    "dev": "run-p dev:*",
+		"dev:patched": "node --require @lukalabs/esbuild-inject-plugin -- ./node_modules/.bin/remix dev",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
@@ -52,6 +54,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^7.4.0",
+    "@lukalabs/esbuild-inject-plugin": "^1.0.2",
     "@remix-run/dev": "^1.6.8",
     "@remix-run/eslint-config": "^1.6.8",
     "@testing-library/cypress": "^8.0.3",

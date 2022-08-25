@@ -21,13 +21,18 @@ export default function handleRequest(
 	const sheet = new ServerStyleSheet();
 
   const html = renderToString(
-		sheet.collectStyles(
-			<ServerStyleContext.Provider value={null}>
-  		  <CacheProvider value={cache}>
-  		    <RemixServer context={remixContext} url={request.url} />
-  		  </CacheProvider>
-  		</ServerStyleContext.Provider>,
-		)
+		<ServerStyleContext.Provider value={null}>
+  	  <CacheProvider value={cache}>
+				{
+					sheet.collectStyles(
+						<RemixServer
+							context={remixContext}
+							url={request.url}
+						/>
+					)
+				}
+		  </CacheProvider>
+  	</ServerStyleContext.Provider>,
   )
 
   const chunks = extractCriticalToChunks(html);
@@ -35,18 +40,18 @@ export default function handleRequest(
   let markup = renderToString(
 		<ServerStyleContext.Provider value={chunks.styles}>
       <CacheProvider value={cache}>
-        <RemixServer context={remixContext} url={request.url} />
+				{
+					sheet.collectStyles(
+						<RemixServer context={remixContext} url={request.url} />
+					)
+				}
       </CacheProvider>
     </ServerStyleContext.Provider>,
   )
 
 	const styles = sheet.getStyleTags();
 
-	//console.log('styles', styles);
-
 	markup = markup.replace("__STYLES__", styles)
-
-	console.log('markup', markup);
 
 	responseHeaders.set("Content-Type", "text/html");
 

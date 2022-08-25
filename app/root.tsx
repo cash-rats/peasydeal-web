@@ -68,7 +68,6 @@ const Document = withEmotionCache(
         <head>
           <Meta />
           <Links />
-					{typeof document === "undefined" ? "__STYLES__" : null}
           {serverStyleData?.map(({ key, ids, css }) => (
             <style
               key={key}
@@ -76,12 +75,13 @@ const Document = withEmotionCache(
               dangerouslySetInnerHTML={{ __html: css }}
             />
           ))}
+					{typeof document === "undefined" ? "__STYLES__" : null}
         </head>
         <body>
           {children}
           <ScrollRestoration />
           <Scripts />
-          <LiveReload />
+					{process.env.NODE_ENV === "development" && <LiveReload />}
         </body>
       </html>
     );
@@ -93,6 +93,7 @@ export default function App() {
 		<Document>
       <ChakraProvider>
         <Outlet />
+
       </ChakraProvider>
     </Document>
   );
