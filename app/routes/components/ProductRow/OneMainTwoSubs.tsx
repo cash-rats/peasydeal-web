@@ -1,6 +1,8 @@
 import styled from "styled-components";
 
 import { ranges } from "~/styles/breakpoints";
+
+import type { Product } from "./index";
 import { LargeGrid, MediumGrid } from "../ProductGrid";
 
 const Container = styled.div`
@@ -20,11 +22,15 @@ const Container = styled.div`
 	}
 `
 const Left = styled.div`
+	display: flex;
+	justify-content: center;
 `
 
 const Right = styled.div`
 	display: flex;
+	justify-content: center;
 	flex-direction: column;
+	gap: 20px 0;
 
 	@media ${ranges.normalScreen} {
 		flex-direction: row;
@@ -43,17 +49,54 @@ const Right = styled.div`
 
 `
 
-export default function OneMainTwoSubs() {
+interface OneMainTwoSubsProps {
+	// Takes in 3 products at most.
+	products?: Array<Product>;
+};
+
+const defaultProps = {
+	products: [],
+}
+
+// What if we only have 1, or 2 products?
+function OneMainTwoSubs({ products }: OneMainTwoSubsProps) {
+	const [ one, two, three ] = products;
+
 	return (
 		<Container>
 			<Left>
-				<LargeGrid />
+				{
+					one && (
+						<LargeGrid />
+					)
+				}
 			</Left>
 
 			<Right>
-				<MediumGrid />
-				<MediumGrid />
+				{
+					two && (
+						<MediumGrid
+							image={two.image}
+							title={two.title}
+							description={two.description}
+						/>
+					)
+				}
+
+				{
+					three && (
+						<MediumGrid
+							image={three.image}
+							title={three.title}
+							description={three.description}
+						/>
+					)
+				}
 			</Right>
 		</Container>
 	);
 }
+
+OneMainTwoSubs.defaultProps = defaultProps;
+
+export default OneMainTwoSubs;

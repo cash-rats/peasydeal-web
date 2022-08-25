@@ -6,6 +6,7 @@ const Container = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	padding: 10px 10px 0;
 `
 
 export default ({ children }) => (

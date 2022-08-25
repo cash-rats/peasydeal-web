@@ -1,3 +1,10 @@
 import OneMainTwoSubs from "./OneMainTwoSubs";
+import EvenRow from "./EvenRow";
 
-export { OneMainTwoSubs }
+export type Product = {
+	image: string;
+	title: string;
+	description: string;
+};
+
+export { OneMainTwoSubs, EvenRow };

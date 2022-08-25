@@ -13,17 +13,14 @@ const Container = styled.div`
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
 	@media ${devices.tabletPortraitUp} {
 		max-width: 273px;
-		//max-height: 256px;
 	}
 
 	@media ${devices.normalScreen} {
 		max-width: 329px;
-		//max-height: 290px;
 	}
 
 	@media ${devices.desktopUp} {
 		max-width: 353.33px;
-		//max-height: 306px;
 	}
 `
 
@@ -45,7 +42,7 @@ const ImageContainer = styled.div`
 
 const ProductDescContainer = styled.div`
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	padding: 11px;
 	@media ${devices.phoneOnly} {
@@ -85,6 +82,12 @@ const ViewBtnContainer = styled.div`
 	}
 `
 
+interface MediumGridProps {
+	image: string;
+	title: string;
+	description: string;
+};
+
 // - [ ] Basic product grid. do not consider wrapper layout.
 // - [ ] breakpoint: > desktopUp, 1 row  has 3 columns
 // - [ ] Image should be as large as the grid width
@@ -94,17 +97,17 @@ const ViewBtnContainer = styled.div`
 //      >= 600: 273px256px, 2 grid
 //      > 1199: 353.33x306, 3 grids flex 1
 //      > 767: 323x290, 2 grids flex 1
-export default function MediumGrid() {
+export default function MediumGrid({ image, title, description }: MediumGridProps) {
 	return (
 		<Container>
 			{/* images */}
 			<ImageContainer>
 				<picture>
 					<source
-						srcSet="https://images.wowcher.co.uk/images/deal/23155097/777x520/864807.jpg" />
-					<source srcSet="https://images.wowcher.co.uk/images/deal/23155097/777x520/864807.jpg" />
+						srcSet={image} />
+					<source srcSet={image} />
 
-					<img src="https://images.wowcher.co.uk/images/deal/23155097/777x520/864807.jpg" />
+					<img src={image} />
 
 				</picture>
 			</ImageContainer>
@@ -114,11 +117,11 @@ export default function MediumGrid() {
 				<ProdInfo>
 					{/* topic */}
 					<Headline>
-						Pop Up Gazebo - Beige, Black, Green, or Grey!
+						{title}
 					</Headline>
 
 					<p>
-						New deal today
+						{description}
 					</p>
 				</ProdInfo>
 				<ViewBtnContainer>

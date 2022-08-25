@@ -1,4 +1,30 @@
 // For example: if screen size is more than 1440px, display corresponding style for labtopL accordingly
+
+const PhoneTop = 599
+
+const tabletPortraitBottom = 600;
+const tabletPortraitTop = 767;
+
+const largeTabletBottom = 991;
+
+const normalScreenBottom = 768;
+const normalScreenTop = 1199;
+
+const desktopBottom = 1200;
+
+export const breakPoints = {
+  PhoneTop,
+
+  tabletPortraitTop,
+  tabletPortraitBottom,
+  largeTabletBottom,
+
+  normalScreenTop,
+  normalScreenBottom,
+
+  desktopBottom,
+};
+
 export const devices = {
   phoneOnly: '(max-width:599px)',
   tabletPortraitUp: '(min-width:600px)',
@@ -9,10 +35,10 @@ export const devices = {
 };
 
 export const ranges = {
-  headerRwd: '(max-width: 991px)',
-  phoneOnly: '(max-width:599px)',
-  tabletPortrait: '(min-width:600px) and (max-width:767px)',
-  normalScreen: '(min-width:768px) and (max-width:1199px)',
-  desktopUp: '(min-width:1200px)',
+  headerRwd: `(max-width: ${largeTabletBottom}px)`,
+  phoneOnly: `(max-width:${PhoneTop}px)`,
+  tabletPortrait: `(min-width:600px) and (max-width:767px)`,
+  normalScreen: `(min-width:${normalScreenBottom}px) and (max-width:${normalScreenTop}px)`,
+  desktopUp: `(min-width:${desktopBottom}px)`,
 };
 
