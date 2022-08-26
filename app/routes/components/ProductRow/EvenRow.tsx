@@ -53,8 +53,9 @@ export default function EvenRow({ products }: EvenRowProps) {
 	return (
 		<Container>
 			{
-				products.map(product => (
+				products.map((product, key) => (
 					<MediumGrid
+						key={key}
 						image={product.image}
 						title={product.title}
 						description={product.description}
