@@ -6,7 +6,9 @@ ifneq (,$(wildcard ./.env))
 	export
 endif
 
+NPM_PATH := $(shell which npm)
+
 start:
 	DATABASE_URL=$(DATABASE_URL) \
 	SESSION_SECRET=$(SESSION_SECRET) \
-	npm start
+	$(NPM_PATH) start
