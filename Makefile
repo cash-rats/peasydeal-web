@@ -14,21 +14,15 @@ REMOTE_PORT=3333
 REMOTE_APP_PATH=/home/bryan/peasydeal_web
 REMOTE_BUILD_PATH=$(REMOTE_APP_PATH)/build
 
-# Build product script
-# rsync to remote server
-# pm2 start remove server
-build:
-	npm run build:patched
-staging_upload: build
-	scp -P $(REMOTE_PORT) -r $(CURRENT_DIR)/build $(REMOTE_USER)@$(REMOTE_HOST):$(REMOTE_APP_PATH)
-
+# We need to load nvm for ssh remote execution.
+# @see https://stackoverflow.com/questions/33357227/bash-doesnt-load-node-on-remote-ssh-command.
 staging_deploy:
-	ssh -t $(REMOTE_USER)@$(REMOTE_HOST) 'cd $(REMOTE_APP_PATH) && \
+	ssh -p $(REMOTE_PORT) -t $(REMOTE_USER)@$(REMOTE_HOST) 'source ~/.nvm/nvm.sh && \
+	cd $(REMOTE_APP_PATH) && \
 	git pull && \
 	npm install && \
 	npm run build:patched &&\
 	make start'
-
 
 start:
 	DATABASE_URL=$(DATABASE_URL) \
