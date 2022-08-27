@@ -1,5 +1,5 @@
 module.exports = {
-  app: [
+  apps: [
     {
       script: "npm",
       watch: true,
