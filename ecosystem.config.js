@@ -1,6 +1,7 @@
 module.exports = {
   apps: [
     {
+      name: "peasydeal_web",
       script: "npm",
       watch: true,
       args: "start",
