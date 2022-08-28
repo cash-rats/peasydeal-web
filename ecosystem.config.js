@@ -12,6 +12,13 @@ module.exports = {
         "SESSION_SECRET": "4f8d522276ae65a7d1db347b98b6185a",
       },
 
+      env_staging: {
+        "PORT": 3000,
+        "NODE_ENV": "staging",
+        "DATABASE_URL": "file:./data.db?connection_limit=1",
+        "SESSION_SECRET": "4f8d522276ae65a7d1db347b98b6185a",
+      },
+
       env_production: {
         "PORT": 3000,
         "NODE_ENV": "production",
