@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 import { ranges } from "~/styles/breakpoints";
-import { OneMainTwoSubs, EvenRow } from "../components/ProductRow";
-import type { Product } from "../components/ProductRow";
+import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
+import type { Product } from "~/components/ProductRow";
 
 // We need to resize container based on viewport.
 const Container = styled.div`
@@ -73,6 +73,8 @@ const products: Array<Product> = [
 ]
 
 /*
+ * Product list page.
+ *
  * - [ ] 根據 row index 的不同，顯示的 grid layout 會不一樣
  *    - 每 3 個 row OneMainTwoSubs 就會 reverse 一次
  *    - 頭一個 row 是 OneMainTwoSubs Layout

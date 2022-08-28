@@ -5,25 +5,25 @@
 // because this way they become hot-reloadable.
 
 
-import fixture0 from './routes/components/Header/Header.fixture.tsx';
-import fixture1 from './routes/components/ProductGrid/LargeGrid.fixture.tsx';
-import fixture2 from './routes/components/ProductGrid/MediumGrid.fixture.tsx';
-import fixture3 from './routes/components/ProductRow/EvenRow.fixture.tsx';
-import fixture4 from './routes/components/ProductRow/OneMainTwoSubs.fixture.tsx';
+import fixture0 from './components/Header/Header.fixture.tsx';
+import fixture1 from './components/ProductGrid/LargeGrid.fixture.tsx';
+import fixture2 from './components/ProductGrid/MediumGrid.fixture.tsx';
+import fixture3 from './components/ProductRow/EvenRow.fixture.tsx';
+import fixture4 from './components/ProductRow/OneMainTwoSubs.fixture.tsx';
 
-import decorator0 from './routes/components/ProductGrid/cosmos.decorator.tsx';
-import decorator1 from './routes/components/ProductRow/cosmos.decorator.tsx';
+import decorator0 from './components/ProductGrid/cosmos.decorator.tsx';
+import decorator1 from './components/ProductRow/cosmos.decorator.tsx';
 
 export const rendererConfig = {
   "port": 5001
 };
 
 export const fixtures = {
-  'app/routes/components/Header/Header.fixture.tsx': { module: { default: fixture0 } },
-  'app/routes/components/ProductGrid/LargeGrid.fixture.tsx': { module: { default: fixture1 } },
-  'app/routes/components/ProductGrid/MediumGrid.fixture.tsx': { module: { default: fixture2 } },
-  'app/routes/components/ProductRow/EvenRow.fixture.tsx': { module: { default: fixture3 } },
-  'app/routes/components/ProductRow/OneMainTwoSubs.fixture.tsx': { module: { default: fixture4 } }
+  'app/components/Header/Header.fixture.tsx': { module: { default: fixture0 } },
+  'app/components/ProductGrid/LargeGrid.fixture.tsx': { module: { default: fixture1 } },
+  'app/components/ProductGrid/MediumGrid.fixture.tsx': { module: { default: fixture2 } },
+  'app/components/ProductRow/EvenRow.fixture.tsx': { module: { default: fixture3 } },
+  'app/components/ProductRow/OneMainTwoSubs.fixture.tsx': { module: { default: fixture4 } }
 };
 
 export const decorators = {

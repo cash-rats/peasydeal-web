@@ -102,9 +102,6 @@ const BtnContainer = styled.div`
 function LargeGrid() {
 	return (
 		<Container>
-			<div className="somediv">
-				aaa
-			</div>
 			{/* image */}
 			<ImageContainer>
 				<picture>

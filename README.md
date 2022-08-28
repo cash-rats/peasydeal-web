@@ -34,4 +34,4 @@ bable plugin to fix this issue. However, remix official does not want any babel 
 	Home route with list of products.
 
 ** /$prod_id **
-	Product route with product detail.
+	Product route with product detail
