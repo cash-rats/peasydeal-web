@@ -1,7 +1,14 @@
 import styled from "styled-components";
 import { Button } from "@chakra-ui/react";
-
 import { devices } from "~/styles/breakpoints";
+
+import styles from "./styles/LargeGrid.css";
+
+export function links() {
+	return [
+		{ rel: "stylesheet", href: styles },
+	];
+}
 
 const Container = styled.div`
 	position: relative;
@@ -95,6 +102,9 @@ const BtnContainer = styled.div`
 function LargeGrid() {
 	return (
 		<Container>
+			<div className="somediv">
+				aaa
+			</div>
 			{/* image */}
 			<ImageContainer>
 				<picture>

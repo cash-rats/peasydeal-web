@@ -14,7 +14,10 @@ import { ChakraProvider } from '@chakra-ui/react'
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
-import { ServerStyleContext, ClientStyleContext } from './context'
+import { ServerStyleContext, ClientStyleContext } from "./context"
+
+// TODO should be removed. This is just an example for scss styling.
+//import { links as LargeGridLinks } from "./routes/components/ProductGrid/LargeGrid";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -24,6 +27,9 @@ export const meta: MetaFunction = () => ({
 
 export let links: LinksFunction = () => {
   return [
+		// TODO should be removed. This is just an example for scss styling.
+		//...LargeGridLinks(),
+
 		{ rel: "stylesheet", href: tailwindStylesheetUrl },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
