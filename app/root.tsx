@@ -18,6 +18,7 @@ import { ServerStyleContext, ClientStyleContext } from "./context"
 
 // TODO should be removed. This is just an example for scss styling.
 //import { links as LargeGridLinks } from "./routes/components/ProductGrid/LargeGrid";
+import { links as LargeGridLinks } from "./routes/__index/product/$prodId";
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",
@@ -28,7 +29,7 @@ export const meta: MetaFunction = () => ({
 export let links: LinksFunction = () => {
   return [
 		// TODO should be removed. This is just an example for scss styling.
-		//...LargeGridLinks(),
+		...LargeGridLinks(),
 
 		{ rel: "stylesheet", href: tailwindStylesheetUrl },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },

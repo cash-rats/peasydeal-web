@@ -5,6 +5,7 @@ import Header from '~/components/Header';
 
 const Main = styled.main`
 	background-color: #EFEFEF;
+	height: 100vh;
 `;
 
 export default function Index() {

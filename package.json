@@ -8,7 +8,7 @@
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
     "dev": "run-p dev:*",
-    "dev:patched": "concurrently \"npm run sass\" \"node --require @lukalabs/esbuild-inject-plugin -- ./node_modules/.bin/remix dev\"",
+    "dev:patched": "concurrently \"npm run sass\" \"npm run postcss\" \"node --require @lukalabs/esbuild-inject-plugin -- ./node_modules/.bin/remix dev\"",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
@@ -25,7 +25,8 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "cosmos": "cosmos",
     "cosmos:export": "cosmos-export",
-    "sass": "sass --watch app/:app/"
+    "sass": "sass --watch app/:app/",
+    "postcss": "postcss app/**/styles/*.css --base app --dir app --watch"
   },
   "prettier": {},
   "eslintIgnore": [
@@ -84,6 +85,7 @@
     "msw": "^0.44.2",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.16",
+    "postcss-cli": "^10.0.0",
     "prettier": "2.7.1",
     "prettier-plugin-tailwindcss": "^0.1.13",
     "prisma": "^4.2.1",

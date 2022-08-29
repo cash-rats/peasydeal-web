@@ -1,3 +1,52 @@
-
-
+.container {
+  margin: 20px auto;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+  max-width: 666px;
+}
+.container .product-detail-title {
+  padding: 10px;
+}
+.container .product-detail-title h1 {
+  font-size: 22px;
+}
+.container .product-info-container {
+  padding: 10px;
+}
+.container .product-info-container .price-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+.container .product-info-container .price-info .price-info-left {
+  display: flex;
+  align-items: center;
+}
+.container .product-info-container .price-info .price-info-left span:not(:first-child) {
+  margin-left: 6px;
+}
+.container .product-info-container .price-info .price-info-left .orig-price {
+  text-decoration: line-through;
+  color: #c1c1c1;
+}
+.container .product-info-container .price-info .price-info-left .price {
+  font-size: 24px;
+  font-weight: bold;
+  color: red;
+}
+.container .product-info-container .price-info .price-info-right {
+  display: flex;
+  align-items: center;
+}
+.container .product-info-container .price-info .price-info-right span {
+  margin-left: 8px;
+}
+.container .product-info-container .product-desc {
+  margin-top: 10px;
+}
+.container .product-info-container .product-desc div {
+  margin-top: 10px;
+}
 /*# sourceMappingURL=ProdDetail.css.map */

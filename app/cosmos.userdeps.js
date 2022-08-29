@@ -10,6 +10,8 @@ import fixture1 from './components/ProductGrid/LargeGrid.fixture.tsx';
 import fixture2 from './components/ProductGrid/MediumGrid.fixture.tsx';
 import fixture3 from './components/ProductRow/EvenRow.fixture.tsx';
 import fixture4 from './components/ProductRow/OneMainTwoSubs.fixture.tsx';
+import fixture5 from './routes/__index/product/components/PriceTag/PriceTag.fixture.tsx';
+import fixture6 from './routes/__index/product/ProductDetail.fixture.tsx';
 
 import decorator0 from './components/ProductGrid/cosmos.decorator.tsx';
 import decorator1 from './components/ProductRow/cosmos.decorator.tsx';
@@ -23,10 +25,12 @@ export const fixtures = {
   'app/components/ProductGrid/LargeGrid.fixture.tsx': { module: { default: fixture1 } },
   'app/components/ProductGrid/MediumGrid.fixture.tsx': { module: { default: fixture2 } },
   'app/components/ProductRow/EvenRow.fixture.tsx': { module: { default: fixture3 } },
-  'app/components/ProductRow/OneMainTwoSubs.fixture.tsx': { module: { default: fixture4 } }
+  'app/components/ProductRow/OneMainTwoSubs.fixture.tsx': { module: { default: fixture4 } },
+  'app/routes/__index/product/components/PriceTag/PriceTag.fixture.tsx': { module: { default: fixture5 } },
+  'app/routes/__index/product/ProductDetail.fixture.tsx': { module: { default: fixture6 } }
 };
 
 export const decorators = {
-  'app/routes/components/ProductGrid/cosmos.decorator.tsx': decorator0,
-  'app/routes/components/ProductRow/cosmos.decorator.tsx': decorator1
+  'app/components/ProductGrid/cosmos.decorator.tsx': decorator0,
+  'app/components/ProductRow/cosmos.decorator.tsx': decorator1
 };
