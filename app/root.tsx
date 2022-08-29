@@ -9,6 +9,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+	useLoaderData,
 } from "@remix-run/react";
 import { ChakraProvider } from '@chakra-ui/react'
 
@@ -44,6 +45,9 @@ export let links: LinksFunction = () => {
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
+		ENV: {
+			MYFB_END_POINT: process.env.MYFB_END_POINT,
+		}
   });
 }
 
@@ -55,6 +59,9 @@ const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
     const serverStyleData = useContext(ServerStyleContext);
     const clientStyleData = useContext(ClientStyleContext);
+		const envData = useLoaderData();
+
+		console.log('envData', envData)
 
     // Only executed on client
     useEffect(() => {
@@ -86,6 +93,12 @@ const Document = withEmotionCache(
         </head>
         <body>
           {children}
+
+					<script
+						dangerouslySetInnerHTML={{
+							__html: `window.ENV=${ JSON.stringify(envData) }`
+						}}
+					/>
           <ScrollRestoration />
           <Scripts />
 					{process.env.NODE_ENV === "development" && <LiveReload />}
@@ -100,7 +113,6 @@ export default function App() {
 		<Document>
       <ChakraProvider>
         <Outlet />
-
       </ChakraProvider>
     </Document>
   );
