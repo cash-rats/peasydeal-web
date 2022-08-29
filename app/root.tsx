@@ -46,7 +46,7 @@ export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
 		ENV: {
-			MYFB_END_POINT: process.env.MYFB_END_POINT,
+			MYFB_END_POINT: process.env.MYFB_ENDPOINT,
 		}
   });
 }
