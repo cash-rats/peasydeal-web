@@ -27,6 +27,9 @@ bable plugin to fix this issue. However, remix official does not want any babel 
 
 ## SCSS
 
+### Responsive mechansim
+
+[variable and mixin](https://medium.com/codeartisan/breakpoints-and-media-queries-in-scss-46e8f551e2f2)
 
 ## Routes
 
