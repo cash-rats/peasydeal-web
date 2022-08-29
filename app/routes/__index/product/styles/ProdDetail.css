@@ -20,6 +20,12 @@
   justify-content: flex-start;
   align-items: center;
 }
+@media (max-width: 576px) {
+  .container .product-info-container .price-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 .container .product-info-container .price-info .price-info-left {
   display: flex;
   align-items: center;
@@ -42,6 +48,9 @@
 }
 .container .product-info-container .price-info .price-info-right span {
   margin-left: 8px;
+}
+.container .product-info-container .button-container {
+  margin-top: 15px;
 }
 .container .product-info-container .product-desc {
   margin-top: 10px;
