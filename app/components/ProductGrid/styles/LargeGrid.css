@@ -1,6 +1,21 @@
-.somediv {
-  width: 10px;
-  height: 10px;
-  background-color: red;
+.large-grid-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 414/277;
+}
+@media (min-width: 576px) {
+  .large-grid-image {
+    height: 378px;
+  }
+}
+@media (min-width: 768px) {
+  .large-grid-image {
+    height: 445px;
+  }
+}
+@media (min-width: 1200px) {
+  .large-grid-image {
+    height: 486px;
+  }
 }
 /*# sourceMappingURL=LargeGrid.css.map */

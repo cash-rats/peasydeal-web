@@ -5,12 +5,13 @@ import { ranges } from "~/styles/breakpoints";
 import type { Product } from "~/shared/lib/types";
 
 import MediumGrid, { links as MediumGridLinks } from "../ProductGrid/MediumGrid";
-import LargeGrid from "../ProductGrid/LargeGrid";
+import LargeGrid, { links as LargeGridLinks } from "../ProductGrid/LargeGrid";
 
 export const links: LinksFunction = () => {
 	return [
 		...MediumGridLinks(),
-	]
+		...LargeGridLinks(),
+	];
 }
 
 const Container = styled.div`
@@ -75,7 +76,11 @@ function OneMainTwoSubs({ products = [] }: OneMainTwoSubsProps) {
 			<Left>
 				{
 					one && (
-						<LargeGrid />
+						<LargeGrid
+							image={one.main_pic}
+							title={one.title}
+							description={one.description}
+						/>
 					)
 				}
 			</Left>

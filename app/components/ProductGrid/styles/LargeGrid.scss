@@ -1,5 +1,20 @@
-.somediv {
-	width: 10px;
-	height: 10px;
-	background-color: red;
+@import "styles/_mixins";
+
+.large-grid-image {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 414/277;
+
+	@include sm {
+		height: 378px;
+	}
+
+
+	@include md {
+		height: 445px;
+	}
+
+	@include xl {
+		height: 486px;
+	}
 }

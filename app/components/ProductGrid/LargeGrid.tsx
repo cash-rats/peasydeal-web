@@ -98,28 +98,28 @@ const BtnContainer = styled.div`
 	}
 `;
 
+interface LargeGridProps {
+	image: string;
+	title: string;
+	description: string;
+}
+
 // > 1200, flex:2; height
-function LargeGrid() {
+function LargeGrid({ image, title, description }: LargeGridProps) {
 	return (
-		<Container>
+		<Container className="large-grid-container">
 			{/* image */}
 			<ImageContainer>
-				<picture>
-					<source
-						srcSet="https://images.wowcher.co.uk/images/deal/24721229/777x520/941941.jpg" />
-					<source srcSet="https://images.wowcher.co.uk/images/deal/24721229/777x520/941941.jpg" />
-
-					<img src="https://images.wowcher.co.uk/images/deal/24721229/777x520/941941.jpg" />
-				</picture>
+				<img className="large-grid-image" src={image} />
 			</ImageContainer>
 
 			<ProductDescContainer>
 				<Info>
 					<Headline>
-						Stranger Things Inspired Hat - Blue, white, Black and Red
+						{title}
 					</Headline>
 					<Desc>
-						£7.99 instead of £19.99 for a Stranger Things inspired hat from One More Ideal- save 60%
+						{description}
 					</Desc>
 				</Info>
 
