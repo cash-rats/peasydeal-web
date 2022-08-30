@@ -1,21 +1,21 @@
 interface fetchProductsParams {
-	category?: string;
+	categoryID?: number;
 	perpage?: number;
 	page: number;
 }
 
 const fetchProducts = ({
-	category,
+	categoryID,
 	perpage,
 	page
 }: fetchProductsParams): Promise<Response> => {
-	if (!category) category = 'hotdeal';
+	if (!categoryID) categoryID = 1;
 	if (!perpage) perpage = 9;
 	if (!page) page = 0;
 
 	const { MYFB_ENDPOINT } = process.env;
 
-	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?cat=${category}&perPage=${perpage}&pageNo=${page}`);
+	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?catId=${categoryID}&perPage=${perpage}&pageNo=${page}`);
 }
 
 export { fetchProducts };

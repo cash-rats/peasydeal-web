@@ -1,0 +1,21 @@
+@import 'styles/_mixins';
+
+.prod-main-image {
+	width: 100%;
+	height: auto;
+	aspect-ratio: 414/277;
+
+	@include sm {
+		height: 182px;
+	}
+
+
+	@include md {
+		width: 100%;
+		height: 216px;
+	}
+
+	@include xl {
+		height: 236px;
+	}
+}

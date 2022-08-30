@@ -1,0 +1,22 @@
+.prod-main-image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 414/277;
+}
+@media (min-width: 576px) {
+  .prod-main-image {
+    height: 182px;
+  }
+}
+@media (min-width: 768px) {
+  .prod-main-image {
+    width: 100%;
+    height: 216px;
+  }
+}
+@media (min-width: 1200px) {
+  .prod-main-image {
+    height: 236px;
+  }
+}
+/*# sourceMappingURL=MediumGrid.css.map */

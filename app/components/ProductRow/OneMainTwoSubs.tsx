@@ -1,9 +1,17 @@
+import type { LinksFunction } from "@remix-run/node";
 import styled from "styled-components";
 
 import { ranges } from "~/styles/breakpoints";
 import type { Product } from "~/shared/lib/types";
 
-import { LargeGrid, MediumGrid } from "../ProductGrid";
+import MediumGrid, { links as MediumGridLinks } from "../ProductGrid/MediumGrid";
+import LargeGrid from "../ProductGrid/LargeGrid";
+
+export const links: LinksFunction = () => {
+	return [
+		...MediumGridLinks(),
+	]
+}
 
 const Container = styled.div`
 	display: flex;

@@ -1,7 +1,17 @@
 import styled from "styled-components";
+import { Button } from '@chakra-ui/react';
+import type { LinksFunction } from '@remix-run/node';
+
 import { devices } from "~/styles/breakpoints";
 
-import { Button } from '@chakra-ui/react';
+import styles from "./styles/MediumGrid.css";
+
+
+export const links: LinksFunction = () => {
+	return [
+		{ rel: 'stylesheet', href: styles },
+	]
+}
 
 const Container = styled.div`
 	position: relative;
@@ -27,6 +37,10 @@ const Container = styled.div`
 const ImageContainer = styled.div`
 	width: 100%;
 	height: 100%;
+	@media (min-width:1199px) {
+		height: 236.33px;
+	}
+
 	@media ${devices.phoneOnly} {
 		&:after {
 			content: '';
@@ -60,13 +74,14 @@ const ProdInfo = styled.div`
 
 	@media ${devices.phoneOnly} {
 		p {
-			display: block;
+			display: none;
 		}
 	}
 `
 
 const Headline = styled.h3`
 	font-size: 14px;
+	line-height: 1.3;
 	font-weight: bold;
 	margin: 0;
 	color: rgb(51, 51, 51);
@@ -102,14 +117,10 @@ export default function MediumGrid({ image, title, description }: MediumGridProp
 		<Container>
 			{/* images */}
 			<ImageContainer>
-				<picture>
-					<source
-						srcSet={image} />
-					<source srcSet={image} />
-
-					<img src={image} />
-
-				</picture>
+				<img
+					className="prod-main-image"
+					src={image}
+				/>
 			</ImageContainer>
 
 			{/* Product Description */}

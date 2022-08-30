@@ -2,41 +2,26 @@ import { useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import styled from "styled-components";
 import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
-import { useFetcher, useTransition, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction, LinksFunction } from "@remix-run/node";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
-import { ranges } from "~/styles/breakpoints";
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
-//import type { Product } from "~/components/ProductRow";
+import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
+
 import type { Product } from "~/shared/lib/types";
 
 import { fetchProducts } from "./api";
+import styles from "./styles/ProductList.css";
+
+export const links: LinksFunction = () => {
+	return [
+		...OneMainTwoSubsLinks(),
+		{ rel: 'stylesheet', href: styles },
+	]
+}
 
 // We need to resize container based on viewport.
-const Container = styled.div`
-	padding-top: 20px;
-	width: 100%;
-	display: flex;
-	justify-content: center;
-
-	& > div {
-		display: flex;
-		flex-direction: column;
-		flex-wrap: wrap;
-		align-items: center;
-		justify: center;
-
-		@media ${ranges.desktopUp} {
-			width: 1100px;
-		}
-
-		@media ${ranges.normalScreen} {
-			width: 992px;
-		}
-	}
-`;
-
 const ProductRow = styled.div`
 	padding-top: 20px;
 	width: 100%;
@@ -148,81 +133,80 @@ export default function Index() {
 	}, [fetcher])
 
 	return (
-		<Container>
-			<fetcher.Form>
-				<div>
-					{
-						productRows.map((row: Product[]): ReactNode => {
-							// A complete row has 9 products.
-							// A incomplete row contains less than 9 products
-							//
-							// To render `OneMainTwoSubs` layout properly, we need to have at least 3 products
-							// To render `EvenRow` layout properly we need to have at least 6 products
-							//
-							// If a given row has less than 9 products, that means we've reached the last page.
-							// Moreover, we might not have enough products to render both layouts.
-							// we'll need to decided if we have enough products to render `OneMainTwoSubs` and `EvenRow`
-							if (row.length === 9) {
-								// We can rest assure that we have enough products to render both `OneMainTwoSubs` and `EvenRow`
-								const oneMainTwoSubsProdData = row.slice(0, 3)
-								const EvenRowProdData = row.slice(3)
+		<div className="prod-list-container">
+			{
+				productRows.map((row: Product[]): ReactNode => {
+					// A complete row has 9 products.
+					// A incomplete row contains less than 9 products
+					//
+					// To render `OneMainTwoSubs` layout properly, we need to have at least 3 products
+					// To render `EvenRow` layout properly we need to have at least 6 products
+					//
+					// If a given row has less than 9 products, that means we've reached the last page.
+					// Moreover, we might not have enough products to render both layouts.
+					// we'll need to decided if we have enough products to render `OneMainTwoSubs` and `EvenRow`
+					if (row.length === 9) {
+						// We can rest assure that we have enough products to render both `OneMainTwoSubs` and `EvenRow`
+						const oneMainTwoSubsProdData = row.slice(0, 3)
+						const EvenRowProdData = row.slice(3)
 
-								return (
-									<>
-										<ProductRow>
-											<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
-										</ProductRow>
+						return (
+							<>
+								<ProductRow>
+									<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
+								</ProductRow>
 
-										<ProductRow>
-											<EvenRow products={EvenRowProdData} />
-										</ProductRow>
-									</>
-								)
-							} else {
-								const oneMainTwoSubsProdData = row.slice(0, 3)
+								<ProductRow>
+									<EvenRow products={EvenRowProdData} />
+								</ProductRow>
+							</>
+						)
+					} else {
+						const oneMainTwoSubsProdData = row.slice(0, 3)
 
-								if (oneMainTwoSubsProdData.length <= 3) {
-									return (
-										<ProductRow>
-											<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
-										</ProductRow>
-									);
-								}
+						if (oneMainTwoSubsProdData.length <= 3) {
+							return (
+								<ProductRow>
+									<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
+								</ProductRow>
+							);
+						}
 
-								const EvenRowProdData = row.slice(3)
+						const EvenRowProdData = row.slice(3)
 
-								return (
-									<>
-										<ProductRow>
-											<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
-										</ProductRow>
+						return (
+							<>
+								<ProductRow>
+									<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
+								</ProductRow>
 
-										<ProductRow>
-											<EvenRow products={EvenRowProdData} />
-										</ProductRow>
-									</>
-								);
-							}
-						})
+								<ProductRow>
+									<EvenRow products={EvenRowProdData} />
+								</ProductRow>
+							</>
+						);
 					}
+				})
+			}
 
-					<input
-						type="hidden"
-						name="per_page"
-						value={pagination.perPage}
-					/>
+			<fetcher.Form>
+				<input
+					type="hidden"
+					name="per_page"
+					value={pagination.perPage}
+				/>
 
-					<input
-						type="hidden"
-						name="page"
-						value={pagination.page}
-					/>
+				<input
+					type="hidden"
+					name="page"
+					value={pagination.page}
+				/>
 
-					<button onSubmit={handleSubmit}>
-						aa~
-					</button>
-				</div>
 			</fetcher.Form>
-		</Container>
+
+			<button onSubmit={handleSubmit}>
+				aa~
+			</button>
+		</div>
 	);
 }
