@@ -129,10 +129,7 @@ export default function Index() {
 
 	const preloadProds = useLoaderData();
 
-	//console.log('debug 1', preloadProds);
 	const [productRows, addProductRows] = useState<Product[][]>(preloadProds.prod_rows);
-	console.log('productRows', productRows);
-
 
 	// Transition to observe when preload the first page of the product list render
 	//const transition = useTransition();
