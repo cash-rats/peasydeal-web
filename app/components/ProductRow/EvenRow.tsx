@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { breakPoints, ranges } from "~/styles/breakpoints";
 
-import type { Product } from "./index";
+import { breakPoints, ranges } from "~/styles/breakpoints";
+import type { Product } from "~/shared/lib/types";
 import { MediumGrid } from "../ProductGrid";
 
 const Container = styled.div`
@@ -46,19 +46,19 @@ interface EvenRowProps {
 	/*
 	 *  Take at most 6 products. Render proper layout based on view port size.
 	 */
-	products: Array<Product>
+	products: Product[];
 }
 
-export default function EvenRow({ products }: EvenRowProps) {
+export default function EvenRow({ products = [] }: EvenRowProps) {
 	return (
 		<Container>
 			{
 				products.map((product, key) => (
 					<MediumGrid
 						key={key}
-						image={product.image}
+						image={product.main_pic}
 						title={product.title}
-						description={product.description}
+						description={product.shortDescription}
 					/>
 				))
 			}

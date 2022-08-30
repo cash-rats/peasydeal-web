@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 import { ranges } from "~/styles/breakpoints";
+import type { Product } from "~/shared/lib/types";
 
-import type { Product } from "./index";
 import { LargeGrid, MediumGrid } from "../ProductGrid";
 
 const Container = styled.div`
@@ -51,7 +51,7 @@ const Right = styled.div`
 
 interface OneMainTwoSubsProps {
 	// Takes in 3 products at most.
-	products?: Array<Product>;
+	products?: Product[];
 };
 
 const defaultProps = {
@@ -59,7 +59,7 @@ const defaultProps = {
 }
 
 // What if we only have 1, or 2 products?
-function OneMainTwoSubs({ products }: OneMainTwoSubsProps) {
+function OneMainTwoSubs({ products = [] }: OneMainTwoSubsProps) {
 	const [ one, two, three ] = products;
 
 	return (
@@ -76,9 +76,9 @@ function OneMainTwoSubs({ products }: OneMainTwoSubsProps) {
 				{
 					two && (
 						<MediumGrid
-							image={two.image}
+							image={two.main_pic}
 							title={two.title}
-							description={two.description}
+							description={two.shortDescription}
 						/>
 					)
 				}
@@ -86,9 +86,9 @@ function OneMainTwoSubs({ products }: OneMainTwoSubsProps) {
 				{
 					three && (
 						<MediumGrid
-							image={three.image}
+							image={three.main_pic}
 							title={three.title}
-							description={three.description}
+							description={three.shortDescription}
 						/>
 					)
 				}

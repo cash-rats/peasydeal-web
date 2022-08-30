@@ -61,8 +61,6 @@ const Document = withEmotionCache(
     const clientStyleData = useContext(ClientStyleContext);
 		const envData = useLoaderData();
 
-		console.log('envData', envData)
-
     // Only executed on client
     useEffect(() => {
       // re-link sheet container
