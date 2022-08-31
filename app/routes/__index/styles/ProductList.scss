@@ -10,6 +10,11 @@
 	flex-wrap: wrap;
 	align-items: center;
 
+	.product-row {
+		padding-top: 20px;
+		width: 100%;
+	}
+
 	@media (min-width: #{$screen-md-min}) and (max-width: #{$screen-xl-min}) {
 		max-width: 992px;
 	}
