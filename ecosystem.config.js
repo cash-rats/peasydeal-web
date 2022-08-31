@@ -10,6 +10,7 @@ module.exports = {
         "NODE_ENV": "development",
         "DATABASE_URL": "file:./data.db?connection_limit=1",
         "SESSION_SECRET": "4f8d522276ae65a7d1db347b98b6185a",
+        "MYFB_ENDPOINT": "https://api.myfbmanage.com:8443",
       },
 
       env_staging: {
@@ -17,6 +18,7 @@ module.exports = {
         "NODE_ENV": "staging",
         "DATABASE_URL": "file:./data.db?connection_limit=1",
         "SESSION_SECRET": "4f8d522276ae65a7d1db347b98b6185a",
+        "MYFB_ENDPOINT": "https://api.myfbmanage.com:8443",
       },
 
       env_production: {
@@ -24,6 +26,7 @@ module.exports = {
         "NODE_ENV": "production",
         "DATABASE_URL": "file:./data.db?connection_limit=1",
         "SESSION_SECRET": "4f8d522276ae65a7d1db347b98b6185a",
+        "MYFB_ENDPOINT": "https://api.myfbmanage.com:8443",
       },
     },
   ],

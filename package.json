@@ -4,11 +4,11 @@
   "sideEffects": false,
   "scripts": {
     "build": "run-s build:*",
-    "build:patched": "node --require @lukalabs/esbuild-inject-plugin -- ./node_modules/.bin/remix build",
+    "build:patched": "npm run build:sass && npm run build:postcss && node --require @lukalabs/esbuild-inject-plugin -- ./node_modules/.bin/remix build",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
     "dev": "run-p dev:*",
-    "dev:patched": "concurrently \"npm run sass\" \"npm run postcss\" \"node --require @lukalabs/esbuild-inject-plugin -- ./node_modules/.bin/remix dev\"",
+    "dev:patched": "concurrently \"npm run watch:sass\" \"npm run watch:postcss\" \"node --require @lukalabs/esbuild-inject-plugin -- ./node_modules/.bin/remix dev\"",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",
@@ -25,8 +25,12 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "cosmos": "cosmos",
     "cosmos:export": "cosmos-export",
-    "sass": "sass --load-path app/ --watch app/:app/",
-    "postcss": "postcss app/**/styles/*.css --base app --dir app --watch"
+
+	"build:sass": "sass --load-path app/ app/:app/",
+    "watch:sass": "sass --load-path app/ --watch app/:app/",
+
+	"build:postcss": "postcss app/**/styles/*.css --base app --dir app --env production",
+    "watch:postcss": "postcss app/**/styles/*.css --base app --dir app --watch"
   },
   "prettier": {},
   "eslintIgnore": [

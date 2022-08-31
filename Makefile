@@ -22,10 +22,7 @@ staging_deploy:
 	git pull && \
 	npm install && \
 	npm run build:patched &&\
-	make start'
+	make start_staging'
 
-start:
-	DATABASE_URL=$(DATABASE_URL) \
-	SESSION_SECRET=$(SESSION_SECRET) \
-	MYFB_ENDPOINT=$(MYFB_ENDPOINT) \
-	pm2 start ecosystem.config.js --env production
+start_staging:
+	pm2 start ecosystem.config.js --env staging
