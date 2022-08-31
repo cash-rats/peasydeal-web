@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   apps: [
     {
@@ -8,25 +10,25 @@ module.exports = {
       env: {
         "PORT": 3000,
         "NODE_ENV": "development",
-        "DATABASE_URL": "file:./data.db?connection_limit=1",
-        "SESSION_SECRET": "4f8d522276ae65a7d1db347b98b6185a",
-        "MYFB_ENDPOINT": "https://api.myfbmanage.com:8443",
+        "DATABASE_URL": process.env.DATABASE_URL,
+        "SESSION_SECRET": process.env.SESSION_SECRET,
+        "MYFB_ENDPOINT": process.env.MYFB_ENDPOINT,
       },
 
       env_staging: {
         "PORT": 3000,
         "NODE_ENV": "staging",
-        "DATABASE_URL": "file:./data.db?connection_limit=1",
-        "SESSION_SECRET": "4f8d522276ae65a7d1db347b98b6185a",
-        "MYFB_ENDPOINT": "https://api.myfbmanage.com:8443",
+        "DATABASE_URL": process.env.DATABASE_URL,
+        "SESSION_SECRET": process.env.SESSION_SECRET,
+        "MYFB_ENDPOINT": process.env.MYFB_ENDPOINT,
       },
 
       env_production: {
         "PORT": 3000,
         "NODE_ENV": "production",
-        "DATABASE_URL": "file:./data.db?connection_limit=1",
-        "SESSION_SECRET": "4f8d522276ae65a7d1db347b98b6185a",
-        "MYFB_ENDPOINT": "https://api.myfbmanage.com:8443",
+        "DATABASE_URL": process.env.DATABASE_URL,
+        "SESSION_SECRET": process.env.SESSION_SECRET,
+        "MYFB_ENDPOINT": process.env.MYFB_ENDPOINT,
       },
     },
   ],

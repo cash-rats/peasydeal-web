@@ -25,11 +25,9 @@
     "validate": "run-p \"test -- --run\" lint typecheck test:e2e:run",
     "cosmos": "cosmos",
     "cosmos:export": "cosmos-export",
-
-	"build:sass": "sass --load-path app/ app/:app/",
+    "build:sass": "sass --load-path app/ app/:app/",
     "watch:sass": "sass --load-path app/ --watch app/:app/",
-
-	"build:postcss": "postcss app/**/styles/*.css --base app --dir app --env production",
+    "build:postcss": "postcss app/**/styles/*.css --base app --dir app --env production",
     "watch:postcss": "postcss app/**/styles/*.css --base app --dir app --watch"
   },
   "prettier": {},
@@ -50,6 +48,7 @@
     "@remix-run/serve": "^1.6.8",
     "@remix-run/server-runtime": "^1.6.8",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.0.2",
     "framer-motion": "^7.2.0",
     "http-status-codes": "^2.2.0",
     "isbot": "^3.5.0",
