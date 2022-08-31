@@ -18,6 +18,7 @@ import type { Product } from "~/shared/lib/types";
 
 import { fetchProducts } from "./api";
 import styles from "./styles/ProductList.css";
+import {should} from "vitest";
 
 export const links: LinksFunction = () => {
 	return [
@@ -144,15 +145,20 @@ export default function Index() {
 					// If a given row has less than 9 products, that means we've reached the last page.
 					// Moreover, we might not have enough products to render both layouts.
 					// we'll need to decided if we have enough products to render `OneMainTwoSubs` and `EvenRow`
+					const shouldReverese = index % 2 !== 0;
+
 					if (row.length === 9) {
 						// We can rest assure that we have enough products to render both `OneMainTwoSubs` and `EvenRow`
 						const oneMainTwoSubsProdData = row.slice(0, 3)
 						const EvenRowProdData = row.slice(3)
+						// 0 % 2 = 0
+						// 1 % 2 = 1
+						// 2 % 2 = 0
 
 						return (
 							<Fragment key={index}>
 								<div className="product-row">
-									<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
+									<OneMainTwoSubs reverse={shouldReverese} products={oneMainTwoSubsProdData}/>
 								</div>
 
 								<div className="product-row">
@@ -166,7 +172,7 @@ export default function Index() {
 						if (oneMainTwoSubsProdData.length <= 3) {
 							return (
 								<div key={index} className="product-row">
-									<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
+									<OneMainTwoSubs reverse={shouldReverese} products={oneMainTwoSubsProdData}/>
 								</div>
 							);
 						}
@@ -176,7 +182,7 @@ export default function Index() {
 						return (
 							<Fragment key={index}>
 								<div className="product-row">
-									<OneMainTwoSubs products={oneMainTwoSubsProdData}/>
+									<OneMainTwoSubs reverse={shouldReverese} products={oneMainTwoSubsProdData}/>
 								</div>
 
 								<div className="product-row">

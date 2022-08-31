@@ -48,6 +48,7 @@
     "@remix-run/serve": "^1.6.8",
     "@remix-run/server-runtime": "^1.6.8",
     "bcryptjs": "^2.4.3",
+    "clsx": "^1.2.1",
     "dotenv": "^16.0.2",
     "framer-motion": "^7.2.0",
     "http-status-codes": "^2.2.0",
