@@ -27,5 +27,5 @@ staging_deploy:
 start:
 	DATABASE_URL=$(DATABASE_URL) \
 	SESSION_SECRET=$(SESSION_SECRET) \
-	MYFB_ENDPOINT=$(MYFB_ENDPOINT)
+	MYFB_ENDPOINT=$(MYFB_ENDPOINT) \
 	pm2 start ecosystem.config.js --env production
