@@ -1,8 +1,14 @@
-@import "./_breakpoints.scss";
 
+@import "./_breakpoints.scss";
 // Small devices
 @mixin sm {
    @media (min-width: #{$screen-sm-min}) {
+       @content;
+   }
+}
+
+@mixin sm-600 {
+   @media (min-width: #{$screen-sm-min-600}) {
        @content;
    }
 }

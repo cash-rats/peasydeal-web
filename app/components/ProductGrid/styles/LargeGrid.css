@@ -3,19 +3,38 @@
   height: auto;
   aspect-ratio: 414/277;
 }
-@media (min-width: 576px) {
+@media (min-width: 600px) {
   .large-grid-image {
     height: 378px;
+    width: 595px;
   }
 }
 @media (min-width: 768px) {
   .large-grid-image {
     height: 445px;
+    width: 666px;
   }
 }
 @media (min-width: 1200px) {
   .large-grid-image {
     height: 486px;
+    width: 727px;
+  }
+}
+
+.image-container {
+  width: 100%;
+  position: relative;
+}
+@media (max-width: 600px) {
+  .image-container:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, black 170%);
   }
 }
 /*# sourceMappingURL=LargeGrid.css.map */

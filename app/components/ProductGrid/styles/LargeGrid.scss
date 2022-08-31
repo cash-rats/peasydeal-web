@@ -1,20 +1,43 @@
 @import "styles/_mixins";
+@import "styles/_breakpoints";
+
+.large-grid-container {
+
+}
 
 .large-grid-image {
 	width: 100%;
 	height: auto;
 	aspect-ratio: 414/277;
 
-	@include sm {
+	@include sm-600 {
 		height: 378px;
+		width: 595px;
 	}
-
 
 	@include md {
 		height: 445px;
+		width: 666px;
 	}
 
 	@include xl {
 		height: 486px;
+		width: 727px;
+	}
+}
+
+.image-container {
+	width: 100%;
+	position: relative;
+	@media (max-width: #{$screen-sm-min-600}) {
+		&:after {
+			content: '';
+  		position: absolute;
+  		top: 0;
+  		left: 0;
+  		right: 0;
+  		bottom: 0;
+  		background: linear-gradient(to bottom, transparent 0%, black 170%);
+		}
 	}
 }

@@ -13,47 +13,6 @@ export const links: LinksFunction = () => {
 	]
 }
 
-const Container = styled.div`
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	flex: 1;
-	border-radius: 10px;
-	overflow: hidden;
-	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
-	@media ${devices.tabletPortraitUp} {
-		max-width: 273px;
-	}
-
-	@media ${devices.normalScreen} {
-		max-width: 329px;
-	}
-
-	@media ${devices.desktopUp} {
-		max-width: 353.33px;
-	}
-`
-
-const ImageContainer = styled.div`
-	width: 100%;
-	height: 100%;
-	@media (min-width:1199px) {
-		height: 236.33px;
-	}
-
-	@media ${devices.phoneOnly} {
-		&:after {
-			content: '';
-  		position: absolute;
-  		top: 0;
-  		left: 0;
-  		right: 0;
-  		bottom: 0;
-  		background: linear-gradient(to bottom, transparent 0%, black 170%);
-		}
-	}
-`
-
 const ProductDescContainer = styled.div`
 	display: flex;
 	justify-content: space-between;
@@ -114,14 +73,14 @@ interface MediumGridProps {
 //      > 767: 323x290, 2 grids flex 1
 export default function MediumGrid({ image, title, description }: MediumGridProps) {
 	return (
-		<Container>
+		<div className="medium-grid-container">
 			{/* images */}
-			<ImageContainer>
+			<div className="image-container">
 				<img
 					className="prod-main-image"
 					src={image}
 				/>
-			</ImageContainer>
+			</div>
 
 			{/* Product Description */}
 			<ProductDescContainer>
@@ -143,6 +102,6 @@ export default function MediumGrid({ image, title, description }: MediumGridProp
 			</ProductDescContainer>
 
 			{/* Description */}
-		</Container>
+		</div>
 	);
 };

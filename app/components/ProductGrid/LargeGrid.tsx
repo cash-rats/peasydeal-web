@@ -34,33 +34,17 @@ const Container = styled.div`
 	}
 `;
 
-
-const ImageContainer = styled.div`
-	width: 100%;
-	height: 100%;
-	position: relative;
-	@media ${devices.phoneOnly} {
-		&:after {
-			content: '';
-  		position: absolute;
-  		top: 0;
-  		left: 0;
-  		right: 0;
-  		bottom: 0;
-  		background: linear-gradient(to bottom, transparent 0%, black 170%);
-		}
-	}
-`;
-
 const ProductDescContainer = styled.div`
 	display: flex;
 	justify-content: center;
-	align-items: center;
+	align-items: flex-end;
 	padding: 11px;
+	height: 100%;
 	@media ${devices.phoneOnly} {
 		position: absolute;
 		left: 0;
 		bottom: 0;
+		align-items: flex-end;
 	}
 `;
 
@@ -109,9 +93,9 @@ function LargeGrid({ image, title, description }: LargeGridProps) {
 	return (
 		<Container className="large-grid-container">
 			{/* image */}
-			<ImageContainer>
+			<div className="image-container">
 				<img className="large-grid-image" src={image} />
-			</ImageContainer>
+			</div>
 
 			<ProductDescContainer>
 				<Info>
