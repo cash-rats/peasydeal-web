@@ -19,9 +19,10 @@ REMOTE_BUILD_PATH=$(REMOTE_APP_PATH)/build
 staging_deploy:
 	ssh -p $(REMOTE_PORT) -t $(REMOTE_USER)@$(REMOTE_HOST) 'source ~/.nvm/nvm.sh && \
 	cd $(REMOTE_APP_PATH) && \
+	git reset --hard HEAD && \
 	git pull && \
 	npm install && \
-	npm run build:patched &&\
+	npm run build:patched && \
 	make start_staging'
 
 start_staging:
