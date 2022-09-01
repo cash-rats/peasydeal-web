@@ -42,17 +42,24 @@
 			height: 236.33px;
 		}
 	}
+
+	.product-desc-container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 11px;
+		@include sm-600-max {
+			position: absolute;
+			left: 0;
+			bottom: 0;
+		}
+	}
 }
 
 .prod-main-image {
 	width: 100%;
 	height: auto;
 	aspect-ratio: 414/277;
-
-	@include sm {
-		//height: 182px;
-	}
-
 
 	@include md {
 		height: 216px;

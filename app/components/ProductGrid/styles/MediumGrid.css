@@ -42,6 +42,19 @@
     height: 236.33px;
   }
 }
+.medium-grid-container .product-desc-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px;
+}
+@media (max-width: 600px) {
+  .medium-grid-container .product-desc-container {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+  }
+}
 
 .prod-main-image {
   width: 100%;

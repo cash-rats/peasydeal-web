@@ -13,18 +13,6 @@ export const links: LinksFunction = () => {
 	]
 }
 
-const ProductDescContainer = styled.div`
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 11px;
-	@media ${devices.phoneOnly} {
-		position: absolute;
-		left: 0;
-		bottom: 0;
-	}
-`;
-
 const ProdInfo = styled.div`
 	p {
 		display: none;
@@ -39,7 +27,7 @@ const ProdInfo = styled.div`
 `
 
 const Headline = styled.h3`
-	font-size: 14px;
+	font-size: 13px;
 	line-height: 1.3;
 	font-weight: bold;
 	margin: 0;
@@ -83,7 +71,7 @@ export default function MediumGrid({ image, title, description }: MediumGridProp
 			</div>
 
 			{/* Product Description */}
-			<ProductDescContainer>
+			<div className="product-desc-container">
 				<ProdInfo>
 					{/* topic */}
 					<Headline>
@@ -99,9 +87,7 @@ export default function MediumGrid({ image, title, description }: MediumGridProp
 						View
 					</Button>
 				</ViewBtnContainer>
-			</ProductDescContainer>
-
-			{/* Description */}
+			</div>
 		</div>
 	);
 };

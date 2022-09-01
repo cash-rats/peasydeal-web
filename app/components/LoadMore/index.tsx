@@ -1,4 +1,5 @@
 import { useEffect, MouseEvent } from 'react';
+import type { ElementType } from 'React';
 import type { LinksFunction } from '@remix-run/node';
 
 
@@ -61,6 +62,10 @@ interface LoadMoreProps {
    * Pass in custom Dom element to be bound with scroll event.
    */
   targetDom?: HTMLElement | null,
+	/*
+	 * Custom loading icon. Display text 'loadng...'  if not provided.
+	 */
+	spinner?: ElementType | null,
 };
 
 function LoadMore({
@@ -70,6 +75,7 @@ function LoadMore({
 	callback = () => {console.log('load more...') },
 	delay = 0,
 	error = null,
+	spinner = null,
 }: LoadMoreProps) {
 	let timeout: number | undefined | NodeJS.Timeout = undefined;
 
@@ -134,6 +140,14 @@ function LoadMore({
 		}
 	}, [])
 
+	const loadingIndicator = () => {
+		const Spinner = spinner;
+
+		return Spinner
+			? <Spinner />
+			: <p> loading </p>
+	}
+
 	return (
 		<div
 			className="loadmore-container"
@@ -142,11 +156,11 @@ function LoadMore({
 			{
 				error
 					? (
-						<div className={styles.error}>
+						<div>
 							error!
 						</div>
 					)
-					: loading && 'loading...'
+					: loading && loadingIndicator()
 			}
 		</div>
 	);

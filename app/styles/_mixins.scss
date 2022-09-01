@@ -7,6 +7,12 @@
    }
 }
 
+@mixin sm-600-max {
+	@media (max-width: #{$screen-sm-min-600}) {
+		@content;
+	}
+}
+
 @mixin sm-600 {
    @media (min-width: #{$screen-sm-min-600}) {
        @content;

@@ -12,16 +12,17 @@ import { StatusCodes } from 'http-status-codes';
 
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
-import LoadMore from "~/components/LoadMore";
+import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
+import Spinner from "~/components/Spinner";
 
 import type { Product } from "~/shared/lib/types";
 
 import { fetchProducts } from "./api";
 import styles from "./styles/ProductList.css";
-import {should} from "vitest";
 
 export const links: LinksFunction = () => {
 	return [
+		...LoadmoreLinks(),
 		...OneMainTwoSubsLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
@@ -202,6 +203,8 @@ export default function Index() {
 				/>
 
 				<LoadMore
+					spinner={Spinner}
+					loading={fetcher.state !== 'idle'}
 					callback={handleLoadMore}
 					delay={100}
 					offset={150}
