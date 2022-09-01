@@ -39,6 +39,12 @@
    }
 }
 
+@mixin lg-992-max {
+	@media (max-width: #{$screen-lg-min}) {
+	    @content;
+	}
+}
+
 // Extra large devices
 @mixin xl {
    @media (min-width: #{$screen-xl-min}) {

@@ -118,7 +118,9 @@ const FeaturedCategoryNav = styled.nav`
 `;
 
 export type Category = {
-	name: string;
+	catId: number;
+	title: string;
+	name?: string;
 };
 
 interface CategoriesNavProps {
@@ -168,11 +170,11 @@ export default function CategoriesNav({ categories }: CategoriesNavProps) {
 									{
 										categories.map((category) => {
 											return (
-													<CategoryListItem key={category.name}>
-														<a>
-															{ category.name }
-														</a>
-													</CategoryListItem>
+												<CategoryListItem key={category.catId}>
+													<a>
+														{ category.title }
+													</a>
+												</CategoryListItem>
 											);
 										})
 									}
@@ -188,9 +190,9 @@ export default function CategoriesNav({ categories }: CategoriesNavProps) {
 				<ul>
 				{
 					categories.map((category) => (
-						<li key={category.name}>
+						<li key={category.catId}>
 							<a>
-								{ category.name }
+								{ category.title }
 							</a>
 						</li>
 					))

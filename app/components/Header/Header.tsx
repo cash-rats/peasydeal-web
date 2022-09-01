@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import type { LinksFunction } from "@remix-run/node";
 import { AiOutlineMail, AiOutlinePhone, AiFillHeart } from "react-icons/ai";
 import { BiUserCircle } from "react-icons/bi";
 import { MdFavorite } from "react-icons/md";
@@ -7,111 +7,24 @@ import { FiShoppingCart } from "react-icons/fi"
 import SearchBar from "./SearchBar";
 import CategoriesNav from "./CategoriesNav";
 import type { Category } from "./CategoriesNav";
+import styles from "./styles/Header.css";
 
-const HeaderContainer = styled.header`
-	display: flex;
-	flex-direction: column;
-	box-shadow: 2px 9px 49px -17px rgba(0,0,0,0.3);
-	position: sticky;
-	top: 0;
-	width: 100%;
-	z-index: 10;
-	background: #fff;
-`;
+export const links: LinksFunction = () => {
+	return [
+		{rel: 'stylesheet', href: styles},
+	];
+};
 
-const ContactContainer = styled.div`
-	display: flex;
-	background-color: #555BBD;
-	justify-content: flex-end;
-	height: 30px;
-	align-items: center;
-	width: 100%;
-`;
+interface HeaderProps {
+	categories?: Category[];
+};
 
-const ContactContent = styled.span`
-	color: #fff;
-	font-size: 12px;
-	margin: 0 15px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	span {
-		margin-right: 5px;
-	}
-
-	i {
-		font-weight: bold;
-		margin-right: 5px;
-	}
-`;
-
-const Container = styled.div`
-	height: 70px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin: 0 auto;
-	max-width: 1300px;
-	width: 100%;
-	padding: 0 15px;
-`;
-
-const Logo = styled.strong`
-	line-height: 20px;
-	padding-right: 15px;
-`
-
-const SearchBarContainer = styled.div`
-	display: flex;
-	flex: 5;
-`
-
-const NavContainer = styled.nav`
-	flex: 1;
-`;
-
-const NavContentList = styled.ul`
-  list-style: none;
-  padding: 0;
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 15px;
-`;
-
-const NavContentItem = styled.li`
-	align-items: center;
-  display: flex;
-  height: 40px;
-  margin: 0 5px;
-  position: relative;
-  transition: 100ms all linear 0s;
-
-  @media (max-width: 991px) {
-     padding: 0 5px;
-   }
-`;
-
-const CategoryNavContainer = styled.div`
-	max-width: 1300px;
-	width: 100%;
-	margin: 0 auto;
-`
-
-const categories: Array<Category> = [
-	{ name: "Home" },
-	{ name: "New Trend"},
-	{ name: "Best Seller" },
-	{ name: "Super Deal" },
-	{ name: "Halloween Season" },
-];
-
-export default function Header() {
+export default function Header({ categories = [] }: HeaderProps) {
 	return (
-		<HeaderContainer>
+		<div className="header-container">
 			{/* Contact */}
-			<ContactContainer>
-				<ContactContent>
+			<div className="contact-container">
+				<div className="contact-content">
 					<span>
 						<AiOutlinePhone />
 					</span>
@@ -119,9 +32,9 @@ export default function Header() {
 					<i>
 						(00)0000-0000
 					</i>
-				</ContactContent>
+				</div>
 
-				<ContactContent>
+				<div className="contact-content">
 					<span>
 						<AiOutlineMail />
 					</span>
@@ -129,38 +42,38 @@ export default function Header() {
 					<i>
 						email@email.com
 					</i>
-				</ContactContent>
-			</ContactContainer>
+				</div>
+			</div>
 
-			<Container>
-				<Logo>
+			<div className="header-content-container">
+				<div className="logo">
 					<AiFillHeart fontSize={45} color="#555BBD" />
-				</Logo>
+				</div>
 
-				<SearchBarContainer>
+				<div className="searchbar-container">
 					<SearchBar />
-				</SearchBarContainer>
+				</div>
 
-				<NavContainer>
-					<NavContentList>
-						<NavContentItem>
+				<nav className="nav-container">
+					<ul className="nav-content-list">
+						<li className="nav-content-item">
 							<BiUserCircle fontSize={25} />
-						</NavContentItem>
+						</li>
 
-						<NavContentItem>
+						<li className="nav-content-item">
 							<MdFavorite fontSize={25} />
-						</NavContentItem>
+						</li>
 
-						<NavContentItem>
+						<li className="nav-content-item">
 							<FiShoppingCart fontSize={25} />
-						</NavContentItem>
-					</NavContentList>
-				</NavContainer>
-			</Container>
+						</li>
+					</ul>
+				</nav>
+			</div>
 
-			<CategoryNavContainer>
+			<div className="category-nav-container">
 				<CategoriesNav categories={categories} />
-			</CategoryNavContainer>
-		</HeaderContainer>
+			</div>
+		</div>
 	);
 }
