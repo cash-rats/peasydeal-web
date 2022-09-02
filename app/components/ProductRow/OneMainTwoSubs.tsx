@@ -40,7 +40,6 @@ function OneMainTwoSubs({
 	onClickProduct = () => {},
 }: OneMainTwoSubsProps) {
 	const [ one, two, three ] = products;
-	//const sizeEnoughForReverse = useRef<boolean>(false);
 	const [enoughForReverse, setEnoughForReverse] = useState(false);
 
 	const checkWidthEnoughForRevers = (dom: Window) => dom.innerWidth > 1199;
@@ -50,7 +49,6 @@ function OneMainTwoSubs({
 	}
 
 	useEffect(() => {
-		//sizeEnoughForReverse.current = checkWidthEnoughForRevers(window)
 		setEnoughForReverse( checkWidthEnoughForRevers(window));
 		window.addEventListener('resize', handleWindowResize);
 		return () => window.removeEventListener('resize', handleWindowResize);
@@ -81,9 +79,11 @@ function OneMainTwoSubs({
 				{
 					two && (
 						<MediumGrid
+							productID={two.productID}
 							image={two.main_pic}
 							title={two.title}
 							description={two.shortDescription}
+							onClickProduct={onClickProduct}
 						/>
 					)
 				}
@@ -91,9 +91,11 @@ function OneMainTwoSubs({
 				{
 					three && (
 						<MediumGrid
+							productID={three.productID}
 							image={three.main_pic}
 							title={three.title}
 							description={three.shortDescription}
+							onClickProduct={onClickProduct}
 						/>
 					)
 				}

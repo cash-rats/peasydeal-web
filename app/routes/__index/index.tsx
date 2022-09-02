@@ -179,7 +179,10 @@ export default function Index() {
 								</div>
 
 								<div className="product-row">
-									<EvenRow products={EvenRowProdData} />
+									<EvenRow
+										products={EvenRowProdData}
+										onClickProduct={handleClickProduct}
+									/>
 								</div>
 							</Fragment>
 						)
@@ -189,7 +192,11 @@ export default function Index() {
 						if (oneMainTwoSubsProdData.length <= 3) {
 							return (
 								<div key={index} className="product-row">
-									<OneMainTwoSubs reverse={shouldReverese} products={oneMainTwoSubsProdData}/>
+									<OneMainTwoSubs
+										reverse={shouldReverese}
+										products={oneMainTwoSubsProdData}
+										onClickProduct={handleClickProduct}
+									/>
 								</div>
 							);
 						}
@@ -199,11 +206,18 @@ export default function Index() {
 						return (
 							<Fragment key={index}>
 								<div className="product-row">
-									<OneMainTwoSubs reverse={shouldReverese} products={oneMainTwoSubsProdData}/>
+									<OneMainTwoSubs
+										reverse={shouldReverese}
+										products={oneMainTwoSubsProdData}
+										onClickProduct={handleClickProduct}
+									/>
 								</div>
 
 								<div className="product-row">
-									<EvenRow products={EvenRowProdData} />
+									<EvenRow
+										products={EvenRowProdData}
+										onClickProduct={handleClickProduct}
+									/>
 								</div>
 							</Fragment>
 						);

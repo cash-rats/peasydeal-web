@@ -47,15 +47,19 @@ interface EvenRowProps {
 	 *  Take at most 6 products. Render proper layout based on view port size.
 	 */
 	products: Product[];
+
+	onClickProduct?: (productID: string) => void;
 }
 
-export default function EvenRow({ products = [] }: EvenRowProps) {
+export default function EvenRow({ products = [], onClickProduct = () => {} }: EvenRowProps) {
 	return (
 		<Container>
 			{
-				products.map((product, key) => (
+				products.map((product) => (
 					<MediumGrid
-						key={key}
+						key={product.productID}
+						productID={product.productID}
+						onClickProduct={onClickProduct}
 						image={product.main_pic}
 						title={product.title}
 						description={product.shortDescription}

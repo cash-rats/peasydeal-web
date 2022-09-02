@@ -45,9 +45,11 @@ const ViewBtnContainer = styled.div`
 `
 
 interface MediumGridProps {
+	productID: string;
 	image: string;
 	title: string;
 	description: string;
+	onClickProduct?: (productID: string) => void;
 };
 
 // - [ ] Basic product grid. do not consider wrapper layout.
@@ -59,7 +61,13 @@ interface MediumGridProps {
 //      >= 600: 273px256px, 2 grid
 //      > 1199: 353.33x306, 3 grids flex 1
 //      > 767: 323x290, 2 grids flex 1
-export default function MediumGrid({ image, title, description }: MediumGridProps) {
+export default function MediumGrid({
+	productID,
+	image,
+	title,
+	description,
+	onClickProduct = () => {},
+}: MediumGridProps) {
 	return (
 		<div className="medium-grid-container">
 			{/* images */}
@@ -83,7 +91,7 @@ export default function MediumGrid({ image, title, description }: MediumGridProp
 					</p>
 				</ProdInfo>
 				<ViewBtnContainer>
-					<Button colorScheme="blue">
+					<Button colorScheme="blue" onClick={() => onClickProduct(productID)}>
 						View
 					</Button>
 				</ViewBtnContainer>
