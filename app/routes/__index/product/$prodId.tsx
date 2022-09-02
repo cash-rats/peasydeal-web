@@ -1,5 +1,8 @@
 import { Button } from "@chakra-ui/react";
 import { BsCartPlus } from "react-icons/bs";
+import Select from 'react-select'
+
+import Divider, { links as DividerLinks } from '~/components/Divider';
 
 import styles from "./styles/ProdDetail.css";
 import PriceOffTag, {
@@ -10,8 +13,8 @@ import PriceOffTag, {
 
 export function links() {
 	return [
+		...DividerLinks(),
 		...PriceTagLinks(),
-
 		{
 			rel: "stylesheet",
 			href: styles
@@ -19,10 +22,21 @@ export function links() {
 	];
 }
 
+interface ProductDetailPageProps {
+	src: string;
+}
 
-function ProductDetailPage () {
+/*
+ * Emulate discount expert
+ * @see https://www.discountexperts.com/deal/uptfll2cfs/Breathable_Air_Cushion_Trainers___6_Colours___Sizes
+ * TODO
+ *   - [ ] image should be changed to carousel.
+ */
+function ProductDetailPage ({
+	src = 'https://images.discountexperts.com/i/v5_19disyt3dry_28.jpg',
+}: ProductDetailPageProps) {
 	return (
-		<div className="container">
+		<div className="productdetail-container">
 
 			{/* Product Image */}
 			{/* > 991 desktop */}
@@ -34,106 +48,93 @@ function ProductDetailPage () {
 						LED Night Light Projector - 3 Styles & 5 Colours!
 					</h1>
 
-					<p>
+					<h2>
 						£9.99 instead of £49.99 for an LED night light projector from Obero - save 80%
-					</p>
+					</h2>
 				</div>
-			</div>
 
-			{/* Product Image */}
-			<div className="product-image">
-				<picture>
-					<source
-						height={251}
-						srcSet="https://images.wowcher.co.uk/images/deal/24734373/777x520/943967.jpg"
-						media="(max-width: 375px)"
-					/>
-
-					<source
-						height={277}
-						srcSet="https://images.wowcher.co.uk/images/deal/24734373/777x520/943967.jpg"
-						media="(max-width: 575px)"
-					/>
-
+				{/* Image container */}
+				<div className="product-detail-img-container">
 					<img
-						src="https://images.wowcher.co.uk/images/deal/24734373/777x520/943967.jpg"
+						src={src}
 					/>
-				</picture>
+				</div>
+
 			</div>
 
-			<div className="product-info-container">
-				{/* Price info */}
-				<div className="price-info">
-					<div className="price-info-left">
-							<span className="price">
-								$4.99
-							</span>
+			{/* Product detail */}
+			<div className="product-content-wrapper">
+				<div className="product-content">
 
-							<span className="orig-price">
-								$6.99
-							</span>
-					</div>
+					<div className="product-tag-bar">
+						<p className="purchased-detail-text">
+							NOW
+						</p>
 
-					{/* Price off tag */}
+						<p className="detail-amount">
+							<b>
+								14.99
+							</b>
+						</p>
 
-					<div className="price-info-right">
-						<span>
-							<PriceOffTag moneySaved={2} percentOff={10} />
-						</span>
-					</div>
-				</div>
-
-				{/* availability */}
-
-				{/* Add to cart button */}
-				<div className="button-container">
-					<Button
-						rightIcon={<BsCartPlus />}
-						colorScheme="blue"
-						width={{ base: '100%', md: 'auto' }}
-					>
-						Add to cart
-					</Button>
-				</div>
-
-				{/* Description */}
-				<div className="product-desc">
-					<div className="desc">
-						<strong> Description: </strong> <br/>
-						<p>
-							Turn an empty bottle into a practical watering device with this dual head bottle cap sprinkler! It works well as a simple watering bottle and is fully sufficient to care about your houseplants.
+						<p className="actual-amount">
+							was 49.99
 						</p>
 					</div>
 
-					<div className="main-features">
-						<strong> Main Feature: </strong> <br/>
-						some fetched feature
-						<ul>
-							<li>
-								feature 1
-							</li>
-
-							<li>
-								feature 2
-							</li>
-						</ul>
+					<div className="lure-text">
+						<span className="lure1">
+							Discount <b> 70% </b>
+						</span>
+						<span className="lure2">
+							You save <b> 35.00 </b>
+						</span>
+						<span className="lure3">
+							Sold <b> 17 </b>
+						</span>
 					</div>
 
-					<div className="specification">
-						<strong> Specification </strong> <br/>
-						<ul>
-							<li>
-								Spec 1
-							</li>
-							<li>
-								Spec 2
-							</li>
-							<li>
-								Spec 3
-							</li>
-						</ul>
+					<Divider text="sales ends" />
+
+					<div className="sales-end-timer">
+						<span className="timer">
+							<span className="readable-time" >6 days left</span> <span className="time">20:42:53</span>
+						</span>
 					</div>
 
+					<Divider text="options" />
+
+					<div className="options-container">
+						<Select
+							placeholder='select variation'
+							options={[
+								{value: 'aaa', label: 'aaa'},
+								{value: 'bbb', label: 'bbb'},
+								{value: 'ccc', label: 'ccc'},
+								{value: 'ddd', label: 'ddd'},
+							]}
+						/>
+					</div>
+
+					<Divider text="product features" />
+
+					{/* TODO dangerous render html */}
+					<div className="product-features-container">
+						Bug vacuum: Get a LED bug vacuum.
+						Two options: Choose from an oval or egg shaped vacuum.
+						Inhales bugs: Designed to inhale mosquitoes and bugs into the lamp.
+						Sleek design: Modern sleek finish.
+						Size: 13cm (L) x 13cm (W) x 22.8cm (H).
+						Home appliances: Great for the summertime when bugs appear in the home!
+					</div>
+
+					<Divider text="cancellation and returns" />
+
+					<div className="product-return-policy">
+						<p>
+							14 days cancellation period applies.
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>

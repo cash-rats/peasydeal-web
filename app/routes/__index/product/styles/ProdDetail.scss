@@ -1,76 +1,125 @@
-@import "../../../../styles/_mixins.scss";
+@import "styles/_mixins.scss";
 
-.container {
-	margin: 20px auto;
-	border-radius: 10px;
+.productdetail-container {
+	padding: 20px 0;
+	width: 100%;
 	background-color: #fff;
-	box-shadow: 0 2px 5px rgb(0 0 0 / 40%);
-	max-width: 666px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	display: flex;
+	flex-direction: column;
 
-	.product-detail {}
+	.product-detail {
+		width: 100%;
+		.product-detail-title {
+			padding: 10px 20px;
+			h1 {
+				font-size: 18px;
+				color: #000;
+			}
 
-	.product-detail-title {
-		padding: 10px;
-		h1 {
-			font-size: 22px;
+			h2 {
+				font-size: 15px;
+				line-height: 18px;
+				margin: 10px 0 20px 0;
+				color: #666;
+			}
 		}
 	}
 
-	.product-image {}
+	.product-detail-img-container {
+		img {
+			width: 100%;
+		}
+	}
 
-	.product-info-container {
-		padding: 10px;
+	.product-content-wrapper {
+		padding: 0 15px;
+		margin-top: 15px;
+		width: 100%;
 
-		.price-info {
+		.product-content {
+			border: solid 1px #ccc;
 			display: flex;
-			flex-direction: row;
-			justify-content: flex-start;
-			align-items: center;
+			flex-direction: column;
+			padding-bottom: 20px;
 
-			@include phoneOnly {
-				flex-direction: column;
-				align-items: flex-start;
-			}
-
-			.price-info-left {
+			.product-tag-bar {
 				display: flex;
 				align-items: center;
+				justify-content: center;
 
-				span:not(:first-child) {
-					margin-left: 6px;
+				.purchased-detail-text {
+					font-size: 1.071rem;
 				}
 
-				.orig-price {
+				.detail-amount {
+					font-size: 20px;
+					margin: 0 5px;
+				}
+
+				.actual-amount {
+					font-size: 1.071rem;
 					text-decoration: line-through;
-					color: #c1c1c1;
-				}
-
-				.price {
-					font-size: 24px;
-					font-weight: bold;
-					color: red;
-				}
-			}
-
-			.price-info-right {
-				display: flex;
-				align-items: center;
-				span {
-					margin-left: 8px;
 				}
 			}
 		}
 
-		.button-container {
-			margin-top: 15px;
-		}
+		.lure-text {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			margin: 10px 0;
 
-		.product-desc {
-			margin-top: 10px;
-			div {
-				margin-top: 10px;
+			.lure1 {
+				margin: 5px 5px 0 0;
+    		font-size: 18px;
+			}
+
+			.lure2 {
+				margin: 5px 5px 0 0;
+    		font-size: 18px;
+			}
+
+			.lure3 {
+				margin-top: 5px;
 			}
 		}
 	}
 }
 
+
+.sales-end-timer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	.timer {
+		margin-bottom: 20px;
+		display: flex;
+		align-items: center;
+
+		.readable-time {
+			margin-right: 10px;
+		}
+
+		.time {
+			color: red;
+			font-weight: bold;
+			font-size: 20px;
+		}
+	}
+}
+
+.options-container {
+	padding: 0 15px;
+}
+
+.product-features-container {
+	padding: 0 10px;
+}
+
+.product-return-policy {
+	padding: 0 10px;
+}

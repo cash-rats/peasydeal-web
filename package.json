@@ -56,6 +56,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
+    "react-select": "^5.4.0",
     "react-spinners": "^0.13.4",
     "styled-components": "^5.3.5",
     "tiny-invariant": "^1.2.0"
@@ -83,6 +84,7 @@
     "concurrently": "^7.3.0",
     "cookie": "^0.5.0",
     "cross-env": "^7.0.3",
+    "css-loader": "^6.7.1",
     "cypress": "^10.4.0",
     "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.5.0",
@@ -98,13 +100,16 @@
     "react-cosmos": "^5.7.2",
     "sass": "^1.54.5",
     "start-server-and-test": "^1.14.0",
+    "style-loader": "^3.3.1",
     "tailwindcss": "^3.1.8",
+    "ts-loader": "^9.3.1",
     "ts-node": "^10.9.1",
     "tsconfig-paths": "^4.1.0",
-    "typescript": "^4.7.4",
+    "typescript": "^4.8.2",
     "vite": "^3.0.7",
     "vite-tsconfig-paths": "^3.5.0",
-    "vitest": "^0.21.1"
+    "vitest": "^0.21.1",
+    "webpack": "^5.74.0"
   },
   "engines": {
     "node": ">=14"
