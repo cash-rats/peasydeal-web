@@ -7,7 +7,7 @@ import {
 import type { ReactNode } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
+import { useFetcher, useLoaderData, useSubmit, PrefetchPageLinks } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
@@ -144,12 +144,13 @@ export default function Index() {
 
 	// Redirect to product detail page when click on product.
 	const handleClickProduct = (productID: string) => {
-		submit({ product_id: productID }, { method: 'post', action: '/?index' });
+		submit({ product_id: productID }, { method: 'post' });
 	};
 
 
 	return (
 		<div className="prod-list-container">
+			<PrefetchPageLinks page='/product/$productId' />
 			{
 				productRows.map((row: Product[], index: number): ReactNode => {
 					// A complete row has 9 products.
