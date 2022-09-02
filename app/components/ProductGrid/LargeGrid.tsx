@@ -83,13 +83,21 @@ const BtnContainer = styled.div`
 `;
 
 interface LargeGridProps {
+	productID: string;
 	image: string;
 	title: string;
 	description: string;
+	onClickProduct?: (productID: string) => void;
 }
 
 // > 1200, flex:2; height
-function LargeGrid({ image, title, description }: LargeGridProps) {
+function LargeGrid({
+	productID,
+	image,
+	title,
+	description,
+	onClickProduct = () => {},
+}: LargeGridProps) {
 	return (
 		<Container className="large-grid-container">
 			{/* image */}
@@ -108,7 +116,11 @@ function LargeGrid({ image, title, description }: LargeGridProps) {
 				</Info>
 
 				<BtnContainer>
-					<Button colorScheme="blue" size="lg">
+					<Button
+						colorScheme="blue"
+						size="lg"
+						onClick={() => onClickProduct(productID)}
+					>
 						View
 					</Button>
 				</BtnContainer>

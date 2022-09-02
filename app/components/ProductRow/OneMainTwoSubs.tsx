@@ -26,10 +26,19 @@ interface OneMainTwoSubsProps {
 	 * Reverse left and right when screen size > 1199.
 	 */
 	reverse?: boolean;
+
+	/*
+	 * Callback when clicks on product.
+	 */
+	onClickProduct?: (productID: string) => void;
 };
 
 // What if we only have 1, or 2 products?
-function OneMainTwoSubs({ products = [], reverse = false }: OneMainTwoSubsProps) {
+function OneMainTwoSubs({
+	products = [],
+	reverse = false,
+	onClickProduct = () => {},
+}: OneMainTwoSubsProps) {
 	const [ one, two, three ] = products;
 	//const sizeEnoughForReverse = useRef<boolean>(false);
 	const [enoughForReverse, setEnoughForReverse] = useState(false);
@@ -58,9 +67,11 @@ function OneMainTwoSubs({ products = [], reverse = false }: OneMainTwoSubsProps)
 				{
 					one && (
 						<LargeGrid
+							productID={one.productID}
 							image={one.main_pic}
 							title={one.title}
 							description={one.description}
+							onClickProduct={onClickProduct}
 						/>
 					)
 				}

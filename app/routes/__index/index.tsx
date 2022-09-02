@@ -5,9 +5,9 @@ import {
 	useRef,
 } from "react";
 import type { ReactNode } from "react";
-import { json } from "@remix-run/node";
-import type { LoaderFunction, LinksFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { json, redirect } from "@remix-run/node";
+import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
+import { useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
@@ -74,9 +74,11 @@ const organizeTo9ProdsPerRow = (prods: Product[]): Product[][] => {
 	return rows;
 }
 
+const LIMIT = 18;
+
 export const loader: LoaderFunction = async ({ request }) => {
 	const url = new URL(request.url);
-	const perPage = Number(url.searchParams.get('per_page') || '18');
+	const perPage = Number(url.searchParams.get('per_page') || LIMIT);
 	const page = Number(url.searchParams.get('page') || '1');
 
 	const resp  = await fetchProducts({
@@ -96,7 +98,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}, { status: StatusCodes.OK });
 };
 
-const LIMIT = 18;
+export const action: ActionFunction = async ({ request }) => {
+	const body = await request.formData();
+  const productID = body.get("product_id");
+	console.log('productID', productID);
+
+	return redirect(`/product/${productID}`);
+};
+
 
 /*
  * Product list page.
@@ -117,7 +126,7 @@ export default function Index() {
 	const fetcher = useFetcher();
 	const handleLoadMore = () => {
 		currPage.current += 1;
-		fetcher.load(`?index&page=${currPage.current}&per_page=${LIMIT}`);
+		fetcher.load(`/?index&page=${currPage.current}&per_page=${LIMIT}`);
 	};
 
 
@@ -130,6 +139,13 @@ export default function Index() {
 		}
 	}, [fetcher])
 
+	// Submit to action to redirect to product detail page.
+	const submit = useSubmit();
+
+	// Redirect to product detail page when click on product.
+	const handleClickProduct = (productID: string) => {
+		submit({ product_id: productID }, { method: 'post', action: '/?index' });
+	};
 
 
 	return (
@@ -151,14 +167,15 @@ export default function Index() {
 						// We can rest assure that we have enough products to render both `OneMainTwoSubs` and `EvenRow`
 						const oneMainTwoSubsProdData = row.slice(0, 3)
 						const EvenRowProdData = row.slice(3)
-						// 0 % 2 = 0
-						// 1 % 2 = 1
-						// 2 % 2 = 0
 
 						return (
 							<Fragment key={index}>
 								<div className="product-row">
-									<OneMainTwoSubs reverse={shouldReverese} products={oneMainTwoSubsProdData}/>
+									<OneMainTwoSubs
+										reverse={shouldReverese}
+										products={oneMainTwoSubsProdData}
+										onClickProduct={handleClickProduct}
+									/>
 								</div>
 
 								<div className="product-row">
