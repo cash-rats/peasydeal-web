@@ -58,6 +58,22 @@ function ProductDetailPage ({
 					/>
 				</div>
 
+				{/* product features. display > 768 */}
+
+				<div className="product-features-large-screen">
+					<h1>
+						Product Features
+					</h1>
+					{/* TODO dangerous render html */}
+					<div className="product-features-large-container">
+						Bug vacuum: Get a LED bug vacuum.
+						Two options: Choose from an oval or egg shaped vacuum.
+						Inhales bugs: Designed to inhale mosquitoes and bugs into the lamp.
+						Sleek design: Modern sleek finish.
+						Size: 13cm (L) x 13cm (W) x 22.8cm (H).
+						Home appliances: Great for the summertime when bugs appear in the home!
+					</div>
+				</div>
 			</div>
 
 			{/* Product detail */}
@@ -114,16 +130,18 @@ function ProductDetailPage ({
 						/>
 					</div>
 
-					<Divider text="product features" />
+					<div className="product-features-mobile">
+						<Divider text="product features" />
 
-					{/* TODO dangerous render html */}
-					<div className="product-features-container">
-						Bug vacuum: Get a LED bug vacuum.
-						Two options: Choose from an oval or egg shaped vacuum.
-						Inhales bugs: Designed to inhale mosquitoes and bugs into the lamp.
-						Sleek design: Modern sleek finish.
-						Size: 13cm (L) x 13cm (W) x 22.8cm (H).
-						Home appliances: Great for the summertime when bugs appear in the home!
+						{/* TODO dangerous render html */}
+						<div className="product-features-container">
+							Bug vacuum: Get a LED bug vacuum.
+							Two options: Choose from an oval or egg shaped vacuum.
+							Inhales bugs: Designed to inhale mosquitoes and bugs into the lamp.
+							Sleek design: Modern sleek finish.
+							Size: 13cm (L) x 13cm (W) x 22.8cm (H).
+							Home appliances: Great for the summertime when bugs appear in the home!
+						</div>
 					</div>
 
 					<Divider text="cancellation and returns" />
@@ -155,6 +173,9 @@ function ProductDetailPage ({
 					</Button>
 				</div>
 			</div>
+
+
+			{/* TODO More products */}
 		</div>
 	);
 };

@@ -1,17 +1,31 @@
 .productdetail-container {
   position: relative;
   width: 100%;
-  background-color: #fff;
+  background-color: #EFEFEF;
   display: flex;
-  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
+}
+@media (min-width: 768px) {
+  .productdetail-container {
+    padding: 30px 20px 0;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+@media (min-width: 1200px) {
+  .productdetail-container {
+    margin: 0 auto;
+    width: 1180px;
+  }
 }
 .productdetail-container .product-detail {
   width: 100%;
 }
 .productdetail-container .product-detail .product-detail-title {
-  padding: 10px 20px;
+  padding: 10px 20px 5px;
 }
 .productdetail-container .product-detail .product-detail-title h1 {
   font-size: 18px;
@@ -26,16 +40,30 @@
 .productdetail-container .product-detail-img-container img {
   width: 100%;
 }
+@media (min-width: 768px) {
+  .productdetail-container .product-detail-img-container img {
+    max-width: 718px;
+  }
+}
 .productdetail-container .product-content-wrapper {
   padding: 0 15px;
   margin-top: 15px;
   width: 100%;
+  background-color: #fff;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
+}
+@media (min-width: 768px) {
+  .productdetail-container .product-content-wrapper {
+    margin-top: 0px;
+    padding: 0;
+    max-width: 398px;
+  }
 }
 .productdetail-container .product-content-wrapper .product-content {
   border: solid 1px #ccc;
   display: flex;
   flex-direction: column;
-  padding-bottom: 20px;
+  padding: 20px 0;
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar {
   display: flex;
@@ -94,6 +122,29 @@
   padding: 0 15px;
 }
 
+.product-features-large-screen {
+  display: none;
+  padding: 20px 0 0 20px;
+}
+.product-features-large-screen h1 {
+  font-weight: bold;
+  font-size: 1.714em;
+  text-transform: uppercase;
+}
+@media (min-width: 768px) {
+  .product-features-large-screen {
+    display: block;
+  }
+}
+.product-features-mobile {
+  display: block;
+}
+@media (min-width: 768px) {
+  .product-features-mobile {
+    display: none;
+  }
+}
+
 .product-features-container {
   padding: 0 10px;
 }
@@ -115,6 +166,11 @@
 }
 .client-action-bar div {
   flex: 1;
+}
+@media (min-width: 768px) {
+  .client-action-bar {
+    display: none;
+  }
 }
 
 /*# sourceMappingURL=ProdDetail.css.map */
