@@ -12,5 +12,7 @@ node_modules
 /app/styles/tailwind.css
 
 /app/cosmos.userdeps.js
+cosmos-export/
 
 .vscode/*
+
