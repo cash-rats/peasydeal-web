@@ -1,13 +1,12 @@
 @import "styles/_mixins.scss";
 
 .productdetail-container {
-	padding: 20px 0;
+	position: relative;
 	width: 100%;
 	background-color: #fff;
 	display: flex;
 	justify-content: flex-start;
 	align-items: center;
-	display: flex;
 	flex-direction: column;
 
 	.product-detail {
@@ -122,4 +121,20 @@
 
 .product-return-policy {
 	padding: 0 10px;
+}
+
+.client-action-bar {
+	position: sticky;
+	bottom: 0;
+	width: 100%;
+	height: 60px;
+	background-color: #fff;
+	display: flex;
+	gap: 10px;
+	padding: 0 10px;
+	align-items: center;
+
+	div {
+		flex: 1;
+	}
 }

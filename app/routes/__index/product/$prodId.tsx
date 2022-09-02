@@ -1,7 +1,5 @@
-import { Button } from "@chakra-ui/react";
-import { BsCartPlus } from "react-icons/bs";
-import Select from 'react-select'
-
+import Select from 'react-select';
+import { Button } from '@chakra-ui/react';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 
 import styles from "./styles/ProdDetail.css";
@@ -135,6 +133,26 @@ function ProductDetailPage ({
 							14 days cancellation period applies.
 						</p>
 					</div>
+				</div>
+			</div>
+
+			<div className="client-action-bar">
+				<div>
+					<Button
+						width={{ base: '100%' }}
+						colorScheme='green'
+					>
+						Add To Cart
+					</Button>
+				</div>
+
+				<div>
+					<Button
+						width={{ base: '100%' }}
+						colorScheme='orange'
+					>
+						Buy Now
+					</Button>
 				</div>
 			</div>
 		</div>
