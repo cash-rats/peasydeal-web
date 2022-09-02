@@ -1,6 +1,9 @@
 import Select from 'react-select';
 import { Button } from '@chakra-ui/react';
+import { TbTruckDelivery } from 'react-icons/tb';
+
 import Divider, { links as DividerLinks } from '~/components/Divider';
+
 
 import styles from "./styles/ProdDetail.css";
 import PriceOffTag, {
@@ -117,9 +120,10 @@ function ProductDetailPage ({
 					</div>
 
 					<Divider text="options" />
-
 					<div className="options-container">
 						<Select
+							inputId='variation_id'
+							instanceId='variation_id'
 							placeholder='select variation'
 							options={[
 								{value: 'aaa', label: 'aaa'},
@@ -128,7 +132,37 @@ function ProductDetailPage ({
 								{value: 'ddd', label: 'ddd'},
 							]}
 						/>
+
+						<div className="client-action-bar-large">
+							<div>
+								<Button
+									width={{ base: '100%' }}
+									colorScheme='green'
+								>
+									Add To Cart
+								</Button>
+							</div>
+
+							<div>
+								<Button
+									width={{ base: '100%' }}
+									colorScheme='orange'
+								>
+									Buy Now
+								</Button>
+							</div>
+						</div>
 					</div>
+
+					<div className="delivery-container">
+						<Divider text="delivery" />
+
+						<div className="delivery-content">
+							<span> <TbTruckDelivery fontSize={30} /> </span>
+							<span> £4.99  delivery charge per voucher </span>
+						</div>
+					</div>
+
 
 					<div className="product-features-mobile">
 						<Divider text="product features" />
@@ -144,7 +178,7 @@ function ProductDetailPage ({
 						</div>
 					</div>
 
-					<Divider text="cancellation and returns" />
+					<Divider text="return policy" />
 
 					<div className="product-return-policy">
 						<p>
