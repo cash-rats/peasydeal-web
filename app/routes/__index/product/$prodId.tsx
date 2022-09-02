@@ -178,9 +178,10 @@ function ProductDetailPage ({
 						</div>
 					</div>
 
-					<Divider text="return policy" />
 
 					<div className="product-return-policy">
+						<Divider text="return policy" />
+
 						<p>
 							14 days cancellation period applies.
 						</p>
