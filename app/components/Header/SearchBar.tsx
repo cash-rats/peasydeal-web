@@ -80,7 +80,7 @@ const InputOpenSearchCheckbox = styled.input`
 export default function SearchBar() {
 	return (
 		<>
-			<OpenSearch labelFor="open-search">
+			<OpenSearch>
 				<OpenSearchIcon>
 					<AiOutlineSearch fontSize={25} />
 				</OpenSearchIcon>

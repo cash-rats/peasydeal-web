@@ -1,5 +1,5 @@
 import { useEffect, MouseEvent } from 'react';
-import type { ElementType } from 'React';
+import type { ElementType } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 

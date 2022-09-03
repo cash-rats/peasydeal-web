@@ -2,7 +2,76 @@
 @import "styles/_breakpoints";
 
 .large-grid-container {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	border-radius: 10px;
+	overflow: hidden;
+	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
 
+	@include sm-600 {
+		max-width: 566px;
+		height: 574px;
+	}
+
+	@include md {
+		max-width: 666px;
+		height: 589px;
+	}
+
+	@include xl {
+		max-width: 727px;
+		height: 621px;
+	}
+
+	.product-desc-container {
+		display: flex;
+		justify-content: center;
+		align-items: flex-end;
+		padding: 11px;
+		height: 100%;
+		@include phoneOnly {
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			align-items: flex-end;
+		}
+
+		.info {
+			width: 100%;
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			flex: 4;
+
+			.headline {
+				font-size: 18px;
+				font-weight: bold;
+				margin: 0;
+				color: rgb(51, 51, 51);
+				@include phoneOnly {
+					color: white;
+					font-size: 16px;
+				}
+			}
+
+			.desc {
+				@include phoneOnly {
+					display: none;
+				}
+			}
+
+			.btn-container {
+				flex: 1;
+				display: flex;
+				justify-content: flex-end;
+				@include phoneOnly {
+					display: none;
+				}
+			}
+
+		}
+	}
 }
 
 .large-grid-image {

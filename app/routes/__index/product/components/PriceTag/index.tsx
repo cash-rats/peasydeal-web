@@ -2,6 +2,8 @@ import type { LinksFunction } from "@remix-run/node";
 
 import styles from "./styles/PriceTag.css";
 
+console.log('styles', styles);
+
 export const links: LinksFunction = () => {
 	return [
 		{

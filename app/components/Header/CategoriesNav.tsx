@@ -146,7 +146,6 @@ export default function CategoriesNav({ categories }: CategoriesNavProps) {
 		<Container>
 			<AllCategoryNav>
 				<Label
-					labelFor="open-menu-all"
 					onMouseEnter={handleMouseEnterAllCategory}
 					onMouseLeave={handleMouseLeaveAllCategory}
 				>

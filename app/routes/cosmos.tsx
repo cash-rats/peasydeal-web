@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { useEffect } from "react";
-import { HeadersFunction } from "remix";
+import { HeadersFunction } from "@remix-run/node";
 import { decorators, fixtures, rendererConfig } from "~/cosmos.userdeps.js";
 
 const shouldLoadCosmos =
@@ -14,7 +14,11 @@ export default function Cosmos() {
     const [cosmosLoaded, setCosmosLoaded] = useState(false);
     const loadRenderer = useCallback(async () => {
         const { mountDomRenderer } = (await import("react-cosmos/dom")).default;
-        mountDomRenderer({ decorators, fixtures, rendererConfig });
+				mountDomRenderer({
+					decorators,
+					fixtures,
+					rendererConfig,
+				});
     }, []);
 
     useEffect(() => {
