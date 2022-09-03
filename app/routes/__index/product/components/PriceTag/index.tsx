@@ -2,8 +2,6 @@ import type { LinksFunction } from "@remix-run/node";
 
 import styles from "./styles/PriceTag.css";
 
-console.log('styles', styles);
-
 export const links: LinksFunction = () => {
 	return [
 		{
@@ -19,7 +17,6 @@ interface PriceTagProps {
 }
 
 function PriceTag ({ moneySaved, percentOff }: PriceTagProps) {
-	console.log('PriceTag', moneySaved, percentOff);
 	return (
 		<span className="price-tag price-tag--one-line" data-separator=", ">
 		  <span className="price-tag__main">SAVED ${moneySaved}</span>

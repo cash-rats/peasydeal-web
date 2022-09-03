@@ -1,41 +1,89 @@
+import { useCallback } from 'react';
+import type { LoaderFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import Select from 'react-select';
 import { Button } from '@chakra-ui/react';
 import { TbTruckDelivery } from 'react-icons/tb';
+import { StatusCodes } from 'http-status-codes';
 
 import Divider, { links as DividerLinks } from '~/components/Divider';
+import ClientOnly from '~/components/ClientOnly';
 
 
 import styles from "./styles/ProdDetail.css";
-import PriceOffTag, {
-	links as PriceTagLinks,
-} from "./components/PriceTag";
+//import PriceOffTag, {
+	//links as PriceTagLinks,
+//} from "./components/PriceTag";
 
 
 
 export function links() {
 	return [
 		...DividerLinks(),
-		...PriceTagLinks(),
-		{
-			rel: "stylesheet",
-			href: styles
-		},
+		//...PriceTagLinks(),
+		{ rel: "stylesheet", href: styles },
 	];
 }
 
-interface ProductDetailPageProps {
-	src: string;
-}
+// Fetch product detail data.
+export const loader: LoaderFunction = async ({ params }) => {
+	const { prodId } = params;
+	const { MYFB_ENDPOINT } = process.env;
+	const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/product?id=${prodId}`)
+	const respJSON = await resp.json();
+
+	return json({ product: respJSON }, { status: StatusCodes.OK });
+};
+
+
+interface ProductVariation {
+	currency: null
+	description: string;
+	discountOff: number;
+	mainPic: string;
+	productId: string;
+	retailPrice: number;
+	salePrice: number;
+	shippingFee: number;
+	shortDescription: string;
+	sku: string;
+	subTitle:  string;
+	title: string;
+	variationId: string;
+};
+
+interface ProductDetail {
+	bought: number;
+	currency: string;
+	defaultVariationId: string;
+	productId: string
+	variations: ProductVariation[];
+};
 
 /*
  * Emulate discount expert
  * @see https://www.discountexperts.com/deal/uptfll2cfs/Breathable_Air_Cushion_Trainers___6_Colours___Sizes
  * TODO
- *   - [ ] image should be changed to carousel.
+ *   - [ ] image should be changed to carousel images.
+ *         Display carousel images if variation is greater than 1
  */
-function ProductDetailPage ({
-	src = 'https://images.discountexperts.com/i/v5_19disyt3dry_28.jpg',
-}: ProductDetailPageProps) {
+function ProductDetailPage () {
+	const productDetailData = useLoaderData();
+	const productDetail: ProductDetail = productDetailData.product;
+
+	console.log('prodDetailData', productDetail);
+
+	const selectCurrentVariation = useCallback((defaultVariationID: string, variations: ProductVariation[]): ProductVariation | undefined => {
+		return variations.find<ProductVariation>((variation) =>  defaultVariationID === variation.variationId);
+	}, []);
+
+	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
+
+	//const currentVariation = prodDetailData.variations[prodDetailData.defaultVariationId];
+
+	console.log('currentVariation', currentVariation);
+
 	return (
 		<div className="productdetail-container">
 
@@ -46,18 +94,18 @@ function ProductDetailPage ({
 				{/* Title */}
 				<div className="product-detail-title">
 					<h1>
-						LED Night Light Projector - 3 Styles & 5 Colours!
+						{ currentVariation?.title }
 					</h1>
 
 					<h2>
-						£9.99 instead of £49.99 for an LED night light projector from Obero - save 80%
+						{ currentVariation?.subTitle }
 					</h2>
 				</div>
 
 				{/* Image container */}
 				<div className="product-detail-img-container">
 					<img
-						src={src}
+						src={currentVariation?.mainPic}
 					/>
 				</div>
 
@@ -68,14 +116,7 @@ function ProductDetailPage ({
 						Product Features
 					</h1>
 					{/* TODO dangerous render html */}
-					<div className="product-features-large-container">
-						Bug vacuum: Get a LED bug vacuum.
-						Two options: Choose from an oval or egg shaped vacuum.
-						Inhales bugs: Designed to inhale mosquitoes and bugs into the lamp.
-						Sleek design: Modern sleek finish.
-						Size: 13cm (L) x 13cm (W) x 22.8cm (H).
-						Home appliances: Great for the summertime when bugs appear in the home!
-					</div>
+					<div dangerouslySetInnerHTML={{ __html: currentVariation?.description || '' }} />
 				</div>
 			</div>
 
@@ -90,29 +131,40 @@ function ProductDetailPage ({
 
 						<p className="detail-amount">
 							<b>
-								14.99
+								{ currentVariation?.currency } { currentVariation?.salePrice }
 							</b>
 						</p>
 
 						<p className="actual-amount">
-							was 49.99
+							was { currentVariation?.currency } { currentVariation?.retailPrice }
 						</p>
 					</div>
 
 					<div className="lure-text">
 						<span className="lure1">
-							Discount <b> 70% </b>
+							Discount <b>
+								{
+									currentVariation && currentVariation.discountOff && (
+										(
+											((currentVariation.retailPrice - currentVariation.salePrice) / currentVariation.retailPrice) * 100
+										).toFixed(0)
+									)
+								}%
+							</b>
 						</span>
 						<span className="lure2">
-							You save <b> 35.00 </b>
+							You save <b> {
+									currentVariation && (currentVariation.retailPrice - currentVariation.salePrice).toFixed(2)
+								}
+							</b>
 						</span>
 						<span className="lure3">
-							Sold <b> 17 </b>
+							Sold <b> { productDetail.bought } </b>
 						</span>
 					</div>
 
-					<Divider text="sales ends" />
 
+					<Divider text="sales ends" />
 					<div className="sales-end-timer">
 						<span className="timer">
 							<span className="readable-time" >6 days left</span> <span className="time">20:42:53</span>
@@ -121,17 +173,18 @@ function ProductDetailPage ({
 
 					<Divider text="options" />
 					<div className="options-container">
-						<Select
-							inputId='variation_id'
-							instanceId='variation_id'
-							placeholder='select variation'
-							options={[
-								{value: 'aaa', label: 'aaa'},
-								{value: 'bbb', label: 'bbb'},
-								{value: 'ccc', label: 'ccc'},
-								{value: 'ddd', label: 'ddd'},
-							]}
-						/>
+						<ClientOnly>
+							<Select
+								inputId='variation_id'
+								instanceId='variation_id'
+								placeholder='select variation'
+								options={
+									productDetail.variations.map(
+										(variation) => ({ value: variation.variationId, label: variation.title })
+									)
+								}
+							/>
+						</ClientOnly>
 
 						<div className="client-action-bar-large">
 							<div>
@@ -168,14 +221,7 @@ function ProductDetailPage ({
 						<Divider text="product features" />
 
 						{/* TODO dangerous render html */}
-						<div className="product-features-container">
-							Bug vacuum: Get a LED bug vacuum.
-							Two options: Choose from an oval or egg shaped vacuum.
-							Inhales bugs: Designed to inhale mosquitoes and bugs into the lamp.
-							Sleek design: Modern sleek finish.
-							Size: 13cm (L) x 13cm (W) x 22.8cm (H).
-							Home appliances: Great for the summertime when bugs appear in the home!
-						</div>
+						<div dangerouslySetInnerHTML={{ __html: currentVariation?.description || '' }} className="product-features-container" />
 					</div>
 
 
@@ -208,7 +254,6 @@ function ProductDetailPage ({
 					</Button>
 				</div>
 			</div>
-
 
 			{/* TODO More products */}
 		</div>

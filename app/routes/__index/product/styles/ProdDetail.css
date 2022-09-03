@@ -28,11 +28,11 @@
   padding: 10px 20px 5px;
 }
 .productdetail-container .product-detail .product-detail-title h1 {
-  font-size: 18px;
+  font-size: 25px;
   color: #000;
 }
 .productdetail-container .product-detail .product-detail-title h2 {
-  font-size: 15px;
+  font-size: 20px;
   line-height: 18px;
   margin: 10px 0 20px 0;
   color: #666;
@@ -133,7 +133,9 @@
 }
 @media (min-width: 768px) {
   .product-features-large-screen {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
 }
 

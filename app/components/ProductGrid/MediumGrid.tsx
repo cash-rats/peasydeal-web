@@ -1,8 +1,5 @@
-import styled from "styled-components";
 import { Button } from '@chakra-ui/react';
 import type { LinksFunction } from '@remix-run/node';
-
-import { devices } from "~/styles/breakpoints";
 
 import styles from "./styles/MediumGrid.css";
 
@@ -12,37 +9,6 @@ export const links: LinksFunction = () => {
 		{ rel: 'stylesheet', href: styles },
 	]
 }
-
-const ProdInfo = styled.div`
-	p {
-		display: none;
-		color: white;
-	}
-
-	@media ${devices.phoneOnly} {
-		p {
-			display: none;
-		}
-	}
-`
-
-const Headline = styled.h3`
-	font-size: 13px;
-	line-height: 1.3;
-	font-weight: bold;
-	margin: 0;
-	color: rgb(51, 51, 51);
-	@media ${devices.phoneOnly} {
-		color: white;
-		font-size: 16px;
-	}
-`;
-
-const ViewBtnContainer = styled.div`
-	@media ${devices.phoneOnly} {
-		display: none;
-	}
-`
 
 interface MediumGridProps {
 	productID: string;
@@ -80,21 +46,22 @@ export default function MediumGrid({
 
 			{/* Product Description */}
 			<div className="product-desc-container">
-				<ProdInfo>
+				<div className="prod-info">
 					{/* topic */}
-					<Headline>
+					<div className="headline">
 						{title}
-					</Headline>
+					</div>
 
 					<p>
 						{description}
 					</p>
-				</ProdInfo>
-				<ViewBtnContainer>
+				</div>
+
+				<div className="view-btn-container">
 					<Button colorScheme="blue" onClick={() => onClickProduct(productID)}>
 						View
 					</Button>
-				</ViewBtnContainer>
+				</div>
 			</div>
 		</div>
 	);

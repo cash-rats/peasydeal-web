@@ -27,12 +27,12 @@
 		.product-detail-title {
 			padding: 10px 20px 5px;
 			h1 {
-				font-size: 18px;
+				font-size: 25px;
 				color: #000;
 			}
 
 			h2 {
-				font-size: 15px;
+				font-size: 20px;
 				line-height: 18px;
 				margin: 10px 0 20px 0;
 				color: #666;
@@ -151,7 +151,9 @@
 	}
 
 	@include md {
-		display: block;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
 	}
 }
 
