@@ -35,7 +35,7 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 		autoplay: false,
 	}
 
-	const [displayImageIdx, setDisplayImageIdx] = useState(1);
+	const [displayImageIdx, setDisplayImageIdx] = useState(0);
 	const handleChangeImage = useCallback((index: number) => {
 		setDisplayImageIdx(index);
 	}, [])
