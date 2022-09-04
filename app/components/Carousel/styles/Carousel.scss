@@ -1,0 +1,8 @@
+@import 'styles/_mixins';
+
+.product-carousel-container {
+	.product-carousel-image {
+		max-width: 768px;
+		max-height: 437px;
+	}
+}

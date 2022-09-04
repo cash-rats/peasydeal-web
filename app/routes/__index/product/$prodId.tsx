@@ -9,8 +9,9 @@ import { StatusCodes } from 'http-status-codes';
 
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
+import PicsCarousel, { links as PicsCarouselLinks } from '~/components/Carousel';
 
-
+import { fetchProductDetail } from './api';
 import styles from "./styles/ProdDetail.css";
 //import PriceOffTag, {
 	//links as PriceTagLinks,
@@ -20,6 +21,7 @@ import styles from "./styles/ProdDetail.css";
 
 export function links() {
 	return [
+		...PicsCarouselLinks(),
 		...DividerLinks(),
 		//...PriceTagLinks(),
 		{ rel: "stylesheet", href: styles },
@@ -29,8 +31,8 @@ export function links() {
 // Fetch product detail data.
 export const loader: LoaderFunction = async ({ params }) => {
 	const { prodId } = params;
-	const { MYFB_ENDPOINT } = process.env;
-	const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/product?id=${prodId}`)
+	if (!prodId) return null;
+	const resp = await fetchProductDetail(prodId)
 	const respJSON = await resp.json();
 
 	return json({ product: respJSON }, { status: StatusCodes.OK });
@@ -59,6 +61,7 @@ interface ProductDetail {
 	defaultVariationId: string;
 	productId: string
 	variations: ProductVariation[];
+	pics: string[];
 };
 
 /*
@@ -75,14 +78,11 @@ function ProductDetailPage () {
 	console.log('prodDetailData', productDetail);
 
 	const selectCurrentVariation = useCallback((defaultVariationID: string, variations: ProductVariation[]): ProductVariation | undefined => {
-		return variations.find<ProductVariation>((variation) =>  defaultVariationID === variation.variationId);
+		return variations.find<ProductVariation>(
+			(variation) =>  defaultVariationID === variation.variationId);
 	}, []);
 
 	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
-
-	//const currentVariation = prodDetailData.variations[prodDetailData.defaultVariationId];
-
-	console.log('currentVariation', currentVariation);
 
 	return (
 		<div className="productdetail-container">
@@ -104,9 +104,7 @@ function ProductDetailPage () {
 
 				{/* Image container */}
 				<div className="product-detail-img-container">
-					<img
-						src={currentVariation?.mainPic}
-					/>
+					<PicsCarousel images={productDetail.pics} />
 				</div>
 
 				{/* product features. display > 768 */}

@@ -9,7 +9,7 @@
 	flex-direction: column;
 
 	@include md {
-		padding: 30px 20px 0;
+		padding: 30px 20px 20px;
 		flex-direction: row;
 		justify-content: center;
 		align-items: flex-start;
@@ -19,7 +19,6 @@
 	@include xl {
 		margin: 0 auto;
 		width: 1180px;
-		//gap: 20px;
 	}
 
 	.product-detail {
