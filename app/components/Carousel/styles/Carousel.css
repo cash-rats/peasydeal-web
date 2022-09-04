@@ -1,6 +1,47 @@
 .product-carousel-container .product-carousel-image {
-  max-width: 768px;
-  max-height: 437px;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 414/277;
+}
+@media (min-width: 768px) {
+  .product-carousel-container {
+    display: none;
+  }
+}
+
+.thumbnails-hover-images-container {
+  display: none;
+}
+@media (min-width: 768px) {
+  .thumbnails-hover-images-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+.thumbnails-hover-images-container .thumbnails-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.thumbnails-hover-images-container .thumbnails-container .product-thumbnail {
+  cursor: pointer;
+  box-sizing: border-box;
+  border: solid 5px transparent;
+  width: 80px;
+  height: 80px;
+}
+.thumbnails-hover-images-container .thumbnails-container .product-thumbnail img {
+  height: 100%;
+  width: 100%;
+}
+.thumbnails-hover-images-container .thumbnails-container .product-thumbnail:hover {
+  border: solid 5px #EC7272;
+}
+
+.thumbail-highlight {
+  border: solid 5px #EC7272 !important;
 }
 
 /*# sourceMappingURL=Carousel.css.map */

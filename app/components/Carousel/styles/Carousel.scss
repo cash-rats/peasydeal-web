@@ -2,7 +2,49 @@
 
 .product-carousel-container {
 	.product-carousel-image {
-		max-width: 768px;
-		max-height: 437px;
+		width: 100%;
+  	height: auto;
+  	aspect-ratio: 414/277;
 	}
+
+	@include md {
+		display: none;
+	}
+}
+
+.thumbnails-hover-images-container {
+	display: none;
+
+	@include md {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	.thumbnails-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		gap: 8px;
+
+		.product-thumbnail {
+			cursor: pointer;
+			box-sizing: border-box;
+			border: solid 5px transparent;
+			width: 80px;
+			height: 80px;
+			img {
+				height: 100%;
+				width: 100%;
+			}
+
+			&:hover {
+				border: solid 5px #EC7272;
+			}
+		}
+	}
+}
+
+.thumbail-highlight {
+	border: solid 5px #EC7272 !important;
 }

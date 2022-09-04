@@ -63,7 +63,7 @@
   border: solid 1px #ccc;
   display: flex;
   flex-direction: column;
-  padding: 20px 0;
+  padding: 20px 10px;
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar {
   display: flex;
