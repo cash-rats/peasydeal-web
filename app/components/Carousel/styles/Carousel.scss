@@ -15,10 +15,22 @@
 .thumbnails-hover-images-container {
 	display: none;
 
+
 	@include md {
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
+	}
+
+	.preview-image-container {
+		img {
+			max-height: 400px;
+		}
+
+		@include xl {
+			width: 685px;
+			height: 385px;
+		}
 	}
 
 	.thumbnails-container {
@@ -26,6 +38,7 @@
 		flex-wrap: wrap;
 		justify-content: flex-start;
 		gap: 8px;
+		margin-top: 20px;
 
 		.product-thumbnail {
 			cursor: pointer;

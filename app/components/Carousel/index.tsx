@@ -57,7 +57,10 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 			</div>
 
 			<div className="thumbnails-hover-images-container">
-				<img src={images[displayImageIdx]} />
+				<div className="preview-image-container">
+					<img src={images[displayImageIdx]} />
+				</div>
+
 				<div className="thumbnails-container">
 					{
 						images.map((image, index) => {

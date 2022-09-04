@@ -19,11 +19,21 @@
     gap: 10px;
   }
 }
+.thumbnails-hover-images-container .preview-image-container img {
+  max-height: 400px;
+}
+@media (min-width: 1200px) {
+  .thumbnails-hover-images-container .preview-image-container {
+    width: 685px;
+    height: 385px;
+  }
+}
 .thumbnails-hover-images-container .thumbnails-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   gap: 8px;
+  margin-top: 20px;
 }
 .thumbnails-hover-images-container .thumbnails-container .product-thumbnail {
   cursor: pointer;
