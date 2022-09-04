@@ -1,5 +1,9 @@
+import { useState } from 'react';
 import { Button } from '@chakra-ui/react';
 import type { LinksFunction } from '@remix-run/node';
+
+import MqNotifier from '~/components/MqNotifier';
+import { breakPoints } from '~/styles/breakpoints';
 
 import styles from "./styles/MediumGrid.css";
 
@@ -34,35 +38,57 @@ export default function MediumGrid({
 	description,
 	onClickProduct = () => {},
 }: MediumGridProps) {
-	return (
-		<div className="medium-grid-container">
-			{/* images */}
-			<div className="image-container">
-				<img
-					className="prod-main-image"
-					src={image}
-				/>
-			</div>
+	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 
-			{/* Product Description */}
-			<div className="product-desc-container">
-				<div className="prod-info">
-					{/* topic */}
-					<div className="headline">
-						{title}
+	console.log('clickableGrid', clickableGrid);
+
+	return (
+		<MqNotifier
+			mqValidators={[
+				{
+					condition: () => true,
+					callback: (dom) => setClickableGrid(
+						dom.innerWidth <= breakPoints.phoneTop
+					),
+				}
+			]}
+		>
+			<div
+				onClick={
+					clickableGrid
+						? () => onClickProduct(productID)
+						: () => {}
+				}
+				className="medium-grid-container"
+			>
+				{/* images */}
+				<div className="image-container">
+					<img
+						className="prod-main-image"
+						src={image}
+					/>
+				</div>
+
+				{/* Product Description */}
+				<div className="product-desc-container">
+					<div className="prod-info">
+						{/* topic */}
+						<div className="headline">
+							{title}
+						</div>
+
+						<p>
+							{description}
+						</p>
 					</div>
 
-					<p>
-						{description}
-					</p>
-				</div>
-
-				<div className="view-btn-container">
-					<Button colorScheme="blue" onClick={() => onClickProduct(productID)}>
-						View
-					</Button>
+					<div className="view-btn-container">
+						<Button colorScheme="blue" onClick={() => onClickProduct(productID)}>
+							View
+						</Button>
+					</div>
 				</div>
 			</div>
-		</div>
+		</MqNotifier>
 	);
 };

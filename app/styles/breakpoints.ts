@@ -1,6 +1,8 @@
 // For example: if screen size is more than 1440px, display corresponding style for labtopL accordingly
 
-const PhoneTop = 599
+import MQ from 'mq-js';
+
+const phoneTop = 599
 
 const tabletPortraitBottom = 600;
 const tabletPortraitTop = 767;
@@ -12,8 +14,9 @@ const normalScreenTop = 1199;
 
 const desktopBottom = 1200;
 
+
 export const breakPoints = {
-  PhoneTop,
+  phoneTop,
 
   tabletPortraitTop,
   tabletPortraitBottom,
@@ -24,6 +27,9 @@ export const breakPoints = {
 
   desktopBottom,
 };
+
+const mq = new MQ(breakPoints);
+export default mq
 
 export const devices = {
   phoneOnly: '(max-width:599px)',
@@ -36,7 +42,7 @@ export const devices = {
 
 export const ranges = {
   headerRwd: `(max-width: ${largeTabletBottom}px)`,
-  phoneOnly: `(max-width:${PhoneTop}px)`,
+  phoneOnly: `(max-width:${phoneTop}px)`,
   tabletPortrait: `(min-width:600px) and (max-width:767px)`,
   normalScreen: `(min-width:${normalScreenBottom}px) and (max-width:${normalScreenTop}px)`,
   desktopUp: `(min-width:${desktopBottom}px)`,

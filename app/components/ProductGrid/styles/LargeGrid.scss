@@ -60,16 +60,15 @@
 					display: none;
 				}
 			}
+		}
 
-			.btn-container {
-				flex: 1;
-				display: flex;
-				justify-content: flex-end;
-				@include phoneOnly {
-					display: none;
-				}
+		.btn-container {
+			flex: 1;
+			display: flex;
+			justify-content: flex-end;
+			@include phoneOnly {
+				display: none;
 			}
-
 		}
 	}
 }

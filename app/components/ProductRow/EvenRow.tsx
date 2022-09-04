@@ -35,7 +35,7 @@ const Container = styled.div`
 			flex: 33.33%;
 		}
 
-		@media (min-width:${breakPoints.PhoneTop}px) and (max-width:${breakPoints.normalScreenTop}px) {
+		@media (min-width:${breakPoints.phoneTop}px) and (max-width:${breakPoints.normalScreenTop}px) {
 			flex: 50%;
 		}
 	}

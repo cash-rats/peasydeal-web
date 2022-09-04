@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { LinksFunction } from "@remix-run/node";
 import clsx from "clsx";
 
 import type { Product } from "~/shared/lib/types";
+import MqNotifier from '~/components/MqNotifier';
+import { breakPoints } from '~/styles/breakpoints';
 
 import MediumGrid, { links as MediumGridLinks } from "../ProductGrid/MediumGrid";
 import LargeGrid, { links as LargeGridLinks } from "../ProductGrid/LargeGrid";
@@ -42,65 +44,64 @@ function OneMainTwoSubs({
 	const [ one, two, three ] = products;
 	const [enoughForReverse, setEnoughForReverse] = useState(false);
 
-	const checkWidthEnoughForRevers = (dom: Window) => dom.innerWidth > 1199;
-	const handleWindowResize = (evt: Event) => {
-		const target = evt.target as Window;
-		setEnoughForReverse(checkWidthEnoughForRevers(target));
-	}
-
-	useEffect(() => {
-		setEnoughForReverse( checkWidthEnoughForRevers(window));
-		window.addEventListener('resize', handleWindowResize);
-		return () => window.removeEventListener('resize', handleWindowResize);
-	}, [])
+	const checkWidthEnoughForReverse = (dom: Window) => dom.innerWidth > breakPoints.normalScreenTop;
 
 	return (
-		<div
-			className={clsx({
-				"one-main-two-subs-container": true,
-				"reverse": reverse && enoughForReverse,
-			})}
+		<MqNotifier
+			mqValidators={[
+				{
+					condition: (dom: Window) => checkWidthEnoughForReverse(dom),
+					callback: (dom: Window) => setEnoughForReverse(checkWidthEnoughForReverse(dom))
+				},
+			]}
 		>
-			<div className="left">
-				{
-					one && (
-						<LargeGrid
-							productID={one.productID}
-							image={one.main_pic}
-							title={one.title}
-							description={one.description}
-							onClickProduct={onClickProduct}
-						/>
-					)
-				}
-			</div>
+			<div
+				className={clsx({
+					"one-main-two-subs-container": true,
+					"reverse": reverse && enoughForReverse,
+				})}
+			>
+				<div className="left">
+					{
+						one && (
+							<LargeGrid
+								productID={one.productID}
+								image={one.main_pic}
+								title={one.title}
+								description={one.description}
+								onClickProduct={onClickProduct}
+							/>
+						)
+					}
+				</div>
 
-			<div className="right">
-				{
-					two && (
-						<MediumGrid
-							productID={two.productID}
-							image={two.main_pic}
-							title={two.title}
-							description={two.shortDescription}
-							onClickProduct={onClickProduct}
-						/>
-					)
-				}
+				<div className="right">
+					{
+						two && (
+							<MediumGrid
+								productID={two.productID}
+								image={two.main_pic}
+								title={two.title}
+								description={two.shortDescription}
+								onClickProduct={onClickProduct}
+							/>
+						)
+					}
 
-				{
-					three && (
-						<MediumGrid
-							productID={three.productID}
-							image={three.main_pic}
-							title={three.title}
-							description={three.shortDescription}
-							onClickProduct={onClickProduct}
-						/>
-					)
-				}
+					{
+						three && (
+							<MediumGrid
+								productID={three.productID}
+								image={three.main_pic}
+								title={three.title}
+								description={three.shortDescription}
+								onClickProduct={onClickProduct}
+							/>
+						)
+					}
+				</div>
 			</div>
-		</div>
+		</MqNotifier>
 	);
 }
 

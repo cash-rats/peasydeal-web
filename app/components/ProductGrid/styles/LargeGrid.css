@@ -63,13 +63,13 @@
     display: none;
   }
 }
-.large-grid-container .product-desc-container .info .btn-container {
+.large-grid-container .product-desc-container .btn-container {
   flex: 1;
   display: flex;
   justify-content: flex-end;
 }
 @media (max-width: 576px) {
-  .large-grid-container .product-desc-container .info .btn-container {
+  .large-grid-container .product-desc-container .btn-container {
     display: none;
   }
 }
