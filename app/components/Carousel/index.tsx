@@ -23,16 +23,24 @@ interface PicsCarouselProps {
 
 /*
  * - [x] hover thumbnail display border.
- * - [ ] clicks on thumbnail should display that image.
+ * - [x] clicks on thumbnail should display that image.
  */
 function PicsCarousel({ images }: PicsCarouselProps) {
 	const settings: Settings = {
-		dots: false,
+		dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
 		autoplay: false,
+		dotsClass: "slick-dots slick-thumb",
+		customPaging(index) {
+			return (
+				<a>
+					<img style={{ 'height': '100%'}} src={images[index]} />
+				</a>
+			);
+		}
 	}
 
 	const [displayImageIdx, setDisplayImageIdx] = useState(0);

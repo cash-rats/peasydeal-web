@@ -20,7 +20,14 @@
   }
 }
 .thumbnails-hover-images-container .preview-image-container img {
-  max-height: 400px;
+  height: 100%;
+}
+@media (min-width: 768px) {
+  .thumbnails-hover-images-container .preview-image-container {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 414/277;
+  }
 }
 @media (min-width: 1200px) {
   .thumbnails-hover-images-container .preview-image-container {
@@ -31,7 +38,7 @@
 .thumbnails-hover-images-container .thumbnails-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 8px;
   margin-top: 20px;
 }

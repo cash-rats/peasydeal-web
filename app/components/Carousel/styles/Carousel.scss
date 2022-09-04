@@ -24,7 +24,13 @@
 
 	.preview-image-container {
 		img {
-			max-height: 400px;
+			height: 100%;
+		}
+
+		@include md {
+			width: 100%;
+  		height: auto;
+  		aspect-ratio: 414/277;
 		}
 
 		@include xl {
@@ -36,7 +42,7 @@
 	.thumbnails-container {
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: flex-start;
+		justify-content: center;
 		gap: 8px;
 		margin-top: 20px;
 
