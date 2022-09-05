@@ -70,7 +70,7 @@
 .shopping-cart-container .cart-items-container .cart-item .top .product-image {
   display: flex;
   flex-direction: center;
-  justify-content: flex-end;
+  align-items: center;
   width: 35%;
 }
 @media (min-width: 768px) {

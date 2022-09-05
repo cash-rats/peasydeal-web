@@ -81,7 +81,7 @@
 				.product-image {
 					display: flex;
 					flex-direction: center;
-					justify-content: flex-end;
+					align-items: center;
 					width: 35%;
 
 					@include md {

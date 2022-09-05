@@ -4,8 +4,9 @@ import {
 	Input,
 	InputLeftAddon,
 	InputRightAddon,
+	IconButton,
 } from '@chakra-ui/react';
-import { BsPlus } from 'react-icons/bs';
+import { BsPlus, BsTrash } from 'react-icons/bs';
 import { BiMinus } from 'react-icons/bi';
 
 
@@ -62,9 +63,6 @@ function Cart() {
 						<div className="top">
 							<div className="product-image">
 								<img src="https://s.cdpn.io/3/large-NutroNaturalChoiceAdultLambMealandRiceDryDogFood.png" />
-
-								<div className="product-remove">
-								</div>
 							</div>
 
 							<div className="product-description">
