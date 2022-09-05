@@ -15,6 +15,8 @@ export const links: LinksFunction = () => {
  * @see https://codepen.io/justinklemm/pen/kyMjjv
  *
  * container width: max-width: 1180px;
+ *
+ * - [ ] show empty shopping cart when no item existed yet.
  */
 function Cart() {
 	return (
@@ -52,33 +54,42 @@ function Cart() {
 
 					<div className="cart-item">
 						{/* Item image */}
-						<div className="product-image">
-							<img src="https://s.cdpn.io/3/large-NutroNaturalChoiceAdultLambMealandRiceDryDogFood.png" />
-						</div>
-
-						<div className="product-description">
-							<div className="product-title">
-								Dingo Dog Bones
+						<div className="top">
+							<div className="product-image">
+								<img src="https://s.cdpn.io/3/large-NutroNaturalChoiceAdultLambMealandRiceDryDogFood.png" />
 							</div>
 
-							<p className="product-description-text">
-								The best dog bones of all time. Holy crap. Your dog will be begging for these things! I got curious once and ate one myself. I'm a fan.
-							</p>
+							<div className="product-description">
+								<div className="product-title">
+									Dingo Dog Bones
+								</div>
+
+								<p className="product-description-text">
+									The best dog bones of all time. Holy crap. Your dog will be begging for these things! I got curious once and ate one myself. I'm a fan.
+								</p>
+
+								<div className="product-price-mobile">
+									$122
+								</div>
+							</div>
 						</div>
 
-						<div className="product-price">
-							$12.99
-						</div>
+						<div className="bottom">
+							<div className="product-price">
+								$12.99
+							</div>
 
-						<div className="product-quantity">
-							2
-						</div>
+							<div className="product-quantity">
+								2
+							</div>
 
-						<div className="product-remove">
-						</div>
+							<div className="product-remove">
+								remove
+							</div>
 
-						<div className="product-total">
-							2
+							<div className="product-total">
+								2
+							</div>
 						</div>
 					</div>
 
