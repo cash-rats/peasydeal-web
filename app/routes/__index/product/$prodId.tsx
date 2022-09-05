@@ -75,8 +75,6 @@ function ProductDetailPage () {
 	const productDetailData = useLoaderData();
 	const productDetail: ProductDetail = productDetailData.product;
 
-	console.log('prodDetailData', productDetail);
-
 	const selectCurrentVariation = useCallback((defaultVariationID: string, variations: ProductVariation[]): ProductVariation | undefined => {
 		return variations.find<ProductVariation>(
 			(variation) =>  defaultVariationID === variation.variationId);

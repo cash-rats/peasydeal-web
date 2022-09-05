@@ -1,6 +1,5 @@
 // For example: if screen size is more than 1440px, display corresponding style for labtopL accordingly
 
-import MQ from 'mq-js';
 
 const phoneTop = 599
 
@@ -27,9 +26,6 @@ export const breakPoints = {
 
   desktopBottom,
 };
-
-const mq = new MQ(breakPoints);
-export default mq
 
 export const devices = {
   phoneOnly: '(max-width:599px)',

@@ -101,7 +101,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
 	const body = await request.formData();
   const productID = body.get("product_id");
-	console.log('productID', productID);
 
 	return redirect(`/product/${productID}`);
 };
