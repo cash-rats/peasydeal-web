@@ -56,32 +56,6 @@
 			flex: 5;
 		}
 
-		.nav-container {
-			flex: 1;
-
-			.nav-content-list {
-				list-style: none;
-  			padding: 0;
-  			align-items: center;
-  			display: flex;
-  			justify-content: space-between;
-  			padding: 0 15px;
-
-				.nav-content-item {
-					align-items: center;
-  				display: flex;
-  				height: 40px;
-  				margin: 0 5px;
-  				position: relative;
-  				transition: 100ms all linear 0s;
-
-					@include lg-992-max {
-						padding: 0 5px;
-  				}
-				}
-			}
-		}
-
 		.category-nav-container {
 			max-width: 1300px;
 			width: 100%;

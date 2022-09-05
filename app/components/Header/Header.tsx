@@ -1,4 +1,5 @@
 import type { LinksFunction } from "@remix-run/node";
+import { Link } from '@remix-run/react';
 import { AiOutlineMail, AiOutlinePhone, AiFillHeart } from "react-icons/ai";
 import { BiUserCircle } from "react-icons/bi";
 import { MdFavorite } from "react-icons/md";
@@ -8,9 +9,11 @@ import SearchBar from "./SearchBar";
 import CategoriesNav from "./CategoriesNav";
 import type { Category } from "./CategoriesNav";
 import styles from "./styles/Header.css";
+import NavBar, { links as NavBarLinks } from './components/NavBar';
 
 export const links: LinksFunction = () => {
 	return [
+		...NavBarLinks(),
 		{rel: 'stylesheet', href: styles},
 	];
 };
@@ -54,21 +57,7 @@ export default function Header({ categories = [] }: HeaderProps) {
 					<SearchBar />
 				</div>
 
-				<nav className="nav-container">
-					<ul className="nav-content-list">
-						<li className="nav-content-item">
-							<BiUserCircle fontSize={25} />
-						</li>
-
-						<li className="nav-content-item">
-							<MdFavorite fontSize={25} />
-						</li>
-
-						<li className="nav-content-item">
-							<FiShoppingCart fontSize={25} />
-						</li>
-					</ul>
-				</nav>
+				<NavBar />
 			</div>
 
 			<div className="category-nav-container">

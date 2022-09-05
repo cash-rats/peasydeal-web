@@ -1,0 +1,26 @@
+.nav-container {
+  flex: 1;
+}
+.nav-container .nav-content-list {
+  list-style: none;
+  padding: 0;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 15px;
+}
+.nav-container .nav-content-list .nav-content-item {
+  align-items: center;
+  display: flex;
+  height: 40px;
+  margin: 0 5px;
+  position: relative;
+  transition: 100ms all linear 0s;
+}
+@media (max-width: 992px) {
+  .nav-container .nav-content-list .nav-content-item {
+    padding: 0 5px;
+  }
+}
+
+/*# sourceMappingURL=NavBar.css.map */
