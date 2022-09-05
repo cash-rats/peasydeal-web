@@ -1,4 +1,13 @@
 import type { LinksFunction } from '@remix-run/node';
+import {
+	InputGroup,
+	Input,
+	InputLeftAddon,
+	InputRightAddon,
+} from '@chakra-ui/react';
+import { BsPlus } from 'react-icons/bs';
+import { BiMinus } from 'react-icons/bi';
+
 
 import styles from './styles/cart.css';
 
@@ -43,8 +52,6 @@ function Cart() {
 							Quantity
 						</h1>
 
-						<div className="remove-label" />
-
 						<h1 className="total-label">
 							Total
 						</h1>
@@ -55,6 +62,9 @@ function Cart() {
 						<div className="top">
 							<div className="product-image">
 								<img src="https://s.cdpn.io/3/large-NutroNaturalChoiceAdultLambMealandRiceDryDogFood.png" />
+
+								<div className="product-remove">
+								</div>
 							</div>
 
 							<div className="product-description">
@@ -78,11 +88,11 @@ function Cart() {
 							</div>
 
 							<div className="product-quantity">
-								2
-							</div>
-
-							<div className="product-remove">
-								remove
+								<InputGroup size='xs'>
+									<InputLeftAddon children={<BiMinus />} />
+									<Input maxWidth={20} value={1000} />
+									<InputRightAddon children={<BsPlus />} />
+								</InputGroup>
 							</div>
 
 							<div className="product-total">
