@@ -8,7 +8,6 @@ import {
 import { BsPlus } from 'react-icons/bs';
 import { BiMinus } from 'react-icons/bi';
 
-
 import styles from './styles/cart.css';
 
 export const links: LinksFunction = () => {

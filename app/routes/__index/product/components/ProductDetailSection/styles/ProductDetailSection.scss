@@ -1,0 +1,29 @@
+@import 'styles/_mixins';
+
+.product-detail {
+	width: 100%;
+	.product-detail-title {
+		padding: 10px 20px 5px;
+		h1 {
+			font-size: 25px;
+			color: #000;
+		}
+
+		h2 {
+			font-size: 20px;
+			line-height: 18px;
+			margin: 10px 0 20px 0;
+			color: #666;
+		}
+	}
+}
+
+.product-detail-img-container {
+	img {
+		width: 100%;
+
+		@include md {
+			max-width: 718px;
+		}
+	}
+}

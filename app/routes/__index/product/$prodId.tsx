@@ -1,32 +1,35 @@
-import { useCallback } from 'react';
-import type { LoaderFunction } from '@remix-run/node';
+import { useCallback, useState, ChangeEvent } from 'react';
+import {
+	InputGroup,
+	Input,
+	InputLeftAddon,
+	InputRightAddon,
+} from '@chakra-ui/react';
+import { BsPlus } from 'react-icons/bs';
+import { BiMinus } from 'react-icons/bi';
+import type { LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
-import Select from 'react-select';
+import { useLoaderData, useFetcher } from '@remix-run/react';
 import { Button } from '@chakra-ui/react';
+import Select from 'react-select';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { StatusCodes } from 'http-status-codes';
 
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
-import PicsCarousel, { links as PicsCarouselLinks } from '~/components/Carousel';
 
+import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
 import styles from "./styles/ProdDetail.css";
-//import PriceOffTag, {
-	//links as PriceTagLinks,
-//} from "./components/PriceTag";
-
-
 
 export function links() {
 	return [
-		...PicsCarouselLinks(),
+		...ProductDetailSectionLinks(),
 		...DividerLinks(),
-		//...PriceTagLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
-}
+};
+
 
 // Fetch product detail data.
 export const loader: LoaderFunction = async ({ params }) => {
@@ -38,6 +41,9 @@ export const loader: LoaderFunction = async ({ params }) => {
 	return json({ product: respJSON }, { status: StatusCodes.OK });
 };
 
+export const action: ActionFunction = ({ request }) => {
+	return null;
+}
 
 interface ProductVariation {
 	currency: null
@@ -79,44 +85,52 @@ function ProductDetailPage () {
 		return variations.find<ProductVariation>(
 			(variation) =>  defaultVariationID === variation.variationId);
 	}, []);
-
 	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
+
+	// Item quantity.
+	const [quantity, updateQuantity] = useState<number>(1);
+
+	const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
+		if (isNaN(Number(evt.target.value))) return;
+		updateQuantity(Number(evt.target.value));
+	};
+
+	const increaseQuantity = () => {
+		updateQuantity(prev => prev+1);
+	};
+	const decreaseQuantity = () => {
+		if (quantity === 1) return;
+		updateQuantity(prev => prev-1);
+	};
+
+	//const addToCart = useFetcher();
+	//const handleAddToCart = (productID: string) => {
+		// - retrieve product info via productID.
+		// - ask action store shopping cart item in the cookie.
+		// params
+		//   prodID: {
+		//		variationID
+		//   	variation title
+		//   	image
+		//   	quantity
+		//   	title
+		//   	description
+		//  }
+
+		//console.log('debug 1', );
+		//addToCart.submit();
+	//};
+
 
 	return (
 		<div className="productdetail-container">
+			<ProductDetailSection
+				title={currentVariation?.title}
+				subTitle={currentVariation?.subTitle}
+				description={currentVariation?.description}
+				pics={productDetail.pics}
+			/>
 
-			{/* Product Image */}
-			{/* > 991 desktop */}
-			{/* < 991 mobile view */}
-			<div className="product-detail">
-				{/* Title */}
-				<div className="product-detail-title">
-					<h1>
-						{ currentVariation?.title }
-					</h1>
-
-					<h2>
-						{ currentVariation?.subTitle }
-					</h2>
-				</div>
-
-				{/* Image container */}
-				<div className="product-detail-img-container">
-					<PicsCarousel images={productDetail.pics} />
-				</div>
-
-				{/* product features. display > 768 */}
-
-				<div className="product-features-large-screen">
-					<h1>
-						Product Features
-					</h1>
-					{/* TODO dangerous render html */}
-					<div dangerouslySetInnerHTML={{ __html: currentVariation?.description || '' }} />
-				</div>
-			</div>
-
-			{/* Product detail */}
 			<div className="product-content-wrapper">
 				<div className="product-content">
 
@@ -169,11 +183,13 @@ function ProductDetailPage () {
 
 					<Divider text="options" />
 					<div className="options-container">
+
+						{/* Variations */}
 						<ClientOnly>
 							<Select
 								inputId='variation_id'
 								instanceId='variation_id'
-								placeholder='select variation'
+								placeholder='select variation~'
 								options={
 									productDetail.variations.map(
 										(variation) => ({ value: variation.variationId, label: variation.title })
@@ -181,6 +197,24 @@ function ProductDetailPage () {
 								}
 							/>
 						</ClientOnly>
+
+						{/* Quantity */}
+						<div className="input-quantity-container">
+							<InputGroup size='sm'>
+								<InputLeftAddon
+									children={<BiMinus />}
+									onClick={decreaseQuantity}
+								/>
+								<Input
+									value={quantity}
+									onChange={handleUpdateQuantity}
+								/>
+								<InputRightAddon
+									children={<BsPlus />}
+									onClick={increaseQuantity}
+								/>
+							</InputGroup>
+						</div>
 
 						<div className="client-action-bar-large">
 							<div>
@@ -234,6 +268,7 @@ function ProductDetailPage () {
 			<div className="client-action-bar">
 				<div>
 					<Button
+						onClick={() => {}}
 						width={{ base: '100%' }}
 						colorScheme='green'
 					>

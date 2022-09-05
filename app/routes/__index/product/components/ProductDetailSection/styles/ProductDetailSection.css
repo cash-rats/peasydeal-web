@@ -1,0 +1,27 @@
+.product-detail {
+  width: 100%;
+}
+.product-detail .product-detail-title {
+  padding: 10px 20px 5px;
+}
+.product-detail .product-detail-title h1 {
+  font-size: 25px;
+  color: #000;
+}
+.product-detail .product-detail-title h2 {
+  font-size: 20px;
+  line-height: 18px;
+  margin: 10px 0 20px 0;
+  color: #666;
+}
+
+.product-detail-img-container img {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .product-detail-img-container img {
+    max-width: 718px;
+  }
+}
+
+/*# sourceMappingURL=ProductDetailSection.css.map */

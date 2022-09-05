@@ -20,34 +20,6 @@
 		width: 1180px;
 	}
 
-	.product-detail {
-		width: 100%;
-		.product-detail-title {
-			padding: 10px 20px 5px;
-			h1 {
-				font-size: 25px;
-				color: #000;
-			}
-
-			h2 {
-				font-size: 20px;
-				line-height: 18px;
-				margin: 10px 0 20px 0;
-				color: #666;
-			}
-		}
-	}
-
-	.product-detail-img-container {
-		img {
-			width: 100%;
-
-			@include md {
-				max-width: 718px;
-			}
-		}
-	}
-
 	.product-content-wrapper {
 		padding: 0 15px;
 		margin-top: 35px;
@@ -136,6 +108,11 @@
 
 .options-container {
 	padding: 0 15px 15px 15px;
+}
+
+.input-quantity-container {
+	margin-top: 15px;
+	width: 100%;
 }
 
 .product-features-large-screen {
