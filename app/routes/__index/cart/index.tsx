@@ -2,8 +2,6 @@ import type { LinksFunction } from '@remix-run/node';
 
 import styles from './styles/cart.css';
 
-console.log('styles', styles);
-
 export const links: LinksFunction = () => {
 	return [
 		{ rel: 'stylesheet', href: styles },
