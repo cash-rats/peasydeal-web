@@ -4,9 +4,8 @@ import {
 	Input,
 	InputLeftAddon,
 	InputRightAddon,
-	IconButton,
 } from '@chakra-ui/react';
-import { BsPlus, BsTrash } from 'react-icons/bs';
+import { BsPlus } from 'react-icons/bs';
 import { BiMinus } from 'react-icons/bi';
 
 
