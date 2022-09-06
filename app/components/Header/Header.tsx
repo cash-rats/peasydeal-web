@@ -1,9 +1,5 @@
 import type { LinksFunction } from "@remix-run/node";
-import { Link } from '@remix-run/react';
 import { AiOutlineMail, AiOutlinePhone, AiFillHeart } from "react-icons/ai";
-import { BiUserCircle } from "react-icons/bi";
-import { MdFavorite } from "react-icons/md";
-import { FiShoppingCart } from "react-icons/fi"
 
 import SearchBar from "./SearchBar";
 import CategoriesNav from "./CategoriesNav";
