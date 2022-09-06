@@ -17,6 +17,8 @@ import { StatusCodes } from 'http-status-codes';
 
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
+import { getSession, commitSession } from '~/sessions';
+//import { shoppingCartCookie } from '~/cookies/shopping_cart';
 
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
@@ -41,8 +43,41 @@ export const loader: LoaderFunction = async ({ params }) => {
 	return json({ product: respJSON }, { status: StatusCodes.OK });
 };
 
-export const action: ActionFunction = ({ request }) => {
-	return null;
+// TODO
+//  - [x] store shopping cart items in session storage if user has not logged in yet.
+//  - [ ] what is error?
+export const action: ActionFunction = async ({ request }) => {
+	const form = await request.formData();
+	const prodIDEntry: FormDataEntryValue | null = form.get('productID');
+	if (!prodIDEntry) return;
+	const prodID = prodIDEntry as string;
+
+	const cartObj = Object.fromEntries(form.entries());
+
+	// Try retrieve `shopping_cart` list from request cookie.
+	const session = await getSession(
+		request.headers.get("Cookie"),
+	);
+
+	// if `shopping_cart` has not been created, create it
+	let shoppingCart = {};
+
+	if (session.has('shopping_cart')) {
+		shoppingCart = session.get('shopping_cart');
+	}
+
+	const newShoppingCart = {
+		...shoppingCart,
+		[prodID]: cartObj ,
+	}
+
+	session.set('shopping_cart', newShoppingCart);
+
+	return new Response('', {
+		headers: {
+			"Set-Cookie": await commitSession(session),
+		}
+	});
 }
 
 interface ProductVariation {
@@ -103,23 +138,34 @@ function ProductDetailPage () {
 		updateQuantity(prev => prev-1);
 	};
 
-	//const addToCart = useFetcher();
-	//const handleAddToCart = (productID: string) => {
-		// - retrieve product info via productID.
-		// - ask action store shopping cart item in the cookie.
-		// params
-		//   prodID: {
-		//		variationID
-		//   	variation title
-		//   	image
-		//   	quantity
-		//   	title
-		//   	description
-		//  }
+	const addToCart = useFetcher();
+	const handleAddToCart = () => {
+		console.log('debug 1');
+		 // - retrieve product info via productID.
+		 // - ask action store shopping cart item in the cookie.
+		 //params
+			 //prodID: {
+				 //variationID
+				 //variation title
+				 //image
+				 //quantity
+				 //title
+				 //description
+			//}
 
 		//console.log('debug 1', );
-		//addToCart.submit();
-	//};
+		addToCart.submit(
+			{
+				productID: productDetail.productId,
+				variationID: currentVariation?.variationId || '',
+				image: currentVariation?.mainPic || '',
+				quantity: quantity.toString(),
+				title: currentVariation?.title || '',
+				subTitle: currentVariation?.subTitle || '',
+			},
+			{ method: 'post', action: '/product/$prodId' },
+		);
+	};
 
 
 	return (
@@ -221,6 +267,7 @@ function ProductDetailPage () {
 								<Button
 									width={{ base: '100%' }}
 									colorScheme='green'
+									onClick={handleAddToCart}
 								>
 									Add To Cart
 								</Button>
@@ -268,7 +315,7 @@ function ProductDetailPage () {
 			<div className="client-action-bar">
 				<div>
 					<Button
-						onClick={() => {}}
+						onClick={handleAddToCart}
 						width={{ base: '100%' }}
 						colorScheme='green'
 					>
