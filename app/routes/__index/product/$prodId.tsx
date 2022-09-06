@@ -1,4 +1,9 @@
-import { useCallback, useState, ChangeEvent } from 'react';
+import {
+	useCallback,
+	useState,
+	ChangeEvent,
+	useEffect,
+} from 'react';
 import {
 	InputGroup,
 	Input,
@@ -15,10 +20,10 @@ import Select from 'react-select';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { StatusCodes } from 'http-status-codes';
 
+import { useSuccessSnackbar } from '~/components/SuccessSnackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import { getSession, commitSession } from '~/sessions';
-//import { shoppingCartCookie } from '~/cookies/shopping_cart';
 
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
@@ -139,21 +144,10 @@ function ProductDetailPage () {
 	};
 
 	const addToCart = useFetcher();
-	const handleAddToCart = () => {
-		console.log('debug 1');
-		 // - retrieve product info via productID.
-		 // - ask action store shopping cart item in the cookie.
-		 //params
-			 //prodID: {
-				 //variationID
-				 //variation title
-				 //image
-				 //quantity
-				 //title
-				 //description
-			//}
 
-		//console.log('debug 1', );
+	const [openSuccessSnackbar] = useSuccessSnackbar();
+
+	const handleAddToCart = () => {
 		addToCart.submit(
 			{
 				productID: productDetail.productId,
@@ -167,6 +161,11 @@ function ProductDetailPage () {
 		);
 	};
 
+	useEffect(() => {
+		if (addToCart.type === 'done') {
+			openSuccessSnackbar('Added to cart');
+		}
+	}, [addToCart])
 
 	return (
 		<div className="productdetail-container">

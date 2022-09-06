@@ -11,7 +11,8 @@ import {
   ScrollRestoration,
 	useLoaderData,
 } from "@remix-run/react";
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react';
+import SnackbarProvider from 'react-simple-snackbar';
 
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
@@ -105,7 +106,9 @@ export default function App() {
   return (
 		<Document>
       <ChakraProvider>
-        <Outlet />
+				<SnackbarProvider>
+					<Outlet />
+				</SnackbarProvider>
       </ChakraProvider>
     </Document>
   );

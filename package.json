@@ -59,6 +59,7 @@
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
     "react-select": "^5.4.0",
+    "react-simple-snackbar": "^1.1.11",
     "react-slick": "^0.29.0",
     "react-spinners": "^0.13.4",
     "slick-carousel": "^1.8.1",
