@@ -40,8 +40,6 @@ export default function MediumGrid({
 }: MediumGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 
-	console.log('clickableGrid', clickableGrid);
-
 	return (
 		<MqNotifier
 			mqValidators={[

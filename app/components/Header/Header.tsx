@@ -1,14 +1,15 @@
 import type { LinksFunction } from "@remix-run/node";
 import { AiOutlineMail, AiOutlinePhone, AiFillHeart } from "react-icons/ai";
 
-import SearchBar from "./SearchBar";
 import CategoriesNav from "./CategoriesNav";
 import type { Category } from "./CategoriesNav";
-import styles from "./styles/Header.css";
+import SearchBar, { links as SearchBarLinks } from "./components/SearchBar";
 import NavBar, { links as NavBarLinks } from './components/NavBar';
+import styles from "./styles/Header.css";
 
 export const links: LinksFunction = () => {
 	return [
+		...SearchBarLinks(),
 		...NavBarLinks(),
 		{rel: 'stylesheet', href: styles},
 	];

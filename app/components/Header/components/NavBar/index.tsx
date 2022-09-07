@@ -34,7 +34,7 @@ function NavBar() {
 				{/* shopping cart */}
 				<li className="nav-content-item">
 					<RedDot
-						dotStyle={{ left: '23px', top: '-3px' }}
+						dotStyle={{ left: '19px', top: '-3px' }}
 						value={100}
 					/>
 
