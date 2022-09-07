@@ -17,9 +17,14 @@ export const links: LinksFunction = () => {
 
 interface HeaderProps {
 	categories?: Category[];
+
+	/*
+	 * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
+	 */
+	cartItemCount?: number;
 };
 
-export default function Header({ categories = [] }: HeaderProps) {
+export default function Header({ categories = [],  cartItemCount = 0 }: HeaderProps) {
 	return (
 		<div className="header-container">
 			{/* Contact */}
@@ -54,7 +59,7 @@ export default function Header({ categories = [] }: HeaderProps) {
 					<SearchBar />
 				</div>
 
-				<NavBar />
+				<NavBar cartItemCount={cartItemCount} />
 			</div>
 
 			<div className="category-nav-container">

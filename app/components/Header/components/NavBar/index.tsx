@@ -1,4 +1,4 @@
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
+import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { BiUserCircle } from "react-icons/bi";
 import { MdFavorite } from "react-icons/md";
@@ -15,11 +15,15 @@ export const links: LinksFunction = () => {
 	];
 };
 
-export const loader: LoaderFunction = () => {
-};
+interface NavBarProps {
+	/*
+	 * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
+	 */
+	cartItemCount?: number;
+}
 
 // Load shopping cart items.
-function NavBar() {
+function NavBar({ cartItemCount = 0 }: NavBarProps) {
 	return (
 		<nav className="nav-container">
 			<ul className="nav-content-list">
@@ -33,10 +37,14 @@ function NavBar() {
 
 				{/* shopping cart */}
 				<li className="nav-content-item">
-					<RedDot
-						dotStyle={{ left: '19px', top: '-3px' }}
-						value={100}
-					/>
+					{
+						cartItemCount > 0 && (
+							<RedDot
+								dotStyle={{ left: '19px', top: '-3px' }}
+								value={cartItemCount}
+							/>
+						)
+					}
 
 					<Link to="/cart">
 						<FiShoppingCart fontSize={25} />

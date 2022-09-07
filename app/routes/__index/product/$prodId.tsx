@@ -23,7 +23,7 @@ import { StatusCodes } from 'http-status-codes';
 import { useSuccessSnackbar } from '~/components/SuccessSnackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
-import { getSession, commitSession } from '~/sessions';
+import { getSession, commitSession, SessionKey } from '~/sessions';
 
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
@@ -67,7 +67,7 @@ export const action: ActionFunction = async ({ request }) => {
 	// if `shopping_cart` has not been created, create it
 	let shoppingCart = {};
 
-	if (session.has('shopping_cart')) {
+	if (session.has('shopping_cart' as SessionKey)) {
 		shoppingCart = session.get('shopping_cart');
 	}
 
@@ -234,7 +234,7 @@ function ProductDetailPage () {
 							<Select
 								inputId='variation_id'
 								instanceId='variation_id'
-								placeholder='select variation~'
+								placeholder='select variation'
 								options={
 									productDetail.variations.map(
 										(variation) => ({ value: variation.variationId, label: variation.title })
