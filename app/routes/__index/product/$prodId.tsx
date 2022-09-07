@@ -267,6 +267,7 @@ function ProductDetailPage () {
 									width={{ base: '100%' }}
 									colorScheme='green'
 									onClick={handleAddToCart}
+									isLoading={addToCart.state !== 'idle'}
 								>
 									Add To Cart
 								</Button>
@@ -317,6 +318,7 @@ function ProductDetailPage () {
 						onClick={handleAddToCart}
 						width={{ base: '100%' }}
 						colorScheme='green'
+						isLoading={addToCart.state !== 'idle'}
 					>
 						Add To Cart
 					</Button>

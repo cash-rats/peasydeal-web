@@ -105,11 +105,11 @@ const Document = withEmotionCache(
 export default function App() {
   return (
 		<Document>
-      <ChakraProvider>
-				<SnackbarProvider>
+			<SnackbarProvider>
+				<ChakraProvider>
 					<Outlet />
-				</SnackbarProvider>
-      </ChakraProvider>
-    </Document>
+  	  	</ChakraProvider>
+			</SnackbarProvider>
+  	</Document>
   );
 }
