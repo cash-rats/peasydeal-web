@@ -36,11 +36,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 
 /*
- * Update items in cart when client update quantity (or remove).
- */
-export const action: ActionFunction = () => {};
-
-/*
  * Calculate subtotal to the list of the items in the shopping cart.
  */
 const calcSubTotal = (items): number => {
