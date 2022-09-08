@@ -25,11 +25,12 @@
 	.preview-image-container {
 		img {
 			height: 100%;
+			max-height: 475px;
 		}
 
 		@include md {
 			width: 100%;
-  		height: auto;
+			max-height: 475px;
   		aspect-ratio: 414/277;
 		}
 

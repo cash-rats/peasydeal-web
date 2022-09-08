@@ -1,14 +1,7 @@
+import { useState } from 'react';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, useFetcher } from '@remix-run/react';
 import type { LinksFunction, ActionFunction, LoaderFunction } from '@remix-run/node';
-import {
-	InputGroup,
-	Input,
-	InputLeftAddon,
-	InputRightAddon,
-} from '@chakra-ui/react';
-import { BsPlus } from 'react-icons/bs';
-import { BiMinus } from 'react-icons/bi';
 import { StatusCodes } from 'http-status-codes';
 
 import { getSession, SessionKey } from '~/sessions';
@@ -45,6 +38,13 @@ export const loader: LoaderFunction = async ({ request }) => {
  */
 export const action: ActionFunction = () => {};
 
+const calcSubTotal = (items): number => {
+	return Object.keys(items).reduce((prev, prodID) => {
+		const item = items[prodID];
+		return prev + (item.salePrice * item.quantity);
+	}, 0);
+}
+
 /*
  * Coppy shopee's layout
  * @see https://codepen.io/justinklemm/pen/kyMjjv
@@ -52,10 +52,31 @@ export const action: ActionFunction = () => {};
  * container width: max-width: 1180px;
  *
  * - [ ] show empty shopping cart when no item existed yet.
+ * - [ ] Remember selected quantity and sales price for each item so that we can calculate total price in result row.
+ * - [ ] Add `~~$99.98 Now $49.99 You Saved $50` text.
+ * - [ ] Checkout flow.
  */
 function Cart() {
-	const cartItems = useLoaderData();
-	console.log('debug', cartItems);
+	const cartItemsData = useLoaderData();
+	const [cartItems, setCartItems] = useState(cartItemsData);
+
+	// TODO when quantity equals 0, display popup to notify customer for item removal.
+	const updateItemQuantity = (quantity: number, prodID: string) => {
+		setCartItems((prev) => (
+			{
+				...prev,
+				[prodID]: {
+					...prev[prodID],
+					quantity,
+				}
+			}
+		));
+
+		// - Update quantity session ?
+		console.log('handleOnPlusQuantity', quantity, prodID);
+	};
+
+	//console.log('cartItems', cartItems);
 
 	return (
 		<section className="shopping-cart-section">
@@ -96,12 +117,16 @@ function Cart() {
 							return (
 								<CartItem
 									key={prodID}
+									prodID={prodID}
 									image={item.image}
 									title={item.title}
 									description={item.subTitle}
 									salePrice={Number(item.salePrice)}
 									retailPrice={Number(item.retailPrice)}
 									quantity={Number(item.quantity)}
+									onPlus={updateItemQuantity}
+									onMinus={updateItemQuantity}
+									onChangeQuantity={updateItemQuantity}
 								/>
 							)
 						})
@@ -111,7 +136,9 @@ function Cart() {
 					<div className="result-row">
 						<div className="subtotal">
 							<label> Subtotal </label>
-							<div className="result-value"> $123 </div>
+							<div className="result-value"> ${
+								calcSubTotal(cartItems).toFixed(2)
+							} </div>
 						</div>
 
 						<div className="tax">

@@ -21,11 +21,12 @@
 }
 .thumbnails-hover-images-container .preview-image-container img {
   height: 100%;
+  max-height: 475px;
 }
 @media (min-width: 768px) {
   .thumbnails-hover-images-container .preview-image-container {
     width: 100%;
-    height: auto;
+    max-height: 475px;
     aspect-ratio: 414/277;
   }
 }

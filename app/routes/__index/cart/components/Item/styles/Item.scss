@@ -17,13 +17,9 @@
 
 	 	.product-image {
 	 		display: flex;
-	 		flex-direction: center;
+			justify-content: center;
 	 		align-items: center;
 	 		width: 35%;
-
-	 		@include md {
-	 			justify-content: flex-start;
-	 		}
 
 	 		img {
 	 			height: 100px;

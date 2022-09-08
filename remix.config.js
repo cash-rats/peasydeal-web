@@ -9,11 +9,8 @@ module.exports = {
     "**/*.scss",
     "**/*.test.{js,jsx,ts,tsx}",
     "**/*.map",
-
     "**/styles/.*",
-
     "**/stub.*",
-
-    "**/components/.*",
+    "**/api/*.*"
   ],
 };
