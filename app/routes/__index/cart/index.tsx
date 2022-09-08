@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { json, ActionFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import type { LinksFunction, ActionFunction, LoaderFunction } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { StatusCodes } from 'http-status-codes';
+import { Button } from '@chakra-ui/react';
+import { BsBagCheck } from 'react-icons/bs';
 
 import { getSession, SessionKey } from '~/sessions';
 
@@ -161,10 +163,21 @@ function Cart() {
 							<label> Grand Total </label>
 							<div className="result-value"> ${ calcGrandTotal(calcSubTotal(cartItems)).toFixed(2) } </div>
 						</div>
+
+						<div className="checkout-button">
+							<Button
+								size='lg'
+								colorScheme='green'
+								leftIcon={<BsBagCheck fontSize={22}/>}
+							>
+								Proceed Checkout
+							</Button>
+						</div>
 					</div>
 				</div>
 
 				{/* show empty shopping cart whe no items */}
+
 			</div>
 		</section>
 	);

@@ -169,5 +169,10 @@
 .shopping-cart-container .cart-items-container .result-row .grand-total label {
   font-weight: bold !important;
 }
+.shopping-cart-container .cart-items-container .result-row .checkout-button {
+  margin-top: 30px;
+  display: flex;
+  justify-content: flex-end;
+}
 
 /*# sourceMappingURL=cart.css.map */
