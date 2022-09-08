@@ -20,7 +20,7 @@ import Select from 'react-select';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { StatusCodes } from 'http-status-codes';
 
-import { useSuccessSnackbar } from '~/components/SuccessSnackbar';
+import { useSuccessSnackbar } from '~/components/Snackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import { getSession, commitSession, SessionKey } from '~/sessions';
@@ -150,6 +150,8 @@ function ProductDetailPage () {
 	const handleAddToCart = () => {
 		addToCart.submit(
 			{
+				salePrice: currentVariation?.salePrice.toString() || '',
+				retailPrice: currentVariation?.retailPrice.toString() || '',
 				productID: productDetail.productId,
 				variationID: currentVariation?.variationId || '',
 				image: currentVariation?.mainPic || '',

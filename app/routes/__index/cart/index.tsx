@@ -1,4 +1,6 @@
-import type { LinksFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
+import type { LinksFunction, ActionFunction, LoaderFunction } from '@remix-run/node';
 import {
 	InputGroup,
 	Input,
@@ -7,14 +9,41 @@ import {
 } from '@chakra-ui/react';
 import { BsPlus } from 'react-icons/bs';
 import { BiMinus } from 'react-icons/bi';
+import { StatusCodes } from 'http-status-codes';
 
+import { getSession, SessionKey } from '~/sessions';
+
+import CartItem, { links as ItemLinks } from './components/Item';
 import styles from './styles/cart.css';
 
 export const links: LinksFunction = () => {
 	return [
+		...ItemLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
+
+/*
+ * Fetch cart items from product list when user is not logged in.
+ */
+export const loader: LoaderFunction = async ({ request }) => {
+	const session = await getSession(request.headers.get("Cookie"));
+	const sessionKey: SessionKey = 'shopping_cart';
+
+	let cartItems = {};
+
+	if (session.has(sessionKey)) {
+		cartItems = session.get(sessionKey);
+	}
+
+	return json(cartItems, { status: StatusCodes.OK });
+};
+
+
+/*
+ * Update items in cart when client update quantity (or remove).
+ */
+export const action: ActionFunction = () => {};
 
 /*
  * Coppy shopee's layout
@@ -25,6 +54,9 @@ export const links: LinksFunction = () => {
  * - [ ] show empty shopping cart when no item existed yet.
  */
 function Cart() {
+	const cartItems = useLoaderData();
+	console.log('debug', cartItems);
+
 	return (
 		<section className="shopping-cart-section">
 			<div className="shopping-cart-container">
@@ -56,8 +88,28 @@ function Cart() {
 						</h1>
 					</div>
 
+					{
+						// TODO: add typescript to item.
+						Object.keys(cartItems).map((prodID) => {
+							const item = cartItems[prodID];
+
+							return (
+								<CartItem
+									key={prodID}
+									image={item.image}
+									title={item.title}
+									description={item.subTitle}
+									salePrice={item.salePrice}
+									retailPrice={item.retailPrice}
+									quantity={item.quantity}
+								/>
+							)
+						})
+					}
+
+					{/*
+
 					<div className="cart-item">
-						{/* Item image */}
 						<div className="top">
 							<div className="product-image">
 								<img src="https://s.cdpn.io/3/large-NutroNaturalChoiceAdultLambMealandRiceDryDogFood.png" />
@@ -96,6 +148,7 @@ function Cart() {
 							</div>
 						</div>
 					</div>
+					*/}
 
 					{/* result row */}
 					<div className="result-row">
