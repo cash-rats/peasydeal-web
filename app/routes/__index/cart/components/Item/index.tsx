@@ -1,3 +1,4 @@
+import { useState, ChangeEvent} from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import {
 	InputGroup,
@@ -20,9 +21,12 @@ interface CartItemProps {
 	image: string;
 	title: string;
 	description: string;
-	salePrice: string;
-	retailPrice: string;
-	quantity: number;
+	salePrice: number;
+	retailPrice: number;
+	quantity?: number;
+
+	onMinus?: (quantity: number) => void;
+	onPlus?: (quantity: number) => void;
 }
 
 function CartItem ({
@@ -31,8 +35,35 @@ function CartItem ({
 	description,
 	salePrice,
 	retailPrice,
-	quantity,
+	quantity = 1,
+	onMinus = () => {},
+	onPlus = () => {},
 }: CartItemProps) {
+	const [itemQauntity, setItemQuantity] = useState<number>(quantity);
+
+	const handleClickAddQuantity = () => {
+		const q = itemQauntity + 1;
+		setItemQuantity(q);
+		onPlus(q);
+	}
+
+	const handleClickMinusQuantity = () => {
+		// We do not allow quantity deduction when quantity equals 1
+		if (itemQauntity === 1) {
+			onMinus(itemQauntity);
+			return;
+		}
+
+		const q = itemQauntity - 1;
+		setItemQuantity(q);
+		onMinus(q);
+	}
+
+	const handleChangeQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
+		if (isNaN(Number(evt.target.value))) return;
+		setItemQuantity(Number(evt.target.value));
+	}
+
 	return (
 		<div className="cart-item">
 			{/* Item image */}
@@ -63,14 +94,24 @@ function CartItem ({
 
 				<div className="product-quantity">
 					<InputGroup size='xs'>
-						<InputLeftAddon children={<BiMinus />} />
-						<Input maxWidth={20} value={1000} />
-						<InputRightAddon children={<BsPlus />} />
+						<InputLeftAddon
+							children={<BiMinus />}
+							onClick={handleClickMinusQuantity}
+						/>
+						<Input
+							maxWidth={20}
+							value={itemQauntity}
+							onChange={handleChangeQuantity}
+						/>
+						<InputRightAddon
+							children={<BsPlus />}
+							onClick={handleClickAddQuantity}
+						/>
 					</InputGroup>
 				</div>
 
 				<div className="product-total">
-					{ quantity }
+					{ (itemQauntity * salePrice).toFixed(2) }
 				</div>
 			</div>
 		</div>

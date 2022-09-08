@@ -99,56 +99,13 @@ function Cart() {
 									image={item.image}
 									title={item.title}
 									description={item.subTitle}
-									salePrice={item.salePrice}
-									retailPrice={item.retailPrice}
-									quantity={item.quantity}
+									salePrice={Number(item.salePrice)}
+									retailPrice={Number(item.retailPrice)}
+									quantity={Number(item.quantity)}
 								/>
 							)
 						})
 					}
-
-					{/*
-
-					<div className="cart-item">
-						<div className="top">
-							<div className="product-image">
-								<img src="https://s.cdpn.io/3/large-NutroNaturalChoiceAdultLambMealandRiceDryDogFood.png" />
-							</div>
-
-							<div className="product-description">
-								<div className="product-title">
-									Dingo Dog Bones
-								</div>
-
-								<p className="product-description-text">
-									The best dog bones of all time. Holy crap. Your dog will be begging for these things! I got curious once and ate one myself. I'm a fan.
-								</p>
-
-								<div className="product-price-mobile">
-									$122
-								</div>
-							</div>
-						</div>
-
-						<div className="bottom">
-							<div className="product-price">
-								$12.99
-							</div>
-
-							<div className="product-quantity">
-								<InputGroup size='xs'>
-									<InputLeftAddon children={<BiMinus />} />
-									<Input maxWidth={20} value={1000} />
-									<InputRightAddon children={<BsPlus />} />
-								</InputGroup>
-							</div>
-
-							<div className="product-total">
-								2
-							</div>
-						</div>
-					</div>
-					*/}
 
 					{/* result row */}
 					<div className="result-row">
