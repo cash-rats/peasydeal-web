@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { json } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { json, ActionFunction } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import type { LinksFunction, ActionFunction, LoaderFunction } from '@remix-run/node';
 import { StatusCodes } from 'http-status-codes';
 
@@ -38,12 +38,23 @@ export const loader: LoaderFunction = async ({ request }) => {
  */
 export const action: ActionFunction = () => {};
 
+/*
+ * Calculate subtotal to the list of the items in the shopping cart.
+ */
 const calcSubTotal = (items): number => {
 	return Object.keys(items).reduce((prev, prodID) => {
 		const item = items[prodID];
 		return prev + (item.salePrice * item.quantity);
 	}, 0);
-}
+};
+
+/*
+ * Calculate grand total of this order.
+ * TODO: TAX and shipping fee are fake data.
+ */
+const TAX = 0.2;
+const SHIPPING_FEE = 20;
+const calcGrandTotal = (subTotal: number): number => (subTotal * (1 +TAX)) + SHIPPING_FEE;
 
 /*
  * Coppy shopee's layout
@@ -71,12 +82,7 @@ function Cart() {
 				}
 			}
 		));
-
-		// - Update quantity session ?
-		console.log('handleOnPlusQuantity', quantity, prodID);
 	};
-
-	//console.log('cartItems', cartItems);
 
 	return (
 		<section className="shopping-cart-section">
@@ -143,17 +149,17 @@ function Cart() {
 
 						<div className="tax">
 							<label> Tax (5%) </label>
-							<div className="result-value"> $123 </div>
+							<div className="result-value"> { TAX * 100 }% </div>
 						</div>
 
 						<div className="shipping">
 							<label> Shipping </label>
-							<div className="result-value"> $123 </div>
+							<div className="result-value"> ${ SHIPPING_FEE } </div>
 						</div>
 
 						<div className="grand-total">
 							<label> Grand Total </label>
-							<div className="result-value"> $123 </div>
+							<div className="result-value"> ${ calcGrandTotal(calcSubTotal(cartItems)).toFixed(2) } </div>
 						</div>
 					</div>
 				</div>
