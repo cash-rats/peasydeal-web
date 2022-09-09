@@ -6,6 +6,8 @@
 	padding: 30px 90px;
 
 	.left {
+		max-width: 28rem;
+
 		.title {
 			font-weight: bold;
 			font-size: 28px;
@@ -17,8 +19,13 @@
 			display: grid;
 			grid-gap: 1rem;
 		}
+
+		.form-container {
+			margin-bottom: 15px;
+		}
 	}
 }
+
 
 .shipping-detail-form {
 	display: grid;

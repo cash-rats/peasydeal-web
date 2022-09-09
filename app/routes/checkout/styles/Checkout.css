@@ -5,6 +5,9 @@
   flex-direction: column;
   padding: 30px 90px;
 }
+.checkout-page-container .left {
+  max-width: 28rem;
+}
 .checkout-page-container .left .title {
   font-weight: bold;
   font-size: 28px;
@@ -14,6 +17,9 @@
   max-width: 38rem;
   display: grid;
   grid-gap: 1rem;
+}
+.checkout-page-container .left .form-container {
+  margin-bottom: 15px;
 }
 
 .shipping-detail-form {
