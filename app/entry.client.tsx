@@ -1,11 +1,13 @@
 import * as React from "react";
 import { RemixBrowser } from "@remix-run/react";
-import SnackbarProvider from 'react-simple-snackbar';
 
 // ISSUE: https://github.com/remix-run/remix/issues/2570
 import { hydrateRoot } from "react-dom/client";
 import { CacheProvider } from '@emotion/react'
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
+import theme from './theme';
 import { ClientStyleContext } from './context'
 import createEmotionCache from './createEmotionCache'
 
@@ -33,7 +35,10 @@ function hydrate() {
 			require("react-dom").hydrate(
 				<React.StrictMode>
 					<ClientCacheProvider>
-						<RemixBrowser />
+						<ThemeProvider theme={theme}>
+							<CssBaseline />
+							<RemixBrowser />
+						</ThemeProvider>
 					</ClientCacheProvider>
 				</React.StrictMode>,
 				document,
@@ -43,7 +48,10 @@ function hydrate() {
 				document,
 				<React.StrictMode>
 					<ClientCacheProvider>
-						<RemixBrowser />
+						<ThemeProvider theme={theme}>
+							<CssBaseline />
+							<RemixBrowser />
+						</ThemeProvider>
 					</ClientCacheProvider>
 				</React.StrictMode>,
 			)

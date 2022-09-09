@@ -6,6 +6,7 @@ import {
 	Input,
 	FormHelperText,
 } from '@chakra-ui/react';
+import TextField from '@mui/material/TextField';
 
 import styles from './styles/Checkout.css';
 
@@ -78,6 +79,7 @@ function CheckoutPage() {
 					</h1>
 
 					{/* select payment gateways */}
+					<TextField variant='outlined' />
 
 
 				</div>
