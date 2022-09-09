@@ -1,46 +1,15 @@
-import styled from "styled-components";
+import { LinksFunction } from '@remix-run/node';
 
-import { breakPoints, ranges } from "~/styles/breakpoints";
 import type { Product } from "~/shared/lib/types";
+
+import styles from './styles/EventRow.css';
 import { MediumGrid } from "../ProductGrid";
 
-const Container = styled.div`
-	display: flex;
-	flex-direction: row;
-	gap: 20px 20px;
-	flex-wrap: wrap;
-	margin: 0 auto;
-	justify-content: center;
-
-	@media ${ranges.normalScreen} {
-		justify-content: flex-start;
-		width: 670px;
-		flex-direction: row;
-		gap: 20px 8px;
-		padding-left: 2px;
-	}
-
-	@media ${ranges.tabletPortrait} {
-		justify-content: flex-start;
-		width: 576px;
-		flex-direction: row;
-	}
-
-	@media ${ranges.phoneOnly} {
-		flex-direction: column;
-	}
-
-	& > div {
-		@media ${ranges.desktopUp} {
-			flex: 33.33%;
-		}
-
-		@media (min-width:${breakPoints.phoneTop}px) and (max-width:${breakPoints.normalScreenTop}px) {
-			flex: 50%;
-		}
-	}
-`;
-
+export const links: LinksFunction = () => {
+	return [
+		{ rel: 'stylesheet', href: styles },
+	];
+}
 
 interface EvenRowProps {
 	/*
@@ -53,7 +22,7 @@ interface EvenRowProps {
 
 export default function EvenRow({ products = [], onClickProduct = () => {} }: EvenRowProps) {
 	return (
-		<Container>
+		<div className="even-row-contianer">
 			{
 				products.map((product) => (
 					<MediumGrid
@@ -66,6 +35,6 @@ export default function EvenRow({ products = [], onClickProduct = () => {} }: Ev
 					/>
 				))
 			}
-		</Container>
+		</div>
 	);
 }

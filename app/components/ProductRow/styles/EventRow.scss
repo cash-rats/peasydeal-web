@@ -1,0 +1,38 @@
+@import 'styles/_breakpoints';
+
+.even-row-contianer {
+	display: flex;
+	flex-direction: row;
+	gap: 20px 20px;
+	flex-wrap: wrap;
+	margin: 0 auto;
+	justify-content: center;
+
+	@media (min-width:#{$screen-md-min}) and (max-width:#{$screen-xl-min}) {
+		justify-content: flex-start;
+		width: 670px;
+		flex-direction: row;
+		gap: 20px 8px;
+		padding-left: 2px;
+	}
+
+	@media (min-width:#{$screen-sm-min-600}) and (max-width:#{$screen-md-min}) {
+		justify-content: flex-start;
+		width: 576px;
+		flex-direction: row;
+	}
+
+	@media (max-width:#{$screen-phone-top-599}) {
+		flex-direction: column;
+	}
+
+	div {
+		@media (min-width:#{$screen-xl-min}) {
+			flex: 33.33%;
+		}
+
+		@media (min-width:#{$screen-phone-top-599}) and (max-width:#{$screen-xl-min}) {
+			flex: 50%;
+		}
+	}
+}

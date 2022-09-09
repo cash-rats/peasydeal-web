@@ -12,6 +12,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
+import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Spinner from "~/components/Spinner";
 
@@ -23,6 +24,7 @@ import styles from "./styles/ProductList.css";
 export const links: LinksFunction = () => {
 	return [
 		...LoadmoreLinks(),
+		...EvenRowLinks(),
 		...OneMainTwoSubsLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
