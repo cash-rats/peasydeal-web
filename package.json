@@ -64,14 +64,11 @@
     "react-slick": "^0.29.0",
     "react-spinners": "^0.13.4",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^5.3.5",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
     "@faker-js/faker": "^7.4.0",
-    "@lukalabs/esbuild-inject-plugin": "^1.0.2",
-    "@lukalabs/esbuild-styled-components": "^1.0.0",
     "@remix-run/dev": "^1.6.8",
     "@remix-run/eslint-config": "^1.6.8",
     "@storybook/addon-actions": "^6.5.10",
@@ -93,7 +90,6 @@
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@types/react-slick": "^0.23.10",
-    "@types/styled-components": "^5.1.26",
     "@vitejs/plugin-react": "^2.0.1",
     "autoprefixer": "^10.4.8",
     "babel-loader": "^8.2.5",
