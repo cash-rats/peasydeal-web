@@ -14,8 +14,6 @@ import fixture5 from './components/Spinner/Spinner.fixture.tsx';
 import fixture6 from './routes/__index/product/components/PriceTag/PriceTag.fixture.tsx';
 import fixture7 from './routes/__index/product/ProductDetail.fixture.tsx';
 
-import decorator0 from './components/ProductGrid/cosmos.decorator.tsx';
-import decorator1 from './components/ProductRow/cosmos.decorator.tsx';
 
 export const rendererConfig = {
   "port": 5001
@@ -33,6 +31,4 @@ export const fixtures = {
 };
 
 export const decorators = {
-  'app/components/ProductGrid/cosmos.decorator.tsx': decorator0,
-  'app/components/ProductRow/cosmos.decorator.tsx': decorator1
 };

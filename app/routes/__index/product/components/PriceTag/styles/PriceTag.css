@@ -63,4 +63,7 @@
 .price-tag--one-line span:not(:first-child)::before {
   content: ", ";
 }
+
+/*# sourceMappingURL=PriceTag.css.map */
+
 /*# sourceMappingURL=PriceTag.css.map */
