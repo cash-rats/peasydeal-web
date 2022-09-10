@@ -1,0 +1,114 @@
+@import 'styles/_breakpoints';
+
+.categories-nav-container {
+  display: flex;
+  align-items: center;
+
+  .all-categories-nav {
+    cursor: pointer;
+    position: relative;
+    max-width: 300px;
+    width: 100%;
+
+    @media (max-width:#{$screen-lg-min}) {
+      max-width: 100%;
+    }
+
+    label {
+      align-items: center;
+      cursor: pointer;
+      display: flex;
+      position: relative;
+
+      span {
+        display: flex;
+        align-items: center;
+        background-color: #555BBD;
+        color: white;
+        width: 100%;
+        height: 40px;
+        padding: 0 25px;
+
+        span {
+          margin-left: 15px;
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+      }
+
+      .all-category-list {
+        background: #fff;
+        border-bottom: 3px solid #545bc4;
+        box-shadow: 2px 9px 49px -17px rgb(0 0 0 / 30%);
+        height: auto;
+        padding: 15px 0;
+        position: absolute;
+        top: 40px;
+        width: 300px;
+        z-index: 90;
+
+        @media (max-width:#{$screen-lg-min}) {
+          min-width: 100%;
+        }
+
+        .category-list-item {
+          a {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            transition: 100ms all linear 0s;
+          }
+
+          &:hover {
+            display: block;
+            background: #555BBD;
+
+            a {
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .featured-category-nav {
+    flex: auto;
+    margin: 0 15px 0 0;
+
+    @media (max-width:#{$screen-lg-min}) {
+      display: none;
+    }
+
+    ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      height: 40px;
+      justify-content: space-between;
+      margin: 0;
+      padding: 0;
+
+      li {
+        flex: auto;
+        cursor: pointer;
+        transition: 100ms all linear 0s;
+
+        &:hover {
+          background-color: #E4E4E4;
+        }
+
+        a {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 40px;
+        }
+      }
+    }
+  }
+}
