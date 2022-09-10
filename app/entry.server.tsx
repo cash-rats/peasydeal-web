@@ -4,7 +4,6 @@ import createEmotionServer from '@emotion/server/create-instance'
 import { RemixServer } from "@remix-run/react";
 import { Response } from "@remix-run/node";
 import type { EntryContext, Headers } from "@remix-run/node";
-import { ServerStyleSheet } from "styled-components";
 
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
@@ -19,55 +18,41 @@ export default function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext
 ) {
-	const cache = createEmotionCache();
+  const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
-	const sheet = new ServerStyleSheet();
-
   const html = renderToString(
-		<ServerStyleContext.Provider value={null}>
-  	  <CacheProvider value={cache}>
-				<ThemeProvider theme={theme}>
-					<CssBaseline />
-					{
-						sheet.collectStyles(
-							<RemixServer
-								context={remixContext}
-								url={request.url}
-							/>
-						)
-					}
-				</ThemeProvider>
-		  </CacheProvider>
-  	</ServerStyleContext.Provider>,
-  )
-
-	// Grab the CSS from emotion
-  const chunks = extractCriticalToChunks(html);
-
-  let markup = renderToString(
-		<ServerStyleContext.Provider value={chunks.styles}>
+    <ServerStyleContext.Provider value={null}>
       <CacheProvider value={cache}>
-				<ThemeProvider theme={theme}>
-					<CssBaseline />
-					{
-						sheet.collectStyles(
-							<RemixServer
-								context={remixContext}
-								url={request.url}
-							/>
-						)
-					}
-				</ThemeProvider>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RemixServer
+            context={remixContext}
+            url={request.url}
+          />
+        </ThemeProvider>
       </CacheProvider>
     </ServerStyleContext.Provider>,
   )
 
-	const styles = sheet.getStyleTags();
+  // Grab the CSS from emotion
+  const chunks = extractCriticalToChunks(html);
 
-	markup = markup.replace("__STYLES__", styles)
+  let markup = renderToString(
+    <ServerStyleContext.Provider value={chunks.styles}>
+      <CacheProvider value={cache}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RemixServer
+            context={remixContext}
+            url={request.url}
+          />
+        </ThemeProvider>
+      </CacheProvider>
+    </ServerStyleContext.Provider>,
+  )
 
-	responseHeaders.set("Content-Type", "text/html");
+  responseHeaders.set("Content-Type", "text/html");
 
   return new Response(`<!DOCTYPE html>${markup}`, {
     status: responseStatusCode,

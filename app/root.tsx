@@ -9,7 +9,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-	useLoaderData,
+  useLoaderData,
 } from "@remix-run/react";
 import { ChakraProvider } from '@chakra-ui/react';
 import SnackbarProvider from 'react-simple-snackbar';
@@ -27,27 +27,27 @@ export const meta: MetaFunction = () => ({
 
 export let links: LinksFunction = () => {
   return [
-		{ rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: "stylesheet", href: tailwindStylesheetUrl },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
-		{
-			rel: 'stylesheet',
-			href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap',
-		},
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap',
+    },
     {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap'
     },
-		{ rel: 'stylesheet', href: styles },
+    { rel: 'stylesheet', href: styles },
   ]
 }
 
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
-		ENV: {
-			MYFB_END_POINT: process.env.MYFB_ENDPOINT,
-		}
+    ENV: {
+      MYFB_END_POINT: process.env.MYFB_ENDPOINT,
+    }
   });
 }
 
@@ -59,7 +59,7 @@ const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
     const serverStyleData = useContext(ServerStyleContext);
     const clientStyleData = useContext(ClientStyleContext);
-		const envData = useLoaderData();
+    const envData = useLoaderData();
 
     // Only executed on client
     useEffect(() => {
@@ -87,19 +87,18 @@ const Document = withEmotionCache(
               dangerouslySetInnerHTML={{ __html: css }}
             />
           ))}
-					{typeof document === "undefined" ? "__STYLES__" : null}
         </head>
         <body>
           {children}
 
-					<script
-						dangerouslySetInnerHTML={{
-							__html: `window.ENV=${ JSON.stringify(envData) }`
-						}}
-					/>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.ENV=${JSON.stringify(envData)}`
+            }}
+          />
           <ScrollRestoration />
           <Scripts />
-					{process.env.NODE_ENV === "development" && <LiveReload />}
+          {process.env.NODE_ENV === "development" && <LiveReload />}
         </body>
       </html>
     );
@@ -108,12 +107,12 @@ const Document = withEmotionCache(
 
 export default function App() {
   return (
-		<Document>
-			<SnackbarProvider>
-				<ChakraProvider>
-					<Outlet />
-  	  	</ChakraProvider>
-			</SnackbarProvider>
-  	</Document>
+    <Document>
+      <SnackbarProvider>
+        <ChakraProvider>
+          <Outlet />
+        </ChakraProvider>
+      </SnackbarProvider>
+    </Document>
   );
 }
