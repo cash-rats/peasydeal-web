@@ -121,18 +121,18 @@ function CheckoutPage() {
           </div>
         </div>
 
+      </div>
+
+      <div className="right">
         {/* Shipping Info */}
 
         {/*Payment gateways*/}
-        <h3 className="title">
-          Payment
-        </h3>
-        {/* You Details  */}
-        <div className='form-container'>
-          <h1 className="title">
-            Shipping Details
-          </h1>
 
+        <div className='form-container'>
+          <h3 className="title">
+            Payment
+          </h3>
+          {/* You Details  */}
           <div className="pricing-panel">
             <div className="payment-form-container">
               <Elements stripe={stripePromise} options={options} >
@@ -141,10 +141,6 @@ function CheckoutPage() {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="right">
-
 
       </div>
     </section>
