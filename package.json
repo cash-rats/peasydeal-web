@@ -50,6 +50,8 @@
     "@remix-run/react": "^1.6.8",
     "@remix-run/serve": "^1.6.8",
     "@remix-run/server-runtime": "^1.6.8",
+    "@stripe/react-stripe-js": "^1.10.0",
+    "@stripe/stripe-js": "^1.36.0",
     "bcryptjs": "^2.4.3",
     "clsx": "^1.2.1",
     "dotenv": "^16.0.2",
@@ -64,6 +66,7 @@
     "react-slick": "^0.29.0",
     "react-spinners": "^0.13.4",
     "slick-carousel": "^1.8.1",
+    "stripe": "^10.8.0",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {

@@ -1,9 +1,5 @@
-import {
-	useCallback,
-	useState,
-	ChangeEvent,
-	useEffect,
-} from 'react';
+import { useCallback, useState, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
 import {
 	InputGroup,
 	Input,
@@ -23,7 +19,8 @@ import { StatusCodes } from 'http-status-codes';
 import { useSuccessSnackbar } from '~/components/Snackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
-import { getSession, commitSession, SessionKey } from '~/sessions';
+import { getSession, commitSession } from '~/sessions';
+import type { SessionKey } from '~/sessions';
 
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
@@ -64,16 +61,15 @@ export const action: ActionFunction = async ({ request }) => {
 		request.headers.get("Cookie"),
 	);
 
-	// if `shopping_cart` has not been created, create it
+	// if `shopping_cart` has not been created, create it.
 	let shoppingCart = {};
-
 	if (session.has('shopping_cart' as SessionKey)) {
 		shoppingCart = session.get('shopping_cart');
 	}
 
 	const newShoppingCart = {
 		...shoppingCart,
-		[prodID]: cartObj ,
+		[prodID]: cartObj,
 	}
 
 	session.set('shopping_cart', newShoppingCart);
@@ -96,7 +92,7 @@ interface ProductVariation {
 	shippingFee: number;
 	shortDescription: string;
 	sku: string;
-	subTitle:  string;
+	subTitle: string;
 	title: string;
 	variationId: string;
 };
@@ -117,13 +113,13 @@ interface ProductDetail {
  *   - [ ] image should be changed to carousel images.
  *         Display carousel images if variation is greater than 1
  */
-function ProductDetailPage () {
+function ProductDetailPage() {
 	const productDetailData = useLoaderData();
 	const productDetail: ProductDetail = productDetailData.product;
 
 	const selectCurrentVariation = useCallback((defaultVariationID: string, variations: ProductVariation[]): ProductVariation | undefined => {
 		return variations.find<ProductVariation>(
-			(variation) =>  defaultVariationID === variation.variationId);
+			(variation) => defaultVariationID === variation.variationId);
 	}, []);
 	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
 
@@ -136,11 +132,11 @@ function ProductDetailPage () {
 	};
 
 	const increaseQuantity = () => {
-		updateQuantity(prev => prev+1);
+		updateQuantity(prev => prev + 1);
 	};
 	const decreaseQuantity = () => {
 		if (quantity === 1) return;
-		updateQuantity(prev => prev-1);
+		updateQuantity(prev => prev - 1);
 	};
 
 	const addToCart = useFetcher();
@@ -188,12 +184,12 @@ function ProductDetailPage () {
 
 						<p className="detail-amount">
 							<b>
-								{ currentVariation?.currency } { currentVariation?.salePrice }
+								{currentVariation?.currency} {currentVariation?.salePrice}
 							</b>
 						</p>
 
 						<p className="actual-amount">
-							was { currentVariation?.currency } { currentVariation?.retailPrice }
+							was {currentVariation?.currency} {currentVariation?.retailPrice}
 						</p>
 					</div>
 
@@ -211,12 +207,12 @@ function ProductDetailPage () {
 						</span>
 						<span className="lure2">
 							You save <b> {
-									currentVariation && (currentVariation.retailPrice - currentVariation.salePrice).toFixed(2)
-								}
+								currentVariation && (currentVariation.retailPrice - currentVariation.salePrice).toFixed(2)
+							}
 							</b>
 						</span>
 						<span className="lure3">
-							Sold <b> { productDetail.bought } </b>
+							Sold <b> {productDetail.bought} </b>
 						</span>
 					</div>
 

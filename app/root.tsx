@@ -47,6 +47,7 @@ export async function loader({ request }: LoaderArgs) {
     user: await getUser(request),
     ENV: {
       MYFB_END_POINT: process.env.MYFB_ENDPOINT,
+      STRIPE_PAYMENT_RETURN_URI: process.env.STRIPE_PAYMENT_RETURN_URI,
     }
   });
 }

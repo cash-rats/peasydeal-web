@@ -11,6 +11,7 @@ module.exports = {
     "**/*.map",
     "**/styles/.*",
     "**/stub.*",
-    "**/api/*.*"
+    "**/api/*.*",
+    "**/images/*.*"
   ],
 };

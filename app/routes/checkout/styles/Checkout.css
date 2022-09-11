@@ -1,17 +1,26 @@
 .checkout-page-container {
-  max-width: 1180px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
+@media (min-width: 599px) {
+  .checkout-page-container {
+    padding: 0 0.75rem;
+  }
+}
 .checkout-page-container .left {
   width: 100%;
-  padding: 15px;
 }
 .checkout-page-container .left .title {
   font-weight: bold;
   font-size: 28px;
   margin-bottom: 18px;
+  padding: 0 0.75rem;
+}
+@media (min-width: 599px) {
+  .checkout-page-container .left .title {
+    padding: 0;
+  }
 }
 .checkout-page-container .left .shipping-detail-container {
   max-width: 38rem;
@@ -20,6 +29,54 @@
 }
 .checkout-page-container .left .form-container {
   margin-bottom: 15px;
+}
+
+.pricing-panel {
+  border-radius: 0px;
+  margin-bottom: 0px;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 4px 1px, rgba(0, 0, 0, 0.14) 0px 0px 1px 0px, rgba(0, 0, 0, 0.12) 0px 2px 1px -1px;
+}
+.pricing-panel .product-tiles {
+  padding: 0 15px;
+}
+.pricing-panel .product-tiles .product-tile {
+  padding: 15px 0;
+  display: flex;
+}
+.pricing-panel .product-tiles .product-tile .product-desc {
+  flex: 1;
+}
+.pricing-panel .product-tiles .product-tile .product-desc h3 {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.pricing-panel .product-tiles .product-tile .product-desc p {
+  margin-top: 8px;
+  font-size: 0.8rem;
+}
+.pricing-panel .product-tiles .product-tile .product-price {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-weight: 600;
+}
+.pricing-panel .form-title {
+  font-weight: bold;
+  font-size: 1.4rem;
+  padding: 0.75rem;
+}
+
+.subtotal {
+  padding: 0.9375rem 0.9375rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-top: 1px solid #DFDFDF;
+}
+.subtotal span {
+  font-weight: 600;
 }
 
 .shipping-detail-form {
@@ -48,6 +105,9 @@
   grid-template-columns: 1fr 1fr 1fr;
 }
 
+.payment-form-container {
+  padding: 15px;
+}
 .payment-form-container .card-types {
   display: flex;
   flex-direction: row;

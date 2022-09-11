@@ -1,20 +1,26 @@
 @import 'styles/_breakpoints';
 
 .checkout-page-container {
-	max-width: 1180px;
 	margin: 0 auto;
 	display: flex;
 	flex-direction: column;
-	// padding: 30px 90px;
+
+	@media(min-width: #{$screen-phone-top-599}) {
+		padding: 0 0.75rem;
+	}
 
 	.left {
 		width: 100%;
-		padding: 15px;
 
 		.title {
 			font-weight: bold;
 			font-size: 28px;
 			margin-bottom: 18px;
+			padding: 0 0.75rem;
+
+			@media(min-width: #{$screen-phone-top-599}) {
+				padding: 0;
+			}
 		}
 
 		.shipping-detail-container {
@@ -26,6 +32,63 @@
 		.form-container {
 			margin-bottom: 15px;
 		}
+	}
+}
+
+.pricing-panel {
+	border-radius: 0px;
+	margin-bottom: 0px;
+	border: none;
+	box-shadow: rgb(0 0 0 / 20%) 0px 0px 4px 1px, rgb(0 0 0 / 14%) 0px 0px 1px 0px, rgb(0 0 0 / 12%) 0px 2px 1px -1px;
+
+	.product-tiles {
+		padding: 0 15px;
+
+		.product-tile {
+			padding: 15px 0;
+			display: flex;
+
+			.product-desc {
+				flex: 1;
+
+				h3 {
+					font-weight: 600;
+					font-size: 1.1rem
+				}
+
+				p {
+					margin-top: 8px;
+					font-size: 0.8rem;
+				}
+			}
+
+			.product-price {
+				flex: 1;
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
+				font-weight: 600;
+			}
+		}
+
+	}
+
+	.form-title {
+		font-weight: bold;
+		font-size: 1.4rem;
+		padding: 0.75rem;
+	}
+}
+
+.subtotal {
+	padding: 0.9375rem 0.9375rem;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	border-top: 1px solid #DFDFDF;
+
+	span {
+		font-weight: 600;
 	}
 }
 
@@ -86,6 +149,8 @@
 }
 
 .payment-form-container {
+	padding: 15px;
+
 	.card-types {
 		display: flex;
 		flex-direction: row;
