@@ -9,17 +9,15 @@ import Divider from '@mui/material/Divider';
 
 import { getSession, SessionKey } from '~/sessions';
 import { createPaymentIntent } from '~/utils/stripe.server';
-import { getDomainUrl } from '~/utils/misc';
 
-import visa from './images/visa.png';
-import mastercard from './images/mastercard.png';
-import amex from './images/american-express.png';
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
 import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
+import EmptyShoppingCartPage, { links as EmptyShoppingCartLinks } from './components/EmptyShoppingCart';
 
 export const links: LinksFunction = () => {
   return [
+    ...EmptyShoppingCartLinks(),
     ...ShippingDetailFormLinks(),
     ...CheckoutFormLinks(),
     { rel: 'stylesheet', href: styles },
@@ -27,20 +25,19 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  console.log('debug 1');
   // Retrieve products from session. create strip payment intend.
   const session = await getSession(
     request.headers.get('Cookie'),
   );
 
-  console.log('debug 2 ~');
   // Check if `shopping_cart` session exists.
-  // TODO: If `shopping_cart` does'n exist. display error message saying that shopping cart does not exist.
+  // TODO: If `shopping_cart` does'n exist. Display error page showing shopping cart has no items.
   const sessionKey: SessionKey = 'shopping_cart';
   if (!session.has(sessionKey)) {
-    console.log('debug 3');
-
-    return null
+    return json({
+      cart_items: [],
+      client_secret: '',
+    });
   }
   const cartItems = session.get(sessionKey);
 
@@ -63,7 +60,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 const stripePromise = loadStripe('pk_test_51LggxmBWJAcUOOvj6slyMPrurLwUhiFy6j59ckvOfykwIKxnSlizJAa961bAGpzoCcmvcFC9CdSwTXpOgeaJhIdI00KEwbxOqW');
 
 function CheckoutPage() {
-  const { client_secret: clientSecret } = useLoaderData();
+  const {
+    client_secret: clientSecret,
+    cart_items: cartItems,
+  } = useLoaderData();
   // TODO retrieve client secret from node
   const options: StripeElementsOptions = {
     // passing the client secret obtained in step 2
@@ -75,6 +75,13 @@ function CheckoutPage() {
     // Only allows england for now.
     locale: 'en-GB',
   };
+
+  console.log('cart items', cartItems);
+
+  // Display empty shopping cart page.
+  if (cartItems.length === 0) {
+    return (<EmptyShoppingCartPage />);
+  }
 
   return (
     <section className="checkout-page-container">

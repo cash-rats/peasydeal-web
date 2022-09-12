@@ -1,0 +1,28 @@
+.empty-cart-container {
+  width: 50vw;
+  margin: 0 auto;
+
+  .empty-cart-image {
+    svg {
+      width: 100%;
+    }
+  }
+
+  .empty-cart-title {
+    margin-top: 20px;
+    font-weight: 600;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .empty-cart-text {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.2rem;
+  }
+
+  .redirect-to-shopping {
+    margin-top: 20px;
+    text-align: center;
+  }
+}
