@@ -27,21 +27,31 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
+  console.log('debug 1');
   // Retrieve products from session. create strip payment intend.
   const session = await getSession(
     request.headers.get('Cookie'),
   );
 
+  console.log('debug 2 ~');
   // Check if `shopping_cart` session exists.
   // TODO: If `shopping_cart` does'n exist. display error message saying that shopping cart does not exist.
   const sessionKey: SessionKey = 'shopping_cart';
-  if (!session.has(sessionKey)) return null
+  if (!session.has(sessionKey)) {
+    console.log('debug 3');
+
+    return null
+  }
   const cartItems = session.get(sessionKey);
+
+  console.log('debug 4');
 
   // TODO Calculate the amount to charge.
 
   // Construct stripe `PaymentIntend`
   const paymentIntent = await createPaymentIntent({ amount: 100, currency: 'usd' });
+
+  console.log('debug 5');
 
   return json({
     cart_items: cartItems,
