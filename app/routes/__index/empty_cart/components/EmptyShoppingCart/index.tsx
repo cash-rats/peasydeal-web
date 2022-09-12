@@ -26,11 +26,11 @@ function EmptyShoppingCartPage() {
       </p>
 
       <div className="redirect-to-shopping">
-        <Button variant='contained' size='large'>
-          <Link to='/'>
+        <Link to='/'>
+          <Button variant='contained' size='large'>
             Go Shopping!
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </div>
 
       {/* Product Suggestion List */}

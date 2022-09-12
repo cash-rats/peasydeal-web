@@ -158,15 +158,15 @@ function Cart() {
 						</div>
 
 						<div className="checkout-button">
-							<Button
-								size='lg'
-								colorScheme='green'
-								leftIcon={<BsBagCheck fontSize={22} />}
-							>
-								<Link to="/checkout">
+							<Link to="/checkout">
+								<Button
+									size='lg'
+									colorScheme='green'
+									leftIcon={<BsBagCheck fontSize={22} />}
+								>
 									Proceed Checkout
-								</Link>
-							</Button>
+								</Button>
+							</Link>
 						</div>
 					</div>
 				</div>
