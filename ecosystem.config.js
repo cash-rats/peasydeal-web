@@ -13,6 +13,8 @@ module.exports = {
         "DATABASE_URL": process.env.DATABASE_URL,
         "SESSION_SECRET": process.env.SESSION_SECRET,
         "MYFB_ENDPOINT": process.env.MYFB_ENDPOINT,
+        "STRIPE_PRIVATE_KEY": process.env.STRIPE_PRIVATE_KEY,
+        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI
       },
 
       env_staging: {
@@ -21,6 +23,8 @@ module.exports = {
         "DATABASE_URL": process.env.DATABASE_URL,
         "SESSION_SECRET": process.env.SESSION_SECRET,
         "MYFB_ENDPOINT": process.env.MYFB_ENDPOINT,
+        "STRIPE_PRIVATE_KEY": process.env.STRIPE_PRIVATE_KEY,
+        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI
       },
 
       env_production: {
@@ -29,6 +33,8 @@ module.exports = {
         "DATABASE_URL": process.env.DATABASE_URL,
         "SESSION_SECRET": process.env.SESSION_SECRET,
         "MYFB_ENDPOINT": process.env.MYFB_ENDPOINT,
+        "STRIPE_PRIVATE_KEY": process.env.STRIPE_PRIVATE_KEY,
+        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI
       },
     },
   ],
