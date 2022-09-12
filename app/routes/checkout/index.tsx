@@ -23,9 +23,11 @@ import mastercard from './images/mastercard.png';
 import amex from './images/american-express.png';
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
+import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
 
 export const links: LinksFunction = () => {
   return [
+    ...ShippingDetailFormLinks(),
     ...CheckoutFormLinks(),
     { rel: 'stylesheet', href: styles },
   ];
@@ -125,6 +127,17 @@ function CheckoutPage() {
 
       <div className="right">
         {/* Shipping Info */}
+        <div className="form-container">
+          <h3 className="title">
+            shipping information
+          </h3>
+
+          <div className="pricing-panel">
+            <div className="shipping-form-container">
+              <ShippingDetailForm />
+            </div>
+          </div>
+        </div >
 
         {/*Payment gateways*/}
 
