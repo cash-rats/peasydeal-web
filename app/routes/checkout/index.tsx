@@ -1,5 +1,5 @@
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -13,11 +13,10 @@ import { createPaymentIntent } from '~/utils/stripe.server';
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
 import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
-import EmptyShoppingCartPage, { links as EmptyShoppingCartLinks } from './components/EmptyShoppingCart';
 
 export const links: LinksFunction = () => {
   return [
-    ...EmptyShoppingCartLinks(),
+    // ...EmptyShoppingCartLinks(),
     ...ShippingDetailFormLinks(),
     ...CheckoutFormLinks(),
     { rel: 'stylesheet', href: styles },
@@ -34,14 +33,14 @@ export const loader: LoaderFunction = async ({ request }) => {
   // TODO: If `shopping_cart` does'n exist. Display error page showing shopping cart has no items.
   const sessionKey: SessionKey = 'shopping_cart';
   if (!session.has(sessionKey)) {
-    return json({
-      cart_items: [],
-      client_secret: '',
-    });
+    throw redirect("/empty_cart");
   }
+
   const cartItems = session.get(sessionKey);
 
-  console.log('debug 4');
+  if (cartItems && Object.keys(cartItems).length === 0) {
+    throw redirect("/empty_cart");
+  }
 
   // TODO Calculate the amount to charge.
 
@@ -76,13 +75,6 @@ function CheckoutPage() {
     locale: 'en-GB',
   };
 
-  console.log('cart items', cartItems);
-
-  // Display empty shopping cart page.
-  if (cartItems.length === 0) {
-    return (<EmptyShoppingCartPage />);
-  }
-
   return (
     <section className="checkout-page-container">
       <h1 className="title">
@@ -94,11 +86,7 @@ function CheckoutPage() {
 
           {/* You Details  */}
           <div className="form-container">
-            {/*
-          <h1 className="title">
-            Shipping Details
-            </h1>
-          */}
+
 
             {/* product summary */}
             <div className="pricing-panel">
@@ -145,6 +133,9 @@ function CheckoutPage() {
         <div className="right">
           {/* Shipping Info */}
           <div className="form-container">
+            <h1 className="shipping-info-title">
+              Shipping Details
+            </h1>
 
             <div className="pricing-panel">
               <div className="shipping-form-container">

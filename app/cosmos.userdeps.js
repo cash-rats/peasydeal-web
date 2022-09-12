@@ -12,7 +12,6 @@ import fixture3 from './components/ProductRow/EvenRow.fixture.tsx';
 import fixture4 from './components/ProductRow/OneMainTwoSubs.fixture.tsx';
 import fixture5 from './components/Spinner/Spinner.fixture.tsx';
 import fixture6 from './routes/__index/product/components/PriceTag/PriceTag.fixture.tsx';
-import fixture7 from './routes/__index/product/ProductDetail.fixture.tsx';
 
 
 export const rendererConfig = {
@@ -27,7 +26,6 @@ export const fixtures = {
   'app/components/ProductRow/OneMainTwoSubs.fixture.tsx': { module: { default: fixture4 } },
   'app/components/Spinner/Spinner.fixture.tsx': { module: { default: fixture5 } },
   'app/routes/__index/product/components/PriceTag/PriceTag.fixture.tsx': { module: { default: fixture6 } },
-  'app/routes/__index/product/ProductDetail.fixture.tsx': { module: { default: fixture7 } }
 };
 
 export const decorators = {

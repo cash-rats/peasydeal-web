@@ -94,6 +94,14 @@
 		}
 	}
 
+	@media(min-width: #{$screen-phone-top-599}) {
+		padding: 0;
+	}
+
+	@media(min-width: #{$screen-min-899}) {
+		flex: 2;
+	}
+
 	.title {
 		font-weight: bold;
 		font-size: 28px;
@@ -101,12 +109,12 @@
 		padding: 0 0.75rem;
 	}
 
-	@media(min-width: #{$screen-phone-top-599}) {
-		padding: 0;
-	}
+	.shipping-info-title {
+		@extend .title;
 
-	@media(min-width: #{$screen-min-899}) {
-		flex: 2;
+		@media(min-width: #{$screen-min-899}) {
+			display: none;
+		}
 	}
 }
 
