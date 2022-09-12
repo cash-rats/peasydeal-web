@@ -33,11 +33,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const session = await getSession(request.headers.get("Cookie"));
 	const sessionKey: SessionKey = 'shopping_cart';
 
-	let cartItems = {};
-
-	if (session.has(sessionKey)) {
-		cartItems = session.get(sessionKey);
+	if (!session.has(sessionKey)) {
+		throw redirect('/empty_cart');
 	}
+
+	const cartItems = session.get(sessionKey);
 
 	if (cartItems && Object.keys(cartItems).length === 0) {
 		throw redirect('/empty_cart');

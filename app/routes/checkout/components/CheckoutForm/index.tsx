@@ -69,7 +69,7 @@ function StripeCheckoutForm() {
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${getBrowserDomainUrl()}/${window.ENV.STRIPE_PAYMENT_RETURN_URI}`,
+        return_url: `${getBrowserDomainUrl()}/${window.ENV.ENV.STRIPE_PAYMENT_RETURN_URI}`,
       },
     });
 

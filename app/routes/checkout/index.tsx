@@ -1,11 +1,11 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import type { ReactElement } from 'react';
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import type { StripeElementsOptions } from '@stripe/stripe-js';
+import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 import Divider from '@mui/material/Divider';
 
 
@@ -33,7 +33,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   );
 
   // Check if `shopping_cart` session exists.
-  // TODO: If `shopping_cart` does'n exist. Display error page showing shopping cart has no items.
   const sessionKey: SessionKey = 'shopping_cart';
   if (!session.has(sessionKey)) {
     throw redirect("/empty_cart");
@@ -45,29 +44,39 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw redirect("/empty_cart");
   }
 
-  // TODO Calculate the amount to charge.
+  // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
+  // In stripe, the base unit is 1 cent, not 1 dollar.
+  const amount = Number(calcGrandTotal(cartItems).toFixed(2))
 
   // Construct stripe `PaymentIntend`
-  const paymentIntent = await createPaymentIntent({ amount: 100, currency: 'usd' });
-
-  console.log('debug 5');
+  // TODO currency should be GBP
+  const paymentIntent = await createPaymentIntent({
+    amount: Math.round(amount * 100),
+    currency: 'usd'
+  });
 
   return json({
+    amount,
     cart_items: cartItems,
     client_secret: paymentIntent.client_secret
   });
 };
 
 // TODO retrieve this secret from node.
-const stripePromise = loadStripe('pk_test_51LggxmBWJAcUOOvj6slyMPrurLwUhiFy6j59ckvOfykwIKxnSlizJAa961bAGpzoCcmvcFC9CdSwTXpOgeaJhIdI00KEwbxOqW');
 
 function CheckoutPage() {
   const {
+    amount,
     client_secret: clientSecret,
     cart_items: cartItems,
   } = useLoaderData();
+  const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
 
-  console.log('cartItems', cartItems);
+  useEffect(() => {
+    if (window) {
+      setStripePromise(loadStripe(window.ENV.ENV.STRIPE_PUBLIC_KEY));
+    }
+  }, []);
 
   // TODO retrieve client secret from node
   const options: StripeElementsOptions = {
@@ -128,7 +137,7 @@ function CheckoutPage() {
 
               {/* Subtotal */}
               <div className="subtotal">
-                Total: &nbsp; <span>${calcGrandTotal(cartItems)}</span>
+                Total: &nbsp; <span>${amount}</span>
               </div>
             </div>
           </div>
@@ -155,9 +164,13 @@ function CheckoutPage() {
             {/* You Details  */}
             <div className="pricing-panel">
               <div className="payment-form-container">
-                <Elements stripe={stripePromise} options={options} >
-                  <CheckoutForm />
-                </Elements>
+                {
+                  stripePromise && (
+                    <Elements stripe={stripePromise} options={options} >
+                      <CheckoutForm />
+                    </Elements>
+                  )
+                }
               </div>
             </div>
           </div>
