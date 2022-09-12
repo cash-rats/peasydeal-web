@@ -1,13 +1,6 @@
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
-  FormHelperText,
-} from '@chakra-ui/react';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import type { StripeElementsOptions } from '@stripe/stripe-js';
@@ -75,85 +68,90 @@ function CheckoutPage() {
 
   return (
     <section className="checkout-page-container">
-      <div className="left">
+      <h1 className="title">
+        Shipping Information
+      </h1>
 
-        {/* You Details  */}
-        <div className="form-container">
+      <div className="checkout-content">
+        <div className="left">
+
+          {/* You Details  */}
+          <div className="form-container">
+            {/*
           <h1 className="title">
             Shipping Details
-          </h1>
-
-          {/* product summary */}
-          <div className="pricing-panel">
-            <h1 className="form-title">
-              Cart Summary
             </h1>
+          */}
 
-            <div className="product-tiles">
-              <div className="product-tile">
-                <div className="product-desc">
-                  <h3>
-                    1 x Maker The Agency Theme
-                  </h3>
-                  <p> Amazing UI Kit pack perfect for your next project </p>
+            {/* product summary */}
+            <div className="pricing-panel">
+              <h1 className="form-title">
+                Cart Summary
+              </h1>
+
+              <div className="product-tiles">
+                <div className="product-tile">
+                  <div className="product-desc">
+                    <h3>
+                      1 x Maker The Agency Theme
+                    </h3>
+                    <p> Amazing UI Kit pack perfect for your next project </p>
+                  </div>
+                  <h2 className="product-price">
+                    $49.89
+                  </h2>
                 </div>
-                <h2 className="product-price">
-                  $49.89
-                </h2>
-              </div>
-              <Divider />
+                <Divider />
 
-              <div className="product-tile">
-                <div className="product-desc">
-                  <h3>
-                    1 x Maker The Agency Theme
-                  </h3>
-                  <p> Amazing UI Kit pack perfect for your next project </p>
+                <div className="product-tile">
+                  <div className="product-desc">
+                    <h3>
+                      1 x Maker The Agency Theme
+                    </h3>
+                    <p> Amazing UI Kit pack perfect for your next project </p>
+                  </div>
+                  <h2 className="product-price">
+                    $49.89
+                  </h2>
                 </div>
-                <h2 className="product-price">
-                  $49.89
-                </h2>
               </div>
-            </div>
 
-            {/* Subtotal */}
-            <div className="subtotal">
-              Sub Total: &nbsp; <span>$102.44</span>
+              {/* Subtotal */}
+              <div className="subtotal">
+                Sub Total: &nbsp; <span>$102.44</span>
+              </div>
             </div>
           </div>
+
         </div>
 
-      </div>
+        <div className="right">
+          {/* Shipping Info */}
+          <div className="form-container">
 
-      <div className="right">
-        {/* Shipping Info */}
-        <div className="form-container">
-          <h3 className="title">
-            shipping information
-          </h3>
+            <div className="pricing-panel">
+              <div className="shipping-form-container">
+                <ShippingDetailForm />
+              </div>
+            </div>
+          </div >
 
-          <div className="pricing-panel">
-            <div className="shipping-form-container">
-              <ShippingDetailForm />
+          <div className='form-container'>
+            <h3 className="title">
+              Payment Information
+            </h3>
+            {/* You Details  */}
+            <div className="pricing-panel">
+              <div className="payment-form-container">
+                <Elements stripe={stripePromise} options={options} >
+                  <CheckoutForm />
+                </Elements>
+              </div>
             </div>
           </div>
-        </div >
 
-        {/*Payment gateways*/}
-
-        <div className='form-container'>
-          <h3 className="title">
-            Payment
-          </h3>
-          {/* You Details  */}
-          <div className="pricing-panel">
-            <div className="payment-form-container">
-              <Elements stripe={stripePromise} options={options} >
-                <CheckoutForm />
-              </Elements>
-            </div>
-          </div>
         </div>
+
 
       </div>
     </section>
