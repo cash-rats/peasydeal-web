@@ -20,7 +20,6 @@ import ShippingDetailForm, { links as ShippingDetailFormLinks } from './componen
 
 export const links: LinksFunction = () => {
   return [
-    // ...EmptyShoppingCartLinks(),
     ...ShippingDetailFormLinks(),
     ...CheckoutFormLinks(),
     { rel: 'stylesheet', href: styles },
@@ -133,7 +132,6 @@ function CheckoutPage() {
               </div>
             </div>
           </div>
-
         </div>
 
         <div className="right">
@@ -163,10 +161,7 @@ function CheckoutPage() {
               </div>
             </div>
           </div>
-
         </div>
-
-
       </div>
     </section>
   );

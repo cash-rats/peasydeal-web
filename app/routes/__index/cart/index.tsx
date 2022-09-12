@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { json, redirect } from '@remix-run/node';
+import { useLoaderData, Link } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { StatusCodes } from 'http-status-codes';
 import { Button } from '@chakra-ui/react';
@@ -37,6 +37,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	if (session.has(sessionKey)) {
 		cartItems = session.get(sessionKey);
+	}
+
+	if (cartItems && Object.keys(cartItems).length === 0) {
+		throw redirect('/empty_cart');
 	}
 
 	return json(cartItems, { status: StatusCodes.OK });
@@ -159,14 +163,15 @@ function Cart() {
 								colorScheme='green'
 								leftIcon={<BsBagCheck fontSize={22} />}
 							>
-								Proceed Checkout
+								<Link to="/checkout">
+									Proceed Checkout
+								</Link>
 							</Button>
 						</div>
 					</div>
 				</div>
 
-				{/* show empty shopping cart whe no items */}
-
+				{/* show empty shopping cart when no items */}
 			</div>
 		</section>
 	);
