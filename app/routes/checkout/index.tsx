@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+import type { ReactElement } from 'react';
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
@@ -7,7 +9,9 @@ import type { StripeElementsOptions } from '@stripe/stripe-js';
 import Divider from '@mui/material/Divider';
 
 
-import { getSession, SessionKey } from '~/sessions';
+import { getSession } from '~/sessions';
+import type { SessionKey } from '~/sessions';
+import { calcGrandTotal } from '~/utils/checkout_accountant';
 import { createPaymentIntent } from '~/utils/stripe.server';
 
 import styles from './styles/Checkout.css';
@@ -63,6 +67,9 @@ function CheckoutPage() {
     client_secret: clientSecret,
     cart_items: cartItems,
   } = useLoaderData();
+
+  console.log('cartItems', cartItems);
+
   // TODO retrieve client secret from node
   const options: StripeElementsOptions = {
     // passing the client secret obtained in step 2
@@ -88,42 +95,41 @@ function CheckoutPage() {
           <div className="form-container">
 
 
-            {/* product summary */}
+            {/* product summary TODO add edit link */}
             <div className="pricing-panel">
               <h1 className="form-title">
                 Cart Summary
               </h1>
 
               <div className="product-tiles">
-                <div className="product-tile">
-                  <div className="product-desc">
-                    <h3>
-                      1 x Maker The Agency Theme
-                    </h3>
-                    <p> Amazing UI Kit pack perfect for your next project </p>
-                  </div>
-                  <h2 className="product-price">
-                    $49.89
-                  </h2>
-                </div>
-                <Divider />
-
-                <div className="product-tile">
-                  <div className="product-desc">
-                    <h3>
-                      1 x Maker The Agency Theme
-                    </h3>
-                    <p> Amazing UI Kit pack perfect for your next project </p>
-                  </div>
-                  <h2 className="product-price">
-                    $49.89
-                  </h2>
-                </div>
+                {
+                  Object.keys(cartItems).map((prodID: string): ReactElement => {
+                    const cartItem = cartItems[prodID];
+                    return (
+                      <Fragment key={prodID}>
+                        <div className="product-tile">
+                          <div className="product-desc">
+                            <h3>
+                              {cartItem.title}
+                            </h3>
+                            <p>
+                              {cartItem.subTitle}
+                            </p>
+                          </div>
+                          <h2 className="product-price">
+                            {cartItem.quantity} x ${cartItem.salePrice}
+                          </h2>
+                        </div>
+                        <Divider />
+                      </Fragment>
+                    )
+                  })
+                }
               </div>
 
               {/* Subtotal */}
               <div className="subtotal">
-                Sub Total: &nbsp; <span>$102.44</span>
+                Total: &nbsp; <span>${calcGrandTotal(cartItems)}</span>
               </div>
             </div>
           </div>

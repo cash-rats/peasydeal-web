@@ -12,3 +12,15 @@ export type Product = {
   subtitle: string;
   variationID: string;
 }
+
+// Shopping cart item stored in session or from API.
+export type CartItem = {
+  image: string;
+  productID: string;
+  quantity: string | number;
+  retailPrice: string | number;
+  salePrice: string | number;
+  subTitle: string;
+  title: string;
+  variationID: string;
+}

@@ -6,7 +6,15 @@ import { StatusCodes } from 'http-status-codes';
 import { Button } from '@chakra-ui/react';
 import { BsBagCheck } from 'react-icons/bs';
 
-import { getSession, SessionKey } from '~/sessions';
+import { getSession } from '~/sessions';
+import type { SessionKey } from '~/sessions';
+import {
+	calcSubTotal,
+	calcGrandTotal,
+	calcPriceWithTax,
+	TAX,
+	SHIPPING_FEE
+} from '~/utils/checkout_accountant';
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import styles from './styles/cart.css';
@@ -33,25 +41,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	return json(cartItems, { status: StatusCodes.OK });
 };
-
-
-/*
- * Calculate subtotal to the list of the items in the shopping cart.
- */
-const calcSubTotal = (items): number => {
-	return Object.keys(items).reduce((prev, prodID) => {
-		const item = items[prodID];
-		return prev + (item.salePrice * item.quantity);
-	}, 0);
-};
-
-/*
- * Calculate grand total of this order.
- * TODO: TAX and shipping fee are fake data.
- */
-const TAX = 0.2;
-const SHIPPING_FEE = 20;
-const calcGrandTotal = (subTotal: number): number => (subTotal * (1 +TAX)) + SHIPPING_FEE;
 
 /*
  * Coppy shopee's layout
@@ -145,25 +134,30 @@ function Cart() {
 						</div>
 
 						<div className="tax">
-							<label> Tax (5%) </label>
-							<div className="result-value"> { TAX * 100 }% </div>
+							<label> Tax ({TAX * 100}%) </label>
+							<div className="result-value"> {
+								calcPriceWithTax(
+									Number(calcSubTotal(cartItems).toFixed(2)),
+								).toFixed(2)
+							}
+							</div>
 						</div>
 
 						<div className="shipping">
 							<label> Shipping </label>
-							<div className="result-value"> ${ SHIPPING_FEE } </div>
+							<div className="result-value"> ${SHIPPING_FEE} </div>
 						</div>
 
 						<div className="grand-total">
 							<label> Grand Total </label>
-							<div className="result-value"> ${ calcGrandTotal(calcSubTotal(cartItems)).toFixed(2) } </div>
+							<div className="result-value"> ${calcGrandTotal(cartItems).toFixed(2)} </div>
 						</div>
 
 						<div className="checkout-button">
 							<Button
 								size='lg'
 								colorScheme='green'
-								leftIcon={<BsBagCheck fontSize={22}/>}
+								leftIcon={<BsBagCheck fontSize={22} />}
 							>
 								Proceed Checkout
 							</Button>
