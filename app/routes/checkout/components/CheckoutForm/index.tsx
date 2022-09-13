@@ -6,7 +6,8 @@ import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
-import Button from '@mui/material/Button';
+import type { StripeError } from '@stripe/stripe-js';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 import { getBrowserDomainUrl } from '~/utils/misc';
 
@@ -18,11 +19,24 @@ export const links: LinksFunction = () => {
   ];
 };
 
+interface StripeCheckoutFormProps {
+  /*
+   * Perform any validations before performing checkout.
+   */
+  validateBeforeCheckout: () => Promise<boolean | undefined> | void;
+
+  /*
+   * Stripe payment result. If success, null will be given else instance of `StripeError` is given.
+   */
+  onPaymentResult?: (errors: StripeError | undefined) => void;
+}
+
 // TODO:
 //  - [ ] error message.
 //  - [ ] loading icon.
 //  - [ ] payment form validation.
-function StripeCheckoutForm() {
+//  - [ ] [To submit payment on server](https://stripe.com/docs/payments/accept-a-payment-synchronously?html-or-react=react)
+function StripeCheckoutForm({ onPaymentResult = () => { }, validateBeforeCheckout }: StripeCheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const [isLoading, setIsLoading] = useState(false);
@@ -60,6 +74,10 @@ function StripeCheckoutForm() {
   const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
+    const hasErrors = await validateBeforeCheckout();
+
+    if (hasErrors) return;
+
     if (!stripe || !elements) {
       return;
     }
@@ -73,13 +91,9 @@ function StripeCheckoutForm() {
       },
     });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
-      setMessage(error.message);
-    } else {
-      setMessage("An unexpected error occurred.");
-    }
-
     setIsLoading(false);
+
+    onPaymentResult(error);
   }
 
   return (
@@ -87,13 +101,14 @@ function StripeCheckoutForm() {
       <PaymentElement id="payment-element" />
 
       <div className="confirm-payment">
-        <Button
+        <LoadingButton
+          loading={isLoading}
           variant="contained"
           type="submit"
           fullWidth
         >
           CONFIRM
-        </Button>
+        </LoadingButton>
       </div>
 
       {

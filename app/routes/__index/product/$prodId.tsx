@@ -14,7 +14,6 @@ import { useLoaderData, useFetcher } from '@remix-run/react';
 import { Button } from '@chakra-ui/react';
 import Select from 'react-select';
 import { TbTruckDelivery } from 'react-icons/tb';
-import MuiAlert from '@mui/material/Alert';
 import { StatusCodes } from 'http-status-codes';
 
 import { useSuccessSnackbar } from '~/components/Snackbar';
@@ -142,7 +141,7 @@ function ProductDetailPage() {
 
 	const addToCart = useFetcher();
 
-	const [openSuccessSnackbar, closeSuccessSnackbar] = useSuccessSnackbar();
+	const [openSuccessSnackbar] = useSuccessSnackbar();
 
 	const handleAddToCart = () => {
 		addToCart.submit(
@@ -162,17 +161,9 @@ function ProductDetailPage() {
 
 	useEffect(() => {
 		if (addToCart.type === 'done') {
-			openSuccessSnackbar(
-				<MuiAlert
-					severity='success'
-					variant='filled'
-					onClose={() => closeSuccessSnackbar()}
-				>
-					Added to cart
-				</MuiAlert>
-			);
+			openSuccessSnackbar();
 		}
-	}, [addToCart])
+	}, [addToCart, openSuccessSnackbar])
 
 	return (
 		<div className="productdetail-container">

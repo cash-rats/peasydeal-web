@@ -1,3 +1,4 @@
+import MuiAlert from '@mui/material/Alert';
 import { useSnackbar } from 'react-simple-snackbar';
 
 const successOptions = {
@@ -36,7 +37,24 @@ const errorOptions = {
   },
 }
 
-const useSuccessSnackbar = () => useSnackbar(successOptions);
+function SuccessSnackBar({ close }) {
+  return (
+    <MuiAlert
+      severity='success'
+      variant='filled'
+      onClose={close}
+    >
+      Added to cart
+    </MuiAlert>
+  );
+}
+
+const useSuccessSnackbar = () => {
+  const [open, close] = useSnackbar(successOptions);
+  const openSuccessSnackbar = () => open(<SuccessSnackBar close={close} />)
+  return [openSuccessSnackbar, close];
+};
+
 const useErrorSnackbar = () => useSnackbar(errorOptions)
 
 export { useSuccessSnackbar, useErrorSnackbar };

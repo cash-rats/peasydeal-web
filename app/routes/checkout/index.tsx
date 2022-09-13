@@ -1,10 +1,10 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useRef } from 'react';
 import type { ReactElement } from 'react';
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
+import { loadStripe, StripeError } from '@stripe/stripe-js';
 import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 import Divider from '@mui/material/Divider';
 
@@ -62,8 +62,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 };
 
-// TODO retrieve this secret from node.
-
 function CheckoutPage() {
   const {
     amount,
@@ -90,6 +88,25 @@ function CheckoutPage() {
     locale: 'en-GB',
   };
 
+  const shippingDetailRef = useRef(null);
+
+  const validateShippingForm = async () => {
+    if (!shippingDetailRef.current) return;
+
+    shippingDetailRef.current.handleSubmit();
+    // Validate shipping detail form before we can perform stripe checkout.
+    const errors = await shippingDetailRef.current.validateForm();
+    return Object.keys(errors).length > 0;
+  }
+
+  const handlePaymentResult = (error: StripeError | undefined) => {
+    if (error.type === "card_error" || error.type === "validation_error") {
+      console.log(error.message);
+    } else {
+      console.log("An unexpected error occurred.");
+    }
+  }
+
   return (
     <section className="checkout-page-container">
       <h1 className="title">
@@ -101,7 +118,6 @@ function CheckoutPage() {
 
           {/* You Details  */}
           <div className="form-container">
-
 
             {/* product summary TODO add edit link */}
             <div className="pricing-panel">
@@ -152,7 +168,7 @@ function CheckoutPage() {
 
             <div className="pricing-panel">
               <div className="shipping-form-container">
-                <ShippingDetailForm />
+                <ShippingDetailForm ref={shippingDetailRef} />
               </div>
             </div>
           </div >
@@ -167,7 +183,10 @@ function CheckoutPage() {
                 {
                   stripePromise && (
                     <Elements stripe={stripePromise} options={options} >
-                      <CheckoutForm />
+                      <CheckoutForm
+                        validateBeforeCheckout={validateShippingForm}
+                        onPaymentResult={handlePaymentResult}
+                      />
                     </Elements>
                   )
                 }
