@@ -51,7 +51,6 @@ const ShippingDetailForm = forwardRef((props, ref) => {
     city: '',
   }
 
-
   return (
     <FormControl fullWidth>
       <Formik

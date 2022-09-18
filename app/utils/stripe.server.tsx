@@ -5,7 +5,7 @@ const stripe = new Stripe(STRIPE_PRIVATE_KEY, {
   apiVersion: '2022-08-01'
 });
 
-export const createPaymentIntent = ({ amount, currency = 'usd' }: { amount: number, currency: 'usd' }): Promise<Stripe.Response<Stripe.PaymentIntent>> => {
+export const createPaymentIntent = ({ amount, currency = 'usd' }: { amount: number, currency: string }): Promise<Stripe.Response<Stripe.PaymentIntent>> => {
   return stripe.paymentIntents.create({
     amount,
     currency,

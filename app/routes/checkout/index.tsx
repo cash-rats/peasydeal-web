@@ -1,13 +1,20 @@
+/*
+  TODOs
+    - [ ] order amount should be calculated and send from backend.
+    - [ ] `client_secret` should be move to action.
+    - [x] Redirect to successful page.
+*/
+
 import { Fragment, useEffect, useState, useRef } from 'react';
 import type { ReactElement } from 'react';
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe, StripeError } from '@stripe/stripe-js';
-import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import type { StripeElementsOptions, Stripe, StripeError } from '@stripe/stripe-js';
 import Divider from '@mui/material/Divider';
-
+import type { FormikProps, FormikValues } from 'formik';
 
 import { getSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
@@ -49,15 +56,16 @@ export const loader: LoaderFunction = async ({ request }) => {
   const amount = Number(calcGrandTotal(cartItems).toFixed(2))
 
   // Construct stripe `PaymentIntend`
-  // TODO currency should be GBP
   const paymentIntent = await createPaymentIntent({
     amount: Math.round(amount * 100),
-    currency: 'usd'
+    currency: 'GBP'
   });
 
   return json({
     amount,
     cart_items: cartItems,
+
+    // TODO client_secret should be move to action.
     client_secret: paymentIntent.client_secret
   });
 };
@@ -65,10 +73,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 function CheckoutPage() {
   const {
     amount,
+    /* Stripe payment intend client secret, every secret is different every time we refresh the page */
     client_secret: clientSecret,
     cart_items: cartItems,
   } = useLoaderData();
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
+  const [paymentMessage, setPaymentMessage] = useState<string | undeinfed>();
 
   useEffect(() => {
     if (window) {
@@ -76,7 +86,6 @@ function CheckoutPage() {
     }
   }, []);
 
-  // TODO retrieve client secret from node
   const options: StripeElementsOptions = {
     // passing the client secret obtained in step 2
     clientSecret,
@@ -88,23 +97,36 @@ function CheckoutPage() {
     locale: 'en-GB',
   };
 
-  const shippingDetailRef = useRef(null);
+  const shippingDetailRef = useRef<FormikProps<FormikValues>>(null);
 
-  const validateShippingForm = async () => {
+  const validateShippingForm = async (): Promise<undefined | [boolean, FormikValues]> => {
     if (!shippingDetailRef.current) return;
 
     shippingDetailRef.current.handleSubmit();
     // Validate shipping detail form before we can perform stripe checkout.
     const errors = await shippingDetailRef.current.validateForm();
-    return Object.keys(errors).length > 0;
+    return [
+      Object.keys(errors).length > 0,
+      shippingDetailRef.current.values,
+    ];
   }
 
-  const handlePaymentResult = (error: StripeError | undefined) => {
-    if (error.type === "card_error" || error.type === "validation_error") {
-      console.log(error.message);
-    } else {
-      console.log("An unexpected error occurred.");
+  const handlePaymentResult = async (orderID: string, error: StripeError | undefined) => {
+    if (error) {
+      if (error.type === "card_error" || error.type === "validation_error") {
+        setPaymentMessage(error.message);
+      } else {
+        setPaymentMessage("An unexpected error occurred.")
+      }
+
+      return;
     }
+
+    setPaymentMessage(null);
+    // Return to payment success page with query param payment intend client secret.
+    // Check
+    console.log('resp', orderID);
+    // debugger;
   }
 
   return (
@@ -181,13 +203,28 @@ function CheckoutPage() {
             <div className="pricing-panel">
               <div className="payment-form-container">
                 {
+                  // When create order action is triggered in `CheckoutForm`, current load will be triggered to realod client secret causing display of the warning.
+                  // The following is a temperary solution.
+                  // @docs https://stackoverflow.com/questions/70864433/integration-of-stripe-paymentelement-warning-unsupported-prop-change-options-c
                   stripePromise && (
-                    <Elements stripe={stripePromise} options={options} >
+                    <Elements
+                      stripe={stripePromise}
+                      options={options}
+                    >
                       <CheckoutForm
                         validateBeforeCheckout={validateShippingForm}
                         onPaymentResult={handlePaymentResult}
+                        clientSecret={clientSecret}
+                        orderDetail={cartItems}
                       />
                     </Elements>
+                  )
+                }
+                {
+                  paymentMessage && (
+                    <div>
+                      {paymentMessage}
+                    </div>
                   )
                 }
               </div>
