@@ -1,3 +1,9 @@
+/*
+  TODOs
+    - [ ] Email validation
+    - [ ] Header
+*/
+
 import { forwardRef } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import FormControl from '@mui/material/FormControl';

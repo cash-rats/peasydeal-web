@@ -1,0 +1,25 @@
+.order-annotation-container {
+  display: flex;
+  flex-direction: column;
+}
+.order-annotation-container .success-icon {
+  text-align: center;
+}
+.order-annotation-container .title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.7rem;
+  margin-top: 1rem;
+}
+.order-annotation-container .text {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #7F7F7F;
+}
+.order-annotation-container .continue-shopping-btn {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+/*# sourceMappingURL=OrderAnnotation.css.map */

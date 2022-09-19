@@ -1,0 +1,28 @@
+.order-annotation-container {
+  display: flex;
+  flex-direction: column;
+
+
+  .success-icon {
+    text-align: center;
+  }
+
+  .title {
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.7rem;
+    margin-top: 1rem;
+  }
+
+  .text {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 1rem;
+    color: #7F7F7F;
+  }
+
+  .continue-shopping-btn {
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+}

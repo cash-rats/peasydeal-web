@@ -131,7 +131,7 @@ function StripeCheckoutForm({
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: `${getBrowserDomainUrl()}/checkout/result`,
+        return_url: `${getBrowserDomainUrl()}/checkout/result?order_id=${orderID}`,
       },
     });
 
