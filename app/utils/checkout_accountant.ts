@@ -1,4 +1,5 @@
 // TODO: TAX and shipping fee are fake data.
+// Should be deprecated
 
 interface CalcItem {
   salePrice: number;

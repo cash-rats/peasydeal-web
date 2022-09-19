@@ -1,0 +1,118 @@
+.checkout-result-container {
+  width: 100vw;
+  height: 100vh;
+  background-color: #F6F6F6;
+  padding: 50px 10px 0;
+}
+.checkout-result-container .checkout-result-content {
+  max-width: 650px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.checkout-result-container .title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.7rem;
+  margin-top: 1rem;
+}
+.checkout-result-container .text {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 1rem;
+  color: #7F7F7F;
+}
+.checkout-result-container .order-detail-container {
+  border: solid 1px #E6E6E6;
+  background-color: white;
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+}
+.checkout-result-container .order-detail-container h1 {
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.checkout-result-container .order-detail-container .order-detail-content {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.checkout-result-container .order-detail-container .order-detail-content .order-detail-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.checkout-result-container .order-detail-container .order-detail-content .order-detail-row:last-of-type {
+  margin-bottom: 0.75rem;
+}
+.checkout-result-container .order-detail-container .order-detail-content .order-detail-row .data {
+  font-weight: 500;
+}
+.checkout-result-container .order-detail-container .order-detail-content .amount-content {
+  display: flex;
+  flex-direction: row;
+  margin-top: 1rem;
+}
+.checkout-result-container .order-detail-container .order-detail-content .amount-content .amount-left {
+  width: 60%;
+}
+.checkout-result-container .order-detail-container .order-detail-content .amount-content .amount-right {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  gap: 4px;
+}
+.checkout-result-container .order-detail-container .order-detail-content .amount-content .amount-right .amount-row {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+.checkout-result-container .order-detail-container .order-detail-content .amount-content .amount-right .amount-row label {
+  text-align: left;
+  width: 69%;
+  display: flex;
+  justify-content: flex-start;
+}
+.checkout-result-container .order-detail-container .order-detail-content .amount-content .amount-right .amount-row .data {
+  width: 31%;
+  display: flex;
+  justify-content: flex-end;
+  font-weight: 500;
+}
+
+.customer-detail-container {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+.customer-detail-container h1 {
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+.customer-detail-container h2 {
+  font-weight: 600;
+}
+.customer-detail-container .customer-detail {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  width: 100%;
+}
+.customer-detail-container .customer-detail .contact {
+  flex: 1;
+}
+.customer-detail-container .customer-detail .billing-address {
+  flex: 1;
+}
+.customer-detail-container .customer-detail .content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+/*# sourceMappingURL=CheckoutResult.css.map */

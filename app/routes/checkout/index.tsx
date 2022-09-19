@@ -78,7 +78,7 @@ function CheckoutPage() {
     cart_items: cartItems,
   } = useLoaderData();
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-  const [paymentMessage, setPaymentMessage] = useState<string | undeinfed>();
+  const [paymentMessage, setPaymentMessage] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if (window) {
