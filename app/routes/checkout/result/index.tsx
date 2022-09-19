@@ -30,11 +30,15 @@
   TODOs
     - [ ] Retrieve order items from server.
     - [ ] Provide a link for customer to trace their package.
+    - [x] Continue shopping button.
+    - [ ] List of purchased products
 */
 import styles from './styles/CheckoutResult.css';
 import type { LinksFunction } from '@remix-run/node';
+import { Link } from '@remix-run/react';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }];
@@ -60,8 +64,17 @@ function CheckoutResult() {
         </p>
 
         <p className="text">
-          Please keep your order number. You can trace your package with order number here.
+          Please keep your order number. You can trace your package with order number
+          <span>
+            <Link to='/'> here </Link>.
+          </span>
         </p>
+
+        <div className="continue-shopping-btn">
+          <Button variant="contained">
+            Continue Shopping
+          </Button>
+        </div>
 
         {/* Order Detail */}
         <div className="order-detail-container">
@@ -139,10 +152,50 @@ function CheckoutResult() {
           </div>
         </div>
 
-        {/*product summary*/}
+        {/* Product summary */}
+        <div className="product-summary-container">
+          <h1>
+            Products Summary
+          </h1>
+          <div className="product-content">
+            <div className="product-row">
+              <div className="left">
+                <label>
+                  1 X some product
+                </label>
+                <p>
+                  some product intro
+                </p>
+              </div>
+
+              <div className="right">
+                $60
+              </div>
+            </div>
+            <Divider />
+            <div className="product-row">
+
+              <div className="left">
+                <label>
+                  1 X some product
+                </label>
+                <p>
+                  some product intro
+                </p>
+              </div>
+
+              <div className="right">
+                $60
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Order summary*/}
         <div className="customer-detail-container">
           <h1>
-            Billing Detail
+            Order Information
           </h1>
           <div className="customer-detail">
             <div className="contact">
