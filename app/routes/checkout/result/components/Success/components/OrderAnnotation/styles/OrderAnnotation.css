@@ -18,7 +18,9 @@
   color: #7F7F7F;
 }
 .order-annotation-container .continue-shopping-btn {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
   margin-top: 1.5rem;
 }
 

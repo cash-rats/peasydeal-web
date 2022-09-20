@@ -32,15 +32,16 @@ function OrderAnnotation({ email }: OrderAnnotationProps) {
       </p>
 
       <p className="text">
-        Please keep your order number. You can trace your package with order number
-        <span>
-          <Link to='/'> here </Link>.
-        </span>
+        Please keep your order number. You can trace your package with the order number.
       </p>
 
       <div className="continue-shopping-btn">
         <Button variant="contained">
           Continue Shopping
+        </Button>
+
+        <Button color='info' variant="contained">
+          Track you order
         </Button>
       </div>
     </div>
