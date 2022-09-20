@@ -2,12 +2,13 @@ import { useEffect } from 'react';
 import { useFetcher } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
-import Divider from '@mui/material/Divider';
 import parseISO from 'date-fns/parseISO';
 
 import OrderAnnotation, { links as OrderAnnotationLinks } from './components/OrderAnnotation';
 import OrderDetail, { links as OrderDetailLinks } from './components/OrderDetail';
 import ProductSummary, { links as ProductSummaryLinks } from './components/ProductSummary';
+import OrderInformation, { links as OrderInformationLinks } from './components/OrderInformation';
+
 import { fetchOrder } from './api';
 import styles from './styles/Success.css';
 
@@ -16,6 +17,7 @@ export const links: LinksFunction = () => {
     ...OrderAnnotationLinks(),
     ...OrderDetailLinks(),
     ...ProductSummaryLinks(),
+    ...OrderInformationLinks(),
     {
       rel: 'stylesheet',
       href: styles,
@@ -55,7 +57,6 @@ function Success() {
     }
   }, []);
 
-
   return (
     <div className="checkout-result-container">
       <div className="checkout-result-content">
@@ -88,39 +89,21 @@ function Success() {
         }
 
         {/* Order summary*/}
-        <div className="customer-detail-container">
-          <h1>
-            Order Information
-          </h1>
-          <div className="customer-detail">
-            <div className="contact">
-              <h2>
-                contact
-              </h2>
-
-              <div className="content">
-                <span> Email: huangchiheng@gmail.com </span>
-                <span> Phone: 12345678 </span>
-              </div>
-            </div>
-
-            <div className="billing-address">
-              <h2>
-                billing address
-              </h2>
-
-              <div className="content">
-                <span> Andrei Dorin </span>
-                <span> some address </span>
-                <span> some address 2 </span>
-                <span> some zip code </span>
-                <span> some country </span>
-              </div>
-            </div>
-          </div>
-        </div>
+        {
+          orderFetcher.type === 'done' && (
+            <OrderInformation
+              email={orderFetcher.data.email}
+              firstname={orderFetcher.data.first_name}
+              lastname={orderFetcher.data.last_name}
+              address={orderFetcher.data.address}
+              address2={orderFetcher.data.address}
+              city={orderFetcher.data.city}
+              postal={orderFetcher.data.postal}
+              country={orderFetcher.data.country}
+            />
+          )
+        }
       </div>
-
     </div>
 
   )

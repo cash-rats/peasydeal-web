@@ -53,7 +53,7 @@ function OrderDetail({
           </div>
         </div>
 
-        <div className="order-detail-row">
+        <div className="order-detail-row last-row">
           <div className="order-title">
             Payment method
           </div>
@@ -61,6 +61,7 @@ function OrderDetail({
             Credit Card
           </div>
         </div>
+
         <Divider />
 
         {/* Amount */}

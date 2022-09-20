@@ -22,7 +22,7 @@ function ProductSummary({ products = [] }: ProductSummaryProps) {
       </h1>
       <div className="product-content">
         {
-          products.map((product) => {
+          products.map((product, idx) => {
             return (
               <Fragment key={product.product_variation_uuid}>
                 <div className="product-row">
@@ -39,7 +39,11 @@ function ProductSummary({ products = [] }: ProductSummaryProps) {
                     ${product.sale_price}
                   </div>
                 </div>
-                <Divider />
+                {
+                  // Don't display `Divider` when it reaches the last product element.
+                  products.length - 1 !== idx && (<Divider />)
+                }
+
               </Fragment>
             );
           })

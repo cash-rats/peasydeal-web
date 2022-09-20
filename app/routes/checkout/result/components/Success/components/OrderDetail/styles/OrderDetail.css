@@ -22,11 +22,11 @@
   flex-direction: row;
   justify-content: space-between;
 }
-.order-detail-container .order-detail-content .order-detail-row:last-of-type {
-  margin-bottom: 0.75rem;
-}
 .order-detail-container .order-detail-content .order-detail-row .data {
   font-weight: 500;
+}
+.order-detail-container .order-detail-content .last-row {
+  margin-bottom: 0.75rem;
 }
 .order-detail-container .order-detail-content .amount-content {
   display: flex;
