@@ -1,10 +1,12 @@
 import type { LinksFunction } from "@remix-run/node";
-import { AiOutlineMail, AiOutlinePhone, AiFillHeart } from "react-icons/ai";
+import { Link } from '@remix-run/react';
+import { AiOutlineMail, AiOutlinePhone } from "react-icons/ai";
 
 import CategoriesNav, { links as CategoriesNavLinks } from "./components/CategoriesNav";
 import type { Category } from "./components/CategoriesNav";
 import SearchBar, { links as SearchBarLinks } from "./components/SearchBar";
 import NavBar, { links as NavBarLinks } from './components/NavBar';
+import LogoJPG from './images/logo.jpg';
 import styles from "./styles/Header.css";
 
 export const links: LinksFunction = () => {
@@ -12,7 +14,7 @@ export const links: LinksFunction = () => {
 		...CategoriesNavLinks(),
 		...SearchBarLinks(),
 		...NavBarLinks(),
-		{rel: 'stylesheet', href: styles},
+		{ rel: 'stylesheet', href: styles },
 	];
 };
 
@@ -25,7 +27,7 @@ interface HeaderProps {
 	cartItemCount?: number;
 };
 
-export default function Header({ categories = [],  cartItemCount = 0 }: HeaderProps) {
+export default function Header({ categories = [], cartItemCount = 0 }: HeaderProps) {
 	return (
 		<div className="header-container">
 			{/* Contact */}
@@ -52,9 +54,9 @@ export default function Header({ categories = [],  cartItemCount = 0 }: HeaderPr
 			</div>
 
 			<div className="header-content-container">
-				<div className="logo">
-					<AiFillHeart fontSize={45} color="#555BBD" />
-				</div>
+				<Link to='/' className="logo">
+					<img alt='peasydeal shop' src={LogoJPG} />
+				</Link>
 
 				<div className="searchbar-container">
 					<SearchBar />

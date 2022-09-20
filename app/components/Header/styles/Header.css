@@ -45,6 +45,10 @@
   line-height: 20px;
   padding-right: 15px;
 }
+.header-container .header-content-container .logo img {
+  width: 110px;
+  height: 40px;
+}
 .header-container .header-content-container .searchbar-container {
   display: flex;
   flex: 5;
