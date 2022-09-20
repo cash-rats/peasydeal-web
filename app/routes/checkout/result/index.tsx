@@ -1,31 +1,3 @@
-// useEffect(() => {
-//   if (!stripe) return;
-
-//   const clientSecret = new URLSearchParams(window.location.search).get(
-//     "payment_intent_client_secret"
-//   );
-
-//   if (!clientSecret) {
-//     return;
-//   }
-
-//   stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-//     switch (paymentIntent.status) {
-//       case "succeeded":
-//         setMessage("Payment succeeded!");
-//         break;
-//       case "processing":
-//         setMessage("Your payment is processing.");
-//         break;
-//       case "requires_payment_method":
-//         setMessage("Your payment was not successful, please try again.");
-//         break;
-//       default:
-//         setMessage("Something went wrong.");
-//         break;
-//     }
-//   }, [stripe]);
-// });
 /*
   TODOs
     - [ ] Check with stripe to see if a given client secret is paid order not. If paid show success page. If not show failed page.
@@ -36,7 +8,7 @@
 */
 import { useEffect, useState } from 'react';
 import styles from './styles/CheckoutResult.css';
-import { json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { loadStripe } from '@stripe/stripe-js';
@@ -59,12 +31,19 @@ export const loader: LoaderFunction = async ({ request }) => {
   const clientSecret = url.searchParams.get('payment_intent_client_secret');
   const orderID = url.searchParams.get('order_id');
 
+  // If `payment_intent_client_secret` or `order_id` does not exists in the query params, it means client requested this page
+  // directly without proper redirection. We simply redrect them to `/cart` page so that customers can finish the checkout flow
+  // properly.
+  if (!clientSecret || !orderID) {
+    throw redirect('/cart');
+  }
+
   return json({ clientSecret, orderID });
 }
 
 function CheckoutResult() {
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-  const { clientSecret = '', orderID = '' } = useLoaderData();
+  const { clientSecret = '' } = useLoaderData();
 
   useEffect(() => {
     if (window) {
@@ -83,15 +62,6 @@ function CheckoutResult() {
     // Only allows england for now.
     locale: 'en-GB',
   };
-
-  // What if client secret isn't provided in query param? Display client secret not provided page.
-  if (!clientSecret || !orderID) {
-    return (
-      <div>
-        client secret or order id is not provided
-      </div>
-    )
-  }
 
   return (
     <>

@@ -37,7 +37,9 @@ function OrderAnnotation({ email }: OrderAnnotationProps) {
 
       <div className="continue-shopping-btn">
         <Button variant="contained">
-          Continue Shopping
+          <Link to='/'>
+            Continue Shopping
+          </Link>
         </Button>
 
         <Button color='info' variant="contained">

@@ -10,7 +10,6 @@ import ProductSummary, { links as ProductSummaryLinks } from './components/Produ
 import OrderInformation, { links as OrderInformationLinks } from './components/OrderInformation';
 
 import { fetchOrder } from './api';
-import styles from './styles/Success.css';
 
 export const links: LinksFunction = () => {
   return [
@@ -18,10 +17,6 @@ export const links: LinksFunction = () => {
     ...OrderDetailLinks(),
     ...ProductSummaryLinks(),
     ...OrderInformationLinks(),
-    {
-      rel: 'stylesheet',
-      href: styles,
-    }
   ];
 }
 
