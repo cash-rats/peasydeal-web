@@ -3,6 +3,7 @@ import { useFetcher } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import Divider from '@mui/material/Divider';
+import parseISO from 'date-fns/parseISO';
 
 import OrderAnnotation, { links as OrderAnnotationLinks } from './components/OrderAnnotation';
 import OrderDetail, { links as OrderDetailLinks } from './components/OrderDetail';
@@ -31,6 +32,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const resp = await fetchOrder(orderID)
   const respJSON = await resp.json();
+
   return json(respJSON);
 }
 
@@ -51,6 +53,7 @@ function Success() {
     }
   }, []);
 
+
   return (
     <div className="checkout-result-container">
       <div className="checkout-result-content">
@@ -61,79 +64,19 @@ function Success() {
         }
 
         {/* Order Detail */}
-        <div className="order-detail-container">
-          <h1>
-            Order details
-          </h1>
+        {
+          orderFetcher.type === 'done' && (
+            <OrderDetail
+              orderUuid={orderFetcher.data.order_uuid}
+              date={parseISO(orderFetcher.data.created_at)}
+              subtotal={orderFetcher.data.subtotal}
+              taxAmount={orderFetcher.data.tax}
+              shippingFee={orderFetcher.data.shipping_fee}
+              total={orderFetcher.data.total}
+            />
+          )
+        }
 
-          <div className="order-detail-content">
-            <div className="order-detail-row">
-              <div className="order-title">
-                Order number:
-              </div>
-
-              <div className="data">
-                86
-              </div>
-            </div>
-
-            <div className="order-detail-row">
-              <div className="order-title">
-                Date
-              </div>
-              <div className="data">
-                May 6, 2017
-              </div>
-            </div>
-
-            <div className="order-detail-row">
-              <div className="order-title">
-                Payment method
-              </div>
-              <div className="data">
-                Credit Card
-              </div>
-            </div>
-            <Divider />
-
-            {/* Amount */}
-            <div className="amount-content">
-              <div className="amount-left" />
-              <div className="amount-right" >
-
-                <div className="amount-row">
-                  <label>
-                    Subtotal
-                  </label>
-
-                  <div className="data">
-                    $69
-                  </div>
-                </div>
-
-                <div className="amount-row">
-                  <label>
-                    Taxes(20%)
-                  </label>
-
-                  <div className="data">
-                    $69
-                  </div>
-                </div>
-
-                <div className="amount-row">
-                  <label>
-                    Total
-                  </label>
-
-                  <div className="data">
-                    $100
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Product summary */}
         <div className="product-summary-container">

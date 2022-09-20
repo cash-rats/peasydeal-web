@@ -1,5 +1,6 @@
 import Divider from '@mui/material/Divider';
 import type { LinksFunction } from '@remix-run/node';
+import format from 'date-fns/format';
 
 import styles from './styles/OrderDetail.css';;
 
@@ -9,7 +10,23 @@ export const links: LinksFunction = () => {
   ];
 };
 
-function OrderDetail() {
+interface OrderDetailProps {
+  orderUuid: string;
+  date: Date;
+  subtotal: number;
+  taxAmount: number;
+  shippingFee: number;
+  total: number;
+}
+
+function OrderDetail({
+  subtotal,
+  orderUuid,
+  date,
+  shippingFee,
+  taxAmount,
+  total,
+}: OrderDetailProps) {
   return (
     <div className="order-detail-container">
       <h1>
@@ -23,7 +40,7 @@ function OrderDetail() {
           </div>
 
           <div className="data">
-            86
+            {orderUuid}
           </div>
         </div>
 
@@ -32,7 +49,7 @@ function OrderDetail() {
             Date
           </div>
           <div className="data">
-            May 6, 2017
+            {format(date, 'MMM dd, yyyy')}
           </div>
         </div>
 
@@ -57,7 +74,7 @@ function OrderDetail() {
               </label>
 
               <div className="data">
-                $69
+                ${subtotal}
               </div>
             </div>
 
@@ -67,7 +84,17 @@ function OrderDetail() {
               </label>
 
               <div className="data">
-                $69
+                ${taxAmount}
+              </div>
+            </div>
+
+            <div className="amount-row">
+              <label>
+                Shipping fee
+              </label>
+
+              <div className="data">
+                ${shippingFee}
               </div>
             </div>
 
@@ -77,7 +104,7 @@ function OrderDetail() {
               </label>
 
               <div className="data">
-                $100
+                ${total}
               </div>
             </div>
           </div>
