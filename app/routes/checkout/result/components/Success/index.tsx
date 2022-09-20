@@ -7,6 +7,7 @@ import parseISO from 'date-fns/parseISO';
 
 import OrderAnnotation, { links as OrderAnnotationLinks } from './components/OrderAnnotation';
 import OrderDetail, { links as OrderDetailLinks } from './components/OrderDetail';
+import ProductSummary, { links as ProductSummaryLinks } from './components/ProductSummary';
 import { fetchOrder } from './api';
 import styles from './styles/Success.css';
 
@@ -14,6 +15,7 @@ export const links: LinksFunction = () => {
   return [
     ...OrderAnnotationLinks(),
     ...OrderDetailLinks(),
+    ...ProductSummaryLinks(),
     {
       rel: 'stylesheet',
       href: styles,
@@ -79,43 +81,11 @@ function Success() {
 
 
         {/* Product summary */}
-        <div className="product-summary-container">
-          <h1>
-            Products Summary
-          </h1>
-          <div className="product-content">
-            <div className="product-row">
-              <div className="left">
-                <label>
-                  1 X some product
-                </label>
-                <p>
-                  some product intro
-                </p>
-              </div>
-
-              <div className="right">
-                $60
-              </div>
-            </div>
-            <Divider />
-            <div className="product-row">
-              <div className="left">
-                <label>
-                  1 X some product
-                </label>
-                <p>
-                  some product intro
-                </p>
-              </div>
-
-              <div className="right">
-                $60
-              </div>
-            </div>
-
-          </div>
-        </div>
+        {
+          orderFetcher.type === 'done' && (
+            <ProductSummary products={orderFetcher.data.order_items} />
+          )
+        }
 
         {/* Order summary*/}
         <div className="customer-detail-container">

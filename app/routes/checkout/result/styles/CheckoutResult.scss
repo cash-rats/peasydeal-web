@@ -112,46 +112,6 @@
   }
 }
 
-.product-summary-container {
-  width: 100%;
-  margin-top: 1.5rem;
-
-  h1 {
-    font-weight: 600;
-    font-size: 1.4rem;
-  }
-
-  .product-content {
-    display: flex;
-    flex-direction: column;
-    margin-top: 0.75rem;
-    font-weight: 500;
-
-    .product-row {
-      display: flex;
-      flex-direction: row;
-      margin: 0.75rem 0;
-
-      .left {
-        flex: 1;
-        display: flex;
-        justify-content: flex-start;
-        flex-direction: column;
-        gap: 10px;
-
-        p {
-          font-weight: 400;
-        }
-      }
-
-      .right {
-        flex: 1;
-        display: flex;
-        justify-content: flex-end;
-      }
-    }
-  }
-}
 
 .customer-detail-container {
   width: 100%;
