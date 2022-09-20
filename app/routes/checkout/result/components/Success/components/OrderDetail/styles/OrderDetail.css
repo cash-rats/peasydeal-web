@@ -34,13 +34,23 @@
   margin-top: 1rem;
 }
 .order-detail-container .order-detail-content .amount-content .amount-left {
-  width: 60%;
+  width: 45%;
+}
+@media (min-width: 499px) {
+  .order-detail-container .order-detail-content .amount-content .amount-left {
+    width: 60%;
+  }
 }
 .order-detail-container .order-detail-content .amount-content .amount-right {
   display: flex;
   flex-direction: column;
-  width: 40%;
+  width: 50%;
   gap: 4px;
+}
+@media (min-width: 499px) {
+  .order-detail-container .order-detail-content .amount-content .amount-right {
+    width: 40%;
+  }
 }
 .order-detail-container .order-detail-content .amount-content .amount-right .amount-row {
   display: flex;
