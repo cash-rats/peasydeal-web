@@ -1,6 +1,9 @@
 .categories-nav-container {
   display: flex;
   align-items: center;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
 }
 .categories-nav-container .all-categories-nav {
   cursor: pointer;

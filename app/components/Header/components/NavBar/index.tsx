@@ -1,6 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
-import { BiUserCircle } from "react-icons/bi";
 import { FiShoppingCart } from "react-icons/fi"
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';

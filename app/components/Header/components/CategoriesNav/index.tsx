@@ -20,14 +20,14 @@ export type Category = {
 };
 
 interface CategoriesNavProps {
-  categories: Array<Category>,
+  categories?: Array<Category>,
 };
 
 /*
  * - [ ] Hover over all category should display all category list.
  * - [ ] If we have too many categories, we should have a scroll view.
  */
-export default function CategoriesNav({ categories }: CategoriesNavProps) {
+export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
   const [openAllCategories, setOpenAllCategories] = useState<boolean>(false);
   const toggleOpenAllCategory = (evt: MouseEvent<HTMLLabelElement>) => {
     setOpenAllCategories(prev => !prev);

@@ -5,7 +5,6 @@
 // because this way they become hot-reloadable.
 
 
-import fixture0 from './components/Header/Header.fixture.tsx';
 import fixture1 from './components/ProductGrid/LargeGrid.fixture.tsx';
 import fixture2 from './components/ProductGrid/MediumGrid.fixture.tsx';
 import fixture3 from './components/ProductRow/EvenRow.fixture.tsx';
@@ -19,7 +18,6 @@ export const rendererConfig = {
 };
 
 export const fixtures = {
-  'app/components/Header/Header.fixture.tsx': { module: { default: fixture0 } },
   'app/components/ProductGrid/LargeGrid.fixture.tsx': { module: { default: fixture1 } },
   'app/components/ProductGrid/MediumGrid.fixture.tsx': { module: { default: fixture2 } },
   'app/components/ProductRow/EvenRow.fixture.tsx': { module: { default: fixture3 } },
