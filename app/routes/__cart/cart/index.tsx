@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, Link } from '@remix-run/react';
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
+import { useLoaderData, Link, useFetcher } from '@remix-run/react';
+import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { StatusCodes } from 'http-status-codes';
 import { Button } from '@chakra-ui/react';
 import { BsBagCheck } from 'react-icons/bs';
 
-import { getSession } from '~/sessions';
+import { getSession, commitSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
 import {
 	calcSubTotal,
@@ -17,6 +17,7 @@ import {
 } from '~/utils/checkout_accountant';
 
 import CartItem, { links as ItemLinks } from './components/Item';
+import RemoveItemModal from './components/RemoveItemModal';
 import styles from './styles/cart.css';
 
 export const links: LinksFunction = () => {
@@ -25,6 +26,34 @@ export const links: LinksFunction = () => {
 		{ rel: 'stylesheet', href: styles },
 	];
 };
+
+// TODOs:
+//   - handle prod_id is falsey value
+//   - handle session key not exists
+export const action: ActionFunction = async ({ request }) => {
+	const body = await request.formData();
+	const prodID = body.get('prod_id') as string || '';
+	const session = await getSession(
+		request.headers.get("Cookie")
+	);
+
+	const sessionKey: SessionKey = 'shopping_cart';
+
+	let cartItems = session.get(sessionKey);
+
+
+	if (cartItems.hasOwnProperty(prodID)) {
+		delete cartItems[prodID];
+		const newShoppingCart = { ...cartItems };
+		session.set(sessionKey, newShoppingCart);
+	}
+
+	return new Response('', {
+		headers: {
+			"Set-Cookie": await commitSession(session),
+		}
+	});
+}
 
 /*
  * Fetch cart items from product list when user is not logged in.
@@ -43,6 +72,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 		throw redirect('/empty_cart');
 	}
 
+	console.log('loader 1', cartItems);
+
 	return json(cartItems, { status: StatusCodes.OK });
 };
 
@@ -55,13 +86,23 @@ export const loader: LoaderFunction = async ({ request }) => {
  * - [ ] show empty shopping cart when no item existed yet.
  * - [ ] Remember selected quantity and sales price for each item so that we can calculate total price in result row.
  * - [ ] Add `~~$99.98 Now $49.99 You Saved $50` text.
- * - [ ] Checkout flow.
+ * - [ ] When quantity is deducted to 0, popup a notification that the item is going to be removed.
+ * - [x] Checkout flow.
  */
 function Cart() {
 	const cartItemsData = useLoaderData();
 	const [cartItems, setCartItems] = useState(cartItemsData);
+	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
+	const removeItemFetcher = useFetcher()
+	const targetRemovalProdID = useRef<null | string>(null);
 
-	// TODO when quantity equals 0, display popup to notify customer for item removal.
+	useEffect(() => {
+		if (removeItemFetcher.type === 'done') {
+			removeItemFetcher.load('/cart?index');
+		}
+
+	}, [removeItemFetcher])
+
 	const updateItemQuantity = (quantity: number, prodID: string) => {
 		setCartItems((prev) => (
 			{
@@ -74,13 +115,47 @@ function Cart() {
 		));
 	};
 
+	const handleMinusQuantity = (quantity: number, prodID: string, askRemoval: boolean) => {
+		// when quantity equals 1, display popup to notify customer for item removal.
+		if (askRemoval) {
+			targetRemovalProdID.current = prodID;
+			setOpenRemoveItemModal(true);
+
+			return;
+		}
+
+		updateItemQuantity(quantity, prodID);
+	};
+
+	const handleRemoveItemResult = (res: boolean) => {
+		if (!res) return false;
+
+		if (!targetRemovalProdID.current) return;
+		removeItemFetcher.submit(
+			{ prod_id: targetRemovalProdID.current },
+			{
+				method: 'post',
+				action: '/cart?index',
+			},
+		)
+		setOpenRemoveItemModal(false);
+		// removeItemFetcher.load('/cart?index');
+	}
+
 	return (
 		<section className="shopping-cart-section">
+			<RemoveItemModal
+				open={openRemoveItemModal}
+				itemName="some item"
+				onClose={() => setOpenRemoveItemModal(false)}
+				onResult={handleRemoveItemResult}
+			/>
+
 			<div className="shopping-cart-container">
 				{/* top bar, display back button and title */}
 				<div className="shopping-cart_topbar">
 					<h1 className="title">
-						Shopping Cart
+						Your Cart
 					</h1>
 				</div>
 
@@ -97,7 +172,7 @@ function Cart() {
 						</h1>
 
 						<h1 className="quantity-label">
-							Quantity
+							Qty
 						</h1>
 
 						<h1 className="total-label">
@@ -121,7 +196,7 @@ function Cart() {
 									retailPrice={Number(item.retailPrice)}
 									quantity={Number(item.quantity)}
 									onPlus={updateItemQuantity}
-									onMinus={updateItemQuantity}
+									onMinus={handleMinusQuantity}
 									onChangeQuantity={updateItemQuantity}
 								/>
 							)

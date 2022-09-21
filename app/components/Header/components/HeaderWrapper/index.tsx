@@ -17,12 +17,12 @@ interface HeaderProps {
 
 export default function HeaderWrapper({ children, categoryBar }: HeaderProps) {
 	return (
-		<div className="header-container">
+		<header className="header-container">
 			<div className="header-content-container">
 				{children}
 			</div>
 
 			{categoryBar && (categoryBar)}
-		</div>
+		</header>
 	);
 }

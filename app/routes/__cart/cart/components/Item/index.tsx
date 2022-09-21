@@ -1,5 +1,5 @@
-import { useState, ChangeEvent} from 'react';
-import { LinksFunction,  ActionFunction } from '@remix-run/node';
+import { useState, ChangeEvent } from 'react';
+import { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import {
 	InputGroup,
@@ -54,12 +54,12 @@ interface CartItemProps {
 	salePrice: number;
 	retailPrice: number;
 	quantity?: number;
-	onMinus?: (quantity: number, prodID: string) => void;
+	onMinus?: (quantity: number, prodID: string, askRemoval: boolean) => void;
 	onPlus?: (quantity: number, prodID: string) => void;
 	onChangeQuantity?: (quantity: number, prodID: string) => void;
 }
 
-function CartItem ({
+function CartItem({
 	prodID,
 	image,
 	title,
@@ -67,9 +67,9 @@ function CartItem ({
 	salePrice,
 	retailPrice,
 	quantity = 1,
-	onMinus = () => {},
-	onPlus = () => {},
-	onChangeQuantity = () => {},
+	onMinus = () => { },
+	onPlus = () => { },
+	onChangeQuantity = () => { },
 }: CartItemProps) {
 	const [itemQauntity, setItemQuantity] = useState<number>(quantity);
 	const cartItemFetcher = useFetcher();
@@ -90,15 +90,15 @@ function CartItem ({
 
 	const handleClickMinusQuantity = () => {
 		// We do not allow quantity deduction when quantity equals 1
-		if (itemQauntity <= 1) {
-			onMinus(itemQauntity, prodID);
+		if (itemQauntity === 1) {
+			onMinus(itemQauntity, prodID, true);
 			return;
 		}
 
 		const q = itemQauntity - 1;
 		updateCartItemQuantityAction(prodID, q.toString());
 		setItemQuantity(q);
-		onMinus(q, prodID);
+		onMinus(q, prodID, false);
 	}
 
 	const handleChangeQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -119,22 +119,22 @@ function CartItem ({
 
 				<div className="product-description">
 					<div className="product-title">
-						{ title }
+						{title}
 					</div>
 
 					<p className="product-description-text">
-						{ description }
+						{description}
 					</p>
 
 					<div className="product-price-mobile">
-						{ retailPrice }
+						{retailPrice}
 					</div>
 				</div>
 			</div>
 
 			<div className="bottom">
 				<div className="product-price">
-					{ salePrice }
+					{salePrice}
 				</div>
 
 				<div className="product-quantity">
@@ -158,7 +158,7 @@ function CartItem ({
 				</div>
 
 				<div className="product-total">
-					{ (itemQauntity * salePrice).toFixed(2) }
+					{(itemQauntity * salePrice).toFixed(2)}
 				</div>
 			</div>
 		</div>
