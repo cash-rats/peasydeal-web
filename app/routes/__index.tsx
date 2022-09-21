@@ -1,10 +1,11 @@
 import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderFunction, ActionFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import Header, { links as HeaderLinks } from '~/components/Header';
-import { getSession, SessionKey } from '~/sessions';
+import { getSession } from '~/sessions';
+import type { SessionKey } from '~/sessions';
 
 import styles from "./styles/index.css";
 import { fetchCategories } from './api';
@@ -46,7 +47,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData();
 
-  return (
+	return (
 		<>
 			<Header
 				cartItemCount={numOfItemsInCart}
@@ -55,8 +56,8 @@ export default function Index() {
 
 			<main className="main-container">
 				<Outlet />
-    	</main>
+			</main>
 		</>
-  );
+	);
 }
 

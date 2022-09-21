@@ -11,11 +11,7 @@
 	background: #fff;
 
 	.contact-container {
-		display: flex;
-		background-color: #555BBD;
-		justify-content: flex-end;
-		height: 30px;
-		align-items: center;
+		height: 0.5rem;
 		width: 100%;
 
 		.contact-content {
@@ -38,24 +34,16 @@
 	}
 
 	.header-content-container {
+		padding-top: 0.5rem;
 		height: 70px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		margin: 0 auto;
-		max-width: 1300px;
+		max-width: 1180px;
 		width: 100%;
 		padding: 0 15px;
 
-		.logo {
-			line-height: 20px;
-			padding-right: 15px;
-
-			img {
-				width: 110px;
-				height: 40px;
-			}
-		}
 
 		.searchbar-container {
 			display: flex;

@@ -9,11 +9,7 @@
   background: #fff;
 }
 .header-container .contact-container {
-  display: flex;
-  background-color: #555BBD;
-  justify-content: flex-end;
-  height: 30px;
-  align-items: center;
+  height: 0.5rem;
   width: 100%;
 }
 .header-container .contact-container .contact-content {
@@ -32,22 +28,15 @@
   margin-right: 5px;
 }
 .header-container .header-content-container {
+  padding-top: 0.5rem;
   height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 0 auto;
-  max-width: 1300px;
+  max-width: 1180px;
   width: 100%;
   padding: 0 15px;
-}
-.header-container .header-content-container .logo {
-  line-height: 20px;
-  padding-right: 15px;
-}
-.header-container .header-content-container .logo img {
-  width: 110px;
-  height: 40px;
 }
 .header-container .header-content-container .searchbar-container {
   display: flex;

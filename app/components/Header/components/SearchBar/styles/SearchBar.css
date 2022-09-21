@@ -1,4 +1,6 @@
 .open-search {
+  width: 100%;
+  max-width: 886px;
   border-radius: 3px;
   flex: auto;
   margin: 0 15px;

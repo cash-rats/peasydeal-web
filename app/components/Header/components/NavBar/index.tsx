@@ -1,7 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { BiUserCircle } from "react-icons/bi";
-import { MdFavorite } from "react-icons/md";
 import { FiShoppingCart } from "react-icons/fi"
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
@@ -27,14 +26,6 @@ function NavBar({ cartItemCount = 0 }: NavBarProps) {
 	return (
 		<nav className="nav-container">
 			<ul className="nav-content-list">
-				<li className="nav-content-item">
-					<BiUserCircle fontSize={25} />
-				</li>
-
-				<li className="nav-content-item">
-					<MdFavorite fontSize={25} />
-				</li>
-
 				{/* shopping cart */}
 				<li className="nav-content-item">
 					{
