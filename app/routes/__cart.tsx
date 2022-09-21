@@ -2,7 +2,8 @@ import { Outlet } from "@remix-run/react";
 import type { LinksFunction } from '@remix-run/node';
 
 import LogoBar, { links as LogoBarLinks } from '~/components/Header/components/LogoBar';
-import HeaderWrapper, { links as HeaderWrapperLinks } from '~/components/Header/HeaderWrapper';
+import HeaderWrapper, { links as HeaderWrapperLinks } from '~/components/Header/components/HeaderWrapper';
+
 import styles from './styles/index.css';
 
 export const links: LinksFunction = () => {

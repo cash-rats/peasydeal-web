@@ -38,13 +38,5 @@
   width: 100%;
   padding: 0 15px;
 }
-.header-container .header-content-container .searchbar-container {
-  display: flex;
-  flex: 5;
-}
-.header-container .header-content-container .category-nav-container {
-  width: 100%;
-  margin: 0 auto;
-}
 
 /*# sourceMappingURL=HeaderWrapper.css.map */

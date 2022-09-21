@@ -1,17 +1,14 @@
 import type { LinksFunction } from '@remix-run/node';
 
-import HeaderWrapper, { links as HeaderLinks } from "./HeaderWrapper";
+import HeaderWrapper, { links as HeaderLinks } from "./components/HeaderWrapper";
 import type { Category } from './components/CategoriesNav';
 import LogoBar, { links as LogoBarLinks } from './components/LogoBar';
 import SearchBar, { links as SearchBarLinks } from './components/SearchBar';
 import NavBar, { links as NavBarLinks } from './components/NavBar';
 import CategoriesNav, { links as CategoriesNavLinks } from './components/CategoriesNav';
 
-import styles from './styles/HeaderWrapper.css';
-
 export const links: LinksFunction = () => {
   return [
-    { rel: 'stylesheet', href: styles },
     ...HeaderLinks(),
     ...LogoBarLinks(),
     ...SearchBarLinks(),

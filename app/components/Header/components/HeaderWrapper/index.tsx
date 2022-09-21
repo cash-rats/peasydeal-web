@@ -1,13 +1,10 @@
 import type { ReactElement } from 'react';
 import type { LinksFunction } from "@remix-run/node";
 
-import CategoriesNav, { links as CategoriesNavLinks } from "./components/CategoriesNav";
-import type { Category } from "./components/CategoriesNav";
 import styles from "./styles/HeaderWrapper.css";
 
 export const links: LinksFunction = () => {
 	return [
-		...CategoriesNavLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
