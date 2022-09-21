@@ -1,5 +1,6 @@
-import { useState, ChangeEvent } from 'react';
-import { LinksFunction, ActionFunction } from '@remix-run/node';
+import { useState } from 'react';
+import type { ChangeEvent } from 'react';
+import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import {
 	InputGroup,
@@ -10,7 +11,8 @@ import {
 import { BiMinus } from 'react-icons/bi';
 import { BsPlus } from 'react-icons/bs';
 
-import { commitSession, getSession, SessionKey } from '~/sessions';
+import { commitSession, getSession } from '~/sessions';
+import type { SessionKey } from '~/sessions';
 
 import styles from './styles/Item.css';
 

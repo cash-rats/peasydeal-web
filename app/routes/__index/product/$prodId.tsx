@@ -140,7 +140,6 @@ function ProductDetailPage() {
 	};
 
 	const addToCart = useFetcher();
-
 	const [openSuccessSnackbar] = useSuccessSnackbar();
 
 	const handleAddToCart = () => {
@@ -163,7 +162,7 @@ function ProductDetailPage() {
 		if (addToCart.type === 'done') {
 			openSuccessSnackbar();
 		}
-	}, [addToCart, openSuccessSnackbar])
+	}, [addToCart])
 
 	return (
 		<div className="productdetail-container">
