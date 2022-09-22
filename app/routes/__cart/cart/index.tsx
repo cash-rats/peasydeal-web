@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { json, redirect } from '@remix-run/node';
+import { json } from '@remix-run/node';
 import { useLoaderData, Link, useFetcher } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { StatusCodes } from 'http-status-codes';
@@ -18,11 +18,13 @@ import {
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
+import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
 import styles from './styles/cart.css';
 
 export const links: LinksFunction = () => {
 	return [
 		...ItemLinks(),
+		...EmptyShippingCartLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
@@ -36,11 +38,8 @@ export const action: ActionFunction = async ({ request }) => {
 	const session = await getSession(
 		request.headers.get("Cookie")
 	);
-
 	const sessionKey: SessionKey = 'shopping_cart';
-
 	let cartItems = session.get(sessionKey);
-
 
 	if (cartItems.hasOwnProperty(prodID)) {
 		delete cartItems[prodID];
@@ -63,13 +62,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const sessionKey: SessionKey = 'shopping_cart';
 
 	if (!session.has(sessionKey)) {
-		throw redirect('/empty_cart');
+		return json([], { status: StatusCodes.OK });
 	}
 
 	const cartItems = session.get(sessionKey);
 
 	if (cartItems && Object.keys(cartItems).length === 0) {
-		throw redirect('/empty_cart');
+		return json([], { status: StatusCodes.OK });
 	}
 
 	return json(cartItems, { status: StatusCodes.OK });
@@ -81,7 +80,7 @@ export const loader: LoaderFunction = async ({ request }) => {
  *
  * container width: max-width: 1180px;
  *
- * - [ ] show empty shopping cart when no item existed yet, empty shipping cart should be a component instead of a route.
+ * - [x] show empty shopping cart when no item existed yet, empty shipping cart should be a component instead of a route.
  * - [ ] Remember selected quantity and sales price for each item so that we can calculate total price in result row.
  * - [ ] Add `~~$99.98 Now $49.99 You Saved $50` text.
  * - [ ] When quantity is deducted to 0, popup a notification that the item is going to be removed.
@@ -95,7 +94,7 @@ function Cart() {
 	const targetRemovalProdID = useRef<null | string>(null);
 
 	useEffect(() => {
-		if (removeItemFetcher.type === 'done') {
+		if (removeItemFetcher.type === 'done' && cartItems.length === 0) {
 			removeItemFetcher.load('/cart?index');
 		}
 	}, [removeItemFetcher])
@@ -126,8 +125,17 @@ function Cart() {
 
 	const handleRemoveItemResult = (res: boolean) => {
 		if (!res) return false;
-
 		if (!targetRemovalProdID.current) return;
+
+		// Remove cart item on the client side before mutating session.
+		const updatedCartItems = Object.keys(cartItems).reduce((newCartItems, prodID) => {
+			if (prodID === targetRemovalProdID.current) return newCartItems;
+			newCartItems[prodID] = cartItems[prodID];
+			return newCartItems
+		}, {})
+
+		setCartItems(updatedCartItems);
+
 		removeItemFetcher.submit(
 			{ prod_id: targetRemovalProdID.current },
 			{
@@ -136,6 +144,10 @@ function Cart() {
 			},
 		)
 		setOpenRemoveItemModal(false);
+	}
+
+	if (Object.keys(cartItems).length === 0) {
+		return (<EmptyShoppingCart />);
 	}
 
 	return (

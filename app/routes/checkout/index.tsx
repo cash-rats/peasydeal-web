@@ -42,13 +42,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   // Check if `shopping_cart` session exists.
   const sessionKey: SessionKey = 'shopping_cart';
   if (!session.has(sessionKey)) {
-    throw redirect("/empty_cart");
+    throw redirect("/cart");
   }
 
   const cartItems = session.get(sessionKey);
 
   if (cartItems && Object.keys(cartItems).length === 0) {
-    throw redirect("/empty_cart");
+    throw redirect("/cart");
   }
 
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error

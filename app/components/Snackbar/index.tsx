@@ -9,7 +9,7 @@ const successOptions = {
     border: 'none',
     backgroundColor: 'transparent',
     boxShadow: 'none',
-    top: '120px',
+    top: '80px',
     right: '0',
     color: '#FFF',
     fontFamily: 'Menlo, monospace',
@@ -17,8 +17,7 @@ const successOptions = {
     textAlign: 'center',
   },
   closeStyle: {
-    color: '#fff',
-    fontSize: '16px',
+    display: 'none',
   },
 };
 
@@ -51,7 +50,7 @@ function SuccessSnackBar({ close }) {
 
 const useSuccessSnackbar = () => {
   const [open, close] = useSnackbar(successOptions);
-  const openSuccessSnackbar = () => open(<SuccessSnackBar close={close} />)
+  const openSuccessSnackbar = () => open(<SuccessSnackBar close={close} />);
   return [openSuccessSnackbar, close];
 };
 

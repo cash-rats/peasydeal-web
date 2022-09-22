@@ -7,8 +7,6 @@ export const links: LinksFunction = () => {
 
 export default function EmptyCart() {
   return (
-    <>
-      <EmptyShoppingCartPage />
-    </>
+    <EmptyShoppingCartPage />
   );
 }
