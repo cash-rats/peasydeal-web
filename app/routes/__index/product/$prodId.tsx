@@ -121,6 +121,7 @@ function ProductDetailPage() {
 		return variations.find<ProductVariation>(
 			(variation) => defaultVariationID === variation.variationId);
 	}, []);
+
 	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
 
 	// Item quantity.
@@ -134,6 +135,7 @@ function ProductDetailPage() {
 	const increaseQuantity = () => {
 		updateQuantity(prev => prev + 1);
 	};
+
 	const decreaseQuantity = () => {
 		if (quantity === 1) return;
 		updateQuantity(prev => prev - 1);

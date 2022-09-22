@@ -72,8 +72,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 		throw redirect('/empty_cart');
 	}
 
-	console.log('loader 1', cartItems);
-
 	return json(cartItems, { status: StatusCodes.OK });
 };
 
@@ -83,7 +81,7 @@ export const loader: LoaderFunction = async ({ request }) => {
  *
  * container width: max-width: 1180px;
  *
- * - [ ] show empty shopping cart when no item existed yet.
+ * - [ ] show empty shopping cart when no item existed yet, empty shipping cart should be a component instead of a route.
  * - [ ] Remember selected quantity and sales price for each item so that we can calculate total price in result row.
  * - [ ] Add `~~$99.98 Now $49.99 You Saved $50` text.
  * - [ ] When quantity is deducted to 0, popup a notification that the item is going to be removed.
@@ -100,7 +98,6 @@ function Cart() {
 		if (removeItemFetcher.type === 'done') {
 			removeItemFetcher.load('/cart?index');
 		}
-
 	}, [removeItemFetcher])
 
 	const updateItemQuantity = (quantity: number, prodID: string) => {
@@ -139,7 +136,6 @@ function Cart() {
 			},
 		)
 		setOpenRemoveItemModal(false);
-		// removeItemFetcher.load('/cart?index');
 	}
 
 	return (
