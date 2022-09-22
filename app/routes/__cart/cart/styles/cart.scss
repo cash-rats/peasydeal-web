@@ -1,3 +1,4 @@
+@import "styles/_breakpoints.scss";
 @import "styles/_mixins.scss";
 
 .shopping-cart-section {
@@ -11,7 +12,8 @@
 
 	.shopping-cart_topbar {
 		.title {
-  	  font-size: 2em;
+			font-size: 2em;
+			font-weight: bold;
 			margin-block-start: 0.67em;
 			margin-block-end: 0.67em;
 			margin-inline-start: 0px;
@@ -23,6 +25,8 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
+		padding-top: 2.25rem;
+
 		.head-row {
 			display: none;
 
@@ -35,7 +39,8 @@
 			line-height: 1.5;
 			font-size: 1.2em;
 
-			h1, div {
+			h1,
+			div {
 				color: #AAA;
 				padding-bottom: 15px;
 			}
@@ -107,9 +112,9 @@
 					.product-description-text {
 						width: 100%;
 						margin: 5px 20px 5px 0;
-    				line-height: 1.4em;
-    				margin-inline-start: 0px;
-    				margin-inline-end: 0px;
+						line-height: 1.4em;
+						margin-inline-start: 0px;
+						margin-inline-end: 0px;
 					}
 
 					.product-price-mobile {
@@ -149,6 +154,7 @@
 
 				@include md {
 					width: 43%;
+
 					.product-price {
 						width: 28%;
 					}
@@ -168,24 +174,44 @@
 
 		.result-row {
 			margin-top: 20px;
-			line-height: 2;
+			display: flex;
+
+
+			.left {
+				width: 0%;
+
+				@media (min-width: #{$screen-sm-min}) {
+					width: 60%;
+				}
+			}
+
+			.right {
+				width: 100%;
+
+				@media (min-width: #{$screen-sm-min}) {
+					width: 40%;
+				}
+
+				display: flex;
+				flex-direction: column;
+				gap: 7px;
+			}
 
 			div {
 				display: flex;
-				align-items: center;
+				align-items: flex-start;
+				width: 100%;
 
 				label {
-					width: 79%;
 					display: flex;
-					justify-content: flex-end;
+					flex: 1;
+					justify-content: flex-start;
 					color: #aaa;
-					line-height: 18.4px;
 					font-size: 20px;
 				}
 
-
 				.result-value {
-					width: 21%;
+					flex: 1;
 					display: flex;
 					justify-content: flex-end;
 				}

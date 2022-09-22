@@ -163,7 +163,7 @@ function Cart() {
 				{/* top bar, display back button and title */}
 				<div className="shopping-cart_topbar">
 					<h1 className="title">
-						Your Cart
+						Shopping Cart
 					</h1>
 				</div>
 
@@ -213,44 +213,49 @@ function Cart() {
 
 					{/* result row */}
 					<div className="result-row">
-						<div className="subtotal">
-							<label> Subtotal </label>
-							<div className="result-value"> ${
-								calcSubTotal(cartItems).toFixed(2)
-							} </div>
-						</div>
+						<div className="left" />
 
-						<div className="tax">
-							<label> Tax ({TAX * 100}%) </label>
-							<div className="result-value"> {
-								calcPriceWithTax(
-									Number(calcSubTotal(cartItems).toFixed(2)),
-								).toFixed(2)
-							}
+						<div className="right">
+							<div className="subtotal">
+								<label> Subtotal </label>
+								<div className="result-value"> ${
+									calcSubTotal(cartItems).toFixed(2)
+								} </div>
+							</div>
+
+							<div className="tax">
+								<label> Tax ({TAX * 100}%) </label>
+								<div className="result-value"> {
+									calcPriceWithTax(
+										Number(calcSubTotal(cartItems).toFixed(2)),
+									).toFixed(2)
+								}
+								</div>
+							</div>
+
+							<div className="shipping">
+								<label> Shipping </label>
+								<div className="result-value"> ${SHIPPING_FEE} </div>
+							</div>
+
+							<div className="grand-total">
+								<label> Grand Total </label>
+								<div className="result-value"> ${calcGrandTotal(cartItems).toFixed(2)} </div>
+							</div>
+
+							<div className="checkout-button">
+								<Link to="/checkout">
+									<Button
+										size='lg'
+										colorScheme='green'
+										leftIcon={<BsBagCheck fontSize={22} />}
+									>
+										Proceed Checkout
+									</Button>
+								</Link>
 							</div>
 						</div>
 
-						<div className="shipping">
-							<label> Shipping </label>
-							<div className="result-value"> ${SHIPPING_FEE} </div>
-						</div>
-
-						<div className="grand-total">
-							<label> Grand Total </label>
-							<div className="result-value"> ${calcGrandTotal(cartItems).toFixed(2)} </div>
-						</div>
-
-						<div className="checkout-button">
-							<Link to="/checkout">
-								<Button
-									size='lg'
-									colorScheme='green'
-									leftIcon={<BsBagCheck fontSize={22} />}
-								>
-									Proceed Checkout
-								</Button>
-							</Link>
-						</div>
 					</div>
 				</div>
 
