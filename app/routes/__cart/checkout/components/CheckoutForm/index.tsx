@@ -16,6 +16,9 @@ import type { StripeError, StripeElements, Stripe } from '@stripe/stripe-js';
 import LoadingButton from '@mui/lab/LoadingButton';
 import type { FormikValues } from 'formik';
 import httpStatus from 'http-status-codes';
+import Divider from '@mui/material/Divider';
+import HelpIcon from '@mui/icons-material/Help';
+import LockIcon from '@mui/icons-material/Lock';
 
 import { getBrowserDomainUrl } from '~/utils/misc';
 import type { ApiErrorResponse } from '~/shared/lib/types';
@@ -62,27 +65,6 @@ export const action: ActionFunction = async ({ request }) => {
     clientSecret,
   } = shippingFormObj;
 
-  // const resp = await fetch(`${PEASY_DEAL_ENDPOINT}/v1/orders`, {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({
-  //     email,
-  //     firstname,
-  //     lastname,
-  //     address: address1,
-  //     address2,
-  //     city,
-  //     postal,
-  //     payment_secret: clientSecret,
-  //     products: trfItems,
-  //     contact_name,
-  //     phone_value,
-  //   }),
-  // });
-
-  // const respJSON = await resp.json();
   const resp = await createOrder({
     email,
     firstname,
@@ -209,10 +191,6 @@ function StripeCheckoutForm({
       }
     }
 
-    console.log('collectedValues', collectedValues);
-
-    // return;
-
     if (!stripe || !elements) {
       return;
     }
@@ -250,6 +228,33 @@ function StripeCheckoutForm({
         >
           CONFIRM
         </LoadingButton>
+      </div>
+
+      <div className="policies-container">
+        <Divider />
+        <div className="policies">
+          <p className="promise">
+            <span>
+              <LockIcon fontSize='small' color='success' />
+            </span>
+            We won't store any of your card information.
+
+          </p>
+
+          <p className="promise">
+            <span>
+              <LockIcon fontSize='small' color='success' />
+            </span>
+            You payment is under SSL protection
+          </p>
+
+          <p className="promise">
+            <span>
+              <LockIcon fontSize='small' color='success' />
+            </span>
+            We use Stripe as our payment system which exceeds the most stringent field standards for security.
+          </p>
+        </div>
       </div>
     </form>
   );

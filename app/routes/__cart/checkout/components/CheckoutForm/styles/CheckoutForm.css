@@ -2,4 +2,11 @@
   margin-top: 20px;
 }
 
+.policies-container {
+  margin-top: 2rem;
+}
+.policies-container .policies {
+  padding-top: 2rem;
+}
+
 /*# sourceMappingURL=CheckoutForm.css.map */

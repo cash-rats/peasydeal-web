@@ -271,13 +271,6 @@ function CheckoutPage() {
                     </Elements>
                   )
                 }
-                {/* {
-                  paymentMessage && (
-                    <div>
-                      {paymentMessage}
-                    </div>
-                  )
-                } */}
               </div>
             </div>
           </div>

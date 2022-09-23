@@ -6,7 +6,6 @@ import type { CountryData } from 'react-phone-input-2';
 import reactPhoneInput2Styles from 'react-phone-input-2/lib/material.css';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
-
 import HelpIcon from '@mui/icons-material/Help';
 
 import styles from './styles/ContactInfoForm.css';
@@ -127,7 +126,7 @@ const ContactInfoForm = forwardRef((props, ref) => {
               {
                 touched.phone && errors.phone && (
                   <p className='phone-error-message'>
-                    {errors.phone}
+                    {<>errors.phone</>}
                   </p>
                 )
               }
