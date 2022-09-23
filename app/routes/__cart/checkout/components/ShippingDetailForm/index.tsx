@@ -2,8 +2,8 @@
   TODOs
     - [ ] Email validation
     - [ ] Header
+    - [ ] validation error should be displayed in tooltip.
 */
-
 import { forwardRef } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import FormControl from '@mui/material/FormControl';
@@ -13,7 +13,9 @@ import { Formik } from 'formik';
 import styles from './styles/ShippingDetailForm.css';
 
 export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: styles }];
+  return [
+    { rel: 'stylesheet', href: styles },
+  ];
 };
 
 const validate = values => {
@@ -92,6 +94,7 @@ const ShippingDetailForm = forwardRef((props, ref) => {
                     helperText={touched.email && errors.email}
                   />
                 </div>
+
 
                 {/* Name */}
                 <div className="shipping-form-fields fields--2">

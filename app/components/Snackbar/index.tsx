@@ -1,10 +1,11 @@
+import type { ReactElement } from 'react';
 import MuiAlert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import { useSnackbar } from 'react-simple-snackbar';
 
 const successOptions = {
   position: 'top-right',
   style: {
-    display: 'inline-block',
     position: 'absolute',
     border: 'none',
     backgroundColor: 'transparent',
@@ -24,37 +25,68 @@ const successOptions = {
 const errorOptions = {
   position: 'top-right',
   style: {
-    backgroundColor: '#EC5E5E',
+    position: 'absolute',
+    border: 'none',
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+    top: '80px',
+    right: '0',
     color: '#FFF',
     fontFamily: 'Menlo, monospace',
     fontSize: '16px',
     textAlign: 'center',
   },
   closeStyle: {
-    color: '#fff',
-    fontSize: '16px',
+    display: 'none',
   },
 }
 
-function SuccessSnackBar({ close }) {
+interface SuccessSnackBarProps {
+  onClose?: (event: React.SyntheticEvent) => void;
+  message: ReactElement | string;
+};
+
+function SuccessSnackBar({ onClose, message }: SuccessSnackBarProps) {
   return (
     <MuiAlert
       severity='success'
-      variant='filled'
-      onClose={close}
+      onClose={onClose}
     >
-      Added to cart
+      {message}
     </MuiAlert>
   );
 }
 
 const useSuccessSnackbar = () => {
   const [open, close] = useSnackbar(successOptions);
-  const openSuccessSnackbar = () => open(<SuccessSnackBar close={close} />);
+  const openSuccessSnackbar = (message: ReactElement | string) => open(<SuccessSnackBar message={message} onClose={close} />);
   return [openSuccessSnackbar, close];
 };
 
-const useErrorSnackbar = () => useSnackbar(errorOptions)
+interface ErrorSnackBarProps {
+  onClose?: (event: React.SyntheticEvent) => void;
+  message: ReactElement | string;
+};
+
+function ErrorSnackBar({ onClose, message }: ErrorSnackBarProps) {
+  return (
+    <MuiAlert
+      severity='error'
+      onClose={onClose}
+    >
+      <AlertTitle>
+        Error
+      </AlertTitle>
+      {message}
+    </MuiAlert>
+  );
+}
+
+const useErrorSnackbar = () => {
+  const [open, close] = useSnackbar(errorOptions);
+  const openErrorSnackbar = (message: string | ReactElement) => open(<ErrorSnackBar onClose={close} message={message} />);
+  return [openErrorSnackbar, close];
+}
 
 export { useSuccessSnackbar, useErrorSnackbar };
 

@@ -1,7 +1,7 @@
 .checkout-page-container {
   font-weight: bold;
   font-size: 28px;
-  padding: 1.125rem 0.75rem;
+  padding: 2.25rem 0.75rem 1.125rem;
 }
 @media (min-width: 1200px) {
   .checkout-page-container {
@@ -170,6 +170,10 @@
 
 .shipping-form-container {
   padding: 15px;
+}
+
+.error-box {
+  margin-top: 0.75rem;
 }
 
 /*# sourceMappingURL=Checkout.css.map */

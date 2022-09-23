@@ -18,9 +18,11 @@ import type { FormikValues } from 'formik';
 import httpStatus from 'http-status-codes';
 
 import { getBrowserDomainUrl } from '~/utils/misc';
+import type { ApiErrorResponse } from '~/shared/lib/types';
 
 import styles from './styles/CheckoutForm.css';
 import { transformOrderDetail } from './utils';
+import { createOrder } from './api';
 
 export const links: LinksFunction = () => {
   return [
@@ -45,7 +47,6 @@ export const action: ActionFunction = async ({ request }) => {
 
   // Order amount information
   // Create new order;
-  const { PEASY_DEAL_ENDPOINT } = process.env;
   const {
     email,
     firstname,
@@ -54,41 +55,75 @@ export const action: ActionFunction = async ({ request }) => {
     address2,
     city,
     postal,
+
+    // TODO: Change those to camel case.
+    contact_name,
+    phone_value,
     clientSecret,
   } = shippingFormObj;
 
-  const resp = await fetch(`${PEASY_DEAL_ENDPOINT}/v1/orders`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      email,
-      firstname,
-      lastname,
-      address: address1,
-      address2,
-      city,
-      postal,
-      payment_secret: clientSecret,
-      products: trfItems,
-    }),
+  // const resp = await fetch(`${PEASY_DEAL_ENDPOINT}/v1/orders`, {
+  //   method: 'POST',
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  //   body: JSON.stringify({
+  //     email,
+  //     firstname,
+  //     lastname,
+  //     address: address1,
+  //     address2,
+  //     city,
+  //     postal,
+  //     payment_secret: clientSecret,
+  //     products: trfItems,
+  //     contact_name,
+  //     phone_value,
+  //   }),
+  // });
+
+  // const respJSON = await resp.json();
+  const resp = await createOrder({
+    email,
+    firstname,
+    lastname,
+    address1,
+    address2,
+    city,
+    postal,
+
+    // TODO: Change those to camel case.
+    contact_name,
+    phone_value,
+    // ---------------------------------
+
+    payment_secret: clientSecret,
+    products: trfItems,
   });
 
-  const respJSON = await resp.json();
+  const respJSON = await resp.json() as Promise<any | ApiErrorResponse>;
 
+  // TODO: failed to create order
   if (resp.status !== httpStatus.OK) {
-    return json(respJSON, resp.status);
+    return json(respJSON, httpStatus.OK);
   }
 
   return json(respJSON, httpStatus.OK);
 }
 
+type Validator = () => Promise<[boolean, FormikValues] | undefined>;
+
 interface StripeCheckoutFormProps {
   /*
    * Perform any validations before performing checkout.
    */
-  validateBeforeCheckout: () => Promise<[boolean, FormikValues] | undefined>;
+  validateBeforeCheckout: Validator[];
+
+
+  /*
+   * Pass the result of order creation as an argument to the `onCreateOrderResult` callback.
+   */
+  onCreateOrderResult: (resp: any) => void;
 
   /*
    * Stripe payment result. If success, null will be given else instance of `StripeError` is given.
@@ -112,6 +147,7 @@ interface StripeCheckoutFormProps {
 //  - [ ] payment form validation.
 //  - [ ] [To submit payment on server](https://stripe.com/docs/payments/accept-a-payment-synchronously?html-or-react=react)
 function StripeCheckoutForm({
+  onCreateOrderResult = () => { },
   onPaymentResult = () => { },
   validateBeforeCheckout,
   orderDetail,
@@ -138,14 +174,19 @@ function StripeCheckoutForm({
     onPaymentResult(orderID, error);
   }
 
-  // Only when new order has been created successfully, we will perform stripe payment.
+  // Perform stripe payment only when new order is created successfully.
   useEffect(() => {
-
-    // If there are any immediate errors, show the error messasge to customer.
+    // If there are any immediate error when creating order, show error messasge to customer.
     if (createOrderFetcher.type === 'done' && elements && stripe) {
+      if (createOrderFetcher.data.err_code) {
+        const errResp = createOrderFetcher.data as ApiErrorResponse;
+        onCreateOrderResult(errResp);
+
+        return;
+      }
+
       const { order_id: orderID } = createOrderFetcher.data
       setOrderID(orderID);
-
       confirmPayment(orderID, elements, stripe);
     }
 
@@ -154,14 +195,23 @@ function StripeCheckoutForm({
   const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
 
-    const res = await validateBeforeCheckout();
+    let collectedValues = {};
 
-    if (!res) return;
+    for (const validator of validateBeforeCheckout) {
+      const res = await validator();
+      if (!res) return;
+      const [hasErrors, formValues] = res;
+      if (hasErrors) return;
 
+      collectedValues = {
+        ...collectedValues,
+        ...formValues,
+      }
+    }
 
-    const [hasErrors, shippingFormValues] = res;
+    console.log('collectedValues', collectedValues);
 
-    if (hasErrors) return;
+    // return;
 
     if (!stripe || !elements) {
       return;
@@ -175,7 +225,7 @@ function StripeCheckoutForm({
     if (!orderID) {
       createOrderFetcher.submit({
         shipping_form: JSON.stringify({
-          ...shippingFormValues,
+          ...collectedValues,
           clientSecret,
         }),
         order_detail: JSON.stringify(orderDetail),

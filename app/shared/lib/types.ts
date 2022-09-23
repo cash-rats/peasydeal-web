@@ -24,3 +24,8 @@ export type CartItem = {
   title: string;
   variationID: string;
 }
+
+export type ApiErrorResponse = {
+  err_code: string;
+  err_message: string;
+}

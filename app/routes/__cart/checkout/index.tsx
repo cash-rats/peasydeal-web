@@ -20,15 +20,19 @@ import { getSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
 import { calcGrandTotal } from '~/utils/checkout_accountant';
 import { createPaymentIntent } from '~/utils/stripe.server';
+import type { ApiErrorResponse } from '~/shared/lib/types';
+import { useErrorSnackbar } from '~/components/Snackbar';
 
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
 import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
+import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
 
 export const links: LinksFunction = () => {
   return [
     ...ShippingDetailFormLinks(),
     ...CheckoutFormLinks(),
+    ...ContactInfoFormLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -78,7 +82,7 @@ function CheckoutPage() {
     cart_items: cartItems,
   } = useLoaderData();
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-  const [paymentMessage, setPaymentMessage] = useState<string | undefined>(undefined);
+  const [openErrorSnackbar] = useErrorSnackbar();
 
   useEffect(() => {
     if (window) {
@@ -98,11 +102,13 @@ function CheckoutPage() {
   };
 
   const shippingDetailRef = useRef<FormikProps<FormikValues>>(null);
+  const contactInfoRef = useRef<FormikProps<FormikValues>>(null);
 
   const validateShippingForm = async (): Promise<undefined | [boolean, FormikValues]> => {
     if (!shippingDetailRef.current) return;
 
     shippingDetailRef.current.handleSubmit();
+
     // Validate shipping detail form before we can perform stripe checkout.
     const errors = await shippingDetailRef.current.validateForm();
     return [
@@ -111,26 +117,53 @@ function CheckoutPage() {
     ];
   }
 
+  // Submit contact information form imperatively.
+  const validateContactForm = async (): Promise<undefined | [boolean, FormikValues]> => {
+    if (!contactInfoRef.current || !shippingDetailRef.current) return;
+
+    contactInfoRef.current.handleSubmit();
+    const errors = await contactInfoRef.current?.validateForm();
+
+    const contactInfoValues = { ...contactInfoRef.current.values };
+
+    // Assign contact name to be same as shipping name if `contact_name_same` is checkedc
+    const { values: shippingDetailValues } = shippingDetailRef.current;
+
+    if (contactInfoValues.contact_name_same) {
+      const { firstname, lastname } = shippingDetailValues;
+      contactInfoValues.contact_name = `${firstname} ${lastname}`
+    }
+
+    return [
+      Object.keys(errors).length > 0,
+      contactInfoValues,
+    ];
+  }
+
+
+  const handleCreateOrderResult = async (res: any) => {
+    if (res.err_code) {
+      const errResp = res as ApiErrorResponse;
+      openErrorSnackbar(`Failed to create order, please try again later, error code: ${errResp.err_code}`);
+    }
+  }
+
   const handlePaymentResult = async (orderID: string, error: StripeError | undefined) => {
     if (error) {
       if (error.type === "card_error" || error.type === "validation_error") {
-        setPaymentMessage(error.message);
+        openErrorSnackbar(error.message);
       } else {
-        setPaymentMessage("An unexpected error occurred.")
+        openErrorSnackbar("An unexpected error occurred.");
       }
 
       return;
     }
-
-    setPaymentMessage(null);
-    // Return to payment success page with query param payment intend client secret.
-    // Check
-    console.log('resp', orderID);
-    // debugger;
   }
 
   return (
     <section className="checkout-page-container">
+
+
       <h1 className="title">
         Shipping Information
       </h1>
@@ -195,6 +228,19 @@ function CheckoutPage() {
             </div>
           </div >
 
+          {/* Contact information */}
+          <div className="form-container">
+            <h1 className="title">
+              Contact Informat
+            </h1>
+
+            <div className="pricing-panel">
+              <div className="shipping-form-container">
+                <ContactInfoForm ref={contactInfoRef} />
+              </div>
+            </div>
+          </div>
+
           <div className='form-container'>
             <h3 className="title">
               Payment Information
@@ -212,7 +258,12 @@ function CheckoutPage() {
                       options={options}
                     >
                       <CheckoutForm
-                        validateBeforeCheckout={validateShippingForm}
+                        validateBeforeCheckout={[
+                          validateShippingForm,
+                          validateContactForm,
+                        ]}
+
+                        onCreateOrderResult={handleCreateOrderResult}
                         onPaymentResult={handlePaymentResult}
                         clientSecret={clientSecret}
                         orderDetail={cartItems}
@@ -220,13 +271,13 @@ function CheckoutPage() {
                     </Elements>
                   )
                 }
-                {
+                {/* {
                   paymentMessage && (
                     <div>
                       {paymentMessage}
                     </div>
                   )
-                }
+                } */}
               </div>
             </div>
           </div>

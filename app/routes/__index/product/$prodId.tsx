@@ -162,7 +162,7 @@ function ProductDetailPage() {
 
 	useEffect(() => {
 		if (addToCart.type === 'done') {
-			openSuccessSnackbar();
+			openSuccessSnackbar('Added to cart');
 		}
 	}, [addToCart])
 
