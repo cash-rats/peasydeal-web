@@ -67,6 +67,8 @@ const ContactInfoForm = forwardRef((props, ref) => {
           handleChange,
           handleBlur,
         }) => {
+          console.log('errors 1', errors);
+          console.log('errors 2', touched);
           return (
             <>
               <div className="contact-name-the-same">
@@ -121,8 +123,14 @@ const ContactInfoForm = forwardRef((props, ref) => {
                   handleChange(evt)
                 }}
                 onBlur={handleBlur}
-                helperText={touched.phone && errors.phone}
               />
+              {
+                touched.phone && errors.phone && (
+                  <p className='phone-error-message'>
+                    {errors.phone}
+                  </p>
+                )
+              }
 
               <div>
                 <p className="promise">

@@ -231,7 +231,7 @@ function CheckoutPage() {
           {/* Contact information */}
           <div className="form-container">
             <h1 className="title">
-              Contact Informat
+              Contact Information
             </h1>
 
             <div className="pricing-panel">

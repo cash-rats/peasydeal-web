@@ -9,6 +9,7 @@ import type { LinksFunction } from '@remix-run/node';
 import FormControl from '@mui/material/FormControl';
 import { TextField } from '@mui/material';
 import { Formik } from 'formik';
+import * as Yup from 'yup';
 
 import styles from './styles/ShippingDetailForm.css';
 
@@ -17,36 +18,20 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 };
-
-const validate = values => {
-  const errors = {};
-  if (!values.email) {
-    errors.email = 'required';
-  }
-
-  if (!values.lastname) {
-    errors.lastname = 'required';
-  }
-
-  if (!values.firstname) {
-    errors.firstname = 'required';
-  }
-
-  if (!values.address1) {
-    errors.address1 = 'required';
-  }
-
-  if (!values.postal) {
-    errors.postal = 'required';
-  }
-
-  if (!values.city) {
-    errors.city = 'required';
-  }
-
-  return errors;
-};
-
+const ShippingDetailSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email').required('Required'),
+  firstname: Yup.string()
+    .min(2, 'too Short!')
+    .max(50, 'too Long!')
+    .required('required'),
+  lastname: Yup.string()
+    .min(2, 'too Short!')
+    .max(50, 'too Long!')
+    .required('required'),
+  address: Yup.string().required('required'),
+  postal: Yup.string().required('required'),
+  city: Yup.string().required('required'),
+});
 
 const ShippingDetailForm = forwardRef((props, ref) => {
   const initialValues = {
@@ -64,7 +49,7 @@ const ShippingDetailForm = forwardRef((props, ref) => {
       <Formik
         innerRef={ref}
         initialValues={initialValues}
-        validate={validate}
+        validationSchema={ShippingDetailSchema}
         id="shipping-detail-form"
       >
         {
