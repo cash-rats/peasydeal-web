@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import {
@@ -14,6 +14,8 @@ import Discover from './images/pi_discover.svg';
 import GooglePay from './images/google_pay.svg';
 import MasterCard from './images/pi_master.svg';
 import Visa from './images/visa.svg';
+import FB from './images/facebook.svg';
+import IG from './images/ig.svg';
 import clsx from 'clsx';
 
 export const links: LinksFunction = () => {
@@ -194,6 +196,34 @@ function Footer() {
           <li> <img alt="Master Card" src={MasterCard} /> </li>
           <li> <img alt="Visa" src={Visa} /></li>
         </ul>
+      </div>
+
+      {/* Company sign */}
+      <div className="company-sign">
+        <span>
+          © PeasyDeal 2022
+        </span>
+      </div>
+
+      {/* Social Media */}
+      <div className="social-media-links">
+        <a
+          rel="noreferrer"
+          target="_blank"
+          href="https://facebook.com"
+        >
+          <img alt='facebook' src={FB} />
+        </a>
+
+        <a
+
+          rel="noreferrer"
+          target="_blank"
+          href="https://instagram.com"
+
+        >
+          <img alt='instagram' src={IG} />
+        </a>
       </div>
     </footer>
   );

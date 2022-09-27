@@ -1,78 +1,17 @@
-.footer-container {
-  padding-top: 30px;
-  background-color: #f5f5f5;
-  width: 100%;
-}
-.footer-container .footer-list {
-  list-style: none;
-  padding: 0;
-  padding: 0 1rem;
-}
-.footer-container .footer-list li {
-  box-sizing: border-box;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.footer-container .footer-list li .footer-list-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 39.5px;
-  width: 100%;
-  cursor: pointer;
-  margin-bottom: 1rem;
-}
-.footer-container .footer-list li .footer-list-title h3 {
-  margin: 0;
-  font-weight: 500;
-  font-size: 1rem;
-}
-.footer-container .footer-list li .footer-list-content {
-  transition: max-height 0.4s ease-in-out;
-  width: 100%;
-  max-height: 0;
-  overflow: hidden;
-}
+/* Error: Can't find stylesheet to import.
+ *   ,
+ * 1 | @import 'styles/__breakpoints';
+ *   |         ^^^^^^^^^^^^^^^^^^^^^^
+ *   '
+ *   app/components/Footer/styles/Footer.scss 1:9  root stylesheet */
 
-.desc {
-  line-height: 1.3rem;
+body::before {
+  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
+      "Droid Sans Mono", monospace, monospace;
+  white-space: pre;
+  display: block;
+  padding: 1em;
+  margin-bottom: 1em;
+  border-bottom: 2px solid black;
+  content: "Error: Can't find stylesheet to import.\a   \2577 \a 1 \2502  @import 'styles/__breakpoints';\a   \2502          ^^^^^^^^^^^^^^^^^^^^^^\a   \2575 \a   app/components/Footer/styles/Footer.scss 1:9  root stylesheet";
 }
-
-.footer-item-grow {
-  max-height: 300px !important;
-}
-
-.hide {
-  display: none;
-}
-
-.show {
-  height: 0px;
-  display: block !important;
-}
-
-.contact-email {
-  text-align: left;
-}
-
-.payment-methods {
-  padding: 0 1rem;
-  width: 100%;
-}
-.payment-methods ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-}
-.payment-methods ul li {
-  width: 38px;
-  height: 24px;
-  margin: 0.624rem;
-}
-
-/*# sourceMappingURL=Footer.css.map */

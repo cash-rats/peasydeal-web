@@ -1,5 +1,8 @@
+@import 'styles/__breakpoints';
+
 .footer-container {
   padding-top: 30px;
+  padding-bottom: 25px;
   background-color: #f5f5f5;
   width: 100%;
 
@@ -23,7 +26,6 @@
         height: 39.5px;
         width: 100%;
         cursor: pointer;
-        margin-bottom: 1rem;
 
         h3 {
           margin: 0;
@@ -33,7 +35,7 @@
       }
 
       .footer-list-content {
-        transition: max-height .4s ease-in-out;
+        transition: max-height .3s;
         width: 100%;
         max-height: 0;
         overflow: hidden;
@@ -79,5 +81,26 @@
       height: 24px;
       margin: 0.624rem;
     }
+  }
+}
+
+.company-sign {
+  text-align: center;
+  width: 100%;
+  margin-top: 0.675rem;
+  margin-bottom: 1.5rem;
+  font-size: 14px;
+}
+
+.social-media-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+
+
+  img {
+    width: 16px;
+    height: 16px;
   }
 }
