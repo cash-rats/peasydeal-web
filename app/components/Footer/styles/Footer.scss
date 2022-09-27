@@ -10,7 +10,6 @@
 
     li {
       box-sizing: border-box;
-      cursor: pointer;
       padding-top: 10px;
       padding-bottom: 10px;
       display: flex;
@@ -23,6 +22,8 @@
         align-items: center;
         height: 39.5px;
         width: 100%;
+        cursor: pointer;
+        margin-bottom: 1rem;
 
         h3 {
           margin: 0;
@@ -32,10 +33,34 @@
       }
 
       .footer-list-content {
-        line-height: 1.3rem;
+        transition: max-height .4s ease-in-out;
+        width: 100%;
+        max-height: 0;
+        overflow: hidden;
       }
     }
   }
+}
+
+.desc {
+  line-height: 1.3rem;
+}
+
+.footer-item-grow {
+  max-height: 300px !important;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  height: 0px;
+  display: block !important;
+}
+
+.contact-email {
+  text-align: left;
 }
 
 .payment-methods {
