@@ -1,0 +1,53 @@
+.footer-container {
+  padding-top: 30px;
+  background-color: #f5f5f5;
+  width: 100%;
+}
+.footer-container .footer-list {
+  list-style: none;
+  padding: 0;
+  padding: 0 1rem;
+}
+.footer-container .footer-list li {
+  box-sizing: border-box;
+  cursor: pointer;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.footer-container .footer-list li .footer-list-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 39.5px;
+  width: 100%;
+}
+.footer-container .footer-list li .footer-list-title h3 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 1rem;
+}
+.footer-container .footer-list li .footer-list-content {
+  line-height: 1.3rem;
+}
+
+.payment-methods {
+  padding: 0 1rem;
+  width: 100%;
+}
+.payment-methods ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+}
+.payment-methods ul li {
+  width: 38px;
+  height: 24px;
+  margin: 0.624rem;
+}
+
+/*# sourceMappingURL=Footer.css.map */

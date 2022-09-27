@@ -1,10 +1,10 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import RedDot from './index';
 
 export default {
 	title: 'RedDot',
-	component: RedDot
+	component: RedDot,
 } as ComponentMeta<typeof RedDot>
 
 const Template: ComponentStory<typeof RedDot> = (args) => (
