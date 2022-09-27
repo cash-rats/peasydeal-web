@@ -4,6 +4,7 @@ import { Outlet, useLoaderData } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import Header, { links as HeaderLinks } from '~/components/Header';
+import Footer, { links as FooterLinks } from '~/components/Footer';
 import { getSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
 
@@ -12,6 +13,7 @@ import { fetchCategories } from './api';
 
 export const links: LinksFunction = () => {
 	return [
+		...FooterLinks(),
 		...HeaderLinks(),
 		{ rel: 'stylesheet', href: styles }
 	];
@@ -57,6 +59,8 @@ export default function Index() {
 			<main className="main-container">
 				<Outlet />
 			</main>
+
+			<Footer />
 		</>
 	);
 }
