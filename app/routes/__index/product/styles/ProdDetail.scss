@@ -26,7 +26,7 @@
 		margin-bottom: 60px;
 		width: 100%;
 		background-color: #fff;
-    box-shadow: 0 8px 16px 0 rgb(0 0 0 / 10%);
+		box-shadow: 0 8px 16px 0 rgb(0 0 0 / 10%);
 
 		@include md {
 			margin-top: 0px;
@@ -69,12 +69,12 @@
 
 			.lure1 {
 				margin: 5px 5px 0 0;
-    		font-size: 18px;
+				font-size: 18px;
 			}
 
 			.lure2 {
 				margin: 5px 5px 0 0;
-    		font-size: 18px;
+				font-size: 18px;
 			}
 
 			.lure3 {
@@ -122,7 +122,7 @@
 
 	h1 {
 		font-weight: bold;
-    font-size: 1.714em;
+		font-size: 1.714em;
 		text-transform: uppercase;
 	}
 
@@ -135,6 +135,7 @@
 
 .product-features-mobile {
 	display: block;
+
 	@include md {
 		display: none;
 	}
@@ -172,6 +173,7 @@
 
 .client-action-bar-large {
 	display: none;
+
 	@include md {
 		margin-top: 15px;
 		display: flex;
