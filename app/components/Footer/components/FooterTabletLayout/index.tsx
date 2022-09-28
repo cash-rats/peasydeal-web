@@ -23,10 +23,18 @@ export const links: LinksFunction = () => {
 function FooterTabletLayout() {
   return (
     <div className="footer-tablet-layout">
-      <PolicyContent />
-      <ServiceContent />
-      <ContactUsContent />
-      <SubscribeContent />
+      <div className="tablet-footer-content">
+        <PolicyContent />
+      </div>
+      <div className="tablet-footer-content">
+        <ServiceContent />
+      </div>
+      <div className="tablet-footer-content">
+        <ContactUsContent />
+      </div>
+      <div className="tablet-footer-content">
+        <SubscribeContent />
+      </div>
     </div>
   );
 }

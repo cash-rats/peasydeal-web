@@ -4,5 +4,18 @@
   padding: 30px 1rem 0 1rem;
   background-color: #EDEDED;
 }
+@media (min-width: 1024px) {
+  .footer-tablet-layout {
+    grid-template-columns: 25% 25% 25% 25%;
+  }
+}
+.footer-tablet-layout .tablet-footer-content {
+  border-right: 1px solid #E5E5E5;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+.footer-tablet-layout .tablet-footer-content:last-child {
+  border-right: none;
+}
 
 /*# sourceMappingURL=FooterTabletLayout.css.map */
