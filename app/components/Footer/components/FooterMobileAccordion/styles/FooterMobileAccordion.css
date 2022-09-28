@@ -1,0 +1,38 @@
+.footer-list {
+  list-style: none;
+  padding: 0;
+  padding: 0 1rem;
+}
+.footer-list li {
+  box-sizing: border-box;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.footer-list li .footer-list-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 39.5px;
+  width: 100%;
+  cursor: pointer;
+}
+.footer-list li .footer-list-title h3 {
+  margin: 0;
+  font-weight: 500;
+  font-size: 1rem;
+}
+.footer-list li .footer-list-content {
+  transition: max-height 0.3s;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.footer-item-grow {
+  max-height: 300px !important;
+}
+
+/*# sourceMappingURL=FooterMobileAccordion.css.map */

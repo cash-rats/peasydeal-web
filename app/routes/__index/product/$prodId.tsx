@@ -122,6 +122,12 @@ function ProductDetailPage() {
 			(variation) => defaultVariationID === variation.variationId);
 	}, []);
 
+	useEffect(() => {
+		if (window) {
+			window.scrollTo(0, 0);
+		}
+	}, []);
+
 	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
 
 	// Item quantity.
