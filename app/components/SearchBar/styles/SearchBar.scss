@@ -9,11 +9,10 @@
   border-radius: 2px;
   border: 1px solid rgb(180, 180, 180);
   padding: 0.875rem 3.25rem 0.875rem 1rem;
-
+  height: 2.625rem;
   width: 100%;
   position: relative;
   display: flex;
-  -webkit-box-align: center;
   align-items: center;
   box-shadow: rgb(0 0 0 / 12%) 1px 2px 8px 1px;
   position: relative;
@@ -21,7 +20,7 @@
   .search-icon {
     cursor: pointer;
     position: absolute;
-    right: 0.8rem;
+    right: 0;
     width: 3.75rem;
     max-height: 3.75rem;
     display: flex;

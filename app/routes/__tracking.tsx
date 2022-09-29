@@ -1,22 +1,18 @@
 import type { LinksFunction } from '@remix-run/node';
 import { Outlet } from "@remix-run/react";
 
-import HeaderWrapper, { links as HeaderWrapperLinks } from '~/components/Header/components/HeaderWrapper';
-import LogoBar, { links as LogoBarLinks } from '~/components/Header/components/LogoBar';
+import TrackOrderHeader, { links as TrackOrderHeaderLinks } from '~/components/Header/components/TrackOrderHeader';
 
 export const links: LinksFunction = () => {
   return [
-    ...HeaderWrapperLinks(),
-    ...LogoBarLinks(),
+    ...TrackOrderHeaderLinks(),
   ];
 };
 
 function TrackingOrder() {
   return (
     <>
-      <HeaderWrapper>
-        <LogoBar />
-      </HeaderWrapper>
+      <TrackOrderHeader />
 
       <main>
         <Outlet />
