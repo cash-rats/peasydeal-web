@@ -122,6 +122,7 @@ function ProductDetailPage() {
 			(variation) => defaultVariationID === variation.variationId);
 	}, []);
 
+	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
 	useEffect(() => {
 		if (window) {
 			window.scrollTo(0, 0);

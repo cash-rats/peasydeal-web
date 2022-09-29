@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { clsx } from 'clsx'
 import { AiOutlineSearch } from "react-icons/ai";
-import { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from '@remix-run/node';
 
 import styles from './styles/SearchBar.css';
 
@@ -29,18 +29,18 @@ export default function SearchBar() {
 				</div>
 
 				<div className={clsx('search', openSearchBar && 'show')}>
-   		  	<input
+					<input
 						className="input-search"
 						type="text"
 						placeholder="What are you looking for?"
-						onChange={() => {}}
+						onChange={() => { }}
 					/>
 
 					<button className="search-button">
 						<AiOutlineSearch fontSize={18} />
 					</button>
 				</div>
-   		</div>
+			</div>
 		</>
 	);
 }

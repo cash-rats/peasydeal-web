@@ -6,9 +6,11 @@
 	box-shadow: 2px 9px 49px -17px rgba(0, 0, 0, 0.3);
 	position: sticky;
 	top: 0;
+	height: 70px;
 	width: 100%;
 	z-index: 10;
 	background: #fff;
+	box-sizing: border-box;
 
 	.contact-container {
 		height: 0.5rem;
@@ -34,14 +36,9 @@
 	}
 
 	.header-content-container {
-		padding-top: 0.5rem;
-		height: 70px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		margin: 0 auto;
-		max-width: 1180px;
 		width: 100%;
-		padding: 0 15px;
+		height: 100%;
+		box-sizing: border-box;
+		padding: 0.5rem 1rem;
 	}
 }
