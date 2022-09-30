@@ -107,6 +107,9 @@
 .tracking-order-container .deliver-info-container .cost-info-box {
   border-bottom: 1px solid #E5E5E5;
   padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 .tracking-order-container .deliver-info-container .info-piece {
   margin-bottom: 1rem;
@@ -132,6 +135,14 @@
   color: rgb(130, 129, 131);
 }
 .tracking-order-container .deliver-info-container .info-piece .price-info p {
+  margin: 0;
+}
+.tracking-order-container .deliver-info-container .info-piece .price-info .title-with-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.tracking-order-container .deliver-info-container .info-piece .price-info p {
   flex: 1;
 }
 .tracking-order-container .deliver-info-container .info-piece .price-info p:last-child {
@@ -141,6 +152,7 @@
 .tracking-order-container .deliver-info-container .subtotal {
   width: 100%;
   display: flex;
+  margin-bottom: 0.5rem;
 }
 .tracking-order-container .deliver-info-container .subtotal p {
   flex: 1;

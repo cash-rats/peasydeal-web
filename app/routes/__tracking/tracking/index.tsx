@@ -1,5 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 import { FaShippingFast } from 'react-icons/fa';
+import { BsFillInfoCircleFill } from 'react-icons/bs';
 
 import styles from './styles/Tracking.css';
 
@@ -12,8 +13,9 @@ export const links: LinksFunction = () => {
   Reference:
     - https://bbbootstrap.com/snippets/ecommerce-product-order-details-tracking-63470618
 
-  - Order Detail
-    -
+  TODOs:
+    - [] Deliver & Tax should have tooltips when hover over the icon.
+
 */
 function TrackingOrderIndex() {
   return (
@@ -120,12 +122,21 @@ function TrackingOrderIndex() {
           </span>
 
           <span className="price-info">
-            <p> Deliver </p>
+            <span className="title-with-info">
+              <p> Deliver </p>
+              <BsFillInfoCircleFill />
+            </span>
             <p> $20.00 </p>
           </span>
 
           <span className="price-info">
-            <p> Total </p>
+            <span className="title-with-info">
+              <p> Tax </p>
+              <span>
+                <BsFillInfoCircleFill />
+              </span>
+            </span>
+
             <p> + $221.88 </p>
           </span>
         </div>

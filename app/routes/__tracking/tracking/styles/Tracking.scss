@@ -130,6 +130,9 @@
     .cost-info-box {
       border-bottom: 1px solid #E5E5E5;
       padding-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
     }
 
     .info-piece {
@@ -154,10 +157,20 @@
 
       .price-info {
         display: flex;
-
         font-size: 0.75rem;
         font-weight: 400;
         color: rgb(130, 129, 131);
+
+        p {
+          margin: 0;
+        }
+
+        .title-with-info {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+
+        }
 
         p {
           flex: 1;
@@ -173,6 +186,7 @@
     .subtotal {
       width: 100%;
       display: flex;
+      margin-bottom: 0.5rem;
 
       p {
         flex: 1;
