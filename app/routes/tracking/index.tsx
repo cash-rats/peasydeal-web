@@ -1,17 +1,22 @@
 import { useState, useEffect } from 'react';
-import type { LinksFunction, LoaderFunction, ErrorBoundaryComponent } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useFetcher, useCatch } from '@remix-run/react';
+import { useFetcher } from '@remix-run/react';
 import { FaShippingFast } from 'react-icons/fa';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 import httpStatus from 'http-status-codes';
+import parseISO from 'date-fns/parseISO';
+import format from 'date-fns/format';
+import add from 'date-fns/add';
 
-import { useOrderNum } from '~/routes/__tracking';
+import { useOrderNum } from '~/routes/tracking';
 import { error } from '~/utils/error';
+import type { ApiErrorResponse } from '~/shared/types';
 
 import styles from './styles/Tracking.css';
 import { trackOrder } from './api';
 import EmptyBox from './images/empty-box.png';
+import type { TrackOrder } from './types';
 
 export const links: LinksFunction = () => {
   return [
@@ -30,9 +35,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const orderID = url.searchParams.get('order_id') || '';
 
-
-  console.log('debug 1', orderID);
-
   // Order id is likely to be empty, thus, is invalid.
   if (!orderID) {
     return json(error('invalid order id'), httpStatus.BAD_REQUEST);
@@ -40,23 +42,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   // TODO check order id format before sending to backend.
   const resp = await trackOrder(orderID);
-  const respJSON = await resp.json();
+  const respJSON = await resp.json() as TrackOrder;
 
   if (resp.status !== httpStatus.OK) {
-    throw json(respJSON, resp.status);
+    return json(respJSON, resp.status)
   }
 
-  console.log('debug 2', resp.status);
-  console.log('debug 3', orderID);
-
-  return null;
+  return json<TrackOrder>(respJSON, httpStatus.OK);
 }
 
-export function ErrorBoundary({ error }) {
-  // const caught = useCatch();
-  console.log('ErrorBoundary', error);
+function TrackingOrderErrorPage() {
   return (
-    <div className="order-not-found">
+    <div className="problematic-page">
       <img
         alt="no data found"
         src={EmptyBox}
@@ -64,9 +61,16 @@ export function ErrorBoundary({ error }) {
 
       <p> wrong order id maybe? </p>
     </div>
-  )
+  );
 }
 
+function InitialPage() {
+  return (
+    <div className="problematic-page">
+      <p> Please prompt order id above to track for your order. </p>
+    </div>
+  );
+}
 
 /*
   Design Reference:
@@ -77,35 +81,72 @@ export function ErrorBoundary({ error }) {
     - [ ] Search order by order number.
     - [ ] Deliver & Tax should have tooltips when hover over the icon.
 */
+
 function TrackingOrderIndex() {
   const { orderNum } = useOrderNum();
-  const [orderInfo, setOrderInfo] = useState<{} | null>(null);
+  const [error, setError] = useState<null | ApiErrorResponse>(null);
+  const [orderInfo, setOrderInfo] = useState<TrackOrder | null>(null);
   const trackOrder = useFetcher();
-
-  console.log('debug 3', orderNum);
 
   // Search when `orderNum` is changed.
   useEffect(() => {
-    console.log('debug fe', orderNum);
     if (!orderNum) return;
+    setError(null);
     trackOrder.load(`/tracking?index&order_id=${orderNum}`);
   }, [orderNum]);
 
-  // useEffect(() => {
-  //   console.log('fetcher data', trackOrder.);
-  // }, [trackOrder])
+  useEffect(() => {
+    if (trackOrder.type === 'done') {
+      // If is an error, set error state to display error page.
+      if (trackOrder.data.hasOwnProperty('err_code')) {
+        setError(trackOrder.data);
+
+        return;
+      }
+
+      let orderInfo = trackOrder.data as TrackOrder;
+      orderInfo.parsed_created_at = parseISO(orderInfo.created_at);
+
+      setOrderInfo(trackOrder.data);
+
+      // If there isn't any error, display tracking order information
+    }
+  }, [trackOrder])
+
+  if (error) {
+    return (<TrackingOrderErrorPage />);
+  }
+
+  // Initial state when nothing is being searched. Ask user to prompot order uuid to search.
+  if (!orderInfo) {
+    return (
+      <InitialPage />
+    );
+  }
 
   return (
     <div className="tracking-order-container">
-      <h1 className="order-title"> Order ID: 33492461 </h1>
+      <h1 className="order-title">
+        Order ID: {orderInfo.order_uuid}
+      </h1>
 
       <div className="order-subtitle">
         <span className="order-subtitle-info">
-          Order date: &nbsp; <b>Feb, 16, 2022</b>
+          Order date: &nbsp; <b>{format(orderInfo.parsed_created_at, 'MMM, d, yyyy')}</b>
         </span>
+
         <span className="order-subtitle-info">
+          {/* Estimated delivery would be 10 days after order is made */}
           <FaShippingFast fontSize={20} color='#00b33b' /> &nbsp;
-          Estimated delivery: &nbsp; <b>May 14, 2022</b>
+          Estimated delivery: &nbsp;
+          <b>
+            {
+              format(
+                add(orderInfo.parsed_created_at, { days: 10 }),
+                'MMM, d, yyyy'
+              )
+            }
+          </b>
         </span>
       </div>
 
@@ -116,7 +157,6 @@ function TrackingOrderIndex() {
 
           <div className="left">
             <div className="product-img">
-
               <img
                 alt='product'
                 src='https://via.placeholder.com/150'
