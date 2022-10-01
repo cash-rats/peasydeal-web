@@ -1,4 +1,4 @@
-import type { Product } from "~/shared/lib/types";
+import type { Product } from "~/shared/types";
 
 import OneMainTwoSubs from "./OneMainTwoSubs";
 

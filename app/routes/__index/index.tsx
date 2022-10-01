@@ -16,7 +16,7 @@ import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Spinner from "~/components/Spinner";
 
-import type { Product } from "~/shared/lib/types";
+import type { Product } from "~/shared/types";
 
 import { fetchProducts } from "./api";
 import styles from "./styles/ProductList.css";
@@ -33,7 +33,7 @@ export const links: LinksFunction = () => {
 const transformData = (apiData: any[]): Product[] => {
 	const transformed: Product[] = apiData.map((data: any): Product => {
 		return {
-  		currency: data.currency,
+			currency: data.currency,
 			description: data.description,
 			discount: data.discountOff,
 			main_pic: data.mainPic,
@@ -83,7 +83,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const perPage = Number(url.searchParams.get('per_page') || LIMIT);
 	const page = Number(url.searchParams.get('page') || '1');
 
-	const resp  = await fetchProducts({
+	const resp = await fetchProducts({
 		perpage: perPage,
 		page,
 	})
@@ -102,7 +102,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
 	const body = await request.formData();
-  const productID = body.get("product_id");
+	const productID = body.get("product_id");
 
 	return redirect(`/product/${productID}`);
 };

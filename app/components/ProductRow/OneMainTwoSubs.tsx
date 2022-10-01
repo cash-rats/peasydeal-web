@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { LinksFunction } from "@remix-run/node";
 import clsx from "clsx";
 
-import type { Product } from "~/shared/lib/types";
+import type { Product } from "~/shared/types";
 import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';
 
@@ -39,9 +39,9 @@ interface OneMainTwoSubsProps {
 function OneMainTwoSubs({
 	products = [],
 	reverse = false,
-	onClickProduct = () => {},
+	onClickProduct = () => { },
 }: OneMainTwoSubsProps) {
-	const [ one, two, three ] = products;
+	const [one, two, three] = products;
 	const [enoughForReverse, setEnoughForReverse] = useState(false);
 
 	const checkWidthEnoughForReverse = (dom: Window) => dom.innerWidth > breakPoints.normalScreenTop;

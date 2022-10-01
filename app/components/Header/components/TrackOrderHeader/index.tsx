@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
@@ -15,7 +16,11 @@ export const links: LinksFunction = () => {
   ];
 };
 
-function TrackOrderHeader() {
+interface TrackOrderHeaderProps {
+  onSearch: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
+}
+
+function TrackOrderHeader({ onSearch }: TrackOrderHeaderProps) {
   return (
     <HeaderWrapper>
       <div className="track-order-header">
@@ -23,7 +28,7 @@ function TrackOrderHeader() {
           <LogoBar />
         </div>
         <div className="search-bar-container">
-          <SearchBar />
+          <SearchBar onSearch={onSearch} />
         </div>
       </div>
     </HeaderWrapper>

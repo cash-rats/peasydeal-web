@@ -17,11 +17,10 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import type { FormikValues } from 'formik';
 import httpStatus from 'http-status-codes';
 import Divider from '@mui/material/Divider';
-import HelpIcon from '@mui/icons-material/Help';
 import LockIcon from '@mui/icons-material/Lock';
 
 import { getBrowserDomainUrl } from '~/utils/misc';
-import type { ApiErrorResponse } from '~/shared/lib/types';
+import type { ApiErrorResponse } from '~/shared/types';
 
 import styles from './styles/CheckoutForm.css';
 import { transformOrderDetail } from './utils';

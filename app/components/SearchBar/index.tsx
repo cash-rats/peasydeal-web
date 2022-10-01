@@ -1,4 +1,5 @@
-import type { MouseEvent } from 'react';
+import type { MouseEvent, ChangeEvent } from 'react';
+import { useState } from 'react';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -13,10 +14,15 @@ export const links: LinksFunction = () => {
 };
 
 interface SearchBarProps {
-  onSearch?: (evt: MouseEvent<HTMLSpanElement>) => void;
+  onSearch?: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
 }
 
 function SearchBar({ onSearch = () => { }, ...args }: SearchBarProps) {
+  const [orderNum, setOrderNum] = useState<string>('');
+  const handleChangeOrderNum = (evt: ChangeEvent<HTMLInputElement>) => {
+    setOrderNum(evt.target.value);
+  };
+
   return (
     <div className="nav-search-box">
       <div className="search-box">
@@ -24,10 +30,12 @@ function SearchBar({ onSearch = () => { }, ...args }: SearchBarProps) {
           fullWidth
           placeholder="Search order number"
           size='small'
+          value={orderNum}
+          onChange={handleChangeOrderNum}
         />
 
         <span
-          onClick={onSearch}
+          onClick={(evt) => onSearch(orderNum, evt)}
           className="search-icon"
         >
           <SearchIcon />

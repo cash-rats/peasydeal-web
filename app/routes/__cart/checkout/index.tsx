@@ -20,7 +20,7 @@ import { getSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
 import { calcGrandTotal } from '~/utils/checkout_accountant';
 import { createPaymentIntent } from '~/utils/stripe.server';
-import type { ApiErrorResponse } from '~/shared/lib/types';
+import type { ApiErrorResponse } from '~/shared/types';
 import { useErrorSnackbar } from '~/components/Snackbar';
 
 import styles from './styles/Checkout.css';

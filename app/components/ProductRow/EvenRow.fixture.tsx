@@ -1,5 +1,5 @@
 import EvenRow from "./EvenRow";
-import type { Product } from "~/shared/lib/types";
+import type { Product } from "~/shared/types";
 
 const products: Array<Product> = [
 	{

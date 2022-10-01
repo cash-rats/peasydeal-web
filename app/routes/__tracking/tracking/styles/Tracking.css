@@ -180,4 +180,16 @@
   line-height: 1.43rem;
 }
 
+.order-not-found {
+  display: flex;
+  flex-direction: column;
+  min-height: 35rem;
+  justify-content: center;
+  align-items: center;
+}
+.order-not-found img {
+  width: 10rem;
+  height: 10rem;
+}
+
 /*# sourceMappingURL=Tracking.css.map */
