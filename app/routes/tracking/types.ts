@@ -4,6 +4,8 @@ export type TrackOrderProduct = {
   spec_name: string;
   retail_price: number;
   sale_price: number;
+  url: string;
+  uuid: string;
 }
 
 export type TrackOrder = {

@@ -17,6 +17,7 @@ import styles from './styles/Tracking.css';
 import { trackOrder } from './api';
 import EmptyBox from './images/empty-box.png';
 import type { TrackOrder } from './types';
+import { ProductDetailCarousel } from '~/components/Carousel/Carousel.stories';
 
 export const links: LinksFunction = () => {
   return [
@@ -106,9 +107,7 @@ function TrackingOrderIndex() {
 
       let orderInfo = trackOrder.data as TrackOrder;
       orderInfo.parsed_created_at = parseISO(orderInfo.created_at);
-
       setOrderInfo(trackOrder.data);
-
       // If there isn't any error, display tracking order information
     }
   }, [trackOrder])
@@ -152,56 +151,35 @@ function TrackingOrderIndex() {
 
       {/* Products */}
       <div className="order-products-container">
+        {
+          orderInfo.products.map((product) => (
+            <div
+              key={product.uuid}
+              className="order-product"
+            >
+              <div className="left">
+                <div className="product-img">
+                  <img
+                    alt={product.title}
+                    src={product.url}
+                  />
+                </div>
 
-        <div className="order-product">
+                <div className="product-spec-info">
+                  <p className="product-name"> {product.title} </p>
+                  <p className="product-spec"> {product.spec_name} </p>
+                </div>
+              </div>
 
-          <div className="left">
-            <div className="product-img">
-              <img
-                alt='product'
-                src='https://via.placeholder.com/150'
-              />
+              <div className="right">
+                <div className="price-qty">
+                  <p>{product.sale_price}</p>
+                  <p>Qty: {product.order_quantity}</p>
+                </div>
+              </div>
             </div>
-
-            <div className="product-spec-info">
-              <p className="product-name"> MacBook Pro 14 </p>
-              <p className="product-spec">Space Gray 32GB 1TB</p>
-            </div>
-          </div>
-
-          <div className="right">
-            <div className="price-qty">
-              <p>$2599</p>
-              <p>Qty: 1</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="order-product">
-
-          <div className="left">
-            <div className="product-img">
-
-              <img
-                alt='product'
-                src='https://via.placeholder.com/150'
-              />
-            </div>
-
-            <div className="product-spec-info">
-              <p className="product-name"> MacBook Pro 14 </p>
-              <p className="product-spec">Space Gray 32GB 1TB</p>
-            </div>
-          </div>
-
-          <div className="right">
-            <div className="price-qty">
-              <p>$2599</p>
-              <p>Qty: 1</p>
-            </div>
-          </div>
-
-        </div>
+          ))
+        }
       </div>
 
       {/* Delivery */}
@@ -209,16 +187,31 @@ function TrackingOrderIndex() {
         <h1>Delivery</h1>
 
         <div className="info-piece">
-          <h4>Address</h4>
+          <h4>Contact Name</h4>
           <p>
-            Mrs Smith 71 Cherry Court SOUTHAMPTON SO53 5PD UK
+            {orderInfo.contact_name}
+          </p>
+
+          <h4>Address</h4>
+
+          {/*
+              UK address example format:
+
+                Mrs Smith 71 Cherry Court SOUTHAMPTON SO53 5PD UK
+            */}
+          <p>
+            {orderInfo.address} &nbsp;
+            {orderInfo.address2} <br />
+            {orderInfo.city} <br />
+            {orderInfo.postalcode}<br />
+            {orderInfo.country}
           </p>
         </div>
 
         <div className="info-piece">
-          <h4>Delivery method</h4>
+          <h4>Shipping Status</h4>
           <p>
-            Free (30 day)
+            {orderInfo.shipping_status}
           </p>
         </div>
       </div>
@@ -235,15 +228,15 @@ function TrackingOrderIndex() {
         <div className="cost-info-box info-piece">
           <span className="price-info">
             <p> Discount </p>
-            <p> - $1109.40 </p>
+            <p> - ${orderInfo.discount_amount} </p>
           </span>
 
           <span className="price-info">
             <span className="title-with-info">
-              <p> Deliver </p>
+              <p> Shipping Fee </p>
               <BsFillInfoCircleFill />
             </span>
-            <p> $20.00 </p>
+            <p> + ${orderInfo.shipping_fee} </p>
           </span>
 
           <span className="price-info">
@@ -254,13 +247,13 @@ function TrackingOrderIndex() {
               </span>
             </span>
 
-            <p> + $221.88 </p>
+            <p> + ${orderInfo.tax_amount} </p>
           </span>
         </div>
 
         <div className="total">
           <p> Total </p>
-          <p> $4659.48 </p>
+          <p> ${orderInfo.total_amount} </p>
         </div>
       </div>
     </div >
