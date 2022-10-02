@@ -192,9 +192,53 @@
   justify-content: center;
   align-items: center;
 }
-.problematic-page img {
+.problematic-page .error-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-top: 2rem;
+  margin-bottom: 2.25rem;
+  flex: 2;
+}
+.problematic-page .error-content {
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 8;
+}
+.problematic-page .error-content img {
   width: 10rem;
   height: 10rem;
+  margin-bottom: 1rem;
+}
+.problematic-page .error-content .error-text {
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.initial-page {
+  min-height: 35rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.initial-page .search-image {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+}
+.initial-page .search-image img {
+  width: 10rem;
+  height: 10rem;
+  margin-bottom: 2.25rem;
+}
+.initial-page .error-text {
+  flex: 2;
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-align: center;
 }
 
 /*# sourceMappingURL=Tracking.css.map */

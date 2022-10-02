@@ -17,6 +17,8 @@ interface SearchBarProps {
   onSearch?: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
 }
 
+const isStringEmpty = (str: string): boolean => str.trim().length === 0;
+
 function SearchBar({ onSearch = () => { }, ...args }: SearchBarProps) {
   const [orderNum, setOrderNum] = useState<string>('');
   const handleChangeOrderNum = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -35,10 +37,19 @@ function SearchBar({ onSearch = () => { }, ...args }: SearchBarProps) {
         />
 
         <span
-          onClick={(evt) => onSearch(orderNum, evt)}
+          onClick={(evt) => {
+            if (isStringEmpty(orderNum)) {
+              return;
+            }
+            onSearch(orderNum, evt)
+          }}
           className="search-icon"
         >
-          <SearchIcon />
+          <SearchIcon color={
+            isStringEmpty(orderNum)
+              ? 'disabled'
+              : 'action'
+          } />
         </span>
       </div>
     </div>

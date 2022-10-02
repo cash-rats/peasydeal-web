@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import { useEffect } from 'react';
+import type { LinksFunction, LoaderFunction, ActionFunction, ErrorBoundaryComponent } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { useFetcher, useLoaderData } from '@remix-run/react';
 import { FaShippingFast } from 'react-icons/fa';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
@@ -11,11 +11,11 @@ import add from 'date-fns/add';
 
 import { useOrderNum } from '~/routes/tracking';
 import { error } from '~/utils/error';
-import type { ApiErrorResponse } from '~/shared/types';
 
 import styles from './styles/Tracking.css';
 import { trackOrder } from './api';
 import EmptyBox from './images/empty-box.png';
+import InitialSearch from './images/search.png';
 import type { TrackOrder } from './types';
 
 export const links: LinksFunction = () => {
@@ -24,13 +24,15 @@ export const links: LinksFunction = () => {
   ];
 };
 
+type LoaderDataType = { order: TrackOrder | null };
+
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const hasOrderID = url.searchParams.has('order_id')
 
   // Current route has just been requested. Ask user to search order by order ID.
   if (!hasOrderID) {
-    return json({ order: null }, httpStatus.OK)
+    return json<LoaderDataType>({ order: null }, httpStatus.OK)
   }
 
   const orderID = url.searchParams.get('order_id') || '';
@@ -42,32 +44,66 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   // TODO check order id format before sending to backend.
   const resp = await trackOrder(orderID);
-  const respJSON = await resp.json() as TrackOrder;
+  const respJSON = await resp.json();
 
   if (resp.status !== httpStatus.OK) {
-    return json(respJSON, resp.status)
+    throw new Error('no order found');
   }
 
-  return json<TrackOrder>(respJSON, httpStatus.OK);
+  const orderInfo = respJSON as TrackOrder
+
+  return json<LoaderDataType>({ order: orderInfo }, httpStatus.OK);
+}
+
+export const action: ActionFunction = async ({ request }) => {
+  const body = await request.formData();
+  const orderUUID = body.get('order_id') as string || '';
+  return redirect(`/tracking?order_id=${orderUUID}`);
 }
 
 function TrackingOrderErrorPage() {
+  const { orderNum } = useOrderNum();
+  const trackOrder = useFetcher();
+
+  useEffect(() => {
+    if (!orderNum) return;
+    trackOrder.submit(
+      { order_id: orderNum },
+      {
+        method: 'post',
+        action: '/tracking?index',
+      },
+    );
+  }, [orderNum]);
+
   return (
     <div className="problematic-page">
-      <img
-        alt="no data found"
-        src={EmptyBox}
-      />
+      <h1 className="error-title">
+        Order not found
+      </h1>
 
-      <p> wrong order id maybe? </p>
+      <div className="error-content">
+        <img
+          alt="no data found"
+          src={EmptyBox}
+        />
+
+        <p className="error-text"> Wrong order id maybe? </p>
+      </div>
     </div>
   );
 }
 
 function InitialPage() {
   return (
-    <div className="problematic-page">
-      <p> Please prompt order id above to track for your order. </p>
+    <div className="initial-page">
+      <div className="search-image">
+        <img
+          alt='search'
+          src={InitialSearch}
+        />
+      </div>
+      <p className='error-text'> Search your order with order id. </p>
     </div>
   );
 }
@@ -77,71 +113,64 @@ const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => {
   return order;
 };
 
+export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+  return (<TrackingOrderErrorPage />);
+}
+
 /*
   Design Reference:
     - https://bbbootstrap.com/snippets/ecommerce-product-order-details-tracking-63470618
     - https://www.ownrides.com/search?cities=&country=&days=&page=1&query=
 
   TODOs:
-    - [ ] Search order by order number.
+    - [x] Search order by order number.
     - [ ] Deliver & Tax should have tooltips when hover over the icon.
 */
 
-function TrackingOrderIndex() {
+interface TrackingOrderIndexProps {
+  error: Error | null
+}
+
+function TrackingOrderIndex({ error }: TrackingOrderIndexProps) {
   const { orderNum } = useOrderNum();
-  const [error, setError] = useState<null | ApiErrorResponse>(null);
-  const orderInfoFromAPI = useLoaderData();
-  const [orderInfo, setOrderInfo] = useState<TrackOrder | null>(
-    orderInfoFromAPI
-      ? parseTrackOrderCreatedAt(orderInfoFromAPI)
-      : null
-  );
+  let orderInfo = useLoaderData<LoaderDataType | null>();
+
+  if (orderInfo && orderInfo.order) {
+    orderInfo.order = parseTrackOrderCreatedAt(orderInfo.order);
+  }
 
   const trackOrder = useFetcher();
 
   // Search when `orderNum` is changed.
   useEffect(() => {
     if (!orderNum) return;
-    setError(null);
-    trackOrder.load(`/tracking?index&order_id=${orderNum}`);
+    trackOrder.submit(
+      { order_id: orderNum },
+      {
+        method: 'post',
+        action: '/tracking?index',
+      },
+    );
   }, [orderNum]);
 
-  useEffect(() => {
-    if (trackOrder.type === 'done') {
-      // If is an error, set error state to display error page.
-      if (trackOrder.data.hasOwnProperty('err_code')) {
-        setError(trackOrder.data);
-
-        return;
-      }
-
-      let orderInfo = trackOrder.data as TrackOrder;
-      orderInfo.parsed_created_at = parseISO(orderInfo.created_at);
-      setOrderInfo(trackOrder.data);
-      // If there isn't any error, display tracking order information
-    }
-  }, [trackOrder])
-
-  if (error) {
-    return (<TrackingOrderErrorPage />);
-  }
-
   // Initial state when nothing is being searched. Ask user to prompot order uuid to search.
-  if (!orderInfo) {
+  if (!orderInfo || !orderInfo.order) {
     return (
       <InitialPage />
     );
   }
 
+  const { order } = orderInfo;
+
   return (
     <div className="tracking-order-container">
       <h1 className="order-title">
-        Order ID: {orderInfo.order_uuid}
+        Order ID: {order.order_uuid}
       </h1>
 
       <div className="order-subtitle">
         <span className="order-subtitle-info">
-          Order date: &nbsp; <b>{format(orderInfo.parsed_created_at, 'MMM, d, yyyy')}</b>
+          Order date: &nbsp; <b>{format(order.parsed_created_at, 'MMM, d, yyyy')}</b>
         </span>
 
         <span className="order-subtitle-info">
@@ -151,7 +180,7 @@ function TrackingOrderIndex() {
           <b>
             {
               format(
-                add(orderInfo.parsed_created_at, { days: 10 }),
+                add(order.parsed_created_at, { days: 10 }),
                 'MMM, d, yyyy'
               )
             }
@@ -162,7 +191,7 @@ function TrackingOrderIndex() {
       {/* Products */}
       <div className="order-products-container">
         {
-          orderInfo.products.map((product) => (
+          order.products.map((product) => (
             <div
               key={product.uuid}
               className="order-product"
@@ -199,7 +228,7 @@ function TrackingOrderIndex() {
         <div className="info-piece">
           <h4>Contact Name</h4>
           <p>
-            {orderInfo.contact_name}
+            {order.contact_name}
           </p>
 
           <h4>Address</h4>
@@ -210,18 +239,18 @@ function TrackingOrderIndex() {
                 Mrs Smith 71 Cherry Court SOUTHAMPTON SO53 5PD UK
             */}
           <p>
-            {orderInfo.address} &nbsp;
-            {orderInfo.address2} <br />
-            {orderInfo.city} <br />
-            {orderInfo.postalcode}<br />
-            {orderInfo.country}
+            {order.address} &nbsp;
+            {order.address2} <br />
+            {order.city} <br />
+            {order.postalcode}<br />
+            {order.country}
           </p>
         </div>
 
         <div className="info-piece">
           <h4>Shipping Status</h4>
           <p>
-            {orderInfo.shipping_status}
+            {order.shipping_status}
           </p>
         </div>
       </div>
@@ -233,9 +262,9 @@ function TrackingOrderIndex() {
         <div className="subtotal">
           <p>Subtotal</p>
           <p>
-            ${orderInfo.subtotal} &nbsp;
+            ${order.subtotal} &nbsp;
             <span className="discount">
-              Saved ${orderInfo.discount_amount}
+              Saved ${order.discount_amount}
             </span>
           </p>
         </div>
@@ -246,7 +275,7 @@ function TrackingOrderIndex() {
               <p> Shipping Fee </p>
               <BsFillInfoCircleFill />
             </span>
-            <p> + ${orderInfo.shipping_fee} </p>
+            <p> + ${order.shipping_fee} </p>
           </span>
 
           <span className="price-info">
@@ -257,13 +286,13 @@ function TrackingOrderIndex() {
               </span>
             </span>
 
-            <p> + ${orderInfo.tax_amount} </p>
+            <p> + ${order.tax_amount} </p>
           </span>
         </div>
 
         <div className="total">
           <p> Total </p>
-          <p> ${orderInfo.total_amount} </p>
+          <p> ${order.total_amount} </p>
         </div>
       </div>
     </div >
