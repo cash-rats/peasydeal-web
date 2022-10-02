@@ -194,7 +194,13 @@
         &:last-child {
           display: flex;
           justify-content: flex-end;
+          align-items: center;
         }
+      }
+
+      .discount {
+        font-size: 0.75rem;
+        font-weight: 400;
       }
     }
 

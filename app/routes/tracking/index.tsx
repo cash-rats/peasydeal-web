@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher, useLoaderData } from '@remix-run/react';
 import { FaShippingFast } from 'react-icons/fa';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 import httpStatus from 'http-status-codes';
@@ -17,7 +17,6 @@ import styles from './styles/Tracking.css';
 import { trackOrder } from './api';
 import EmptyBox from './images/empty-box.png';
 import type { TrackOrder } from './types';
-import { ProductDetailCarousel } from '~/components/Carousel/Carousel.stories';
 
 export const links: LinksFunction = () => {
   return [
@@ -73,6 +72,11 @@ function InitialPage() {
   );
 }
 
+const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => {
+  order.parsed_created_at = parseISO(order.created_at);
+  return order;
+};
+
 /*
   Design Reference:
     - https://bbbootstrap.com/snippets/ecommerce-product-order-details-tracking-63470618
@@ -86,7 +90,13 @@ function InitialPage() {
 function TrackingOrderIndex() {
   const { orderNum } = useOrderNum();
   const [error, setError] = useState<null | ApiErrorResponse>(null);
-  const [orderInfo, setOrderInfo] = useState<TrackOrder | null>(null);
+  const orderInfoFromAPI = useLoaderData();
+  const [orderInfo, setOrderInfo] = useState<TrackOrder | null>(
+    orderInfoFromAPI
+      ? parseTrackOrderCreatedAt(orderInfoFromAPI)
+      : null
+  );
+
   const trackOrder = useFetcher();
 
   // Search when `orderNum` is changed.
@@ -222,15 +232,15 @@ function TrackingOrderIndex() {
 
         <div className="subtotal">
           <p>Subtotal</p>
-          <p>$5547</p>
+          <p>
+            ${orderInfo.subtotal} &nbsp;
+            <span className="discount">
+              Saved ${orderInfo.discount_amount}
+            </span>
+          </p>
         </div>
 
         <div className="cost-info-box info-piece">
-          <span className="price-info">
-            <p> Discount </p>
-            <p> - ${orderInfo.discount_amount} </p>
-          </span>
-
           <span className="price-info">
             <span className="title-with-info">
               <p> Shipping Fee </p>

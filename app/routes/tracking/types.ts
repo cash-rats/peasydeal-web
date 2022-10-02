@@ -17,6 +17,7 @@ export type TrackOrder = {
   country: string;
   postalcode: string;
   shipping_status: string;
+  subtotal: number;
   total_amount: number;
   shipping_fee: number;
   tax_amount: number;

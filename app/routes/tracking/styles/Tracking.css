@@ -160,6 +160,11 @@
 .tracking-order-container .deliver-info-container .subtotal p:last-child {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+}
+.tracking-order-container .deliver-info-container .subtotal .discount {
+  font-size: 0.75rem;
+  font-weight: 400;
 }
 .tracking-order-container .deliver-info-container .total {
   display: flex;
