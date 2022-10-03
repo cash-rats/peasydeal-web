@@ -2,6 +2,7 @@ import type { MouseEvent, ChangeEvent } from 'react';
 import { useState } from 'react';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 
 import type { LinksFunction } from '@remix-run/node';
 
@@ -15,14 +16,19 @@ export const links: LinksFunction = () => {
 
 interface SearchBarProps {
   onSearch?: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
+  onClear?: (evt: MouseEvent<HTMLSpanElement>) => void;
 }
 
 const isStringEmpty = (str: string): boolean => str.trim().length === 0;
 
-function SearchBar({ onSearch = () => { }, ...args }: SearchBarProps) {
+function SearchBar({ onSearch = () => { }, onClear = () => { }, ...args }: SearchBarProps) {
   const [orderNum, setOrderNum] = useState<string>('');
   const handleChangeOrderNum = (evt: ChangeEvent<HTMLInputElement>) => {
     setOrderNum(evt.target.value);
+  };
+  const handleClearOrderNum = (evt: MouseEvent<HTMLSpanElement>) => {
+    setOrderNum('');
+    onClear(evt);
   };
 
   return (
@@ -35,6 +41,14 @@ function SearchBar({ onSearch = () => { }, ...args }: SearchBarProps) {
           value={orderNum}
           onChange={handleChangeOrderNum}
         />
+
+        {
+          !isStringEmpty(orderNum) && (
+            <span onClick={handleClearOrderNum}>
+              <ClearIcon color='action' />
+            </span>
+          )
+        }
 
         <span
           onClick={(evt) => {

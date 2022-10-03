@@ -15,7 +15,6 @@ import { error } from '~/utils/error';
 import styles from './styles/Tracking.css';
 import { trackOrder } from './api';
 import EmptyBox from './images/empty-box.png';
-import InitialSearch from './images/search.png';
 import type { TrackOrder } from './types';
 
 export const links: LinksFunction = () => {
@@ -58,6 +57,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const orderUUID = body.get('order_id') as string || '';
+
+  if (!orderUUID) {
+    return redirect('/tracking');
+  }
+
   return redirect(`/tracking?order_id=${orderUUID}`);
 }
 
@@ -67,7 +71,7 @@ function TrackingOrderErrorPage() {
   const trackOrder = useFetcher();
 
   useEffect(() => {
-    if (!orderNum) return;
+
     trackOrder.submit(
       { order_id: orderNum },
       {
@@ -146,7 +150,10 @@ function TrackingOrderIndex({ error }: TrackingOrderIndexProps) {
 
   // Search when `orderNum` is changed.
   useEffect(() => {
-    if (!orderNum) return;
+    console.log('debug 1', orderNum);
+    console.log('debug 2', orderNum === '');
+
+    // If `orderNum` is an empty string, redirect user to initial page.
     trackOrder.submit(
       { order_id: orderNum },
       {

@@ -22,13 +22,22 @@ function TrackingOrder() {
     evt.preventDefault();
     setOrderNum(prev => ({ ...prev, orderNum: newOrderNum }));
   }
+  const handleOnClear = () => {
+    setOrderNum({ orderNum: '' });
+  }
 
   return (
     <>
-      <TrackOrderHeader onSearch={handleOnSearch} />
+      <TrackOrderHeader
+        onSearch={handleOnSearch}
+        onClear={handleOnClear}
+      />
 
       <main>
-        <Outlet key={orderNum.orderNum} context={orderNum} />
+        <Outlet
+          key={orderNum.orderNum}
+          context={orderNum}
+        />
       </main>
 
       <Footer />

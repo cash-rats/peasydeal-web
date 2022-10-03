@@ -18,9 +18,10 @@ export const links: LinksFunction = () => {
 
 interface TrackOrderHeaderProps {
   onSearch: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
+  onClear?: (evt: MouseEvent<HTMLSpanElement>) => void;
 }
 
-function TrackOrderHeader({ onSearch }: TrackOrderHeaderProps) {
+function TrackOrderHeader({ onSearch, onClear }: TrackOrderHeaderProps) {
   return (
     <HeaderWrapper>
       <div className="track-order-header">
@@ -28,7 +29,10 @@ function TrackOrderHeader({ onSearch }: TrackOrderHeaderProps) {
           <LogoBar />
         </div>
         <div className="search-bar-container">
-          <SearchBar onSearch={onSearch} />
+          <SearchBar
+            onSearch={onSearch}
+            onClear={onClear}
+          />
         </div>
       </div>
     </HeaderWrapper>
