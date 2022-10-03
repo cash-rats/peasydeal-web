@@ -28,4 +28,9 @@
   align-items: center;
 }
 
+.clear-icon {
+  cursor: pointer;
+  padding: 10px;
+}
+
 /*# sourceMappingURL=SearchBar.css.map */

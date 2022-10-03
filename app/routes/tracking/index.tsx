@@ -8,6 +8,7 @@ import httpStatus from 'http-status-codes';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
+import Tooltip from '@mui/material/Tooltip';
 
 import { useOrderNum } from '~/routes/tracking';
 import { error } from '~/utils/error';
@@ -301,7 +302,6 @@ function TrackingOrderIndex({ error }: TrackingOrderIndexProps) {
           <span className="price-info">
             <span className="title-with-info">
               <p> Shipping Fee </p>
-              <BsFillInfoCircleFill />
             </span>
             <p> + ${order.shipping_fee} </p>
           </span>
@@ -310,7 +310,11 @@ function TrackingOrderIndex({ error }: TrackingOrderIndexProps) {
             <span className="title-with-info">
               <p> Tax </p>
               <span>
-                <BsFillInfoCircleFill />
+                <Tooltip title="20% VAT" arrow>
+                  <span>
+                    <BsFillInfoCircleFill />
+                  </span>
+                </Tooltip>
               </span>
             </span>
 

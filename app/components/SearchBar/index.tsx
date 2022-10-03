@@ -44,7 +44,10 @@ function SearchBar({ onSearch = () => { }, onClear = () => { }, ...args }: Searc
 
         {
           !isStringEmpty(orderNum) && (
-            <span onClick={handleClearOrderNum}>
+            <span
+              className="clear-icon"
+              onClick={handleClearOrderNum}
+            >
               <ClearIcon color='action' />
             </span>
           )

@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
+import type { LoaderFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { Outlet, useOutletContext } from "@remix-run/react";
 
 import TrackOrderHeader, { links as TrackOrderHeaderLinks } from '~/components/Header/components/TrackOrderHeader';
@@ -13,10 +16,18 @@ export const links: LinksFunction = () => {
   ];
 };
 
+export const loader: LoaderFunction = async ({ request }) => {
+  const url = new URL(request.url);
+  const orderID = url.searchParams.get('order_id') || '';
+
+  return json(orderID);
+}
+
 type ContextType = { orderNum: string };
 
 function TrackingOrder() {
-  const [orderNum, setOrderNum] = useState<ContextType>({ orderNum: '' });
+  const orderID = useLoaderData();
+  const [orderNum, setOrderNum] = useState<ContextType>({ orderNum: orderID });
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
