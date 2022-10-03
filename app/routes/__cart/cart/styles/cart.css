@@ -26,7 +26,7 @@
   display: none;
   width: 100%;
   border-bottom: 1px solid #eee;
-  line-height: 1.5;
+  line-height: 1.5rem;
   font-size: 1.2em;
 }
 @media (min-width: 768px) {
@@ -45,7 +45,7 @@
   width: 57%;
   display: flex;
   justify-content: flex-start;
-  padding-left: 8.3rem;
+  padding-left: 9.6rem;
 }
 .shopping-cart-container .cart-items-container .head-row .price-label {
   width: 12%;

@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { json } from '@remix-run/node';
-import { useLoaderData, Link, useFetcher } from '@remix-run/react';
+import { useLoaderData, Link, useFetcher, useCatch } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { StatusCodes } from 'http-status-codes';
 import { Button } from '@chakra-ui/react';
@@ -67,12 +67,17 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	const cartItems = session.get(sessionKey);
 
+	// If cart contains no items, display empty cart page via CatchBoundary
 	if (cartItems && Object.keys(cartItems).length === 0) {
-		return json([], { status: StatusCodes.OK });
+		throw json([], { status: StatusCodes.OK });
 	}
 
 	return json(cartItems, { status: StatusCodes.OK });
 };
+
+export const CatchBoundary = () => {
+	return (<EmptyShoppingCart />);
+}
 
 /*
  * Coppy shopee's layout
@@ -146,9 +151,6 @@ function Cart() {
 		setOpenRemoveItemModal(false);
 	}
 
-	if (Object.keys(cartItems).length === 0) {
-		return (<EmptyShoppingCart />);
-	}
 
 	return (
 		<section className="shopping-cart-section">

@@ -1,6 +1,6 @@
 
 import type { LinksFunction } from '@remix-run/node';
-import { Link, PrefetchPageLinks } from '@remix-run/react';
+import { Link } from '@remix-run/react';
 import Button from '@mui/material/Button';
 
 import emptyCartSVG from './images/empty_cart.svg';
@@ -13,7 +13,6 @@ export const links: LinksFunction = () => {
 function EmptyShoppingCartPage() {
   return (
     <section className="empty-cart-container">
-      <PrefetchPageLinks page="/" />
       <div className="empty-cart-image">
         <img alt='nothing in the shopping cart' src={emptyCartSVG} />
       </div>
@@ -28,7 +27,11 @@ function EmptyShoppingCartPage() {
 
       <div className="redirect-to-shopping">
         <Link to='/'>
-          <Button variant='contained' size='large'>
+          <Button
+            color='success'
+            variant='contained'
+            size='large'
+          >
             Go Shopping!
           </Button>
         </Link>
