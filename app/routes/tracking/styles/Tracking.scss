@@ -1,3 +1,5 @@
+@import 'styles/_breakpoints';
+
 .tracking-order-container {
   max-width: 1180px;
   margin: 0 auto;
@@ -143,13 +145,12 @@
       }
 
       h4 {
-        font-size: 0.75rem;
-        font-weight: 400;
+        font-size: 1rem;
+        font-weight: 500;
         color: rgb(130, 129, 131);
       }
 
       p {
-        margin-top: 0.375rem;
         font-size: 0.875rem;
         font-weight: 400;
         line-height: 1.43;
@@ -169,7 +170,6 @@
           display: flex;
           align-items: center;
           gap: 5px;
-
         }
 
         p {
@@ -199,8 +199,10 @@
       }
 
       .discount {
+        text-transform: uppercase;
+        color: rgb(0, 179, 59);
         font-size: 0.75rem;
-        font-weight: 400;
+        font-weight: 500;
       }
     }
 
@@ -228,37 +230,32 @@
 }
 
 .problematic-page {
-  display: flex;
-  flex-direction: column;
-  min-height: 35rem;
-  justify-content: center;
-  align-items: center;
+  padding: 2rem 1rem 3rem 2rem;
+  max-height: 460px;
+
+  @media (min-width: #{$screen-phone-top-599}) {
+    min-height: 560px;
+  }
 
   .error-title {
     font-size: 1.5rem;
     font-weight: 500;
     margin-top: 2rem;
     margin-bottom: 2.25rem;
-    flex: 2;
   }
 
   .error-content {
-    height: 80%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
-    flex: 8;
+    height: 100%;
+    padding-top: 6.25rem;
 
     img {
       width: 10rem;
       height: 10rem;
       margin-bottom: 1rem;
-    }
-
-    .error-text {
-      font-size: 1.2rem;
-      font-weight: 400;
     }
   }
 }
@@ -266,26 +263,13 @@
 .initial-page {
   min-height: 35rem;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
 
-  .search-image {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
+}
 
-    img {
-      width: 10rem;
-      height: 10rem;
-      margin-bottom: 2.25rem;
-    }
-  }
-
-  .error-text {
-    flex: 2;
-    font-size: 1.2rem;
-    font-weight: 400;
-    text-align: center;
-  }
+.error-text {
+  margin: 0px 0px 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
 }

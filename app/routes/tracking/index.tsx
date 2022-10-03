@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction, ErrorBoundaryComponent } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useFetcher, useLoaderData } from '@remix-run/react';
@@ -62,6 +62,7 @@ export const action: ActionFunction = async ({ request }) => {
 }
 
 function TrackingOrderErrorPage() {
+  const [orderID, setOrderID] = useState('');
   const { orderNum } = useOrderNum();
   const trackOrder = useFetcher();
 
@@ -76,19 +77,27 @@ function TrackingOrderErrorPage() {
     );
   }, [orderNum]);
 
+  useEffect(() => {
+    if (!window) return;
+    const params = (new URLSearchParams(window.location.search));
+
+    if (!params.has('order_id')) return;
+    const orderID = params.get('order_id');
+
+    if (!orderID) return;
+    setOrderID(orderID);
+
+  }, [orderID]);
+
   return (
     <div className="problematic-page">
-      <h1 className="error-title">
-        Order not found
-      </h1>
+      <p className="error-text"> Result for order {orderID} is not found </p>
 
       <div className="error-content">
         <img
           alt="no data found"
           src={EmptyBox}
         />
-
-        <p className="error-text"> Wrong order id maybe? </p>
       </div>
     </div>
   );
@@ -97,12 +106,6 @@ function TrackingOrderErrorPage() {
 function InitialPage() {
   return (
     <div className="initial-page">
-      <div className="search-image">
-        <img
-          alt='search'
-          src={InitialSearch}
-        />
-      </div>
       <p className='error-text'> Search your order with order id. </p>
     </div>
   );
@@ -223,7 +226,7 @@ function TrackingOrderIndex({ error }: TrackingOrderIndexProps) {
 
       {/* Delivery */}
       <div className="deliver-info-container ">
-        <h1>Delivery</h1>
+        <h1>Delivery Information</h1>
 
         <div className="info-piece">
           <h4>Contact Name</h4>
@@ -231,6 +234,9 @@ function TrackingOrderIndex({ error }: TrackingOrderIndexProps) {
             {order.contact_name}
           </p>
 
+        </div>
+
+        <div className="info-piece">
           <h4>Address</h4>
 
           {/*
@@ -245,12 +251,27 @@ function TrackingOrderIndex({ error }: TrackingOrderIndexProps) {
             {order.postalcode}<br />
             {order.country}
           </p>
+
         </div>
 
         <div className="info-piece">
           <h4>Shipping Status</h4>
           <p>
             {order.shipping_status}
+          </p>
+        </div>
+
+        <div className="info-piece">
+          <h4>Tracking Number</h4>
+          <p>
+            {order.tracking_number}
+          </p>
+        </div>
+
+        <div className="info-piece">
+          <h4>Carrier</h4>
+          <p>
+            {order.carrier}
           </p>
         </div>
       </div>
@@ -264,7 +285,7 @@ function TrackingOrderIndex({ error }: TrackingOrderIndexProps) {
           <p>
             ${order.subtotal} &nbsp;
             <span className="discount">
-              Saved ${order.discount_amount}
+              Saved ${order.discount_amount} !
             </span>
           </p>
         </div>

@@ -20,13 +20,8 @@ function TrackingOrder() {
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
-    console.log('debug * ', newOrderNum);
-    // if (orderNum === newOrderNum) return;
-    console.log('debug * 2', newOrderNum);
     setOrderNum(prev => ({ ...prev, orderNum: newOrderNum }));
   }
-
-  console.log('deubg * 4 ', orderNum);
 
   return (
     <>

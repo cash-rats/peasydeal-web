@@ -24,5 +24,7 @@ export type TrackOrder = {
   discount_amount: number;
   created_at: string;
   parsed_created_at: Date;
+  carrier: string;
+  tracking_number: string;
   products: TrackOrderProduct[];
 }
