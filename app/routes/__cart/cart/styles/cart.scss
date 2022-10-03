@@ -42,16 +42,17 @@
 
 			h1,
 			div {
-				color: #AAA;
+				font-weight: 500;
+				font-size: 1.2rem;
+				line-height: 1.875rem;
 				padding-bottom: 15px;
 			}
 
-			.image-label {
-				width: 20%;
-			}
-
 			.description-label {
-				width: 37%;
+				width: 57%;
+				display: flex;
+				justify-content: flex-start;
+				padding-left: 8.3rem;
 			}
 
 			.price-label {
@@ -83,40 +84,20 @@
 			.top {
 				display: flex;
 				flex-direction: row-reverse;
+				justify-content: flex-end;
+				gap: 1rem;
 
-				.product-image {
-					display: flex;
-					flex-direction: center;
-					align-items: center;
-					width: 35%;
+				@include md {
+					justify-content: flex-start;
 
-					@include md {
-						justify-content: flex-start;
-					}
+					gap: 2.25rem;
 
-					img {
-						height: 100px;
-						width: 100px;
-					}
 				}
 
 				.product-description {
 					display: flex;
 					flex-direction: column;
 					width: 65%;
-
-					.product-title {
-						font-size: 1.2rem;
-						font-weight: bold;
-					}
-
-					.product-description-text {
-						width: 100%;
-						margin: 5px 20px 5px 0;
-						line-height: 1.4em;
-						margin-inline-start: 0px;
-						margin-inline-end: 0px;
-					}
 
 					.product-price-mobile {
 						display: block;

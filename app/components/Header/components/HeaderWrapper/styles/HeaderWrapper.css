@@ -35,5 +35,10 @@
   box-sizing: border-box;
   padding: 0.5rem 1rem;
 }
+@media (min-width: 899px) {
+  .header-container .header-content-container {
+    padding: 0.5rem 3rem;
+  }
+}
 
 /*# sourceMappingURL=HeaderWrapper.css.map */

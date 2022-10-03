@@ -1,8 +1,7 @@
 import { Outlet } from "@remix-run/react";
 import type { LinksFunction } from '@remix-run/node';
 
-import LogoBar, { links as LogoBarLinks } from '~/components/Header/components/LogoBar';
-import HeaderWrapper, { links as HeaderWrapperLinks } from '~/components/Header/components/HeaderWrapper';
+import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 
 import styles from './styles/index.css';
@@ -10,8 +9,7 @@ import styles from './styles/index.css';
 export const links: LinksFunction = () => {
   return [
     ...FooterLinks(),
-    ...HeaderWrapperLinks(),
-    ...LogoBarLinks(),
+    ...LogoHeaderLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -19,9 +17,7 @@ export const links: LinksFunction = () => {
 function CartLayout() {
   return (
     <>
-      <HeaderWrapper>
-        <LogoBar />
-      </HeaderWrapper>
+      <LogoHeader />
 
       <main>
         <Outlet />

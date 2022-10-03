@@ -116,7 +116,7 @@ function CartItem({
 			{/* Item image */}
 			<div className="top">
 				<div className="product-image">
-					<img src={image} />
+					<img alt={title} src={image} />
 				</div>
 
 				<div className="product-description">

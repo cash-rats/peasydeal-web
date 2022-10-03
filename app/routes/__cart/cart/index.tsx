@@ -169,8 +169,6 @@ function Cart() {
 
 				<div className="cart-items-container">
 					<div className="head-row">
-						<div className="image-label" />
-
 						<h1 className="description-label">
 							Description
 						</h1>
