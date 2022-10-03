@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { json } from '@remix-run/node';
-import { useLoaderData, Link, useFetcher, useCatch } from '@remix-run/react';
-import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
+import { useLoaderData, Link, useFetcher } from '@remix-run/react';
+import type { LinksFunction, LoaderFunction, ActionFunction, } from '@remix-run/node';
 import { StatusCodes } from 'http-status-codes';
 import { Button } from '@chakra-ui/react';
 import { BsBagCheck } from 'react-icons/bs';
@@ -39,7 +39,7 @@ export const action: ActionFunction = async ({ request }) => {
 		request.headers.get("Cookie")
 	);
 	const sessionKey: SessionKey = 'shopping_cart';
-	let cartItems = session.get(sessionKey);
+	let cartItems = session.get(sessionKey) || {};
 
 	if (cartItems.hasOwnProperty(prodID)) {
 		delete cartItems[prodID];
@@ -47,11 +47,18 @@ export const action: ActionFunction = async ({ request }) => {
 		session.set(sessionKey, newShoppingCart);
 	}
 
-	return new Response('', {
-		headers: {
-			"Set-Cookie": await commitSession(session),
-		}
-	});
+
+	// `cart_item_count` tells frontend when to perform page refresh. When `cart_item_count`
+	// equals 0, frontend will trigger load of the current route which displays empty bag page.
+	return new Response(
+		JSON.stringify({
+			cart_item_count: Object.keys(cartItems).length,
+		}),
+		{
+			headers: {
+				"Set-Cookie": await commitSession(session),
+			}
+		});
 }
 
 /*
@@ -98,9 +105,15 @@ function Cart() {
 	const removeItemFetcher = useFetcher()
 	const targetRemovalProdID = useRef<null | string>(null);
 
+	// If cart item contains no item, we simply redirect user to `/cart` so that
+	// corresponding loader can display empty cart page to user.
 	useEffect(() => {
-		if (removeItemFetcher.type === 'done' && cartItems.length === 0) {
-			removeItemFetcher.load('/cart?index');
+		if (removeItemFetcher.type === 'done') {
+			const { cart_item_count } = JSON.parse(removeItemFetcher.data);
+
+			if (cart_item_count === 0) {
+				removeItemFetcher.load('/cart?index');
+			}
 		}
 	}, [removeItemFetcher])
 
@@ -258,8 +271,6 @@ function Cart() {
 
 					</div>
 				</div>
-
-				{/* show empty shopping cart when no items */}
 			</div>
 		</section>
 	);
