@@ -164,6 +164,11 @@ function Cart() {
 		setOpenRemoveItemModal(false);
 	}
 
+	if (Object.keys(cartItems).length === 0) {
+		return (
+			<EmptyShoppingCart />
+		);
+	}
 
 	return (
 		<section className="shopping-cart-section">
