@@ -29,16 +29,15 @@ export const links: LinksFunction = () => {
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const clientSecret = url.searchParams.get('payment_intent_client_secret');
-  const orderID = url.searchParams.get('order_id');
 
   // If `payment_intent_client_secret` or `order_id` does not exists in the query params, it means client requested this page
   // directly without proper redirection. We simply redrect them to `/cart` page so that customers can finish the checkout flow
   // properly.
-  if (!clientSecret || !orderID) {
+  if (!clientSecret) {
     throw redirect('/cart');
   }
 
-  return json({ clientSecret, orderID });
+  return json({ clientSecret });
 }
 
 function CheckoutResult() {

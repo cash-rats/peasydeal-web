@@ -23,13 +23,13 @@ export const links: LinksFunction = () => {
 // Load order information by stripe `client_secret` and it's relative items.
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
-  const orderID = url.searchParams.get('order_id');
+  const orderUUID = url.searchParams.get('order_uuid');
 
-  if (!orderID) {
+  if (!orderUUID) {
     throw Error('no order id presented in query params');
   }
 
-  const resp = await fetchOrder(orderID)
+  const resp = await fetchOrder(orderUUID)
   const respJSON = await resp.json();
 
   return json(respJSON);
@@ -40,14 +40,14 @@ function Success() {
 
   useEffect(() => {
     if (window) {
-      const orderID = new URLSearchParams(window.location.search).get('order_id');
+      const orderUUID = new URLSearchParams(window.location.search).get('order_uuid');
 
       // Retrieve order information via loader.
       orderFetcher.submit(
         {},
         {
           method: 'get',
-          action: `/checkout/result/components/Success?index&order_id=${orderID}`
+          action: `/checkout/result/components/Success?index&order_uuid=${orderUUID}`
         });
     }
   }, []);

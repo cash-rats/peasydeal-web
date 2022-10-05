@@ -63,7 +63,7 @@ export const action: ActionFunction = async ({ request }) => {
     return redirect('/tracking');
   }
 
-  return redirect(`/tracking?order_id=${orderUUID}`);
+  return redirect(`/tracking?order_uuid=${orderUUID}`);
 }
 
 function TrackingOrderErrorPage() {

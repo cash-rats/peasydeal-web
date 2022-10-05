@@ -1,7 +1,7 @@
 .checkout-result-container {
   width: 100vw;
   background-color: #F6F6F6;
-  padding: 50px 10px 15px;
+  padding: 2rem 10px 1rem;
 
 
   .checkout-result-content {
@@ -32,4 +32,11 @@
   .continue-shopping-btn {
     margin-top: 1.5rem;
   }
+}
+
+.skeleton-container {
+  width: 42rem;
+  height: 650px;
+  margin: auto;
+  padding: 2rem 1rem 2rem;
 }
