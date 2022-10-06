@@ -60,6 +60,7 @@ export default function Index() {
 	return (
 		<>
 			<LogoHeader
+				style={{ height: '120px' }}
 				categoriesBar={
 					<CategoriesNav categories={categories} />
 				}

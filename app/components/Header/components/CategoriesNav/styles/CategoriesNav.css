@@ -70,7 +70,7 @@
 }
 .categories-nav-container .featured-category-nav {
   flex: auto;
-  margin: 0 15px 0 0;
+  margin: 0;
 }
 @media (max-width: 992px) {
   .categories-nav-container .featured-category-nav {

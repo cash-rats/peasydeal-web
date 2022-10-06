@@ -1,4 +1,4 @@
-import type { ReactElement } from 'react';
+import type { ReactElement, CSSProperties } from 'react';
 import type { LinksFunction } from "@remix-run/node";
 
 import styles from "./styles/HeaderWrapper.css";
@@ -13,14 +13,15 @@ interface HeaderProps {
 	children: ReactElement | ReactElement[];
 
 	categoryBar?: ReactElement;
+
+	style?: CSSProperties | undefined;
 };
 
-export default function HeaderWrapper({ children, categoryBar }: HeaderProps) {
+export default function HeaderWrapper({ children, categoryBar, style }: HeaderProps) {
 	return (
-		<header className="header-container">
+		<header style={style} className="header-container">
 			<div className="header-content-container">
 				<div className="header-wrapper_top">
-
 					{children}
 				</div>
 
