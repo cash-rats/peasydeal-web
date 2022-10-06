@@ -3,17 +3,12 @@
 
 .prod-list-container {
 	margin: 0 auto;
-	padding-top: 20px;
+	padding: 2rem 0;
 	width: 100%;
 	display: flex;
 	justify-content: center;
 	flex-wrap: wrap;
 	align-items: center;
-
-	.product-row {
-		padding-top: 20px;
-		width: 100%;
-	}
 
 	@media (min-width: #{$screen-md-min}) and (max-width: #{$screen-xl-min}) {
 		max-width: 992px;
@@ -21,5 +16,10 @@
 
 	@include xl {
 		width: 1100px;
+	}
+
+	.product-row {
+		padding-top: 20px;
+		width: 100%;
 	}
 }

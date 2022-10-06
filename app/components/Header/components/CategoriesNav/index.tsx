@@ -1,9 +1,11 @@
 import { useState } from "react";
 import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
-
+import { Link } from '@remix-run/react';
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { BsList } from "react-icons/bs";
+
+import { Category } from '~/shared/types';
 
 import styles from './styles/CategoriesNav.css';
 
@@ -12,19 +14,12 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 }
-
-export type Category = {
-  catId: number;
-  title: string;
-  name?: string;
-};
-
 interface CategoriesNavProps {
   categories?: Array<Category>,
 };
 
 /*
- * - [ ] Hover over all category should display all category list.
+ * - [x] Hover over all category should display all category list.
  * - [ ] If we have too many categories, we should have a scroll view.
  */
 export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
@@ -67,9 +62,9 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                           className="category-list-item"
                           key={category.catId}
                         >
-                          <a>
+                          <Link to={`${category.url}`}>
                             {category.title}
-                          </a>
+                          </Link>
                         </li>
                       );
                     })
@@ -87,9 +82,9 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
           {
             categories.map((category) => (
               <li key={category.catId}>
-                <a>
+                <Link to={`${category.url}`}>
                   {category.title}
-                </a>
+                </Link>
               </li>
             ))
           }

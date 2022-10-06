@@ -1,17 +1,19 @@
 import { useState } from 'react';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, PrefetchPageLinks } from '@remix-run/react';
 
 import { PAGE_LIMIT } from '~/shared/constants';
-import { Product } from '~/shared/types';
+import type { Product } from '~/shared/types';
 
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
 import { transformData, organizeTo9ProdsPerRow } from './utils';
+import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 
 export const links: LinksFunction = () => {
   return [
+    ...ProductRowsContainerLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -40,11 +42,10 @@ function Collection() {
   const preloadProds = useLoaderData();
   const [productRows, addProductRows] = useState<Product[][]>(preloadProds.prod_rows);
 
-  console.log('debug', productRows);
-
   return (
-    <div>
-      some collection
+    <div className="prod-list-container">
+      <PrefetchPageLinks page='/product/$productId' />
+      <ProductRowsContainer productRows={productRows} />
     </div>
   );
 }
