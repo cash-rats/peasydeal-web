@@ -226,7 +226,10 @@ function CheckoutPage() {
 
   return (
     <section className="checkout-page-container">
+      <h1 className="title"> Shipping Information </h1>
+
       <div className="checkout-content">
+
         <div className="left">
 
           {/* You Details  */}

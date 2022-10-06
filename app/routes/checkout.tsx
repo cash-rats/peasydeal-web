@@ -4,7 +4,7 @@ import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
-import type { StripeElementsOptions, Stripe, StripeError, StripeElements } from '@stripe/stripe-js';
+import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 
 import { getSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
