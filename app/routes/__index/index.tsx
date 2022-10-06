@@ -15,10 +15,12 @@ import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwo
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Spinner from "~/components/Spinner";
+import { PAGE_LIMIT } from '~/shared/constants';
 
 import type { Product } from "~/shared/types";
 
 import { fetchProducts } from "./api";
+import { transformData, organizeTo9ProdsPerRow } from './utils';
 import styles from "./styles/ProductList.css";
 
 export const links: LinksFunction = () => {
@@ -30,62 +32,16 @@ export const links: LinksFunction = () => {
 	]
 }
 
-const transformData = (apiData: any[]): Product[] => {
-	const transformed: Product[] = apiData.map((data: any): Product => {
-		return {
-			currency: data.currency,
-			description: data.description,
-			discount: data.discountOff,
-			main_pic: data.mainPic,
-			productID: data.productId,
-			retailPrice: data.retailPrice,
-			salePrice: data.salePrice,
-			shortDescription: data.shortDescription,
-			subtitle: data.subTitle,
-			title: data.title,
-			variationID: data.variationId,
-		};
-	})
-
-	return transformed;
-}
-
-// To render grid layout properly:
-//  - 1 ~ 3 prods in layout 1
-//  - 4 ~ 9 prods in layout 2,
-//  we need to organize list of products in a format of 2 dimensional array:
-//
-//  [
-//		[{}, {} ..., {}] <--- 9 prods each row.
-//		[{}, {} ..., {}]
-//  ]
-//
-// So that frontend only needs to consider 9 products for each iteration.
-const organizeTo9ProdsPerRow = (prods: Product[]): Product[][] => {
-	const rows = [];
-	let row = []
-
-	for (let i = 0; i < prods.length; i++) {
-		row.push(prods[i])
-		if ((row.length % 9) === 0) {
-			rows.push(row);
-			row = [];
-		}
-	}
-
-	return rows;
-}
-
-const LIMIT = 18;
-
 export const loader: LoaderFunction = async ({ request }) => {
 	const url = new URL(request.url);
-	const perPage = Number(url.searchParams.get('per_page') || LIMIT);
+	const perPage = Number(url.searchParams.get('per_page') || PAGE_LIMIT);
 	const page = Number(url.searchParams.get('page') || '1');
+	const categoryID = Number(url.searchParams.get('category_id')) || 1;
 
 	const resp = await fetchProducts({
 		perpage: perPage,
 		page,
+		categoryID,
 	})
 
 	const respJSON = await resp.json();
@@ -127,7 +83,7 @@ export default function Index() {
 	const fetcher = useFetcher();
 	const handleLoadMore = () => {
 		currPage.current += 1;
-		fetcher.load(`/?index&page=${currPage.current}&per_page=${LIMIT}`);
+		fetcher.load(`/?index&page=${currPage.current}&per_page=${PAGE_LIMIT}`);
 	};
 
 
@@ -152,6 +108,7 @@ export default function Index() {
 	return (
 		<div className="prod-list-container">
 			<PrefetchPageLinks page='/product/$productId' />
+
 			{
 				productRows.map((row: Product[], index: number): ReactNode => {
 					// A complete row has 9 products.

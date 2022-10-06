@@ -39,20 +39,23 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
       <nav className="all-categories-nav">
         <label
           onClick={toggleOpenAllCategory}
+          onMouseEnter={toggleOpenAllCategory}
+          onMouseLeave={toggleOpenAllCategory}
         >
           <span>
             <BsList fontSize={24} color="#fff" />
             <span>
               All Categories
               {
+                // TODO add animation
                 openAllCategories
                   ? <RiArrowUpSLine />
                   : <RiArrowDownSLine />
               }
             </span>
           </span>
-          {/* submenu */}
 
+          {/* Submenu */}
           {
             openAllCategories
               ? (

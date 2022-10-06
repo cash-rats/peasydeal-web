@@ -1,12 +1,13 @@
 import { json } from "@remix-run/node";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import { Outlet, useLoaderData } from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
 import NavBar, { links as NavBarLinks } from '~/components/Header/components/NavBar';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
+import type { Category } from '~/shared/types';
 
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { getSession } from '~/sessions';
@@ -27,9 +28,13 @@ export const links: LinksFunction = () => {
 	];
 };
 
+type ContextType = { categories: Category[] };
+
 export const loader: LoaderFunction = async ({ request }) => {
 	// Fetch categories.
 	const categories = await fetchCategories();
+
+	console.log('debug categories', categories);
 
 	// - Count number of items in shopping cart from session if not logged in yet.
 	// - Retrieve this information from API if user is logged in.
@@ -81,7 +86,7 @@ export default function Index() {
 			</LogoHeader>
 
 			<main className="main-container">
-				<Outlet />
+				<Outlet context={{ categories: categories }} />
 			</main>
 
 			<Footer />
@@ -89,3 +94,6 @@ export default function Index() {
 	);
 }
 
+export function useContext() {
+	return useOutletContext<ContextType>();
+};

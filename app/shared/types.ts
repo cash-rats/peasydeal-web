@@ -11,7 +11,7 @@ export type Product = {
   title: string;
   subtitle: string;
   variationID: string;
-}
+};
 
 // Shopping cart item stored in session or from API.
 export type CartItem = {
@@ -23,9 +23,15 @@ export type CartItem = {
   subTitle: string;
   title: string;
   variationID: string;
-}
+};
 
 export type ApiErrorResponse = {
   err_code: string;
   err_message: string;
-}
+};
+
+export type Category = {
+  catId: string;
+  title: string;
+  url: string;
+};

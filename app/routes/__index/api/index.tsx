@@ -17,4 +17,23 @@ const fetchProducts = ({
 	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?catId=${categoryID}&perPage=${perpage}&pageNo=${page}`);
 }
 
-export { fetchProducts };
+interface fetchProductsByCategoryParams {
+	category?: string;
+	perpage?: number;
+	page: number;
+}
+
+const fetchProductsByCategory = ({
+	category,
+	perpage,
+	page
+}: fetchProductsByCategoryParams): Promise<Response> => {
+	if (!category) category = 'home';
+	if (!perpage) perpage = 9;
+	if (!page) page = 0;
+
+	const { MYFB_ENDPOINT } = process.env;
+	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?cat=${category}&perPage=${perpage}&pageNo=${page}`);
+}
+
+export { fetchProducts, fetchProductsByCategory };
