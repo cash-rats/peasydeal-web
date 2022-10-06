@@ -1,8 +1,9 @@
 .payment-failed-container {
-  height: 100vh;
+  height: 650px;
   width: 100vw;
   background-color: #F6F6F6;
-  padding: 50px 10px 15px;
+  padding: 0 10px 15px;
+  display: flex;
 }
 .payment-failed-container .payment-failed-content {
   max-width: 650px;
