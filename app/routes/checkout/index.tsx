@@ -135,6 +135,7 @@ function CheckoutPage() {
   // Store orderUUID when is newly created. There might be an senario where shipping information is valid but not billing info.
   // When customer submit payment again, a new order will be created again. Thus, if orderID exists we should not create a new order again.
   const [orderUUID, setOrderUUID] = useState<string | null>();
+  const [isPaying, setIsPaying] = useState(false);
 
   const [shippingDetailFormValues, setShippingDetailFormValues] = useState<ShippingDetailFormType>({
     email: '',
@@ -155,6 +156,8 @@ function CheckoutPage() {
 
 
   const stripeConfirmPayment = async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
+    setIsPaying(true);
+
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -166,11 +169,11 @@ function CheckoutPage() {
       if (error.type === "card_error" || error.type === "validation_error") {
         openErrorSnackbar(error.message);
       } else {
-        openErrorSnackbar("An unexpected error occurred.");
+        openErrorSnackbar(`An unexpected error occurred. ${error.message}`);
       }
-
-      return;
     }
+
+    setIsPaying(false);
   }
 
   useEffect(
@@ -189,6 +192,7 @@ function CheckoutPage() {
 
         const { order_uuid: orderUUID } = createOrderFetcher.data;
         setOrderUUID(orderUUID);
+
         stripeConfirmPayment(orderUUID, element, stripe);
       }
     },
@@ -342,7 +346,8 @@ function CheckoutPage() {
                     // When create order action is triggered in `CheckoutForm`, current loader will be triggered to realod client secret causing display of the warning.
                     // The following is a temperary solution.
                     // @docs https://stackoverflow.com/questions/70864433/integration-of-stripe-paymentelement-warning-unsupported-prop-change-options-c
-                    <CheckoutForm />
+                    <CheckoutForm loading={createOrderFetcher.state !== 'idle' || isPaying}
+                    />
                   }
                 </div>
               </div>
