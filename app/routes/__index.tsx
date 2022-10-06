@@ -3,7 +3,11 @@ import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import { Outlet, useLoaderData } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
-import Header, { links as HeaderLinks } from '~/components/Header';
+import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
+import NavBar, { links as NavBarLinks } from '~/components/Header/components/NavBar';
+import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
+import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
+
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { getSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
@@ -14,7 +18,11 @@ import { fetchCategories } from './api';
 export const links: LinksFunction = () => {
 	return [
 		...FooterLinks(),
-		...HeaderLinks(),
+		...LogoHeaderLinks(),
+		...SearchBarLinks(),
+		...NavBarLinks(),
+		...CategoriesNavLinks(),
+
 		{ rel: 'stylesheet', href: styles }
 	];
 };
@@ -51,10 +59,25 @@ export default function Index() {
 
 	return (
 		<>
-			<Header
-				cartItemCount={numOfItemsInCart}
-				categories={categories}
-			/>
+			<LogoHeader
+				categoriesBar={
+					<CategoriesNav categories={categories} />
+				}
+			>
+				<div className="index_header-content">
+					{/* search bar */}
+					<div className="index_search-bar">
+						<SearchBar placeholder="search product" />
+					</div>
+
+					{/* right status bar, cart, search icon...etc */}
+					<div className="index_nav-bar">
+						<div className="index_nav-bar-wrapper">
+							<NavBar cartItemCount={numOfItemsInCart} />
+						</div>
+					</div>
+				</div>
+			</LogoHeader>
 
 			<main className="main-container">
 				<Outlet />

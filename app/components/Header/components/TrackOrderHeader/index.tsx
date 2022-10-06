@@ -32,6 +32,7 @@ function TrackOrderHeader({ onSearch, onClear }: TrackOrderHeaderProps) {
           <SearchBar
             onSearch={onSearch}
             onClear={onClear}
+            placeholder="Search order id "
           />
         </div>
       </div>

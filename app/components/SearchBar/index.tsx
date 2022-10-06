@@ -17,11 +17,17 @@ export const links: LinksFunction = () => {
 interface SearchBarProps {
   onSearch?: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
   onClear?: (evt: MouseEvent<HTMLSpanElement>) => void;
+  placeholder?: string;
 }
 
 const isStringEmpty = (str: string): boolean => str.trim().length === 0;
 
-function SearchBar({ onSearch = () => { }, onClear = () => { }, ...args }: SearchBarProps) {
+function SearchBar({
+  onSearch = () => { },
+  onClear = () => { },
+  placeholder = '',
+  ...args
+}: SearchBarProps) {
   const [orderNum, setOrderNum] = useState<string>('');
   const handleChangeOrderNum = (evt: ChangeEvent<HTMLInputElement>) => {
     setOrderNum(evt.target.value);
@@ -36,7 +42,7 @@ function SearchBar({ onSearch = () => { }, onClear = () => { }, ...args }: Searc
       <div className="search-box">
         <InputBase
           fullWidth
-          placeholder="Search order number"
+          placeholder={placeholder}
           size='small'
           value={orderNum}
           onChange={handleChangeOrderNum}

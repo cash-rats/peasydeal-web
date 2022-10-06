@@ -1,6 +1,47 @@
+@import 'styles/_breakpoints';
+
+.index_header-content {
+	width: 100%;
+	display: flex;
+}
+
+.index_search-bar {
+	width: 85%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	display: none;
+
+	@media(min-width: $screen-md-min) {
+		display: block;
+	}
+}
+
+.index_nav-bar {
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	padding-left: 1rem;
+
+	@media(min-width: $screen-md-min) {
+		width: 15%;
+		justify-content: flex-start;
+	}
+}
+
 .main-container {
 	background-color: #FFF;
 	min-height: 100%;
 	min-height: 100vh;
 	overflow-x: hidden;
+}
+
+.index_nav-bar-wrapper {
+	display: flex;
+	align-items: center;
+	width: 25%;
+
+	@media(min-width: $screen-md-min) {
+		width: 100%;
+	}
 }

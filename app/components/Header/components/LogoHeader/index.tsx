@@ -1,5 +1,5 @@
 
-import type { ReactElement } from 'react';
+import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import LogoBar, { links as LogoBarLinks } from '~/components/Header/components/LogoBar';
@@ -14,12 +14,15 @@ export const links: LinksFunction = () => {
 };
 
 interface LogoHeaderProps {
-  children?: ReactElement | ReactElement[];
+  children?: ReactNode;
+  categoriesBar?: ReactNode;
 };
 
-function LogoHeader({ children = <></> }: LogoHeaderProps) {
+function LogoHeader({ children = null, categoriesBar = null }: LogoHeaderProps) {
   return (
-    <HeaderWrapper>
+    <HeaderWrapper
+      categoryBar={categoriesBar}
+    >
       <div
         style={{
           height: '100%',

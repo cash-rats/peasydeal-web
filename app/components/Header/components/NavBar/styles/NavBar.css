@@ -6,8 +6,8 @@
   padding: 0;
   align-items: center;
   display: flex;
-  justify-content: space-between;
-  padding: 0 15px;
+  justify-content: flex-start;
+  gap: 1.2rem;
 }
 .nav-container .nav-content-list .nav-content-item {
   align-items: center;
@@ -17,9 +17,9 @@
   position: relative;
   transition: 100ms all linear 0s;
 }
-@media (max-width: 992px) {
-  .nav-container .nav-content-list .nav-content-item {
-    padding: 0 5px;
+@media (min-width: 768px) {
+  .nav-container .nav-content-list .index_nav-search {
+    display: none;
   }
 }
 

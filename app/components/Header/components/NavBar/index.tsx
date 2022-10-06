@@ -1,6 +1,8 @@
+import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { FiShoppingCart } from "react-icons/fi"
+import { TbReportSearch, TbSearch } from "react-icons/tb";
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
 
@@ -18,13 +20,25 @@ interface NavBarProps {
 	 * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
 	 */
 	cartItemCount?: number;
+
+	/*
+	 * Open full screen search bar on mobile view. (Only works on mobile view)
+	 */
+	onClickSearch?: { (evt: MouseEvent<HTMLSpanElement>): void },
 }
 
 // Load shopping cart items.
-function NavBar({ cartItemCount = 0 }: NavBarProps) {
+function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 	return (
 		<nav className="nav-container">
 			<ul className="nav-content-list">
+				{/* Search icon that only displays in mobile view */}
+				<li className="index_nav-search">
+					<span onClick={onClickSearch}>
+						<TbSearch fontSize={22} />
+					</span>
+				</li>
+
 				{/* shopping cart */}
 				<li className="nav-content-item">
 					{
@@ -36,8 +50,14 @@ function NavBar({ cartItemCount = 0 }: NavBarProps) {
 						)
 					}
 
-					<Link to="/cart">
-						<FiShoppingCart fontSize={25} />
+					<Link aria-label='shopping cart' to="/cart">
+						<FiShoppingCart fontSize={22} />
+					</Link>
+				</li>
+
+				<li>
+					<Link aria-label='track order' to="/tracking">
+						<TbReportSearch fontSize={26} />
 					</Link>
 				</li>
 			</ul>

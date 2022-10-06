@@ -4,10 +4,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import Divider from '@mui/material/Divider';
 import LockIcon from '@mui/icons-material/Lock';
 
-
 import styles from './styles/CheckoutForm.css';
-// import { transformOrderDetail } from './utils';
-// import { createOrder } from './api';
 
 export const links: LinksFunction = () => {
   return [

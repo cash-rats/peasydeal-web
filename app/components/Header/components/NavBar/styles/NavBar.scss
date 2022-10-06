@@ -1,4 +1,5 @@
 @import 'styles/_mixins';
+@import 'styles/_breakpoints';
 
 .nav-container {
 	flex: 1;
@@ -8,8 +9,8 @@
 		padding: 0;
 		align-items: center;
 		display: flex;
-		justify-content: space-between;
-		padding: 0 15px;
+		justify-content: flex-start;
+		gap: 1.2rem;
 
 		.nav-content-item {
 			align-items: center;
@@ -18,9 +19,11 @@
 			margin: 0 5px;
 			position: relative;
 			transition: 100ms all linear 0s;
+		}
 
-			@include lg-992-max {
-				padding: 0 5px;
+		.index_nav-search {
+			@media(min-width: #{$screen-md-min}) {
+				display: none;
 			}
 		}
 	}
