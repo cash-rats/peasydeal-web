@@ -1,6 +1,8 @@
 .problematic-page {
-  padding: 2rem 1rem 3rem 2rem;
   max-height: 460px;
+  max-width: 1180px;
+  padding: 2rem 1rem 3rem 2rem;
+  margin: 0 auto;
 }
 @media (min-width: 599px) {
   .problematic-page {
