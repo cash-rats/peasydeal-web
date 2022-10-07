@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react';
-import type { LinksFunction, LoaderFunction, ActionFunction, ErrorBoundaryComponent } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 
 import TrackOrderHeader, { links as TrackOrderHeaderLinks } from '~/components/Header/components/TrackOrderHeader';
@@ -45,7 +45,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const respJSON = await resp.json();
 
   if (resp.status !== httpStatus.OK) {
-    throw new Error(`Result for order ${orderID} is not found`);
+    throw json(`Result for order ${orderID} is not found`, resp.status);
   }
 
   const orderInfo = respJSON as TrackOrder
@@ -64,7 +64,8 @@ export const action: ActionFunction = async ({ request }) => {
   return redirect(`/tracking?query=${orderUUID}`);
 }
 
-export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
+export const CatchBoundary = () => {
+  const caught = useCatch();
   const trackOrderFetcher = useFetcher();
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
@@ -92,12 +93,13 @@ export const ErrorBoundary: ErrorBoundaryComponent = ({ error }) => {
         onSearch={handleOnSearch}
         onClear={handleOnClear}
       />
-      <TrackingOrderErrorPage message={error.message} />
+      <TrackingOrderErrorPage message={caught.data} />
 
       <Footer />
     </>
-  );
+  )
 }
+
 
 function TrackingOrder() {
   const { order } = useLoaderData<LoaderDataType>();
