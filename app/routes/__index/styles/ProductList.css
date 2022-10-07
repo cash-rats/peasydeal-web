@@ -3,6 +3,7 @@
   padding: 2rem 0;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   flex-wrap: wrap;
   align-items: center;
@@ -16,10 +17,6 @@
   .prod-list-container {
     width: 1100px;
   }
-}
-.prod-list-container .product-row {
-  padding-top: 20px;
-  width: 100%;
 }
 
 /*# sourceMappingURL=ProductList.css.map */

@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from "react";
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, PrefetchPageLinks } from '@remix-run/react';
+import { useFetcher, useLoaderData, PrefetchPageLinks } from '@remix-run/react';
 
+import Spinner from "~/components/Spinner";
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from '~/shared/types';
+import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
@@ -14,6 +16,7 @@ import ProductRowsContainer, { links as ProductRowsContainerLinks } from './comp
 export const links: LinksFunction = () => {
   return [
     ...ProductRowsContainerLinks(),
+    ...LoadmoreLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -35,17 +38,50 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const transformedProds = transformData(respJSON.products)
   const prodRows = organizeTo9ProdsPerRow(transformedProds)
 
-  return json({ prod_rows: prodRows });
+  return json({ prod_rows: prodRows, category: collection });
 }
 
 function Collection() {
-  const preloadProds = useLoaderData();
-  const [productRows, addProductRows] = useState<Product[][]>(preloadProds.prod_rows);
+  const { prod_rows: preloadProds, category } = useLoaderData();
+  const [productRows, addProductRows] = useState<Product[][]>(preloadProds);
+  const currPage = useRef(1);
+  const loadmoreFetcher = useFetcher();
+
+  useEffect(() => {
+    if (loadmoreFetcher.type === 'done') {
+      // Current page fetched successfully, increase page number getting ready to fetch next page.
+      const productRows = loadmoreFetcher.data.prod_rows;
+      addProductRows(prev => prev.concat(productRows))
+    }
+  }, [loadmoreFetcher])
+
+
+  const handleLoadMore = () => {
+    currPage.current += 1;
+    loadmoreFetcher.load(`/${category}?page=${currPage.current}&per_page=${PAGE_LIMIT}`);
+  };
 
   return (
     <div className="prod-list-container">
       <PrefetchPageLinks page='/product/$productId' />
+
       <ProductRowsContainer productRows={productRows} />
+
+      <loadmoreFetcher.Form>
+        <input
+          type="hidden"
+          name="page"
+          value={currPage.current}
+        />
+
+        <LoadMore
+          spinner={Spinner}
+          loading={loadmoreFetcher.state !== 'idle'}
+          callback={handleLoadMore}
+          delay={100}
+          offset={150}
+        />
+      </loadmoreFetcher.Form>
     </div>
   );
 }

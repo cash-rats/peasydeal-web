@@ -1,6 +1,11 @@
+.productRowsContainer_wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .productRowsContainer_product-row {
-  padding-top: 20px;
   width: 100%;
+  margin-bottom: 1.25rem;
 }
 
 /*# sourceMappingURL=ProductRowsContainer.css.map */

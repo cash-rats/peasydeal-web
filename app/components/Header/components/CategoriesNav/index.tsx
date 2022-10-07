@@ -5,7 +5,7 @@ import { Link } from '@remix-run/react';
 import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
 import { BsList } from "react-icons/bs";
 
-import { Category } from '~/shared/types';
+import type { Category } from '~/shared/types';
 
 import styles from './styles/CategoriesNav.css';
 

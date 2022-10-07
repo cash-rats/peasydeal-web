@@ -1,24 +1,16 @@
-import {
-	useState,
-	useEffect,
-	Fragment,
-	useRef,
-} from "react";
-import type { ReactNode } from "react";
+import { useState, useEffect, useRef } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
 import { useFetcher, useLoaderData, useSubmit, PrefetchPageLinks } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
-import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
-import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
-import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Spinner from "~/components/Spinner";
 import { PAGE_LIMIT } from '~/shared/constants';
 
 import type { Product } from "~/shared/types";
 
+import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProducts } from "./api";
 import { transformData, organizeTo9ProdsPerRow } from './utils';
 import styles from "./styles/ProductList.css";
@@ -26,8 +18,7 @@ import styles from "./styles/ProductList.css";
 export const links: LinksFunction = () => {
 	return [
 		...LoadmoreLinks(),
-		...EvenRowLinks(),
-		...OneMainTwoSubsLinks(),
+		...ProductRowsContainerLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
 }
@@ -104,85 +95,14 @@ export default function Index() {
 		submit({ product_id: productID }, { method: 'post' });
 	};
 
-
 	return (
 		<div className="prod-list-container">
 			<PrefetchPageLinks page='/product/$productId' />
 
-			{
-				productRows.map((row: Product[], index: number): ReactNode => {
-					// A complete row has 9 products.
-					// A incomplete row contains less than 9 products
-					//
-					// To render `OneMainTwoSubs` layout properly, we need to have at least 3 products
-					// To render `EvenRow` layout properly we need to have at least 6 products
-					//
-					// If a given row has less than 9 products, that means we've reached the last page.
-					// Moreover, we might not have enough products to render both layouts.
-					// we'll need to decided if we have enough products to render `OneMainTwoSubs` and `EvenRow`
-					const shouldReverese = index % 2 !== 0;
-
-					if (row.length === 9) {
-						// We can rest assure that we have enough products to render both `OneMainTwoSubs` and `EvenRow`
-						const oneMainTwoSubsProdData = row.slice(0, 3)
-						const EvenRowProdData = row.slice(3)
-
-						return (
-							<Fragment key={index}>
-								<div className="product-row">
-									<OneMainTwoSubs
-										reverse={shouldReverese}
-										products={oneMainTwoSubsProdData}
-										onClickProduct={handleClickProduct}
-									/>
-								</div>
-
-								<div className="product-row">
-									<EvenRow
-										products={EvenRowProdData}
-										onClickProduct={handleClickProduct}
-									/>
-								</div>
-							</Fragment>
-						)
-					} else {
-						const oneMainTwoSubsProdData = row.slice(0, 3)
-
-						if (oneMainTwoSubsProdData.length <= 3) {
-							return (
-								<div key={index} className="product-row">
-									<OneMainTwoSubs
-										reverse={shouldReverese}
-										products={oneMainTwoSubsProdData}
-										onClickProduct={handleClickProduct}
-									/>
-								</div>
-							);
-						}
-
-						const EvenRowProdData = row.slice(3)
-
-						return (
-							<Fragment key={index}>
-								<div className="product-row">
-									<OneMainTwoSubs
-										reverse={shouldReverese}
-										products={oneMainTwoSubsProdData}
-										onClickProduct={handleClickProduct}
-									/>
-								</div>
-
-								<div className="product-row">
-									<EvenRow
-										products={EvenRowProdData}
-										onClickProduct={handleClickProduct}
-									/>
-								</div>
-							</Fragment>
-						);
-					}
-				})
-			}
+			<ProductRowsContainer
+				productRows={productRows}
+				onClickProduct={handleClickProduct}
+			/>
 
 			<fetcher.Form>
 				<input

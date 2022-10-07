@@ -186,46 +186,11 @@
   line-height: 1.43rem;
 }
 
-.problematic-page {
-  padding: 2rem 1rem 3rem 2rem;
-  max-height: 460px;
-}
-@media (min-width: 599px) {
-  .problematic-page {
-    min-height: 560px;
-  }
-}
-.problematic-page .error-title {
-  font-size: 1.5rem;
-  font-weight: 500;
-  margin-top: 2rem;
-  margin-bottom: 2.25rem;
-}
-.problematic-page .error-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  height: 100%;
-  padding-top: 6.25rem;
-}
-.problematic-page .error-content img {
-  width: 10rem;
-  height: 10rem;
-  margin-bottom: 1rem;
-}
-
 .initial-page {
   min-height: 35rem;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.error-text {
-  margin: 0px 0px 0.25rem;
-  font-size: 1.5rem;
-  font-weight: 700;
 }
 
 /*# sourceMappingURL=Tracking.css.map */

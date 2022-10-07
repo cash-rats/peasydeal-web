@@ -5,24 +5,26 @@ import type { LinksFunction } from '@remix-run/node';
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
-
 import type { Product } from '~/shared/types';
+
+import styles from './styles/ProductRowsContainer.css';
 
 export const links: LinksFunction = () => {
   return [
     ...OneMainTwoSubsLinks(),
     ...EvenRowLinks(),
+    { rel: 'stylesheet', href: styles },
   ];
 };
 
 interface ProductRowsContainerProps {
-  handleClickProduct?: (prodID: string) => void;
+  onClickProduct?: (prodID: string) => void;
   productRows?: Product[][];
 }
 
-function ProductRowsContainer({ handleClickProduct = () => { }, productRows = [] }: ProductRowsContainerProps) {
+function ProductRowsContainer({ onClickProduct = () => { }, productRows = [] }: ProductRowsContainerProps) {
   return (
-    <>
+    <div className="productRowsContainer_wrapper">
       {
         productRows.map((row: Product[], index: number): ReactNode => {
           // A complete row has 9 products.
@@ -47,14 +49,14 @@ function ProductRowsContainer({ handleClickProduct = () => { }, productRows = []
                   <OneMainTwoSubs
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
-                    onClickProduct={handleClickProduct}
+                    onClickProduct={onClickProduct}
                   />
                 </div>
 
                 <div className="productRowsContainer_product-row">
                   <EvenRow
                     products={EvenRowProdData}
-                    onClickProduct={handleClickProduct}
+                    onClickProduct={onClickProduct}
                   />
                 </div>
               </Fragment>
@@ -68,7 +70,7 @@ function ProductRowsContainer({ handleClickProduct = () => { }, productRows = []
                   <OneMainTwoSubs
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
-                    onClickProduct={handleClickProduct}
+                    onClickProduct={onClickProduct}
                   />
                 </div>
               );
@@ -82,14 +84,14 @@ function ProductRowsContainer({ handleClickProduct = () => { }, productRows = []
                   <OneMainTwoSubs
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
-                    onClickProduct={handleClickProduct}
+                    onClickProduct={onClickProduct}
                   />
                 </div>
 
                 <div className="productRowsContainer_product-row">
                   <EvenRow
                     products={EvenRowProdData}
-                    onClickProduct={handleClickProduct}
+                    onClickProduct={onClickProduct}
                   />
                 </div>
               </Fragment>
@@ -97,7 +99,7 @@ function ProductRowsContainer({ handleClickProduct = () => { }, productRows = []
           }
         })
       }
-    </>
+    </div>
   );
 }
 
