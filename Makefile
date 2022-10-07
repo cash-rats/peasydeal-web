@@ -16,7 +16,7 @@ REMOTE_BUILD_PATH=$(REMOTE_APP_PATH)/build
 
 # We need to load nvm for ssh remote execution.
 # @see https://stackoverflow.com/questions/33357227/bash-doesnt-load-node-on-remote-ssh-command.
-staging_deploy:
+deploy_staging:
 	ssh -p $(REMOTE_PORT) -t $(REMOTE_USER)@$(REMOTE_HOST) 'source ~/.nvm/nvm.sh && \
 	cd $(REMOTE_APP_PATH) && \
 	git reset --hard HEAD && \
