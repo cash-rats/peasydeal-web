@@ -36,7 +36,7 @@ export default function MediumGrid({
 	image,
 	title,
 	description,
-	onClickProduct = () => {},
+	onClickProduct = () => { },
 }: MediumGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 
@@ -55,14 +55,15 @@ export default function MediumGrid({
 				onClick={
 					clickableGrid
 						? () => onClickProduct(productID)
-						: () => {}
+						: () => { }
 				}
 				className="medium-grid-container"
 			>
 				{/* images */}
 				<div className="image-container">
 					<img
-						className="prod-main-image"
+						alt={title}
+						className="medium-grid-image"
 						src={image}
 					/>
 				</div>

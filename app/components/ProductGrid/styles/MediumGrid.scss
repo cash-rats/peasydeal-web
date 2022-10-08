@@ -23,8 +23,8 @@
 	}
 
 	.image-container {
-		width: 100%;
-		height: 100%;
+		max-width: 600px;
+		max-height: 600px;
 
 		@media (max-width: #{$screen-sm-min-600}) {
 			&:after {
@@ -48,6 +48,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 11px;
+
 		@include sm-600-max {
 			position: absolute;
 			left: 0;
@@ -72,6 +73,7 @@
 				font-weight: bold;
 				margin: 0;
 				color: rgb(51, 51, 51);
+
 				@include phoneOnly {
 					color: white;
 					font-size: 16px;
@@ -87,10 +89,8 @@
 	}
 }
 
-.prod-main-image {
-	width: 100%;
-	height: auto;
-	aspect-ratio: 414/277;
+.medium-grid-image {
+	aspect-ratio: 1/1;
 
 	@include md {
 		height: 216px;

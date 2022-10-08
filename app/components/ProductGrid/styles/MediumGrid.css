@@ -23,8 +23,8 @@
   }
 }
 .medium-grid-container .image-container {
-  width: 100%;
-  height: 100%;
+  max-width: 600px;
+  max-height: 600px;
 }
 @media (max-width: 600px) {
   .medium-grid-container .image-container:after {
@@ -83,18 +83,16 @@
   }
 }
 
-.prod-main-image {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 414/277;
+.medium-grid-image {
+  aspect-ratio: 1/1;
 }
 @media (min-width: 768px) {
-  .prod-main-image {
+  .medium-grid-image {
     height: 216px;
   }
 }
 @media (min-width: 1200px) {
-  .prod-main-image {
+  .medium-grid-image {
     height: 236px;
   }
 }
