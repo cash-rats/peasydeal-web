@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useFetcher, useLoaderData, PrefetchPageLinks } from '@remix-run/react';
+import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
+import { useFetcher, useLoaderData, PrefetchPageLinks, useSubmit } from '@remix-run/react';
 
 import Spinner from "~/components/Spinner";
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -41,11 +41,19 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   return json({ prod_rows: prodRows, category: collection });
 }
 
+export const action: ActionFunction = async ({ request }) => {
+  const body = await request.formData();
+  const productID = body.get("product_id");
+
+  return redirect(`/product/${productID}`);
+};
+
 function Collection() {
   const { prod_rows: preloadProds, category } = useLoaderData();
   const [productRows, addProductRows] = useState<Product[][]>(preloadProds);
   const currPage = useRef(1);
   const loadmoreFetcher = useFetcher();
+  const submit = useSubmit();
 
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
@@ -61,11 +69,18 @@ function Collection() {
     loadmoreFetcher.load(`/${category}?page=${currPage.current}&per_page=${PAGE_LIMIT}`);
   };
 
+  const handleClickProduct = (prodID: string) => {
+    submit({ product_id: prodID }, { method: 'post' });
+  };
+
   return (
     <div className="prod-list-container">
       <PrefetchPageLinks page='/product/$productId' />
 
-      <ProductRowsContainer productRows={productRows} />
+      <ProductRowsContainer
+        productRows={productRows}
+        onClickProduct={handleClickProduct}
+      />
 
       <loadmoreFetcher.Form>
         <input

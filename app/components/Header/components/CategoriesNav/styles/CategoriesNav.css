@@ -4,6 +4,7 @@
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
+  height: 38px;
 }
 .categories-nav-container .all-categories-nav {
   cursor: pointer;
@@ -90,6 +91,7 @@
   flex: auto;
   cursor: pointer;
   transition: 100ms all linear 0s;
+  color: #fff;
 }
 .categories-nav-container .featured-category-nav ul li:hover {
   background-color: #E4E4E4;

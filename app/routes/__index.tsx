@@ -8,7 +8,6 @@ import NavBar, { links as NavBarLinks } from '~/components/Header/components/Nav
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import type { Category } from '~/shared/types';
-
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { getSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
@@ -33,8 +32,6 @@ type ContextType = { categories: Category[] };
 export const loader: LoaderFunction = async ({ request }) => {
 	// Fetch categories.
 	const categories = await fetchCategories();
-
-	console.log('debug categories', categories);
 
 	// - Count number of items in shopping cart from session if not logged in yet.
 	// - Retrieve this information from API if user is logged in.
