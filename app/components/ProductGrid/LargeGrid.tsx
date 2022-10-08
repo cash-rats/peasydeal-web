@@ -27,7 +27,7 @@ function LargeGrid({
 	image,
 	title,
 	description,
-	onClickProduct = () => {},
+	onClickProduct = () => { },
 }: LargeGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 
@@ -47,12 +47,12 @@ function LargeGrid({
 				onClick={
 					clickableGrid
 						? () => onClickProduct(productID)
-						: () => {}
+						: () => { }
 				}
 			>
 				{/* image */}
 				<div className="image-container">
-					<img className="large-grid-image" src={image} />
+					<img alt={title} className="large-grid-image" src={image} />
 				</div>
 
 				<div className="product-desc-container">

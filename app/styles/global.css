@@ -18,8 +18,8 @@ body {
   /* Optional: Adds an empty scrollbar to the right margin in case content grows vertically, creating a scrollbar.  Allows for better width calculations, as the browser pre-calculates width before scrollbar appears, avoiding page content shifting.*/
   margin: 0;
   padding: 0;
-  background: #f6f6f6;
   /* add text to your page and make sure this background color always fills the screen! */
+  background: #f6f6f6 !important;
   font-family: "Roboto", sans-serif !important;
 }
 
