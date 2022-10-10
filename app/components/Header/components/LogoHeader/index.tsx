@@ -29,6 +29,7 @@ function LogoHeader({ children = null, categoriesBar = null, style }: LogoHeader
           height: '100%',
           display: 'flex',
           alignItems: 'center',
+          width: '10rem',
         }}
       >
         <LogoBar />
