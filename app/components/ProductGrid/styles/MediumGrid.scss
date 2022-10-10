@@ -18,15 +18,20 @@
 		max-width: 600px;
 		max-height: 600px;
 
-		@media (max-width: #{$screen-sm-min-600}) {
+		&:after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: linear-gradient(to bottom, transparent 0%, black 170%);
+		}
+
+		@media (min-width: #{$screen-sm-min-600}) {
 			&:after {
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				background: linear-gradient(to bottom, transparent 0%, black 170%);
+				position: relative;
+				background: none;
 			}
 		}
 	}

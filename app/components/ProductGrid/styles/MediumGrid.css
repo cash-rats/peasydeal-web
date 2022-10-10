@@ -16,15 +16,19 @@
   max-width: 600px;
   max-height: 600px;
 }
-@media (max-width: 600px) {
+.medium-grid-container .image-container:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, black 170%);
+}
+@media (min-width: 600px) {
   .medium-grid-container .image-container:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to bottom, transparent 0%, black 170%);
+    position: relative;
+    background: none;
   }
 }
 .medium-grid-container .product-desc-container {
