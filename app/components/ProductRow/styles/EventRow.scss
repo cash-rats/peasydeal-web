@@ -3,22 +3,20 @@
 .even-row-contianer {
 	display: flex;
 	flex-direction: row;
-	gap: 20px 20px;
+	gap: 1rem;
 	flex-wrap: wrap;
 	margin: 0 auto;
 	justify-content: center;
 
 	@media (min-width:#{$screen-md-min}) and (max-width:#{$screen-xl-min}) {
-		justify-content: flex-start;
+		justify-content: center;
 		width: 670px;
 		flex-direction: row;
-		gap: 20px 8px;
-		padding-left: 2px;
 	}
 
 	@media (min-width:#{$screen-sm-min-600}) and (max-width:#{$screen-md-min}) {
-		justify-content: flex-start;
-		width: 576px;
+		justify-content: center;
+		// width: 576px;
 		flex-direction: row;
 	}
 

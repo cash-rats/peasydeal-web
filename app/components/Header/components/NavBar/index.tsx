@@ -35,7 +35,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 				{/* Search icon that only displays in mobile view */}
 				<li className="index_nav-search">
 					<span onClick={onClickSearch}>
-						<TbSearch fontSize={22} />
+						<TbSearch color='white' fontSize={22} />
 					</span>
 				</li>
 
@@ -51,13 +51,13 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 					}
 
 					<Link aria-label='shopping cart' to="/cart">
-						<FiShoppingCart fontSize={22} />
+						<FiShoppingCart color='white' fontSize={22} />
 					</Link>
 				</li>
 
 				<li>
 					<Link aria-label='track order' to="/tracking">
-						<TbReportSearch fontSize={26} />
+						<TbReportSearch color='white' fontSize={26} />
 					</Link>
 				</li>
 			</ul>

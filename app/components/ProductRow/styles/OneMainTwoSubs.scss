@@ -28,26 +28,22 @@
 		display: flex;
 		justify-content: center;
 		flex-direction: column;
-		gap: 20px 0;
+		gap: 20px;
 
 		@media (max-width: #{$screen-sm-min-600}) {
 			flex-direction: column;
-			gap: 20px;
 		}
 
 		@media (min-width: #{$screen-sm-min-600}) and (max-width: #{$screen-md-min}) {
 			flex-direction: row;
-			gap: 20px;
 		}
 
 		@media (min-width: #{$screen-md-min}) and (max-width: #{$screen-xl-min}) {
 			flex-direction: row;
-			gap: 10px;
 		}
 
 		@include xl {
 			flex-direction: column;
-			gap: 10px;
 		}
 	}
 }

@@ -27,30 +27,26 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
-  gap: 20px 0;
+  gap: 20px;
 }
 @media (max-width: 600px) {
   .one-main-two-subs-container .right {
     flex-direction: column;
-    gap: 20px;
   }
 }
 @media (min-width: 600px) and (max-width: 768px) {
   .one-main-two-subs-container .right {
     flex-direction: row;
-    gap: 20px;
   }
 }
 @media (min-width: 768px) and (max-width: 1200px) {
   .one-main-two-subs-container .right {
     flex-direction: row;
-    gap: 10px;
   }
 }
 @media (min-width: 1200px) {
   .one-main-two-subs-container .right {
     flex-direction: column;
-    gap: 10px;
   }
 }
 

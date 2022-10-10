@@ -1,24 +1,21 @@
 .even-row-contianer {
   display: flex;
   flex-direction: row;
-  gap: 20px 20px;
+  gap: 1rem;
   flex-wrap: wrap;
   margin: 0 auto;
   justify-content: center;
 }
 @media (min-width: 768px) and (max-width: 1200px) {
   .even-row-contianer {
-    justify-content: flex-start;
+    justify-content: center;
     width: 670px;
     flex-direction: row;
-    gap: 20px 8px;
-    padding-left: 2px;
   }
 }
 @media (min-width: 600px) and (max-width: 768px) {
   .even-row-contianer {
-    justify-content: flex-start;
-    width: 576px;
+    justify-content: center;
     flex-direction: row;
   }
 }
