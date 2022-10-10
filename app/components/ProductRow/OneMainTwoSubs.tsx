@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { LinksFunction } from "@remix-run/node";
-import clsx from "clsx";
 
 import type { Product } from "~/shared/types";
 import MqNotifier from '~/components/MqNotifier';
@@ -16,6 +15,68 @@ export const links: LinksFunction = () => {
 		...LargeGridLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
+};
+
+interface LeftLayoutProps {
+	product?: Product;
+	onClickProduct?: (productID: string) => void;
+};
+
+function LeftLayout({ product, onClickProduct = () => { } }: LeftLayoutProps) {
+	return (
+		<div className="left">
+			{
+				product && (
+					<LargeGrid
+						productID={product.productID}
+						image={product.main_pic}
+						title={product.title}
+						description={product.description}
+						onClickProduct={onClickProduct}
+					/>
+				)
+			}
+
+		</div>
+	)
+};
+
+interface RightLayoutProps {
+	products?: Product[];
+	onClickProduct?: (productID: string) => void;
+};
+
+function RightLayout({ products = [], onClickProduct = () => { } }: RightLayoutProps) {
+	const [one, two] = products;
+	return (
+
+		<div className="right">
+			{
+				one && (
+					<MediumGrid
+						productID={one.productID}
+						image={one.main_pic}
+						title={one.title}
+						description={one.shortDescription}
+						onClickProduct={onClickProduct}
+					/>
+				)
+			}
+
+			{
+				two && (
+					<MediumGrid
+						productID={two.productID}
+						image={two.main_pic}
+						title={two.title}
+						description={two.shortDescription}
+						onClickProduct={onClickProduct}
+					/>
+				)
+			}
+		</div>
+
+	);
 };
 
 interface OneMainTwoSubsProps {
@@ -55,51 +116,36 @@ function OneMainTwoSubs({
 				},
 			]}
 		>
-			<div
-				className={clsx({
-					"one-main-two-subs-container": true,
-					"reverse": reverse && enoughForReverse,
-				})}
-			>
-				<div className="left">
-					{
-						one && (
-							<LargeGrid
-								productID={one.productID}
-								image={one.main_pic}
-								title={one.title}
-								description={one.description}
-								onClickProduct={onClickProduct}
-							/>
-						)
-					}
-				</div>
+			<div className="one-main-two-subs-container">
+				{
+					reverse && enoughForReverse
+						? (
+							<>
+								<RightLayout
+									products={[one, two]}
+									onClickProduct={onClickProduct}
+								/>
 
-				<div className="right">
-					{
-						two && (
-							<MediumGrid
-								productID={two.productID}
-								image={two.main_pic}
-								title={two.title}
-								description={two.shortDescription}
-								onClickProduct={onClickProduct}
-							/>
+								<LeftLayout
+									product={three}
+									onClickProduct={onClickProduct}
+								/>
+							</>
 						)
-					}
+						: (
+							<>
+								<LeftLayout
+									product={one}
+									onClickProduct={onClickProduct}
+								/>
 
-					{
-						three && (
-							<MediumGrid
-								productID={three.productID}
-								image={three.main_pic}
-								title={three.title}
-								description={three.shortDescription}
-								onClickProduct={onClickProduct}
-							/>
+								<RightLayout
+									products={[two, three]}
+									onClickProduct={onClickProduct}
+								/>
+							</>
 						)
-					}
-				</div>
+				}
 			</div>
 		</MqNotifier>
 	);

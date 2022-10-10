@@ -33,20 +33,25 @@
 
 	.product-desc-container {
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
 		padding: 11px;
+		position: absolute;
+		left: 0;
+		bottom: 0;
 
-		@include sm-600-max {
-			position: absolute;
-			left: 0;
-			bottom: 0;
+		@media (min-width: $screen-sm-min-600) {
+			position: relative;
 		}
 
 		.prod-info {
+
 			p {
 				display: none;
 				color: white;
+			}
+
+			@media(min-width: $screen-sm-min-600) {
+				flex: 2;
 			}
 
 			@include phoneOnly {
@@ -62,7 +67,7 @@
 				margin: 0;
 				color: white;
 
-				@media(min-width: $screen-phone-top-599) {
+				@media(min-width: $screen-sm-min-600) {
 					font-size: 13px;
 					color: rgb(51, 51, 51);
 				}
@@ -72,7 +77,11 @@
 		.view-btn-container {
 			display: none;
 
-			@include phoneOnly {}
+			@media(min-width: $screen-sm-min-600) {
+				flex: 1;
+				display: flex;
+				justify-content: flex-end;
+			}
 		}
 	}
 }

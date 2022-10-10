@@ -57,8 +57,10 @@
 @media (min-width: 600px) {
   .large-grid-container .product-desc-container .btn-container {
     display: flex;
+    flex-direction: column;
     flex: 1;
     justify-content: flex-end;
+    height: 100%;
   }
 }
 
