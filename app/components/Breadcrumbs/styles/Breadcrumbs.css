@@ -1,0 +1,40 @@
+.breadscrum {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  min-height: 4.875rem;
+}
+
+.breadscrum-back {
+  margin-right: 1.8rem;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.breadscrum-back a {
+  display: flex;
+  align-items: center;
+}
+
+.back-text {
+  margin: 0;
+  margin-left: 0.8rem;
+  font-weight: 500;
+}
+
+.breadcrumbs-link {
+  font-weight: 500;
+  cursor: pointer;
+  text-transform: capitalize;
+}
+.breadcrumbs-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs-link-active {
+  color: #009378;
+  text-decoration: none !important;
+}
+
+/*# sourceMappingURL=Breadcrumbs.css.map */

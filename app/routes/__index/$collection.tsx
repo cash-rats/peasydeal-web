@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useFetcher, useLoaderData, PrefetchPageLinks, useSubmit } from '@remix-run/react';
+import { NavLink } from '@remix-run/react';
 
 import Spinner from "~/components/Spinner";
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from '~/shared/types';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
+import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
 
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
@@ -17,6 +19,7 @@ export const links: LinksFunction = () => {
   return [
     ...ProductRowsContainerLinks(),
     ...LoadmoreLinks(),
+    ...BreadCrumbsLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -76,6 +79,22 @@ function Collection() {
   return (
     <div className="prod-list-container">
       <PrefetchPageLinks page='/product/$productId' />
+
+      <div className="prod-list-breadcrumbs-container">
+        <Breadcrumbs breadcrumbs={[
+          <NavLink
+            className={({ isActive }) => (
+              isActive
+                ? "breadcrumbs-link breadcrumbs-link-active"
+                : "breadcrumbs-link"
+            )}
+            key='1'
+            to={`/${category}`}
+          >
+            {category}
+          </NavLink>,
+        ]} />
+      </div>
 
       <ProductRowsContainer
         productRows={productRows}

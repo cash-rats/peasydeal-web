@@ -10,11 +10,12 @@ import { BsPlus } from 'react-icons/bs';
 import { BiMinus } from 'react-icons/bi';
 import type { LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
 import { Button } from '@chakra-ui/react';
 import Select from 'react-select';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { StatusCodes } from 'http-status-codes';
+import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
 
 import { useSuccessSnackbar } from '~/components/Snackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
@@ -30,6 +31,7 @@ export function links() {
 	return [
 		...ProductDetailSectionLinks(),
 		...DividerLinks(),
+		...BreadCrumbsLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
 };
@@ -174,173 +176,191 @@ function ProductDetailPage() {
 	}, [addToCart])
 
 	return (
-		<div className="productdetail-container">
-			<ProductDetailSection
-				title={currentVariation?.title}
-				subTitle={currentVariation?.subTitle}
-				description={currentVariation?.description}
-				pics={productDetail.pics}
-			/>
+		<div>
+			<div className="productdetail-breadcrumbs">
+				<Breadcrumbs breadcrumbs={[
+					<NavLink
+						className={({ isActive }) => (
+							isActive
+								? "breadcrumbs-link breadcrumbs-link-active"
+								: "breadcrumbs-link"
+						)}
+						key='1'
+						to={`/`}
+					>
+						some category
+					</NavLink>,
+				]} />
+			</div>
 
-			<div className="product-content-wrapper">
-				<div className="product-content">
+			<div className="productdetail-container">
+				<ProductDetailSection
+					title={currentVariation?.title}
+					subTitle={currentVariation?.subTitle}
+					description={currentVariation?.description}
+					pics={productDetail.pics}
+				/>
 
-					<div className="product-tag-bar">
-						<p className="purchased-detail-text">
-							NOW
-						</p>
+				<div className="product-content-wrapper">
+					<div className="product-content">
 
-						<p className="detail-amount">
-							<b>
-								{currentVariation?.currency} {currentVariation?.salePrice}
-							</b>
-						</p>
+						<div className="product-tag-bar">
+							<p className="purchased-detail-text">
+								NOW
+							</p>
 
-						<p className="actual-amount">
-							was {currentVariation?.currency} {currentVariation?.retailPrice}
-						</p>
-					</div>
+							<p className="detail-amount">
+								<b>
+									{currentVariation?.currency} {currentVariation?.salePrice}
+								</b>
+							</p>
 
-					<div className="lure-text">
-						<span className="lure1">
-							Discount <b>
-								{
-									currentVariation && currentVariation.discountOff && (
-										(
-											((currentVariation.retailPrice - currentVariation.salePrice) / currentVariation.retailPrice) * 100
-										).toFixed(0)
-									)
-								}%
-							</b>
-						</span>
-						<span className="lure2">
-							You save <b> {
-								currentVariation && (currentVariation.retailPrice - currentVariation.salePrice).toFixed(2)
-							}
-							</b>
-						</span>
-						<span className="lure3">
-							Sold <b> {productDetail.bought} </b>
-						</span>
-					</div>
+							<p className="actual-amount">
+								was {currentVariation?.currency} {currentVariation?.retailPrice}
+							</p>
+						</div>
 
-
-					<Divider text="sales ends" />
-					<div className="sales-end-timer">
-						<span className="timer">
-							<span className="readable-time" >6 days left</span> <span className="time">20:42:53</span>
-						</span>
-					</div>
-
-					<Divider text="options" />
-					<div className="options-container">
-
-						{/* Variations */}
-						<ClientOnly>
-							<Select
-								inputId='variation_id'
-								instanceId='variation_id'
-								placeholder='select variation'
-								options={
-									productDetail.variations.map(
-										(variation) => ({ value: variation.variationId, label: variation.title })
-									)
+						<div className="lure-text">
+							<span className="lure1">
+								Discount <b>
+									{
+										currentVariation && currentVariation.discountOff && (
+											(
+												((currentVariation.retailPrice - currentVariation.salePrice) / currentVariation.retailPrice) * 100
+											).toFixed(0)
+										)
+									}%
+								</b>
+							</span>
+							<span className="lure2">
+								You save <b> {
+									currentVariation && (currentVariation.retailPrice - currentVariation.salePrice).toFixed(2)
 								}
-							/>
-						</ClientOnly>
-
-						{/* Quantity */}
-						<div className="input-quantity-container">
-							<InputGroup size='sm'>
-								<InputLeftAddon
-									children={<BiMinus />}
-									onClick={decreaseQuantity}
-								/>
-								<Input
-									value={quantity}
-									onChange={handleUpdateQuantity}
-								/>
-								<InputRightAddon
-									children={<BsPlus />}
-									onClick={increaseQuantity}
-								/>
-							</InputGroup>
+								</b>
+							</span>
+							<span className="lure3">
+								Sold <b> {productDetail.bought} </b>
+							</span>
 						</div>
 
-						<div className="client-action-bar-large">
-							<div>
-								<Button
-									width={{ base: '100%' }}
-									colorScheme='green'
-									onClick={handleAddToCart}
-									isLoading={addToCart.state !== 'idle'}
-								>
-									Add To Cart
-								</Button>
+
+						<Divider text="sales ends" />
+						<div className="sales-end-timer">
+							<span className="timer">
+								<span className="readable-time" >6 days left</span> <span className="time">20:42:53</span>
+							</span>
+						</div>
+
+						<Divider text="options" />
+						<div className="options-container">
+
+							{/* Variations */}
+							<ClientOnly>
+								<Select
+									inputId='variation_id'
+									instanceId='variation_id'
+									placeholder='select variation'
+									options={
+										productDetail.variations.map(
+											(variation) => ({ value: variation.variationId, label: variation.title })
+										)
+									}
+								/>
+							</ClientOnly>
+
+							{/* Quantity */}
+							<div className="input-quantity-container">
+								<InputGroup size='sm'>
+									<InputLeftAddon
+										children={<BiMinus />}
+										onClick={decreaseQuantity}
+									/>
+									<Input
+										value={quantity}
+										onChange={handleUpdateQuantity}
+									/>
+									<InputRightAddon
+										children={<BsPlus />}
+										onClick={increaseQuantity}
+									/>
+								</InputGroup>
 							</div>
 
-							<div>
-								<Button
-									width={{ base: '100%' }}
-									colorScheme='orange'
-								>
-									Buy Now
-								</Button>
+							<div className="client-action-bar-large">
+								<div>
+									<Button
+										width={{ base: '100%' }}
+										colorScheme='green'
+										onClick={handleAddToCart}
+										isLoading={addToCart.state !== 'idle'}
+									>
+										Add To Cart
+									</Button>
+								</div>
+
+								<div>
+									<Button
+										width={{ base: '100%' }}
+										colorScheme='orange'
+									>
+										Buy Now
+									</Button>
+								</div>
 							</div>
 						</div>
-					</div>
 
-					<div className="delivery-container">
-						<Divider text="delivery" />
+						<div className="delivery-container">
+							<Divider text="delivery" />
 
-						<div className="delivery-content">
-							<span> <TbTruckDelivery fontSize={30} /> </span>
-							<span> £4.99  delivery charge per voucher </span>
+							<div className="delivery-content">
+								<span> <TbTruckDelivery fontSize={30} /> </span>
+								<span> £4.99  delivery charge per voucher </span>
+							</div>
+						</div>
+
+
+						<div className="product-features-mobile">
+							<Divider text="product features" />
+
+							{/* TODO dangerous render html */}
+							<div dangerouslySetInnerHTML={{ __html: currentVariation?.description || '' }} className="product-features-container" />
+						</div>
+
+
+						<div className="product-return-policy">
+							<Divider text="return policy" />
+
+							<p>
+								14 days cancellation period applies.
+							</p>
 						</div>
 					</div>
+				</div>
 
-
-					<div className="product-features-mobile">
-						<Divider text="product features" />
-
-						{/* TODO dangerous render html */}
-						<div dangerouslySetInnerHTML={{ __html: currentVariation?.description || '' }} className="product-features-container" />
+				<div className="client-action-bar">
+					<div>
+						<Button
+							onClick={handleAddToCart}
+							width={{ base: '100%' }}
+							colorScheme='green'
+							isLoading={addToCart.state !== 'idle'}
+						>
+							Add To Cart
+						</Button>
 					</div>
 
-
-					<div className="product-return-policy">
-						<Divider text="return policy" />
-
-						<p>
-							14 days cancellation period applies.
-						</p>
+					<div>
+						<Button
+							width={{ base: '100%' }}
+							colorScheme='orange'
+						>
+							Buy Now
+						</Button>
 					</div>
 				</div>
+
+				{/* TODO More products */}
 			</div>
-
-			<div className="client-action-bar">
-				<div>
-					<Button
-						onClick={handleAddToCart}
-						width={{ base: '100%' }}
-						colorScheme='green'
-						isLoading={addToCart.state !== 'idle'}
-					>
-						Add To Cart
-					</Button>
-				</div>
-
-				<div>
-					<Button
-						width={{ base: '100%' }}
-						colorScheme='orange'
-					>
-						Buy Now
-					</Button>
-				</div>
-			</div>
-
-			{/* TODO More products */}
 		</div>
 	);
 };

@@ -1,8 +1,9 @@
 .product-detail {
   width: 100%;
+  padding: 0 1rem 5px;
 }
 .product-detail .product-detail-title {
-  padding: 10px 20px 5px;
+  padding-left: 0;
 }
 .product-detail .product-detail-title h1 {
   font-size: 25px;
@@ -21,6 +22,17 @@
 @media (min-width: 768px) {
   .product-detail-img-container img {
     max-width: 718px;
+  }
+}
+
+.productdetail-breadcrumbs {
+  width: 1180px;
+  padding: 0 1rem;
+  margin: 0 auto;
+}
+@media (min-width: 768px) {
+  .productdetail-breadcrumbs {
+    padding-left: 2rem;
   }
 }
 
