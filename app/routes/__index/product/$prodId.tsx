@@ -190,6 +190,17 @@ function ProductDetailPage() {
 					>
 						some category
 					</NavLink>,
+					<NavLink
+						className={({ isActive }) => (
+							isActive
+								? "breadcrumbs-link breadcrumbs-link-active"
+								: "breadcrumbs-link"
+						)}
+						key='1'
+						to={`/product/${productDetail.productId}`}
+					>
+						{currentVariation?.title}
+					</NavLink>,
 				]} />
 			</div>
 

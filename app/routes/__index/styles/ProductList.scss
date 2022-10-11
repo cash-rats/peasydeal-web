@@ -9,6 +9,7 @@
 	justify-content: center;
 	flex-wrap: wrap;
 	align-items: center;
+	margin-top: 2.25rem;
 
 	@media (min-width: #{$screen-md-min}) and (max-width: #{$screen-xl-min}) {
 		max-width: 992px;
@@ -27,4 +28,9 @@
 	@media (min-width: $screen-xl-min) {
 		width: 912px;
 	}
+}
+
+.prod-collection-container {
+	@extend .prod-list-container;
+	margin-top: 0;
 }

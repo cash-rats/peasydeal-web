@@ -19,7 +19,7 @@
     display: block;
   }
 }
-.footer-content .content-text {
+.footer-content .content-text, .footer-content .news-letter {
   font-weight: 500;
   font-size: 1rem;
 }
@@ -47,7 +47,6 @@
 .footer-content .news-letter {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  composes: content-text;
   line-height: 1.3rem;
 }
 

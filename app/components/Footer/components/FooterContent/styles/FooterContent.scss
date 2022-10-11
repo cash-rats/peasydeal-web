@@ -51,7 +51,7 @@
   .news-letter {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
-    composes: content-text;
+    @extend .content-text;
     line-height: 1.3rem;
   }
 }

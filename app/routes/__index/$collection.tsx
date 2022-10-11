@@ -77,7 +77,7 @@ function Collection() {
   };
 
   return (
-    <div className="prod-list-container">
+    <div className="prod-collection-container">
       <PrefetchPageLinks page='/product/$productId' />
 
       <div className="prod-list-breadcrumbs-container">
