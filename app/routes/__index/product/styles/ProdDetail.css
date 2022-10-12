@@ -40,7 +40,7 @@
   display: flex;
   flex-direction: column;
   padding: 20px 10px;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar {
   display: flex;
@@ -138,9 +138,14 @@
   padding: 0 10px;
 }
 
+.client-action-bar-wrapper {
+  height: 60px;
+}
+
 .client-action-bar {
   position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
   height: 60px;
   background-color: #fff;
@@ -156,6 +161,14 @@
   .client-action-bar {
     display: none;
   }
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-fixed {
+  position: fixed;
 }
 
 .client-action-bar-large {
