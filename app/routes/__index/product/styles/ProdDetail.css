@@ -51,6 +51,7 @@
   display: flex;
   align-items: baseline;
   justify-content: flex-start;
+  margin-top: 1rem;
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar .detail-amount {
   color: #e81120;
@@ -91,11 +92,12 @@
 }
 
 .options-container {
-  padding: 0 15px 15px 15px;
+  padding: 0 1rem 1rem;
+  margin-top: 1.25rem;
 }
 
 .input-quantity-container {
-  margin-top: 15px;
+  margin-top: 1.25rem;
   width: 100%;
 }
 
@@ -179,6 +181,15 @@
   margin-left: 1rem;
   font-size: 18px;
   font-weight: 600;
+}
+
+.product-subtitle {
+  font-size: 1.2rem;
+}
+
+.error {
+  height: 1.1rem;
+  color: #E81120;
 }
 
 /*# sourceMappingURL=ProdDetail.css.map */

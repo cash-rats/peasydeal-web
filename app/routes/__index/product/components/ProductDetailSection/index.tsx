@@ -26,17 +26,6 @@ function ProductDetailSection({
 }: ProductDetailSectionProps) {
 	return (
 		<div className="product-detail">
-			{/* Title */}
-			<div className="product-detail-title">
-				<h1>
-					{title}
-				</h1>
-
-				<h2>
-					{subTitle}
-				</h2>
-			</div>
-
 			{/* Image container */}
 			<div className="product-detail-img-container">
 				<PicsCarousel images={pics} />

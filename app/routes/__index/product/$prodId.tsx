@@ -134,11 +134,12 @@ function ProductDetailPage() {
 	const productDetail = productDetailData.product;
 	const [mainCategory] = productDetail.categories;
 
-
-	const selectCurrentVariation = useCallback((defaultVariationID: string, variations: ProductVariation[]): ProductVariation | undefined => {
-		return variations.find<ProductVariation>(
-			(variation) => defaultVariationID === variation.variationId);
-	}, []);
+	const selectCurrentVariation = useCallback(
+		(defaultVariationID: string, variations: ProductVariation[]): ProductVariation | undefined => {
+			return variations.find(
+				(variation) => defaultVariationID === variation.variationId);
+		}, []
+	);
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
@@ -175,9 +176,9 @@ function ProductDetailPage() {
 
 
 	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
-
-	// Item quantity.
 	const [quantity, updateQuantity] = useState<number>(1);
+	const [variation, setVariation] = useState<string>('');
+	const [variationErr, setVariationErr] = useState<string>('');
 
 	const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
 		if (isNaN(Number(evt.target.value))) return;
@@ -212,6 +213,11 @@ function ProductDetailPage() {
 	const [openSuccessSnackbar] = useSuccessSnackbar();
 
 	const handleAddToCart = () => {
+		setVariationErr('Please pick a variation');
+
+		if (!variation) return
+		setVariationErr('');
+
 		addToCart.submit(
 			{
 				__action: 'add_to_cart',
@@ -222,6 +228,11 @@ function ProductDetailPage() {
 	};
 
 	const handleBuyNow = () => {
+		setVariationErr('Please pick a variation');
+
+		if (!variation) return
+		setVariationErr('');
+
 		// Add this item to shopping cart (session).
 		// Redirect to checkout page after it's added to cart.
 		buyNow.submit({
@@ -284,6 +295,9 @@ function ProductDetailPage() {
 							{currentVariation?.title}
 						</h1>
 
+						<h1 className="product-subtitle">
+							{currentVariation?.subTitle}
+						</h1>
 
 						<div className="product-tag-bar">
 							<p className="detail-amount">
@@ -320,19 +334,28 @@ function ProductDetailPage() {
 
 						<Divider text="options" />
 						<div className="options-container">
-
 							{/* Variations */}
 							<ClientOnly>
 								<Select
 									inputId='variation_id'
 									instanceId='variation_id'
 									placeholder='select variation'
+									onChange={(v) => {
+										if (!v) return;
+
+										console.log('debug 1');
+										setVariation(v.value);
+									}}
 									options={
 										productDetail.variations.map(
 											(variation) => ({ value: variation.variationId, label: variation.title })
 										)
 									}
 								/>
+
+								<p className="error">
+									{variationErr}
+								</p>
 							</ClientOnly>
 
 							{/* Quantity */}

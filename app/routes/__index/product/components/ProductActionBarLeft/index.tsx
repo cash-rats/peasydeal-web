@@ -1,5 +1,5 @@
-import { Button } from '@chakra-ui/react';
 import type { LinksFunction } from '@remix-run/node';
+import RoundButton from '~/components/RoundButton';
 
 import styles from './styles/ProductActionBarLeft.css';
 
@@ -23,24 +23,20 @@ export default function ProductActionBarLeft({
   return (
     <div className="client-action-bar-large">
       <div>
-        <Button
-          width={{ base: '100%' }}
-          colorScheme='green'
+        <RoundButton
+          colorScheme='addtocart'
           onClick={onClickAddToCart}
           isLoading={loading}
-        >
-          Add To Cart
-        </Button>
+          text='Add To Cart'
+        />
       </div>
 
       <div>
-        <Button
-          width={{ base: '100%' }}
-          colorScheme='orange'
+        <RoundButton
+          colorScheme='buynow'
           onClick={onClickBuyNow}
-        >
-          Buy Now
-        </Button>
+          text='Buy Now'
+        />
       </div>
     </div>
   );
