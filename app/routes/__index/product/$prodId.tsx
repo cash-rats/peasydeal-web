@@ -9,9 +9,8 @@ import {
 import { BsPlus } from 'react-icons/bs';
 import { BiMinus } from 'react-icons/bi';
 import type { LoaderFunction, ActionFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
-import { Button } from '@chakra-ui/react';
 import Select from 'react-select';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { StatusCodes } from 'http-status-codes';
@@ -26,12 +25,16 @@ import type { SessionKey } from '~/sessions';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
 import styles from "./styles/ProdDetail.css";
+import ProductActionBar, { links as ProductActionBarLinks } from './components/ProductActionBar';
+import ProductActionBarLeft, { links as ProductActionBarLeftLinks } from './components/ProductActionBarLeft';
 
 export function links() {
 	return [
 		...ProductDetailSectionLinks(),
 		...DividerLinks(),
 		...BreadCrumbsLinks(),
+		...ProductActionBarLinks(),
+		...ProductActionBarLeftLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
 };
@@ -47,12 +50,15 @@ export const loader: LoaderFunction = async ({ params }) => {
 	return json({ product: respJSON }, { status: StatusCodes.OK });
 };
 
+
 // TODO
 //  - [x] store shopping cart items in session storage if user has not logged in yet.
 //  - [ ] what is error?
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
 	const prodIDEntry: FormDataEntryValue | null = form.get('productID');
+	const formAction = form.get('__action');
+
 	if (!prodIDEntry) return;
 	const prodID = prodIDEntry as string;
 
@@ -76,13 +82,20 @@ export const action: ActionFunction = async ({ request }) => {
 
 	session.set('shopping_cart', newShoppingCart);
 
+	if (formAction == 'buy_now') {
+		return redirect('/cart', {
+			headers: {
+				"Set-Cookie": await commitSession(session),
+			},
+		});
+	}
+
 	return new Response('', {
 		headers: {
 			"Set-Cookie": await commitSession(session),
 		}
 	});
 }
-
 interface ProductVariation {
 	currency: null
 	description: string;
@@ -100,6 +113,7 @@ interface ProductVariation {
 };
 
 interface ProductDetail {
+	categories: string[];
 	bought: number;
 	currency: string;
 	defaultVariationId: string;
@@ -116,8 +130,10 @@ interface ProductDetail {
  *         Display carousel images if variation is greater than 1
  */
 function ProductDetailPage() {
-	const productDetailData = useLoaderData();
-	const productDetail: ProductDetail = productDetailData.product;
+	const productDetailData = useLoaderData<{ product: ProductDetail }>();
+	const productDetail = productDetailData.product;
+	const [mainCategory] = productDetail.categories;
+
 
 	const selectCurrentVariation = useCallback((defaultVariationID: string, variations: ProductVariation[]): ProductVariation | undefined => {
 		return variations.find<ProductVariation>(
@@ -126,7 +142,6 @@ function ProductDetailPage() {
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
-	const [windowAtProductContentBottom, setWindowAtProductContentBottom] = useState(false);
 
 	const handleWindowScrolling = (evt: Event) => {
 		if (!window || !productContentWrapperRef.current || !mobileUserActionBarRef.current) return;
@@ -179,23 +194,42 @@ function ProductDetailPage() {
 	};
 
 	const addToCart = useFetcher();
+	const buyNow = useFetcher();
+
+	const extractProductInfo = useCallback(() => (
+		{
+			salePrice: currentVariation?.salePrice.toString() || '',
+			retailPrice: currentVariation?.retailPrice.toString() || '',
+			productID: productDetail.productId,
+			variationID: currentVariation?.variationId || '',
+			image: currentVariation?.mainPic || '',
+			quantity: quantity.toString(),
+			title: currentVariation?.title || '',
+			subTitle: currentVariation?.subTitle || '',
+		}
+	), [currentVariation, productDetail, quantity]);
+
 	const [openSuccessSnackbar] = useSuccessSnackbar();
 
 	const handleAddToCart = () => {
 		addToCart.submit(
 			{
-				salePrice: currentVariation?.salePrice.toString() || '',
-				retailPrice: currentVariation?.retailPrice.toString() || '',
-				productID: productDetail.productId,
-				variationID: currentVariation?.variationId || '',
-				image: currentVariation?.mainPic || '',
-				quantity: quantity.toString(),
-				title: currentVariation?.title || '',
-				subTitle: currentVariation?.subTitle || '',
+				__action: 'add_to_cart',
+				...extractProductInfo(),
 			},
 			{ method: 'post', action: '/product/$prodId' },
 		);
 	};
+
+	const handleBuyNow = () => {
+		// Add this item to shopping cart (session).
+		// Redirect to checkout page after it's added to cart.
+		buyNow.submit({
+			__action: 'buy_now',
+			...extractProductInfo(),
+
+		}, { method: 'post', action: '/product/$prodId' });
+	}
 
 	useEffect(() => {
 		if (addToCart.type === 'done') {
@@ -214,9 +248,9 @@ function ProductDetailPage() {
 								: "breadcrumbs-link"
 						)}
 						key='1'
-						to={`/`}
+						to={`/${mainCategory}`}
 					>
-						some category
+						{mainCategory}
 					</NavLink>,
 					<NavLink
 						className={({ isActive }) => (
@@ -328,27 +362,11 @@ function ProductDetailPage() {
 								</InputGroup>
 							</div>
 
-							<div className="client-action-bar-large">
-								<div>
-									<Button
-										width={{ base: '100%' }}
-										colorScheme='green'
-										onClick={handleAddToCart}
-										isLoading={addToCart.state !== 'idle'}
-									>
-										Add To Cart
-									</Button>
-								</div>
-
-								<div>
-									<Button
-										width={{ base: '100%' }}
-										colorScheme='orange'
-									>
-										Buy Now
-									</Button>
-								</div>
-							</div>
+							<ProductActionBarLeft
+								onClickAddToCart={handleAddToCart}
+								onClickBuyNow={handleBuyNow}
+								loading={addToCart.state !== 'idle'}
+							/>
 						</div>
 
 						<div className="delivery-container">
@@ -379,30 +397,12 @@ function ProductDetailPage() {
 					</div>
 
 					<div className="client-action-bar-wrapper">
-						<div
+						<ProductActionBar
 							ref={mobileUserActionBarRef}
-							className="client-action-bar"
-						>
-							<div>
-								<Button
-									onClick={handleAddToCart}
-									width={{ base: '100%' }}
-									colorScheme='green'
-									isLoading={addToCart.state !== 'idle'}
-								>
-									Add To Cart
-								</Button>
-							</div>
-
-							<div>
-								<Button
-									width={{ base: '100%' }}
-									colorScheme='orange'
-								>
-									Buy Now
-								</Button>
-							</div>
-						</div>
+							onClickAddToCart={handleAddToCart}
+							onClickBuyNow={handleBuyNow}
+							loading={addToCart.state !== 'idle'}
+						/>
 					</div>
 				</div>
 

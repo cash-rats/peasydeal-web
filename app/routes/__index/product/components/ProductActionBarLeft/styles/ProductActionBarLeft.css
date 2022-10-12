@@ -1,0 +1,13 @@
+.client-action-bar-large {
+  display: none;
+}
+@media (min-width: 768px) {
+  .client-action-bar-large {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+/*# sourceMappingURL=ProductActionBarLeft.css.map */

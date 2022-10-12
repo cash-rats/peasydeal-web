@@ -1,0 +1,12 @@
+@import 'styles/_mixins';
+
+.client-action-bar-large {
+  display: none;
+
+  @include md {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+}
