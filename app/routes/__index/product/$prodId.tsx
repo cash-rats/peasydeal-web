@@ -274,58 +274,49 @@ function ProductDetailPage() {
 					pics={productDetail.pics}
 				/>
 
+
 				<div
 					ref={productContentWrapperRef}
 					className="product-content-wrapper"
 				>
 					<div className="product-content">
+						<h1 className="product-name">
+							{currentVariation?.title}
+						</h1>
+
 
 						<div className="product-tag-bar">
-							<p className="purchased-detail-text">
-								NOW
-							</p>
-
 							<p className="detail-amount">
-								<b>
-									{currentVariation?.currency} {currentVariation?.salePrice}
-								</b>
+								{currentVariation?.currency}{currentVariation?.salePrice}
 							</p>
 
 							<p className="actual-amount">
-								was {currentVariation?.currency} {currentVariation?.retailPrice}
+								compared at {currentVariation?.currency} {currentVariation?.retailPrice}
 							</p>
+
+							<p className="discount-amount">
+								SAVE
+								{
+									currentVariation && currentVariation.discountOff && (
+										(
+											((currentVariation.retailPrice - currentVariation.salePrice) / currentVariation.retailPrice) * 100
+										).toFixed(0)
+									)
+								} %
+							</p>
+
 						</div>
 
-						<div className="lure-text">
-							<span className="lure1">
-								Discount <b>
-									{
-										currentVariation && currentVariation.discountOff && (
-											(
-												((currentVariation.retailPrice - currentVariation.salePrice) / currentVariation.retailPrice) * 100
-											).toFixed(0)
-										)
-									}%
-								</b>
+						<div className="bought">
+							<span className="bought-number">
+								{productDetail.bought}
 							</span>
-							<span className="lure2">
-								You save <b> {
-									currentVariation && (currentVariation.retailPrice - currentVariation.salePrice).toFixed(2)
-								}
-								</b>
-							</span>
-							<span className="lure3">
-								Sold <b> {productDetail.bought} </b>
-							</span>
+							<span className="bought-text"> bought </span>
+
+							<span className="in-stock-text" > in-stock </span>
 						</div>
 
 
-						<Divider text="sales ends" />
-						<div className="sales-end-timer">
-							<span className="timer">
-								<span className="readable-time" >6 days left</span> <span className="time">20:42:53</span>
-							</span>
-						</div>
 
 						<Divider text="options" />
 						<div className="options-container">
@@ -367,6 +358,14 @@ function ProductDetailPage() {
 								onClickBuyNow={handleBuyNow}
 								loading={addToCart.state !== 'idle'}
 							/>
+						</div>
+
+
+						<Divider text="Share" />
+						<div className="sales-end-timer">
+							<span className="timer">
+								<span className="readable-time" >6 days left</span> <span className="time">20:42:53</span>
+							</span>
 						</div>
 
 						<div className="delivery-container">

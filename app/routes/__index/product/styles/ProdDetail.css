@@ -49,36 +49,26 @@
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar {
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.productdetail-container .product-content-wrapper .product-content .product-tag-bar .purchased-detail-text {
-  font-size: 1.071rem;
+  align-items: baseline;
+  justify-content: flex-start;
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar .detail-amount {
-  font-size: 20px;
-  margin: 0 5px;
+  color: #e81120;
+  font-size: 40px;
+  font-weight: 700;
+  margin: 0;
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar .actual-amount {
-  font-size: 1.071rem;
+  color: #343434;
+  font-size: 1.125rem;
+  margin-left: 0.5rem;
   text-decoration: line-through;
 }
-.productdetail-container .product-content-wrapper .lure-text {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 10px 0;
-}
-.productdetail-container .product-content-wrapper .lure-text .lure1 {
-  margin: 5px 5px 0 0;
-  font-size: 18px;
-}
-.productdetail-container .product-content-wrapper .lure-text .lure2 {
-  margin: 5px 5px 0 0;
-  font-size: 18px;
-}
-.productdetail-container .product-content-wrapper .lure-text .lure3 {
-  margin-top: 5px;
+.productdetail-container .product-content-wrapper .product-content .product-tag-bar .discount-amount {
+  margin-left: 1.125rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #e81120;
 }
 
 .sales-end-timer {
@@ -158,6 +148,37 @@
   justify-content: center;
   align-items: center;
   gap: 5px;
+}
+
+.product-name {
+  font-size: 24px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.bought {
+  margin-left: 1.125rem;
+  margin: 0;
+  color: #EB008C;
+}
+
+.bought .bought-number {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1em;
+}
+
+.bought .bought-text {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.bought .in-stock-text {
+  color: #009378;
+  margin-left: 1rem;
+  font-size: 18px;
+  font-weight: 600;
 }
 
 /*# sourceMappingURL=ProdDetail.css.map */
