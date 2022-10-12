@@ -16,14 +16,12 @@ import Select from 'react-select';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { StatusCodes } from 'http-status-codes';
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
-import clsx from 'clsx';
 
 import { useSuccessSnackbar } from '~/components/Snackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import { getSession, commitSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
-import { debounce } from '~/utils';
 
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
@@ -130,46 +128,20 @@ function ProductDetailPage() {
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 	const [windowAtProductContentBottom, setWindowAtProductContentBottom] = useState(false);
 
-	let timeout: number | undefined | NodeJS.Timeout = undefined;
-	// let lock = false;
-
-	const handleWindowScrolling = (windowDOM: Window) => {
+	const handleWindowScrolling = (evt: Event) => {
 		if (!window || !productContentWrapperRef.current || !mobileUserActionBarRef.current) return;
+		const windowDOM = window as Window;
 		const prodContentRect = productContentWrapperRef.current.getBoundingClientRect();
-		const userActionBarRect = mobileUserActionBarRef.current.getBoundingClientRect();
 
 		const isScrollAtDivBottom = windowDOM.innerHeight + windowDOM.scrollY >= prodContentRect.bottom + windowDOM.scrollY;
-		// console.log('debug 1', windowDOM.innerHeight + windowDOM.scrollY);
-		// console.log('debug 2', prodContentRect.bottom + windowDOM.scrollY);
-		// console.log('debug 3', prodContentRect.bottom);
-		console.log('debug 4', isScrollAtDivBottom);
-
-		// console.log('lock', lock);
-
-		// if (lock) return;
-
-		// if (timeout !== undefined) {
-		// 	clearTimeout(timeout);
-		// }
 
 		if (isScrollAtDivBottom) {
-			// 	timeout = setTimeout(() => {
-			// 		setWindowAtProductContentBottom(true);
+			if (mobileUserActionBarRef.current.style.position === 'relative') return;
 			mobileUserActionBarRef.current.style.position = 'relative';
-			// 		// lock = true;
-
-			// 		// setTimeout(() => { lock = false; }, 100);
-			// 	}, 10);
 		} else {
 
+			if (mobileUserActionBarRef.current.style.position === 'fixed') return;
 			mobileUserActionBarRef.current.style.position = 'fixed';
-			// 	timeout = setTimeout(() => {
-			// 		setWindowAtProductContentBottom(false);
-
-			// 		// lock = true;
-
-			// 		// setTimeout(() => { lock = false; }, 100);
-			// 	}, 10);
 		}
 	};
 
@@ -180,22 +152,10 @@ function ProductDetailPage() {
 
 			// Listen to scroll position of window, if window scroll bottom is at bottom position of productContentWrapperRef
 			// change position of `productContentWrapperRef` from `fixed` to `relative`.
-			window.addEventListener('scroll', (evt) => {
-				// if (timeout !== undefined) {
-				// 	clearTimeout(timeout);
-				// 	timeout = undefined;
-				// } else {
-				// 	timeout = setTimeout(() => {
-				const windowDOM = window as Window;
-				// 		console.log('debug *', windowDOM);
-
-				handleWindowScrolling(windowDOM);
-				// 	}, 300);
-				// }
-			});
+			window.addEventListener('scroll', handleWindowScrolling);
 		}
 
-		// return () => window.removeEventListener('scroll', handleWindowScrolling);
+		return () => window.removeEventListener('scroll', handleWindowScrolling);
 	}, []);
 
 
@@ -421,14 +381,7 @@ function ProductDetailPage() {
 					<div className="client-action-bar-wrapper">
 						<div
 							ref={mobileUserActionBarRef}
-							className={clsx(
-								"client-action-bar",
-								{
-									'position-relative': windowAtProductContentBottom,
-									'position-fixed': !windowAtProductContentBottom,
-								}
-							)
-							}
+							className="client-action-bar"
 						>
 							<div>
 								<Button
