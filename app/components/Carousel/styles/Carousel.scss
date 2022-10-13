@@ -26,6 +26,8 @@
 		@include md {
 			width: 100%;
 			aspect-ratio: 1.5/1;
+			max-height: 465px;
+			max-width: 698px;
 		}
 
 		img {

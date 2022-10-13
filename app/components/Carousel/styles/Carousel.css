@@ -23,6 +23,8 @@
   .thumbnails-hover-images-container .preview-image-container {
     width: 100%;
     aspect-ratio: 1.5/1;
+    max-height: 465px;
+    max-width: 698px;
   }
 }
 .thumbnails-hover-images-container .preview-image-container img {
