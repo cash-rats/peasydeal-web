@@ -19,22 +19,14 @@
     gap: 10px;
   }
 }
-.thumbnails-hover-images-container .preview-image-container img {
-  height: 100%;
-  max-height: 475px;
-}
 @media (min-width: 768px) {
   .thumbnails-hover-images-container .preview-image-container {
     width: 100%;
-    max-height: 475px;
-    aspect-ratio: 414/277;
+    aspect-ratio: 1.5/1;
   }
 }
-@media (min-width: 1200px) {
-  .thumbnails-hover-images-container .preview-image-container {
-    width: 685px;
-    height: 385px;
-  }
+.thumbnails-hover-images-container .preview-image-container img {
+  height: 100%;
 }
 .thumbnails-hover-images-container .thumbnails-container {
   display: flex;

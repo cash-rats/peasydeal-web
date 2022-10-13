@@ -23,20 +23,13 @@
 	}
 
 	.preview-image-container {
-		img {
-			height: 100%;
-			max-height: 475px;
-		}
-
 		@include md {
 			width: 100%;
-			max-height: 475px;
-			aspect-ratio: 414/277;
+			aspect-ratio: 1.5/1;
 		}
 
-		@include xl {
-			width: 685px;
-			height: 385px;
+		img {
+			height: 100%;
 		}
 	}
 
