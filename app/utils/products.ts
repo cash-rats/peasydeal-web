@@ -1,0 +1,1 @@
+export { organizeTo9ProdsPerRow } from '~/routes/__index/utils';

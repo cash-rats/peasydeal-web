@@ -9,7 +9,7 @@
 }
 @media (min-width: 600px) {
   .medium-grid-container {
-    max-width: 292px;
+    max-width: 284px;
   }
 }
 .medium-grid-container .image-container {

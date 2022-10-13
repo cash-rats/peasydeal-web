@@ -21,12 +21,15 @@ import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import { getSession, commitSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
+import { fetchProductsByCategory } from '~/api';
+import type { Product } from '~/shared/types';
 
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
 import styles from "./styles/ProdDetail.css";
 import ProductActionBar, { links as ProductActionBarLinks } from './components/ProductActionBar';
 import ProductActionBarLeft, { links as ProductActionBarLeftLinks } from './components/ProductActionBarLeft';
+import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 
 export function links() {
 	return [
@@ -35,19 +38,35 @@ export function links() {
 		...BreadCrumbsLinks(),
 		...ProductActionBarLinks(),
 		...ProductActionBarLeftLinks(),
+		...RecommendedProductsLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
 };
 
+type LoaderTypeRecommendedProducts = {
+	products: Product[];
+}
 
 // Fetch product detail data.
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
 	const { prodId } = params;
-	if (!prodId) return null;
+	if (!prodId) return redirect('/');
+
+	const url = new URL(request.url);
+	const action = url.searchParams.get('__action') || '';
+
+	if (action === 'recommended_products') {
+		const category = url.searchParams.get('category') || 'Hot Deal';
+
+		const recProds = await fetchProductsByCategory({ category });
+		return json<LoaderTypeRecommendedProducts>({ products: recProds });
+	}
+
 	const resp = await fetchProductDetail(prodId)
 	const respJSON = await resp.json();
 
 	return json({ product: respJSON }, { status: StatusCodes.OK });
+
 };
 
 
@@ -161,6 +180,9 @@ function ProductDetailPage() {
 		}
 	};
 
+	const loadRecommendedProduct = useFetcher();
+	const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
+
 	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
 	useEffect(() => {
 		if (window) {
@@ -169,10 +191,25 @@ function ProductDetailPage() {
 			// Listen to scroll position of window, if window scroll bottom is at bottom position of productContentWrapperRef
 			// change position of `productContentWrapperRef` from `fixed` to `relative`.
 			window.addEventListener('scroll', handleWindowScrolling);
+			// Load recommended product on the client side to reduce render time.
+			loadRecommendedProduct.submit(
+				{
+					__action: 'recommended_products',
+					category: mainCategory,
+				},
+				{ method: 'get', action: '/product/$prodId' }
+			);
 		}
 
 		return () => window.removeEventListener('scroll', handleWindowScrolling);
 	}, []);
+
+	// Recommende product has been loaded
+	useEffect(() => {
+		if (loadRecommendedProduct.type === 'done') {
+			setRecommendedProducts(loadRecommendedProduct.data.products);
+		}
+	}, [loadRecommendedProduct]);
 
 
 	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
@@ -249,7 +286,7 @@ function ProductDetailPage() {
 	}, [addToCart])
 
 	return (
-		<div>
+		<>
 			<div className="productdetail-breadcrumbs">
 				<Breadcrumbs breadcrumbs={[
 					<NavLink
@@ -429,9 +466,16 @@ function ProductDetailPage() {
 				</div>
 
 
-				{/* TODO More products */}
 			</div>
-		</div>
+
+			{/*
+					Recommended products:
+						- Things you might like: other products that belongs to the same category.
+					  - Hot deals
+						- New trend
+				*/}
+			<RecommendedProducts products={recommendedProducts} />
+		</>
 	);
 };
 

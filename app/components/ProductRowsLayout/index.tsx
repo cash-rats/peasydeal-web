@@ -1,0 +1,1 @@
+export { default, links } from '~/routes/__index/components/ProductRowsContainer';

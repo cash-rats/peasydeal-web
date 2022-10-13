@@ -36,10 +36,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     category: collection,
   })
 
-  const respJSON = await resp.json();
   // Transform data to frontend compatible format.
-  const transformedProds = transformData(respJSON.products)
-  const prodRows = organizeTo9ProdsPerRow(transformedProds)
+  const prodRows = organizeTo9ProdsPerRow(resp)
 
   return json({ prod_rows: prodRows, category: collection });
 }

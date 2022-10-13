@@ -1,14 +1,18 @@
-interface fetchProductsParams {
+import httpStatus from 'http-status-codes';
+
+import type { Product, ApiErrorResponse } from '~/shared/types';
+
+export interface FetchProductsParams {
 	categoryID?: number;
 	perpage?: number;
-	page: number;
+	page?: number;
 }
 
-const fetchProducts = ({
+export const fetchProducts = ({
 	categoryID,
 	perpage,
 	page
-}: fetchProductsParams): Promise<Response> => {
+}: FetchProductsParams): Promise<Response> => {
 	if (!categoryID) categoryID = 1;
 	if (!perpage) perpage = 9;
 	if (!page) page = 0;
@@ -17,23 +21,56 @@ const fetchProducts = ({
 	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?catId=${categoryID}&perPage=${perpage}&pageNo=${page}`);
 }
 
-interface fetchProductsByCategoryParams {
+export interface FetchProductsByCategoryParams {
 	category?: string;
 	perpage?: number;
-	page: number;
+	page?: number;
 }
 
-const fetchProductsByCategory = ({
+export interface FetchProductsByCategoryResponse {
+	products: Product[];
+}
+
+const transformData = (apiData: any[]): Product[] => {
+	const transformed: Product[] = apiData.map((data: any): Product => {
+		return {
+			currency: data.currency,
+			description: data.description,
+			discount: data.discountOff,
+			main_pic: data.mainPic,
+			productID: data.productId,
+			retailPrice: data.retailPrice,
+			salePrice: data.salePrice,
+			shortDescription: data.shortDescription,
+			subtitle: data.subTitle,
+			title: data.title,
+			variationID: data.variationId,
+		};
+	})
+
+	return transformed;
+}
+
+export const fetchProductsByCategory = async ({
 	category,
 	perpage,
 	page
-}: fetchProductsByCategoryParams): Promise<Response> => {
+}: FetchProductsByCategoryParams): Promise<Product[]> => {
 	if (!category) category = 'home';
 	if (!perpage) perpage = 9;
 	if (!page) page = 0;
 
 	const { MYFB_ENDPOINT } = process.env;
-	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?cat=${category}&perPage=${perpage}&pageNo=${page}`);
-}
+	const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/products?cat=${category}&perPage=${perpage}&pageNo=${page}`);
+	const respJSON = await resp.json();
 
-export { fetchProducts, fetchProductsByCategory };
+	if (resp.status !== httpStatus.OK) {
+		const errResp = respJSON as ApiErrorResponse;
+
+		throw new Error(errResp.err_message);
+	}
+
+	const prods = transformData(respJSON.products);
+
+	return prods;
+}

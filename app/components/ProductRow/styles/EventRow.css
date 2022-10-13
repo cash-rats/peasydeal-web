@@ -1,10 +1,11 @@
 .even-row-contianer {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
+  gap: 1.6rem;
   flex-wrap: wrap;
   margin: 0 auto;
   justify-content: center;
+  max-width: 1180px;
 }
 @media (min-width: 768px) and (max-width: 1200px) {
   .even-row-contianer {
