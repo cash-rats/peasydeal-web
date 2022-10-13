@@ -9,6 +9,7 @@
 }
 
 .recommended-products-wrapper_title {
+  text-transform: uppercase;
   max-width: 1180px;
   padding: 0 1rem;
   margin: 0 auto 2rem;
