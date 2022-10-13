@@ -29,7 +29,6 @@
   margin-bottom: 60px;
   width: 100%;
   background-color: #fff;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.1);
 }
 @media (min-width: 768px) {
   .productdetail-container .product-content-wrapper {
