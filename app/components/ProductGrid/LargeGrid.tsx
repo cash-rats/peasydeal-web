@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from "@chakra-ui/react";
+import RoundButton from '~/components/RoundButton';
 
 import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';
@@ -66,13 +67,12 @@ function LargeGrid({
 					</div>
 
 					<div className="btn-container">
-						<Button
+						<RoundButton
 							colorScheme="blue"
-							size="lg"
 							onClick={() => onClickProduct(productID)}
 						>
 							View
-						</Button>
+						</RoundButton>
 					</div>
 				</div>
 			</div>

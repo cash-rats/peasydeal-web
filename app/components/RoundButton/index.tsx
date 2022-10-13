@@ -2,15 +2,18 @@ import type { ReactNode, CSSProperties } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { styled } from '@mui/material/styles';
 
-const AddToCartButton = styled(LoadingButton)({
-  color: 'white',
+const BasicRoundButton = styled(LoadingButton)({
   padding: '0.875rem 2rem',
-  fontSize: '1.2rem',
-  fontWeight: '700',
-  lineHeight: '1rem',
-  borderColor: 'white',
   borderRadius: '24px',
   textTransform: 'none',
+  lineHeight: '1rem',
+});
+
+const AddToCartButton = styled(BasicRoundButton)({
+  color: 'white',
+  fontSize: '1.2rem',
+  fontWeight: '700',
+  borderColor: 'white',
   backgroundColor: '#009378',
   '&:hover': {
     backgroundColor: 'rgba(0, 147, 120, 0.8)',
@@ -18,7 +21,10 @@ const AddToCartButton = styled(LoadingButton)({
   },
 }) as typeof LoadingButton;
 
-const BuyNowButton = styled(AddToCartButton)({
+const BuyNowButton = styled(BasicRoundButton)({
+  color: 'white',
+  fontSize: '1.2rem',
+  fontWeight: '700',
   backgroundColor: '#CF7135',
   '&:hover': {
     backgroundColor: 'rgba(207, 112, 53, 0.8)',
@@ -26,10 +32,21 @@ const BuyNowButton = styled(AddToCartButton)({
   },
 }) as typeof LoadingButton;
 
-type ColorScheme = 'buynow' | 'addtocart';
+const ViewButton = styled(BasicRoundButton)({
+  backgroundColor: '#4880C8',
+  color: 'white',
+  fontSize: '1.2rem',
+  fontWeight: '700',
+  '&:hover': {
+    backgroundColor: 'rgba(72, 128, 200, 0.8)',
+  },
+}) as typeof LoadingButton;
+
+type ColorScheme = 'buynow' | 'addtocart' | 'blue';
 
 interface RoundButtonProps {
-  text: ReactNode;
+  children?: ReactNode;
+  text?: ReactNode;
   style?: CSSProperties;
   colorScheme?: ColorScheme;
   onClick?: () => void;
@@ -43,14 +60,16 @@ type ColorSchemeButtonMap = {
 const colorSchemeButton: ColorSchemeButtonMap = {
   'addtocart': AddToCartButton,
   'buynow': BuyNowButton,
+  'blue': ViewButton,
 };
 
 export default function RoundButton({
   style,
-  text,
+  text = '',
   colorScheme = 'addtocart',
   onClick = () => { },
   isLoading = false,
+  children,
 }: RoundButtonProps) {
   const CustomButton = colorSchemeButton[colorScheme];
   return (
@@ -61,6 +80,7 @@ export default function RoundButton({
       onClick={onClick}
       loading={isLoading}
     >
+      {children}
       {text}
     </CustomButton>
   );

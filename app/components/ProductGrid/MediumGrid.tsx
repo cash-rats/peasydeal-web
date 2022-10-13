@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Button } from '@chakra-ui/react';
 import type { LinksFunction } from '@remix-run/node';
 
 import MqNotifier from '~/components/MqNotifier';
+import RoundButton from '~/components/RoundButton';
 import { breakPoints } from '~/styles/breakpoints';
 
 import styles from "./styles/MediumGrid.css";
@@ -82,9 +82,15 @@ export default function MediumGrid({
 					</div>
 
 					<div className="view-btn-container">
-						<Button colorScheme="blue" onClick={() => onClickProduct(productID)}>
+						<RoundButton
+							colorScheme="blue"
+							onClick={() => onClickProduct(productID)}
+							style={{
+								padding: '0.675rem 1.5rem'
+							}}
+						>
 							View
-						</Button>
+						</RoundButton>
 					</div>
 				</div>
 			</div>

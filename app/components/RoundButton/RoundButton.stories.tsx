@@ -22,3 +22,11 @@ export const buyNow = () => (
     onClick={() => console.log('hello')}
   />
 )
+
+export const view = () => (
+  <RoundButton
+    colorScheme='view'
+    text='View'
+    onClick={() => console.log('hello')}
+  />
+)
