@@ -68,4 +68,23 @@
   transform: translateY(-50%);
 }
 
+.carousel__thumbnail {
+  width: 60px !important;
+  height: 60px;
+}
+
+.slick-thumb {
+  position: static !important;
+  display: flex !important;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1rem !important;
+}
+.slick-thumb li {
+  width: 60px !important;
+  height: 60px !important;
+}
+
 /*# sourceMappingURL=Carousel.css.map */

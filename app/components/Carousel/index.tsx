@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Slider from 'react-slick';
 import type { Settings } from 'react-slick';
 import type { LinksFunction } from '@remix-run/node';
@@ -57,7 +56,16 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 		customPaging(index) {
 			return (
 				<a>
-					<img style={{ 'height': '100%' }} src={images[index]} />
+					<img
+						alt='thumbnail'
+						className="carousel__thumbnail"
+						// style={{
+						// 	'height': '40px',
+						// 	'width': '40px',
+						// 	marginRight: '1rem',
+						// }}
+						src={images[index]}
+					/>
 				</a>
 			);
 		},
