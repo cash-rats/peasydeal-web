@@ -1,5 +1,3 @@
-import clsx from 'clsx';
-import { useState, useCallback } from 'react';
 import Slider from 'react-slick';
 import type { Settings } from 'react-slick';
 import type { LinksFunction } from '@remix-run/node';
@@ -28,25 +26,20 @@ interface PicsCarouselProps {
 function PicsCarousel({ images }: PicsCarouselProps) {
 	const settings: Settings = {
 		dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
+		infinite: true,
+		speed: 500,
+		slidesToShow: 1,
+		slidesToScroll: 1,
 		autoplay: false,
 		dotsClass: "slick-dots slick-thumb",
 		customPaging(index) {
 			return (
 				<a>
-					<img style={{ 'height': '100%'}} src={images[index]} />
+					<img style={{ 'height': '100%' }} src={images[index]} />
 				</a>
 			);
 		}
 	}
-
-	const [displayImageIdx, setDisplayImageIdx] = useState(0);
-	const handleChangeImage = useCallback((index: number) => {
-		setDisplayImageIdx(index);
-	}, [])
 
 	return (
 		<>
@@ -56,7 +49,7 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 						images.map((image, index) => {
 							return (
 								<div key={index}>
-									<img className="product-carousel-image" src={image} />
+									<img alt='product' className="product-carousel-image" src={image} />
 								</div>
 							)
 						})
@@ -65,29 +58,17 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 			</div>
 
 			<div className="thumbnails-hover-images-container">
-				<div className="preview-image-container">
-					<img src={images[displayImageIdx]} />
-				</div>
-
-				<div className="thumbnails-container">
+				<Slider {...settings}>
 					{
 						images.map((image, index) => {
 							return (
-								<div
-									key={index}
-									className={clsx(
-											"product-thumbnail",
-											displayImageIdx === index && 'thumbail-highlight'
-										)
-									}
-									onClick={() => handleChangeImage(index)}
-								>
-									 <img src={image} />
+								<div key={index} >
+									<img alt='product' className="preview-image" src={image} />
 								</div>
-							);
+							)
 						})
 					}
-				</div>
+				</Slider>
 			</div>
 		</>
 	);

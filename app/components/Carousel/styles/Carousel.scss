@@ -15,25 +15,29 @@
 .thumbnails-hover-images-container {
 	display: none;
 
-
 	@include md {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
+		// display: flex;
+		// flex-direction: column;
+		// gap: 10px;
+		display: block;
 	}
 
-	.preview-image-container {
+	.preview-image {
 		@include md {
+			// width: 100%;
+
 			width: 100%;
-			aspect-ratio: 1.5/1;
-			max-height: 465px;
-			max-width: 698px;
+			height: auto;
+			aspect-ratio: 414/277;
+			// aspect-ratio: 1.5/1;
+			// max-height: 465px;
+			// max-width: 698px;
 		}
 
-		img {
-			aspect-ratio: 1/1;
-			height: 100%;
-		}
+		// img {
+		// aspect-ratio: 1.5/1;
+		// height: 100%;
+		// }
 	}
 
 	.thumbnails-container {
