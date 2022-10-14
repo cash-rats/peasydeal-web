@@ -1,0 +1,45 @@
+.carousel__scrollButton__wrapper, .carousel__scrollButton__wrapper-right {
+  transition: opacity 0.25s ease-in-out 0s;
+  border: none !important;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.carousel__scrollButton__wrapper-right {
+  top: 50%;
+  transform: translateY(-50%);
+  right: 0;
+}
+
+.carousel__scrollButton__circle {
+  position: relative;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  box-shadow: rgba(0, 0, 0, 0.2) 2px 4px 3px 1px;
+  background-color: #FC8A15;
+}
+
+.carousel__scrollButton__left-arrow, .carousel__scrollButton__right-arrow {
+  position: absolute;
+  top: 30%;
+  width: 1rem;
+  height: 1rem;
+  border-style: solid;
+  border-color: rgb(52, 52, 52);
+  border-image: initial;
+  border-width: 0px 0.125rem 0.125rem 0px;
+  border-radius: 0px 0.125rem;
+  transform: rotate(135deg);
+  left: 40%;
+}
+
+.carousel__scrollButton__right-arrow {
+  left: 20%;
+  transform: rotate(-45deg);
+}
+
+/*# sourceMappingURL=ScrollButton.css.map */

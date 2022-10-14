@@ -14,7 +14,7 @@
 		flex-direction: row;
 		justify-content: center;
 		align-items: flex-start;
-		gap: 20px;
+		gap: 10px;
 	}
 
 	@include xl {
@@ -122,7 +122,7 @@
 .product-features-large-screen {
 	display: none;
 	padding-top: 5px;
-	margin-top: 20px;
+	margin-top: 4.25rem;
 
 	h1 {
 		font-weight: bold;

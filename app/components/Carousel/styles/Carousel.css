@@ -21,7 +21,8 @@
   .thumbnails-hover-images-container .preview-image {
     width: 100%;
     height: auto;
-    aspect-ratio: 414/277;
+    aspect-ratio: 1/1;
+    margin: 0 auto;
   }
 }
 .thumbnails-hover-images-container .thumbnails-container {
@@ -48,6 +49,23 @@
 
 .thumbail-highlight {
   border: solid 5px #EC7272 !important;
+}
+
+.carousel_desktop-preview-image-container {
+  position: relative;
+}
+
+.carousel__left-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.carousel__right-arrow {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
 }
 
 /*# sourceMappingURL=Carousel.css.map */

@@ -11,7 +11,7 @@
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
-    gap: 20px;
+    gap: 10px;
   }
 }
 @media (min-width: 1200px) {
@@ -111,7 +111,7 @@
 .product-features-large-screen {
   display: none;
   padding-top: 5px;
-  margin-top: 20px;
+  margin-top: 4.25rem;
 }
 .product-features-large-screen h1 {
   font-weight: bold;

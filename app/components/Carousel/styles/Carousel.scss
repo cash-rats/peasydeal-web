@@ -16,28 +16,16 @@
 	display: none;
 
 	@include md {
-		// display: flex;
-		// flex-direction: column;
-		// gap: 10px;
 		display: block;
 	}
 
 	.preview-image {
 		@include md {
-			// width: 100%;
-
 			width: 100%;
 			height: auto;
-			aspect-ratio: 414/277;
-			// aspect-ratio: 1.5/1;
-			// max-height: 465px;
-			// max-width: 698px;
+			aspect-ratio: 1/1;
+			margin: 0 auto;
 		}
-
-		// img {
-		// aspect-ratio: 1.5/1;
-		// height: 100%;
-		// }
 	}
 
 	.thumbnails-container {
@@ -68,4 +56,21 @@
 
 .thumbail-highlight {
 	border: solid 5px #EC7272 !important;
+}
+
+.carousel_desktop-preview-image-container {
+	position: relative;
+}
+
+.carousel__left-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.carousel__right-arrow {
+	position: absolute;
+	top: 50%;
+	right: 0.5rem;
+	transform: translateY(-50%);
 }
