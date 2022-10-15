@@ -3,6 +3,7 @@ import type { MouseEvent } from 'react';
 import Slider from 'react-slick';
 import type { Settings } from 'react-slick';
 import type { LinksFunction } from '@remix-run/node';
+import clsx from 'clsx';
 
 import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
@@ -29,7 +30,7 @@ interface PicsCarouselProps {
  */
 function PicsCarousel({ images }: PicsCarouselProps) {
 	const sliderRef = useRef<Slider>();
-	const sliderRefDesktop = useRef<Slider>();
+	const [activeSlide, setActiveSlide] = useState(0);
 
 	const handleClickNext = () => console.log('next');
 	const handleClickPrev = () => console.log('prev');
@@ -61,6 +62,9 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 				onClick={handleClickPrev}
 			/>
 		),
+		beforeChange(_, nextSlide: number) {
+			setActiveSlide(nextSlide);
+		}
 	}
 
 	return (
@@ -84,7 +88,11 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 						images.map((image, index) => {
 							return (
 								<a
-									className="ProductDetailSection__carousel-thumbnail-container"
+									className={
+										clsx("ProductDetailSection__carousel-thumbnail-container", {
+											'active-thumbnail': index === activeSlide
+										})
+									}
 									key={index}
 									onClick={(evt) => handleChooseSlide(index, evt)}
 								>
@@ -99,44 +107,6 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 					}
 				</div>
 			</div>
-
-			{/* Desktop view slider */}
-			<div className="thumbnails-hover-images-container">
-				<Slider ref={sliderRef} {...settings}>
-					{
-						images.map((image, index) => {
-							return (
-								<div className="carousel_desktop-preview-image-container" key={index} >
-									<img alt='product' className="preview-image" src={image} />
-								</div>
-							)
-						})
-					}
-				</Slider>
-
-				<div className="ProductDetailSection__carousel-thumbnails">
-					{
-						images.map((image, index) => {
-							return (
-								<a
-									className="ProductDetailSection__carousel-thumbnail-container"
-									key={index}
-									onClick={(evt) => handleChooseSlide(index, evt)}
-								>
-									<img
-										alt='product thumbnail'
-										className="carousel__thumbnail"
-										src={image}
-									/>
-								</a>
-
-							)
-						})
-					}
-				</div>
-
-			</div>
-
 		</>
 	);
 };

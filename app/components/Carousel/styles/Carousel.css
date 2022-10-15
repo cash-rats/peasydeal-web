@@ -1,49 +1,33 @@
 .product-carousel-container .product-carousel-image {
   width: 100%;
   height: auto;
-  aspect-ratio: 414/277;
+  aspect-ratio: 1.5/1;
 }
 @media (min-width: 768px) {
-  .product-carousel-container {
-    display: none;
+  .product-carousel-container .product-carousel-image {
+    aspect-ratio: 1/1;
   }
 }
 
-.thumbnails-hover-images-container {
-  display: none;
-}
-@media (min-width: 768px) {
-  .thumbnails-hover-images-container {
-    display: block;
-  }
-}
-@media (min-width: 768px) {
-  .thumbnails-hover-images-container .preview-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1/1;
-    margin: 0 auto;
-  }
-}
-.thumbnails-hover-images-container .thumbnails-container {
+.thumbnails-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
   gap: 8px;
   margin-top: 20px;
 }
-.thumbnails-hover-images-container .thumbnails-container .product-thumbnail {
+.thumbnails-container .product-thumbnail {
   cursor: pointer;
   box-sizing: border-box;
   border: solid 5px transparent;
   width: 80px;
   height: 80px;
 }
-.thumbnails-hover-images-container .thumbnails-container .product-thumbnail img {
+.thumbnails-container .product-thumbnail img {
   height: 100%;
   width: 100%;
 }
-.thumbnails-hover-images-container .thumbnails-container .product-thumbnail:hover {
+.thumbnails-container .product-thumbnail:hover {
   border: solid 5px #EC7272;
 }
 
@@ -69,8 +53,8 @@
 }
 
 .carousel__thumbnail {
-  width: 60px !important;
-  height: 60px;
+  width: 55px;
+  height: 55px;
 }
 
 .slick-thumb {
@@ -87,12 +71,26 @@
   height: 60px !important;
 }
 
+.ProductDetailSection__carousel-thumbnail-container {
+  cursor: pointer;
+  width: 65px !important;
+  height: 65px;
+  transition: background-color 0.25s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .ProductDetailSection__carousel-thumbnails {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   padding: 0 0.5rem;
   margin-top: 1rem;
+}
+
+.active-thumbnail {
+  background-color: #EC7272;
 }
 
 /*# sourceMappingURL=Carousel.css.map */
