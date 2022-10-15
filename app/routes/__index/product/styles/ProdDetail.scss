@@ -69,23 +69,20 @@
 
 				.actual-amount {
 					color: $original-price;
-					font-size: 1.125rem;
+					font-size: 0.75rem;
 					margin-left: 0.5rem;
 					text-decoration: line-through;
 				}
-
-				.discount-amount {
-					margin-left: 1.125rem;
-					font-size: 1.125rem;
-					font-weight: 500;
-					color: $product-price;
-				}
 			}
-
 		}
 	}
 }
 
+.discount-amount {
+	font-size: 1.125rem;
+	font-weight: 500;
+	color: $product-price;
+}
 
 .sales-end-timer {
 	display: flex;
@@ -179,8 +176,7 @@
 }
 
 .bought {
-	margin-left: 1.125rem;
-	margin: 0;
+	margin: 0.5rem 0;
 	color: $number-bought;
 }
 
@@ -210,4 +206,11 @@
 .error {
 	height: 1.1rem;
 	color: #E81120;
+}
+
+.ProductDetail__divder-content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
 }

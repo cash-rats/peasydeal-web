@@ -68,12 +68,12 @@
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar .actual-amount {
   color: #343434;
-  font-size: 1.125rem;
+  font-size: 0.75rem;
   margin-left: 0.5rem;
   text-decoration: line-through;
 }
-.productdetail-container .product-content-wrapper .product-content .product-tag-bar .discount-amount {
-  margin-left: 1.125rem;
+
+.discount-amount {
   font-size: 1.125rem;
   font-weight: 500;
   color: #e81120;
@@ -167,8 +167,7 @@
 }
 
 .bought {
-  margin-left: 1.125rem;
-  margin: 0;
+  margin: 0.5rem 0;
   color: #EB008C;
 }
 
@@ -198,6 +197,13 @@
 .error {
   height: 1.1rem;
   color: #E81120;
+}
+
+.ProductDetail__divder-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
 }
 
 /*# sourceMappingURL=ProdDetail.css.map */

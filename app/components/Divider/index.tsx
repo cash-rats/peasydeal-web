@@ -1,4 +1,6 @@
+import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
+
 import styles from './styles/divider.css';
 
 export const links: LinksFunction = () => {
@@ -8,16 +10,16 @@ export const links: LinksFunction = () => {
 };
 
 interface DividerProps {
-	text: string;
+	text: ReactNode;
 };
 
 function Divider({ text }: DividerProps) {
 	return (
 		<div className="divider">
-		  <span className="divider-border" />
+			<span className="divider-border" />
 
 			<h1 className="divider-text">
-				{ text }
+				{text}
 			</h1>
 		</div>
 	);

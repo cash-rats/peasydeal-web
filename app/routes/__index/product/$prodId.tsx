@@ -12,7 +12,7 @@ import type { LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
 import Select from 'react-select';
-import { TbTruckDelivery } from 'react-icons/tb';
+import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
 import { StatusCodes } from 'http-status-codes';
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
 
@@ -129,6 +129,7 @@ interface ProductVariation {
 	subTitle: string;
 	title: string;
 	variationId: string;
+	deliveryInfo: string;
 };
 
 interface ProductDetail {
@@ -341,22 +342,23 @@ function ProductDetailPage() {
 								{currentVariation?.currency}{currentVariation?.salePrice}
 							</p>
 
-							<p className="actual-amount">
+							<span className="actual-amount">
 								compared at {currentVariation?.currency} {currentVariation?.retailPrice}
-							</p>
-
-							<p className="discount-amount">
-								SAVE
-								{
-									currentVariation && currentVariation.discountOff && (
-										(
-											((currentVariation.retailPrice - currentVariation.salePrice) / currentVariation.retailPrice) * 100
-										).toFixed(0)
-									)
-								} %
-							</p>
+							</span>
 
 						</div>
+
+						<p className="discount-amount">
+							YOU SAVE &nbsp;
+							{
+								currentVariation && currentVariation.discountOff && (
+									(
+										((currentVariation.retailPrice - currentVariation.salePrice) / currentVariation.retailPrice) * 100
+									).toFixed(0)
+								)
+							}%!
+						</p>
+
 
 						<div className="bought">
 							<span className="bought-number">
@@ -421,7 +423,11 @@ function ProductDetailPage() {
 						</div>
 
 
-						<Divider text="Share" />
+						<Divider text={
+							<span className="ProductDetail__divder-content">
+								<TbShare fontSize={20} /> share
+							</span>
+						} />
 						<div className="sales-end-timer">
 							<span className="timer">
 								<span className="readable-time" >6 days left</span> <span className="time">20:42:53</span>
@@ -429,11 +435,14 @@ function ProductDetailPage() {
 						</div>
 
 						<div className="delivery-container">
-							<Divider text="delivery" />
+							<Divider text={(
+								<span className="ProductDetail__divder-content">
+									<TbTruckDelivery fontSize={24} /> DELIVERY
+								</span>
+							)} />
 
 							<div className="delivery-content">
-								<span> <TbTruckDelivery fontSize={30} /> </span>
-								<span> £4.99  delivery charge per voucher </span>
+								<span> {currentVariation.deliveryInfo} </span>
 							</div>
 						</div>
 
@@ -445,9 +454,12 @@ function ProductDetailPage() {
 							<div dangerouslySetInnerHTML={{ __html: currentVariation?.description || '' }} className="product-features-container" />
 						</div>
 
-
 						<div className="product-return-policy">
-							<Divider text="return policy" />
+							<Divider text={(
+								<span className="ProductDetail__divder-content">
+									<TbTruckReturn fontSize={24} /> return policy
+								</span>
+							)} />
 
 							<p>
 								14 days cancellation period applies.
