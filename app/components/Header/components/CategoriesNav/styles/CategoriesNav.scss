@@ -1,4 +1,5 @@
 @import 'styles/_breakpoints';
+@import 'styles/_colors';
 
 .categories-nav-container {
   display: flex;
@@ -6,7 +7,6 @@
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
-  height: 38px;
 
   .all-categories-nav {
     cursor: pointer;
@@ -92,7 +92,6 @@
       list-style: none;
       display: flex;
       align-items: center;
-      height: 40px;
       justify-content: space-between;
       margin: 0;
       padding: 0;
@@ -101,7 +100,8 @@
         flex: auto;
         cursor: pointer;
         transition: 100ms all linear 0s;
-        color: #fff;
+        color: black;
+        padding: 1rem 0;
 
         &:hover {
           background-color: #E4E4E4;
@@ -111,9 +111,85 @@
           display: flex;
           align-items: center;
           justify-content: center;
-          height: 40px;
+          font-weight: 500;
         }
       }
     }
   }
+}
+
+.Header__CategoriesNav__more {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.Header__CategoriesNav__arrow_wrapper {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.Header__CategoriesNav__text {
+  margin-right: 0.3rem;
+}
+
+.Header__CategoriesNav__arrow-up {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-style: solid;
+  border-color: #545bc4;
+  border-image: initial;
+  border-width: 0px 0.125rem 0.125rem 0px;
+  border-radius: 0px 0.125rem;
+  transform: rotate(45deg);
+  right: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  transition: transform 0.2s;
+}
+
+.Header__CategoriesNav__arrow-down {
+  transform: rotate(225deg);
+}
+
+.Header__CategoriesNav__all-cats {
+  position: absolute;
+  top: 55px;
+  background-color: white;
+  border: solid 1px $border-color;
+  width: 300px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1rem;
+}
+
+.Header__CategoriesNav__all-cats-title {
+  padding: 0.5rem 0;
+  cursor: pointer;
+  color: black;
+  display: inline-block;
+  background-image: linear-gradient($primary, $primary);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  transition: background-size 0.3s;
+  margin: 2px 0;
+
+  a {
+    width: 100%;
+    justify-content: flex-start !important;
+  }
+
+  &:hover {
+    background-size: 70% 1px;
+  }
+}
+
+.fromLeft {
+  background-position: 0 calc(100% - 0px);
 }

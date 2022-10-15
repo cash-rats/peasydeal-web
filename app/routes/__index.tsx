@@ -2,6 +2,7 @@ import { json } from "@remix-run/node";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
+import MenuIcon from '@mui/icons-material/Menu';
 
 import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
 import NavBar, { links as NavBarLinks } from '~/components/Header/components/NavBar';
@@ -62,12 +63,11 @@ export default function Index() {
 	return (
 		<>
 			<LogoHeader
-				style={{ height: '120px' }}
-				categoriesBar={
-					<CategoriesNav categories={categories} />
-				}
+				categoriesBar={<CategoriesNav categories={categories} />}
 			>
+
 				<div className="index_header-content">
+
 					{/* search bar */}
 					<div className="index_search-bar">
 						<SearchBar placeholder="search product" />

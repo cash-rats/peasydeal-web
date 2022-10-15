@@ -53,19 +53,15 @@
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  padding: 0 0.5rem;
+  padding: 0 1rem;
   width: 100%;
   height: 100%;
 }
 
 .header-wrapper_category-bar {
   width: 100%;
-  padding: 0.4rem 0 0;
-}
-@media (min-width: 768px) {
-  .header-wrapper_category-bar {
-    max-width: 1180px;
-  }
+  background-color: white;
+  border-bottom: solid 1px #e5e5e5;
 }
 
 /*# sourceMappingURL=HeaderWrapper.css.map */

@@ -69,7 +69,7 @@
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;
-	padding: 0 0.5rem;
+	padding: 0 1rem;
 
 	width: 100%;
 	height: 100%;
@@ -77,9 +77,6 @@
 
 .header-wrapper_category-bar {
 	width: 100%;
-	padding: 0.4rem 0 0;
-
-	@media (min-width: #{$screen-md-min}) {
-		max-width: 1180px;
-	}
+	background-color: white;
+	border-bottom: solid 1px $border-color;
 }
