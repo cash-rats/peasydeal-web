@@ -14,10 +14,11 @@ export const links: LinksFunction = () => {
 };
 
 interface RecommendedProductsProps {
-  products: Product[]
+  products: Product[];
+  onClickProduct: (productID: string) => void;
 }
 
-function RecommendedProducts({ products }: RecommendedProductsProps) {
+function RecommendedProducts({ products, onClickProduct }: RecommendedProductsProps) {
   let rows: Product[][] = [];
 
   // Transform before using it.
@@ -31,7 +32,7 @@ function RecommendedProducts({ products }: RecommendedProductsProps) {
         you may also like
       </h2>
 
-      <ProductRowsLayout productRows={rows} />
+      <ProductRowsLayout onClickProduct={onClickProduct} productRows={rows} />
     </div>
   );
 }

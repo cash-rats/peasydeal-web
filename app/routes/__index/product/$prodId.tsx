@@ -30,6 +30,7 @@ import styles from "./styles/ProdDetail.css";
 import ProductActionBar, { links as ProductActionBarLinks } from './components/ProductActionBar';
 import ProductActionBarLeft, { links as ProductActionBarLeftLinks } from './components/ProductActionBarLeft';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
+import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
 
 export function links() {
 	return [
@@ -39,6 +40,7 @@ export function links() {
 		...ProductActionBarLinks(),
 		...ProductActionBarLeftLinks(),
 		...RecommendedProductsLinks(),
+		...SocialShareLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
 };
@@ -78,6 +80,10 @@ export const action: ActionFunction = async ({ request }) => {
 	const prodIDEntry: FormDataEntryValue | null = form.get('productID');
 	const formAction = form.get('__action');
 
+	if (formAction === 'to_product_detail') {
+		return redirect(`product/${prodIDEntry}`);
+	}
+
 	if (!prodIDEntry) return;
 	const prodID = prodIDEntry as string;
 
@@ -96,7 +102,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const newShoppingCart = {
 		...shoppingCart,
-		[prodID]: cartObj,
+		[prodIDEntry]: cartObj,
 	}
 
 	session.set('shopping_cart', newShoppingCart);
@@ -286,6 +292,15 @@ function ProductDetailPage() {
 		}
 	}, [addToCart])
 
+	const toProductDetailFetcher = useFetcher();
+
+	const handleClickProduct = (productID: string) => {
+		toProductDetailFetcher.submit({
+			__action: 'to_product_detail',
+			productID,
+		}, { method: 'post' });
+	}
+
 	return (
 		<>
 			<div className="productdetail-breadcrumbs">
@@ -423,16 +438,17 @@ function ProductDetailPage() {
 						</div>
 
 
+						{/*
+							- Facebook
+							- Twitter
+							- Whatsapp
+						*/}
 						<Divider text={
 							<span className="ProductDetail__divder-content">
 								<TbShare fontSize={20} /> share
 							</span>
 						} />
-						<div className="sales-end-timer">
-							<span className="timer">
-								<span className="readable-time" >6 days left</span> <span className="time">20:42:53</span>
-							</span>
-						</div>
+						<SocialShare />
 
 						<div className="delivery-container">
 							<Divider text={(
@@ -486,7 +502,10 @@ function ProductDetailPage() {
 					  - Hot deals
 						- New trend
 				*/}
-			<RecommendedProducts products={recommendedProducts} />
+			<RecommendedProducts
+				products={recommendedProducts}
+				onClickProduct={handleClickProduct}
+			/>
 		</>
 	);
 };
