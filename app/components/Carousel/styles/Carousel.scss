@@ -94,3 +94,11 @@
 		height: 60px !important;
 	}
 }
+
+.ProductDetailSection__carousel-thumbnails {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+	padding: 0 0.5rem;
+	margin-top: 1rem;
+}

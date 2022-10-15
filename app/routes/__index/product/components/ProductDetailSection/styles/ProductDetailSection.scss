@@ -1,9 +1,13 @@
 @import 'styles/_mixins';
+@import 'styles/_breakpoints';
 
 .product-detail {
-	// width: 100%;
-	width: 66%;
-	padding: 0 0 5px 1rem;
+	width: 100%;
+
+	@media (min-width: $screen-md-min) {
+		width: 66%;
+		padding: 0 0 5px 1rem;
+	}
 
 	.product-detail-title {
 		padding-left: 0;
@@ -24,7 +28,7 @@
 
 .product-detail-img-container {
 	img {
-		width: 100%;
+		// width: 100%;
 
 		@include md {
 			max-width: 718px;

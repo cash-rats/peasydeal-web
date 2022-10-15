@@ -1,3 +1,5 @@
+import { useState, useRef } from 'react';
+import type { MouseEvent } from 'react';
 import Slider from 'react-slick';
 import type { Settings } from 'react-slick';
 import type { LinksFunction } from '@remix-run/node';
@@ -26,14 +28,21 @@ interface PicsCarouselProps {
  * - [x] clicks on thumbnail should display that image.
  */
 function PicsCarousel({ images }: PicsCarouselProps) {
+	const sliderRef = useRef<Slider>();
+	const sliderRefDesktop = useRef<Slider>();
+
 	const handleClickNext = () => console.log('next');
-
-
 	const handleClickPrev = () => console.log('prev');
 
+	const handleChooseSlide = (index: number, evt: MouseEvent<HTMLAnchorElement>) => {
+		evt.preventDefault();
+		if (!sliderRef.current) return;
+
+		sliderRef.current.slickGoTo(index);
+	}
 
 	const settings: Settings = {
-		dots: true,
+		dots: false,
 		infinite: true,
 		speed: 500,
 		slidesToShow: 1,
@@ -52,29 +61,13 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 				onClick={handleClickPrev}
 			/>
 		),
-
-		customPaging(index) {
-			return (
-				<a>
-					<img
-						alt='thumbnail'
-						className="carousel__thumbnail"
-						// style={{
-						// 	'height': '40px',
-						// 	'width': '40px',
-						// 	marginRight: '1rem',
-						// }}
-						src={images[index]}
-					/>
-				</a>
-			);
-		},
 	}
 
 	return (
 		<>
+			{/* Mobile view slider */}
 			<div className="product-carousel-container">
-				<Slider {...settings}>
+				<Slider ref={sliderRef} {...settings}>
 					{
 						images.map((image, index) => {
 							return (
@@ -85,10 +78,31 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 						})
 					}
 				</Slider>
+
+				<div className="ProductDetailSection__carousel-thumbnails">
+					{
+						images.map((image, index) => {
+							return (
+								<a
+									className="ProductDetailSection__carousel-thumbnail-container"
+									key={index}
+									onClick={(evt) => handleChooseSlide(index, evt)}
+								>
+									<img
+										alt='product thumbnail'
+										className="carousel__thumbnail"
+										src={image}
+									/>
+								</a>
+							)
+						})
+					}
+				</div>
 			</div>
 
+			{/* Desktop view slider */}
 			<div className="thumbnails-hover-images-container">
-				<Slider {...settings}>
+				<Slider ref={sliderRef} {...settings}>
 					{
 						images.map((image, index) => {
 							return (
@@ -99,7 +113,30 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 						})
 					}
 				</Slider>
+
+				<div className="ProductDetailSection__carousel-thumbnails">
+					{
+						images.map((image, index) => {
+							return (
+								<a
+									className="ProductDetailSection__carousel-thumbnail-container"
+									key={index}
+									onClick={(evt) => handleChooseSlide(index, evt)}
+								>
+									<img
+										alt='product thumbnail'
+										className="carousel__thumbnail"
+										src={image}
+									/>
+								</a>
+
+							)
+						})
+					}
+				</div>
+
 			</div>
+
 		</>
 	);
 };
