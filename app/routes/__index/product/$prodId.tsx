@@ -481,16 +481,19 @@ function ProductDetailPage() {
 								14 days cancellation period applies.
 							</p>
 						</div>
+
+						<div className="client-action-bar-wrapper">
+
+							<Divider />
+							<ProductActionBar
+								ref={mobileUserActionBarRef}
+								onClickAddToCart={handleAddToCart}
+								onClickBuyNow={handleBuyNow}
+								loading={addToCart.state !== 'idle'}
+							/>
+						</div>
 					</div>
 
-					<div className="client-action-bar-wrapper">
-						<ProductActionBar
-							ref={mobileUserActionBarRef}
-							onClickAddToCart={handleAddToCart}
-							onClickBuyNow={handleBuyNow}
-							loading={addToCart.state !== 'idle'}
-						/>
-					</div>
 				</div>
 
 
