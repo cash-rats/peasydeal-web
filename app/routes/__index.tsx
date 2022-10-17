@@ -1,12 +1,13 @@
+import { useState } from 'react';
 import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import { Outlet, useLoaderData, useOutletContext, Form } from "@remix-run/react";
+import type { LinksFunction, LoaderFunction, ActionFunction } from "@remix-run/node";
+import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
 import NavBar, { links as NavBarLinks } from '~/components/Header/components/NavBar';
-import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { getSession } from '~/sessions';
@@ -19,8 +20,8 @@ export const links: LinksFunction = () => {
 	return [
 		...FooterLinks(),
 		...LogoHeaderLinks(),
-		...SearchBarLinks(),
 		...NavBarLinks(),
+		...DropDownSearchBarLinks(),
 		...CategoriesNavLinks(),
 
 		{ rel: 'stylesheet', href: styles }
@@ -56,8 +57,19 @@ export const loader: LoaderFunction = async ({ request }) => {
 	});
 };
 
+// export const action: ActionFunction = ({ request }) => {
+// 	console.log('debug action');
+
+// 	return null;
+// }
+
 export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData();
+	const [results, setResults] = useState([]);
+
+	const handleDropdownSearch = () => {
+		console.log('trigger handleDropdownSearch');
+	};
 
 	return (
 		<>
@@ -69,7 +81,11 @@ export default function Index() {
 
 					{/* search bar */}
 					<div className="index_search-bar">
-						<SearchBar placeholder="search product" />
+						<DropDownSearchBar
+							placeholder="search product"
+							onDropdownSearch={handleDropdownSearch}
+							results={results}
+						/>
 					</div>
 
 					{/* right status bar, cart, search icon...etc */}

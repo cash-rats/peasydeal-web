@@ -2,6 +2,7 @@
 
 .DropDownSearchBar__wrapper {
   width: 100%;
+  position: relative;
 }
 
 .DropDownSearchBar__dropdown-wrapper {
@@ -9,7 +10,9 @@
   margin-top: 4px;
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 8px 13px 0 rgb(44 44 45 / 27%);
+  box-shadow: 0 8px 13px 0 #2c2c2d45;
+  position: absolute;
+  width: 100%;
 }
 
 .DropDownSearchBar__dropdown-list {

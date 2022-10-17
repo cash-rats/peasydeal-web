@@ -6,7 +6,7 @@ import { Form } from '@remix-run/react';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 
 import styles from './styles/DropDownSearchBar.css';
-import TrieNode, { rootNode } from './trie';
+import { rootNode } from './trie';
 
 export const links: LinksFunction = () => {
   return [
@@ -15,9 +15,12 @@ export const links: LinksFunction = () => {
   ];
 }
 
+
 type SearchingState = 'empty' | 'searching' | 'done' | 'error';
 
 interface DropDownSearchBarProps {
+  placeholder?: string;
+
   onDropdownSearch?: (query: string) => void;
 
   results?: string[];
@@ -33,13 +36,13 @@ interface DropDownSearchBarProps {
 // 4. Display the result (either from local trie, or remote API) in dropdown box. don't forget to update local trie for the next search.
 // 5. Hide dropdown list when is unfocused.
 export default function DropDownSearchBar({
+  placeholder = '',
   onDropdownSearch = () => { },
   results = []
 }: DropDownSearchBarProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState<string>('');
-
   const [suggests, setSuggests] = useState<string[]>([]);
 
   useEffect(() => {
@@ -54,11 +57,20 @@ export default function DropDownSearchBar({
   }, [results]);
 
 
+  console.log('debug 3');
   let timer = undefined;
   let timeoutTimer = undefined;
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    console.log('debug 4', timer);
+
+    if (timer) {
+      console.log('debug 5');
+      clearTimeout(timer);
+    }
+
     setSearchContent(evt.target.value);
+
 
     if (!showDropdown) setShowDropdown(true);
 
@@ -86,37 +98,42 @@ export default function DropDownSearchBar({
     } else {
       if (matches.length > 0) {
         setSuggests(matches);
-
         setSearchingState('done');
 
         return;
       }
 
-      if (timer) {
-        clearTimeout(timer);
-      }
+
+      // if (timeoutTimer) {
+      //   clearTimeout(timeoutTimer);
+      // }
 
 
       // Perform debounce here. Only perform search when use finish typing
-      timer = setTimeout(async () => {
+      timer = setTimeout(() => {
         timer = undefined;
 
-        await onDropdownSearch(evt.target.value);
+        console.log('debug 6');
+        onDropdownSearch(evt.target.value);
+        console.log('debug 7');
 
-        clearTimeout(timeoutTimer);
-        timeoutTimer = undefined;
+        // if (timeoutTimer) {
+        //   clearTimeout(timeoutTimer);
+        // }
 
+        // timeoutTimer = undefined;
       }, 700);
     }
 
     // I'll wait for 2.2s. If no dropdown results coming back, it's a timeout
     // then i'll cancel onDropdownSearch
-    timeoutTimer = setTimeout(() => {
-      timeoutTimer = undefined;
-      clearTimeout(timer);
-      timer = undefined;
-      setSuggests([]);
-    }, 2200);
+    // timeoutTimer = setTimeout(() => {
+    //   timeoutTimer = undefined;
+    //   clearTimeout(timer);
+    //   timer = undefined;
+    //   console.log('debug 8');
+    //   setSuggests([]);
+    // }, 5);
   };
 
   const handleBlur = () => {
@@ -133,11 +150,15 @@ export default function DropDownSearchBar({
   }
 
   return (
-    <Form className="DropDownSearchBar__wrapper">
+    <Form
+      className="DropDownSearchBar__wrapper"
+      action="/__index?index"
+    >
       <SearchBar
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleChange}
+        placeholder={placeholder}
       />
 
       {
