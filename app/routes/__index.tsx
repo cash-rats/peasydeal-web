@@ -1,8 +1,7 @@
 import { json } from "@remix-run/node";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext, Form } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
-import MenuIcon from '@mui/icons-material/Menu';
 
 import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
 import NavBar, { links as NavBarLinks } from '~/components/Header/components/NavBar';

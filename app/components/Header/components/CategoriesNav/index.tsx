@@ -67,9 +67,11 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                   {
                     categories.map((category, index) => {
                       return (
-                        <div key={index} className="Header__CategoriesNav__all-cats-title fromLeft">
+                        <div key={index} className="Header__CategoriesNav__all-cats-title">
                           <Link to={`/${category.title}`}>
-                            {category.title}
+                            <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
+                              {category.title}
+                            </span>
                           </Link>
                         </div>
                       );

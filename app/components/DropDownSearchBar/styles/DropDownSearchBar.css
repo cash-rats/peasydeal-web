@@ -1,0 +1,37 @@
+.DropDownSearchBar__wrapper {
+  width: 100%;
+}
+
+.DropDownSearchBar__dropdown-wrapper {
+  padding: 8px 0;
+  margin-top: 4px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 13px 0 rgba(44, 44, 45, 0.27);
+}
+
+.DropDownSearchBar__dropdown-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.DropDownSearchBar__dropdown-item {
+  padding: 0.5rem 0;
+}
+.DropDownSearchBar__dropdown-item:hover {
+  background-color: #E4E4E4;
+}
+.DropDownSearchBar__dropdown-item a {
+  margin: 0;
+}
+.DropDownSearchBar__dropdown-item p {
+  margin: 0;
+  padding: 0.5rem 1rem;
+}
+
+.DropDownSearchBar__dropdown-content {
+  padding: 0.5rem 1rem;
+}
+
+/*# sourceMappingURL=DropDownSearchBar.css.map */

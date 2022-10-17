@@ -312,6 +312,17 @@ function ProductDetailPage() {
 								: "breadcrumbs-link"
 						)}
 						key='1'
+						to='/'
+					>
+						Home
+					</NavLink>,
+					<NavLink
+						className={({ isActive }) => (
+							isActive
+								? "breadcrumbs-link breadcrumbs-link-active"
+								: "breadcrumbs-link"
+						)}
+						key='2'
 						to={`/${mainCategory}`}
 					>
 						{mainCategory}
@@ -322,7 +333,7 @@ function ProductDetailPage() {
 								? "breadcrumbs-link breadcrumbs-link-active"
 								: "breadcrumbs-link"
 						)}
-						key='1'
+						key='3'
 						to={`/product/${productDetail.productId}`}
 					>
 						{currentVariation?.title}
@@ -397,7 +408,6 @@ function ProductDetailPage() {
 									onChange={(v) => {
 										if (!v) return;
 
-										console.log('debug 1');
 										setVariation(v.value);
 									}}
 									options={

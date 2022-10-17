@@ -1,8 +1,9 @@
-import type { MouseEvent, ChangeEvent } from 'react';
+import type { MouseEvent, ChangeEvent, FocusEvent } from 'react';
 import { useState } from 'react';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import clsx from 'clsx';
 
 import type { LinksFunction } from '@remix-run/node';
 
@@ -16,7 +17,18 @@ export const links: LinksFunction = () => {
 
 interface SearchBarProps {
   onSearch?: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
+
   onClear?: (evt: MouseEvent<HTMLSpanElement>) => void;
+
+  // When search content changes
+  onChange?: (evt: ChangeEvent<HTMLInputElement>) => void;
+
+  // When search input is focused
+  onFocus?: (evt: FocusEvent<HTMLInputElement>) => void;
+
+  // When search input is blurred
+  onBlur?: (evt: FocusEvent<HTMLInputElement>) => void;
+
   placeholder?: string;
 }
 
@@ -26,54 +38,74 @@ function SearchBar({
   onSearch = () => { },
   onClear = () => { },
   placeholder = '',
+  onChange = () => { },
+  onFocus = () => { },
+  onBlur = () => { },
   ...args
 }: SearchBarProps) {
-  const [orderNum, setOrderNum] = useState<string>('');
-  const handleChangeOrderNum = (evt: ChangeEvent<HTMLInputElement>) => {
-    setOrderNum(evt.target.value);
+  const [content, setContent] = useState<string>('');
+  const [focusSearch, setFocusSearch] = useState(false);
+  const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    setContent(evt.target.value);
+    onChange(evt)
   };
-  const handleClearOrderNum = (evt: MouseEvent<HTMLSpanElement>) => {
-    setOrderNum('');
+  const handleClear = (evt: MouseEvent<HTMLSpanElement>) => {
+    setContent('');
     onClear(evt);
   };
 
+  const handleFocus = (evt: FocusEvent<HTMLInputElement>) => {
+    setFocusSearch(true);
+    onFocus(evt);
+  };
+
+  const handleBlur = (evt: FocusEvent<HTMLInputElement>) => {
+    setFocusSearch(false);
+    onBlur(evt);
+  }
+
   return (
-    <div className="nav-search-box">
+    <div className={clsx("nav-search-box", {
+      "SearchBar__focus": focusSearch,
+    })}>
       <div className="search-box">
         <InputBase
           fullWidth
           placeholder={placeholder}
           size='small'
-          value={orderNum}
-          onChange={handleChangeOrderNum}
+          value={content}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={handleChange}
         />
 
         {
-          !isStringEmpty(orderNum) && (
+          !isStringEmpty(content) && (
             <span
               className="clear-icon"
-              onClick={handleClearOrderNum}
+              onClick={handleClear}
             >
               <ClearIcon color='action' />
             </span>
           )
         }
 
-        <span
+        <button
+          type='submit'
           onClick={(evt) => {
-            if (isStringEmpty(orderNum)) {
+            if (isStringEmpty(content)) {
               return;
             }
-            onSearch(orderNum, evt)
+            onSearch(content, evt)
           }}
           className="search-icon"
         >
           <SearchIcon color={
-            isStringEmpty(orderNum)
+            isStringEmpty(content)
               ? 'disabled'
               : 'action'
           } />
-        </span>
+        </button>
       </div>
     </div>
   );
