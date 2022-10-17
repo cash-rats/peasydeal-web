@@ -1,4 +1,4 @@
-import { assert, expect, test } from 'vitest';
+import { expect, test } from 'vitest';
 
 import TrieNode from './trie';
 
@@ -25,5 +25,8 @@ describe('preffix trie node', () => {
     expect(matches).toEqual(
       expect.arrayContaining(['test', 'teac', 'teaccc'])
     );
+
+    const matches2 = root.findAllMatched('tec');
+    expect(matches2.length).toEqual(0);
   })
 })

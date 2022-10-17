@@ -75,8 +75,7 @@ class TrieNode {
     this.end = false;
   }
 
-  // Given a string, populate a trie.
-  // O(n) where n is the length of a word.
+  // Given a string, populate a trie. O(n) where n is the length of a word.
   populatePrefixTrie(word) {
     let node = this;
 
@@ -95,6 +94,16 @@ class TrieNode {
 
     // We reach the end of the word. 'node' should represents the last word, we append end symbol in the child node.
     node.end = true;
+  }
+
+  populateListOfWords(words = []) {
+    // console.log('words', words);
+    // for (let i = 0; words.length; i++) {
+    // const word = words[i];
+
+    // console.log('word', word);
+    //   this.populatePrefixTrie(word);
+    // }
   }
 
   getWord() {
@@ -117,15 +126,17 @@ class TrieNode {
     // the decendents of the this trie node will be all matched strings.
     for (let i = 0; i < prefix.length; i++) {
       const char = prefix[i];
-      if (node.children[char]) {
-        node = node.children[char];
-        continue;
-      } else {
-        break;
-      }
+      node = node.children[char];
+
+      if (!node) break;
+    }
+
+    if (!node) {
+      return [];
     }
 
     const matches = [];
+
     findAllMatches(node, matches)
 
     return matches;
@@ -146,8 +157,8 @@ function newTrieNode() {
   return new TrieNode(null);
 }
 
-const singleton = newTrieNode();
+const rootNode = newTrieNode();
 
-export { singleton };
+export { rootNode };
 
 export default TrieNode;
