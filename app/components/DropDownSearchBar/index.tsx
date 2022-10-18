@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Form } from '@remix-run/react';
@@ -57,34 +57,27 @@ export default function DropDownSearchBar({
   }, [results]);
 
 
-  console.log('debug 3');
-  let timer = undefined;
-  let timeoutTimer = undefined;
+  const timerRef = useRef(undefined);
+  const timeoutTimerRef = useRef(undefined);
 
-  const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    console.log('debug 4', timer);
-
-    if (timer) {
-      console.log('debug 5');
-      clearTimeout(timer);
+  const handleChange = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
     }
 
     setSearchContent(evt.target.value);
-
-
-    if (!showDropdown) setShowDropdown(true);
+    setShowDropdown(true);
 
     // If search content is empty, hide dropdown.
     if (!evt.target.value) {
+      setSuggests([]);
       setShowDropdown(false);
 
       return;
     }
 
-
     setSearchingState('searching');
 
-    // If timer is not null, clear previous search operation
     const matches = rootNode.findAllMatched(evt.target.value);
 
     // If search query length is reducing, other than empty, there must exists matches in
@@ -95,46 +88,47 @@ export default function DropDownSearchBar({
       setSearchingState('done');
 
       return;
-    } else {
-      if (matches.length > 0) {
-        setSuggests(matches);
-        setSearchingState('done');
-
-        return;
-      }
-
-
-      // if (timeoutTimer) {
-      //   clearTimeout(timeoutTimer);
-      // }
-
-
-      // Perform debounce here. Only perform search when use finish typing
-      timer = setTimeout(() => {
-        timer = undefined;
-
-        console.log('debug 6');
-        onDropdownSearch(evt.target.value);
-        console.log('debug 7');
-
-        // if (timeoutTimer) {
-        //   clearTimeout(timeoutTimer);
-        // }
-
-        // timeoutTimer = undefined;
-      }, 700);
     }
 
-    // I'll wait for 2.2s. If no dropdown results coming back, it's a timeout
+    // User increases the characters of search content. if there are matches found in trie cache,
+    // we display the cached matches from trie.
+    if (matches.length > 0) {
+      setSuggests(matches);
+      setSearchingState('done');
+
+      return;
+    }
+
+    // User type more characters in search content but no matches found in trie cache.
+    // we need to do some operation to fetch more results. Only perform search when use finish typing.
+    timerRef.current = setTimeout(async () => {
+      timerRef.current = undefined;
+
+      await onDropdownSearch(evt.target.value);
+
+      setSearchingState('done');
+
+      if (timeoutTimerRef.current) {
+        clearTimeout(timeoutTimerRef.current);
+      }
+
+      timeoutTimerRef.current = undefined;
+    }, 700);
+
+    // I'll wait for 2.5s. If no dropdown results coming back, it's a timeout
     // then i'll cancel onDropdownSearch
-    // timeoutTimer = setTimeout(() => {
-    //   timeoutTimer = undefined;
-    //   clearTimeout(timer);
-    //   timer = undefined;
-    //   console.log('debug 8');
-    //   setSuggests([]);
-    // }, 5);
-  };
+    timeoutTimerRef.current = setTimeout(() => {
+      timeoutTimerRef.current = undefined;
+
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+
+      timerRef.current = undefined;
+      setSearchingState('done');
+      setSuggests([]);
+    }, 2500);
+  }, [])
 
   const handleBlur = () => {
     setShowDropdown(false);
@@ -144,16 +138,17 @@ export default function DropDownSearchBar({
     // show dropdown list only if we have matches in trie.
     const matches = rootNode.findAllMatched(searchContent);
 
+    // TODO: show most recent search.
+    // if user has not enter any search content, we don't show dropdown.
+    if (!searchContent) return;
+
     if (matches.length > 0) {
       setShowDropdown(true);
     }
   }
 
   return (
-    <Form
-      className="DropDownSearchBar__wrapper"
-      action="/__index?index"
-    >
+    <Form className="DropDownSearchBar__wrapper">
       <SearchBar
         onFocus={handleFocus}
         onBlur={handleBlur}
