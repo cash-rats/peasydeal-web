@@ -23,7 +23,6 @@ interface ProductRowsContainerProps {
 }
 
 function ProductRowsContainer({ onClickProduct = () => { }, productRows = [] }: ProductRowsContainerProps) {
-  console.log('debug productRows', productRows);
   return (
     <div className="productRowsContainer_wrapper">
       {

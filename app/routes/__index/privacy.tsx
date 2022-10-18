@@ -11,7 +11,9 @@ export const links: LinksFunction = () => {
 export default function Privacy() {
   return (
     <div className="StaticPage-page">
-      <h1 className="StaticPage-title">
+      <h1 className="StaticPage-title" style={{
+        lineHeight: '2.1rem',
+      }}>
         Peasy Deal - Privacy Policy & Term
       </h1>
 

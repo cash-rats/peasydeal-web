@@ -24,9 +24,9 @@ export default function EvenRow({ products = [], onClickProduct = () => { } }: E
 	return (
 		<div className="even-row-contianer">
 			{
-				products.map((product) => (
+				products.map((product, index: number) => (
 					<MediumGrid
-						key={product.productID}
+						key={product.productID || index}
 						productID={product.productID}
 						onClickProduct={onClickProduct}
 						image={product.main_pic}
