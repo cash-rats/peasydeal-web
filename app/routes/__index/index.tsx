@@ -65,12 +65,14 @@ export const action: ActionFunction = async ({ request }) => {
 /*
  * Product list page.
  *
- * - [ ] 根據 row index 的不同，顯示的 grid layout 會不一樣
+ * - [x] 根據 row index 的不同，顯示的 grid layout 會不一樣
  *    - 每 3 個 row OneMainTwoSubs 就會 reverse 一次
  *    - 頭一個 row 是 OneMainTwoSubs Layout
  *
- * - [ ] Fetch products from remote API when initial rendered.
- * - [ ] Fetch more.
+ * - [x] Fetch products from remote API when initial rendered.
+ * - [x] Fetch more.
+ * - [ ] When number of data fetched is less than limit(9), it reaches the end. stop triggering loadmore but displays a button
+ *       letting the user triggering loadmore manually.
  */
 export default function Index() {
 	const preloadProds = useLoaderData();
@@ -90,7 +92,6 @@ export default function Index() {
 		if (fetcher.type === 'done') {
 			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			const productRows = fetcher.data.prod_rows;
-			console.log('debug productRows', productRows.length);
 			if (productRows.length <= 0) return;
 			addProductRows(prev => prev.concat(productRows))
 		}
