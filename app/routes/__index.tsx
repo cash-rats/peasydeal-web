@@ -57,12 +57,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 	});
 };
 
-// export const action: ActionFunction = ({ request }) => {
-// 	console.log('debug action');
-
-// 	return null;
-// }
-
 export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData();
 	const [results, setResults] = useState([]);

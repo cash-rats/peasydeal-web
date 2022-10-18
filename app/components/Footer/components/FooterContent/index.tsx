@@ -1,4 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
+import { Link } from '@remix-run/react';
 import { TextField, } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import { AiOutlineArrowRight } from 'react-icons/ai';
@@ -13,28 +14,26 @@ export const links: LinksFunction = () => {
 
 export function PolicyContent() {
   return (
-    <div>
-      <div className="footer-content">
-        <h3 className="content-title"> Policy </h3>
-        <ul className="content-list">
-          <li>
-            <a>Privacy Policy</a>
-          </li>
-          <li>
-            <a>
-              Return Policy
-            </a>
-          </li>
-          <li>
-            <a>
-              Shipping Policy
-            </a>
-          </li>
-          <a>
-            <li>Terms of Use</li>
-          </a>
-        </ul>
-      </div>
+    <div className="footer-content">
+      <h3 className="content-title"> Policy </h3>
+      <ul className="content-list">
+        <li>
+          <Link to='/privacy'>Privacy Policy</Link>
+        </li>
+        <li>
+          <Link to='/return-policy'>
+            Return Policy
+          </Link>
+        </li>
+        <li>
+          <Link to='/shipping-policy'>
+            Shipping Policy
+          </Link>
+        </li>
+        <a>
+          <li>Terms of Use</li>
+        </a>
+      </ul>
     </div>
   );
 }

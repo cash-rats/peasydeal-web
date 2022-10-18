@@ -11,7 +11,7 @@ import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from "~/shared/types";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { fetchProducts } from "./api";
+import { fetchProducts, fetchProductsByCategory } from "./api";
 import { transformData, organizeTo9ProdsPerRow } from './utils';
 import styles from "./styles/ProductList.css";
 
@@ -29,16 +29,17 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const page = Number(url.searchParams.get('page') || '1');
 	const categoryID = Number(url.searchParams.get('category_id')) || 1;
 
-	const resp = await fetchProducts({
+	console.log('debug 1 ~');
+
+	const respJSON = await fetchProductsByCategory({
 		perpage: perPage,
 		page,
-		categoryID,
 	})
 
-	const respJSON = await resp.json();
+	console.log('debug 2 ~', respJSON);
 
 	// Transform data to frontend compatible format.
-	const transformedProds = transformData(respJSON.products)
+	const transformedProds = transformData(respJSON)
 	const prodRows = organizeTo9ProdsPerRow(transformedProds)
 
 	return json({
@@ -49,6 +50,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
 	const body = await request.formData();
+	const action = body.get("__action");
+
+	// User queries products, redirect to search result page.
+	if (action === 'query_products') {
+		const query = body.get("query");
+		return redirect(`/products/search?query=${query}`);
+	}
+
 	const productID = body.get("product_id");
 
 	return redirect(`/product/${productID}`);

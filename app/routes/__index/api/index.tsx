@@ -18,7 +18,7 @@ export const fetchProducts = ({
 	if (!page) page = 0;
 
 	const { MYFB_ENDPOINT } = process.env;
-	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?catId=${categoryID}&perPage=${perpage}&pageNo=${page}`);
+	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?catId=${categoryID}&pageSize=${perpage}&pageNo=${page}`);
 }
 
 export interface FetchProductsByCategoryParams {
@@ -61,7 +61,7 @@ export const fetchProductsByCategory = async ({
 	if (!page) page = 0;
 
 	const { MYFB_ENDPOINT } = process.env;
-	const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/products?cat=${category}&perPage=${perpage}&pageNo=${page}`);
+	const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/products?cat=${category}&pageSize=${perpage}&pageNo=${page}`);
 	const respJSON = await resp.json();
 
 	if (resp.status !== httpStatus.OK) {

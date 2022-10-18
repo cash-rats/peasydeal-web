@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
-import { Form } from '@remix-run/react';
+import { Form, Link } from '@remix-run/react';
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 
@@ -13,7 +13,7 @@ export const links: LinksFunction = () => {
     ...SearchBarLinks(),
     { href: styles, rel: 'stylesheet' },
   ];
-}
+};
 
 
 type SearchingState = 'empty' | 'searching' | 'done' | 'error';
@@ -24,7 +24,10 @@ interface DropDownSearchBarProps {
   onDropdownSearch?: (query: string) => void;
 
   results?: string[];
+
+  action?: string;
 }
+
 
 // `DropDownSearchBar` is the extension of SearchBar. It displays list of suggestions in the dropdown box
 //  when user is typing search text.
@@ -35,10 +38,15 @@ interface DropDownSearchBarProps {
 // 3. When rerendered, update trie node with the result.
 // 4. Display the result (either from local trie, or remote API) in dropdown box. don't forget to update local trie for the next search.
 // 5. Hide dropdown list when is unfocused.
+//
+// TODOs:
+//  - show most recent search.
+//  - have timeout mechanism.
 export default function DropDownSearchBar({
   placeholder = '',
   onDropdownSearch = () => { },
-  results = []
+  results = [],
+  action = '/?index',
 }: DropDownSearchBarProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
@@ -58,7 +66,7 @@ export default function DropDownSearchBar({
 
 
   const timerRef = useRef(undefined);
-  const timeoutTimerRef = useRef(undefined);
+  // const timeoutTimerRef = useRef(undefined);
 
   const handleChange = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
     if (timerRef.current) {
@@ -102,32 +110,14 @@ export default function DropDownSearchBar({
     // User type more characters in search content but no matches found in trie cache.
     // we need to do some operation to fetch more results. Only perform search when use finish typing.
     timerRef.current = setTimeout(async () => {
-      timerRef.current = undefined;
-
-      await onDropdownSearch(evt.target.value);
-
-      setSearchingState('done');
-
-      if (timeoutTimerRef.current) {
-        clearTimeout(timeoutTimerRef.current);
+      try {
+        timerRef.current = undefined;
+        await onDropdownSearch(evt.target.value);
+        setSearchingState('done');
+      } catch (error) {
+        setSearchContent('error');
       }
-
-      timeoutTimerRef.current = undefined;
     }, 700);
-
-    // I'll wait for 2.5s. If no dropdown results coming back, it's a timeout
-    // then i'll cancel onDropdownSearch
-    timeoutTimerRef.current = setTimeout(() => {
-      timeoutTimerRef.current = undefined;
-
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-
-      timerRef.current = undefined;
-      setSearchingState('done');
-      setSuggests([]);
-    }, 2500);
   }, [])
 
   const handleBlur = () => {
@@ -138,7 +128,6 @@ export default function DropDownSearchBar({
     // show dropdown list only if we have matches in trie.
     const matches = rootNode.findAllMatched(searchContent);
 
-    // TODO: show most recent search.
     // if user has not enter any search content, we don't show dropdown.
     if (!searchContent) return;
 
@@ -148,7 +137,11 @@ export default function DropDownSearchBar({
   }
 
   return (
-    <Form className="DropDownSearchBar__wrapper">
+    <Form
+      method='post'
+      className="DropDownSearchBar__wrapper"
+      action={action}
+    >
       <SearchBar
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -156,10 +149,12 @@ export default function DropDownSearchBar({
         placeholder={placeholder}
       />
 
+      <input name='__action' type='hidden' value='query_products' />
+      <input name='query' type='hidden' value={searchContent} />
+
       {
         showDropdown && (
           <div className="DropDownSearchBar__dropdown-wrapper">
-
             {
               searchContent && (
                 <p className="DropDownSearchBar__dropdown-content">
@@ -172,11 +167,11 @@ export default function DropDownSearchBar({
               {
                 suggests.map((result, index) => {
                   return (
-                    <li key={index} className="DropDownSearchBar__dropdown-item">
-                      <a>
+                    <Form method='post' key={index}>
+                      <Link className="DropDownSearchBar__dropdown-item">
                         <p> {result} </p>
-                      </a>
-                    </li>
+                      </Link>
+                    </Form>
                   );
                 })
               }
