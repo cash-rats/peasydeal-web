@@ -30,9 +30,9 @@ export function PolicyContent() {
             Shipping Policy
           </Link>
         </li>
-        <a>
+        <Link to='/terms-of-use'>
           <li>Terms of Use</li>
-        </a>
+        </Link>
       </ul>
     </div>
   );
@@ -43,7 +43,7 @@ export function ServiceContent() {
     <div className="footer-content">
       <h3 className="content-title"> Service </h3>
       <ul className="content-list">
-        <li> <a> About Us</a> </li>
+        <li> <Link to="/about-us"> About Us</Link> </li>
         <li> <a> Wholesale </a>  </li>
       </ul>
     </div>
