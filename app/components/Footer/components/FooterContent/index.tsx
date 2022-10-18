@@ -44,7 +44,7 @@ export function ServiceContent() {
       <h3 className="content-title"> Service </h3>
       <ul className="content-list">
         <li> <Link to="/about-us"> About Us</Link> </li>
-        <li> <a> Wholesale </a>  </li>
+        <li> <Link to="/wholesale"> Wholesale </Link>  </li>
       </ul>
     </div>
   );
