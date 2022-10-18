@@ -28,19 +28,20 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const perPage = Number(url.searchParams.get('per_page') || PAGE_LIMIT);
 	const page = Number(url.searchParams.get('page') || '1');
 
-	const respJSON = await fetchProductsByCategory({
+	const prods = await fetchProductsByCategory({
 		perpage: perPage,
 		page,
 	})
 
+	let prodRows: Product[][] = [];
 
-	// Transform data to frontend compatible format.
-	const transformedProds = transformData(respJSON)
-
-	const prodRows = organizeTo9ProdsPerRow(transformedProds)
+	if (prods.length > 0) {
+		// Transform data to frontend compatible format.
+		const transformedProds = transformData(prods)
+		prodRows = organizeTo9ProdsPerRow(transformedProds)
+	}
 
 	return json({
-		...respJSON,
 		prod_rows: prodRows,
 	}, { status: StatusCodes.OK });
 };
@@ -89,6 +90,8 @@ export default function Index() {
 		if (fetcher.type === 'done') {
 			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			const productRows = fetcher.data.prod_rows;
+			console.log('debug productRows', productRows.length);
+			if (productRows.length <= 0) return;
 			addProductRows(prev => prev.concat(productRows))
 		}
 	}, [fetcher])
