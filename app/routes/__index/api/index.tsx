@@ -1,6 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
+import { getMYFBEndpoint } from '~/utils/endpoints';
 
 export interface FetchProductsParams {
 	categoryID?: number;
@@ -50,18 +51,22 @@ const transformData = (apiData: any[]): Product[] => {
 
 	return transformed;
 }
-
+// https://api.myfbmanage.com:8443/data-server/ec/products?pageSize=10&pageNo=0&cat=home
 export const fetchProductsByCategory = async ({
 	category,
 	perpage,
 	page
 }: FetchProductsByCategoryParams): Promise<Product[]> => {
-	if (!category) category = 'home';
 	if (!perpage) perpage = 9;
 	if (!page) page = 0;
 
-	const { MYFB_ENDPOINT } = process.env;
-	const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/products?cat=${category}&pageSize=${perpage}&pageNo=${page}`);
+	let endpoint = `${getMYFBEndpoint()}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}`;
+
+	if (category) {
+		endpoint = `${endpoint}&cat=${category}`;
+	}
+
+	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
 
 	if (resp.status !== httpStatus.OK) {

@@ -11,7 +11,7 @@ import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from "~/shared/types";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { fetchProducts, fetchProductsByCategory } from "./api";
+import { fetchProductsByCategory } from "./api";
 import { transformData, organizeTo9ProdsPerRow } from './utils';
 import styles from "./styles/ProductList.css";
 
@@ -27,19 +27,16 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const url = new URL(request.url);
 	const perPage = Number(url.searchParams.get('per_page') || PAGE_LIMIT);
 	const page = Number(url.searchParams.get('page') || '1');
-	const categoryID = Number(url.searchParams.get('category_id')) || 1;
-
-	console.log('debug 1 ~');
 
 	const respJSON = await fetchProductsByCategory({
 		perpage: perPage,
 		page,
 	})
 
-	console.log('debug 2 ~', respJSON);
 
 	// Transform data to frontend compatible format.
 	const transformedProds = transformData(respJSON)
+
 	const prodRows = organizeTo9ProdsPerRow(transformedProds)
 
 	return json({

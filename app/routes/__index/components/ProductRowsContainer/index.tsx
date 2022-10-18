@@ -23,6 +23,7 @@ interface ProductRowsContainerProps {
 }
 
 function ProductRowsContainer({ onClickProduct = () => { }, productRows = [] }: ProductRowsContainerProps) {
+  console.log('debug productRows', productRows);
   return (
     <div className="productRowsContainer_wrapper">
       {
@@ -64,7 +65,7 @@ function ProductRowsContainer({ onClickProduct = () => { }, productRows = [] }: 
           } else {
             const oneMainTwoSubsProdData = row.slice(0, 3)
 
-            if (oneMainTwoSubsProdData.length <= 3) {
+            if (oneMainTwoSubsProdData.length < 3) {
               return (
                 <div key={index} className="productRowsContainer_product-row">
                   <OneMainTwoSubs
@@ -76,7 +77,7 @@ function ProductRowsContainer({ onClickProduct = () => { }, productRows = [] }: 
               );
             }
 
-            const EvenRowProdData = row.slice(3)
+            const evenRowProdData = row.slice(3)
 
             return (
               <Fragment key={index}>
@@ -90,7 +91,7 @@ function ProductRowsContainer({ onClickProduct = () => { }, productRows = [] }: 
 
                 <div className="productRowsContainer_product-row">
                   <EvenRow
-                    products={EvenRowProdData}
+                    products={evenRowProdData}
                     onClickProduct={onClickProduct}
                   />
                 </div>

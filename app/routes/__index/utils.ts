@@ -35,6 +35,12 @@ export const organizeTo9ProdsPerRow = (prods: Product[]): Product[][] => {
   const rows = [];
   let row = []
 
+  if (prods.length < 9) {
+    row = [...prods];
+    rows.push(row);
+    return rows;
+  }
+
   for (let i = 0; i < prods.length; i++) {
     row.push(prods[i])
     if ((row.length % 9) === 0) {
