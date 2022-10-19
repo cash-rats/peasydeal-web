@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
+import MoonLoader from 'react-spinners/MoonLoader';
+import { CgSearchFound } from 'react-icons/cg';
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 
@@ -39,7 +41,6 @@ interface DropDownSearchBarProps {
   action?: string;
 }
 
-
 // `DropDownSearchBar` is the extension of SearchBar. It displays list of suggestions in the dropdown box
 //  when user is typing search text.
 //
@@ -60,7 +61,6 @@ export default function DropDownSearchBar({
   onDropdownSearch = () => { },
   results = [],
 }: DropDownSearchBarProps) {
-  console.log('debug cool', results);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState<string>('');
@@ -85,15 +85,13 @@ export default function DropDownSearchBar({
   }, []);
 
   useEffect(() => {
-    console.log('debug', results);
+    if (searchingState === 'empty') return;
 
-    if (results.length === 0) {
-      setSuggests([]);
-
-      return;
-    }
-
-    setSuggests(results);
+    setSuggests(
+      results.length === 0
+        ? []
+        : results
+    );
     setSearchingState('done');
 
     results.forEach(({ title, data }) => {
@@ -103,7 +101,6 @@ export default function DropDownSearchBar({
 
 
   const timerRef = useRef(undefined);
-  // const timeoutTimerRef = useRef(undefined);
 
   const handleChange = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
     if (timerRef.current) {
@@ -153,7 +150,7 @@ export default function DropDownSearchBar({
       try {
         timerRef.current = undefined;
         await onDropdownSearch(evt.target.value);
-        setSearchingState('done');
+        // setSearchingState('done');
       } catch (error) {
         setSearchContent('error');
       }
@@ -189,26 +186,38 @@ export default function DropDownSearchBar({
           <div className="DropDownSearchBar__dropdown-wrapper">
             {
               searchContent && (
-                <p className="DropDownSearchBar__dropdown-content">
-                  Searching {searchContent}
-                </p>
+                <div className="DropDownSearchBar__dropdown-search-status">
+                  <p className="DropDownSearchBar__dropdown-content">
+                    Searching {searchContent}
+                  </p>
+                  <span className="DropDownSearchBar__dropdown-state"> {
+                    searchingState === 'searching'
+                      ? <MoonLoader size={20} color="#009378" />
+                      : <CgSearchFound fontSize={24} color='#009378' />
+                  } </span>
+                </div>
               )
             }
 
             <ul className="DropDownSearchBar__dropdown-list">
               {
-                suggests.map((suggest, index) => {
-                  return (
-                    <Link onClick={(evt) => { }} key={index} to={`/product/${suggest.data.productID}`}>
-                      <div className="DropDownSearchBar__dropdown-item">
-                        <p>  {suggest.data.title}  </p>
-                        <span className="DropDownSearchBar__dropdown-discount"> SAVE {
-                          (Number(suggest.data.discount) * 100).toFixed(0)
-                        }%</span>
-                      </div>
-                    </Link>
-                  );
-                })
+                suggests.length === 0 && searchingState === 'done'
+                  ? <p className="DropDownSearchBar__dropdown-list-no-found">no result found</p>
+                  : (
+                    suggests.map((suggest, index) => {
+                      return (
+                        <Link onClick={(evt) => { }} key={index} to={`/product/${suggest.data.productID}`}>
+                          <div className="DropDownSearchBar__dropdown-item">
+                            <p>  {suggest.data.title}  </p>
+                            <span className="DropDownSearchBar__dropdown-discount"> SAVE {
+                              (Number(suggest.data.discount) * 100).toFixed(0)
+                            }%</span>
+                          </div>
+                        </Link>
+                      );
+                    })
+                  )
+
               }
             </ul>
           </div>
