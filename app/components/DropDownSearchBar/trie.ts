@@ -45,10 +45,21 @@ o
 
 */
 
-import nodeTest from "node:test";
+// data that we wish to go with this node.
+type DataCache = {
+  [index: string]: any;
+}
 
+export const dataCache: DataCache = {};
+
+type MatchesWithData = {
+  title: string;
+  data: any;
+}
+
+// this.data = data;
 class TrieNode {
-  constructor(key) {
+  constructor(key: string | null) {
     this.key = key;
 
     /* key : Trie pair that remembers all children characters of a given node.
@@ -68,15 +79,15 @@ class TrieNode {
     */
     this.children = {};
 
-    // we keep a reference to parent.
-    this.parent = null;
-
     // end symbol to be '*'. when we see '*' in prefixMap, we know that this node is the end of a word.
     this.end = false;
   }
 
   // Given a string, populate a trie. O(n) where n is the length of a word.
-  populatePrefixTrie(word) {
+  populatePrefixTrie<T>(word: string, data?: T) {
+    // cache data with key first.
+    dataCache[word] = data || {};
+
     let node = this;
 
     for (let i = 0; i < word.length; i++) {
@@ -96,22 +107,14 @@ class TrieNode {
     node.end = true;
   }
 
-  populateListOfWords(words = []) {
-    // console.log('words', words);
-    // for (let i = 0; words.length; i++) {
-    // const word = words[i];
-
-    // console.log('word', word);
-    //   this.populatePrefixTrie(word);
-    // }
-  }
-
   getWord() {
     let output = [];
     let node = this;
 
-    while (node !== null) {
-      output.unshift(node.key);
+    while (node.parent) {
+      if (node.key) { // root node does not have key.
+        output.unshift(node.key);
+      }
       node = node.parent;
     }
 
@@ -119,7 +122,7 @@ class TrieNode {
   }
 
   // find all strings that matches the given prefix.
-  findAllMatched(prefix) {
+  findAllMatched(prefix: string) {
     let node = this;
 
     // find a trie node with it's key that doesn't match current char in prefix.
@@ -127,19 +130,28 @@ class TrieNode {
     for (let i = 0; i < prefix.length; i++) {
       const char = prefix[i];
       node = node.children[char];
-
-      if (!node) break;
-    }
-
-    if (!node) {
-      return [];
+      if (!node) return [];
     }
 
     const matches = [];
 
-    findAllMatches(node, matches)
+    findAllMatches(node, matches);
 
     return matches;
+  }
+
+  // find all matches keys along with it's relative data.
+  findAllMatchedWithData(prefix: string): MatchesWithData[] {
+    const matches = this.findAllMatched(prefix);
+    const matchesWithData: MatchesWithData[] = [];
+    for (let i = 0; i < matches.length; i++) {
+      const matchesKey = matches[i];
+      if (dataCache[matchesKey]) {
+        matchesWithData.push({ title: matchesKey, data: dataCache[matchesKey] });
+      }
+    }
+
+    return matchesWithData;
   }
 }
 
@@ -152,6 +164,7 @@ function findAllMatches(trieNode, matches) {
     findAllMatches(trieNode.children[child], matches);
   }
 }
+
 
 function newTrieNode() {
   return new TrieNode(null);

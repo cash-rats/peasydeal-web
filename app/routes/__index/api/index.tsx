@@ -6,6 +6,7 @@ export interface FetchProductsByCategoryParams {
 	category?: string;
 	perpage?: number;
 	page?: number;
+	title?: string;
 }
 
 export interface FetchProductsByCategoryResponse {
@@ -33,6 +34,7 @@ const transformData = (apiData: any[]): Product[] => {
 }
 // https://api.myfbmanage.com:8443/data-server/ec/products?pageSize=10&pageNo=0&cat=home
 export const fetchProductsByCategory = async ({
+	title,
 	category,
 	perpage,
 	page
@@ -44,6 +46,10 @@ export const fetchProductsByCategory = async ({
 
 	if (category) {
 		endpoint = `${endpoint}&cat=${category}`;
+	}
+
+	if (title) {
+		endpoint = `${endpoint}&title=${title}`;
 	}
 
 	const resp = await fetch(endpoint);

@@ -29,4 +29,11 @@ describe('preffix trie node', () => {
     const matches2 = root.findAllMatched('tec');
     expect(matches2.length).toEqual(0);
   })
+
+  test('populate trie node and find suggested', () => {
+    const root = new TrieNode(null);
+    root.populatePrefixTrie('i10 Touch Tws Earbuds - 5 colors', { dummy: true });
+    const matches = root.findAllMatchedWithData('i10');
+    expect(matches[0].data.dummy).toBeTruthy();
+  })
 })

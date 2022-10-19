@@ -15,15 +15,25 @@ export const links: LinksFunction = () => {
   ];
 };
 
-
 type SearchingState = 'empty' | 'searching' | 'done' | 'error';
+
+export type ItemData = {
+  title: string;
+  image: string;
+  discount: number;
+};
+
+export type SuggestItem = {
+  title: string;
+  data: ItemData;
+};
 
 interface DropDownSearchBarProps {
   placeholder?: string;
 
   onDropdownSearch?: (query: string) => void;
 
-  results?: string[];
+  results?: SuggestItem[];
 
   action?: string;
 }
@@ -31,6 +41,8 @@ interface DropDownSearchBarProps {
 
 // `DropDownSearchBar` is the extension of SearchBar. It displays list of suggestions in the dropdown box
 //  when user is typing search text.
+//
+//  It has it's own action to handle API requesting.
 //
 // 1. When user start typing, display dropdown list.
 // 2. Debounce for 0.5s, once done debouncing, start search local trie to see if there is a match, If there is no matches,
@@ -46,21 +58,19 @@ export default function DropDownSearchBar({
   placeholder = '',
   onDropdownSearch = () => { },
   results = [],
-  action = '/?index',
 }: DropDownSearchBarProps) {
+  console.log('render !', results);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState<string>('');
-  const [suggests, setSuggests] = useState<string[]>([]);
+  const [suggests, setSuggests] = useState<SuggestItem[]>(results);
 
   useEffect(() => {
-    results.forEach((result) => {
-      rootNode.populatePrefixTrie(result);
+    results.forEach(({ title, data }) => {
+      rootNode.populatePrefixTrie<ItemData>(title, data);
     });
 
-    const matches = rootNode.findAllMatched(searchContent);
-
-    setSuggests(matches);
+    setSuggests(results);
     setSearchingState('done');
   }, [results]);
 
@@ -86,7 +96,9 @@ export default function DropDownSearchBar({
 
     setSearchingState('searching');
 
-    const matches = rootNode.findAllMatched(evt.target.value);
+    const matches = rootNode.findAllMatchedWithData(evt.target.value);
+
+    console.log('matches ~~', matches);
 
     // If search query length is reducing, other than empty, there must exists matches in
     // trie we can display in dropdown
@@ -125,8 +137,12 @@ export default function DropDownSearchBar({
   };
 
   const handleFocus = () => {
+    console.log('handleFocus 1', rootNode);
+
     // show dropdown list only if we have matches in trie.
-    const matches = rootNode.findAllMatched(searchContent);
+    const matches = rootNode.findAllMatchedWithData(searchContent);
+
+    console.log('handleFocus 2', matches);
 
     // if user has not enter any search content, we don't show dropdown.
     if (!searchContent) return;
@@ -137,11 +153,7 @@ export default function DropDownSearchBar({
   }
 
   return (
-    <Form
-      method='post'
-      className="DropDownSearchBar__wrapper"
-      action={action}
-    >
+    <div className="DropDownSearchBar__wrapper" >
       <SearchBar
         onFocus={handleFocus}
         onBlur={handleBlur}
@@ -165,12 +177,13 @@ export default function DropDownSearchBar({
 
             <ul className="DropDownSearchBar__dropdown-list">
               {
-                suggests.map((result, index) => {
+                suggests.map((suggest, index) => {
+                  console.log('aa~~', suggest);
                   return (
                     <Form method='post' key={index}>
-                      <Link className="DropDownSearchBar__dropdown-item">
-                        <p> {result} </p>
-                      </Link>
+                      {/* <Link className="DropDownSearchBar__dropdown-item"> */}
+                      <p>  {suggest.data.title} </p>
+                      {/* </Link> */}
                     </Form>
                   );
                 })
@@ -179,6 +192,6 @@ export default function DropDownSearchBar({
           </div>
         )
       }
-    </Form>
+    </div>
   );
 };

@@ -1,18 +1,21 @@
-import { useState } from 'react';
 import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderFunction, ActionFunction } from "@remix-run/node";
-import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
+import type { LinksFunction, LoaderFunction } from "@remix-run/node";
+import {
+	Outlet,
+	useLoaderData,
+	useOutletContext,
+} from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
 import NavBar, { links as NavBarLinks } from '~/components/Header/components/NavBar';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { getSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
 
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from './auto-complete-search';
 import styles from "./styles/index.css";
 import { fetchCategories } from './api';
 
@@ -59,11 +62,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData();
-	const [results, setResults] = useState([]);
-
-	const handleDropdownSearch = () => {
-		console.log('trigger handleDropdownSearch');
-	};
 
 	return (
 		<>
@@ -75,11 +73,7 @@ export default function Index() {
 
 					{/* search bar */}
 					<div className="index_search-bar">
-						<DropDownSearchBar
-							placeholder="Search product"
-							onDropdownSearch={handleDropdownSearch}
-							results={results}
-						/>
+						<DropDownSearchBar />
 					</div>
 
 					{/* right status bar, cart, search icon...etc */}
