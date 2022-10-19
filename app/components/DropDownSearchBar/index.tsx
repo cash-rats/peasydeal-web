@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ChangeEvent, FocusEvent } from 'react';
+import type { ChangeEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 
@@ -60,6 +60,7 @@ export default function DropDownSearchBar({
   onDropdownSearch = () => { },
   results = [],
 }: DropDownSearchBarProps) {
+  console.log('debug cool', results);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState<string>('');
@@ -84,13 +85,21 @@ export default function DropDownSearchBar({
   }, []);
 
   useEffect(() => {
+    console.log('debug', results);
+
+    if (results.length === 0) {
+      setSuggests([]);
+
+      return;
+    }
+
     setSuggests(results);
     setSearchingState('done');
 
     results.forEach(({ title, data }) => {
       rootNode.populatePrefixTrie<ItemData>(title, data);
     });
-  }, [results]);
+  }, [results, results.length]);
 
 
   const timerRef = useRef(undefined);
@@ -108,6 +117,10 @@ export default function DropDownSearchBar({
     if (!evt.target.value) {
       setSuggests([]);
       setShowDropdown(false);
+
+      if (timerRef) {
+        clearTimeout(timerRef.current);
+      }
 
       return;
     }
@@ -146,13 +159,6 @@ export default function DropDownSearchBar({
       }
     }, 700);
   }, [])
-
-  const handleBlur = (evt: FocusEvent<HTMLInputElement>) => {
-    // get the size position of
-    console.log('debug blur', evt.target);
-    return;
-    setShowDropdown(false);
-  };
 
   const handleFocus = () => {
     // show dropdown list only if we have matches in trie.
@@ -193,10 +199,7 @@ export default function DropDownSearchBar({
               {
                 suggests.map((suggest, index) => {
                   return (
-                    <Link onClick={(evt) => {
-                      evt.preventDefault();
-                      console.log('debug 1');
-                    }} key={index} to={`/product/${suggest.data.productID}`}>
+                    <Link onClick={(evt) => { }} key={index} to={`/product/${suggest.data.productID}`}>
                       <div className="DropDownSearchBar__dropdown-item">
                         <p>  {suggest.data.title}  </p>
                         <span className="DropDownSearchBar__dropdown-discount"> SAVE {

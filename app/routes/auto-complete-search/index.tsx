@@ -42,22 +42,22 @@ export default function AutoCompleteSearch() {
     if (fetcher.type === 'done') {
       const { results } = fetcher.data as ActionType;
 
-      if (results.length === 0) return;
+      let suggestItems: SuggestItem[] = [];
 
-      // Transform product result to suggest item.
-      const suggestItems = results.map<SuggestItem>((result) => {
-        return {
-          title: result.title,
-          data: {
+      if (results.length > 0) {
+        // Transform product result to suggest item.
+        suggestItems = results.map<SuggestItem>((result) => {
+          return {
             title: result.title,
-            image: result.main_pic,
-            discount: result.discount,
-            productID: result.productID,
-          },
-        };
-      });
-
-      console.log('debug 1', suggestItems);
+            data: {
+              title: result.title,
+              image: result.main_pic,
+              discount: result.discount,
+              productID: result.productID,
+            },
+          };
+        });
+      }
 
       setResults(suggestItems);
     }
