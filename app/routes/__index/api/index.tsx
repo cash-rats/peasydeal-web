@@ -2,26 +2,6 @@ import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
 import { getMYFBEndpoint } from '~/utils/endpoints';
-
-export interface FetchProductsParams {
-	categoryID?: number;
-	perpage?: number;
-	page?: number;
-}
-
-export const fetchProducts = ({
-	categoryID,
-	perpage,
-	page
-}: FetchProductsParams): Promise<Response> => {
-	if (!categoryID) categoryID = 1;
-	if (!perpage) perpage = 9;
-	if (!page) page = 0;
-
-	const { MYFB_ENDPOINT } = process.env;
-	return fetch(`${MYFB_ENDPOINT}/data-server/ec/products?catId=${categoryID}&pageSize=${perpage}&pageNo=${page}`);
-}
-
 export interface FetchProductsByCategoryParams {
 	category?: string;
 	perpage?: number;

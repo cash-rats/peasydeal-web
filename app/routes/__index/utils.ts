@@ -6,7 +6,7 @@ export const transformData = (apiData: any[]): Product[] => {
       currency: data.currency,
       description: data.description,
       discount: data.discountOff,
-      main_pic: data.mainPic,
+      main_pic: data.main_pic,
       productID: data.productId,
       retailPrice: data.retailPrice,
       salePrice: data.salePrice,

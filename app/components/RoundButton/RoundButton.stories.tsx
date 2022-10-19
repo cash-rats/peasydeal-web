@@ -7,7 +7,7 @@ export default {
   component: RoundButton,
 } as ComponentMeta<typeof RoundButton>;
 
-export const addToCart = () => (
+export const AddToCart = () => (
   <RoundButton
     colorScheme='addtocart'
     text='Add To Cart'
@@ -15,7 +15,7 @@ export const addToCart = () => (
   />
 )
 
-export const buyNow = () => (
+export const BuyNow = () => (
   <RoundButton
     colorScheme='buynow'
     text='Buy Now'
@@ -23,9 +23,9 @@ export const buyNow = () => (
   />
 )
 
-export const view = () => (
+export const View = () => (
   <RoundButton
-    colorScheme='view'
+    colorScheme='blue'
     text='View'
     onClick={() => console.log('hello')}
   />
