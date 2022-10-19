@@ -85,9 +85,9 @@ class TrieNode {
 
   // Given a string, populate a trie. O(n) where n is the length of a word.
   populatePrefixTrie<T>(word: string, data?: T) {
+    if (!word) return;
     // cache data with key first.
     dataCache[word] = data || {};
-
     let node = this;
 
     for (let i = 0; i < word.length; i++) {

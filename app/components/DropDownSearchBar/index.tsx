@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, FocusEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
-import { Form, Link } from '@remix-run/react';
+import { Link } from '@remix-run/react';
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 
@@ -21,6 +21,7 @@ export type ItemData = {
   title: string;
   image: string;
   discount: number;
+  productID: string;
 };
 
 export type SuggestItem = {
@@ -59,19 +60,36 @@ export default function DropDownSearchBar({
   onDropdownSearch = () => { },
   results = [],
 }: DropDownSearchBarProps) {
-  console.log('render !', results);
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState<string>('');
   const [suggests, setSuggests] = useState<SuggestItem[]>(results);
+  const dropdownListRef = useRef<HTMLDivElement>();
+
+  // @see https://www.codegrepper.com/code-examples/javascript/check+if+click+is+inside+div+javascript
+  useEffect(() => {
+    if (!document) return;
+
+    const handleBodyClick = (evt) => {
+      if (!dropdownListRef || !dropdownListRef.current) return;
+
+      if (dropdownListRef.current !== evt.target && !dropdownListRef.current.contains(evt.target)) {
+        console.log('clicking outside the div');
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('click', handleBodyClick);
+    return () => window.removeEventListener('click', handleBodyClick);
+  }, []);
 
   useEffect(() => {
+    setSuggests(results);
+    setSearchingState('done');
+
     results.forEach(({ title, data }) => {
       rootNode.populatePrefixTrie<ItemData>(title, data);
     });
-
-    setSuggests(results);
-    setSearchingState('done');
   }, [results]);
 
 
@@ -98,13 +116,10 @@ export default function DropDownSearchBar({
 
     const matches = rootNode.findAllMatchedWithData(evt.target.value);
 
-    console.log('matches ~~', matches);
-
     // If search query length is reducing, other than empty, there must exists matches in
     // trie we can display in dropdown
     if (evt.target.value.length < searchContent.length) {
-      setSuggests(matches);
-
+      setSuggests(matches.map(match => match.data));
       setSearchingState('done');
 
       return;
@@ -132,17 +147,16 @@ export default function DropDownSearchBar({
     }, 700);
   }, [])
 
-  const handleBlur = () => {
+  const handleBlur = (evt: FocusEvent<HTMLInputElement>) => {
+    // get the size position of
+    console.log('debug blur', evt.target);
+    return;
     setShowDropdown(false);
   };
 
   const handleFocus = () => {
-    console.log('handleFocus 1', rootNode);
-
     // show dropdown list only if we have matches in trie.
     const matches = rootNode.findAllMatchedWithData(searchContent);
-
-    console.log('handleFocus 2', matches);
 
     // if user has not enter any search content, we don't show dropdown.
     if (!searchContent) return;
@@ -153,10 +167,10 @@ export default function DropDownSearchBar({
   }
 
   return (
-    <div className="DropDownSearchBar__wrapper" >
+    <div ref={dropdownListRef} className="DropDownSearchBar__wrapper" >
       <SearchBar
         onFocus={handleFocus}
-        onBlur={handleBlur}
+        // onBlur={handleBlur}
         onChange={handleChange}
         placeholder={placeholder}
       />
@@ -178,13 +192,18 @@ export default function DropDownSearchBar({
             <ul className="DropDownSearchBar__dropdown-list">
               {
                 suggests.map((suggest, index) => {
-                  console.log('aa~~', suggest);
                   return (
-                    <Form method='post' key={index}>
-                      {/* <Link className="DropDownSearchBar__dropdown-item"> */}
-                      <p>  {suggest.data.title} </p>
-                      {/* </Link> */}
-                    </Form>
+                    <Link onClick={(evt) => {
+                      evt.preventDefault();
+                      console.log('debug 1');
+                    }} key={index} to={`/product/${suggest.data.productID}`}>
+                      <div className="DropDownSearchBar__dropdown-item">
+                        <p>  {suggest.data.title}  </p>
+                        <span className="DropDownSearchBar__dropdown-discount"> SAVE {
+                          (Number(suggest.data.discount) * 100).toFixed(0)
+                        }%</span>
+                      </div>
+                    </Link>
                   );
                 })
               }

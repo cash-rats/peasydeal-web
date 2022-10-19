@@ -52,6 +52,7 @@ export default function AutoCompleteSearch() {
             title: result.title,
             image: result.main_pic,
             discount: result.discount,
+            productID: result.productID,
           },
         };
       });
