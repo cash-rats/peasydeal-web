@@ -113,7 +113,6 @@ export default function DropDownSearchBar({
 
     // If search content is empty, hide dropdown.
     if (!evt.target.value) {
-      setSuggests([]);
       setShowDropdown(false);
 
       if (timerRef) {
@@ -159,13 +158,10 @@ export default function DropDownSearchBar({
   }, [])
 
   const handleFocus = () => {
-    // show dropdown list only if we have matches in trie.
-    const matches = rootNode.findAllMatchedWithData(searchContent);
-
     // if user has not enter any search content, we don't show dropdown.
     if (!searchContent) return;
 
-    if (matches.length > 0) {
+    if (suggests.length > 0) {
       setShowDropdown(true);
     }
   }
