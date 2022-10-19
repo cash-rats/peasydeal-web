@@ -129,19 +129,21 @@ export default function Index() {
 					value={currPage.current}
 				/>
 
-				{
-					hasMore
-						? (
-							<LoadMore
-								spinner={Spinner}
-								loading={fetcher.state !== 'idle'}
-								callback={handleLoadMore}
-								delay={100}
-								offset={150}
-							/>
-						)
-						: 'manual loadmore'
-				}
+				<div className="ProductList__loadmore-container">
+					{
+						hasMore
+							? (
+								<LoadMore
+									spinner={Spinner}
+									loading={fetcher.state !== 'idle'}
+									callback={handleLoadMore}
+									delay={100}
+									offset={150}
+								/>
+							)
+							: 'manual loadmore'
+					}
+				</div>
 			</fetcher.Form>
 		</div>
 	);

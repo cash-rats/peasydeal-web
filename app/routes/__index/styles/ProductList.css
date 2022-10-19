@@ -34,4 +34,11 @@
   margin-top: 0;
 }
 
+.ProductList__loadmore-container {
+  height: 4.25rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /*# sourceMappingURL=ProductList.css.map */
