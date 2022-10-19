@@ -16,13 +16,13 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  background-color: white;
 }
 @media (min-width: 600px) {
   .large-grid-container .product-desc-container {
     position: relative;
     height: 100%;
     align-items: center;
+    background-color: white;
   }
 }
 .large-grid-container .product-desc-container .info {

@@ -38,10 +38,10 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  background-color: white;
 }
 @media (min-width: 600px) {
   .medium-grid-container .product-desc-container {
+    background-color: white;
     position: relative;
   }
 }

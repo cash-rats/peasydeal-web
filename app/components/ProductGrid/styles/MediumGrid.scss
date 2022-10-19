@@ -43,9 +43,9 @@
 		position: absolute;
 		left: 0;
 		bottom: 0;
-		background-color: white;
 
 		@media (min-width: $screen-sm-min-600) {
+			background-color: white;
 			position: relative;
 		}
 
