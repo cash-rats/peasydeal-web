@@ -76,7 +76,7 @@ export default function Index() {
 					{/* search bar */}
 					<div className="index_search-bar">
 						<DropDownSearchBar
-							placeholder="search product"
+							placeholder="Search product"
 							onDropdownSearch={handleDropdownSearch}
 							results={results}
 						/>

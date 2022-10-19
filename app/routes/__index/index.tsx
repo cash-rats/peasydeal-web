@@ -103,12 +103,11 @@ export default function Index() {
 		if (fetcher.type === 'done') {
 			const productRows = fetcher.data.prod_rows;
 
-			// Increase page number to next page only when next page data is not empty.
+			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			if (productRows.length > 0) {
 				currPage.current += 1;
 			}
 
-			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			if (productRows.length <= 0) {
 				setHasMore(false);
 
