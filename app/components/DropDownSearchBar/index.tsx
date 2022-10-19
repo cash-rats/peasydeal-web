@@ -68,14 +68,14 @@ export default function DropDownSearchBar({
   const dropdownListRef = useRef<HTMLDivElement>();
 
   // @see https://www.codegrepper.com/code-examples/javascript/check+if+click+is+inside+div+javascript
+  // Hide dropdown list if user clicks outside of the dropdown area.
   useEffect(() => {
     if (!document) return;
 
-    const handleBodyClick = (evt) => {
+    const handleBodyClick = (evt: MouseEvent) => {
       if (!dropdownListRef || !dropdownListRef.current) return;
 
       if (dropdownListRef.current !== evt.target && !dropdownListRef.current.contains(evt.target)) {
-        console.log('clicking outside the div');
         setShowDropdown(false);
       }
     };
@@ -83,6 +83,7 @@ export default function DropDownSearchBar({
     document.addEventListener('click', handleBodyClick);
     return () => window.removeEventListener('click', handleBodyClick);
   }, []);
+
 
   useEffect(() => {
     if (searchingState === 'empty') return;
@@ -173,7 +174,6 @@ export default function DropDownSearchBar({
     <div ref={dropdownListRef} className="DropDownSearchBar__wrapper" >
       <SearchBar
         onFocus={handleFocus}
-        // onBlur={handleBlur}
         onChange={handleChange}
         placeholder={placeholder}
       />
@@ -206,7 +206,11 @@ export default function DropDownSearchBar({
                   : (
                     suggests.map((suggest, index) => {
                       return (
-                        <Link onClick={(evt) => { }} key={index} to={`/product/${suggest.data.productID}`}>
+                        <Link
+                          onClick={(evt) => { setShowDropdown(false); }}
+                          key={index}
+                          to={`/product/${suggest.data.productID}`}
+                        >
                           <div className="DropDownSearchBar__dropdown-item">
                             <p>  {suggest.data.title}  </p>
                             <span className="DropDownSearchBar__dropdown-discount"> SAVE {
@@ -217,7 +221,6 @@ export default function DropDownSearchBar({
                       );
                     })
                   )
-
               }
             </ul>
           </div>

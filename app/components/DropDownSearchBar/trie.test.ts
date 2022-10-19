@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { assert, expect, test } from 'vitest';
 
 import TrieNode from './trie';
 
@@ -7,8 +7,11 @@ describe('preffix trie node', () => {
     const root = new TrieNode(null);
     root.populatePrefixTrie('shoe');
     root.populatePrefixTrie('shit');
-    // console.log('root', root.children['s'].children['h'].children['o'].children['e']);
-    // console.log('root', root.children['s'].children['h']);
+
+    const atENode = root.children['s'].children['h'].children['o'];
+
+    expect(atENode.key).toBe('o');
+    assert.isTrue(atENode.children.hasOwnProperty('e'));
   })
 
   test('find all prefix matches from a trie', () => {
