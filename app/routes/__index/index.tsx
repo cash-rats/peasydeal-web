@@ -6,6 +6,7 @@ import { StatusCodes } from 'http-status-codes';
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Spinner from "~/components/Spinner";
+import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { PAGE_LIMIT } from '~/shared/constants';
 
 import type { Product } from "~/shared/types";
@@ -19,6 +20,7 @@ export const links: LinksFunction = () => {
 	return [
 		...LoadmoreLinks(),
 		...ProductRowsContainerLinks(),
+		...LoadMoreButtonLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
 }
@@ -88,19 +90,31 @@ export default function Index() {
 	// Transition to observe when preload the first page of the product list render
 	const fetcher = useFetcher();
 	const handleLoadMore = () => {
-		currPage.current += 1;
-		fetcher.load(`/?index&page=${currPage.current}&per_page=${PAGE_LIMIT}`);
+		const nextPage = currPage.current + 1;
+		fetcher.load(`/?index&page=${nextPage}&per_page=${PAGE_LIMIT}`);
 	};
+
+	const handleManualLoad = () => {
+		fetcher.load(`/?index&page=${currPage.current}&per_page=${PAGE_LIMIT}`);
+	}
 
 	// Append products to local state when fetcher type is in `done` state.
 	useEffect(() => {
 		if (fetcher.type === 'done') {
-			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			const productRows = fetcher.data.prod_rows;
+
+			// Increase page number to next page only when next page data is not empty.
+			if (productRows.length > 0) {
+				currPage.current += 1;
+			}
+
+			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			if (productRows.length <= 0) {
 				setHasMore(false);
+
 				return;
 			}
+
 			addProductRows(prev => prev.concat(productRows))
 		}
 	}, [fetcher])
@@ -141,7 +155,13 @@ export default function Index() {
 									offset={150}
 								/>
 							)
-							: 'manual loadmore'
+							: (
+								<LoadMoreButton
+									loading={fetcher.state !== 'idle'}
+									text='Load more'
+									onClick={handleManualLoad}
+								/>
+							)
 					}
 				</div>
 			</fetcher.Form>

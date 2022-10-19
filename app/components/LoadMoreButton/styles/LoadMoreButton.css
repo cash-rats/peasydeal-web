@@ -1,0 +1,17 @@
+.LoadMoreButton {
+  display: block;
+  cursor: pointer;
+  transition: background-color 0.25s ease-in-out;
+  padding: 7px 16px;
+  background-color: white;
+  border: 1px solid #c5c5c6;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: 4px;
+}
+.LoadMoreButton:hover {
+  background-color: #f0f1f1;
+}
+
+/*# sourceMappingURL=LoadMoreButton.css.map */

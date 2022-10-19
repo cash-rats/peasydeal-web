@@ -7,4 +7,6 @@ export default {
   component: LoadMoreButton,
 } as ComponentMeta<typeof LoadMoreButton>;
 
-export const basic = () => <LoadMoreButton />
+export const basic = () => <LoadMoreButton text='Load more' />
+
+export const disabled = () => <LoadMoreButton disabled text='Load more' />
