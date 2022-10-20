@@ -13,6 +13,7 @@ REMOTE_APP_PATH=/home/flybuddy/peasydeal_web
 
 
 deploy_staging: build
+	npm run build:patched && \
 	rsync -Pavz -e 'ssh -i $(HOME)/.ssh/peasydealkey_gcp' build/* $(SERVER_USER)@staging_peasydeal_gcp:/home/flybuddy/peasydeal_web
 	ssh -p $(REMOTE_PORT) -t $(SERVER_USER)@$(SERVER_HOST) 'source ~/.nvm/nvm.sh && \
 	cd $(REMOTE_APP_PATH) && \
@@ -25,4 +26,4 @@ build:
 	npm run build:patched
 
 start_staging:
-	pm2 restart 0 ecosystem.config.js --env staging
+	pm2 restart ecosystem.config.js --env staging
