@@ -34,7 +34,6 @@ export const links: LinksFunction = () => {
 type ContextType = { categories: Category[] };
 
 export const loader: LoaderFunction = async ({ request }) => {
-	// Fetch categories.
 	const categories = await fetchCategories();
 
 	// - Count number of items in shopping cart from session if not logged in yet.

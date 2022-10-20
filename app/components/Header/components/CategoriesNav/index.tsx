@@ -38,49 +38,13 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
         <ul>
           {
             categories.map((category) => (
-              <li key={category.catId}>
+              <li className="CategoriesNav_item" key={category.catId}>
                 <Link to={`${category.url}`}>
                   {category.title}
                 </Link>
               </li>
             ))
           }
-
-          <li
-            className="Header__CategoriesNav__more"
-            onMouseEnter={toggleOpenAllCategory}
-            onMouseLeave={toggleOpenAllCategory}
-          >
-            <span className="Header__CategoriesNav__text">
-              More
-            </span>
-
-            <div className="Header__CategoriesNav__arrow_wrapper">
-              <div className={clsx("Header__CategoriesNav__arrow-up", {
-                "Header__CategoriesNav__arrow-down": openAllCategories,
-              })} />
-            </div>
-
-            {
-              openAllCategories && (
-                <div className="Header__CategoriesNav__all-cats">
-                  {
-                    categories.map((category, index) => {
-                      return (
-                        <div key={index} className="Header__CategoriesNav__all-cats-title">
-                          <Link to={`/${category.title}`}>
-                            <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
-                              {category.title}
-                            </span>
-                          </Link>
-                        </div>
-                      );
-                    })
-                  }
-                </div>
-              )
-            }
-          </li>
         </ul>
       </nav>
     </div>

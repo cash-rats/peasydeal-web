@@ -88,13 +88,17 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 						images.map((image, index) => {
 							return (
 								<a
+									href="/#"
 									className={
 										clsx("ProductDetailSection__carousel-thumbnail-container", {
 											'active-thumbnail': index === activeSlide
 										})
 									}
 									key={index}
-									onClick={(evt) => handleChooseSlide(index, evt)}
+									onClick={(evt) => {
+										evt.preventDefault();
+										handleChooseSlide(index, evt)
+									}}
 								>
 									<img
 										alt='product thumbnail'

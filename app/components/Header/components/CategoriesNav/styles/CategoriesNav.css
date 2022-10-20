@@ -71,6 +71,17 @@
 .categories-nav-container .featured-category-nav {
   flex: auto;
   margin: 0;
+  width: 85%;
+  overflow-x: scroll;
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  /* Hide scrollbar for Chrome, Safari and Opera */
+}
+.categories-nav-container .featured-category-nav::-webkit-scrollbar {
+  display: none;
 }
 @media (max-width: 992px) {
   .categories-nav-container .featured-category-nav {
@@ -90,7 +101,11 @@
   cursor: pointer;
   transition: 100ms all linear 0s;
   color: black;
-  padding: 1rem 0;
+  padding: 1rem 1rem;
+  border-right: solid 1px #e5e5e5;
+}
+.categories-nav-container .featured-category-nav ul li:first-of-type {
+  border-left: solid 1px #e5e5e5;
 }
 .categories-nav-container .featured-category-nav ul li:hover {
   background-color: #E4E4E4;
@@ -100,6 +115,10 @@
   align-items: center;
   justify-content: center;
   font-weight: 500;
+}
+
+.CategoriesNav_item {
+  white-space: nowrap;
 }
 
 .Header__CategoriesNav__more {
