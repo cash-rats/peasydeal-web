@@ -9,7 +9,7 @@ import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
 
 import styles from './styles/Carousel.css';
-import ScrollButton, { links as ScrollButtonLinks } from './components/ScrollButton';
+import ScrollButton, { links as ScrollButtonLinks } from '../ScrollButton';
 
 export const links: LinksFunction = () => {
 	return [

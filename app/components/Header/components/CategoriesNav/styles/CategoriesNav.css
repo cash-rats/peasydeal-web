@@ -4,6 +4,7 @@
   width: 100%;
   max-width: 1180px;
   margin: 0 auto;
+  position: relative;
 }
 .categories-nav-container .all-categories-nav {
   cursor: pointer;
@@ -117,7 +118,17 @@
   font-weight: 500;
 }
 
-.CategoriesNav_item {
+.CategoriesNav__left-arrow {
+  position: absolute;
+  left: 0px;
+}
+
+.CategoriesNav__right-arrow {
+  position: absolute;
+  right: 0px;
+}
+
+.CategoriesNav__item {
   white-space: nowrap;
 }
 
@@ -126,6 +137,10 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  width: 12%;
+  border-right: solid 1px #e5e5e5;
+  border-left: solid 1px #e5e5e5;
+  padding: 1rem 0;
 }
 
 .Header__CategoriesNav__arrow_wrapper {
@@ -198,6 +213,13 @@
 
 .fromLeft {
   background-position: 0 calc(100% - 0px);
+}
+
+.CategoriesNav__scrollable-nav {
+  position: relative;
+  width: 88%;
+  display: flex;
+  align-items: center;
 }
 
 /*# sourceMappingURL=CategoriesNav.css.map */
