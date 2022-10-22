@@ -63,9 +63,9 @@ export const action: ActionFunction = async ({ request }) => {
 		return redirect(`/products/search?query=${query}`);
 	}
 
-	const productID = body.get("product_id");
+	const productUUID = body.get("product_uuid");
 
-	return redirect(`/product/${productID}`);
+	return redirect(`/product/${productUUID}`);
 };
 
 
@@ -83,6 +83,7 @@ export const action: ActionFunction = async ({ request }) => {
  */
 export default function Index() {
 	const { prod_rows, has_more } = useLoaderData<LoaderType>();
+	console.log('prod_rows 1', prod_rows);
 	const [productRows, addProductRows] = useState<Product[][]>(prod_rows);
 	const currPage = useRef(1);
 	const [hasMore, setHasMore] = useState(has_more);
@@ -122,14 +123,12 @@ export default function Index() {
 	const submit = useSubmit();
 
 	// Redirect to product detail page when click on product.
-	const handleClickProduct = (productID: string) => {
-		submit({ product_id: productID }, { method: 'post' });
+	const handleClickProduct = (productUUID: string) => {
+		submit({ product_uuid: productUUID }, { method: 'post' });
 	};
 
 	return (
 		<div className="prod-list-container">
-			<PrefetchPageLinks page='/product/$productId' />
-
 			<ProductRowsContainer
 				productRows={productRows}
 				onClickProduct={handleClickProduct}

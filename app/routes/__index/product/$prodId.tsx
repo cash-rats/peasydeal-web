@@ -13,7 +13,6 @@ import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
 import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
-import { StatusCodes } from 'http-status-codes';
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
 
 import { useSuccessSnackbar } from '~/components/Snackbar';
@@ -21,9 +20,8 @@ import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import { getSession, commitSession } from '~/sessions';
 import type { SessionKey } from '~/sessions';
-import { fetchProductsByCategory } from '~/api';
-import type { Product } from '~/shared/types';
 
+import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
 import styles from "./styles/ProdDetail.css";
@@ -45,30 +43,18 @@ export function links() {
 	];
 };
 
-type LoaderTypeRecommendedProducts = {
-	products: Product[];
-}
+type LoaderTypeProductDetail = {
+	product: ProductDetail;
+};
 
 // Fetch product detail data.
 export const loader: LoaderFunction = async ({ params, request }) => {
 	const { prodId } = params;
 	if (!prodId) return redirect('/');
 
-	const url = new URL(request.url);
-	const action = url.searchParams.get('__action') || '';
+	const prodDetail = await fetchProductDetail(prodId)
 
-	if (action === 'recommended_products') {
-		const category = url.searchParams.get('category') || 'Hot Deal';
-
-		const recProds = await fetchProductsByCategory({ category });
-		return json<LoaderTypeRecommendedProducts>({ products: recProds });
-	}
-
-	const resp = await fetchProductDetail(prodId)
-	const respJSON = await resp.json();
-
-	return json({ product: respJSON }, { status: StatusCodes.OK });
-
+	return json<LoaderTypeProductDetail>({ product: prodDetail });
 };
 
 
@@ -77,19 +63,19 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 //  - [ ] what is error?
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
-	const prodIDEntry: FormDataEntryValue | null = form.get('productID');
+	let prodUuid: FormDataEntryValue | null = form.get('productUuid');
 	const formAction = form.get('__action');
 
 	if (formAction === 'to_product_detail') {
-		return redirect(`product/${prodIDEntry}`);
+		return redirect(`product/${prodUuid}`);
 	}
 
-	if (!prodIDEntry) return;
-	const prodID = prodIDEntry as string;
+	if (!prodUuid) return;
+	prodUuid = prodUuid as string;
 
 	const cartObj = Object.fromEntries(form.entries());
 
-	// Try retrieve `shopping_cart` list from request cookie.
+	// // Try retrieve `shopping_cart` list from request cookie.
 	const session = await getSession(
 		request.headers.get("Cookie"),
 	);
@@ -102,7 +88,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const newShoppingCart = {
 		...shoppingCart,
-		[prodIDEntry]: cartObj,
+		[prodUuid]: cartObj,
 	}
 
 	session.set('shopping_cart', newShoppingCart);
@@ -120,33 +106,8 @@ export const action: ActionFunction = async ({ request }) => {
 			"Set-Cookie": await commitSession(session),
 		}
 	});
+	// return null;
 }
-interface ProductVariation {
-	currency: null
-	description: string;
-	discountOff: number;
-	mainPic: string;
-	productId: string;
-	retailPrice: number;
-	salePrice: number;
-	shippingFee: number;
-	shortDescription: string;
-	sku: string;
-	subTitle: string;
-	title: string;
-	variationId: string;
-	deliveryInfo: string;
-};
-
-interface ProductDetail {
-	categories: string[];
-	bought: number;
-	currency: string;
-	defaultVariationId: string;
-	productId: string
-	variations: ProductVariation[];
-	pics: string[];
-};
 
 /*
  * Emulate discount expert
@@ -156,14 +117,13 @@ interface ProductDetail {
  *         Display carousel images if variation is greater than 1
  */
 function ProductDetailPage() {
-	const productDetailData = useLoaderData<{ product: ProductDetail }>();
-	const productDetail = productDetailData.product;
+	const { product: productDetail } = useLoaderData<LoaderTypeProductDetail>();
 	const [mainCategory] = productDetail.categories;
 
 	const selectCurrentVariation = useCallback(
-		(defaultVariationID: string, variations: ProductVariation[]): ProductVariation | undefined => {
+		(defaultVariationUUID: string, variations: ProductVariation[]): ProductVariation | undefined => {
 			return variations.find(
-				(variation) => defaultVariationID === variation.variationId);
+				(variation) => defaultVariationUUID === variation.uuid);
 		}, []
 	);
 
@@ -187,9 +147,6 @@ function ProductDetailPage() {
 		}
 	};
 
-	const loadRecommendedProduct = useFetcher();
-	const [recommendedProducts, setRecommendedProducts] = useState<Product[]>([]);
-
 	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
 	useEffect(() => {
 		if (window) {
@@ -198,28 +155,10 @@ function ProductDetailPage() {
 			// Listen to scroll position of window, if window scroll bottom is at bottom position of productContentWrapperRef
 			// change position of `productContentWrapperRef` from `fixed` to `relative`.
 			window.addEventListener('scroll', handleWindowScrolling);
-			// Load recommended product on the client side to reduce render time.
-			loadRecommendedProduct.submit(
-				{
-					__action: 'recommended_products',
-					category: mainCategory,
-				},
-				{ method: 'get', action: '/product/$prodId' }
-			);
 		}
-
-		return () => window.removeEventListener('scroll', handleWindowScrolling);
 	}, []);
 
-	// Recommende product has been loaded
-	useEffect(() => {
-		if (loadRecommendedProduct.type === 'done') {
-			setRecommendedProducts(loadRecommendedProduct.data.products);
-		}
-	}, [loadRecommendedProduct]);
-
-
-	const currentVariation = selectCurrentVariation(productDetail.defaultVariationId, productDetail.variations);
+	const currentVariation = selectCurrentVariation(productDetail.default_variation_uuid, productDetail.variations);
 	const [quantity, updateQuantity] = useState<number>(1);
 	const [variation, setVariation] = useState<string>('');
 	const [variationErr, setVariationErr] = useState<string>('');
@@ -243,14 +182,16 @@ function ProductDetailPage() {
 
 	const extractProductInfo = useCallback(() => (
 		{
-			salePrice: currentVariation?.salePrice.toString() || '',
-			retailPrice: currentVariation?.retailPrice.toString() || '',
-			productID: productDetail.productId,
-			variationID: currentVariation?.variationId || '',
-			image: currentVariation?.mainPic || '',
+			salePrice: currentVariation?.sale_price.toString() || '',
+			retailPrice: currentVariation?.retail_price.toString() || '',
+			productUUID: productDetail.uuid,
+			variationUUID: currentVariation?.uuid || '',
+
+			// product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
+			image: productDetail.images[0] || '',
 			quantity: quantity.toString(),
-			title: currentVariation?.title || '',
-			subTitle: currentVariation?.subTitle || '',
+			title: currentVariation?.spec_name || '',
+			subTitle: currentVariation?.spec_content || '',
 		}
 	), [currentVariation, productDetail, quantity]);
 
@@ -325,7 +266,7 @@ function ProductDetailPage() {
 						key='2'
 						to={`/${mainCategory}`}
 					>
-						{mainCategory}
+						{mainCategory.name}
 					</NavLink>,
 					<NavLink
 						className={({ isActive }) => (
@@ -334,42 +275,48 @@ function ProductDetailPage() {
 								: "breadcrumbs-link"
 						)}
 						key='3'
-						to={`/product/${productDetail.productId}`}
+						to={`/product/${productDetail.uuid}`}
 					>
-						{currentVariation?.title}
+						{productDetail?.title}
 					</NavLink>,
 				]} />
 			</div>
 
 			<div className="productdetail-container">
 				<ProductDetailSection
-					title={currentVariation?.title}
-					subTitle={currentVariation?.subTitle}
-					description={currentVariation?.description}
-					pics={productDetail.pics}
+					description={productDetail?.description}
+					pics={productDetail.images}
 				/>
-
 
 				<div
 					ref={productContentWrapperRef}
 					className="product-content-wrapper"
 				>
+
+
 					<div className="product-content">
 						<h1 className="product-name">
-							{currentVariation?.title}
+							{productDetail?.title}
 						</h1>
 
 						<h1 className="product-subtitle">
-							{currentVariation?.subTitle}
+							{currentVariation?.spec_name}
 						</h1>
 
 						<div className="product-tag-bar">
 							<p className="detail-amount">
-								{currentVariation?.currency}{currentVariation?.salePrice}
+								{
+									// TODO: enable currency
+									// currentVariation?.currency
+								} {currentVariation?.sale_price}
 							</p>
 
 							<span className="actual-amount">
-								compared at {currentVariation?.currency} {currentVariation?.retailPrice}
+								compared at {
+
+									// TODO: enable currency
+									// currentVariation?.currency
+								} {currentVariation?.retail_price}
 							</span>
 
 						</div>
@@ -377,10 +324,8 @@ function ProductDetailPage() {
 						<p className="discount-amount">
 							YOU SAVE &nbsp;
 							{
-								currentVariation && currentVariation.discountOff && (
-									(
-										((currentVariation.retailPrice - currentVariation.salePrice) / currentVariation.retailPrice) * 100
-									).toFixed(0)
+								currentVariation && currentVariation.discount && (
+									(Number(currentVariation.discount) * 100).toFixed(0)
 								)
 							}%!
 						</p>
@@ -412,7 +357,7 @@ function ProductDetailPage() {
 									}}
 									options={
 										productDetail.variations.map(
-											(variation) => ({ value: variation.variationId, label: variation.title })
+											(variation) => ({ value: variation.uuid, label: variation.spec_name })
 										)
 									}
 								/>
@@ -468,7 +413,7 @@ function ProductDetailPage() {
 							)} />
 
 							<div className="delivery-content">
-								<span> {currentVariation.deliveryInfo} </span>
+								<span> {currentVariation?.delivery_info} </span>
 							</div>
 						</div>
 
@@ -477,7 +422,7 @@ function ProductDetailPage() {
 							<Divider text="product features" />
 
 							{/* TODO dangerous render html */}
-							<div dangerouslySetInnerHTML={{ __html: currentVariation?.description || '' }} className="product-features-container" />
+							<div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} className="product-features-container" />
 						</div>
 
 						<div className="product-return-policy">
@@ -504,11 +449,9 @@ function ProductDetailPage() {
 						</div>
 					</div>
 
+
 				</div>
-
-
 			</div>
-
 			{/*
 					Recommended products:
 						- Things you might like: other products that belongs to the same category.
@@ -516,7 +459,7 @@ function ProductDetailPage() {
 						- New trend
 				*/}
 			<RecommendedProducts
-				products={recommendedProducts}
+				category={mainCategory.name}
 				onClickProduct={handleClickProduct}
 			/>
 		</>

@@ -35,6 +35,7 @@ type ContextType = { categories: Category[] };
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();
+	console.log('categories', categories);
 
 	// - Count number of items in shopping cart from session if not logged in yet.
 	// - Retrieve this information from API if user is logged in.

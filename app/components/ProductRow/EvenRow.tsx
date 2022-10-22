@@ -26,8 +26,8 @@ export default function EvenRow({ products = [], onClickProduct = () => { } }: E
 			{
 				products.map((product, index: number) => (
 					<MediumGrid
-						key={product.productID || index}
-						productID={product.productID}
+						key={product.productUUID || index}
+						productID={product.productUUID}
 						onClickProduct={onClickProduct}
 						image={product.main_pic}
 						title={product.title}

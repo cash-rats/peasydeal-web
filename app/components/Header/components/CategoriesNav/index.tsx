@@ -2,18 +2,13 @@ import { useState } from "react";
 import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
-import { RiArrowDownSLine, RiArrowUpSLine } from "react-icons/ri";
-import { BsList } from "react-icons/bs";
 import clsx from 'clsx';
-
-import ScrollButton, { links as ScrollButtonLinks } from '~/components/ScrollButton';
 import type { Category } from '~/shared/types';
 
 import styles from './styles/CategoriesNav.css';
 
 export const links: LinksFunction = () => {
   return [
-    ...ScrollButtonLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 }
@@ -27,39 +22,21 @@ interface CategoriesNavProps {
  */
 export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
   const [openAllCategories, setOpenAllCategories] = useState<boolean>(false);
-  const toggleOpenAllCategory = (evt: MouseEvent<HTMLLIElement>) => {
-    setOpenAllCategories(prev => !prev);
+  const toggleOpenAllCategory = (evt: MouseEvent<HTMLDivElement>) => {
     evt.stopPropagation();
+    setOpenAllCategories(prev => !prev);
   }
 
   return (
     <div className="categories-nav-container">
       <div className="CategoriesNav__scrollable-nav">
-        <div className="CategoriesNav__left-arrow">
-          <ScrollButton
-            direction="left"
-            arrowWrapperStyle={{
-              width: '1.6rem',
-              height: '1.6rem',
-              backgroundColor: '#fff',
-            }}
-            arrowStyle={{
-              top: '35%',
-              left: '45%',
-              width: '0.5rem',
-              height: '0.5rem',
-              borderColor: 'rgb(52, 52, 52)',
-            }}
-          />
-        </div>
-
         {/* categories nav */}
         <nav className="featured-category-nav">
           <ul>
             {
               categories.map((category) => (
                 <li className="CategoriesNav__item" key={category.catId}>
-                  <Link to={`${category.url}`}>
+                  <Link to={`${category.title}`}>
                     {category.title}
                   </Link>
                 </li>
@@ -67,24 +44,6 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
             }
           </ul>
         </nav>
-
-        <div className="CategoriesNav__right-arrow">
-          <ScrollButton
-            direction="right"
-            arrowWrapperStyle={{
-              width: '1.6rem',
-              height: '1.6rem',
-              backgroundColor: '#fff',
-            }}
-            arrowStyle={{
-              top: '35%',
-              left: '29%',
-              width: '0.5rem',
-              height: '0.5rem',
-              borderColor: 'rgb(52, 52, 52)',
-            }}
-          />
-        </div>
       </div>
 
       <div

@@ -26,4 +26,4 @@ build:
 	npm run build:patched
 
 start_staging:
-	pm2 restart ecosystem.config.js --env staging
+	pm2 stop ecosystem.config.js --env staging && pm2 start ecosystem.config.js --env staging

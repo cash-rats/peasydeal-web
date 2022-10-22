@@ -100,6 +100,7 @@ export const CatchBoundary = () => {
  */
 function Cart() {
 	const cartItemsData = useLoaderData();
+	console.log('debug cartItemsData', cartItemsData);
 	const [cartItems, setCartItems] = useState(cartItemsData);
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 	const removeItemFetcher = useFetcher()

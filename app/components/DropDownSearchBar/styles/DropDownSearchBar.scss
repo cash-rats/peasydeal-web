@@ -25,6 +25,9 @@
   padding: 0.5rem 1rem;
   cursor: pointer;
   line-height: 1.25;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &:hover {
     background-color: $gray-hover-bg;

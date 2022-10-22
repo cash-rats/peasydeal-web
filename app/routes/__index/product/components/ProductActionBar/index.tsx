@@ -40,6 +40,7 @@ const ProductActionBar = forwardRef(({
       <Button
         width={{ base: '100%' }}
         colorScheme='orange'
+        onClick={onClickBuyNow}
       >
         Buy Now
       </Button>

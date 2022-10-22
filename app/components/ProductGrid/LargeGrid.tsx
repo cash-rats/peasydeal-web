@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Button } from "@chakra-ui/react";
 import RoundButton from '~/components/RoundButton';
 
 import MqNotifier from '~/components/MqNotifier';

@@ -19,7 +19,7 @@ export const links: LinksFunction = () => {
 
 interface LeftLayoutProps {
 	product?: Product;
-	onClickProduct?: (productID: string) => void;
+	onClickProduct?: (productUUID: string) => void;
 };
 
 function LeftLayout({ product, onClickProduct = () => { } }: LeftLayoutProps) {
@@ -28,7 +28,7 @@ function LeftLayout({ product, onClickProduct = () => { } }: LeftLayoutProps) {
 			{
 				product && (
 					<LargeGrid
-						productID={product.productID}
+						productID={product.productUUID}
 						image={product.main_pic}
 						title={product.title}
 						description={product.description}
@@ -43,7 +43,7 @@ function LeftLayout({ product, onClickProduct = () => { } }: LeftLayoutProps) {
 
 interface RightLayoutProps {
 	products?: Product[];
-	onClickProduct?: (productID: string) => void;
+	onClickProduct?: (productUUID: string) => void;
 };
 
 function RightLayout({ products = [], onClickProduct = () => { } }: RightLayoutProps) {
@@ -54,7 +54,7 @@ function RightLayout({ products = [], onClickProduct = () => { } }: RightLayoutP
 			{
 				one && (
 					<MediumGrid
-						productID={one.productID}
+						productID={one.productUUID}
 						image={one.main_pic}
 						title={one.title}
 						description={one.shortDescription}
@@ -66,7 +66,7 @@ function RightLayout({ products = [], onClickProduct = () => { } }: RightLayoutP
 			{
 				two && (
 					<MediumGrid
-						productID={two.productID}
+						productID={two.productUUID}
 						image={two.main_pic}
 						title={two.title}
 						description={two.shortDescription}

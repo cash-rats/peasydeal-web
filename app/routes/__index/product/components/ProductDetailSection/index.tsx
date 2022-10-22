@@ -12,15 +12,11 @@ export const links: LinksFunction = () => {
 }
 
 interface ProductDetailSectionProps {
-	title?: string;
-	subTitle?: string;
 	description?: string;
 	pics: string[],
 }
 
 function ProductDetailSection({
-	title = '',
-	subTitle = '',
 	description = '',
 	pics = [],
 }: ProductDetailSectionProps) {

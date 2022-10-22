@@ -150,7 +150,6 @@ export default function DropDownSearchBar({
       try {
         timerRef.current = undefined;
         await onDropdownSearch(evt.target.value);
-        // setSearchingState('done');
       } catch (error) {
         setSearchContent('error');
       }

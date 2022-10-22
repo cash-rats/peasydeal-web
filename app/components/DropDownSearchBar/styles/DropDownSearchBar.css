@@ -23,6 +23,9 @@
   padding: 0.5rem 1rem;
   cursor: pointer;
   line-height: 1.25;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .DropDownSearchBar__dropdown-item:hover {
   background-color: #E4E4E4;
