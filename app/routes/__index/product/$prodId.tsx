@@ -13,13 +13,14 @@ import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
 import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
-import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
 
+import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
 import { useSuccessSnackbar } from '~/components/Snackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
-import { getSession, commitSession } from '~/sessions';
-import type { SessionKey } from '~/sessions';
+import { commitSession } from '~/sessions';
+import { insertItem } from '~/utils/shoppingcart.session';
+import type { ShoppingCartItem } from '~/utils/shoppingcart.session';
 
 import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -63,35 +64,15 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 //  - [ ] what is error?
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
-	let prodUuid: FormDataEntryValue | null = form.get('productUuid');
 	const formAction = form.get('__action');
 
 	if (formAction === 'to_product_detail') {
+		let prodUuid: FormDataEntryValue | null = form.get('productUUID');
 		return redirect(`product/${prodUuid}`);
 	}
 
-	if (!prodUuid) return;
-	prodUuid = prodUuid as string;
-
-	const cartObj = Object.fromEntries(form.entries());
-
-	// // Try retrieve `shopping_cart` list from request cookie.
-	const session = await getSession(
-		request.headers.get("Cookie"),
-	);
-
-	// if `shopping_cart` has not been created, create it.
-	let shoppingCart = {};
-	if (session.has('shopping_cart' as SessionKey)) {
-		shoppingCart = session.get('shopping_cart');
-	}
-
-	const newShoppingCart = {
-		...shoppingCart,
-		[prodUuid]: cartObj,
-	}
-
-	session.set('shopping_cart', newShoppingCart);
+	const cartObj = Object.fromEntries(form.entries()) as ShoppingCartItem;
+	const session = await insertItem(request, cartObj);
 
 	if (formAction == 'buy_now') {
 		return redirect('/cart', {
@@ -106,7 +87,6 @@ export const action: ActionFunction = async ({ request }) => {
 			"Set-Cookie": await commitSession(session),
 		}
 	});
-	// return null;
 }
 
 /*
@@ -190,32 +170,33 @@ function ProductDetailPage() {
 			// product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
 			image: productDetail.images[0] || '',
 			quantity: quantity.toString(),
-			title: currentVariation?.spec_name || '',
-			subTitle: currentVariation?.spec_content || '',
+			title: productDetail?.title || '',
+			specName: currentVariation?.spec_name || '',
 		}
 	), [currentVariation, productDetail, quantity]);
 
 	const [openSuccessSnackbar] = useSuccessSnackbar();
 
 	const handleAddToCart = () => {
-		setVariationErr('Please pick a variation');
+		if (!variation) {
+			setVariationErr('Please pick a variation');
 
-		if (!variation) return
+			return;
+		}
 		setVariationErr('');
 
 		addToCart.submit(
-			{
-				__action: 'add_to_cart',
-				...extractProductInfo(),
-			},
+			{ ...extractProductInfo() },
 			{ method: 'post', action: '/product/$prodId' },
 		);
 	};
 
 	const handleBuyNow = () => {
-		setVariationErr('Please pick a variation');
+		if (!variation) {
+			setVariationErr('Please pick a variation');
 
-		if (!variation) return
+			return
+		}
 		setVariationErr('');
 
 		// Add this item to shopping cart (session).

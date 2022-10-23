@@ -34,7 +34,7 @@ interface RecommendedProductsProps {
   onClickProduct: (productID: string) => void;
 }
 
-function RecommendedProducts({ category, products, onClickProduct }: RecommendedProductsProps) {
+function RecommendedProducts({ category, onClickProduct }: RecommendedProductsProps) {
   const fetcher = useFetcher();
   const [rows, setRows] = useState<Product[][]>([]);
 

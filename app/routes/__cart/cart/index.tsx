@@ -6,8 +6,9 @@ import { StatusCodes } from 'http-status-codes';
 import { Button } from '@chakra-ui/react';
 import { BsBagCheck } from 'react-icons/bs';
 
-import { getSession, commitSession } from '~/sessions';
-import type { SessionKey } from '~/sessions';
+import { commitSession } from '~/sessions';
+// import type { SessionKey } from '~/sessions';
+import { getCart, removeItem } from '~/utils/shoppingcart.session';
 import {
 	calcSubTotal,
 	calcGrandTotal,
@@ -35,24 +36,20 @@ export const links: LinksFunction = () => {
 export const action: ActionFunction = async ({ request }) => {
 	const body = await request.formData();
 	const prodID = body.get('prod_id') as string || '';
-	const session = await getSession(
-		request.headers.get("Cookie")
-	);
-	const sessionKey: SessionKey = 'shopping_cart';
-	let cartItems = session.get(sessionKey) || {};
+	const session = await removeItem(request, prodID);
+	const cart = await getCart(request);
 
-	if (cartItems.hasOwnProperty(prodID)) {
-		delete cartItems[prodID];
-		const newShoppingCart = { ...cartItems };
-		session.set(sessionKey, newShoppingCart);
+	let itemCount = 0;
+
+	if (cart && Object.keys(cart).length > 0) {
+		itemCount = Object.keys(cart).length
 	}
-
 
 	// `cart_item_count` tells frontend when to perform page refresh. When `cart_item_count`
 	// equals 0, frontend will trigger load of the current route which displays empty bag page.
 	return new Response(
 		JSON.stringify({
-			cart_item_count: Object.keys(cartItems).length,
+			cart_item_count: itemCount,
 		}),
 		{
 			headers: {
@@ -65,21 +62,13 @@ export const action: ActionFunction = async ({ request }) => {
  * Fetch cart items from product list when user is not logged in.
  */
 export const loader: LoaderFunction = async ({ request }) => {
-	const session = await getSession(request.headers.get("Cookie"));
-	const sessionKey: SessionKey = 'shopping_cart';
-
-	if (!session.has(sessionKey)) {
+	// If cart contains no items, display empty cart page via CatchBoundary
+	const cart = await getCart(request);
+	if (!cart || Object.keys(cart).length === 0) {
 		return json([], { status: StatusCodes.OK });
 	}
 
-	const cartItems = session.get(sessionKey);
-
-	// If cart contains no items, display empty cart page via CatchBoundary
-	if (cartItems && Object.keys(cartItems).length === 0) {
-		throw json([], { status: StatusCodes.OK });
-	}
-
-	return json(cartItems, { status: StatusCodes.OK });
+	return json(cart, { status: StatusCodes.OK });
 };
 
 export const CatchBoundary = () => {
@@ -100,7 +89,6 @@ export const CatchBoundary = () => {
  */
 function Cart() {
 	const cartItemsData = useLoaderData();
-	console.log('debug cartItemsData', cartItemsData);
 	const [cartItems, setCartItems] = useState(cartItemsData);
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 	const removeItemFetcher = useFetcher()
@@ -162,6 +150,7 @@ function Cart() {
 				action: '/cart?index',
 			},
 		)
+
 		setOpenRemoveItemModal(false);
 	}
 
@@ -274,7 +263,6 @@ function Cart() {
 								</Link>
 							</div>
 						</div>
-
 					</div>
 				</div>
 			</div>
