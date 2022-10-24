@@ -44,6 +44,7 @@ function OrderInformation({
 
           <div className="content">
             <span> Email: {email} </span>
+            <span> Contact name: {firstname} {lastname} </span>
             <span> Contact phone: {phone} </span>
           </div>
         </div>
@@ -54,7 +55,6 @@ function OrderInformation({
           </h2>
 
           <div className="content">
-            <span> {firstname} {lastname} </span>
             <span> {address} </span>
             <span> {address2} </span>
             <span> {city}, {postal} </span>
