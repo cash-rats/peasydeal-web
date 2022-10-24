@@ -1,42 +1,49 @@
+import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
-import HeaderWrapper, { links as HeaderLinks } from "./components/HeaderWrapper";
-import type { Category } from './components/CategoriesNav';
-import LogoBar, { links as LogoBarLinks } from './components/LogoBar';
-import SearchBar, { links as SearchBarLinks } from './components/SearchBar';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
+
+import LogoHeader, { links as LogoHeaderLinks } from "./components/LogoHeader";
 import NavBar, { links as NavBarLinks } from './components/NavBar';
-import CategoriesNav, { links as CategoriesNavLinks } from './components/CategoriesNav';
+
+import styles from './styles/Header.css';
 
 export const links: LinksFunction = () => {
   return [
-    ...HeaderLinks(),
-    ...LogoBarLinks(),
-    ...SearchBarLinks(),
+    { href: styles, rel: 'stylesheet' },
+    ...DropDownSearchBarLinks(),
+    ...LogoHeaderLinks(),
     ...NavBarLinks(),
-    ...CategoriesNavLinks(),
   ];
 };
 
 interface HeaderProps {
-  categories?: Category[];
+  categoriesBar?: ReactNode;
 
   /*
    * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
    */
-  cartItemCount?: number;
+  numOfItemsInCart?: number;
 }
 
-function Header({ categories, cartItemCount = 0 }: HeaderProps) {
+function Header({ categoriesBar, numOfItemsInCart = 0 }: HeaderProps) {
   return (
-    <HeaderWrapper
-      categoryBar={
-        <CategoriesNav categories={categories} />
-      }
-    >
-      <LogoBar />
-      <SearchBar />
-      <NavBar cartItemCount={cartItemCount} />
-    </HeaderWrapper>
+    <LogoHeader categoriesBar={categoriesBar} >
+      <div className="Header__content">
+
+        {/* search bar */}
+        <div className="Header__search-bar">
+          <DropDownSearchBar />
+        </div>
+
+        {/* right status bar, cart, search icon...etc */}
+        <div className="Header__nav-bar">
+          <div className="Header__nav-bar-wrapper">
+            <NavBar cartItemCount={numOfItemsInCart} />
+          </div>
+        </div>
+      </div>
+    </LogoHeader>
   );
 };
 

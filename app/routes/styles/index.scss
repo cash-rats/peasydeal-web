@@ -1,44 +1,4 @@
-@import 'styles/_breakpoints';
-
-.index_header-content {
-	width: 100%;
-	display: flex;
-}
-
-.index_search-bar {
-	flex: 3;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	display: none;
-
-	@media(min-width: $screen-md-min) {
-		display: block;
-	}
-}
-
-.index_nav-bar {
-	flex: 1;
-	display: flex;
-	justify-content: flex-end;
-	padding-left: 1rem;
-
-	@media(min-width: $screen-md-min) {
-		width: 15%;
-		justify-content: flex-start;
-	}
-}
-
 .main-container {
 	min-height: 100%;
 	min-height: 35rem;
-}
-
-.index_nav-bar-wrapper {
-	display: flex;
-	align-items: center;
-
-	@media(min-width: $screen-md-min) {
-		width: 100%;
-	}
 }

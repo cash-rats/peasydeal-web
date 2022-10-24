@@ -25,6 +25,7 @@ const getSessionCookie = async (request: Request): Promise<Session> => {
   return await getSession(request.headers.get("Cookie"));
 }
 
+// getCart get current shopping cart data in session. return "undefined" If no key exists.
 export const getCart = async (request: Request): Promise<ShoppingCart | undefined> => {
   const session = await getSessionCookie(request);
   if (!session.has(CartSessionKey)) return undefined;
@@ -37,6 +38,12 @@ export const getItem = async (request: Request, prodUUID: string): Promise<Shopp
   const shoppingCart = session.get('shopping_cart') as ShoppingCart;
   const item = shoppingCart[prodUUID];
   return item;
+}
+
+//  Count number of items in shopping cart from session if not logged in yet. Retrieve this information from API if user is logged in.
+export const getItemCount = async (request: Request): Promise<number> => {
+  const cart = await getCart(request);
+  return !cart ? 0 : Object.keys(cart).length;
 }
 
 export const insertItem = async (request: Request, item: ShoppingCartItem): Promise<Session> => {

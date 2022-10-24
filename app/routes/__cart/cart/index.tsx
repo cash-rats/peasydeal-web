@@ -7,7 +7,6 @@ import { Button } from '@chakra-ui/react';
 import { BsBagCheck } from 'react-icons/bs';
 
 import { commitSession } from '~/sessions';
-// import type { SessionKey } from '~/sessions';
 import { getCart, removeItem } from '~/utils/shoppingcart.session';
 import {
 	calcSubTotal,
@@ -64,6 +63,7 @@ export const action: ActionFunction = async ({ request }) => {
 export const loader: LoaderFunction = async ({ request }) => {
 	// If cart contains no items, display empty cart page via CatchBoundary
 	const cart = await getCart(request);
+
 	if (!cart || Object.keys(cart).length === 0) {
 		return json([], { status: StatusCodes.OK });
 	}

@@ -1,28 +1,22 @@
-import { BrowserRouter as Router } from 'react-router-dom';
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import TrackOrderHeader from './components/TrackOrderHeader';
-
-function TrackOrderHeaderWithRouter() {
-  return (
-    <Router>
-      <TrackOrderHeader />
-    </Router>
-  );
-}
-
+import Header from './index';
 
 export default {
-  title: 'Track Order Header',
-  component: TrackOrderHeaderWithRouter,
-} as ComponentMeta<typeof TrackOrderHeaderWithRouter>
+  title: 'Headers',
+  component: TrackOrderHeader,
+} as ComponentMeta<typeof TrackOrderHeader>
 
-const Template: ComponentStory<typeof TrackOrderHeaderWithRouter> = (args) => (
-  <TrackOrderHeaderWithRouter />
+const TrackOrderHeaderTemplate: ComponentStory<typeof TrackOrderHeader> = (args) => (
+  <TrackOrderHeader />
 );
 
-export const TrackOrderHeaderStory = Template.bind({});
-TrackOrderHeaderStory.args = {
+export const TrackOrderHeaderStory = TrackOrderHeaderTemplate.bind({});
+
+TrackOrderHeader.args = {
   value: 1000,
 };
+
+export const FullHeader = () => (<Header />)
 

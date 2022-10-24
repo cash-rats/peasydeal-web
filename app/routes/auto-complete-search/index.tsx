@@ -53,7 +53,7 @@ export default function AutoCompleteSearch() {
               title: result.title,
               image: result.main_pic,
               discount: result.discount,
-              productID: result.productID,
+              productID: result.productUUID,
             },
           };
         });
@@ -65,13 +65,11 @@ export default function AutoCompleteSearch() {
   }, [fetcher]);
 
   return (
-    <>
-      <DropDownSearchBar
-        placeholder='Search product by name'
-        onDropdownSearch={handleDropDownSearch}
-        results={results}
-      />
-    </>
+    <DropDownSearchBar
+      placeholder='Search product by name'
+      onDropdownSearch={handleDropDownSearch}
+      results={results}
+    />
   )
 }
 

@@ -81,12 +81,7 @@ export const action: ActionFunction = async ({ request }) => {
   const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
   const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
   const cartItemsObj = JSON.parse(cartItems);
-  console.log('debug 3', cartItemsObj);
   const trfItemsObj = transformOrderDetail(cartItemsObj);
-
-  console.log('debug 4', trfItemsObj);
-
-  // return null;
 
   const resp = await createOrder({
     email: shippingFormObj.email,
@@ -113,6 +108,10 @@ export const action: ActionFunction = async ({ request }) => {
   return json(respJSON, httpStatus.OK);
 };
 
+/*
+TODOs:
+  - [ ] add search bar header
+*/
 function CheckoutPage() {
   const {
     amount,
