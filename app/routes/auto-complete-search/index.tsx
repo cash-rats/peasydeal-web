@@ -1,21 +1,14 @@
 import { useState, useEffect } from 'react';
-import type { ActionFunction, LinksFunction } from '@remix-run/node';
+import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 
-import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import type { SuggestItem } from '~/components/DropDownSearchBar';
 import type { Product } from '~/shared/types';
 import { fetchProductsByCategory } from '~/api';
 
 type ActionType = {
   results: Product[];
-};
-
-export const links: LinksFunction = () => {
-  return [
-    ...DropDownSearchBarLinks(),
-  ];
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -31,17 +24,19 @@ export const action: ActionFunction = async ({ request }) => {
   return json<ActionType>({ results });
 };
 
-export default function AutoCompleteSearch() {
-  const [results, setResults] = useState<SuggestItem[]>([]);
-  const fetcher = useFetcher();
+export type SearchSuggest = (query: string) => void
 
-  const handleDropDownSearch = (query: string) => {
+// Fetchs suggestion list when user types on search bar.
+export function useSearchSuggests(): [SuggestItem[], SearchSuggest] {
+  const fetcher = useFetcher();
+  const [suggests, setSuggests] = useState<SuggestItem[]>([]);
+  const searchSuggests: SearchSuggest = (query: string) => {
     fetcher.submit({ query }, { method: 'post', action: '/auto-complete-search?index' });
   }
+
   useEffect(() => {
     if (fetcher.type === 'done') {
       const { results } = fetcher.data as ActionType;
-
       let suggestItems: SuggestItem[] = [];
 
       if (results.length > 0) {
@@ -59,17 +54,9 @@ export default function AutoCompleteSearch() {
         });
       }
 
-      setResults(suggestItems);
+      setSuggests(suggestItems);
     }
+  }, [fetcher])
 
-  }, [fetcher]);
-
-  return (
-    <DropDownSearchBar
-      placeholder='Search product by name'
-      onDropdownSearch={handleDropDownSearch}
-      results={results}
-    />
-  )
+  return [suggests, searchSuggests];
 }
-

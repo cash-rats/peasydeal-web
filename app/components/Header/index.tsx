@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
-import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
+import DropDownSearchBar, { links as DropDownSearchBarLinks, SuggestItem } from '~/components/DropDownSearchBar';
+import { useSearchSuggests } from '~/routes/auto-complete-search';
+import type { SearchSuggest } from '~/routes/auto-complete-search';
 
 import LogoHeader, { links as LogoHeaderLinks } from "./components/LogoHeader";
 import NavBar, { links as NavBarLinks } from './components/NavBar';
@@ -24,16 +26,28 @@ interface HeaderProps {
    * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
    */
   numOfItemsInCart?: number;
+
+  useSearchSuggests?: () => [SuggestItem[], SearchSuggest];
 }
 
-function Header({ categoriesBar, numOfItemsInCart = 0 }: HeaderProps) {
+function Header({
+  categoriesBar,
+  numOfItemsInCart = 0,
+  useSearchSuggests = () => ([[], () => { }]),
+}: HeaderProps) {
+  const [suggests, searchSuggests] = useSearchSuggests();
+
   return (
     <LogoHeader categoriesBar={categoriesBar} >
       <div className="Header__content">
 
         {/* search bar */}
         <div className="Header__search-bar">
-          <DropDownSearchBar />
+          <DropDownSearchBar
+            placeholder='Search products by name'
+            onDropdownSearch={searchSuggests}
+            results={suggests}
+          />
         </div>
 
         {/* right status bar, cart, search icon...etc */}

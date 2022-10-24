@@ -11,6 +11,7 @@ import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
+import { useSearchSuggests } from '~/routes/auto-complete-search';
 import { getItemCount } from '~/utils/shoppingcart.session';
 
 import styles from "./styles/index.css";
@@ -43,12 +44,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData();
-
 	return (
 		<>
 			<Header
 				categoriesBar={<CategoriesNav categories={categories} />}
 				numOfItemsInCart={numOfItemsInCart}
+				useSearchSuggests={useSearchSuggests}
 			/>
 
 			<main className="main-container">

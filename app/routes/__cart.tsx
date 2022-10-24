@@ -6,6 +6,7 @@ import { useLoaderData } from '@remix-run/react';
 import { getItemCount } from '~/utils/shoppingcart.session';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
+import { useSearchSuggests } from '~/routes/auto-complete-search';
 
 import styles from './styles/index.css';
 
@@ -31,7 +32,10 @@ function CartLayout() {
 
   return (
     <>
-      <Header numOfItemsInCart={cartItemCount} />
+      <Header
+        numOfItemsInCart={cartItemCount}
+        useSearchSuggests={useSearchSuggests}
+      />
       <main>
         <Outlet />
       </main>

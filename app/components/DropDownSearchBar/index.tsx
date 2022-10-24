@@ -37,8 +37,6 @@ interface DropDownSearchBarProps {
   onDropdownSearch?: (query: string) => void;
 
   results?: SuggestItem[];
-
-  action?: string;
 }
 
 // `DropDownSearchBar` is the extension of SearchBar. It displays list of suggestions in the dropdown box
