@@ -1,6 +1,6 @@
 @import 'styles/_breakpoints';
 @import 'styles/_mixins';
-
+@import 'styles/_colors';
 
 .checkout-page-container {
 	font-weight: bold;
@@ -19,10 +19,10 @@
 	margin: 15px auto 0;
 	display: flex;
 	flex-direction: column;
-	background-color: #F8F8F8;
+	background-color: $secondary;
 
 	@media(min-width: #{$screen-phone-top-599}) {
-		background-color: #FFF;
+		background-color: $secondary;
 	}
 
 	@media(min-width: #{$screen-md-min}) {
@@ -87,7 +87,6 @@
 .right {
 	.form-container {
 		margin-top: 20px;
-
 	}
 
 	@media (min-width: #{$screen-min-899}) {

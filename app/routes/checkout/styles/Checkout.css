@@ -16,11 +16,11 @@
   margin: 15px auto 0;
   display: flex;
   flex-direction: column;
-  background-color: #F8F8F8;
+  background-color: #f6f6f6;
 }
 @media (min-width: 599px) {
   .checkout-content {
-    background-color: #FFF;
+    background-color: #f6f6f6;
   }
 }
 @media (min-width: 768px) {
