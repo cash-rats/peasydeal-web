@@ -6,36 +6,32 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 
-import { getSession } from '~/sessions';
-import type { SessionKey } from '~/sessions';
 import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { calcGrandTotal } from '~/utils/checkout_accountant';
 import { createPaymentIntent } from '~/utils/stripe.server';
+import { getCart } from '~/utils/shoppingcart.session';
+
+import styles from './styles/index.css';
 
 
 export const links: LinksFunction = () => {
   return [
+    { rel: 'stylesheet', href: styles },
     ...FooterLinks(),
     ...LogoHeaderLinks(),
   ];
 };
 
+type LoaderType = {
+  client_secret?: string | null;
+  payment_intend_id: string;
+};
+
 export const loader: LoaderFunction = async ({ request }) => {
-  // Retrieve products from session. create strip payment intend.
-  const session = await getSession(
-    request.headers.get('Cookie'),
-  );
+  const cartItems = await getCart(request);
 
-  // Check if `shopping_cart` session exists.
-  const sessionKey: SessionKey = 'shopping_cart';
-  if (!session.has(sessionKey)) {
-    throw redirect("/cart");
-  }
-
-  const cartItems = session.get(sessionKey);
-
-  if (cartItems && Object.keys(cartItems).length === 0) {
+  if (!cartItems || Object.keys(cartItems).length === 0) {
     throw redirect("/cart");
   }
 
@@ -50,16 +46,20 @@ export const loader: LoaderFunction = async ({ request }) => {
     currency: 'GBP'
   });
 
-  return json({ client_secret: paymentIntent.client_secret });
+
+  return json<LoaderType>({ client_secret: paymentIntent.client_secret, payment_intend_id: paymentIntent.id });
 }
 
-type ContextType = { clientSecret: string };
+type ContextType = { clientSecret: string, paymentIntendID: string };
 
 function CheckoutLayout() {
   const {
     /* Stripe payment intend client secret, every secret is different every time we refresh the page */
     client_secret: clientSecret,
-  } = useLoaderData();
+    payment_intend_id,
+  } = useLoaderData<LoaderType>();
+
+  console.log('debug 1 ', payment_intend_id, typeof payment_intend_id);
 
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
 
@@ -84,14 +84,14 @@ function CheckoutLayout() {
     <>
       <LogoHeader />
 
-      <main>
+      <main style={{ minHeight: '35rem' }} className="Checkout__main">
         {
           stripePromise && (
             <Elements
               stripe={stripePromise}
               options={options}
             >
-              <Outlet context={{ clientSecret }} />
+              <Outlet context={{ paymentIntendID: payment_intend_id }} />
             </Elements>
           )
         }

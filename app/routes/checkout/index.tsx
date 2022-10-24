@@ -18,13 +18,12 @@ import type { Stripe, StripeElements } from '@stripe/stripe-js';
 import Divider from '@mui/material/Divider';
 import httpStatus from 'http-status-codes';
 
-import { getSession } from '~/sessions';
-import type { SessionKey } from '~/sessions';
 import { calcGrandTotal } from '~/utils/checkout_accountant';
 import type { ApiErrorResponse } from '~/shared/types';
 import { useErrorSnackbar } from '~/components/Snackbar';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
+import { getCart } from '~/utils/shoppingcart.session';
 
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
@@ -44,30 +43,19 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  // Retrieve products from session. create strip payment intend.
-  const session = await getSession(
-    request.headers.get('Cookie'),
-  );
+  const cart = await getCart(request);
 
-  // Check if `shopping_cart` session exists.
-  const sessionKey: SessionKey = 'shopping_cart';
-  if (!session.has(sessionKey)) {
-    throw redirect("/cart");
-  }
-
-  const cartItems = session.get(sessionKey);
-
-  if (cartItems && Object.keys(cartItems).length === 0) {
+  if (!cart || Object.keys(cart).length === 0) {
     throw redirect("/cart");
   }
 
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
   // In stripe, the base unit is 1 cent, not 1 dollar.
-  const amount = Number(calcGrandTotal(cartItems).toFixed(2))
+  const amount = Number(calcGrandTotal(cart).toFixed(2))
 
   return json({
     amount,
-    cart_items: cartItems,
+    cart_items: cart,
   });
 };
 
@@ -93,7 +81,12 @@ export const action: ActionFunction = async ({ request }) => {
   const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
   const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
   const cartItemsObj = JSON.parse(cartItems);
+  console.log('debug 3', cartItemsObj);
   const trfItemsObj = transformOrderDetail(cartItemsObj);
+
+  console.log('debug 4', trfItemsObj);
+
+  // return null;
 
   const resp = await createOrder({
     email: shippingFormObj.email,
@@ -125,7 +118,7 @@ function CheckoutPage() {
     amount,
     cart_items: cartItems,
   } = useLoaderData();
-  const { clientSecret } = useContext();
+  const { paymentIntendID } = useContext();
   const element = useElements();
   const stripe = useStripe();
 
@@ -201,7 +194,6 @@ function CheckoutPage() {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
-
     const phoneField = evt.target.querySelector('#phone');
 
     if (
@@ -218,7 +210,7 @@ function CheckoutPage() {
         shipping_form: JSON.stringify(shippingDetailFormValues),
         contact_info_form: JSON.stringify(contactInfoFormValues),
         cart_items: JSON.stringify(cartItems),
-        payment_secret: clientSecret,
+        payment_secret: paymentIntendID,
       }, { method: 'post', action: '/checkout?index' });
       return;
     }
@@ -231,9 +223,7 @@ function CheckoutPage() {
   return (
     <section className="checkout-page-container">
       <h1 className="title"> Shipping Information </h1>
-
       <div className="checkout-content">
-
         <div className="left">
 
           {/* You Details  */}
@@ -287,10 +277,10 @@ function CheckoutPage() {
               let target = evt.target as HTMLInputElement;
 
               const fieldName = target.name;
-              let fieldValue = target.value;
+              let fieldValue: string | boolean = target.value;
 
-              if (evt.target.type === 'checkbox') {
-                fieldValue = evt.target.checked;
+              if (target.type === 'checkbox') {
+                fieldValue = target.checked;
               }
 
               if (shippingDetailFormValues.hasOwnProperty(fieldName)) {

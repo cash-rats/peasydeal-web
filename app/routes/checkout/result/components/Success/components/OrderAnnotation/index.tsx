@@ -11,9 +11,10 @@ export const links: LinksFunction = () => {
 
 interface OrderAnnotationProps {
   email: string;
+  orderUUID: string;
 }
 
-function OrderAnnotation({ email }: OrderAnnotationProps) {
+function OrderAnnotation({ email, orderUUID }: OrderAnnotationProps) {
   return (
     <div className="order-annotation-container">
       <div className="success-icon">
@@ -28,7 +29,7 @@ function OrderAnnotation({ email }: OrderAnnotationProps) {
       </h1>
 
       <p className="text">
-        An email of your order detail has been sent to {email}
+        An email of your order detail has been sent to <b>{email}</b>
       </p>
 
       <p className="text">
@@ -43,7 +44,9 @@ function OrderAnnotation({ email }: OrderAnnotationProps) {
         </Button>
 
         <Button color='info' variant="contained">
-          Track you order
+          <Link to={`/tracking?query=${orderUUID}`}>
+            Track you order
+          </Link>
         </Button>
       </div>
     </div>

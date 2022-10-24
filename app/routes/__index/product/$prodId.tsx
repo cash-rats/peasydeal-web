@@ -245,7 +245,7 @@ function ProductDetailPage() {
 								: "breadcrumbs-link"
 						)}
 						key='2'
-						to={`/${mainCategory}`}
+						to={`/${mainCategory.name}`}
 					>
 						{mainCategory.name}
 					</NavLink>,

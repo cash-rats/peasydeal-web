@@ -2,6 +2,8 @@ import { Fragment } from 'react';
 import Divider from '@mui/material/Divider';
 import type { LinksFunction } from '@remix-run/node';
 
+import type { OrderItem } from '../../types';
+
 import styles from './styles/ProductSummary.css';
 
 export const links: LinksFunction = () => {
@@ -11,7 +13,7 @@ export const links: LinksFunction = () => {
 };
 
 interface ProductSummaryProps {
-  products: any[];
+  products: OrderItem[];
 }
 
 function ProductSummary({ products = [] }: ProductSummaryProps) {

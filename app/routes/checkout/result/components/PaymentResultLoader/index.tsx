@@ -80,7 +80,11 @@ function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
     return (<LoadingSkeleton />)
   }
 
-  return (<>{renderResult(stripePaymentStatus)}</>);
+  return (
+    <div className="PaymentResultLoader__wrapper">
+      {renderResult(stripePaymentStatus)}
+    </div>
+  );
 }
 
 export default PaymentResultLoader

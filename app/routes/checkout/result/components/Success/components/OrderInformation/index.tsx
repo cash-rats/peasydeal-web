@@ -10,6 +10,7 @@ export const links: LinksFunction = () => {
 
 interface OrderInformationProps {
   email: string;
+  phone: string;
   firstname: string;
   lastname: string
   address: string;
@@ -21,6 +22,7 @@ interface OrderInformationProps {
 
 function OrderInformation({
   email,
+  phone,
   firstname,
   lastname,
   address,
@@ -42,7 +44,7 @@ function OrderInformation({
 
           <div className="content">
             <span> Email: {email} </span>
-            <span> Phone: 12345678 </span>
+            <span> Contact phone: {phone} </span>
           </div>
         </div>
 

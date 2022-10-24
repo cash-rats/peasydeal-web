@@ -2,6 +2,7 @@
   font-weight: bold;
   font-size: 28px;
   padding: 2.25rem 0.75rem 1.125rem;
+  min-height: 35rem;
 }
 @media (min-width: 1200px) {
   .checkout-page-container {

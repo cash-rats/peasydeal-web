@@ -5,7 +5,7 @@ export const transformOrderDetail = (orderDetail: OrderItemFromAPI): Array<Order
     const prod = orderDetail[prodID];
     prev.push({
       product_uuid: prodID,
-      variation_uuid: prod.variationID,
+      variation_uuid: prod.variationUUID,
       quantity: Number(prod.quantity),
     });
 
