@@ -75,7 +75,7 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
         fetcher.type !== 'done'
           ? (
             <div className="loader-wrapper">
-              <CssSpinner scheme="default" />
+              <CssSpinner scheme="spinner" />
             </div>
           )
           : (
