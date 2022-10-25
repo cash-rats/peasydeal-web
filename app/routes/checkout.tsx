@@ -59,8 +59,6 @@ function CheckoutLayout() {
     payment_intend_id,
   } = useLoaderData<LoaderType>();
 
-  console.log('debug 1 ', payment_intend_id, typeof payment_intend_id);
-
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
 
   const options: StripeElementsOptions = {

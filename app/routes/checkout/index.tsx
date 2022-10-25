@@ -157,12 +157,11 @@ function CheckoutPage() {
       },
     });
 
-    if (error) {
-      if (error.type === "card_error" || error.type === "validation_error") {
-        openErrorSnackbar(error.message);
-      } else {
-        openErrorSnackbar(`An unexpected error occurred. ${error.message}`);
-      }
+    if (error.type === "card_error" || error.type === "validation_error") {
+      openErrorSnackbar(error.message);
+    } else {
+      // TODO log to remote API if error happens
+      console.log(`An unexpected error occurred. ${error.message}`);
     }
 
     setIsPaying(false);
