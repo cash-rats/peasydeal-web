@@ -3,6 +3,7 @@ import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { FiShoppingCart } from "react-icons/fi"
 import { TbReportSearch, TbSearch } from "react-icons/tb";
+import IconButton from '@mui/material/IconButton';
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
 
@@ -44,20 +45,25 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 					{
 						cartItemCount > 0 && (
 							<RedDot
-								dotStyle={{ left: '13px', top: '-1px' }}
+								dotStyle={{ left: '24px', top: '-1px' }}
 								value={cartItemCount}
 							/>
 						)
 					}
-
+					{/* TODO this isn't the right way to have ripple effect */}
 					<Link aria-label='shopping cart' to="/cart">
-						<FiShoppingCart color='white' fontSize={22} />
+						<IconButton>
+							<FiShoppingCart color='white' fontSize={26} />
+						</IconButton>
 					</Link>
 				</li>
 
 				<li>
+
 					<Link aria-label='track order' to="/tracking">
-						<TbReportSearch color='white' fontSize={26} />
+						<IconButton>
+							<TbReportSearch color='white' fontSize={26} />
+						</IconButton>
 					</Link>
 				</li>
 			</ul>

@@ -164,7 +164,6 @@ export default function Index() {
 					}
 				</div>
 			</fetcher.Form>
-
 		</div>
 	);
 }

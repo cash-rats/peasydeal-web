@@ -1,10 +1,25 @@
-.logo {
+.LogoBar__wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.LogoBar__menu {
+  width: 40px;
+}
+
+@media (min-width: 768px) {
+  .LogoBar__menu-button {
+    opacity: 0;
+  }
+}
+
+.LogoBar__link {
   line-height: 20px;
   padding-right: 15px;
 }
-.logo img {
-  width: 120px;
-  height: 120px;
+.LogoBar__link img {
+  min-width: 70px;
+  min-height: 70px;
 }
 
 /*# sourceMappingURL=LogoBar.css.map */

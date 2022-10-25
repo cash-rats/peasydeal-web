@@ -1,9 +1,26 @@
-.logo {
+@import "styles/_breakpoints";
+
+.LogoBar__wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.LogoBar__menu {
+  width: 40px;
+}
+
+.LogoBar__menu-button {
+  @media (min-width: $screen-md-min) {
+    opacity: 0;
+  }
+}
+
+.LogoBar__link {
   line-height: 20px;
   padding-right: 15px;
 
   img {
-    width: 120px;
-    height: 120px;
+    min-width: 70px;
+    min-height: 70px;
   }
 }

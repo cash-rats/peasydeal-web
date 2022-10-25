@@ -6,6 +6,11 @@
   margin: 0 auto;
   position: relative;
 }
+@media (max-width: 768px) {
+  .categories-nav-container {
+    display: none;
+  }
+}
 .categories-nav-container .all-categories-nav {
   cursor: pointer;
   position: relative;
@@ -83,11 +88,6 @@
 }
 .categories-nav-container .featured-category-nav::-webkit-scrollbar {
   display: none;
-}
-@media (max-width: 992px) {
-  .categories-nav-container .featured-category-nav {
-    display: none;
-  }
 }
 .categories-nav-container .featured-category-nav ul {
   list-style: none;
