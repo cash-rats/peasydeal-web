@@ -147,7 +147,7 @@ export default function Index() {
 						hasMore
 							? (
 								<LoadMore
-									spinner={<CssSpinner scheme="default" />}
+									spinner={<CssSpinner scheme="spinner" />}
 									loading={fetcher.state !== 'idle'}
 									callback={handleLoadMore}
 									delay={100}
