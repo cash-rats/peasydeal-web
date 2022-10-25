@@ -1,3 +1,5 @@
+import { getPeasyDealEndpoint } from '~/utils/endpoints';
+
 type CreateOrderParams = {
   email: string;
   firstname: string;
@@ -25,8 +27,7 @@ export const createOrder = async ({
   contact_name,
   phone_value,
 }: CreateOrderParams): Promise<Response> => {
-  const { PEASY_DEAL_ENDPOINT } = process.env;
-  return fetch(`${PEASY_DEAL_ENDPOINT}/v1/orders`, {
+  return fetch(`${getPeasyDealEndpoint()}/v1/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -6,13 +6,14 @@ import { json } from '@remix-run/node';
 import type { Product } from '~/shared/types';
 import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
 import { organizeTo9ProdsPerRow } from '~/utils/products';
+import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 
 import styles from './styles/RecommendedProducts.css';
 import { fetchProductsByCategory } from '~/api';
-import { AiOutlineConsoleSql } from 'react-icons/ai';
 
 export const links: LinksFunction = () => {
   return [
+    ...CssSpinnerLinks(),
     ...ProductRowsLayoutLinks(),
     { rel: 'stylesheet', href: styles },
   ];
@@ -22,12 +23,19 @@ type ActionDataType = {
   products: Product[];
 }
 
+// generateRandomInteger random page number to recommand
+function generateRandomInteger(min: number, max: number): number {
+  return Math.floor(min + Math.random() * (max - min) + 1);
+}
+
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const category = body.get('category') as string || '';
-  const products = await fetchProductsByCategory({ category });
+  const randomPage = generateRandomInteger(1, 20);
+  const products = await fetchProductsByCategory({ category, page: randomPage });
   return json<ActionDataType>({ products });
 }
+
 
 interface RecommendedProductsProps {
   category: string;
@@ -41,7 +49,6 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
   useEffect(() => {
     fetcher.submit({
       category
-
     }, { method: 'post', action: '/product/components/RecommendedProducts?index' });
   }, []);
 
@@ -58,14 +65,23 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
     }
   }, [fetcher])
 
-
   return (
     <div className="recommended-products-wrapper">
       <h2 className="recommended-products-wrapper_title">
         you may also like
       </h2>
 
-      <ProductRowsLayout onClickProduct={onClickProduct} productRows={rows} />
+      {
+        fetcher.type !== 'done'
+          ? (
+            <div className="loader-wrapper">
+              <CssSpinner scheme="default" />
+            </div>
+          )
+          : (
+            <ProductRowsLayout onClickProduct={onClickProduct} productRows={rows} />
+          )
+      }
     </div>
   );
 }

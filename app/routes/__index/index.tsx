@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData, useSubmit, PrefetchPageLinks } from "@remix-run/react";
+import { useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
-import Spinner from "~/components/Spinner";
+import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { PAGE_LIMIT } from '~/shared/constants';
 
@@ -19,6 +19,7 @@ import styles from "./styles/ProductList.css";
 export const links: LinksFunction = () => {
 	return [
 		...LoadmoreLinks(),
+		...CssSpinnerLinks(),
 		...ProductRowsContainerLinks(),
 		...LoadMoreButtonLinks(),
 		{ rel: 'stylesheet', href: styles },
@@ -134,19 +135,19 @@ export default function Index() {
 				onClickProduct={handleClickProduct}
 			/>
 
-			<fetcher.Form>
+			<fetcher.Form className="ProductList__loadmore-container" >
 				<input
 					type="hidden"
 					name="page"
 					value={currPage.current}
 				/>
 
-				<div className="ProductList__loadmore-container">
+				<div >
 					{
 						hasMore
 							? (
 								<LoadMore
-									spinner={Spinner}
+									spinner={<CssSpinner scheme="default" />}
 									loading={fetcher.state !== 'idle'}
 									callback={handleLoadMore}
 									delay={100}
@@ -163,6 +164,7 @@ export default function Index() {
 					}
 				</div>
 			</fetcher.Form>
+
 		</div>
 	);
 }

@@ -1,5 +1,6 @@
-import { useEffect, MouseEvent } from 'react';
-import type { ElementType } from 'react';
+import { useEffect } from 'react';
+import type { MouseEvent } from 'react';
+import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 
@@ -34,45 +35,45 @@ const isAtDomBottom = (dom: HTMLElement, offset: number = 0): boolean => (dom.of
 const hasVerticalScrollbar = (dom: HTMLElement): boolean => dom.scrollHeight > dom.clientHeight;
 
 interface LoadMoreProps {
-  /**
-   * The function to callback.
-   * It gets called when window is scrolled down to the bottom and stay for more than
-   * `delay` millseconds.
-   */
+	/**
+	 * The function to callback.
+	 * It gets called when window is scrolled down to the bottom and stay for more than
+	 * `delay` millseconds.
+	 */
 	callback: (evt: Event | MouseEvent<HTMLElement>) => void,
-  /**
-   * How long (in ms) the callback will be triggered when user staying at bottom.
-   * Default to 1000ms.
-   */
-  delay?: number,
-  /**
-   * when true, the spinner is displayed. get ignored if `error` is specified.
-   */
-  error?: object | null,
-  /**
-   * when true, the spinner is displayed. get ignored if `error` is specified.
-   */
-  loading?: boolean,
-  /**
-   * Offset from the bottom of the page or dom element (in px).
-   * Default to 0.
-   */
-  offset: number,
-  /**
-   * Pass in custom Dom element to be bound with scroll event.
-   */
-  targetDom?: HTMLElement | null,
+	/**
+	 * How long (in ms) the callback will be triggered when user staying at bottom.
+	 * Default to 1000ms.
+	 */
+	delay?: number,
+	/**
+	 * when true, the spinner is displayed. get ignored if `error` is specified.
+	 */
+	error?: object | null,
+	/**
+	 * when true, the spinner is displayed. get ignored if `error` is specified.
+	 */
+	loading?: boolean,
+	/**
+	 * Offset from the bottom of the page or dom element (in px).
+	 * Default to 0.
+	 */
+	offset: number,
+	/**
+	 * Pass in custom Dom element to be bound with scroll event.
+	 */
+	targetDom?: HTMLElement | null,
 	/*
 	 * Custom loading icon. Display text 'loadng...'  if not provided.
 	 */
-	spinner?: ElementType | null,
+	spinner?: ReactNode | null,
 };
 
 function LoadMore({
 	targetDom = null,
 	offset = 0,
 	loading = false,
-	callback = () => {console.log('load more...') },
+	callback = () => { console.log('load more...') },
 	delay = 0,
 	error = null,
 	spinner = null,
@@ -141,10 +142,8 @@ function LoadMore({
 	}, [])
 
 	const loadingIndicator = () => {
-		const Spinner = spinner;
-
-		return Spinner
-			? <Spinner />
+		return spinner
+			? <>{spinner}</>
 			: <p> loading </p>
 	}
 

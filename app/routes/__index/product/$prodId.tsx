@@ -216,10 +216,10 @@ function ProductDetailPage() {
 
 	const toProductDetailFetcher = useFetcher();
 
-	const handleClickProduct = (productID: string) => {
+	const handleClickProduct = (productUUID: string) => {
 		toProductDetailFetcher.submit({
 			__action: 'to_product_detail',
-			productID,
+			productUUID,
 		}, { method: 'post' });
 	}
 

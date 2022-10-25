@@ -15,4 +15,11 @@
   margin: 0 auto 2rem;
 }
 
+.loader-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+
 /*# sourceMappingURL=RecommendedProducts.css.map */

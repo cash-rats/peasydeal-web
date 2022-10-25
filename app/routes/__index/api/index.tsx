@@ -55,8 +55,6 @@ export const fetchProductsByCategory = async ({
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
 
-	console.log('respJSON', respJSON);
-
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
 
