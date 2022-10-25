@@ -31,7 +31,7 @@ function generateRandomInteger(min: number, max: number): number {
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const category = body.get('category') as string || '';
-  const randomPage = generateRandomInteger(1, 20);
+  const randomPage = generateRandomInteger(1, 5);
   const products = await fetchProductsByCategory({ category, page: randomPage });
   return json<ActionDataType>({ products });
 }
