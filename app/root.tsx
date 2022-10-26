@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { withEmotionCache } from '@emotion/react';
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
@@ -12,15 +12,17 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-import { ChakraProvider } from '@chakra-ui/react';
-// import SnackbarProvider from 'react-simple-snackbar';
 
-// import theme from './theme';
+// TOOD deprecate chakra in favor of mui
+// import { ChakraProvider } from '@chakra-ui/react';
+
+// TODO deprecate it in favor of mui
+import SnackbarProvider from 'react-simple-snackbar';
+
 import Layout from './Layout';
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
-// import { ServerStyleContext, ClientStyleContext } from "./context"
-import ClientStyleContext from "./context"
+import { ServerStyleContext, ClientStyleContext } from "./context"
 import styles from "./styles/global.css";
 
 export const meta: MetaFunction = () => ({
@@ -57,120 +59,118 @@ export async function loader({ request }: LoaderArgs) {
     }
   });
 }
-interface DocumentProps {
-  children: React.ReactNode;
-  title?: string;
-}
-
-const Document = withEmotionCache(({ children, title }: DocumentProps, emotionCache) => {
-  const clientStyleData = React.useContext(ClientStyleContext);
-
-  // Only executed on client
-  useEnhancedEffect(() => {
-    // re-link sheet container
-    emotionCache.sheet.container = document.head;
-    // re-inject tags
-    const tags = emotionCache.sheet.tags;
-    emotionCache.sheet.flush();
-    tags.forEach((tag) => {
-      // eslint-disable-next-line no-underscore-dangle
-      (emotionCache.sheet as any)._insertTag(tag);
-    });
-    // reset cache to reapply global styles
-    clientStyleData.reset();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        {/* <meta name="theme-color" content={theme.palette.primary.main} /> */}
-        {title ? <title>{title}</title> : null}
-        <Meta />
-        <Links />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-        />
-        <meta name="emotion-insertion-point" content="emotion-insertion-point" />
-      </head>
-      <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
-  );
-});
-
 // interface DocumentProps {
 //   children: React.ReactNode;
+//   title?: string;
 // }
 
-// const Document = withEmotionCache(
-//   ({ children }: DocumentProps, emotionCache) => {
-//     // const serverStyleData = useContext(ServerStyleContext);
-//     const clientStyleData = useContext(ClientStyleContext);
-//     const envData = useLoaderData();
+// const Document = withEmotionCache(({ children, title }: DocumentProps, emotionCache) => {
+//   const clientStyleData = React.useContext(ClientStyleContext);
 
-//     // Only executed on client
-//     useEnhancedEffect(() => {
-//       // re-link sheet container
-//       emotionCache.sheet.container = document.head;
-//       // re-inject tags
-//       const tags = emotionCache.sheet.tags;
-//       emotionCache.sheet.flush();
-//       tags.forEach((tag) => {
-//         (emotionCache.sheet as any)._insertTag(tag);
-//       });
-//       // reset cache to reapply global styles
-//       clientStyleData?.reset();
-//     }, []);
+//   // Only executed on client
+//   useEnhancedEffect(() => {
+//     // re-link sheet container
+//     emotionCache.sheet.container = document.head;
+//     // re-inject tags
+//     const tags = emotionCache.sheet.tags;
+//     emotionCache.sheet.flush();
+//     tags.forEach((tag) => {
+//       // eslint-disable-next-line no-underscore-dangle
+//       (emotionCache.sheet as any)._insertTag(tag);
+//     });
+//     // reset cache to reapply global styles
+//     clientStyleData.reset();
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);
 
-//     return (
-//       <html lang="en">
-//         <head>
-//           <Meta />
-//           <Links />
-//           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
-//           {/* {serverStyleData?.map(({ key, ids, css }) => (
-//             <style
-//               key={key}
-//               data-emotion={`${key} ${ids.join(' ')}`}
-//               dangerouslySetInnerHTML={{ __html: css }}
-//             />
-//           ))} */}
-//         </head>
-//         <body>
-//           {children}
+//   return (
+//     <html lang="en">
+//       <head>
+//         <meta charSet="utf-8" />
+//         <meta name="viewport" content="width=device-width,initial-scale=1" />
+//         {/* <meta name="theme-color" content={theme.palette.primary.main} /> */}
+//         {title ? <title>{title}</title> : null}
+//         <Meta />
+//         <Links />
+//         <link
+//           rel="stylesheet"
+//           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+//         />
+//         <meta name="emotion-insertion-point" content="emotion-insertion-point" />
+//       </head>
+//       <body>
+//         {children}
+//         <ScrollRestoration />
+//         <Scripts />
+//         <LiveReload />
+//       </body>
+//     </html>
+//   );
+// });
 
-//           <script
-//             dangerouslySetInnerHTML={{
-//               __html: `window.ENV=${JSON.stringify(envData)}`
-//             }}
-//           />
-//           <ScrollRestoration />
-//           <Scripts />
-//           {process.env.NODE_ENV === "development" && <LiveReload />}
-//         </body>
-//       </html>
-//     );
-//   }
-// );
+interface DocumentProps {
+  children: React.ReactNode;
+}
+
+const Document = withEmotionCache(
+  ({ children }: DocumentProps, emotionCache) => {
+    const serverStyleData = useContext(ServerStyleContext);
+    const clientStyleData = useContext(ClientStyleContext);
+    const envData = useLoaderData();
+
+    // Only executed on client
+    useEnhancedEffect(() => {
+      // re-link sheet container
+      emotionCache.sheet.container = document.head;
+      // re-inject tags
+      const tags = emotionCache.sheet.tags;
+      emotionCache.sheet.flush();
+      tags.forEach((tag) => {
+        (emotionCache.sheet as any)._insertTag(tag);
+      });
+      // reset cache to reapply global styles
+      clientStyleData?.reset();
+    }, []);
+
+    return (
+      <html lang="en">
+        <head>
+          <Meta />
+          <Links />
+          <meta name="emotion-insertion-point" content="emotion-insertion-point" />
+          {serverStyleData?.map(({ key, ids, css }) => (
+            <style
+              key={key}
+              data-emotion={`${key} ${ids.join(' ')}`}
+              dangerouslySetInnerHTML={{ __html: css }}
+            />
+          ))}
+        </head>
+        <body>
+          {children}
+
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.ENV=${JSON.stringify(envData)}`
+            }}
+          />
+          <ScrollRestoration />
+          <Scripts />
+          {process.env.NODE_ENV === "development" && <LiveReload />}
+        </body>
+      </html>
+    );
+  }
+);
 
 export default function App() {
   return (
     <Document>
-      {/* <SnackbarProvider> */}
-      {/* <ChakraProvider> */}
-      <Layout>
-        <Outlet />
-      </Layout>
-      {/* </ChakraProvider> */}
-      {/* </SnackbarProvider> */}
+      <SnackbarProvider>
+        <Layout>
+          <Outlet />
+        </Layout>
+      </SnackbarProvider>
     </Document>
   );
 }

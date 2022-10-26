@@ -1,25 +1,25 @@
-// import { createContext } from 'react'
+import { createContext } from 'react'
 
-// export interface ServerStyleContextData {
-//   key: string
-//   ids: Array<string>
-//   css: string
-// }
-
-// export const ServerStyleContext = createContext<ServerStyleContextData[] | null>(null)
-
-// export interface ClientStyleContextData {
-//   reset: () => void
-// }
-
-// export const ClientStyleContext = createContext<ClientStyleContextData | null>(null)
-
-import { createContext } from 'react';
-
-export interface ClientStyleContextData {
-  reset: () => void;
+export interface ServerStyleContextData {
+  key: string
+  ids: Array<string>
+  css: string
 }
 
-export default createContext<ClientStyleContextData>({
-  reset: () => { },
-});
+export const ServerStyleContext = createContext<ServerStyleContextData[] | null>(null)
+
+export interface ClientStyleContextData {
+  reset: () => void
+}
+
+export const ClientStyleContext = createContext<ClientStyleContextData | null>(null)
+
+// import { createContext } from 'react';
+
+// export interface ClientStyleContextData {
+//   reset: () => void;
+// }
+
+// export default createContext<ClientStyleContextData>({
+//   reset: () => { },
+// });

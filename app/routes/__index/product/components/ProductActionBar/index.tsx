@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Button } from '@chakra-ui/react';
+import Button from '@mui/lab/LoadingButton';
 import type { LinksFunction } from '@remix-run/node';
 
 import styles from './styles/ProductActionBar.css';
@@ -28,9 +28,8 @@ const ProductActionBar = forwardRef(({
     <div>
       <Button
         onClick={onClickAddToCart}
-        width={{ base: '100%' }}
-        colorScheme='green'
-        isLoading={loading}
+        fullWidth
+        loading={loading}
       >
         Add To Cart
       </Button>
@@ -38,8 +37,7 @@ const ProductActionBar = forwardRef(({
 
     <div>
       <Button
-        width={{ base: '100%' }}
-        colorScheme='orange'
+        fullWidth
         onClick={onClickBuyNow}
       >
         Buy Now
@@ -49,36 +47,3 @@ const ProductActionBar = forwardRef(({
 ));
 
 export default ProductActionBar;
-
-
-// () {
-//   return (
-//     <div>
-// 						<div
-// 							ref={mobileUserActionBarRef}
-// 							className="client-action-bar"
-// 						>
-// 							<div>
-// 								<Button
-// 									onClick={handleAddToCart}
-// 									width={{ base: '100%' }}
-// 									colorScheme='green'
-// 									isLoading={addToCart.state !== 'idle'}
-// 								>
-// 									Add To Cart
-// 								</Button>
-// 							</div>
-
-// 							<div>
-// 								<Button
-// 									width={{ base: '100%' }}
-// 									colorScheme='orange'
-// 								>
-// 									Buy Now
-// 								</Button>
-// 							</div>
-// 						</div>
-//     </div>
-//   )
-// }
-
