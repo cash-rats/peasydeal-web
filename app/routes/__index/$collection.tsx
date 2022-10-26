@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useFetcher, useLoaderData, PrefetchPageLinks, useSubmit } from '@remix-run/react';
+import { useFetcher, useLoaderData, useSubmit } from '@remix-run/react';
 import { NavLink } from '@remix-run/react';
 
-import Spinner from "~/components/Spinner";
+import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from '~/shared/types';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
@@ -24,6 +24,7 @@ type LoaderType = {
 
 export const links: LinksFunction = () => {
   return [
+    ...CssSpinnerLinks(),
     ...ProductRowsContainerLinks(),
     ...LoadmoreLinks(),
     ...BreadCrumbsLinks(),
@@ -107,8 +108,6 @@ function Collection() {
 
   return (
     <div className="prod-collection-container">
-      <PrefetchPageLinks page='/product/$productId' />
-
       <div className="prod-list-breadcrumbs-container">
         <Breadcrumbs breadcrumbs={[
           <NavLink
@@ -143,7 +142,7 @@ function Collection() {
               ? (
 
                 <LoadMore
-                  spinner={Spinner}
+                  spinner={<CssSpinner scheme='spinner' />}
                   loading={loadmoreFetcher.state !== 'idle'}
                   callback={handleLoadMore}
                   delay={100}

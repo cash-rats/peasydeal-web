@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
+import { useLocation } from '@remix-run/react';
 import IconButton from '@mui/material/IconButton';
 import { FiMenu } from 'react-icons/fi';
 
@@ -21,6 +22,7 @@ export const links: LinksFunction = () => {
 
 function LogoBar() {
   const [openMenu, setOpenMenu] = useState(false);
+  const location = useLocation();
 
   const handleOpenMenu = () => {
     setOpenMenu(true);
@@ -28,6 +30,14 @@ function LogoBar() {
   const handleCloseMenu = () => {
     setOpenMenu(false);
   }
+
+  useEffect(() => {
+    return () => setOpenMenu(false)
+  }, [])
+
+  useEffect(() => {
+    setOpenMenu(false);
+  }, [location])
 
   return (
     <div className="LogoBar__wrapper">
@@ -61,7 +71,7 @@ function LogoBar() {
                           categories.map((category) => {
                             return (
                               <Link
-                                onClick={handleCloseMenu}
+                                prefetch='intent'
                                 key={category.catId}
                                 to={`/${category.title}`}
                               >
