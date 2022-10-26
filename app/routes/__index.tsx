@@ -7,6 +7,7 @@ import {
 } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
+import CategoryContext from '~/context/categories';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
@@ -16,6 +17,7 @@ import { getItemCount } from '~/utils/shoppingcart.session';
 
 import styles from "./styles/index.css";
 import { fetchCategories } from './api';
+
 
 export const links: LinksFunction = () => {
 	return [
@@ -28,13 +30,17 @@ export const links: LinksFunction = () => {
 };
 
 type ContextType = { categories: Category[] };
+type LoaderType = {
+	numOfItemsInCart: number;
+	categories: Category[];
+};
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();
 
 	const numOfItemsInCart = await getItemCount(request);
 
-	return json({
+	return json<LoaderType>({
 		numOfItemsInCart,
 		categories: categories.cats,
 	}, {
@@ -43,14 +49,16 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Index() {
-	const { numOfItemsInCart, categories } = useLoaderData();
+	const { numOfItemsInCart, categories } = useLoaderData<LoaderType>();
 	return (
 		<>
-			<Header
-				categoriesBar={<CategoriesNav categories={categories} />}
-				numOfItemsInCart={numOfItemsInCart}
-				useSearchSuggests={useSearchSuggests}
-			/>
+			<CategoryContext.Provider value={categories} >
+				<Header
+					categoriesBar={<CategoriesNav categories={categories} />}
+					numOfItemsInCart={numOfItemsInCart}
+					useSearchSuggests={useSearchSuggests}
+				/>
+			</CategoryContext.Provider >
 
 			<main className="main-container">
 				<Outlet context={{ categories: categories }} />

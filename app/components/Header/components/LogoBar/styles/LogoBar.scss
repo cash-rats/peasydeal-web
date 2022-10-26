@@ -24,3 +24,34 @@
     height: 70px;
   }
 }
+
+.LogoBar__Category-container {}
+
+.LogoBar__Category-title {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.LogoBar__Category-list-wrapper {}
+
+.LogoBar__Category-list-title {
+  margin: 0px;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  background: rgb(244, 246, 249);
+  font-weight: 700;
+  color: rgb(52, 52, 52);
+  text-transform: uppercase;
+}
+
+.LogoBar__Category-list {
+  li {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(252, 138, 21, .2)
+    }
+  }
+}

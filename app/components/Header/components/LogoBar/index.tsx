@@ -1,10 +1,14 @@
-import type { MouseEvent } from 'react';
 import { useState } from 'react';
 import { Link, } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 import IconButton from '@mui/material/IconButton';
 import { FiMenu } from 'react-icons/fi';
+
+// Dialog related
 import Dialog from '@mui/material/Dialog';
+import CloseIcon from '@mui/icons-material/Close';
+
+import CategoryContext from '~/context/categories';
 
 import PeasyDeal from './images/Peasydeal.png';
 import styles from './styles/LogoBar.css';
@@ -19,7 +23,6 @@ function LogoBar() {
   const [openMenu, setOpenMenu] = useState(false);
 
   const handleOpenMenu = () => {
-    console.log('aaccc');
     setOpenMenu(true);
   }
   const handleCloseMenu = () => {
@@ -34,12 +37,46 @@ function LogoBar() {
             <FiMenu fontSize={26} color='white' />
           </IconButton>
           <Dialog
-            fullScreen
+            fullWidth
             open={openMenu}
             onClose={handleCloseMenu}
+            PaperProps={{ sx: { width: "86%" } }}
           >
-            <div>
-              aaa
+            <div className="LogoBar__Category-container">
+              <div className="LogoBar__Category-title">
+                <IconButton onClick={handleCloseMenu}>
+                  <CloseIcon fontSize='32' />
+                </IconButton>
+              </div>
+              <div className="LogoBar__Category-list-wrapper">
+                <h1 className="LogoBar__Category-list-title">
+                  Shop By Category
+                </h1>
+
+                <CategoryContext.Consumer>
+                  {(categories) => {
+                    return (
+                      <ul className="LogoBar__Category-list">
+                        {
+                          categories.map((category) => {
+                            return (
+                              <Link
+                                onClick={handleCloseMenu}
+                                key={category.catId}
+                                to={`/${category.title}`}
+                              >
+                                <li>
+                                  {category.title}
+                                </li>
+                              </Link>
+                            )
+                          })
+                        }
+                      </ul>
+                    )
+                  }}
+                </CategoryContext.Consumer>
+              </div>
             </div>
           </Dialog>
         </div>
