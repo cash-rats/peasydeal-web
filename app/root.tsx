@@ -1,6 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
-import { withEmotionCache } from '@emotion/react'
+import { withEmotionCache } from '@emotion/react';
+import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
 import { json } from "@remix-run/node";
 import {
   Links,
@@ -65,7 +66,7 @@ const Document = withEmotionCache(
     const envData = useLoaderData();
 
     // Only executed on client
-    useEffect(() => {
+    useEnhancedEffect(() => {
       // re-link sheet container
       emotionCache.sheet.container = document.head;
       // re-inject tags

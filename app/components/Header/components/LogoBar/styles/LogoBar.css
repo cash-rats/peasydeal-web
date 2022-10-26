@@ -18,8 +18,8 @@
   padding-right: 15px;
 }
 .LogoBar__link img {
-  min-width: 70px;
-  min-height: 70px;
+  width: 70px;
+  height: 70px;
 }
 
 /*# sourceMappingURL=LogoBar.css.map */

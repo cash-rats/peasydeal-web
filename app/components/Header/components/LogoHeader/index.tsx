@@ -18,7 +18,11 @@ interface LogoHeaderProps {
   style?: CSSProperties | undefined;
 };
 
-function LogoHeader({ children = null, categoriesBar = null, style }: LogoHeaderProps) {
+function LogoHeader({
+  children = null,
+  categoriesBar = null,
+  style,
+}: LogoHeaderProps) {
   return (
     <HeaderWrapper
       categoryBar={categoriesBar}
