@@ -45,11 +45,11 @@ export const fetchProductsByCategory = async ({
 	let endpoint = `${getMYFBEndpoint()}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}`;
 
 	if (category) {
-		endpoint = `${endpoint}&cat=${category}`;
+		endpoint = `${endpoint}&cat=${encodeURI(category)}`;
 	}
 
 	if (title) {
-		endpoint = `${endpoint}&title=${title}`;
+		endpoint = `${endpoint}&title=${encodeURI(title)}`;
 	}
 
 	const resp = await fetch(endpoint);
