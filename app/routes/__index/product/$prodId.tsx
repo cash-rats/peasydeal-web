@@ -1,13 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from 'react';
 import type { ChangeEvent } from 'react';
-import {
-	InputGroup,
-	Input,
-	InputLeftAddon,
-	InputRightAddon,
-} from '@chakra-ui/react';
-import { BsPlus } from 'react-icons/bs';
-import { BiMinus } from 'react-icons/bi';
 import type { LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
@@ -18,6 +10,7 @@ import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs
 import { useSuccessSnackbar } from '~/components/Snackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
+import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import { commitSession } from '~/sessions';
 import { insertItem } from '~/utils/shoppingcart.session';
 import type { ShoppingCartItem } from '~/utils/shoppingcart.session';
@@ -33,6 +26,7 @@ import SocialShare, { links as SocialShareLinks } from './components/SocialShare
 
 export function links() {
 	return [
+		...QuantityPickerLinks(),
 		...ProductDetailSectionLinks(),
 		...DividerLinks(),
 		...BreadCrumbsLinks(),
@@ -144,7 +138,6 @@ function ProductDetailPage() {
 	const [variationErr, setVariationErr] = useState<string>('');
 
 	const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
-		if (isNaN(Number(evt.target.value))) return;
 		updateQuantity(Number(evt.target.value));
 	};
 
@@ -350,20 +343,12 @@ function ProductDetailPage() {
 
 							{/* Quantity */}
 							<div className="input-quantity-container">
-								<InputGroup size='sm'>
-									<InputLeftAddon
-										children={<BiMinus />}
-										onClick={decreaseQuantity}
-									/>
-									<Input
-										value={quantity}
-										onChange={handleUpdateQuantity}
-									/>
-									<InputRightAddon
-										children={<BsPlus />}
-										onClick={increaseQuantity}
-									/>
-								</InputGroup>
+								<QuantityPicker
+									value={quantity}
+									onChange={handleUpdateQuantity}
+									onIncrease={increaseQuantity}
+									onDecrease={decreaseQuantity}
+								/>
 							</div>
 
 							<ProductActionBarLeft
