@@ -2,22 +2,16 @@ import { useState } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
-import {
-	InputGroup,
-	InputLeftAddon,
-	Input,
-	InputRightAddon,
-} from '@chakra-ui/react';
-import { BiMinus } from 'react-icons/bi';
-import { BsPlus } from 'react-icons/bs';
 
-import { commitSession, getSession } from '~/sessions';
-import type { SessionKey } from '~/sessions';
+import { getItem, updateItem } from '~/utils/shoppingcart.session';
+import { commitSession } from '~/sessions';
+import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 
 import styles from './styles/Item.css';
 
 export const links: LinksFunction = () => {
 	return [
+		...QuantityPickerLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
@@ -25,21 +19,12 @@ export const links: LinksFunction = () => {
 export const action: ActionFunction = async ({ request }) => {
 	const body = await request.formData();
 	const prodID = body.get('prodID') as string || '';
-	const quantity = body.get('quantity');
-	const sessionKey: SessionKey = 'shopping_cart';
-	const session = await getSession(
-		request.headers.get(("Cookie"))
-	);
+	const quantity = body.get('quantity') as string;
 
-	if (!session.has(sessionKey)) return null;
-
-	const cartItems = session.get(sessionKey);
-
-	// Only update item quantity if product exists in cart.
-	if (cartItems.hasOwnProperty(prodID)) {
-		cartItems[prodID].quantity = quantity;
-		session.set(sessionKey, cartItems);
-	}
+	const item = await getItem(request, prodID);
+	if (!item) return null;
+	item.quantity = quantity;
+	const session = await updateItem(request, item);
 
 	return new Response('', {
 		headers: {
@@ -73,7 +58,7 @@ function CartItem({
 	onPlus = () => { },
 	onChangeQuantity = () => { },
 }: CartItemProps) {
-	const [itemQauntity, setItemQuantity] = useState<number>(quantity);
+	const [itemQuantity, setItemQuantity] = useState<number>(quantity);
 	const cartItemFetcher = useFetcher();
 
 	// Update cart item item quantity in session if user isn't logged in yet, or, database if user has logged in.
@@ -84,7 +69,7 @@ function CartItem({
 
 
 	const handleClickAddQuantity = () => {
-		const q = itemQauntity + 1;
+		const q = itemQuantity + 1;
 		updateCartItemQuantityAction(prodID, q.toString());
 		setItemQuantity(q);
 		onPlus(q, prodID);
@@ -92,12 +77,12 @@ function CartItem({
 
 	const handleClickMinusQuantity = () => {
 		// We do not allow quantity deduction when quantity equals 1
-		if (itemQauntity === 1) {
-			onMinus(itemQauntity, prodID, true);
+		if (itemQuantity === 1) {
+			onMinus(itemQuantity, prodID, true);
 			return;
 		}
 
-		const q = itemQauntity - 1;
+		const q = itemQuantity - 1;
 		updateCartItemQuantityAction(prodID, q.toString());
 		setItemQuantity(q);
 		onMinus(q, prodID, false);
@@ -141,26 +126,17 @@ function CartItem({
 
 				<div className="product-quantity">
 					<cartItemFetcher.Form>
-						<InputGroup size='xs'>
-							<InputLeftAddon
-								children={<BiMinus />}
-								onClick={handleClickMinusQuantity}
-							/>
-							<Input
-								maxWidth={20}
-								value={itemQauntity}
-								onChange={handleChangeQuantity}
-							/>
-							<InputRightAddon
-								children={<BsPlus />}
-								onClick={handleClickAddQuantity}
-							/>
-						</InputGroup>
+						<QuantityPicker
+							value={itemQuantity}
+							onChange={handleChangeQuantity}
+							onDecrease={handleClickMinusQuantity}
+							onIncrease={handleClickAddQuantity}
+						/>
 					</cartItemFetcher.Form>
 				</div>
 
 				<div className="product-total">
-					{(itemQauntity * salePrice).toFixed(2)}
+					{(itemQuantity * salePrice).toFixed(2)}
 				</div>
 			</div>
 		</div>

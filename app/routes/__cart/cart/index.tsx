@@ -65,10 +65,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const cart = await getCart(request);
 
 	if (!cart || Object.keys(cart).length === 0) {
-		return json([], { status: StatusCodes.OK });
+		return json([]);
 	}
 
-	return json(cart, { status: StatusCodes.OK });
+	return json(cart);
 };
 
 export const CatchBoundary = () => {
