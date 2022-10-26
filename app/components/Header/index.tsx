@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
-import DropDownSearchBar, { links as DropDownSearchBarLinks, SuggestItem } from '~/components/DropDownSearchBar';
-import { useSearchSuggests } from '~/routes/auto-complete-search';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
+import type { SuggestItem } from '~/components/DropDownSearchBar';
 import type { SearchSuggest } from '~/routes/auto-complete-search';
 
 import LogoHeader, { links as LogoHeaderLinks } from "./components/LogoHeader";
@@ -40,7 +40,6 @@ function Header({
   return (
     <LogoHeader categoriesBar={categoriesBar} >
       <div className="Header__content">
-
         {/* search bar */}
         <div className="Header__search-bar">
           <DropDownSearchBar

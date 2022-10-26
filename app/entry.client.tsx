@@ -8,29 +8,29 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import theme from './theme';
-import { ClientStyleContext } from './context'
+import ClientStyleContext from './context'
 import createEmotionCache from './createEmotionCache'
 
 interface ClientCacheProviderProps {
-  children: React.ReactNode;
+	children: React.ReactNode;
 }
 
 function ClientCacheProvider({ children }: ClientCacheProviderProps) {
-  const [cache, setCache] = React.useState(createEmotionCache())
+	const [cache, setCache] = React.useState(createEmotionCache())
 
-  function reset() {
-    setCache(createEmotionCache())
-  }
+	function reset() {
+		setCache(createEmotionCache())
+	}
 
-  return (
-    <ClientStyleContext.Provider value={{ reset }}>
-      <CacheProvider value={cache}>{children}</CacheProvider>
-    </ClientStyleContext.Provider>
-  )
+	return (
+		<ClientStyleContext.Provider value={{ reset }}>
+			<CacheProvider value={cache}>{children}</CacheProvider>
+		</ClientStyleContext.Provider>
+	)
 }
 
 function hydrate() {
-  React.startTransition(() => {
+	React.startTransition(() => {
 		if (process.env.NODE_ENV === 'development') {
 			require("react-dom").hydrate(
 				<React.StrictMode>
@@ -56,11 +56,11 @@ function hydrate() {
 				</React.StrictMode>,
 			)
 		}
-  });
+	});
 }
 
 if (window.requestIdleCallback) {
-  window.requestIdleCallback(hydrate);
+	window.requestIdleCallback(hydrate);
 } else {
-  window.setTimeout(hydrate, 1);
+	window.setTimeout(hydrate, 1);
 }

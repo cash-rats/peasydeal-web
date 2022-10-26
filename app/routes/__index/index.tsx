@@ -84,7 +84,6 @@ export const action: ActionFunction = async ({ request }) => {
  */
 export default function Index() {
 	const { prod_rows, has_more } = useLoaderData<LoaderType>();
-	console.log('prod_rows 1', prod_rows);
 	const [productRows, addProductRows] = useState<Product[][]>(prod_rows);
 	const currPage = useRef(1);
 	const [hasMore, setHasMore] = useState(has_more);
