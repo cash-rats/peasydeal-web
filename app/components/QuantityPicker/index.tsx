@@ -41,7 +41,7 @@ export default function QuantityPicker({
   return (
     <div className="QuantityPicker__wrapper">
       <div className="QuantityPicker__icon-wrapper">
-        <IconButton onClick={handleIncrease} disableRipple>
+        <IconButton onClick={handleIncrease} disableTouchRipple>
           <AiOutlinePlus fontSize={16} />
         </IconButton>
       </div>
@@ -52,7 +52,7 @@ export default function QuantityPicker({
         onChange={handleChange}
       />
       <div className="QuantityPicker__icon-wrapper">
-        <IconButton onClick={handleDecrease} disableRipple>
+        <IconButton onClick={handleDecrease} disableTouchRipple>
           <AiOutlineMinus fontSize={16} />
         </IconButton>
       </div>
