@@ -54,8 +54,14 @@
 }
 
 .carousel__thumbnail {
-  width: 55px;
-  height: 55px;
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
 }
 
 .slick-thumb {
@@ -74,20 +80,23 @@
 
 .ProductDetailSection__carousel-thumbnail-container {
   cursor: pointer;
+  display: inline-block !important;
   width: 65px !important;
   height: 65px;
   transition: background-color 0.25s;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 
 .ProductDetailSection__carousel-thumbnails {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  padding: 0 0.5rem;
+  padding: 0.3rem 0.5rem;
   margin-top: 1rem;
+  overflow-x: scroll;
+  border-radius: 3px;
+  background-color: rgba(255, 115, 55, 0.3);
+  white-space: nowrap;
 }
 
 .active-thumbnail {

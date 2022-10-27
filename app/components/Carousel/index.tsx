@@ -25,8 +25,10 @@ interface PicsCarouselProps {
 };
 
 /*
- * - [x] hover thumbnail display border.
- * - [x] clicks on thumbnail should display that image.
+ * TODOs:
+ * 	- [x] hover thumbnail display border.
+ * 	- [x] clicks on thumbnail should display that image.
+ *  - [ ] 當移動 slide 到 thumbnail 看不到的位置，要 scroll thumbnail bar.
  */
 function PicsCarousel({ images }: PicsCarouselProps) {
 	const sliderRef = useRef<Slider>();
@@ -87,8 +89,7 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 					{
 						images.map((image, index) => {
 							return (
-								<a
-									href="/#"
+								<div
 									className={
 										clsx("ProductDetailSection__carousel-thumbnail-container", {
 											'active-thumbnail': index === activeSlide
@@ -105,7 +106,7 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 										className="carousel__thumbnail"
 										src={image}
 									/>
-								</a>
+								</div>
 							)
 						})
 					}
