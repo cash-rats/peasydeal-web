@@ -7,10 +7,9 @@ import { BsBagCheck } from 'react-icons/bs';
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions';
 import { getCart, removeItem } from '~/utils/shoppingcart.session';
+import type { ShoppingCart } from '~/utils/shoppingcart.session';
 import {
-	calcSubTotal,
 	calcGrandTotal,
-	calcPriceWithTax,
 	TAX,
 	SHIPPING_FEE
 } from '~/utils/checkout_accountant';
@@ -18,6 +17,8 @@ import {
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
 import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
+import { fetchPriceInfo } from './cart.server';
+import type { PriceInfo, PriceQuery } from './cart.server';
 import styles from './styles/cart.css';
 
 export const links: LinksFunction = () => {
@@ -57,6 +58,11 @@ export const action: ActionFunction = async ({ request }) => {
 		});
 }
 
+type LoaderType = {
+	cart: ShoppingCart | {};
+	priceInfo: PriceInfo | null;
+};
+
 /*
  * Fetch cart items from product list when user is not logged in.
  */
@@ -65,10 +71,23 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const cart = await getCart(request);
 
 	if (!cart || Object.keys(cart).length === 0) {
-		return json([]);
+		return json<LoaderType>({ cart: {}, priceInfo: null });
 	}
 
-	return json(cart);
+	const costQuery = Object.keys(cart).map((productUUID): PriceQuery => {
+		const item = cart[productUUID];
+		return {
+			variation_uuid: item.variationUUID,
+			quantity: Number(item.quantity),
+		}
+	});
+
+	// console.log('costQuery', costQuery);
+	// Fetch price info.
+	const priceInfo = await fetchPriceInfo({ products: costQuery });
+	console.log('costInfo 2', priceInfo);
+
+	return json<LoaderType>({ cart, priceInfo });
 };
 
 export const CatchBoundary = () => {
@@ -88,8 +107,8 @@ export const CatchBoundary = () => {
  * - [x] Checkout flow.
  */
 function Cart() {
-	const cartItemsData = useLoaderData();
-	const [cartItems, setCartItems] = useState(cartItemsData);
+	const { cart, priceInfo } = useLoaderData<LoaderType>();
+	const [cartItems, setCartItems] = useState<ShoppingCart>(cart);
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 	const removeItemFetcher = useFetcher()
 	const targetRemovalProdID = useRef<null | string>(null);
@@ -112,7 +131,7 @@ function Cart() {
 				...prev,
 				[prodID]: {
 					...prev[prodID],
-					quantity,
+					quantity: `${quantity}`,
 				}
 			}
 		));
@@ -135,7 +154,7 @@ function Cart() {
 		if (!targetRemovalProdID.current) return;
 
 		// Remove cart item on the client side before mutating session.
-		const updatedCartItems = Object.keys(cartItems).reduce((newCartItems, prodID) => {
+		const updatedCartItems = Object.keys(cartItems).reduce((newCartItems: ShoppingCart, prodID) => {
 			if (prodID === targetRemovalProdID.current) return newCartItems;
 			newCartItems[prodID] = cartItems[prodID];
 			return newCartItems
@@ -193,14 +212,13 @@ function Cart() {
 						// TODO: add typescript to item.
 						Object.keys(cartItems).map((prodID) => {
 							const item = cartItems[prodID];
-
 							return (
 								<CartItem
 									key={prodID}
 									prodID={prodID}
 									image={item.image}
 									title={item.title}
-									description={item.subTitle}
+									description={item.specName}
 									salePrice={Number(item.salePrice)}
 									retailPrice={Number(item.retailPrice)}
 									quantity={Number(item.quantity)}
@@ -213,50 +231,47 @@ function Cart() {
 					}
 
 					{/* result row */}
-					<div className="result-row">
-						<div className="left" />
+					{
+						priceInfo && (
+							<div className="result-row">
+								<div className="left" />
 
-						<div className="right">
-							<div className="subtotal">
-								<label> Subtotal </label>
-								<div className="result-value"> ${
-									calcSubTotal(cartItems).toFixed(2)
-								} </div>
-							</div>
+								<div className="right">
+									<div className="subtotal">
+										<label> Subtotal </label>
+										<div className="result-value"> {priceInfo.sub_total} </div>
+									</div>
 
-							<div className="tax">
-								<label> Tax ({TAX * 100}%) </label>
-								<div className="result-value"> {
-									calcPriceWithTax(
-										Number(calcSubTotal(cartItems).toFixed(2)),
-									).toFixed(2)
-								}
+									<div className="tax">
+										<label> Tax ({TAX * 100}%) </label>
+										<div className="result-value"> {priceInfo.tax_amount} </div>
+									</div>
+
+									<div className="shipping">
+										<label> Shipping </label>
+										<div className="result-value"> ${priceInfo.shipping_fee} </div>
+									</div>
+
+									<div className="grand-total">
+										<label> Total </label>
+										<div className="result-value"> ${priceInfo.total_amount} </div>
+									</div>
+
+									<div className="checkout-button">
+										<Link prefetch="render" to="/checkout">
+											<RoundButton
+												size='large'
+												colorScheme='checkout'
+												leftIcon={<BsBagCheck fontSize={22} />}
+											>
+												<b>Proceed Checkout</b>
+											</RoundButton>
+										</Link>
+									</div>
 								</div>
 							</div>
-
-							<div className="shipping">
-								<label> Shipping </label>
-								<div className="result-value"> ${SHIPPING_FEE} </div>
-							</div>
-
-							<div className="grand-total">
-								<label> Grand Total </label>
-								<div className="result-value"> ${calcGrandTotal(cartItems).toFixed(2)} </div>
-							</div>
-
-							<div className="checkout-button">
-								<Link to="/checkout">
-									<RoundButton
-										size='large'
-										colorScheme='checkout'
-										leftIcon={<BsBagCheck fontSize={22} />}
-									>
-										<b>Proceed Checkout</b>
-									</RoundButton>
-								</Link>
-							</div>
-						</div>
-					</div>
+						)
+					}
 				</div>
 			</div>
 		</section>
