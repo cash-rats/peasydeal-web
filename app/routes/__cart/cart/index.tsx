@@ -6,13 +6,11 @@ import { BsBagCheck } from 'react-icons/bs';
 
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions';
-import { getCart, removeItem } from '~/utils/shoppingcart.session';
+import { getCart, removeItem, updateItem } from '~/utils/shoppingcart.session';
 import type { ShoppingCart } from '~/utils/shoppingcart.session';
-import {
-	calcGrandTotal,
-	TAX,
-	SHIPPING_FEE
-} from '~/utils/checkout_accountant';
+
+// TODO: all script in this file should be removed.
+import { TAX } from '~/utils/checkout_accountant';
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
@@ -30,12 +28,19 @@ export const links: LinksFunction = () => {
 	];
 };
 
-// TODOs:
-//   - handle prod_id is falsey value
-//   - handle session key not exists
-export const action: ActionFunction = async ({ request }) => {
-	const body = await request.formData();
-	const prodID = body.get('prod_id') as string || '';
+type __action_type = 'remove_cart_item' | 'calc_price';
+
+const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
+	return Object.keys(cart).map((productUUID): PriceQuery => {
+		const item = cart[productUUID];
+		return {
+			variation_uuid: item.variationUUID,
+			quantity: Number(item.quantity),
+		}
+	});
+}
+
+const __removeCartItemAction = async (prodID: string, request: Request) => {
 	const session = await removeItem(request, prodID);
 	const cart = await getCart(request);
 
@@ -58,6 +63,54 @@ export const action: ActionFunction = async ({ request }) => {
 		});
 }
 
+const __updatePriceInfo = async (prodID: string, quantity: string, request: Request) => {
+	// Retrieve cart from
+	const cart = await getCart(request);
+	if (!cart || Object.keys(cart).length === 0) return null;
+	const item = cart[prodID];
+	item.quantity = `${quantity}`;
+	const priceQuery = convertShoppingCartToPriceQuery(cart);
+	const priceInfo = await fetchPriceInfo({ products: priceQuery });
+
+	// If price info is fetched, update quantity the shopping cart.
+	const session = await updateItem(request, item);
+
+
+	return new Response(
+		JSON.stringify({
+			price_info: priceInfo,
+		}),
+		{
+			headers: {
+				'Set-Cookie': await commitSession(session),
+			},
+		},
+	);
+};
+
+// TODOs:
+//   - handle prod_id is falsey value
+//   - handle session key not exists
+export const action: ActionFunction = async ({ request }) => {
+	const form = await request.formData();
+	const formEntries = Object.fromEntries(form.entries());
+	const actionType = formEntries['__action'] as __action_type || 'remove_cart_item'
+
+	if (actionType === 'remove_cart_item') {
+		const prodID = formEntries['prod_id'] as string || '';
+		return await __removeCartItemAction(prodID, request);
+	}
+
+	if (actionType === 'calc_price') {
+		const prodID = formEntries['prod_id'] as string || '';
+		const quantity = formEntries['quantity'] as string;
+		return await __updatePriceInfo(prodID, quantity, request);
+	}
+
+	// Unknown action
+	return null;
+}
+
 type LoaderType = {
 	cart: ShoppingCart | {};
 	priceInfo: PriceInfo | null;
@@ -73,19 +126,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 	if (!cart || Object.keys(cart).length === 0) {
 		return json<LoaderType>({ cart: {}, priceInfo: null });
 	}
-
-	const costQuery = Object.keys(cart).map((productUUID): PriceQuery => {
-		const item = cart[productUUID];
-		return {
-			variation_uuid: item.variationUUID,
-			quantity: Number(item.quantity),
-		}
-	});
-
-	// console.log('costQuery', costQuery);
-	// Fetch price info.
+	const costQuery = convertShoppingCartToPriceQuery(cart);
 	const priceInfo = await fetchPriceInfo({ products: costQuery });
-	console.log('costInfo 2', priceInfo);
 
 	return json<LoaderType>({ cart, priceInfo });
 };
@@ -107,10 +149,17 @@ export const CatchBoundary = () => {
  * - [x] Checkout flow.
  */
 function Cart() {
-	const { cart, priceInfo } = useLoaderData<LoaderType>();
-	const [cartItems, setCartItems] = useState<ShoppingCart>(cart);
+	const preloadData = useLoaderData<LoaderType>();
+
+	const [cartItems, setCartItems] = useState<ShoppingCart>(preloadData.cart);
+	const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
+
+
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
-	const removeItemFetcher = useFetcher()
+
+	const removeItemFetcher = useFetcher();
+	const updatePriceFetcher = useFetcher();
+
 	const targetRemovalProdID = useRef<null | string>(null);
 
 	// If cart item contains no item, we simply redirect user to `/cart` so that
@@ -123,9 +172,32 @@ function Cart() {
 				removeItemFetcher.load('/cart?index');
 			}
 		}
-	}, [removeItemFetcher])
+	}, [removeItemFetcher]);
+
+	// When user update the quantity, we need to update the cost by querying backend.
+	useEffect(() => {
+		if (updatePriceFetcher.type === 'done') {
+			const data = updatePriceFetcher.data as string | null;
+			if (!data) return;
+
+			const dataJSON = JSON.parse(data);
+			setPriceInfo(dataJSON.price_info);
+		}
+	}, [updatePriceFetcher]);
 
 	const updateItemQuantity = (quantity: number, prodID: string) => {
+		updatePriceFetcher.submit(
+			{
+				__action: 'calc_price',
+				prod_id: prodID,
+				quantity: `${quantity}`,
+			},
+			{
+				method: 'post',
+				action: '/cart?index'
+			}
+		);
+
 		setCartItems((prev) => (
 			{
 				...prev,
@@ -163,7 +235,10 @@ function Cart() {
 		setCartItems(updatedCartItems);
 
 		removeItemFetcher.submit(
-			{ prod_id: targetRemovalProdID.current },
+			{
+				__action: 'remove_cart_item',
+				prod_id: targetRemovalProdID.current
+			},
 			{
 				method: 'post',
 				action: '/cart?index',
@@ -258,7 +333,7 @@ function Cart() {
 									</div>
 
 									<div className="checkout-button">
-										<Link prefetch="render" to="/checkout">
+										<Link prefetch="intent" to="/checkout">
 											<RoundButton
 												size='large'
 												colorScheme='checkout'
