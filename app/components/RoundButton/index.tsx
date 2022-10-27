@@ -21,7 +21,7 @@ const BasicRoundButton = styled(LoadingButton)({
 
 const AddToCartButton = styled(BasicRoundButton)({
   color: 'white',
-  fontSize: '1.2rem',
+  fontSize: '1.1rem',
   fontWeight: '700',
   border: 'solid 1px #009378',
   backgroundColor: '#009378',
@@ -34,7 +34,7 @@ const AddToCartButton = styled(BasicRoundButton)({
 
 const BuyNowButton = styled(BasicRoundButton)({
   color: 'white',
-  fontSize: '1.2rem',
+  fontSize: '1.1rem',
   fontWeight: '700',
   border: 'solid 1px #CF7135',
   backgroundColor: '#CF7135',
