@@ -18,19 +18,21 @@ export function PolicyContent() {
       <h3 className="content-title"> Policy </h3>
       <ul className="content-list">
         <li>
-          <Link to='/privacy'>Privacy Policy</Link>
+          <Link prefetch='render' to='/privacy' >
+            Privacy Policy
+          </Link>
         </li>
         <li>
-          <Link to='/return-policy'>
+          <Link prefetch='render' to='/return-policy'>
             Return Policy
           </Link>
         </li>
         <li>
-          <Link to='/shipping-policy'>
+          <Link prefetch='render' to='/shipping-policy'>
             Shipping Policy
           </Link>
         </li>
-        <Link to='/terms-of-use'>
+        <Link prefetch='render' to='/terms-of-use'>
           <li>Terms of Use</li>
         </Link>
       </ul>

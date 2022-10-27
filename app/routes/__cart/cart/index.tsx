@@ -160,8 +160,6 @@ function Cart() {
 		);
 	}
 
-	console.log('cartItems', cartItems);
-
 	return (
 		<section className="shopping-cart-section">
 			<RemoveItemModal
