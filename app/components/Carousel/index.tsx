@@ -37,7 +37,7 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 	const handleClickNext = () => console.log('next');
 	const handleClickPrev = () => console.log('prev');
 
-	const handleChooseSlide = (index: number, evt: MouseEvent<HTMLAnchorElement>) => {
+	const handleChooseSlide = (index: number, evt: MouseEvent<HTMLDivElement>) => {
 		evt.preventDefault();
 		if (!sliderRef.current) return;
 

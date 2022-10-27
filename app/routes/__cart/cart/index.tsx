@@ -160,6 +160,8 @@ function Cart() {
 		);
 	}
 
+	console.log('cartItems', cartItems);
+
 	return (
 		<section className="shopping-cart-section">
 			<RemoveItemModal
@@ -175,27 +177,20 @@ function Cart() {
 					<h1 className="title">
 						Shopping Cart
 					</h1>
+
+					{
+						Object.keys(cartItems).length > 0 && (
+							<h1 className="count">
+								(
+								{Object.keys(cartItems).length} &nbsp;
+								{Object.keys(cartItems).length > 1 ? 'items' : 'item'}
+								)
+							</h1>
+						)
+					}
 				</div>
 
 				<div className="cart-items-container">
-					<div className="head-row">
-						<h1 className="description-label">
-							Description
-						</h1>
-
-						<h1 className="price-label">
-							Price
-						</h1>
-
-						<h1 className="quantity-label">
-							Qty
-						</h1>
-
-						<h1 className="total-label">
-							Total
-						</h1>
-					</div>
-
 					{
 						// TODO: add typescript to item.
 						Object.keys(cartItems).map((prodID) => {

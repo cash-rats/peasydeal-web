@@ -12,6 +12,10 @@
 	padding-bottom: 3.75rem;
 
 	.shopping-cart_topbar {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+
 		.title {
 			font-size: 2em;
 			font-weight: bold;
@@ -19,6 +23,10 @@
 			margin-block-end: 0.67em;
 			margin-inline-start: 0px;
 			margin-inline-end: 0px;
+		}
+
+		.count {
+			font-size: 1.8em;
 		}
 	}
 
