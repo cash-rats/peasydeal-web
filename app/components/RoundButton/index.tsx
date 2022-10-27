@@ -23,11 +23,12 @@ const AddToCartButton = styled(BasicRoundButton)({
   color: 'white',
   fontSize: '1.2rem',
   fontWeight: '700',
-  borderColor: 'white',
+  border: 'solid 1px #009378',
   backgroundColor: '#009378',
+  boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
   '&:hover': {
     backgroundColor: 'rgba(0, 147, 120, 0.8)',
-    borderColor: 'white',
+    border: 'solid 1px #009378',
   },
 }) as typeof LoadingButton;
 
@@ -35,10 +36,12 @@ const BuyNowButton = styled(BasicRoundButton)({
   color: 'white',
   fontSize: '1.2rem',
   fontWeight: '700',
+  border: 'solid 1px #CF7135',
   backgroundColor: '#CF7135',
+  boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
   '&:hover': {
     backgroundColor: 'rgba(207, 112, 53, 0.8)',
-    borderColor: 'white',
+    border: 'solid 1px #CF7135',
   },
 }) as typeof LoadingButton;
 

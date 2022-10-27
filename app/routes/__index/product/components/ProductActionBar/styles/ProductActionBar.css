@@ -3,11 +3,12 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px;
-  background-color: #fff;
+  background: rgba(255, 255, 255, 0.9) !important;
+  transition: all 150ms linear;
+  border-top: 0.5px solid #F2F2F2;
   display: flex;
   gap: 10px;
-  padding: 0 10px;
+  padding: 0.5rem 1rem;
   align-items: center;
 }
 .client-action-bar div {

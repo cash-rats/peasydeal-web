@@ -1,6 +1,7 @@
 import { forwardRef } from 'react';
-import Button from '@mui/lab/LoadingButton';
 import type { LinksFunction } from '@remix-run/node';
+
+import RoundButton from '~/components/RoundButton';
 
 import styles from './styles/ProductActionBar.css';
 
@@ -26,22 +27,24 @@ const ProductActionBar = forwardRef(({
     className="client-action-bar"
   >
     <div>
-      <Button
+      <RoundButton
         onClick={onClickAddToCart}
         fullWidth
         loading={loading}
+        colorScheme='addtocart'
       >
         Add To Cart
-      </Button>
+      </RoundButton>
     </div>
 
     <div>
-      <Button
+      <RoundButton
         fullWidth
         onClick={onClickBuyNow}
+        colorScheme='buynow'
       >
         Buy Now
-      </Button>
+      </RoundButton>
     </div>
   </div>
 ));
