@@ -10,23 +10,26 @@ export default {
 export const AddToCart = () => (
   <RoundButton
     colorScheme='addtocart'
-    text='Add To Cart'
     onClick={() => console.log('hello')}
-  />
+  >
+    Add To Cart
+  </RoundButton>
 )
 
 export const BuyNow = () => (
   <RoundButton
     colorScheme='buynow'
-    text='Buy Now'
     onClick={() => console.log('hello')}
-  />
+  >
+    Buy Now
+  </RoundButton>
 )
 
 export const View = () => (
   <RoundButton
     colorScheme='blue'
-    text='View'
     onClick={() => console.log('hello')}
-  />
+  >
+    View
+  </RoundButton>
 )

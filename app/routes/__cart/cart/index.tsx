@@ -2,10 +2,9 @@ import { useEffect, useState, useRef } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link, useFetcher } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction, ActionFunction, } from '@remix-run/node';
-import { StatusCodes } from 'http-status-codes';
-import { Button } from '@chakra-ui/react';
 import { BsBagCheck } from 'react-icons/bs';
 
+import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions';
 import { getCart, removeItem } from '~/utils/shoppingcart.session';
 import {
@@ -23,6 +22,7 @@ import styles from './styles/cart.css';
 
 export const links: LinksFunction = () => {
 	return [
+		...RoundButtonLinks(),
 		...ItemLinks(),
 		...EmptyShippingCartLinks(),
 		{ rel: 'stylesheet', href: styles },
@@ -253,13 +253,13 @@ function Cart() {
 
 							<div className="checkout-button">
 								<Link to="/checkout">
-									<Button
-										size='lg'
-										colorScheme='green'
+									<RoundButton
+										size='large'
+										colorScheme='checkout'
 										leftIcon={<BsBagCheck fontSize={22} />}
 									>
-										Proceed Checkout
-									</Button>
+										<b>Proceed Checkout</b>
+									</RoundButton>
 								</Link>
 							</div>
 						</div>

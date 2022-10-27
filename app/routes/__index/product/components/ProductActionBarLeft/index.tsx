@@ -27,16 +27,18 @@ export default function ProductActionBarLeft({
           colorScheme='addtocart'
           onClick={onClickAddToCart}
           isLoading={loading}
-          text='Add To Cart'
-        />
+        >
+          Add To Cart
+        </RoundButton>
       </div>
 
       <div>
         <RoundButton
           colorScheme='buynow'
           onClick={onClickBuyNow}
-          text='Buy Now'
-        />
+        >
+          Buy Now
+        </RoundButton>
       </div>
     </div>
   );
