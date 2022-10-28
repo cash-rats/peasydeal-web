@@ -369,6 +369,7 @@ function ProductDetailPage() {
 								<TbShare fontSize={20} /> share
 							</span>
 						} />
+
 						<SocialShare />
 
 						<div className="delivery-container">

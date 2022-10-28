@@ -1,9 +1,9 @@
 import type { LinksFunction } from '@remix-run/node';
 
 import styles from './styles/SocialShare.css';
-import Facebook from './images/facebook.png';
-import Twitter from './images/twitter.png';
-import Whatsapp from './images/whatsapp.png';
+// import Facebook from './images/facebook.png';
+// import Twitter from './images/twitter.png';
+// import Whatsapp from './images/whatsapp.png';
 
 export const links: LinksFunction = () => {
   return [
@@ -14,7 +14,8 @@ export const links: LinksFunction = () => {
 export default function SocialShare() {
   return (
     <div className="SocialShare__wrapper">
-      <ul className="SocialShare__list">
+      <div className="sharethis-inline-share-buttons"></div>
+      {/* <ul className="SocialShare__list">
         <li>
           <img alt='share on facebook' src={Facebook} />
         </li>
@@ -24,7 +25,7 @@ export default function SocialShare() {
         <li>
           <img alt='share on whatsapp' src={Whatsapp} />
         </li>
-      </ul>
+      </ul> */}
     </div>
   );
 }
