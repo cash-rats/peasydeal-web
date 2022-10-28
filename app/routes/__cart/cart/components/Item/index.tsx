@@ -6,11 +6,13 @@ import { useFetcher } from '@remix-run/react';
 import { getItem, updateItem } from '~/utils/shoppingcart.session';
 import { commitSession } from '~/sessions';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
+import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
 
 import styles from './styles/Item.css';
 
 export const links: LinksFunction = () => {
 	return [
+		...QuantityDropDownLinks(),
 		...QuantityPickerLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
@@ -88,12 +90,10 @@ function CartItem({
 		onMinus(q, prodID, false);
 	}
 
-	const handleChangeQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
-		const q = Number(evt.target.value)
-		if (isNaN(q)) return;
-		updateCartItemQuantityAction(prodID, q.toString());
-		setItemQuantity(q);
-		onChangeQuantity(q, prodID);
+	const handleChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, number: number) => {
+		updateCartItemQuantityAction(prodID, number.toString());
+		setItemQuantity(number);
+		onChangeQuantity(number, prodID);
 	}
 
 	return (
@@ -126,11 +126,9 @@ function CartItem({
 
 				<div className="product-quantity">
 					<cartItemFetcher.Form>
-						<QuantityPicker
+						<QuantityDropDown
 							value={itemQuantity}
 							onChange={handleChangeQuantity}
-							onDecrease={handleClickMinusQuantity}
-							onIncrease={handleClickAddQuantity}
 						/>
 					</cartItemFetcher.Form>
 				</div>

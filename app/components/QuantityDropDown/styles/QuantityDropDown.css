@@ -1,5 +1,6 @@
 .QuantityDropDown__wrapper {
   width: 100%;
+  position: relative;
 }
 
 .QuantityDropDown__text {
@@ -31,6 +32,10 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0 0 3px 0 rgba(73, 143, 226, 0.5);
+  position: absolute;
+  width: 100%;
+  background-color: white;
+  z-index: 1;
 }
 .QuantityDropDown__list li {
   cursor: pointer;

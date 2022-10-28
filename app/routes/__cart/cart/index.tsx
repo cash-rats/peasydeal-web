@@ -161,10 +161,10 @@ function Cart() {
 
 	const targetRemovalProdID = useRef<null | string>(null);
 
-	let debounceTimer = useRef<NodeJS.Timeout | string | number | undefined>(undefined);
-	const calcPriceInfo = useCallback((cart: ShoppingCart) => {
-		console.log('calcPriceInfo', cart);
-	}, [])
+	// let debounceTimer = useRef<NodeJS.Timeout | string | number | undefined>(undefined);
+	// const calcPriceInfo = useCallback((cart: ShoppingCart) => {
+	// 	console.log('calcPriceInfo', cart);
+	// }, [])
 
 	// If cart item contains no item, we simply redirect user to `/cart` so that
 	// corresponding loader can display empty cart page to user.
@@ -202,24 +202,24 @@ function Cart() {
 		// 	}
 		// );
 
-		const newCart = {
-			...cartItems,
-			[prodID]: {
-				...cartItems[prodID],
-				quantity: `${quantity}`,
-			}
-		} as ShoppingCart;
+		// const newCart = {
+		// 	...cartItems,
+		// 	[prodID]: {
+		// 		...cartItems[prodID],
+		// 		quantity: `${quantity}`,
+		// 	}
+		// } as ShoppingCart;
 
-		if (debounceTimer.current !== undefined) {
-			clearTimeout(debounceTimer.current);
-			debounceTimer.current = undefined;
-		}
+		// if (debounceTimer.current !== undefined) {
+		// 	clearTimeout(debounceTimer.current);
+		// 	debounceTimer.current = undefined;
+		// }
 
-		debounceTimer.current = setTimeout(() => {
-			calcPriceInfo(newCart);
-		}, 200)
+		// debounceTimer.current = setTimeout(() => {
+		// 	calcPriceInfo(newCart);
+		// }, 200)
 
-		setCartItems(newCart);
+		// setCartItems(newCart);
 
 		// setCartItems((prev) => (
 		// 	{

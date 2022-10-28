@@ -1,12 +1,13 @@
 import { useRef, useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
+import type { LinksFunction } from '@remix-run/node';
 
 import useBodyClick from '~/hooks/useBodyClick';
 
 import styles from './styles/QuantityDropDown.css';
 
-export const links = () => {
-  return [{ href: styles, ref: 'stylesheet' }];
+export const links: LinksFunction = () => {
+  return [{ href: styles, rel: 'stylesheet' }];
 }
 
 interface QuantityDropDownProps {
