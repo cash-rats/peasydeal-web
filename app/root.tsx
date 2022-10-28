@@ -89,6 +89,7 @@ const Document = withEmotionCache(
           <Meta />
           <Links />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
+
           {serverStyleData?.map(({ key, ids, css }) => (
             <style
               key={key}
@@ -97,39 +98,47 @@ const Document = withEmotionCache(
             />
           ))}
 
-          {/* Social feed share buttons -- Start */}
-          <script
-            type="text/javascript"
-            src="https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons&source=platform"
-            async
-          ></script>
 
           <script
             type='text/javascript'
             src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons'
             async
-          ></script>
+          >
+          </script>
 
-          <script
-            type='text/javascript'
-            src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=privacy-policy-generator&source=platform'
-            async
-          ></script>
-
-          <div className="sharethis-privacy-policy"></div>
-          {/* Social feed share buttons -- End */}
         </head>
         <body>
           {children}
 
           <script
             dangerouslySetInnerHTML={{
-              __html: `window.ENV=${JSON.stringify(envData)}`
+              __html: `
+                window.ENV=${JSON.stringify(envData)}
+              `
             }}
           />
 
-
           <ScrollRestoration />
+
+          {/* Social feed share buttons -- Start */}
+
+          {/*
+          <script
+            src="https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons&source=platform"
+            async
+          ></script>
+
+          <script
+            src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons'
+            async
+          ></script>
+
+          <script
+            src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=privacy-policy-generator&source=platform'
+            async
+          ></script> */}
+
+          {/* Social feed share buttons -- End */}
           <Scripts />
           {process.env.NODE_ENV === "development" && <LiveReload />}
         </body>
