@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import type { ChangeEvent, MouseEvent } from 'react';
+import type { ChangeEvent, MouseEvent, FocusEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import useBodyClick from '~/hooks/useBodyClick';
@@ -13,19 +13,19 @@ export const links: LinksFunction = () => {
 interface QuantityDropDownProps {
   value?: number;
   maxNum?: number
-  onBlur?: (evt: ChangeEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>, number: number) => void;
+  onChange?: (evt: ChangeEvent<HTMLInputElement | MouseEvent<HTMLLIElement>>) => void;
+  onBlur?: (evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>, number: number) => void;
 }
 
 export default function QuantityDropDown({
   value = 1,
   maxNum = 5,
+  onChange = () => { },
   onBlur = () => { },
 }: QuantityDropDownProps) {
   const dropDownListRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
   const numArr = new Array(maxNum).fill(0).map((_, i) => i + 1);
-  const [cValue, setCvalue] = useState(value);
-
   useBodyClick((evt: MouseEvent) => {
     evt.preventDefault();
     if (!dropDownListRef || !dropDownListRef.current) return;
@@ -42,19 +42,17 @@ export default function QuantityDropDown({
   const handleOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const number = Number(evt.target.value);
     if (isNaN(number)) return;
-    setCvalue(number);
+    onChange(evt);
   }
 
-  const handleOnBlur = (evt: ChangeEvent<HTMLInputElement>) => {
+  const handleOnBlur = (evt: FocusEvent<HTMLInputElement>) => {
     const number = Number(evt.target.value);
     if (isNaN(number)) return;
-    setCvalue(number);
     onBlur(evt, number);
   }
 
   const handleClickNumber = (evt: MouseEvent<HTMLLIElement>, number: number) => {
     setOpen(false);
-    setCvalue(number);
     onBlur(evt, number);
   }
 
@@ -65,7 +63,7 @@ export default function QuantityDropDown({
         className="QuantityDropDown__text"
         maxLength={3}
         onFocus={handleFocus}
-        value={cValue}
+        value={value}
         onChange={handleOnChange}
         onBlur={handleOnBlur}
       />

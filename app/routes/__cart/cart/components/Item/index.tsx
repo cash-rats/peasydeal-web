@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, FocusEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
 
@@ -21,7 +20,8 @@ interface CartItemProps {
 	quantity?: number;
 	onMinus?: (quantity: number, prodID: string, askRemoval: boolean) => void;
 	onPlus?: (quantity: number, prodID: string) => void;
-	onChangeQuantity?: (quantity: number, prodID: string, askRemoval: boolean) => void;
+	onChangeQuantity?: (evt: ChangeEvent<HTMLInputElement>) => void;
+	onBlurQuantity?: (evt: FocusEvent<HTMLInputElement>, number: number) => void;
 }
 
 function CartItem({
@@ -32,22 +32,9 @@ function CartItem({
 	salePrice,
 	retailPrice,
 	quantity = 1,
-	onMinus = () => { },
-	onPlus = () => { },
 	onChangeQuantity = () => { },
+	onBlurQuantity = (evt: FocusEvent<HTMLInputElement>, number: number) => { },
 }: CartItemProps) {
-	const [itemQuantity, setItemQuantity] = useState<number>(quantity);
-	const handleChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, number: number) => {
-		setItemQuantity(number);
-
-		if (number === 0) {
-			onChangeQuantity(number, prodID, true);
-			return;
-		}
-
-		onChangeQuantity(number, prodID, false);
-	}
-
 	return (
 		<div className="cart-item">
 			{/* Item image */}
@@ -78,13 +65,14 @@ function CartItem({
 
 				<div className="product-quantity">
 					<QuantityDropDown
-						value={itemQuantity}
-						onBlur={handleChangeQuantity}
+						value={quantity}
+						onChange={onChangeQuantity}
+						onBlur={onBlurQuantity}
 					/>
 				</div>
 
 				<div className="product-total">
-					{(itemQuantity * salePrice).toFixed(2)}
+					{(quantity * salePrice).toFixed(2)}
 				</div>
 			</div>
 		</div>

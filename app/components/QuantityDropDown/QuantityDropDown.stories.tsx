@@ -9,16 +9,18 @@ export default {
 } as ComponentMeta<typeof QuantityDropDown>;
 
 const Template = () => {
-  const [num] = useState(2);
+  const [num, setNum] = useState(2);
+  const handleOnChange = (evt) => {
+    setNum(Number(evt.target.value));
+  }
+
   return (
     <div style={{
       width: '55px',
     }}>
       <QuantityDropDown
         value={num}
-        onChange={(evt, number) => {
-          console.log('onchange', number);
-        }}
+        onChange={handleOnChange}
       />
     </div>
   )

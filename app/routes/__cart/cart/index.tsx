@@ -1,4 +1,5 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import type { ChangeEvent, FocusEvent } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link, useFetcher } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction, ActionFunction, } from '@remix-run/node';
@@ -156,6 +157,10 @@ export const CatchBoundary = () => {
 	return (<EmptyShoppingCart />);
 }
 
+type PreviousQuantity = {
+	[key: string]: string;
+}
+
 /*
  * Coppy shopee's layout
  * @see https://codepen.io/justinklemm/pen/kyMjjv
@@ -172,6 +177,7 @@ function Cart() {
 	const preloadData = useLoaderData<LoaderType>();
 
 	const [cartItems, setCartItems] = useState<ShoppingCart>(preloadData.cart);
+	const [prevQuantity, setPrevQuantity] = useState<PreviousQuantity>({});
 	const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
 
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
@@ -181,11 +187,6 @@ function Cart() {
 	const updateItemQuantityFetcher = useFetcher();
 
 	const targetRemovalProdID = useRef<null | string>(null);
-
-	// let debounceTimer = useRef<NodeJS.Timeout | string | number | undefined>(undefined);
-	// const calcPriceInfo = useCallback((cart: ShoppingCart) => {
-	// 	console.log('calcPriceInfo', cart);
-	// }, [])
 
 	// If cart item contains no item, we simply redirect user to `/cart` so that
 	// corresponding loader can display empty cart page to user.
@@ -210,9 +211,10 @@ function Cart() {
 		}
 	}, [updatePriceFetcher]);
 
-	const updateItemQuantity = (quantity: number, prodID: string, askRemoval: boolean) => {
-		if (askRemoval) {
+	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, prodID: string, quantity: number) => {
+		if (quantity === 0) {
 			targetRemovalProdID.current = prodID;
+
 			setOpenRemoveItemModal(true);
 
 			return;
@@ -288,8 +290,40 @@ function Cart() {
 
 	const handleCancelRemoval = () => {
 		// User decide not to cancel, revert cartitem in session.
-		console.log('cartItems', cartItems);
+		if (!targetRemovalProdID || !targetRemovalProdID.current) return;
+		const prodID = targetRemovalProdID.current;
+
+		setCartItems((prev) => (
+			{
+				...prev,
+				[prodID]: {
+					...prev[prodID],
+					quantity: prevQuantity[prodID],
+				}
+			}
+		));
+
 		setOpenRemoveItemModal(false);
+	}
+
+	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, prodID: string) => {
+		const number = Number(evt.target.value)
+		if (isNaN(number)) return;
+
+		setPrevQuantity(prev => ({
+			...prev,
+			[prodID]: cartItems[prodID].quantity,
+		}));
+
+		setCartItems((prev) => (
+			{
+				...prev,
+				[prodID]: {
+					...prev[prodID],
+					quantity: evt.target.value,
+				}
+			}
+		));
 	}
 
 	return (
@@ -300,6 +334,8 @@ function Cart() {
 				onClose={handleCancelRemoval}
 				onResult={handleRemoveItemResult}
 			/>
+
+			{/* <input type='hidden' name="recoverable-product-id" value= /> */}
 
 			<div className="shopping-cart-container">
 				{/* top bar, display back button and title */}
@@ -335,9 +371,8 @@ function Cart() {
 									salePrice={Number(item.salePrice)}
 									retailPrice={Number(item.retailPrice)}
 									quantity={Number(item.quantity)}
-									// onPlus={updateItemQuantity}
-									// onMinus={handleMinusQuantity}
-									onChangeQuantity={updateItemQuantity}
+									onChangeQuantity={(evt) => handleOnChangeQuantity(evt, prodID)}
+									onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, prodID, number)}
 								/>
 							)
 						})
