@@ -98,6 +98,9 @@ const Document = withEmotionCache(
             />
           ))}
 
+          {typeof document === "undefined"
+            ? "__STYLES__"
+            : null}
         </head>
         <body>
           {children}
@@ -114,9 +117,12 @@ const Document = withEmotionCache(
 
           <Scripts />
 
-          {process.env.NODE_ENV === "development" && <LiveReload />}
+          {/* {typeof document === "undefined"
+            ? "__STYLES__"
+            : null} */}
 
-          <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-635bba2fbbd28044"></script>
+
+          {process.env.NODE_ENV === "development" && <LiveReload />}
         </body>
       </html>
     );

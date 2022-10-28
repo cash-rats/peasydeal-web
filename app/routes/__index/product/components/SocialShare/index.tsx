@@ -11,7 +11,8 @@ export const links: LinksFunction = () => {
 export default function SocialShare() {
   return (
     <div className="SocialShare__wrapper">
-      <div className="addthis_inline_share_toolbox"></div>
+      {/* <div className="addthis_inline_share_toolbox"></div> */}
+      <div className="sharethis-inline-share-buttons"></div>
     </div>
   );
 }
