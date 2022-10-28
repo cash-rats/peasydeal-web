@@ -98,14 +98,7 @@ const Document = withEmotionCache(
             />
           ))}
 
-
-          <script
-            type='text/javascript'
-            src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons'
-            async
-          >
-          </script>
-
+          <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=635bb7bc9c9fa7001910fbe2&product=sop' async='async'></script>
         </head>
         <body>
           {children}
