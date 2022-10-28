@@ -98,7 +98,6 @@ const Document = withEmotionCache(
             />
           ))}
 
-          <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=635bb7bc9c9fa7001910fbe2&product=sop'></script>
         </head>
         <body>
           {children}
@@ -113,27 +112,11 @@ const Document = withEmotionCache(
 
           <ScrollRestoration />
 
-          {/* Social feed share buttons -- Start */}
-
-          {/*
-          <script
-            src="https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons&source=platform"
-            async
-          ></script>
-
-          <script
-            src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons'
-            async
-          ></script>
-
-          <script
-            src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=privacy-policy-generator&source=platform'
-            async
-          ></script> */}
-
-          {/* Social feed share buttons -- End */}
           <Scripts />
+
           {process.env.NODE_ENV === "development" && <LiveReload />}
+
+          <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-635bba2fbbd28044"></script>
         </body>
       </html>
     );
