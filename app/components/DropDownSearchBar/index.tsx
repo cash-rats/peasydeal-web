@@ -6,6 +6,7 @@ import MoonLoader from 'react-spinners/MoonLoader';
 import { CgSearchFound } from 'react-icons/cg';
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
+import useBodyClick from '~/hooks/useBodyClick';
 
 import styles from './styles/DropDownSearchBar.css';
 import { rootNode } from './trie';
@@ -63,24 +64,17 @@ export default function DropDownSearchBar({
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState<string>('');
   const [suggests, setSuggests] = useState<SuggestItem[]>(results);
-  const dropdownListRef = useRef<HTMLDivElement>();
+  const dropdownListRef = useRef<HTMLDivElement | null>(null);
 
   // @see https://www.codegrepper.com/code-examples/javascript/check+if+click+is+inside+div+javascript
   // Hide dropdown list if user clicks outside of the dropdown area.
-  useEffect(() => {
-    if (!document) return;
+  useBodyClick((evt: MouseEvent) => {
+    if (!dropdownListRef || !dropdownListRef.current) return;
 
-    const handleBodyClick = (evt: MouseEvent) => {
-      if (!dropdownListRef || !dropdownListRef.current) return;
-
-      if (dropdownListRef.current !== evt.target && !dropdownListRef.current.contains(evt.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener('click', handleBodyClick);
-    return () => window.removeEventListener('click', handleBodyClick);
-  }, []);
+    if (dropdownListRef.current !== evt.target && !dropdownListRef.current.contains(evt.target)) {
+      setShowDropdown(false);
+    }
+  });
 
 
   useEffect(() => {

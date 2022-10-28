@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link, useFetcher } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction, ActionFunction, } from '@remix-run/node';
@@ -154,13 +154,17 @@ function Cart() {
 	const [cartItems, setCartItems] = useState<ShoppingCart>(preloadData.cart);
 	const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
 
-
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 
 	const removeItemFetcher = useFetcher();
 	const updatePriceFetcher = useFetcher();
 
 	const targetRemovalProdID = useRef<null | string>(null);
+
+	let debounceTimer = useRef<NodeJS.Timeout | string | number | undefined>(undefined);
+	const calcPriceInfo = useCallback((cart: ShoppingCart) => {
+		console.log('calcPriceInfo', cart);
+	}, [])
 
 	// If cart item contains no item, we simply redirect user to `/cart` so that
 	// corresponding loader can display empty cart page to user.
@@ -186,27 +190,46 @@ function Cart() {
 	}, [updatePriceFetcher]);
 
 	const updateItemQuantity = (quantity: number, prodID: string) => {
-		updatePriceFetcher.submit(
-			{
-				__action: 'calc_price',
-				prod_id: prodID,
-				quantity: `${quantity}`,
-			},
-			{
-				method: 'post',
-				action: '/cart?index'
-			}
-		);
+		// updatePriceFetcher.submit(
+		// 	{
+		// 		__action: 'calc_price',
+		// 		prod_id: prodID,
+		// 		quantity: `${quantity}`,
+		// 	},
+		// 	{
+		// 		method: 'post',
+		// 		action: '/cart?index'
+		// 	}
+		// );
 
-		setCartItems((prev) => (
-			{
-				...prev,
-				[prodID]: {
-					...prev[prodID],
-					quantity: `${quantity}`,
-				}
+		const newCart = {
+			...cartItems,
+			[prodID]: {
+				...cartItems[prodID],
+				quantity: `${quantity}`,
 			}
-		));
+		} as ShoppingCart;
+
+		if (debounceTimer.current !== undefined) {
+			clearTimeout(debounceTimer.current);
+			debounceTimer.current = undefined;
+		}
+
+		debounceTimer.current = setTimeout(() => {
+			calcPriceInfo(newCart);
+		}, 200)
+
+		setCartItems(newCart);
+
+		// setCartItems((prev) => (
+		// 	{
+		// 		...prev,
+		// 		[prodID]: {
+		// 			...prev[prodID],
+		// 			quantity: `${quantity}`,
+		// 		}
+		// 	}
+		// ));
 	};
 
 	const handleMinusQuantity = (quantity: number, prodID: string, askRemoval: boolean) => {

@@ -12,6 +12,7 @@ $product-price: #e81120;
 $original-price: #343434;
 $number-bought: #EB008C;
 $gray-hover-bg: #E4E4E4;
+$gray-hover-bg-2: #D8D8D8;
 $spinner-color: #999;
 
 // Copy from newegg.com
@@ -20,5 +21,5 @@ $--gray-l1: #F2F2F2;
 
 // Shadows
 $button-3d-shadow: 0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%);
-
+$dropdown-shadow: 0 0 3px 0 rgb(73 143 226 / 50%);
 $primary-graident: linear-gradient(#ee4d2d, #ff7337);

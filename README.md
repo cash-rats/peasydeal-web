@@ -38,3 +38,6 @@ bable plugin to fix this issue. However, remix official does not want any babel 
 
 ** /$prod_id **
 	Product route with product detail
+
+## Folder structure
+[folder structure](https://blog.webdevsimplified.com/2022-07/react-folder-structure/)

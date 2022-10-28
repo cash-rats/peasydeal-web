@@ -1,3 +1,9 @@
+/*
+  TODO:
+    this is purely a hook that needs a remix route as part of it's functionality.
+    We should move this hook to it's dedicated folder.
+*/
+
 import { useState, useEffect } from 'react';
 import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
