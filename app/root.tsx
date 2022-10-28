@@ -97,6 +97,7 @@ const Document = withEmotionCache(
             />
           ))}
 
+          {/* Social feed share buttons -- Start */}
           <script
             type="text/javascript"
             src="https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons&source=platform"
@@ -108,6 +109,15 @@ const Document = withEmotionCache(
             src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons'
             async
           ></script>
+
+          <script
+            type='text/javascript'
+            src='https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=privacy-policy-generator&source=platform'
+            async
+          ></script>
+
+          <div className="sharethis-privacy-policy"></div>
+          {/* Social feed share buttons -- End */}
         </head>
         <body>
           {children}
