@@ -98,7 +98,7 @@ const Document = withEmotionCache(
             />
           ))}
 
-          <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=635bb7bc9c9fa7001910fbe2&product=sop' async='async'></script>
+          <script type='text/javascript' src='https://platform-api.sharethis.com/js/sharethis.js#property=635bb7bc9c9fa7001910fbe2&product=sop'></script>
         </head>
         <body>
           {children}
