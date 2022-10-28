@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import type { ChangeEvent } from 'react';
-import type { LinksFunction, ActionFunction } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
-
-import { getItem, updateItem } from '~/utils/shoppingcart.session';
-import { commitSession } from '~/sessions';
-import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
+import type { LinksFunction } from '@remix-run/node';
 import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
 
 import styles from './styles/Item.css';
@@ -13,28 +8,9 @@ import styles from './styles/Item.css';
 export const links: LinksFunction = () => {
 	return [
 		...QuantityDropDownLinks(),
-		...QuantityPickerLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
-
-export const action: ActionFunction = async ({ request }) => {
-	const body = await request.formData();
-	const prodID = body.get('prodID') as string || '';
-	const quantity = body.get('quantity') as string;
-
-	const item = await getItem(request, prodID);
-	if (!item) return null;
-	item.quantity = quantity;
-	const session = await updateItem(request, item);
-
-	return new Response('', {
-		headers: {
-			"Set-Cookie": await commitSession(session),
-		}
-	});
-};
-
 interface CartItemProps {
 	prodID: string;
 	image: string;
@@ -45,7 +21,7 @@ interface CartItemProps {
 	quantity?: number;
 	onMinus?: (quantity: number, prodID: string, askRemoval: boolean) => void;
 	onPlus?: (quantity: number, prodID: string) => void;
-	onChangeQuantity?: (quantity: number, prodID: string) => void;
+	onChangeQuantity?: (quantity: number, prodID: string, askRemoval: boolean) => void;
 }
 
 function CartItem({
@@ -61,39 +37,15 @@ function CartItem({
 	onChangeQuantity = () => { },
 }: CartItemProps) {
 	const [itemQuantity, setItemQuantity] = useState<number>(quantity);
-	const cartItemFetcher = useFetcher();
+	const handleChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, number: number) => {
+		setItemQuantity(number);
 
-	// Update cart item item quantity in session if user isn't logged in yet, or, database if user has logged in.
-	const updateCartItemQuantityAction = (prodID: string, quantity: string) => cartItemFetcher.submit({
-		prodID,
-		quantity,
-	}, { method: 'post', action: '/cart/components/Item?index' });
-
-
-	const handleClickAddQuantity = () => {
-		const q = itemQuantity + 1;
-		updateCartItemQuantityAction(prodID, q.toString());
-		setItemQuantity(q);
-		onPlus(q, prodID);
-	}
-
-	const handleClickMinusQuantity = () => {
-		// We do not allow quantity deduction when quantity equals 1
-		if (itemQuantity === 1) {
-			onMinus(itemQuantity, prodID, true);
+		if (number === 0) {
+			onChangeQuantity(number, prodID, true);
 			return;
 		}
 
-		const q = itemQuantity - 1;
-		updateCartItemQuantityAction(prodID, q.toString());
-		setItemQuantity(q);
-		onMinus(q, prodID, false);
-	}
-
-	const handleChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, number: number) => {
-		updateCartItemQuantityAction(prodID, number.toString());
-		setItemQuantity(number);
-		onChangeQuantity(number, prodID);
+		onChangeQuantity(number, prodID, false);
 	}
 
 	return (
@@ -125,12 +77,10 @@ function CartItem({
 				</div>
 
 				<div className="product-quantity">
-					<cartItemFetcher.Form>
-						<QuantityDropDown
-							value={itemQuantity}
-							onChange={handleChangeQuantity}
-						/>
-					</cartItemFetcher.Form>
+					<QuantityDropDown
+						value={itemQuantity}
+						onBlur={handleChangeQuantity}
+					/>
 				</div>
 
 				<div className="product-total">

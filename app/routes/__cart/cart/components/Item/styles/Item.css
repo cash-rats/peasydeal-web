@@ -75,7 +75,7 @@
   width: 70px;
 }
 .cart-item .bottom .product-quantity {
-  width: 100px;
+  max-width: 65px;
 }
 .cart-item .bottom .product-total {
   display: none;

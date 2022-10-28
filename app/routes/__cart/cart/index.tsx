@@ -6,7 +6,7 @@ import { BsBagCheck } from 'react-icons/bs';
 
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions';
-import { getCart, removeItem, updateItem } from '~/utils/shoppingcart.session';
+import { getCart, removeItem, updateItem, getItem } from '~/utils/shoppingcart.session';
 import type { ShoppingCart } from '~/utils/shoppingcart.session';
 
 // TODO: all script in this file should be removed.
@@ -28,7 +28,7 @@ export const links: LinksFunction = () => {
 	];
 };
 
-type __action_type = 'remove_cart_item' | 'calc_price';
+type __action_type = 'remove_cart_item' | 'calc_price' | 'update_item_quantity';
 
 const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
 	return Object.keys(cart).map((productUUID): PriceQuery => {
@@ -88,6 +88,20 @@ const __updatePriceInfo = async (prodID: string, quantity: string, request: Requ
 	);
 };
 
+const __updateItemQuantity = async (prodID: string, quantity: string, request: Request) => {
+	const item = await getItem(request, prodID);
+	if (!item) return null;
+	item.quantity = quantity;
+	console.log('item __updateItemQuantity', item);
+	const session = await updateItem(request, item);
+
+	return new Response('', {
+		headers: {
+			"Set-Cookie": await commitSession(session),
+		}
+	});
+}
+
 // TODOs:
 //   - handle prod_id is falsey value
 //   - handle session key not exists
@@ -105,6 +119,12 @@ export const action: ActionFunction = async ({ request }) => {
 		const prodID = formEntries['prod_id'] as string || '';
 		const quantity = formEntries['quantity'] as string;
 		return await __updatePriceInfo(prodID, quantity, request);
+	}
+
+	if (actionType === 'update_item_quantity') {
+		const prodID = formEntries['prodID'] as string || '';
+		const quantity = formEntries['quantity'] as string;
+		return __updateItemQuantity(prodID, quantity, request);
 	}
 
 	// Unknown action
@@ -158,6 +178,7 @@ function Cart() {
 
 	const removeItemFetcher = useFetcher();
 	const updatePriceFetcher = useFetcher();
+	const updateItemQuantityFetcher = useFetcher();
 
 	const targetRemovalProdID = useRef<null | string>(null);
 
@@ -189,51 +210,7 @@ function Cart() {
 		}
 	}, [updatePriceFetcher]);
 
-	const updateItemQuantity = (quantity: number, prodID: string) => {
-		// updatePriceFetcher.submit(
-		// 	{
-		// 		__action: 'calc_price',
-		// 		prod_id: prodID,
-		// 		quantity: `${quantity}`,
-		// 	},
-		// 	{
-		// 		method: 'post',
-		// 		action: '/cart?index'
-		// 	}
-		// );
-
-		// const newCart = {
-		// 	...cartItems,
-		// 	[prodID]: {
-		// 		...cartItems[prodID],
-		// 		quantity: `${quantity}`,
-		// 	}
-		// } as ShoppingCart;
-
-		// if (debounceTimer.current !== undefined) {
-		// 	clearTimeout(debounceTimer.current);
-		// 	debounceTimer.current = undefined;
-		// }
-
-		// debounceTimer.current = setTimeout(() => {
-		// 	calcPriceInfo(newCart);
-		// }, 200)
-
-		// setCartItems(newCart);
-
-		// setCartItems((prev) => (
-		// 	{
-		// 		...prev,
-		// 		[prodID]: {
-		// 			...prev[prodID],
-		// 			quantity: `${quantity}`,
-		// 		}
-		// 	}
-		// ));
-	};
-
-	const handleMinusQuantity = (quantity: number, prodID: string, askRemoval: boolean) => {
-		// when quantity equals 1, display popup to notify customer for item removal.
+	const updateItemQuantity = (quantity: number, prodID: string, askRemoval: boolean) => {
 		if (askRemoval) {
 			targetRemovalProdID.current = prodID;
 			setOpenRemoveItemModal(true);
@@ -241,8 +218,40 @@ function Cart() {
 			return;
 		}
 
-		updateItemQuantity(quantity, prodID);
+		updateItemQuantityFetcher.submit(
+			{
+				__action: 'update_item_quantity',
+				prodID,
+				quantity: quantity.toString()
+			},
+			{
+				method: 'post',
+				action: '/cart?index',
+			},
+		);
+
+		setCartItems((prev) => (
+			{
+				...prev,
+				[prodID]: {
+					...prev[prodID],
+					quantity: `${quantity}`,
+				}
+			}
+		));
 	};
+
+	// const handleMinusQuantity = (quantity: number, prodID: string, askRemoval: boolean) => {
+	// 	// when quantity equals 1, display popup to notify customer for item removal.
+	// 	if (askRemoval) {
+	// 		targetRemovalProdID.current = prodID;
+	// 		setOpenRemoveItemModal(true);
+
+	// 		return;
+	// 	}
+
+	// 	// updateItemQuantity(quantity, prodID);
+	// };
 
 	const handleRemoveItemResult = (res: boolean) => {
 		if (!res) return false;
@@ -277,12 +286,18 @@ function Cart() {
 		);
 	}
 
+	const handleCancelRemoval = () => {
+		// User decide not to cancel, revert cartitem in session.
+		console.log('cartItems', cartItems);
+		setOpenRemoveItemModal(false);
+	}
+
 	return (
 		<section className="shopping-cart-section">
 			<RemoveItemModal
 				open={openRemoveItemModal}
 				itemName="some item"
-				onClose={() => setOpenRemoveItemModal(false)}
+				onClose={handleCancelRemoval}
 				onResult={handleRemoveItemResult}
 			/>
 
@@ -320,8 +335,8 @@ function Cart() {
 									salePrice={Number(item.salePrice)}
 									retailPrice={Number(item.retailPrice)}
 									quantity={Number(item.quantity)}
-									onPlus={updateItemQuantity}
-									onMinus={handleMinusQuantity}
+									// onPlus={updateItemQuantity}
+									// onMinus={handleMinusQuantity}
 									onChangeQuantity={updateItemQuantity}
 								/>
 							)

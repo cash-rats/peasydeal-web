@@ -19,7 +19,7 @@ export function PolicyContent() {
       <ul className="content-list">
         <li>
           <Link
-            prefetch='render'
+            // prefetch='render'
             to='/privacy'
           >
             Privacy Policy
@@ -27,7 +27,7 @@ export function PolicyContent() {
         </li>
         <li>
           <Link
-            prefetch='render'
+            // prefetch='render'
             to='/return-policy'
           >
             Return Policy
@@ -35,13 +35,13 @@ export function PolicyContent() {
         </li>
         <li>
           <Link
-            prefetch='render'
+            // prefetch='render'
             to='/shipping-policy'>
             Shipping Policy
           </Link>
         </li>
         <Link
-          prefetch='render'
+          // prefetch='render'
           to='/terms-of-use'
         >
           <li>Terms of Use</li>
