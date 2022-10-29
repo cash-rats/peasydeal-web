@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { json, redirect } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData, useSubmit } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
@@ -25,6 +25,8 @@ export const links: LinksFunction = () => {
 		{ rel: 'stylesheet', href: styles },
 	]
 }
+
+type ActionType = 'query_products';
 
 type LoaderType = {
 	prod_rows: Product[][];
@@ -56,13 +58,15 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
 	const body = await request.formData();
-	const action = body.get("__action");
+	const action = body.get("__action") as ActionType;
 
 	// User queries products, redirect to search result page.
 	if (action === 'query_products') {
 		const query = body.get("query");
 		return redirect(`/products/search?query=${query}`);
 	}
+
+	return null;
 };
 
 
@@ -118,7 +122,7 @@ export default function Index() {
 
 	// Redirect to product detail page when click on product.
 	const handleClickProduct = (productUUID: string) => {
-		console.log('[ga]: user clicked product: ', productUUID);
+		console.log('[ga] user clicks on:', productUUID);
 	};
 
 	return (

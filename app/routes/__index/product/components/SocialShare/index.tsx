@@ -32,9 +32,6 @@ export default function SocialShare() {
         <div id="sharebuttons" class="sharethis-inline-share-buttons"> </div>
       `
       }}
-    >
-      {/* <div className="addthis_inline_share_toolbox"></div> */}
-      {/* <div className="sharethis-inline-share-buttons"></div> */}
-    </div>
+    />
   );
 }

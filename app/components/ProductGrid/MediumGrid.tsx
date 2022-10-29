@@ -52,51 +52,88 @@ export default function MediumGrid({
 				}
 			]}
 		>
-			<div
-				onClick={
-					clickableGrid
-						? () => onClickProduct(productID)
-						: () => { }
-				}
-				className="medium-grid-container"
-			>
-				{/* images */}
-				<div className="image-container">
-					<img
-						alt={title}
-						className="medium-grid-image"
-						src={image}
-					/>
-				</div>
+			{
+				clickableGrid
+					? (
+						<Link
+							prefetch='intent'
+							to={`/product/${productID}`}
+							onClick={() => onClickProduct(productID)}
+							className="medium-grid-container"
+						>
+							{/* images */}
+							<div className="image-container">
+								<img
+									alt={title}
+									className="medium-grid-image"
+									src={image}
+								/>
+							</div>
 
-				{/* Product Description */}
-				<div className="product-desc-container">
-					<div className="prod-info">
-						{/* topic */}
-						<div className="headline">
-							{title}
-						</div>
+							{/* Product Description */}
+							<div className="product-desc-container">
+								<div className="prod-info">
+									{/* topic */}
+									<div className="headline">
+										{title}
+									</div>
 
-						<p>
-							{description}
-						</p>
-					</div>
-
-					<div className="view-btn-container">
-						<Link prefetch="intent" to={`/product/${productID}`}>
-							<RoundButton
-								colorScheme="blue"
-								onClick={() => onClickProduct(productID)}
-								style={{
-									padding: '0.675rem 1.5rem'
-								}}
-							>
-								View
-							</RoundButton>
+									<p>
+										{description}
+									</p>
+								</div>
+							</div>
 						</Link>
-					</div>
-				</div>
-			</div>
+					)
+					: (
+
+						<div
+							onClick={
+								clickableGrid
+									? () => onClickProduct(productID)
+									: () => { }
+							}
+							className="medium-grid-container"
+						>
+							{/* images */}
+							<div className="image-container">
+								<img
+									alt={title}
+									className="medium-grid-image"
+									src={image}
+								/>
+							</div>
+
+							{/* Product Description */}
+							<div className="product-desc-container">
+								<div className="prod-info">
+									{/* topic */}
+									<div className="headline">
+										{title}
+									</div>
+
+									<p>
+										{description}
+									</p>
+								</div>
+
+								<div className="view-btn-container">
+									<Link prefetch="intent" to={`/product/${productID}`}>
+										<RoundButton
+											colorScheme="blue"
+											onClick={() => onClickProduct(productID)}
+											style={{
+												padding: '0.675rem 1.5rem'
+											}}
+										>
+											View
+										</RoundButton>
+									</Link>
+								</div>
+							</div>
+						</div>
+					)
+			}
 		</MqNotifier>
 	);
 };

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from '@remix-run/react';
+import { Link, useSubmit } from '@remix-run/react';
 
 import RoundButton from '~/components/RoundButton';
 import MqNotifier from '~/components/MqNotifier';
@@ -22,7 +22,6 @@ interface LargeGridProps {
 }
 
 
-// > 1200, flex:2; height
 function LargeGrid({
 	productID,
 	image,
@@ -43,41 +42,70 @@ function LargeGrid({
 				},
 			]}
 		>
-			<div
-				className="large-grid-container"
-				onClick={
-					clickableGrid
-						? () => onClickProduct(productID)
-						: () => { }
-				}
-			>
-				{/* image */}
-				<div className="image-container">
-					<img alt={title} className="large-grid-image" src={image} />
-				</div>
+			{
+				clickableGrid
+					? (
+						<Link
+							prefetch='intent'
+							className="large-grid-container"
+							to={`/product/${productID}`}
+							onClick={() => onClickProduct(productID)
+							}
+						>
+							<input type='hidden' name="product-id" value={productID} />
+							{/* image */}
+							<div className="image-container">
+								<img alt={title} className="large-grid-image" src={image} />
+							</div>
 
-				<div className="product-desc-container">
-					<div className="info">
-						<div className="headline">
-							{title}
-						</div>
-						<div className="desc">
-							{description}
-						</div>
-					</div>
-
-					<div className="btn-container">
-						<Link prefetch="intent" to={`/product/${productID}`}>
-							<RoundButton
-								colorScheme="blue"
-								onClick={() => onClickProduct(productID)}
-							>
-								View
-							</RoundButton>
+							<div className="product-desc-container">
+								<div className="info">
+									<div className="headline">
+										{title}
+									</div>
+									<div className="desc">
+										{description}
+									</div>
+								</div>
+							</div>
 						</Link>
-					</div>
-				</div>
-			</div>
+					)
+					: (
+						<div className="large-grid-container" >
+							<input type='hidden' name="product-id" value={productID} />
+							{/* image */}
+							<div className="image-container">
+								<img alt={title} className="large-grid-image" src={image} />
+							</div>
+
+							<div className="product-desc-container">
+								<div className="info">
+									<div className="headline">
+										{title}
+									</div>
+									<div className="desc">
+										{description}
+									</div>
+								</div>
+
+								{
+									!clickableGrid && (
+										<div className="btn-container">
+											<Link prefetch="intent" to={`/product/${productID}`}>
+												<RoundButton
+													colorScheme="blue"
+													onClick={() => onClickProduct(productID)}
+												>
+													View
+												</RoundButton>
+											</Link>
+										</div>
+									)
+								}
+							</div>
+						</div>
+					)
+			}
 		</MqNotifier>
 	);
 }
