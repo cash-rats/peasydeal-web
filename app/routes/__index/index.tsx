@@ -63,10 +63,6 @@ export const action: ActionFunction = async ({ request }) => {
 		const query = body.get("query");
 		return redirect(`/products/search?query=${query}`);
 	}
-
-	const productUUID = body.get("product_uuid");
-
-	return redirect(`/product/${productUUID}`);
 };
 
 
@@ -119,12 +115,10 @@ export default function Index() {
 		}
 	}, [fetcher])
 
-	// Submit to action to redirect to product detail page.
-	const submit = useSubmit();
 
 	// Redirect to product detail page when click on product.
 	const handleClickProduct = (productUUID: string) => {
-		submit({ product_uuid: productUUID }, { method: 'post' });
+		console.log('[ga]: user clicked product: ', productUUID);
 	};
 
 	return (

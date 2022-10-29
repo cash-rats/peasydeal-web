@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { LinksFunction } from '@remix-run/node';
+import { Link } from '@remix-run/react';
 
 import MqNotifier from '~/components/MqNotifier';
 import RoundButton from '~/components/RoundButton';
@@ -82,15 +83,18 @@ export default function MediumGrid({
 					</div>
 
 					<div className="view-btn-container">
-						<RoundButton
-							colorScheme="blue"
-							onClick={() => onClickProduct(productID)}
-							style={{
-								padding: '0.675rem 1.5rem'
-							}}
-						>
-							View
-						</RoundButton>
+						<Link to={`/product/${productID}`}>
+
+							<RoundButton
+								colorScheme="blue"
+								onClick={() => onClickProduct(productID)}
+								style={{
+									padding: '0.675rem 1.5rem'
+								}}
+							>
+								View
+							</RoundButton>
+						</Link>
 					</div>
 				</div>
 			</div>
