@@ -43,7 +43,7 @@ type LoaderTypeProductDetail = {
 };
 
 // Fetch product detail data.
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader: LoaderFunction = async ({ params, context }) => {
 	const { prodId } = params;
 	if (!prodId) return redirect('/');
 
@@ -93,6 +93,7 @@ export const action: ActionFunction = async ({ request }) => {
 function ProductDetailPage() {
 	const { product: productDetail } = useLoaderData<LoaderTypeProductDetail>();
 	const [mainCategory] = productDetail.categories;
+	const [, forceUpdate] = useState({});
 
 	const selectCurrentVariation = useCallback(
 		(defaultVariationUUID: string, variations: ProductVariation[]): ProductVariation | undefined => {
@@ -123,6 +124,8 @@ function ProductDetailPage() {
 
 	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
 	useEffect(() => {
+
+		console.log('aaa');
 		if (window) {
 			window.scrollTo(0, 0);
 
@@ -130,6 +133,8 @@ function ProductDetailPage() {
 			// change position of `productContentWrapperRef` from `fixed` to `relative`.
 			window.addEventListener('scroll', handleWindowScrolling);
 		}
+
+		return window.removeEventListener('scroll', handleWindowScrolling);
 	}, []);
 
 	const currentVariation = selectCurrentVariation(productDetail.default_variation_uuid, productDetail.variations);

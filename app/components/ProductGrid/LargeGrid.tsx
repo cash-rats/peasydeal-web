@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import RoundButton from '~/components/RoundButton';
+import { Link } from '@remix-run/react';
 
+import RoundButton from '~/components/RoundButton';
 import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';
 
@@ -66,12 +67,14 @@ function LargeGrid({
 					</div>
 
 					<div className="btn-container">
-						<RoundButton
-							colorScheme="blue"
-							onClick={() => onClickProduct(productID)}
-						>
-							View
-						</RoundButton>
+						<Link to={`/product/${productID}`}>
+							<RoundButton
+								colorScheme="blue"
+							// onClick={() => onClickProduct(productID)}
+							>
+								View
+							</RoundButton>
+						</Link>
 					</div>
 				</div>
 			</div>

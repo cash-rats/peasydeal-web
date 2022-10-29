@@ -61,10 +61,6 @@ export default function handleRequest(
     `<meta name="emotion-insertion-point" content="emotion-insertion-point"/>${stylesHTML}`,
   )
 
-  // markup = markup.replace("__STYLES__", '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-635bba2fbbd28044"></script>');
-  markup = markup.replace("__STYLES__", '<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons" async></script>');
-  console.log('debug markup', markup);
-
   responseHeaders.set("Content-Type", "text/html");
 
   return new Response(`<!DOCTYPE html>${markup}`, {

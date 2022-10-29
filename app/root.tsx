@@ -98,9 +98,6 @@ const Document = withEmotionCache(
             />
           ))}
 
-          {typeof document === "undefined"
-            ? "__STYLES__"
-            : null}
         </head>
         <body>
           {children}
@@ -116,11 +113,6 @@ const Document = withEmotionCache(
           <ScrollRestoration />
 
           <Scripts />
-
-          {/* {typeof document === "undefined"
-            ? "__STYLES__"
-            : null} */}
-
 
           {process.env.NODE_ENV === "development" && <LiveReload />}
         </body>
