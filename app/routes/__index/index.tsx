@@ -127,6 +127,7 @@ export default function Index() {
 
 	return (
 		<div className="prod-list-container">
+
 			<ProductRowsContainer
 				productRows={productRows}
 				onClickProduct={handleClickProduct}

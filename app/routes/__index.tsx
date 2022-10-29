@@ -52,6 +52,9 @@ export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData<LoaderType>();
 	return (
 		<>
+			{/* sharethis popup for news letter subscription */}
+			<div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div>
+
 			<CategoryContext.Provider value={categories} >
 				<Header
 					categoriesBar={<CategoriesNav categories={categories} />}
