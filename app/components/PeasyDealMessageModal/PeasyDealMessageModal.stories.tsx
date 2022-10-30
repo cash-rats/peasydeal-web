@@ -23,6 +23,6 @@ export const Loading = Template.bind({});
 
 export const ItemAdded = () => {
   return (
-    <ItemAddedModal />
+    <ItemAddedModal open />
   );
 }

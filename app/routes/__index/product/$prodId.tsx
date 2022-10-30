@@ -207,7 +207,7 @@ function ProductDetailPage() {
 
 			setTimeout(() => {
 				setOpenSuccessModal(false);
-			}, 1300)
+			}, 1000)
 		}
 	}, [addToCart])
 

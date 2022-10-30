@@ -31,9 +31,8 @@ export default function LoadingModal({ open = true, onClose, children }: Loading
       aria-describedby="modal-desc"
       open={open}
       onClose={onClose}
-    // slots={{
-    //   backdrop: ()
-    // }}
+      hideBackdrop
+      disableScrollLock
     >
       <Box sx={style}>
         {children}
