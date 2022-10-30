@@ -32,6 +32,12 @@ export const getCart = async (request: Request): Promise<ShoppingCart | undefine
   return session.get(CartSessionKey);
 }
 
+export const updateCart = async (request: Request, cart: ShoppingCart): Promise<Session> => {
+  const session = await getSessionCookie(request);
+  session.set(CartSessionKey, cart);
+  return session;
+}
+
 export const getItem = async (request: Request, prodUUID: string): Promise<ShoppingCartItem | undefined> => {
   const session = await getSessionCookie(request);
   if (!session.has(CartSessionKey)) return undefined;

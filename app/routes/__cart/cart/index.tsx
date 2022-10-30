@@ -7,11 +7,11 @@ import { BsBagCheck } from 'react-icons/bs';
 
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions';
-import { getCart, removeItem, updateItem, getItem } from '~/utils/shoppingcart.session';
+import { getCart, removeItem, updateItem, updateCart } from '~/utils/shoppingcart.session';
 import type { ShoppingCart } from '~/utils/shoppingcart.session';
-
 // TODO: all script in this file should be removed.
 import { TAX } from '~/utils/checkout_accountant';
+import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
@@ -90,13 +90,19 @@ const __updatePriceInfo = async (prodID: string, quantity: string, request: Requ
 };
 
 const __updateItemQuantity = async (prodID: string, quantity: string, request: Request) => {
-	const item = await getItem(request, prodID);
+	// Recalc price info
+	const cart = await getCart(request);
+	if (!cart || Object.keys(cart).length === 0) return null;
+	const item = cart[prodID]
 	if (!item) return null;
 	item.quantity = quantity;
-	console.log('item __updateItemQuantity', item);
-	const session = await updateItem(request, item);
 
-	return new Response('', {
+	const priceQuery = convertShoppingCartToPriceQuery(cart);
+	const priceInfo = await fetchPriceInfo({ products: priceQuery });
+
+	const session = await updateCart(request, cart);
+
+	return new Response(JSON.stringify(priceInfo), {
 		headers: {
 			"Set-Cookie": await commitSession(session),
 		}
@@ -179,11 +185,11 @@ function Cart() {
 	const [cartItems, setCartItems] = useState<ShoppingCart>(preloadData.cart);
 	const [prevQuantity, setPrevQuantity] = useState<PreviousQuantity>({});
 	const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
+	const [syncingPrice, setSyncingPrice] = useState(false);
 
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 
 	const removeItemFetcher = useFetcher();
-	const updatePriceFetcher = useFetcher();
 	const updateItemQuantityFetcher = useFetcher();
 
 	const targetRemovalProdID = useRef<null | string>(null);
@@ -200,16 +206,16 @@ function Cart() {
 		}
 	}, [removeItemFetcher]);
 
-	// When user update the quantity, we need to update the cost by querying backend.
+	// When user update the quantity, we need to update the cost info calced by backend as well.
 	useEffect(() => {
-		if (updatePriceFetcher.type === 'done') {
-			const data = updatePriceFetcher.data as string | null;
+		if (updateItemQuantityFetcher.type === 'done') {
+			const data = updateItemQuantityFetcher.data as string | null;
 			if (!data) return;
-
-			const dataJSON = JSON.parse(data);
-			setPriceInfo(dataJSON.price_info);
+			const priceInfo = JSON.parse(data);
+			setPriceInfo(priceInfo);
+			setSyncingPrice(false);
 		}
-	}, [updatePriceFetcher]);
+	}, [updateItemQuantityFetcher]);
 
 	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, prodID: string, quantity: number) => {
 		if (quantity === 0) {
@@ -220,6 +226,9 @@ function Cart() {
 			return;
 		}
 
+		setSyncingPrice(true);
+
+		// Update item quantity in session && Recalc price info from BE.
 		updateItemQuantityFetcher.submit(
 			{
 				__action: 'update_item_quantity',
@@ -232,28 +241,17 @@ function Cart() {
 			},
 		);
 
-		setCartItems((prev) => (
-			{
-				...prev,
-				[prodID]: {
-					...prev[prodID],
-					quantity: `${quantity}`,
-				}
-			}
-		));
+
+		// setCartItems((prev) => (
+		// 	{
+		// 		...prev,
+		// 		[prodID]: {
+		// 			...prev[prodID],
+		// 			quantity: `${quantity}`,
+		// 		}
+		// 	}
+		// ));
 	};
-
-	// const handleMinusQuantity = (quantity: number, prodID: string, askRemoval: boolean) => {
-	// 	// when quantity equals 1, display popup to notify customer for item removal.
-	// 	if (askRemoval) {
-	// 		targetRemovalProdID.current = prodID;
-	// 		setOpenRemoveItemModal(true);
-
-	// 		return;
-	// 	}
-
-	// 	// updateItemQuantity(quantity, prodID);
-	// };
 
 	const handleRemoveItemResult = (res: boolean) => {
 		if (!res) return false;
@@ -327,102 +325,106 @@ function Cart() {
 	}
 
 	return (
-		<section className="shopping-cart-section">
-			<RemoveItemModal
-				open={openRemoveItemModal}
-				itemName="some item"
-				onClose={handleCancelRemoval}
-				onResult={handleRemoveItemResult}
-			/>
+		<>
+			<LoadingBackdrop open={syncingPrice} />
 
-			{/* <input type='hidden' name="recoverable-product-id" value= /> */}
+			<section className="shopping-cart-section">
+				<RemoveItemModal
+					open={openRemoveItemModal}
+					itemName="some item"
+					onClose={handleCancelRemoval}
+					onResult={handleRemoveItemResult}
+				/>
 
-			<div className="shopping-cart-container">
-				{/* top bar, display back button and title */}
-				<div className="shopping-cart_topbar">
-					<h1 className="title">
-						Shopping Cart
-					</h1>
+				{/* <input type='hidden' name="recoverable-product-id" value= /> */}
 
-					{
-						Object.keys(cartItems).length > 0 && (
-							<h1 className="count">
-								(
-								{Object.keys(cartItems).length} &nbsp;
-								{Object.keys(cartItems).length > 1 ? 'items' : 'item'}
-								)
-							</h1>
-						)
-					}
-				</div>
+				<div className="shopping-cart-container">
+					{/* top bar, display back button and title */}
+					<div className="shopping-cart_topbar">
+						<h1 className="title">
+							Shopping Cart
+						</h1>
 
-				<div className="cart-items-container">
-					{
-						// TODO: add typescript to item.
-						Object.keys(cartItems).map((prodID) => {
-							const item = cartItems[prodID];
-							return (
-								<CartItem
-									key={prodID}
-									prodID={prodID}
-									image={item.image}
-									title={item.title}
-									description={item.specName}
-									salePrice={Number(item.salePrice)}
-									retailPrice={Number(item.retailPrice)}
-									quantity={Number(item.quantity)}
-									onChangeQuantity={(evt) => handleOnChangeQuantity(evt, prodID)}
-									onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, prodID, number)}
-								/>
+						{
+							Object.keys(cartItems).length > 0 && (
+								<h1 className="count">
+									(
+									{Object.keys(cartItems).length} &nbsp;
+									{Object.keys(cartItems).length > 1 ? 'items' : 'item'}
+									)
+								</h1>
 							)
-						})
-					}
+						}
+					</div>
 
-					{/* result row */}
-					{
-						priceInfo && (
-							<div className="result-row">
-								<div className="left" />
+					<div className="cart-items-container">
+						{
+							// TODO: add typescript to item.
+							Object.keys(cartItems).map((prodID) => {
+								const item = cartItems[prodID];
+								return (
+									<CartItem
+										key={prodID}
+										prodID={prodID}
+										image={item.image}
+										title={item.title}
+										description={item.specName}
+										salePrice={Number(item.salePrice)}
+										retailPrice={Number(item.retailPrice)}
+										quantity={Number(item.quantity)}
+										onChangeQuantity={(evt) => handleOnChangeQuantity(evt, prodID)}
+										onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, prodID, number)}
+									/>
+								)
+							})
+						}
 
-								<div className="right">
-									<div className="subtotal">
-										<label> Subtotal </label>
-										<div className="result-value"> {priceInfo.sub_total} </div>
-									</div>
+						{/* result row */}
+						{
+							priceInfo && (
+								<div className="result-row">
+									<div className="left" />
 
-									<div className="tax">
-										<label> Tax ({TAX * 100}%) </label>
-										<div className="result-value"> {priceInfo.tax_amount} </div>
-									</div>
+									<div className="right">
+										<div className="subtotal">
+											<label> Subtotal </label>
+											<div className="result-value"> {priceInfo.sub_total} </div>
+										</div>
 
-									<div className="shipping">
-										<label> Shipping </label>
-										<div className="result-value"> ${priceInfo.shipping_fee} </div>
-									</div>
+										<div className="tax">
+											<label> Tax ({TAX * 100}%) </label>
+											<div className="result-value"> {priceInfo.tax_amount} </div>
+										</div>
 
-									<div className="grand-total">
-										<label> Total </label>
-										<div className="result-value"> ${priceInfo.total_amount} </div>
-									</div>
+										<div className="shipping">
+											<label> Shipping </label>
+											<div className="result-value"> ${priceInfo.shipping_fee} </div>
+										</div>
 
-									<div className="checkout-button">
-										<Link prefetch="intent" to="/checkout">
-											<RoundButton
-												size='large'
-												colorScheme='checkout'
-												leftIcon={<BsBagCheck fontSize={22} />}
-											>
-												<b>Proceed Checkout</b>
-											</RoundButton>
-										</Link>
+										<div className="grand-total">
+											<label> Total </label>
+											<div className="result-value"> ${priceInfo.total_amount} </div>
+										</div>
+
+										<div className="checkout-button">
+											<Link prefetch="intent" to="/checkout">
+												<RoundButton
+													size='large'
+													colorScheme='checkout'
+													leftIcon={<BsBagCheck fontSize={22} />}
+												>
+													<b>Proceed Checkout</b>
+												</RoundButton>
+											</Link>
+										</div>
 									</div>
 								</div>
-							</div>
-						)
-					}
+							)
+						}
+					</div>
 				</div>
-			</div>
-		</section>
+			</section>
+		</>
 	);
 }
 
