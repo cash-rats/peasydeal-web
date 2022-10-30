@@ -3,6 +3,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import type { LoadingButtonProps } from '@mui/lab/LoadingButton';
 import { styled } from '@mui/material/styles';
 import type { LinksFunction } from '@remix-run/node';
+import MoonLoader from 'react-spinners/MoonLoader';
 
 import styles from './styles/RoundButton.css';
 
@@ -108,6 +109,13 @@ function RoundButton({
       variant='outlined'
       onClick={onClick}
       loading={isLoading}
+      loadingIndicator={
+        <MoonLoader
+          color='#fff'
+          size={20}
+          speedMultiplier={0.6}
+        />
+      }
     >
       <div className="RoundButton__Custom">
         {leftIcon && (<span>{leftIcon}</span>)}

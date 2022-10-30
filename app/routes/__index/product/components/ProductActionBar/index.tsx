@@ -21,32 +21,34 @@ const ProductActionBar = forwardRef(({
   onClickAddToCart,
   onClickBuyNow,
   loading = false,
-}: ProductActionBarProps, ref) => (
-  <div
-    ref={ref}
-    className="client-action-bar"
-  >
-    <div>
-      <RoundButton
-        onClick={onClickAddToCart}
-        fullWidth
-        loading={loading}
-        colorScheme='addtocart'
-      >
-        Add To Cart
-      </RoundButton>
-    </div>
+}: ProductActionBarProps, ref) => {
+  return (
+    <div
+      ref={ref}
+      className="client-action-bar"
+    >
+      <div>
+        <RoundButton
+          onClick={onClickAddToCart}
+          fullWidth
+          isLoading={loading}
+          colorScheme='addtocart'
+        >
+          Add To Cart
+        </RoundButton>
+      </div>
 
-    <div>
-      <RoundButton
-        fullWidth
-        onClick={onClickBuyNow}
-        colorScheme='buynow'
-      >
-        Buy Now
-      </RoundButton>
+      <div>
+        <RoundButton
+          fullWidth
+          onClick={onClickBuyNow}
+          colorScheme='buynow'
+        >
+          Buy Now
+        </RoundButton>
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
 export default ProductActionBar;

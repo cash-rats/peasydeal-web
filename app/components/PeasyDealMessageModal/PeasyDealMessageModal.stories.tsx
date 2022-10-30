@@ -1,9 +1,11 @@
+
 import type { ComponentMeta } from '@storybook/react';
 
-import LoadingModal from './index';
+import LoadingModal from './LoadingModal';
+import ItemAddedModal from './ItemAddedModal';
 
 export default {
-  title: 'Loading Modal',
+  title: 'Modal',
   component: LoadingModal,
 } as ComponentMeta<typeof LoadingModal>
 
@@ -17,5 +19,10 @@ const Template = (args) => {
   )
 }
 
-const Basic = Template.bind({});
-export { Basic };
+export const Loading = Template.bind({});
+
+export const ItemAdded = () => {
+  return (
+    <ItemAddedModal />
+  );
+}

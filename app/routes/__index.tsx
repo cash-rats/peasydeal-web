@@ -53,7 +53,7 @@ export default function Index() {
 	return (
 		<>
 			{/* sharethis popup for news letter subscription */}
-			<div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div>
+			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
 
 			<CategoryContext.Provider value={categories} >
 				<Header

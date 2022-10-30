@@ -7,13 +7,13 @@ import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
 
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
-import { useSuccessSnackbar } from '~/components/Snackbar';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import { commitSession } from '~/sessions';
 import { insertItem } from '~/utils/shoppingcart.session';
 import type { ShoppingCartItem } from '~/utils/shoppingcart.session';
+import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
 
 import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -26,6 +26,7 @@ import SocialShare, { links as SocialShareLinks } from './components/SocialShare
 
 export function links() {
 	return [
+		...ItemAddedModalLinks(),
 		...QuantityPickerLinks(),
 		...ProductDetailSectionLinks(),
 		...DividerLinks(),
@@ -93,14 +94,11 @@ export const action: ActionFunction = async ({ request }) => {
 function ProductDetailPage() {
 	const { product: productDetail } = useLoaderData<LoaderTypeProductDetail>();
 	const [mainCategory] = productDetail.categories;
-	const [, forceUpdate] = useState({});
 
-	const selectCurrentVariation = useCallback(
-		(defaultVariationUUID: string, variations: ProductVariation[]): ProductVariation | undefined => {
-			return variations.find(
-				(variation) => defaultVariationUUID === variation.uuid);
-		}, []
-	);
+	const selectCurrentVariation = (defaultVariationUUID: string, variations: ProductVariation[]): ProductVariation | undefined => {
+		return variations.find(
+			(variation) => defaultVariationUUID === variation.uuid);
+	};
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
@@ -124,8 +122,6 @@ function ProductDetailPage() {
 
 	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
 	useEffect(() => {
-
-		console.log('aaa');
 		if (window) {
 			window.scrollTo(0, 0);
 
@@ -141,6 +137,7 @@ function ProductDetailPage() {
 	const [quantity, updateQuantity] = useState<number>(1);
 	const [variation, setVariation] = useState<string>('');
 	const [variationErr, setVariationErr] = useState<string>('');
+	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
 	const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
 		updateQuantity(Number(evt.target.value));
@@ -172,8 +169,6 @@ function ProductDetailPage() {
 			specName: currentVariation?.spec_name || '',
 		}
 	), [currentVariation, productDetail, quantity]);
-
-	const [openSuccessSnackbar] = useSuccessSnackbar();
 
 	const handleAddToCart = () => {
 		if (!variation) {
@@ -208,7 +203,11 @@ function ProductDetailPage() {
 
 	useEffect(() => {
 		if (addToCart.type === 'done') {
-			openSuccessSnackbar('Added to cart');
+			setOpenSuccessModal(true);
+
+			setTimeout(() => {
+				setOpenSuccessModal(false);
+			}, 1300)
 		}
 	}, [addToCart])
 
@@ -221,8 +220,16 @@ function ProductDetailPage() {
 		}, { method: 'post' });
 	}
 
+	const handleOnClose = () => {
+		setOpenSuccessModal(false);
+	}
+
 	return (
 		<>
+			<ItemAddedModal
+				open={openSuccessModal}
+				onClose={handleOnClose}
+			/>
 			<div className="productdetail-breadcrumbs">
 				<Breadcrumbs breadcrumbs={[
 					<NavLink
@@ -410,7 +417,6 @@ function ProductDetailPage() {
 						</div>
 
 						<div className="client-action-bar-wrapper">
-
 							<Divider />
 							<ProductActionBar
 								ref={mobileUserActionBarRef}
@@ -420,8 +426,6 @@ function ProductDetailPage() {
 							/>
 						</div>
 					</div>
-
-
 				</div>
 			</div>
 			{/*
