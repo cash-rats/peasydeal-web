@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react';
-import Box from '@mui/material/Box';
 import SyncLoader from 'react-spinners/SyncLoader';
 
 import GeneralModal from './index';

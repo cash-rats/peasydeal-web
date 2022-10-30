@@ -1,7 +1,6 @@
 
-import Box from '@mui/material/Box';
 import type { LinksFunction } from '@remix-run/node';
-import { AiOutlineCheckCircle } from 'react-icons/ai';
+import { AiFillCheckCircle } from 'react-icons/ai';
 
 import styles from './styles/ItemAddedModal.css';
 import GeneralModal from './index';
@@ -21,7 +20,7 @@ const ItemAddedModal = ({ open = false, onClose }: ItemAddedModalProps) => {
   return (
     <GeneralModal open={open} onClose={onClose}>
       <div className="ItemAddedModal__wrapper">
-        <span><AiOutlineCheckCircle color='#009378' fontSize={60} /></span>
+        <span><AiFillCheckCircle color='white' fontSize={60} /></span>
         <p className="ItemAddedModal__message">
           Item added to cart
         </p>

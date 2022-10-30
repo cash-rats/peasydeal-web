@@ -4,11 +4,11 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  gap: 1rem;
 }
 
 .ItemAddedModal__message {
   font-size: 1.2rem;
+  color: white;
 }
 
 /*# sourceMappingURL=ItemAddedModal.css.map */
