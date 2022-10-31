@@ -1,7 +1,7 @@
 import { Outlet } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, Form } from '@remix-run/react';
 
 import { getItemCount } from '~/utils/shoppingcart.session';
 import Footer, { links as FooterLinks } from '~/components/Footer';
@@ -32,10 +32,13 @@ function CartLayout() {
 
   return (
     <>
-      <Header
-        numOfItemsInCart={cartItemCount}
-        useSearchSuggests={useSearchSuggests}
-      />
+      <Form method='get' action='/search'>
+        <Header
+          numOfItemsInCart={cartItemCount}
+          useSearchSuggests={useSearchSuggests}
+        />
+      </Form>
+
       <main>
         <Outlet />
       </main>
