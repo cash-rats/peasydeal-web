@@ -193,6 +193,7 @@ function Cart() {
 	const updateItemQuantityFetcher = useFetcher();
 
 	const targetRemovalProdID = useRef<null | string>(null);
+	const justSynced = useRef<boolean>(false);
 
 	// If cart item contains no item, we simply redirect user to `/cart` so that
 	// corresponding loader can display empty cart page to user.
@@ -226,8 +227,15 @@ function Cart() {
 			return;
 		}
 
+
 		// Update item quantity in session && Recalc price info from BE.
-		if (quantity === Number(cartItems[prodID].quantity)) return
+		console.log('trigger handleOnBlur 2', justSynced.current);
+		if (justSynced.current) {
+			justSynced.current = false;
+
+			return;
+		}
+		updateQuantity(prodID, quantity);
 
 		setSyncingPrice(true);
 
@@ -298,24 +306,29 @@ function Cart() {
 	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, prodID: string) => {
 		const number = Number(evt.target.value)
 		if (isNaN(number)) return;
-
-		setPrevQuantity(prev => ({
-			...prev,
-			[prodID]: cartItems[prodID].quantity,
-		}));
-
-		setCartItems((prev) => (
-			{
-				...prev,
-				[prodID]: {
-					...prev[prodID],
-					quantity: evt.target.value,
-				}
-			}
-		));
+		updateQuantity(prodID, number);
 	}
 
 	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, prodID: string, number: number) => {
+		updateQuantity(prodID, number);
+
+		setSyncingPrice(true);
+		updateItemQuantityFetcher.submit(
+			{
+				__action: 'update_item_quantity',
+				prodID,
+				quantity: number.toString()
+			},
+			{
+				method: 'post',
+				action: '/cart?index',
+			},
+		);
+
+		justSynced.current = true;
+	}
+
+	const updateQuantity = (prodID: string, number: number) => {
 		setPrevQuantity(prev => ({
 			...prev,
 			[prodID]: cartItems[prodID].quantity,
