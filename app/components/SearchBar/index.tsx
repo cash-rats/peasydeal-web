@@ -1,5 +1,5 @@
-import type { MouseEvent, ChangeEvent, FocusEvent } from 'react';
-import { useState } from 'react';
+import type { Ref, MouseEvent, ChangeEvent, FocusEvent } from 'react';
+import { useState, forwardRef } from 'react';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -42,7 +42,7 @@ function SearchBar({
   onFocus = () => { },
   onBlur = () => { },
   ...args
-}: SearchBarProps) {
+}: SearchBarProps, ref: Ref<HTMLInputElement> | undefined) {
   const [content, setContent] = useState<string>('');
   const [focusSearch, setFocusSearch] = useState(false);
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +70,7 @@ function SearchBar({
     })}>
       <div className="search-box">
         <InputBase
+          ref={ref}
           fullWidth
           placeholder={placeholder}
           size='small'
@@ -114,4 +115,4 @@ function SearchBar({
   );
 }
 
-export default SearchBar
+export default forwardRef(SearchBar);

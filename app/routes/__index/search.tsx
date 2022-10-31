@@ -67,6 +67,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 }
 
+// TODO: more design
 export const CatchBoundary = () => {
   const caught = useCatch();
   if (caught.status === httpStatus.NOT_FOUND) {

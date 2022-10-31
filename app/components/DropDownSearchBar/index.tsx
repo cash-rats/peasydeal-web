@@ -79,6 +79,20 @@ export default function DropDownSearchBar({
     }
   });
 
+  const searchInputRef = useRef<HTMLInputElement | undefined>(undefined);
+
+  useEffect(() => {
+    const handleEnter = () => {
+      setShowDropdown(false);
+      searchInputRef?.current?.blur();
+    }
+
+    if (!searchInputRef || !searchInputRef.current) return;
+    const inputRef = searchInputRef.current;
+    inputRef.addEventListener('keypress', handleEnter);
+
+    return () => inputRef.addEventListener('keypress', handleEnter);
+  }, []);
 
   useEffect(() => {
     if (searchingState === 'empty') return;
@@ -163,6 +177,7 @@ export default function DropDownSearchBar({
   return (
     <div ref={dropdownListRef} className="DropDownSearchBar__wrapper" >
       <SearchBar
+        ref={searchInputRef}
         onSearch={onSearch}
         onFocus={handleFocus}
         onChange={handleChange}
