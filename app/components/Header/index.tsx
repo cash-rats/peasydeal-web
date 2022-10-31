@@ -3,7 +3,7 @@ import type { LinksFunction } from '@remix-run/node';
 
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import type { SuggestItem } from '~/components/DropDownSearchBar';
-import type { SearchSuggest } from '~/routes/auto-complete-search';
+import type { SearchSuggest } from '~/routes/hooks/auto-complete-search';
 
 import LogoHeader, { links as LogoHeaderLinks } from "./components/LogoHeader";
 import NavBar, { links as NavBarLinks } from './components/NavBar';

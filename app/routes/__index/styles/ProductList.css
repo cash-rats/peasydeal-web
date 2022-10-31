@@ -41,4 +41,13 @@
   align-items: center;
 }
 
+.Search__title-wrapper {
+  padding: 1rem 2.25rem;
+  width: 100%;
+}
+.Search__title-wrapper p {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
 /*# sourceMappingURL=ProductList.css.map */

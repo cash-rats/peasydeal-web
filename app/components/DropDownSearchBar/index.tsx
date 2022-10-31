@@ -35,6 +35,8 @@ export type SuggestItem = {
 interface DropDownSearchBarProps {
   placeholder?: string;
 
+  onSearch?: (query: string) => void;
+
   onDropdownSearch?: (query: string) => void;
 
   results?: SuggestItem[];
@@ -58,6 +60,7 @@ interface DropDownSearchBarProps {
 export default function DropDownSearchBar({
   placeholder = '',
   onDropdownSearch = () => { },
+  onSearch = () => { },
   results = [],
 }: DropDownSearchBarProps) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -160,6 +163,7 @@ export default function DropDownSearchBar({
   return (
     <div ref={dropdownListRef} className="DropDownSearchBar__wrapper" >
       <SearchBar
+        onSearch={onSearch}
         onFocus={handleFocus}
         onChange={handleChange}
         placeholder={placeholder}

@@ -6,7 +6,7 @@ import { useLoaderData } from '@remix-run/react';
 import { getItemCount } from '~/utils/shoppingcart.session';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
-import { useSearchSuggests } from '~/routes/auto-complete-search';
+import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 
 import styles from './styles/index.css';
 

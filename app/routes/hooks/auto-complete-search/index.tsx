@@ -37,7 +37,7 @@ export function useSearchSuggests(): [SuggestItem[], SearchSuggest] {
   const fetcher = useFetcher();
   const [suggests, setSuggests] = useState<SuggestItem[]>([]);
   const searchSuggests: SearchSuggest = (query: string) => {
-    fetcher.submit({ query }, { method: 'post', action: '/auto-complete-search?index' });
+    fetcher.submit({ query }, { method: 'post', action: '/hooks/auto-complete-search?index' });
   }
 
   useEffect(() => {

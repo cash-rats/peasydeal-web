@@ -33,6 +33,7 @@ const transformData = (apiData: any[]): Product[] => {
 	return transformed;
 }
 // https://api.myfbmanage.com:8443/data-server/ec/products?pageSize=10&pageNo=0&cat=home
+// fetchProductsByCategort takes category in type "string" instead of type "number" as search criteria.
 export const fetchProductsByCategory = async ({
 	title,
 	category,

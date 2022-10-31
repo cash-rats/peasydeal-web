@@ -74,6 +74,7 @@ function SearchBar({
           placeholder={placeholder}
           size='small'
           value={content}
+          name='query'
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleChange}
@@ -89,6 +90,8 @@ function SearchBar({
             </span>
           )
         }
+
+        <input type='hidden' name='__action' value='__search-bar-query' />
 
         <button
           type='submit'

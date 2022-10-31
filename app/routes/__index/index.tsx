@@ -41,6 +41,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const prods = await fetchProductsByCategory({
 		perpage: perPage,
 		page,
+		category: 'hotdeal',
 	})
 
 	let prodRows: Product[][] = [];
@@ -127,7 +128,6 @@ export default function Index() {
 
 	return (
 		<div className="prod-list-container">
-
 			<ProductRowsContainer
 				productRows={productRows}
 				onClickProduct={handleClickProduct}
@@ -140,7 +140,7 @@ export default function Index() {
 					value={currPage.current}
 				/>
 
-				<div >
+				<div>
 					{
 						hasMore
 							? (

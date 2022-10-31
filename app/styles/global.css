@@ -6,7 +6,7 @@ html {
 }
 
 body {
-  height: auto;
+  height: 100%;
   /* Allows content to grow beyond the page without overflow */
   width: auto;
   /* Allows content to grow beyond the page without overflow */

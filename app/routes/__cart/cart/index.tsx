@@ -29,7 +29,7 @@ export const links: LinksFunction = () => {
 	];
 };
 
-type __action_type = 'remove_cart_item' | 'calc_price' | 'update_item_quantity';
+type __action_type = 'remove_cart_item' | 'update_item_quantity';
 
 const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
 	return Object.keys(cart).map((productUUID): PriceQuery => {
@@ -69,31 +69,6 @@ const __removeCartItemAction = async (prodID: string, request: Request) => {
 		});
 }
 
-const __updatePriceInfo = async (prodID: string, quantity: string, request: Request) => {
-	// Retrieve cart from
-	const cart = await getCart(request);
-	if (!cart || Object.keys(cart).length === 0) return null;
-	const item = cart[prodID];
-	item.quantity = `${quantity}`;
-	const priceQuery = convertShoppingCartToPriceQuery(cart);
-	const priceInfo = await fetchPriceInfo({ products: priceQuery });
-
-	// If price info is fetched, update quantity the shopping cart.
-	const session = await updateItem(request, item);
-
-
-	return new Response(
-		JSON.stringify({
-			price_info: priceInfo,
-		}),
-		{
-			headers: {
-				'Set-Cookie': await commitSession(session),
-			},
-		},
-	);
-};
-
 const __updateItemQuantity = async (prodID: string, quantity: string, request: Request) => {
 	// Recalc price info
 	const cart = await getCart(request);
@@ -125,12 +100,6 @@ export const action: ActionFunction = async ({ request }) => {
 	if (actionType === 'remove_cart_item') {
 		const prodID = formEntries['prod_id'] as string || '';
 		return await __removeCartItemAction(prodID, request);
-	}
-
-	if (actionType === 'calc_price') {
-		const prodID = formEntries['prod_id'] as string || '';
-		const quantity = formEntries['quantity'] as string;
-		return await __updatePriceInfo(prodID, quantity, request);
 	}
 
 	if (actionType === 'update_item_quantity') {
