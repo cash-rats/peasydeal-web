@@ -184,9 +184,6 @@ export default function DropDownSearchBar({
         placeholder={placeholder}
       />
 
-      <input name='__action' type='hidden' value='query_products' />
-      <input name='query' type='hidden' value={searchContent} />
-
       {
         showDropdown && (
           <div className="DropDownSearchBar__dropdown-wrapper">

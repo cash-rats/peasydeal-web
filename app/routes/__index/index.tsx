@@ -26,7 +26,6 @@ export const links: LinksFunction = () => {
 	]
 }
 
-type ActionType = 'query_products';
 
 type LoaderType = {
 	prod_rows: Product[][];
@@ -56,20 +55,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 		has_more: prods.length === PAGE_LIMIT,
 	}, { status: StatusCodes.OK });
 };
-
-export const action: ActionFunction = async ({ request }) => {
-	const body = await request.formData();
-	const action = body.get("__action") as ActionType;
-
-	// User queries products, redirect to search result page.
-	if (action === 'query_products') {
-		const query = body.get("query");
-		return redirect(`/products/search?query=${query}`);
-	}
-
-	return null;
-};
-
 
 /*
  * Product list page.

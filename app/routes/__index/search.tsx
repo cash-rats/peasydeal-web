@@ -103,10 +103,19 @@ export default function Search() {
     has_more,
     page,
   } = useLoaderData<LoaderType>();
+
   const currPageRef = useRef(page);
   const loadMoreFetcher = useFetcher();
   const [productRows, setProductRows] = useState<Product[][]>(product_rows);
   const [hasMore, setHasMore] = useState(has_more);
+
+
+  // Update product rows when user searches different item. When user stays on `/search` page and searches again,
+  // the component does not get rerendered (since we stay on the same page). Thus, we need to update product_rows
+  // state when we get new search results from loader.
+  useEffect(() => {
+    setProductRows(product_rows);
+  }, [product_rows]);
 
   useEffect(() => {
     if (loadMoreFetcher.type === 'done') {

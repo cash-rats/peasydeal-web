@@ -92,8 +92,6 @@ function SearchBar({
           )
         }
 
-        <input type='hidden' name='__action' value='__search-bar-query' />
-
         <button
           type='submit'
           onClick={(evt) => {
