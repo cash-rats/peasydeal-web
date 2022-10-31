@@ -1,7 +1,7 @@
 import { Outlet } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, Form } from '@remix-run/react';
+import { useLoaderData, Form, useFetcher } from '@remix-run/react';
 
 import { getItemCount } from '~/utils/shoppingcart.session';
 import Footer, { links as FooterLinks } from '~/components/Footer';
@@ -29,16 +29,20 @@ export const links: LinksFunction = () => {
 
 function CartLayout() {
   const { cartItemCount } = useLoaderData<LoaderType>();
+  const search = useFetcher();
 
   return (
     <>
-      <Form method='get' action='/search'>
+      <Form
+        method='post'
+        action='/search'
+      >
         <Header
+          form='cart-search-products'
           numOfItemsInCart={cartItemCount}
           useSearchSuggests={useSearchSuggests}
         />
       </Form>
-
       <main>
         <Outlet />
       </main>

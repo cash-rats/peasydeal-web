@@ -16,6 +16,7 @@ export const links: LinksFunction = () => {
 };
 
 interface SearchBarProps {
+  form?: string | undefined;
   onSearch?: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
 
   onClear?: (evt: MouseEvent<HTMLSpanElement>) => void;
@@ -35,6 +36,7 @@ interface SearchBarProps {
 const isStringEmpty = (str: string): boolean => str.trim().length === 0;
 
 function SearchBar({
+  form,
   onSearch = () => { },
   onClear = () => { },
   placeholder = '',
@@ -93,13 +95,14 @@ function SearchBar({
         }
 
         <button
+          form={form}
           type='submit'
-          onClick={(evt) => {
-            if (isStringEmpty(content)) {
-              return;
-            }
-            onSearch(content, evt)
-          }}
+          // onClick={(evt) => {
+          //   if (isStringEmpty(content)) {
+          //     return;
+          //   }
+          //   onSearch(content, evt)
+          // }}
           className="search-icon"
         >
           <SearchIcon color={

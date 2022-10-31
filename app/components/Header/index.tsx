@@ -22,6 +22,8 @@ export const links: LinksFunction = () => {
 interface HeaderProps {
   categoriesBar?: ReactNode;
 
+  form?: string | undefined;
+
   /*
    * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
    */
@@ -31,6 +33,7 @@ interface HeaderProps {
 }
 
 function Header({
+  form,
   categoriesBar,
   numOfItemsInCart = 0,
   useSearchSuggests = () => ([[], () => { }]),
@@ -43,6 +46,7 @@ function Header({
         {/* search bar */}
         <div className="Header__search-bar">
           <DropDownSearchBar
+            form={form}
             placeholder='Search products by name'
             onDropdownSearch={searchSuggests}
             results={suggests}

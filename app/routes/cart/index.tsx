@@ -7,7 +7,7 @@ import { BsBagCheck } from 'react-icons/bs';
 
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions';
-import { getCart, removeItem, updateItem, updateCart } from '~/utils/shoppingcart.session';
+import { getCart, removeItem, updateCart } from '~/utils/shoppingcart.session';
 import type { ShoppingCart } from '~/utils/shoppingcart.session';
 // TODO: all script in this file should be removed.
 import { TAX } from '~/utils/checkout_accountant';

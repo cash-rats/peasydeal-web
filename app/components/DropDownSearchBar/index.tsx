@@ -33,6 +33,8 @@ export type SuggestItem = {
 };
 
 interface DropDownSearchBarProps {
+  form?: string | undefined;
+
   placeholder?: string;
 
   onSearch?: (query: string) => void;
@@ -58,6 +60,7 @@ interface DropDownSearchBarProps {
 //  - show most recent search.
 //  - have timeout mechanism.
 export default function DropDownSearchBar({
+  form,
   placeholder = '',
   onDropdownSearch = () => { },
   onSearch = () => { },
@@ -180,6 +183,7 @@ export default function DropDownSearchBar({
   return (
     <div ref={dropdownListRef} className="DropDownSearchBar__wrapper" >
       <SearchBar
+        form={form}
         ref={searchInputRef}
         onSearch={onSearch}
         onFocus={handleFocus}

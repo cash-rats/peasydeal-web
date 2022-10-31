@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 import { useCatch, useLoaderData, useFetcher } from '@remix-run/react';
 
@@ -65,6 +65,16 @@ export const loader: LoaderFunction = async ({ request }) => {
     page,
     has_more: products.length === PAGE_LIMIT,
   });
+}
+
+
+export const action: ActionFunction = async ({ request }) => {
+  const form = await request.formData();
+  const formObj = Object.fromEntries(form.entries());
+  // const url = new URL(request.url);
+  // const search = url.searchParams.get("query");
+  // const page = Number(url.searchParams.get('page')) || 1;
+  return redirect(`/search?query=${formObj['query']}`);
 }
 
 // TODO: more design
