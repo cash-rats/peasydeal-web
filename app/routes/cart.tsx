@@ -33,10 +33,7 @@ function CartLayout() {
 
   return (
     <>
-      <Form
-        method='post'
-        action='/search'
-      >
+      <Form action='/search' >
         <Header
           form='cart-search-products'
           numOfItemsInCart={cartItemCount}

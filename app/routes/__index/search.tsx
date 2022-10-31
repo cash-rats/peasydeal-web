@@ -71,9 +71,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
-  // const url = new URL(request.url);
-  // const search = url.searchParams.get("query");
-  // const page = Number(url.searchParams.get('page')) || 1;
   return redirect(`/search?query=${formObj['query']}`);
 }
 
