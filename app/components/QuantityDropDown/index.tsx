@@ -13,8 +13,9 @@ export const links: LinksFunction = () => {
 interface QuantityDropDownProps {
   value?: number;
   maxNum?: number
-  onChange?: (evt: ChangeEvent<HTMLInputElement | MouseEvent<HTMLLIElement>>) => void;
+  onChange?: (evt: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>, number: number) => void;
+  onClickNumber?: (evt: MouseEvent<HTMLLIElement>, number: number) => void;
 }
 
 export default function QuantityDropDown({
@@ -22,6 +23,7 @@ export default function QuantityDropDown({
   maxNum = 5,
   onChange = () => { },
   onBlur = () => { },
+  onClickNumber = () => { },
 }: QuantityDropDownProps) {
   const dropDownListRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
@@ -52,7 +54,9 @@ export default function QuantityDropDown({
   }
 
   const handleClickNumber = (evt: MouseEvent<HTMLLIElement>, number: number) => {
+    evt.preventDefault()
     setOpen(false);
+    onClickNumber(evt, number);
     onBlur(evt, number);
   }
 

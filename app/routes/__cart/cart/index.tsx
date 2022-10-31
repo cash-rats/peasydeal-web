@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import type { ChangeEvent, FocusEvent } from 'react';
+import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link, useFetcher } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction, ActionFunction, } from '@remix-run/node';
@@ -226,9 +226,11 @@ function Cart() {
 			return;
 		}
 
+		// Update item quantity in session && Recalc price info from BE.
+		if (quantity === Number(cartItems[prodID].quantity)) return
+
 		setSyncingPrice(true);
 
-		// Update item quantity in session && Recalc price info from BE.
 		updateItemQuantityFetcher.submit(
 			{
 				__action: 'update_item_quantity',
@@ -240,17 +242,6 @@ function Cart() {
 				action: '/cart?index',
 			},
 		);
-
-
-		// setCartItems((prev) => (
-		// 	{
-		// 		...prev,
-		// 		[prodID]: {
-		// 			...prev[prodID],
-		// 			quantity: `${quantity}`,
-		// 		}
-		// 	}
-		// ));
 	};
 
 	const handleRemoveItemResult = (res: boolean) => {
@@ -324,6 +315,23 @@ function Cart() {
 		));
 	}
 
+	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, prodID: string, number: number) => {
+		setPrevQuantity(prev => ({
+			...prev,
+			[prodID]: cartItems[prodID].quantity,
+		}));
+
+		setCartItems((prev) => (
+			{
+				...prev,
+				[prodID]: {
+					...prev[prodID],
+					quantity: number.toString(),
+				}
+			}
+		));
+	}
+
 	return (
 		<>
 			<LoadingBackdrop open={syncingPrice} />
@@ -372,6 +380,7 @@ function Cart() {
 										salePrice={Number(item.salePrice)}
 										retailPrice={Number(item.retailPrice)}
 										quantity={Number(item.quantity)}
+										onClickQuantity={(evt, number) => handleOnClickQuantity(evt, prodID, number)}
 										onChangeQuantity={(evt) => handleOnChangeQuantity(evt, prodID)}
 										onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, prodID, number)}
 									/>

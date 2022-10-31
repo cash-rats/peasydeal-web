@@ -1,4 +1,4 @@
-import type { ChangeEvent, FocusEvent } from 'react';
+import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
 
@@ -20,6 +20,7 @@ interface CartItemProps {
 	quantity?: number;
 	onMinus?: (quantity: number, prodID: string, askRemoval: boolean) => void;
 	onPlus?: (quantity: number, prodID: string) => void;
+	onClickQuantity?: (evt: MouseEvent<HTMLLIElement>, number: number) => void;
 	onChangeQuantity?: (evt: ChangeEvent<HTMLInputElement>) => void;
 	onBlurQuantity?: (evt: FocusEvent<HTMLInputElement>, number: number) => void;
 }
@@ -33,6 +34,7 @@ function CartItem({
 	retailPrice,
 	quantity = 1,
 	onChangeQuantity = () => { },
+	onClickQuantity = () => { },
 	onBlurQuantity = (evt: FocusEvent<HTMLInputElement>, number: number) => { },
 }: CartItemProps) {
 	return (
@@ -66,6 +68,7 @@ function CartItem({
 				<div className="product-quantity">
 					<QuantityDropDown
 						value={quantity}
+						onClickNumber={onClickQuantity}
 						onChange={onChangeQuantity}
 						onBlur={onBlurQuantity}
 					/>
