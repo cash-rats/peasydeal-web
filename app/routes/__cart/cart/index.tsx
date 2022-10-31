@@ -43,7 +43,11 @@ const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
 
 const __removeCartItemAction = async (prodID: string, request: Request) => {
 	const session = await removeItem(request, prodID);
-	const cart = await getCart(request);
+	const cart = session.get('shopping_cart');
+
+	// Recalc price info.
+	const priceQuery = convertShoppingCartToPriceQuery(cart);
+	const priceInfo = await fetchPriceInfo({ products: priceQuery });
 
 	let itemCount = 0;
 
@@ -56,6 +60,7 @@ const __removeCartItemAction = async (prodID: string, request: Request) => {
 	return new Response(
 		JSON.stringify({
 			cart_item_count: itemCount,
+			price_info: priceInfo,
 		}),
 		{
 			headers: {
@@ -199,11 +204,14 @@ function Cart() {
 	// corresponding loader can display empty cart page to user.
 	useEffect(() => {
 		if (removeItemFetcher.type === 'done') {
-			const { cart_item_count } = JSON.parse(removeItemFetcher.data);
+			const { cart_item_count, price_info } = JSON.parse(removeItemFetcher.data);
 
 			if (cart_item_count === 0) {
 				removeItemFetcher.load('/cart?index');
 			}
+
+			setPriceInfo(price_info);
+			setSyncingPrice(false);
 		}
 	}, [removeItemFetcher]);
 
@@ -262,8 +270,11 @@ function Cart() {
 			return newCartItems
 		}, {})
 
+		// Update cart state with a version without removed item.
+		setSyncingPrice(true);
 		setCartItems(updatedCartItems);
 
+		// Remove item in session.
 		removeItemFetcher.submit(
 			{
 				__action: 'remove_cart_item',
