@@ -50,17 +50,16 @@ export default function QuantityDropDown({
   const handleOnBlur = (evt: FocusEvent<HTMLInputElement>) => {
     const number = Number(evt.target.value);
     if (isNaN(number)) return;
-
-    console.log('trigger handleOnBlur 1', number);
     onBlur(evt, number);
   }
 
   const handleClickNumber = (evt: MouseEvent<HTMLLIElement>, number: number) => {
-    evt.preventDefault()
     setOpen(false);
-
-    console.log('trigger handleClickNumber 1', number);
     onClickNumber(evt, number);
+
+    if (dropDownListRef && dropDownListRef.current) {
+      dropDownListRef.current.blur();
+    }
   }
 
   return (
@@ -83,11 +82,11 @@ export default function QuantityDropDown({
                 return (
                   <li
                     key={v}
-                    // onClick={(evt) => handleClickNumber(evt, v)}
+                    onMouseUp={(evt) => {
+                      console.log('trigger onMouseUp');
+
+                    }}
                     onMouseDown={(evt) => handleClickNumber(evt, v)}
-                  // onClick={(evt) => {
-                  //   evt.preventDefault();
-                  // }}
                   >
                     {v}
                   </li>

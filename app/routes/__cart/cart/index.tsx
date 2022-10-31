@@ -229,7 +229,6 @@ function Cart() {
 
 
 		// Update item quantity in session && Recalc price info from BE.
-		console.log('trigger handleOnBlur 2', justSynced.current);
 		if (justSynced.current) {
 			justSynced.current = false;
 
