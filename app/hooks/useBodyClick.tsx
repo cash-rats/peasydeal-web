@@ -1,7 +1,6 @@
-import type { MouseEvent } from 'react';
 import { useEffect } from 'react';
 
-const useBodyClick = (cb: (evt: MouseEvent<HTMLBodyElement>) => void) => {
+const useBodyClick = (cb: (evt: MouseEvent) => void) => {
   useEffect(() => {
     if (!document) return;
 
