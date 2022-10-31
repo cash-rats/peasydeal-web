@@ -5,6 +5,7 @@ import {
 	useLoaderData,
 	useOutletContext,
 	Form,
+	useFetcher,
 } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
@@ -40,7 +41,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();
 
 	const numOfItemsInCart = await getItemCount(request);
-
 	return json<LoaderType>({
 		numOfItemsInCart,
 		categories: categories.cats,
@@ -51,6 +51,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData<LoaderType>();
+	const search = useFetcher();
+
+	const handleSearch = (query: string) => {
+		search.submit({ query }, { method: 'post', action: '/search' });
+	};
+
 	return (
 		<>
 			{/* sharethis popup for news letter subscription */}
@@ -62,6 +68,7 @@ export default function Index() {
 						categoriesBar={<CategoriesNav categories={categories} />}
 						numOfItemsInCart={numOfItemsInCart}
 						useSearchSuggests={useSearchSuggests}
+						onSearch={handleSearch}
 					/>
 				</Form>
 			</CategoryContext.Provider >

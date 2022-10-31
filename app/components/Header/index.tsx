@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
@@ -30,13 +30,16 @@ interface HeaderProps {
   numOfItemsInCart?: number;
 
   useSearchSuggests?: () => [SuggestItem[], SearchSuggest];
-}
+
+  onSearch?: (query: string, evt: MouseEvent<HTMLButtonElement>) => void;
+};
 
 function Header({
   form,
   categoriesBar,
   numOfItemsInCart = 0,
   useSearchSuggests = () => ([[], () => { }]),
+  onSearch = () => { },
 }: HeaderProps) {
   const [suggests, searchSuggests] = useSearchSuggests();
 
@@ -50,6 +53,7 @@ function Header({
             placeholder='Search products by name'
             onDropdownSearch={searchSuggests}
             results={suggests}
+            onSearch={onSearch}
           />
         </div>
 

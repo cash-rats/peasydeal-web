@@ -30,6 +30,9 @@ export const links: LinksFunction = () => {
 function CartLayout() {
   const { cartItemCount } = useLoaderData<LoaderType>();
   const search = useFetcher();
+  const handleSearch = (query: string) => {
+    search.submit({ query }, { method: 'post', action: '/search' });
+  }
 
   return (
     <>
@@ -38,6 +41,7 @@ function CartLayout() {
           form='cart-search-products'
           numOfItemsInCart={cartItemCount}
           useSearchSuggests={useSearchSuggests}
+          onSearch={handleSearch}
         />
       </Form>
       <main>

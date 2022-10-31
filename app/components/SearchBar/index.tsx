@@ -97,12 +97,12 @@ function SearchBar({
         <button
           form={form}
           type='submit'
-          // onClick={(evt) => {
-          //   if (isStringEmpty(content)) {
-          //     return;
-          //   }
-          //   onSearch(content, evt)
-          // }}
+          onClick={(evt: MouseEvent<HTMLButtonElement>) => {
+            if (isStringEmpty(content)) {
+              return;
+            }
+            onSearch(content, evt)
+          }}
           className="search-icon"
         >
           <SearchIcon color={
