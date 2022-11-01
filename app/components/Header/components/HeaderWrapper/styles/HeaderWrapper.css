@@ -2,13 +2,11 @@
   display: flex;
   flex-direction: column;
   border-bottom: 1px solid rgba(180, 180, 180, 0.4);
-  position: sticky;
+  position: fixed;
   top: 0;
-  height: 70px;
   width: 100%;
   z-index: 10;
   box-sizing: border-box;
-  background: linear-gradient(#ee4d2d, #ff7337);
 }
 .header-container .contact-container {
   height: 0.5rem;
@@ -31,8 +29,9 @@
 }
 .header-container .header-content-container {
   width: 100%;
-  height: 100%;
+  height: 70px;
   box-sizing: border-box;
+  background: linear-gradient(#ee4d2d, #ff7337);
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -43,6 +42,7 @@
     max-width: 1180px;
   }
 }
+
 .header-content-container {
   display: flex;
   flex-direction: column;

@@ -27,15 +27,15 @@ export default function HeaderWrapper({ children, categoryBar, style }: HeaderPr
 					</div>
 				</div>
 
-			</header>
+				{
+					categoryBar && (
+						<div className="header-wrapper_category-bar">
+							{categoryBar}
+						</div>
+					)
+				}
 
-			{
-				categoryBar && (
-					<div className="header-wrapper_category-bar">
-						{categoryBar}
-					</div>
-				)
-			}
+			</header>
 		</>
 	);
 }

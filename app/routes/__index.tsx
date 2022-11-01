@@ -62,7 +62,7 @@ export default function Index() {
 			{/* sharethis popup for news letter subscription */}
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
 			<CategoryContext.Provider value={categories} >
-				<Form action='/search'>
+				<Form className="header-wrapper" action='/search'>
 					<Header
 						form='index-search-product'
 						categoriesBar={<CategoriesNav categories={categories} />}

@@ -46,12 +46,14 @@ export const fetchProductsByCategory = async ({
 	let endpoint = `${getMYFBEndpoint()}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}`;
 
 	if (category) {
-		endpoint = `${endpoint}&cat=${encodeURI(category)}`;
+		endpoint = `${endpoint}&cat=${encodeURI(category.toString())}`;
 	}
 
 	if (title) {
 		endpoint = `${endpoint}&title=${encodeURI(title)}`;
 	}
+
+	console.log('endpoint', endpoint);
 
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
