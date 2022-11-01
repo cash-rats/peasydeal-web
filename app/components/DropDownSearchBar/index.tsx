@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ChangeEvent, MouseEvent } from 'react';
+import type { ChangeEvent, MouseEvent as ReactMouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import MoonLoader from 'react-spinners/MoonLoader';
@@ -37,7 +37,7 @@ interface DropDownSearchBarProps {
 
   placeholder?: string;
 
-  onSearch?: (query: string, evt: MouseEvent<HTMLButtonElement>) => void;
+  onSearch?: (query: string, evt: ReactMouseEvent<HTMLButtonElement>) => void;
 
   onDropdownSearch?: (query: string) => void;
 
