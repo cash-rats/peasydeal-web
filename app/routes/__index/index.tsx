@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const prods = await fetchProductsByCategory({
 		perpage: perPage,
 		page,
-		category: 'hotdeal',
+		category: 1, // 1 is the id for category 'Hot Deal'
 	})
 
 	let prodRows: Product[][] = [];

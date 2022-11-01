@@ -39,8 +39,8 @@ type LoaderType = {
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();
-
 	const numOfItemsInCart = await getItemCount(request);
+
 	return json<LoaderType>({
 		numOfItemsInCart,
 		categories: categories,
