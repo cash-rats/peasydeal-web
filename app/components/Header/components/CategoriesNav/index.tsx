@@ -36,11 +36,11 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
           <ul>
             {
               categories.map((category) => (
-                <li className="CategoriesNav__item" key={category.catId}>
-                  <Link prefetch="intent" to={`/${category.title}`}>
+                <Link key={category.catId} prefetch="intent" to={`/${category.title}`}>
+                  <li className="CategoriesNav__item" >
                     {category.title}
-                  </Link>
-                </li>
+                  </li>
+                </Link>
               ))
             }
           </ul>
