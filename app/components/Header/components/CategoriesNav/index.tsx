@@ -37,7 +37,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
             {
               categories.map((category) => (
                 <li className="CategoriesNav__item" key={category.catId}>
-                  <Link to={`${category.title}`}>
+                  <Link prefetch="intent" to={`/${category.title}`}>
                     {category.title}
                   </Link>
                 </li>
@@ -69,7 +69,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                 categories.map((category, index) => {
                   return (
                     <div key={index} className="Header__CategoriesNav__all-cats-title">
-                      <Link to={`/${category.title}`}>
+                      <Link prefetch='intent' to={`/${category.title}`}>
                         <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
                           {category.title}
                         </span>
