@@ -18,7 +18,7 @@ import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { getItemCount } from '~/utils/shoppingcart.session';
 
 import styles from "./styles/index.css";
-import { fetchCategories } from './api';
+import { fetchCategories } from '~/categories.server';
 
 
 export const links: LinksFunction = () => {
@@ -43,7 +43,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const numOfItemsInCart = await getItemCount(request);
 	return json<LoaderType>({
 		numOfItemsInCart,
-		categories: categories.cats,
+		categories: categories,
 	}, {
 		status: StatusCodes.OK,
 	});
