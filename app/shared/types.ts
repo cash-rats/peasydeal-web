@@ -31,7 +31,11 @@ export type ApiErrorResponse = {
 };
 
 export type Category = {
-  catId: string;
+  catId: string | number;
   title: string;
   url: string;
+};
+
+export type CategoriesMap = {
+  [key: string]: Category;
 };

@@ -3,7 +3,7 @@ import httpStatus from 'http-status-codes';
 import type { Product, ApiErrorResponse } from '~/shared/types';
 import { getMYFBEndpoint } from '~/utils/endpoints';
 export interface FetchProductsByCategoryParams {
-	category?: string;
+	category?: string | number;
 	perpage?: number;
 	page?: number;
 	title?: string;
