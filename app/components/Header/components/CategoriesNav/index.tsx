@@ -36,7 +36,12 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
           <ul>
             {
               categories.map((category) => (
-                <Link key={category.catId} prefetch="intent" to={`/${category.title}`}>
+                <Link
+                  key={category.catId}
+                  prefetch="intent"
+                  to={`/${category.title}`}
+                // state={{ key: category.title }}
+                >
                   <li className="CategoriesNav__item" >
                     {category.title}
                   </li>

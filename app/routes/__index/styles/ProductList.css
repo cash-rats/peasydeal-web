@@ -1,4 +1,4 @@
-.prod-list-container, .prod-collection-container {
+.prod-list-container {
   margin: 0 auto;
   width: 100%;
   display: flex;
@@ -9,12 +9,12 @@
   margin-top: 2.25rem;
 }
 @media (min-width: 768px) and (max-width: 1200px) {
-  .prod-list-container, .prod-collection-container {
+  .prod-list-container {
     max-width: 992px;
   }
 }
 @media (min-width: 1200px) {
-  .prod-list-container, .prod-collection-container {
+  .prod-list-container {
     width: 1100px;
   }
 }
@@ -28,10 +28,6 @@
   .prod-list-breadcrumbs-container {
     width: 912px;
   }
-}
-
-.prod-collection-container {
-  margin-top: 0;
 }
 
 .ProductList__loadmore-container {

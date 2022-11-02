@@ -1,8 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useFetcher, useLoaderData, useSubmit } from '@remix-run/react';
-import { NavLink } from '@remix-run/react';
+import {
+  useFetcher,
+  useLoaderData,
+  NavLink,
+  useSearchParams,
+} from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
@@ -17,8 +21,13 @@ import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
 import { organizeTo9ProdsPerRow } from './utils';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
+import { ProductsContext, addCollectionProducts, setCollectionProducts } from '../reducers/products_reducer';
 
 type LoaderType = {
+  category: string,
+};
+
+type ActionType = {
   prod_rows: Product[][],
   has_more: boolean,
   category: string,
@@ -35,22 +44,51 @@ export const links: LinksFunction = () => {
   ];
 };
 
+type __ActionType = 'redirect_to_prod' | 'load_category_products';
+
 export const loader: LoaderFunction = async ({ params, request }) => {
-  const url = new URL(request.url);
-  const perPage = Number(url.searchParams.get('per_page') || PAGE_LIMIT);
-  const page = Number(url.searchParams.get('page') || '1');
+  // const url = new URL(request.url);
+  // const perPage = Number(url.searchParams.get('per_page') || PAGE_LIMIT);
+  // const page = Number(url.searchParams.get('page') || '1');
   const { collection = '' } = params;
 
+  // const catMap = normalizeToMap(await fetchCategories());
+  // const targetCat = catMap[collection];
+  // if (!targetCat) {
+  //   throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
+  // }
+
+  // const prods = await fetchProductsByCategory({
+  //   perpage: perPage,
+  //   page,
+  //   category: catMap[collection].catId,
+  // })
+
+  // let prodRows: Product[][] = [];
+
+  // if (prods.length > 0) {
+  //   prodRows = organizeTo9ProdsPerRow(prods);
+  // }
+
+  return json<LoaderType>({
+    category: collection,
+  });
+  // return null;
+}
+
+const __loadCategoryProducts = async (category: string, page: number, perPage: number) => {
   const catMap = normalizeToMap(await fetchCategories());
-  const targetCat = catMap[collection];
+  const targetCat = catMap[category];
   if (!targetCat) {
-    throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
+    throw json(`target category ${category} not found`, httpStatus.NOT_FOUND);
   }
+
+  console.log('debug __loadCategoryProducts', page);
 
   const prods = await fetchProductsByCategory({
     perpage: perPage,
     page,
-    category: catMap[collection].catId,
+    category: catMap[category].catId,
   })
 
   let prodRows: Product[][] = [];
@@ -59,17 +97,27 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     prodRows = organizeTo9ProdsPerRow(prods);
   }
 
-  return json<LoaderType>({
+  return json<ActionType>({
     prod_rows: prodRows,
     has_more: prods.length === PAGE_LIMIT,
-    category: collection,
+    category,
   });
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request, params }) => {
   const body = await request.formData();
-  const productID = body.get("product_id");
+  const actionType = body.get("__action") as __ActionType;
 
+  if (actionType === 'load_category_products') {
+    const page = Number(body.get("page") || '1');
+    const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
+    const { collection = '' } = params;
+
+    return __loadCategoryProducts(collection, page, perPage);
+  }
+
+
+  const productID = body.get("product_id");
   return redirect(`/product/${productID}`);
 };
 
@@ -82,25 +130,34 @@ export const CatchBoundary = () => {
 };
 
 function Collection() {
-  const { prod_rows: preloadProds, category, has_more } = useLoaderData<LoaderType>();
-  const [productRows, setProductRows] = useState<Product[][]>(preloadProds);
-  const [hasMore, setHasMore] = useState(has_more);
+  const { category } = useLoaderData<LoaderType>();
+  const [hasMore, setHasMore] = useState(true);
   const currPage = useRef(1);
+
+  const fetcher = useFetcher();
   const loadmoreFetcher = useFetcher();
-  const submit = useSubmit();
+
+  const [state, dispatch] = useContext(ProductsContext);
+
 
   useEffect(() => {
-    setProductRows(preloadProds);
-  }, [preloadProds])
+    if (fetcher.type === 'done') {
+      // Current page fetched successfully, increase page number getting ready to fetch next page.
+      const { prod_rows: productRows } = fetcher.data as ActionType;
+      console.log('debug productRows', productRows);
+      if (productRows.length <= 0) {
+        setHasMore(false);
+
+        return;
+      }
+
+      dispatch(setCollectionProducts(productRows));
+    }
+  }, [fetcher])
 
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
-      // Current page fetched successfully, increase page number getting ready to fetch next page.
-      const productRows = loadmoreFetcher.data.prod_rows;
-
-      if (productRows.length > 0) {
-        currPage.current += 1;
-      }
+      const { prod_rows: productRows } = loadmoreFetcher.data as ActionType;
 
       if (productRows.length <= 0) {
         setHasMore(false);
@@ -108,26 +165,61 @@ function Collection() {
         return;
       }
 
-      setProductRows(prev => prev.concat(productRows))
+      currPage.current += 1;
+      dispatch(addCollectionProducts(productRows));
     }
   }, [loadmoreFetcher])
 
 
+  // User changes category, always load the 1st page.
+  useEffect(() => {
+    currPage.current = 1;
+
+    fetcher.submit(
+      {
+        __action: 'load_category_products',
+        page: currPage.current.toString(),
+        per_page: PAGE_LIMIT.toString(),
+      },
+      {
+        method: 'post',
+        action: `/${category}`
+      },
+    );
+  }, [category]);
+
   const handleLoadMore = () => {
     const nextPage = currPage.current + 1;
-    loadmoreFetcher.load(`/${category}?page=${nextPage}&per_page=${PAGE_LIMIT}`);
+    loadmoreFetcher.submit(
+      {
+        __action: 'load_category_products',
+        page: nextPage.toString(),
+        per_page: PAGE_LIMIT.toString(),
+      },
+      {
+        method: 'post',
+        action: `/${category}`
+      },
+    );
   };
 
   const handleManualLoad = () => {
-    loadmoreFetcher.load(`/?index&page=${currPage.current}&per_page=${PAGE_LIMIT}`);
+    const nextPage = currPage.current + 1;
+    loadmoreFetcher.submit(
+      {
+        __action: 'load_category_products',
+        page: nextPage.toString(),
+        per_page: PAGE_LIMIT.toString(),
+      },
+      {
+        method: 'post',
+        action: `/${category}`
+      },
+    );
   }
 
-  const handleClickProduct = (prodID: string) => {
-    submit({ product_id: prodID }, { method: 'post' });
-  };
-
   return (
-    <div className="prod-collection-container">
+    <div className="prod-list-container">
       <div className="prod-list-breadcrumbs-container">
         <Breadcrumbs breadcrumbs={[
           <NavLink
@@ -144,12 +236,9 @@ function Collection() {
         ]} />
       </div>
 
-      <ProductRowsContainer
-        productRows={productRows}
-        onClickProduct={handleClickProduct}
-      />
+      <ProductRowsContainer productRows={state.collection_products} />
 
-      <loadmoreFetcher.Form>
+      <fetcher.Form>
         <input
           type="hidden"
           name="page"
@@ -176,7 +265,7 @@ function Collection() {
               />
           }
         </div>
-      </loadmoreFetcher.Form>
+      </fetcher.Form>
     </div>
   );
 }

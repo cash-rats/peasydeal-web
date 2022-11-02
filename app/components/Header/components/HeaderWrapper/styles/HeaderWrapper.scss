@@ -45,10 +45,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-
-		@media (min-width: #{$screen-md-min}) {
-			max-width: 1180px;
-		}
 	}
 }
 

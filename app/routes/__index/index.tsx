@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { json, redirect } from "@remix-run/node";
+import { useState, useEffect, useRef, useContext, useCallback } from "react";
+import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
@@ -15,6 +15,7 @@ import ProductRowsContainer, { links as ProductRowsContainerLinks } from './comp
 import { fetchProductsByCategory } from "./api";
 import { organizeTo9ProdsPerRow } from './utils';
 import styles from "./styles/ProductList.css";
+import { ProductsContext, addProducts } from '../reducers/products_reducer';
 
 export const links: LinksFunction = () => {
 	return [
@@ -33,9 +34,13 @@ type LoaderType = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-	const url = new URL(request.url);
-	const perPage = Number(url.searchParams.get('per_page') || PAGE_LIMIT);
-	const page = Number(url.searchParams.get('page') || '1');
+	return null
+};
+
+export const action: ActionFunction = async ({ request }) => {
+	const body = await request.formData();
+	const page = Number(body.get("page") || '1');
+	const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
 
 	const prods = await fetchProductsByCategory({
 		perpage: perPage,
@@ -54,7 +59,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		prod_rows: prodRows,
 		has_more: prods.length === PAGE_LIMIT,
 	}, { status: StatusCodes.OK });
-};
+}
 
 /*
  * Product list page.
@@ -69,31 +74,49 @@ export const loader: LoaderFunction = async ({ request }) => {
  *       letting the user triggering loadmore manually.
  */
 export default function Index() {
-	const { prod_rows, has_more } = useLoaderData<LoaderType>();
-	const [productRows, addProductRows] = useState<Product[][]>(prod_rows);
+	const [state, dispatch] = useContext(ProductsContext);
+
+	const firstLoad = useRef(false);
 	const currPage = useRef(1);
-	const [hasMore, setHasMore] = useState(has_more);
+	const [hasMore, setHasMore] = useState(true);
 
 	// Transition to observe when preload the first page of the product list render
 	const fetcher = useFetcher();
-	const handleLoadMore = () => {
-		const nextPage = currPage.current + 1;
-		fetcher.load(`/?index&page=${nextPage}&per_page=${PAGE_LIMIT}`);
-	};
+	const handleLoadMore = useCallback(
+		() => {
+			const nextPage = currPage.current + 1;
+			fetcher.submit(
+				{
+					page: nextPage.toString(),
+					per_page: PAGE_LIMIT.toString(),
+				},
+				{
+					method: 'post',
+					action: '/?index'
+				}
+			);
+		}, []);
 
-	const handleManualLoad = () => {
-		fetcher.load(`/?index&page=${currPage.current}&per_page=${PAGE_LIMIT}`);
-	}
+	const handleManualLoad = useCallback(
+		() => {
+			const nextPage = currPage.current + 1;
+			fetcher.submit(
+				{
+					page: nextPage.toString(),
+					per_page: PAGE_LIMIT.toString(),
+				},
+				{
+					method: 'post',
+					action: '/?index'
+				}
+			);
+		}, []);
 
 	// Append products to local state when fetcher type is in `done` state.
 	useEffect(() => {
 		if (fetcher.type === 'done') {
 			const productRows = fetcher.data.prod_rows;
 
-			// Current page fetched successfully, increase page number getting ready to fetch next page.
-			if (productRows.length > 0) {
-				currPage.current += 1;
-			}
 
 			if (productRows.length <= 0) {
 				setHasMore(false);
@@ -101,9 +124,28 @@ export default function Index() {
 				return;
 			}
 
-			addProductRows(prev => prev.concat(productRows))
+			// Current page fetched successfully, increase page number getting ready to fetch next page.
+			currPage.current += 1;
+
+			dispatch(addProducts(productRows));
 		}
 	}, [fetcher])
+
+	useEffect(() => {
+		if (firstLoad && !firstLoad.current) {
+			fetcher.submit(
+				{
+					page: currPage.current.toString(),
+					per_page: PAGE_LIMIT.toString(),
+				},
+				{
+					method: 'post',
+					action: '/?index',
+				},
+			);
+			firstLoad.current = true;
+		}
+	}, []);
 
 
 	// Redirect to product detail page when click on product.
@@ -114,7 +156,7 @@ export default function Index() {
 	return (
 		<div className="prod-list-container">
 			<ProductRowsContainer
-				productRows={productRows}
+				productRows={state.products}
 				onClickProduct={handleClickProduct}
 			/>
 
@@ -124,7 +166,6 @@ export default function Index() {
 					name="page"
 					value={currPage.current}
 				/>
-
 				<div>
 					{
 						hasMore

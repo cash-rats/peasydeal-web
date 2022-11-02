@@ -16,9 +16,10 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { getItemCount } from '~/utils/shoppingcart.session';
+import { fetchCategories } from '~/categories.server';
 
 import styles from "./styles/index.css";
-import { fetchCategories } from '~/categories.server';
+import ProductStore from './reducers/products_reducer';
 
 
 export const links: LinksFunction = () => {
@@ -74,7 +75,9 @@ export default function Index() {
 			</CategoryContext.Provider >
 
 			<main className="main-container">
-				<Outlet context={{ categories: categories }} />
+				<ProductStore>
+					<Outlet context={{ categories: categories }} />
+				</ProductStore>
 			</main>
 
 			<Footer />
