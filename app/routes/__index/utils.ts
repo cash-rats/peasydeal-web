@@ -32,8 +32,10 @@ export const transformData = (apiData: any[]): Product[] => {
 //
 // So that frontend only needs to consider 9 products for each iteration.
 export const organizeTo9ProdsPerRow = (prods: Product[]): Product[][] => {
-  const rows = [];
+  const rows: Product[][] = [];
   let row = []
+
+  if (prods.length === 0) return rows;
 
   if (prods.length < 9) {
     row = [...prods];

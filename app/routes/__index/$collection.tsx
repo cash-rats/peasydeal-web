@@ -18,7 +18,6 @@ import { normalizeToMap, fetchCategories } from '~/categories.server';
 
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
-import { organizeTo9ProdsPerRow } from './utils';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { ProductsContext, addCollectionProducts, setCollectionProducts } from '../reducers/products_reducer';
 
@@ -27,7 +26,7 @@ type LoaderType = {
 };
 
 type ActionType = {
-  prod_rows: Product[][],
+  products: Product[],
   has_more: boolean,
   category: string,
 };
@@ -60,22 +59,14 @@ const __loadCategoryProducts = async (category: string, page: number, perPage: n
     throw json(`target category ${category} not found`, httpStatus.NOT_FOUND);
   }
 
-  console.log('debug __loadCategoryProducts', page);
-
   const prods = await fetchProductsByCategory({
     perpage: perPage,
     page,
     category: catMap[category].catId,
   })
 
-  let prodRows: Product[][] = [];
-
-  if (prods.length > 0) {
-    prodRows = organizeTo9ProdsPerRow(prods);
-  }
-
   return json<ActionType>({
-    prod_rows: prodRows,
+    products: prods,
     has_more: prods.length === PAGE_LIMIT,
     category,
   });
@@ -120,27 +111,27 @@ function Collection() {
   useEffect(() => {
     if (fetcher.type === 'done') {
       // Current page fetched successfully, increase page number getting ready to fetch next page.
-      const { prod_rows: productRows } = fetcher.data as ActionType;
-      if (productRows.length <= 0) {
+      const { products } = fetcher.data as ActionType;
+      if (products.length <= 0) {
         setHasMore(false);
       }
 
-      dispatch(setCollectionProducts(productRows));
+      dispatch(setCollectionProducts(products));
     }
   }, [fetcher])
 
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
-      const { prod_rows: productRows } = loadmoreFetcher.data as ActionType;
+      const { products } = loadmoreFetcher.data as ActionType;
 
-      if (productRows.length <= 0) {
+      if (products.length <= 0) {
         setHasMore(false);
 
         return;
       }
 
       currPage.current += 1;
-      dispatch(addCollectionProducts(productRows));
+      dispatch(addCollectionProducts(products));
     }
   }, [loadmoreFetcher])
 
@@ -211,7 +202,9 @@ function Collection() {
         ]} />
       </div>
 
-      <ProductRowsContainer productRows={state.collection_products} />
+      <ProductRowsContainer
+        productRows={state.collection_products_rows}
+      />
 
       <fetcher.Form>
         <input

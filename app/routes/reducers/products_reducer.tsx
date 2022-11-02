@@ -3,8 +3,10 @@ import produce from 'immer';
 
 import type { Product } from '~/shared/types';
 
+import { organizeTo9ProdsPerRow } from '~/routes/__index/utils';
 export interface InitState {
-  products: Product[][];
+  products: Product[];
+  product_rows: Product[][];
 
   /*
    * We keep a different array for collection products "collection_products" needs to be reloaded
@@ -12,12 +14,16 @@ export interface InitState {
    * products on the index page will be wiped out and reloaded every time user clicks back to index ("/") page
    * and we don't want that.
    */
-  collection_products: Product[][];
+  collection_products: Product[];
+  collection_products_rows: Product[][];
 };
 
 export const initState: InitState = {
   products: [],
-  collection_products: []
+  product_rows: [],
+
+  collection_products: [],
+  collection_products_rows: [],
 }
 
 const ADD_PRODUCTS = 'ADD_PRODUCTS';
@@ -30,31 +36,34 @@ export const reducer = produce((draft, action) => {
   switch (action.type) {
     case ADD_PRODUCTS:
       draft.products = draft.products.concat(action.payload.products);
+      draft.product_rows = draft.product_rows.concat(organizeTo9ProdsPerRow(action.payload.products));
       break;
     case SET_COLLECTION_PRODUCTS:
       draft.collection_products = action.payload.products;
+      draft.collection_products_rows = organizeTo9ProdsPerRow(action.payload.products);
       break;
     case ADD_COLLECTION_PRODUCTS:
       draft.collection_products = draft.collection_products.concat(action.payload.products);
+      draft.collection_products_rows = draft.collection_products_rows.concat(organizeTo9ProdsPerRow(action.payload.products));
       break;
   }
 }, initState);
 
-export const addProducts = (products: Product[][]) => {
+export const addProducts = (products: Product[]) => {
   return {
     type: ADD_PRODUCTS,
     payload: { products },
   }
 }
 
-export const setCollectionProducts = (products: Product[][]) => {
+export const setCollectionProducts = (products: Product[]) => {
   return {
     type: SET_COLLECTION_PRODUCTS,
     payload: { products },
   }
 }
 
-export const addCollectionProducts = (products: Product[][]) => {
+export const addCollectionProducts = (products: Product[]) => {
   return {
     type: ADD_COLLECTION_PRODUCTS,
     payload: { products },

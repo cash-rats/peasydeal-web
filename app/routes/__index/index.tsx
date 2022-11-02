@@ -13,7 +13,6 @@ import type { Product } from "~/shared/types";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from "./api";
-import { organizeTo9ProdsPerRow } from './utils';
 import styles from "./styles/ProductList.css";
 import { ProductsContext, addProducts } from '../reducers/products_reducer';
 
@@ -28,8 +27,8 @@ export const links: LinksFunction = () => {
 }
 
 
-type LoaderType = {
-	prod_rows: Product[][];
+type ActionType = {
+	products: Product[];
 	has_more: boolean;
 };
 
@@ -48,15 +47,8 @@ export const action: ActionFunction = async ({ request }) => {
 		category: 1, // 1 is the id for category 'Hot Deal'
 	})
 
-	let prodRows: Product[][] = [];
-
-	if (prods.length > 0) {
-		// Transform data to frontend compatible format.
-		prodRows = organizeTo9ProdsPerRow(prods)
-	}
-
-	return json<LoaderType>({
-		prod_rows: prodRows,
+	return json<ActionType>({
+		products: prods,
 		has_more: prods.length === PAGE_LIMIT,
 	}, { status: StatusCodes.OK });
 }
@@ -115,16 +107,16 @@ export default function Index() {
 	// Append products to local state when fetcher type is in `done` state.
 	useEffect(() => {
 		if (fetcher.type === 'done') {
-			const productRows = fetcher.data.prod_rows;
+			const { products } = fetcher.data as ActionType;
 
-			if (productRows.length <= 0) {
+			if (products.length <= 0) {
 				setHasMore(false);
 			}
 
 			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			currPage.current += 1;
 
-			dispatch(addProducts(productRows));
+			dispatch(addProducts(products));
 		}
 	}, [fetcher])
 
@@ -144,7 +136,6 @@ export default function Index() {
 		}
 	}, []);
 
-
 	// Redirect to product detail page when click on product.
 	const handleClickProduct = (productUUID: string) => {
 		console.log('[ga] user clicks on:', productUUID);
@@ -153,7 +144,7 @@ export default function Index() {
 	return (
 		<div className="prod-list-container">
 			<ProductRowsContainer
-				productRows={state.products}
+				productRows={state.product_rows}
 				onClickProduct={handleClickProduct}
 			/>
 
