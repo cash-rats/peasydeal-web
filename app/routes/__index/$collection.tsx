@@ -5,7 +5,6 @@ import {
   useFetcher,
   useLoaderData,
   NavLink,
-  useSearchParams,
 } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 
@@ -47,33 +46,11 @@ export const links: LinksFunction = () => {
 type __ActionType = 'redirect_to_prod' | 'load_category_products';
 
 export const loader: LoaderFunction = async ({ params, request }) => {
-  // const url = new URL(request.url);
-  // const perPage = Number(url.searchParams.get('per_page') || PAGE_LIMIT);
-  // const page = Number(url.searchParams.get('page') || '1');
   const { collection = '' } = params;
-
-  // const catMap = normalizeToMap(await fetchCategories());
-  // const targetCat = catMap[collection];
-  // if (!targetCat) {
-  //   throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
-  // }
-
-  // const prods = await fetchProductsByCategory({
-  //   perpage: perPage,
-  //   page,
-  //   category: catMap[collection].catId,
-  // })
-
-  // let prodRows: Product[][] = [];
-
-  // if (prods.length > 0) {
-  //   prodRows = organizeTo9ProdsPerRow(prods);
-  // }
 
   return json<LoaderType>({
     category: collection,
   });
-  // return null;
 }
 
 const __loadCategoryProducts = async (category: string, page: number, perPage: number) => {
@@ -144,11 +121,8 @@ function Collection() {
     if (fetcher.type === 'done') {
       // Current page fetched successfully, increase page number getting ready to fetch next page.
       const { prod_rows: productRows } = fetcher.data as ActionType;
-      console.log('debug productRows', productRows);
       if (productRows.length <= 0) {
         setHasMore(false);
-
-        return;
       }
 
       dispatch(setCollectionProducts(productRows));
@@ -175,6 +149,7 @@ function Collection() {
   useEffect(() => {
     currPage.current = 1;
 
+    // If we've loaded that category before, we just render it straight from local store instead of fetching from server.
     fetcher.submit(
       {
         __action: 'load_category_products',

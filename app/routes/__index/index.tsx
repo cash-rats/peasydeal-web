@@ -117,11 +117,8 @@ export default function Index() {
 		if (fetcher.type === 'done') {
 			const productRows = fetcher.data.prod_rows;
 
-
 			if (productRows.length <= 0) {
 				setHasMore(false);
-
-				return;
 			}
 
 			// Current page fetched successfully, increase page number getting ready to fetch next page.
