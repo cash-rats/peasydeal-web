@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
@@ -6,8 +6,6 @@ import {
   useFetcher,
   useLoaderData,
   NavLink,
-  useParams,
-  useLocation,
 } from '@remix-run/react';
 import { ClientOnly } from 'remix-utils';
 import httpStatus from 'http-status-codes';
@@ -31,6 +29,7 @@ import ProductRowsContainer, { links as ProductRowsContainerLinks } from './comp
 //   selectCollectionProductRows,
 // } from '../reducers/products_reducer';
 import { organizeTo9ProdsPerRow } from "./utils";
+import { k } from "vitest/dist/index-4a906fa4";
 
 type LoaderType = {
   category: string,
@@ -111,8 +110,14 @@ export const CatchBoundary = () => {
 
 const LocalStorageCategoryProductsKey = 'category_products';
 
+type ProductListInfo = {
+  page: number;
+  products: Product[];
+};
+
 type CollectionProducts = {
-  [key: string]: Product[];
+  // [key: string]: Product[];
+  [key: string]: ProductListInfo;
 };
 
 const getCategoryProductsMap = (): CollectionProducts => {
@@ -121,8 +126,20 @@ const getCategoryProductsMap = (): CollectionProducts => {
   return JSON.parse(item);
 }
 
-const getCategoryProductFromLocalStorage = (map: CollectionProducts, category: string): Product[] => {
-  return map[category] || [];
+const initProductListInfoIfNotExists = (map: CollectionProducts, category: string) => {
+  if (!map[category]) {
+    map[category] = {
+      page: 1,
+      products: [],
+    }
+  }
+}
+
+const getCategoryProductListInfoFromLocalStorage = (map: CollectionProducts, category: string): ProductListInfo => {
+  return map[category] || {
+    page: 1,
+    products: [],
+  };
 }
 
 const writeCategoryProductMapToLocalStorage = (map: CollectionProducts) => {
@@ -134,6 +151,8 @@ function CollectionList() {
 
   // "catProdMap" a cached map that won't be used to display but to cache in local storage.
   const catProdMap = useRef<CollectionProducts>({});
+
+  // "productRows" is for displaying products on the screen, it's not being used in caching.
   const [productRows, setProductRows] = useState<Product[][]>([]);
 
   const [hasMore, setHasMore] = useState(true);
@@ -142,16 +161,18 @@ function CollectionList() {
   const fetcher = useFetcher();
   const loadmoreFetcher = useFetcher();
   const transition = useTransition();
-  const location = useLocation();
 
   // When component first mounted, we need to rehydrate product list data if it already exist in local storage.
   // When user switch category tab, this hook will not get trigger which ensures the rehydration only happen once.
   useEffect(() => {
+    // Restore cache from local storage.
     catProdMap.current = getCategoryProductsMap();
+    const productListInfo = getCategoryProductListInfoFromLocalStorage(catProdMap.current, category);
+    console.log('debug 1', productListInfo);
+    currPage.current = productListInfo.page;
+
     setProductRows(
-      organizeTo9ProdsPerRow(
-        getCategoryProductFromLocalStorage(catProdMap.current, category)
-      ),
+      organizeTo9ProdsPerRow(productListInfo.products),
     );
 
     return () => {
@@ -161,16 +182,21 @@ function CollectionList() {
 
   // For any subsequent change of category, we will try to find that category data in cache first.
   // If it is found, we render it.
-  // If category data isn't found in the cache, we'll need to fetch it from server.
+  // If category data not found in the cache, we'll need to fetch it from server.
   useEffect(() => {
     const cacheMap = catProdMap.current;
+    const prodListInfo = cacheMap[category];
 
-    if (cacheMap[category]) {
+    setHasMore(true);
+
+    if (prodListInfo) {
       setProductRows(
-        organizeTo9ProdsPerRow(cacheMap[category])
+        organizeTo9ProdsPerRow(prodListInfo.products)
       )
 
-      return
+      currPage.current = prodListInfo.page;
+
+      return;
     }
 
     currPage.current = 1;
@@ -178,7 +204,7 @@ function CollectionList() {
     fetcher.submit(
       {
         __action: 'load_category_products',
-        page: currPage.current.toString(),
+        page: '1',
         per_page: PAGE_LIMIT.toString(),
       },
       {
@@ -186,6 +212,7 @@ function CollectionList() {
         action: `/${category}`
       },
     );
+
   }, [category]);
 
 
@@ -203,8 +230,16 @@ function CollectionList() {
         setHasMore(false);
       }
 
-      // Update cache only if cache hasn't exists yet
-      catProdMap.current[category] = products;
+      // Cache newly fetched products. If category not yet in the cache, we initialize one for it.
+      if (!catProdMap.current[category]) {
+        catProdMap.current[category] = {
+          products: [],
+          page: 1
+        };
+      }
+
+      initProductListInfoIfNotExists(catProdMap.current, category);
+      catProdMap.current[category].products = products;
 
       setProductRows(organizeTo9ProdsPerRow(products));
     }
@@ -221,8 +256,15 @@ function CollectionList() {
         return;
       }
 
-      currPage.current += 1;
-      catProdMap.current[category] = catProdMap.current[category].concat(products);
+      const incrementedPageNumber = currPage.current + 1;
+      currPage.current = incrementedPageNumber;
+
+      initProductListInfoIfNotExists(catProdMap.current, category);
+
+      catProdMap.current[category].products = catProdMap.current[category].products.concat(products);
+      catProdMap.current[category].page = incrementedPageNumber;
+
+      console.log('debug 2 incrementedPageNumber', incrementedPageNumber);
 
       setProductRows(prev => {
         return prev.concat(organizeTo9ProdsPerRow(products))
@@ -235,9 +277,10 @@ function CollectionList() {
   const handleLoadMore = () => {
     const pathname = window.location.pathname;
     const category = pathname.substring(pathname.lastIndexOf('/') + 1);
-
-    console.log('debug 2 handleLoadMore', category);
     const nextPage = currPage.current + 1;
+
+    console.log('debug 3 nextPage', nextPage);
+
     loadmoreFetcher.submit(
       {
         __action: 'load_category_products',
