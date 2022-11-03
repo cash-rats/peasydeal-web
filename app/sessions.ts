@@ -1,7 +1,5 @@
 import { createCookieSessionStorage } from '@remix-run/node';
 
-export type SessionKey = 'shopping_cart';
-
 const { getSession, commitSession, destroySession } = createCookieSessionStorage({
   cookie: {
     name: "__session",

@@ -74,6 +74,8 @@
     "react-slick": "^0.29.0",
     "react-spinners": "^0.13.4",
     "react-sticky": "^6.0.3",
+    "remix-utils": "^3.4.0",
+    "reselect": "^4.1.6",
     "slick-carousel": "^1.8.1",
     "stripe": "^10.8.0",
     "tiny-invariant": "^1.2.0",

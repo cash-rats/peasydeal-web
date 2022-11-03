@@ -1,12 +1,17 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
+  useTransition,
   useFetcher,
   useLoaderData,
   NavLink,
+  useParams,
+  useLocation,
 } from '@remix-run/react';
+import { ClientOnly } from 'remix-utils';
 import httpStatus from 'http-status-codes';
+
 
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -19,7 +24,13 @@ import { normalizeToMap, fetchCategories } from '~/categories.server';
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { ProductsContext, addCollectionProducts, setCollectionProducts } from '../reducers/products_reducer';
+// import {
+//   ProductsContext,
+//   addCollectionProducts,
+//   setCollectionProducts,
+//   selectCollectionProductRows,
+// } from '../reducers/products_reducer';
+import { organizeTo9ProdsPerRow } from "./utils";
 
 type LoaderType = {
   category: string,
@@ -97,50 +108,73 @@ export const CatchBoundary = () => {
   );
 };
 
-function Collection() {
+
+const LocalStorageCategoryProductsKey = 'category_products';
+
+type CollectionProducts = {
+  [key: string]: Product[];
+};
+
+const getCategoryProductsMap = (): CollectionProducts => {
+  const item = localStorage.getItem(LocalStorageCategoryProductsKey);
+  if (!item) return {};
+  return JSON.parse(item);
+}
+
+const getCategoryProductFromLocalStorage = (map: CollectionProducts, category: string): Product[] => {
+  return map[category] || [];
+}
+
+const writeCategoryProductMapToLocalStorage = (map: CollectionProducts) => {
+  localStorage.setItem(LocalStorageCategoryProductsKey, JSON.stringify(map));
+}
+
+function CollectionList() {
   const { category } = useLoaderData<LoaderType>();
+
+  // "catProdMap" a cached map that won't be used to display but to cache in local storage.
+  const catProdMap = useRef<CollectionProducts>({});
+  const [productRows, setProductRows] = useState<Product[][]>([]);
+
   const [hasMore, setHasMore] = useState(true);
   const currPage = useRef(1);
 
   const fetcher = useFetcher();
   const loadmoreFetcher = useFetcher();
+  const transition = useTransition();
+  const location = useLocation();
 
-  const [state, dispatch] = useContext(ProductsContext);
-
-
+  // When component first mounted, we need to rehydrate product list data if it already exist in local storage.
+  // When user switch category tab, this hook will not get trigger which ensures the rehydration only happen once.
   useEffect(() => {
-    if (fetcher.type === 'done') {
-      // Current page fetched successfully, increase page number getting ready to fetch next page.
-      const { products } = fetcher.data as ActionType;
-      if (products.length <= 0) {
-        setHasMore(false);
-      }
+    catProdMap.current = getCategoryProductsMap();
+    setProductRows(
+      organizeTo9ProdsPerRow(
+        getCategoryProductFromLocalStorage(catProdMap.current, category)
+      ),
+    );
 
-      dispatch(setCollectionProducts(products));
+    return () => {
+      console.log('unmounting...');
     }
-  }, [fetcher])
+  }, []);
 
+  // For any subsequent change of category, we will try to find that category data in cache first.
+  // If it is found, we render it.
+  // If category data isn't found in the cache, we'll need to fetch it from server.
   useEffect(() => {
-    if (loadmoreFetcher.type === 'done') {
-      const { products } = loadmoreFetcher.data as ActionType;
+    const cacheMap = catProdMap.current;
 
-      if (products.length <= 0) {
-        setHasMore(false);
+    if (cacheMap[category]) {
+      setProductRows(
+        organizeTo9ProdsPerRow(cacheMap[category])
+      )
 
-        return;
-      }
-
-      currPage.current += 1;
-      dispatch(addCollectionProducts(products));
+      return
     }
-  }, [loadmoreFetcher])
 
-
-  // User changes category, always load the 1st page.
-  useEffect(() => {
     currPage.current = 1;
 
-    // If we've loaded that category before, we just render it straight from local store instead of fetching from server.
     fetcher.submit(
       {
         __action: 'load_category_products',
@@ -154,7 +188,55 @@ function Collection() {
     );
   }, [category]);
 
+
+  useEffect(() => {
+    if (transition.state === 'loading') {
+      // writeCategoryProductMapToLocalStorage(catProdMap.current);
+    }
+  }, [transition.state]);
+
+  useEffect(() => {
+    if (fetcher.type === 'done') {
+      // Current page fetched successfully, increase page number getting ready to fetch next page.
+      const { products } = fetcher.data as ActionType;
+      if (products.length < PAGE_LIMIT) {
+        setHasMore(false);
+      }
+
+      // Update cache only if cache hasn't exists yet
+      catProdMap.current[category] = products;
+
+      setProductRows(organizeTo9ProdsPerRow(products));
+    }
+  }, [fetcher.type])
+
+  useEffect(() => {
+    if (loadmoreFetcher.type === 'done') {
+
+      const { products } = loadmoreFetcher.data as ActionType;
+
+      if (products.length <= 0) {
+        setHasMore(false);
+
+        return;
+      }
+
+      currPage.current += 1;
+      catProdMap.current[category] = catProdMap.current[category].concat(products);
+
+      setProductRows(prev => {
+        return prev.concat(organizeTo9ProdsPerRow(products))
+      });
+    }
+  }, [loadmoreFetcher.type]);
+
+
+
   const handleLoadMore = () => {
+    const pathname = window.location.pathname;
+    const category = pathname.substring(pathname.lastIndexOf('/') + 1);
+
+    console.log('debug 2 handleLoadMore', category);
     const nextPage = currPage.current + 1;
     loadmoreFetcher.submit(
       {
@@ -164,7 +246,7 @@ function Collection() {
       },
       {
         method: 'post',
-        action: `/${category}`
+        action: `/${decodeURI(category)}`,
       },
     );
   };
@@ -203,7 +285,7 @@ function Collection() {
       </div>
 
       <ProductRowsContainer
-        productRows={state.collection_products_rows}
+        productRows={productRows}
       />
 
       <fetcher.Form>
@@ -217,7 +299,6 @@ function Collection() {
           {
             hasMore
               ? (
-
                 <LoadMore
                   spinner={<CssSpinner scheme='spinner' />}
                   loading={loadmoreFetcher.state !== 'idle'}
@@ -236,6 +317,15 @@ function Collection() {
       </fetcher.Form>
     </div>
   );
+
 }
 
-export default Collection;
+function CollectionWrapper() {
+  return (
+    <ClientOnly fallback={null}>
+      {() => <CollectionList />}
+    </ClientOnly>
+  )
+}
+
+export default CollectionWrapper;

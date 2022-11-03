@@ -14,7 +14,11 @@ import type { Product } from "~/shared/types";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from "./api";
 import styles from "./styles/ProductList.css";
-import { ProductsContext, addProducts } from '../reducers/products_reducer';
+import {
+	ProductsContext,
+	addProducts,
+	selectCollectionProductRows,
+} from '../reducers/products_reducer';
 
 export const links: LinksFunction = () => {
 	return [
