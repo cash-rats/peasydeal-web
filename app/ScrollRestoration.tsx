@@ -21,7 +21,6 @@ if (typeof document !== "undefined") {
  * @see https://remix.run/api/remix#scrollrestoration
  */
 export function ScrollRestoration({ nonce = undefined }: { nonce?: string }) {
-  // console.log('debug * 1 ScrollRestoration');
   useScrollRestoration();
 
   // wait for the browser to restore it on its own
@@ -32,6 +31,8 @@ export function ScrollRestoration({ nonce = undefined }: { nonce?: string }) {
   // let the browser restore on it's own for refresh
   useBeforeUnload(
     React.useCallback(() => {
+
+      console.log('debug * 1 auto');
       window.history.scrollRestoration = "auto";
     }, [])
   );
@@ -82,7 +83,6 @@ function useScrollRestoration() {
   }, [transition]);
 
   React.useEffect(() => {
-
     console.log('debug * 3', location.key);
     console.log('debug * 4', location.pathname);
     console.log('debug * 5', positions);
