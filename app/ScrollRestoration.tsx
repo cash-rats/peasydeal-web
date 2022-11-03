@@ -122,7 +122,9 @@ function useScrollRestoration() {
       if (y != undefined) {
 
         console.log('debug * 10', y);
-        window.scrollTo(0, y);
+        setTimeout(() => {
+          window.scrollTo(0, y);
+        }, 1000);
 
         console.log('debug * 11', y);
         return;

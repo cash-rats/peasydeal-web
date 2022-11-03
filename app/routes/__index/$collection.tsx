@@ -3,6 +3,7 @@ import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/n
 import { json, redirect } from '@remix-run/node';
 import {
   useTransition,
+  useLocation,
   useFetcher,
   useLoaderData,
   NavLink,
@@ -107,10 +108,10 @@ const LocalStorageCategoryProductsKey = 'category_products';
 type ProductListInfo = {
   page: number;
   products: Product[];
+  position: number;
 };
 
 type CollectionProducts = {
-  // [key: string]: Product[];
   [key: string]: ProductListInfo;
 };
 
@@ -123,6 +124,7 @@ const getCategoryProductsMap = (): CollectionProducts => {
 const initProductListInfoIfNotExists = (map: CollectionProducts, category: string) => {
   if (!map[category]) {
     map[category] = {
+      position: 0,
       page: 1,
       products: [],
     }
@@ -144,6 +146,12 @@ const removeCategoryProductMapFromLocalStorage = () => {
   localStorage.removeItem(LocalStorageCategoryProductsKey);
 };
 
+const getCategoryFromWindowPath = (window: Window): string => {
+  const pathname = window.location.pathname;
+  const category = pathname.substring(pathname.lastIndexOf('/') + 1);
+  return category;
+};
+
 function CollectionList() {
   const { category } = useLoaderData<LoaderType>();
 
@@ -159,6 +167,7 @@ function CollectionList() {
   const fetcher = useFetcher();
   const loadmoreFetcher = useFetcher();
   const transition = useTransition();
+  const location = useLocation();
 
   // When component first mounted, we need to rehydrate product list data if it already exist in local storage.
   // When user switch category tab, this hook will not get trigger which ensures the rehydration only happen once.
@@ -172,12 +181,38 @@ function CollectionList() {
       organizeTo9ProdsPerRow(productListInfo.products),
     );
 
-    return () => {
-      // Cache product list info to local storage when user redirect to other page.
-      console.log('unmounting... write product list to cache');
+
+    // return () => {
+    //   // Cache product list info to local storage when user redirect to other page.
+    //   // console.log('debug 1', tWin.scrollY);
+    //   // console.log('debug 2', tWin.pageYOffset);
+    //   console.log('unmounting... write product list to cache');
+    //   writeCategoryProductMapToLocalStorage(catProdMap.current);
+    // }
+  }, []);
+
+  useEffect(() => {
+    // console.log('debug * 3', location.key);
+    // console.log('debug * 4', location.pathname);
+    // console.log('debug * 5', positions);
+    // console.log('debug * 6', window.scrollY);
+    if (transition.location) {
+      // console.log('debug * 6 - 1');
+
+      // positions[location.key] = window.scrollY;
+      // positions[location.key] = window.scrollY;
+
+      // console.log('debug * 6 - 2', positions[location.key]);
+
+
+      // writeCategoryProductMapToLocalStorage(catProdMap.current);
+      console.log('debug category', category);
+      console.log('debug next location', transition.location);
+      console.log('debug detect change location', window.scrollY);
+      catProdMap.current[category].position = window.scrollY;
       writeCategoryProductMapToLocalStorage(catProdMap.current);
     }
-  }, []);
+  }, [transition, location]);
 
   // Clear product list info when user refreshes so that we are in sync with the latest data.
   useBeforeUnload(() => {
@@ -191,17 +226,19 @@ function CollectionList() {
     const cacheMap = catProdMap.current;
     const prodListInfo = cacheMap[category];
 
-    setHasMore(true);
-
     if (prodListInfo) {
       setProductRows(
         organizeTo9ProdsPerRow(prodListInfo.products)
       )
 
       currPage.current = prodListInfo.page;
+      window.scrollTo(0, prodListInfo.position);
+      setHasMore(true);
 
       return;
     }
+
+    setHasMore(true);
 
     // When you reach this point, user chose a category that has not been loaded
     // to cache before. Thus, we must be loading the first page of the category.
@@ -223,12 +260,6 @@ function CollectionList() {
 
 
   useEffect(() => {
-    if (transition.state === 'loading') {
-      // writeCategoryProductMapToLocalStorage(catProdMap.current);
-    }
-  }, [transition.state]);
-
-  useEffect(() => {
     if (fetcher.type === 'done') {
       // Current page fetched successfully, increase page number getting ready to fetch next page.
       const { products } = fetcher.data as ActionType;
@@ -237,13 +268,6 @@ function CollectionList() {
       }
 
       // Cache newly fetched products. If category not yet in the cache, we initialize one for it.
-      if (!catProdMap.current[category]) {
-        catProdMap.current[category] = {
-          products: [],
-          page: 1
-        };
-      }
-
       initProductListInfoIfNotExists(catProdMap.current, category);
       catProdMap.current[category].products = products;
 
@@ -279,8 +303,7 @@ function CollectionList() {
 
 
   const handleLoadMore = () => {
-    const pathname = window.location.pathname;
-    const category = pathname.substring(pathname.lastIndexOf('/') + 1);
+    const category = getCategoryFromWindowPath(window);
     const nextPage = currPage.current + 1;
 
     loadmoreFetcher.submit(
