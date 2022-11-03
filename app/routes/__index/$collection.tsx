@@ -23,14 +23,7 @@ import { normalizeToMap, fetchCategories } from '~/categories.server';
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-// import {
-//   ProductsContext,
-//   addCollectionProducts,
-//   setCollectionProducts,
-//   selectCollectionProductRows,
-// } from '../reducers/products_reducer';
 import { organizeTo9ProdsPerRow } from "./utils";
-import { k } from "vitest/dist/index-4a906fa4";
 
 type LoaderType = {
   category: string,
@@ -277,8 +270,6 @@ function CollectionList() {
       catProdMap.current[category].products = catProdMap.current[category].products.concat(products);
       catProdMap.current[category].page = incrementedPageNumber;
 
-      console.log('debug 2 incrementedPageNumber', incrementedPageNumber);
-
       setProductRows(prev => {
         return prev.concat(organizeTo9ProdsPerRow(products))
       });
@@ -291,8 +282,6 @@ function CollectionList() {
     const pathname = window.location.pathname;
     const category = pathname.substring(pathname.lastIndexOf('/') + 1);
     const nextPage = currPage.current + 1;
-
-    console.log('debug 3 nextPage', nextPage);
 
     loadmoreFetcher.submit(
       {

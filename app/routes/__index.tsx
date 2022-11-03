@@ -19,7 +19,6 @@ import { getItemCount } from '~/utils/shoppingcart.session';
 import { fetchCategories } from '~/categories.server';
 
 import styles from "./styles/index.css";
-import ProductStore from './reducers/products_reducer';
 
 
 export const links: LinksFunction = () => {
@@ -75,9 +74,7 @@ export default function Index() {
 			</CategoryContext.Provider >
 
 			<main className="main-container">
-				<ProductStore>
-					<Outlet context={{ categories: categories }} />
-				</ProductStore>
+				<Outlet context={{ categories: categories }} />
 			</main>
 
 			<Footer />

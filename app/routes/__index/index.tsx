@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
 import { useFetcher } from "@remix-run/react";
@@ -8,17 +8,12 @@ import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { PAGE_LIMIT } from '~/shared/constants';
-
 import type { Product } from "~/shared/types";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from "./api";
 import styles from "./styles/ProductList.css";
-import {
-	ProductsContext,
-	addProducts,
-	selectCollectionProductRows,
-} from '../reducers/products_reducer';
+import { organizeTo9ProdsPerRow } from './utils';
 
 export const links: LinksFunction = () => {
 	return [
@@ -66,15 +61,14 @@ export const action: ActionFunction = async ({ request }) => {
  *
  * - [x] Fetch products from remote API when initial rendered.
  * - [x] Fetch more.
- * - [ ] When number of data fetched is less than limit(9), it reaches the end. stop triggering loadmore but displays a button
+ * - [x] When number of data fetched is less than limit(9), it reaches the end. stop triggering loadmore but displays a button
  *       letting the user triggering loadmore manually.
+ * - [ ] Cache product list in local storage.
  */
 export default function Index() {
-	const [state, dispatch] = useContext(ProductsContext);
-
-	const firstLoad = useRef(false);
 	const currPage = useRef(1);
 	const [hasMore, setHasMore] = useState(true);
+	const [productRows, setProductRows] = useState<Product[][]>([]);
 
 	// Transition to observe when preload the first page of the product list render
 	const fetcher = useFetcher();
@@ -119,25 +113,21 @@ export default function Index() {
 
 			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			currPage.current += 1;
-
-			dispatch(addProducts(products));
+			setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
 		}
-	}, [fetcher])
+	}, [fetcher.type])
 
 	useEffect(() => {
-		if (firstLoad && !firstLoad.current) {
-			fetcher.submit(
-				{
-					page: currPage.current.toString(),
-					per_page: PAGE_LIMIT.toString(),
-				},
-				{
-					method: 'post',
-					action: '/?index',
-				},
-			);
-			firstLoad.current = true;
-		}
+		fetcher.submit(
+			{
+				page: currPage.current.toString(),
+				per_page: PAGE_LIMIT.toString(),
+			},
+			{
+				method: 'post',
+				action: '/?index',
+			},
+		);
 	}, []);
 
 	// Redirect to product detail page when click on product.
@@ -148,7 +138,7 @@ export default function Index() {
 	return (
 		<div className="prod-list-container">
 			<ProductRowsContainer
-				productRows={state.product_rows}
+				productRows={productRows}
 				onClickProduct={handleClickProduct}
 			/>
 
