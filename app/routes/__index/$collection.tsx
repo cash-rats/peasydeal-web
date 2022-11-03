@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
+import { flushSync } from 'react-dom';
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
@@ -135,6 +136,7 @@ const getCategoryProductListInfoFromLocalStorage = (map: CollectionProducts, cat
   return map[category] || {
     page: 1,
     products: [],
+    position: 0,
   };
 };
 
@@ -181,36 +183,16 @@ function CollectionList() {
       organizeTo9ProdsPerRow(productListInfo.products),
     );
 
-
-    // return () => {
-    //   // Cache product list info to local storage when user redirect to other page.
-    //   // console.log('debug 1', tWin.scrollY);
-    //   // console.log('debug 2', tWin.pageYOffset);
-    //   console.log('unmounting... write product list to cache');
-    //   writeCategoryProductMapToLocalStorage(catProdMap.current);
-    // }
+    // window.scrollTo(0, productListInfo.position);
+    return () => {
+      writeCategoryProductMapToLocalStorage(catProdMap.current);
+    }
   }, []);
 
   useEffect(() => {
-    // console.log('debug * 3', location.key);
-    // console.log('debug * 4', location.pathname);
-    // console.log('debug * 5', positions);
-    // console.log('debug * 6', window.scrollY);
     if (transition.location) {
-      // console.log('debug * 6 - 1');
-
-      // positions[location.key] = window.scrollY;
-      // positions[location.key] = window.scrollY;
-
-      // console.log('debug * 6 - 2', positions[location.key]);
-
-
-      // writeCategoryProductMapToLocalStorage(catProdMap.current);
-      console.log('debug category', category);
-      console.log('debug next location', transition.location);
-      console.log('debug detect change location', window.scrollY);
-      catProdMap.current[category].position = window.scrollY;
-      writeCategoryProductMapToLocalStorage(catProdMap.current);
+      console.log('debug redirect', category, catProdMap.current[category]);
+      // catProdMap.current[category].position = window.scrollY;
     }
   }, [transition, location]);
 
@@ -219,20 +201,25 @@ function CollectionList() {
     removeCategoryProductMapFromLocalStorage();
   });
 
-  // For any subsequent change of category, we will try to find that category data in cache first.
-  // If it is found, we render it.
-  // If category data not found in the cache, we'll need to fetch it from server.
+  // For any subsequent change of category, we will try to find category data in cache first.
+  // If it is found, we render it. If category data not found in the cache, we'll need to fetch it from server.
   useEffect(() => {
     const cacheMap = catProdMap.current;
     const prodListInfo = cacheMap[category];
+
+    console.log('debug rehydrate', category, prodListInfo);
 
     if (prodListInfo) {
       setProductRows(
         organizeTo9ProdsPerRow(prodListInfo.products)
       )
 
-      currPage.current = prodListInfo.page;
+      // setTimeout(() => {
+      console.log('debug setTimeout', prodListInfo);
       window.scrollTo(0, prodListInfo.position);
+      // }, 1000);
+
+      currPage.current = prodListInfo.page;
       setHasMore(true);
 
       return;
