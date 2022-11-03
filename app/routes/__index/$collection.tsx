@@ -6,6 +6,7 @@ import {
   useFetcher,
   useLoaderData,
   NavLink,
+  useBeforeUnload,
 } from '@remix-run/react';
 import { ClientOnly } from 'remix-utils';
 import httpStatus from 'http-status-codes';
@@ -124,7 +125,7 @@ const getCategoryProductsMap = (): CollectionProducts => {
   const item = localStorage.getItem(LocalStorageCategoryProductsKey);
   if (!item) return {};
   return JSON.parse(item);
-}
+};
 
 const initProductListInfoIfNotExists = (map: CollectionProducts, category: string) => {
   if (!map[category]) {
@@ -133,18 +134,22 @@ const initProductListInfoIfNotExists = (map: CollectionProducts, category: strin
       products: [],
     }
   }
-}
+};
 
 const getCategoryProductListInfoFromLocalStorage = (map: CollectionProducts, category: string): ProductListInfo => {
   return map[category] || {
     page: 1,
     products: [],
   };
-}
+};
 
 const writeCategoryProductMapToLocalStorage = (map: CollectionProducts) => {
   localStorage.setItem(LocalStorageCategoryProductsKey, JSON.stringify(map));
-}
+};
+
+const removeCategoryProductMapFromLocalStorage = () => {
+  localStorage.removeItem(LocalStorageCategoryProductsKey);
+};
 
 function CollectionList() {
   const { category } = useLoaderData<LoaderType>();
@@ -168,7 +173,6 @@ function CollectionList() {
     // Restore cache from local storage.
     catProdMap.current = getCategoryProductsMap();
     const productListInfo = getCategoryProductListInfoFromLocalStorage(catProdMap.current, category);
-    console.log('debug 1', productListInfo);
     currPage.current = productListInfo.page;
 
     setProductRows(
@@ -176,9 +180,16 @@ function CollectionList() {
     );
 
     return () => {
-      console.log('unmounting...');
+      // Cache product list info to local storage when user redirect to other page.
+      console.log('unmounting... write product list to cache');
+      writeCategoryProductMapToLocalStorage(catProdMap.current);
     }
   }, []);
+
+  // Clear product list info when user refreshes so that we are in sync with the latest data.
+  useBeforeUnload(() => {
+    removeCategoryProductMapFromLocalStorage();
+  });
 
   // For any subsequent change of category, we will try to find that category data in cache first.
   // If it is found, we render it.
@@ -199,6 +210,8 @@ function CollectionList() {
       return;
     }
 
+    // When you reach this point, user chose a category that has not been loaded
+    // to cache before. Thus, we must be loading the first page of the category.
     currPage.current = 1;
 
     fetcher.submit(
