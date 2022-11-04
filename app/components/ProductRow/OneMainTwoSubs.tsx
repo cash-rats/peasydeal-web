@@ -6,6 +6,8 @@ import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';
 
 import MediumGrid, { links as MediumGridLinks } from "../ProductGrid/MediumGrid";
+import MediumGridSkeleton, { links as MediumGridSkeletonLinks } from "~/components/ProductGrid/MediumGridSkeleton";
+import LargeGridSkeleton, { links as LargeGridSkeletonLinks } from "../ProductGrid/LargeGridSkeleton";
 import LargeGrid, { links as LargeGridLinks } from "../ProductGrid/LargeGrid";
 import styles from "./styles/OneMainTwoSubs.css";
 
@@ -13,6 +15,9 @@ export const links: LinksFunction = () => {
 	return [
 		...MediumGridLinks(),
 		...LargeGridLinks(),
+		...MediumGridSkeletonLinks(),
+		...LargeGridSkeletonLinks(),
+
 		{ rel: 'stylesheet', href: styles },
 	];
 };
@@ -20,9 +25,16 @@ export const links: LinksFunction = () => {
 interface LeftLayoutProps {
 	product?: Product;
 	onClickProduct?: (productUUID: string) => void;
+	loading?: boolean
 };
 
-function LeftLayout({ product, onClickProduct = () => { } }: LeftLayoutProps) {
+function LeftLayout({ product, onClickProduct = () => { }, loading = false }: LeftLayoutProps) {
+	if (loading) {
+		return (
+			<LargeGridSkeleton />
+		);
+	}
+
 	return (
 		<div className="left">
 			{
@@ -44,12 +56,25 @@ function LeftLayout({ product, onClickProduct = () => { } }: LeftLayoutProps) {
 interface RightLayoutProps {
 	products?: Product[];
 	onClickProduct?: (productUUID: string) => void;
+	loading?: boolean;
 };
 
-function RightLayout({ products = [], onClickProduct = () => { } }: RightLayoutProps) {
+function RightLayout({
+	loading = false,
+	products = [],
+	onClickProduct = () => { }
+}: RightLayoutProps) {
 	const [one, two] = products;
-	return (
+	if (loading) {
+		return (
+			<div className="right">
+				<MediumGridSkeleton />
+				<MediumGridSkeleton />
+			</div>
+		)
+	}
 
+	return (
 		<div className="right">
 			{
 				one && (
@@ -94,6 +119,8 @@ interface OneMainTwoSubsProps {
 	 * Callback when clicks on product.
 	 */
 	onClickProduct?: (productID: string) => void;
+
+	loading?: boolean;
 };
 
 // What if we only have 1, or 2 products?
@@ -101,10 +128,10 @@ function OneMainTwoSubs({
 	products = [],
 	reverse = false,
 	onClickProduct = () => { },
+	loading = false,
 }: OneMainTwoSubsProps) {
 	const [one, two, three] = products;
 	const [enoughForReverse, setEnoughForReverse] = useState(false);
-
 	const checkWidthEnoughForReverse = (dom: Window) => dom.innerWidth > breakPoints.normalScreenTop;
 
 	return (
@@ -118,31 +145,47 @@ function OneMainTwoSubs({
 		>
 			<div className="one-main-two-subs-container">
 				{
-					reverse && enoughForReverse
+					loading
 						? (
 							<>
-								<RightLayout
-									products={[one, two]}
-									onClickProduct={onClickProduct}
-								/>
-
-								<LeftLayout
-									product={three}
-									onClickProduct={onClickProduct}
-								/>
+								<LeftLayout loading />
+								<RightLayout loading />
 							</>
 						)
 						: (
 							<>
-								<LeftLayout
-									product={one}
-									onClickProduct={onClickProduct}
-								/>
+								{
 
-								<RightLayout
-									products={[two, three]}
-									onClickProduct={onClickProduct}
-								/>
+									reverse && enoughForReverse
+										? (
+											<>
+												<>
+													<RightLayout
+														products={[one, two]}
+														onClickProduct={onClickProduct}
+													/>
+
+													<LeftLayout
+														product={three}
+														onClickProduct={onClickProduct}
+													/>
+												</>
+											</>
+										)
+										: (
+											<>
+												<LeftLayout
+													product={one}
+													onClickProduct={onClickProduct}
+												/>
+
+												<RightLayout
+													products={[two, three]}
+													onClickProduct={onClickProduct}
+												/>
+											</>
+										)
+								}
 							</>
 						)
 				}

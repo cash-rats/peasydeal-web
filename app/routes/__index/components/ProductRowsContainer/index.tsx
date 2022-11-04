@@ -17,14 +17,33 @@ export const links: LinksFunction = () => {
   ];
 };
 
-interface ProductRowsContainerProps {
-  onClickProduct?: (prodID: string) => void;
-  productRows?: Product[][];
+
+const LoadingRows = () => {
+  return (
+    <>
+      <div className="productRowsContainer_product-row">
+        <OneMainTwoSubs loading />
+      </div>
+
+      <div className="productRowsContainer_product-row">
+        <EvenRow loading />
+      </div>
+    </>
+  );
 }
 
-function ProductRowsContainer({ onClickProduct = () => { }, productRows = [] }: ProductRowsContainerProps) {
+
+interface RealRowsProps {
+  productRows?: Product[][];
+  onClickProduct?: (prodID: string) => void;
+}
+
+const RealRows = ({
+  productRows = [],
+  onClickProduct = () => { },
+}: RealRowsProps) => {
   return (
-    <div className="productRowsContainer_wrapper">
+    <>
       {
         productRows.map((row: Product[], index: number): ReactNode => {
           // A complete row has 9 products.
@@ -98,6 +117,34 @@ function ProductRowsContainer({ onClickProduct = () => { }, productRows = [] }: 
             );
           }
         })
+      }
+    </>
+  )
+}
+
+interface ProductRowsContainerProps {
+  onClickProduct?: (prodID: string) => void;
+  productRows?: Product[][];
+  loading?: boolean;
+}
+
+function ProductRowsContainer({
+  onClickProduct = () => { },
+  productRows = [],
+  loading = false,
+}: ProductRowsContainerProps) {
+
+  return (
+    <div className="productRowsContainer_wrapper">
+      {
+        loading
+          ? (<LoadingRows />)
+          : (
+            <RealRows
+              productRows={productRows}
+              onClickProduct={onClickProduct}
+            />
+          )
       }
     </div>
   );

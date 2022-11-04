@@ -1,13 +1,11 @@
 import type { LinksFunction } from '@remix-run/node';
-import Skeleton from 'react-loading-skeleton'
-import skeletonStyles from 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton from '@mui/material/Skeleton';
 
 import styles from './styles/MediumGrid.css';
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: styles },
-    { rel: 'stylesheet', href: skeletonStyles },
   ];
 };
 
@@ -17,7 +15,7 @@ export default function MediumGridSkeleton() {
     <div className="medium-grid-container">
       <div className="image-container">
         <div className="medium-grid-image">
-          <Skeleton height={'100%'} />
+          <Skeleton variant='rectangular' height='284px' />
         </div>
       </div>
 
@@ -25,20 +23,18 @@ export default function MediumGridSkeleton() {
         <div className="prod-info">
           {/* topic */}
           <div className="headline">
-            <Skeleton
-              count={2}
-              width='100%'
-            />
+            <Skeleton variant='text' />
+            <Skeleton variant='text' />
           </div>
 
-
           <p>
-            <Skeleton />
+            <Skeleton variant='text' />
+            <Skeleton variant='text' />
           </p>
         </div>
 
         <div className="view-btn-container">
-          <Skeleton height='30px' width='80px' />
+          <Skeleton variant='rounded' height='30px' width='80px' />
         </div>
       </div>
     </div>

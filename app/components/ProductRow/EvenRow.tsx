@@ -1,5 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 
+import MediumGridSkeleton, { links as MediumGridSkeletonLinks } from "~/components/ProductGrid/MediumGridSkeleton";
 import type { Product } from "~/shared/types";
 
 import styles from './styles/EventRow.css';
@@ -7,6 +8,7 @@ import { MediumGrid } from "../ProductGrid";
 
 export const links: LinksFunction = () => {
 	return [
+		...MediumGridSkeletonLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 }
@@ -15,25 +17,41 @@ interface EvenRowProps {
 	/*
 	 *  Take at most 6 products. Render proper layout based on view port size.
 	 */
-	products: Product[];
+	products?: Product[];
 
 	onClickProduct?: (productID: string) => void;
+
+	loading?: boolean;
 }
 
-export default function EvenRow({ products = [], onClickProduct = () => { } }: EvenRowProps) {
+export default function EvenRow({
+	loading = false,
+	products = [],
+	onClickProduct = () => { },
+}: EvenRowProps) {
 	return (
 		<div className="even-row-contianer">
 			{
-				products.map((product, index: number) => (
-					<MediumGrid
-						key={product.productUUID || index}
-						productID={product.productUUID}
-						onClickProduct={onClickProduct}
-						image={product.main_pic}
-						title={product.title}
-						description={product.shortDescription}
-					/>
-				))
+				loading
+					? (
+						<>
+							<MediumGridSkeleton />
+							<MediumGridSkeleton />
+							<MediumGridSkeleton />
+						</>
+					)
+					: (
+						products.map((product, index: number) => (
+							<MediumGrid
+								key={product.productUUID || index}
+								productID={product.productUUID}
+								onClickProduct={onClickProduct}
+								image={product.main_pic}
+								title={product.title}
+								description={product.shortDescription}
+							/>
+						)
+						))
 			}
 		</div>
 	);

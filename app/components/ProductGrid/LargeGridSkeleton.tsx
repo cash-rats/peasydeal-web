@@ -1,13 +1,11 @@
 import type { LinksFunction } from '@remix-run/node';
-import Skeleton from 'react-loading-skeleton'
-import skeletonStyles from 'react-loading-skeleton/dist/skeleton.css'
+import Skeleton from '@mui/material/Skeleton';
 
 import styles from './styles/LargeGrid.css';
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: styles },
-    { rel: 'stylesheet', href: skeletonStyles },
   ];
 };
 
@@ -16,7 +14,7 @@ export default function LargeGridSkeleton() {
     <div className='large-grid-container'>
       <div className="image-container">
         <div className="large-grid-image">
-          <Skeleton height='100%' />
+          <Skeleton variant='rectangular' height='100%' />
         </div>
       </div>
 
@@ -24,16 +22,16 @@ export default function LargeGridSkeleton() {
 
         <div className="info">
           <div className="headline">
-            <Skeleton width='80%' />
+            <Skeleton variant='text' width='80%' />
           </div>
 
           <div className="desc">
-            <Skeleton width='80%' />
+            <Skeleton variant='text' width='80%' />
           </div>
         </div>
 
         <div className="btn-container">
-          <Skeleton height='60px' />
+          <Skeleton variant='text' height='60px' />
         </div>
       </div>
     </div>
