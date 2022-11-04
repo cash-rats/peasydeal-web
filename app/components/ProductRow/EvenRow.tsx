@@ -13,6 +13,8 @@ export const links: LinksFunction = () => {
 	];
 }
 
+// const Skele
+
 interface EvenRowProps {
 	/*
 	 *  Take at most 6 products. Render proper layout based on view port size.
@@ -35,10 +37,13 @@ export default function EvenRow({
 				loading
 					? (
 						<>
-							<MediumGridSkeleton />
-							<MediumGridSkeleton />
-							<MediumGridSkeleton />
-							<MediumGridSkeleton />
+							{
+								(new Array(4)).fill(0).map((_, idx) => {
+									return (
+										<MediumGridSkeleton key={idx} />
+									)
+								})
+							}
 						</>
 					)
 					: (
