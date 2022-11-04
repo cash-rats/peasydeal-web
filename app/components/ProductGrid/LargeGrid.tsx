@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useSubmit } from '@remix-run/react';
+import { Link } from '@remix-run/react';
 
 import RoundButton from '~/components/RoundButton';
 import MqNotifier from '~/components/MqNotifier';
@@ -17,7 +17,7 @@ interface LargeGridProps {
 	productID: string;
 	image: string;
 	title: string;
-	description: string;
+	description?: string;
 	onClickProduct?: (productID: string) => void;
 }
 

@@ -6,6 +6,11 @@
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
 }
+@media (min-width: 600px) {
+  .large-grid-container {
+    max-width: 600px;
+  }
+}
 .large-grid-container .product-desc-container {
   display: flex;
   justify-content: center;
