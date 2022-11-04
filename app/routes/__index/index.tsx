@@ -40,6 +40,8 @@ export const action: ActionFunction = async ({ request }) => {
 	const page = Number(body.get("page") || '1');
 	const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
 
+	console.log('debug page', page);
+
 	const prods = await fetchProductsByCategory({
 		perpage: perPage,
 		page,
@@ -72,10 +74,13 @@ export default function Index() {
 
 	// Transition to observe when preload the first page of the product list render
 	const fetcher = useFetcher();
+	const loadmoreFetcher = useFetcher();
+
 	const handleLoadMore = useCallback(
 		() => {
 			const nextPage = currPage.current + 1;
-			fetcher.submit(
+			console.log('debug nextPage', nextPage);
+			loadmoreFetcher.submit(
 				{
 					page: nextPage.toString(),
 					per_page: PAGE_LIMIT.toString(),
@@ -90,7 +95,7 @@ export default function Index() {
 	const handleManualLoad = useCallback(
 		() => {
 			const nextPage = currPage.current + 1;
-			fetcher.submit(
+			loadmoreFetcher.submit(
 				{
 					page: nextPage.toString(),
 					per_page: PAGE_LIMIT.toString(),
@@ -102,7 +107,7 @@ export default function Index() {
 			);
 		}, []);
 
-	// Append products to local state when fetcher type is in `done` state.
+
 	useEffect(() => {
 		if (fetcher.type === 'done') {
 			const { products } = fetcher.data as ActionType;
@@ -116,6 +121,22 @@ export default function Index() {
 			setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
 		}
 	}, [fetcher.type])
+
+	// Append products to local state when fetcher type is in `done` state.
+	useEffect(() => {
+		if (loadmoreFetcher.type === 'done') {
+			const { products } = loadmoreFetcher.data as ActionType;
+
+			if (products.length <= 0) {
+				setHasMore(false);
+			}
+
+			// Current page fetched successfully, increase page number getting ready to fetch next page.
+			currPage.current += 1;
+			setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
+		}
+	}, [loadmoreFetcher.type])
+
 
 	useEffect(() => {
 		fetcher.submit(
@@ -155,7 +176,7 @@ export default function Index() {
 							? (
 								<LoadMore
 									spinner={<CssSpinner scheme="spinner" />}
-									loading={fetcher.state !== 'idle'}
+									loading={loadmoreFetcher.state !== 'idle'}
 									callback={handleLoadMore}
 									delay={100}
 									offset={150}
@@ -163,7 +184,7 @@ export default function Index() {
 							)
 							: (
 								<LoadMoreButton
-									loading={fetcher.state !== 'idle'}
+									loading={loadmoreFetcher.state !== 'idle'}
 									text='Load more'
 									onClick={handleManualLoad}
 								/>

@@ -38,7 +38,7 @@ export default function EvenRow({
 					? (
 						<>
 							{
-								(new Array(4)).fill(0).map((_, idx) => {
+								(new Array(6)).fill(0).map((_, idx) => {
 									return (
 										<MediumGridSkeleton key={idx} />
 									)
