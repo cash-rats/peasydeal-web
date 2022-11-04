@@ -83,23 +83,13 @@ function useScrollRestoration() {
   }, [transition]);
 
   React.useEffect(() => {
-    console.log('debug * 3', location.key);
-    console.log('debug * 4', location.pathname);
-    console.log('debug * 5', positions);
-    console.log('debug * 6', window.scrollY);
     if (transition.location) {
-      console.log('debug * 6 - 1');
-
-      // positions[location.key] = window.scrollY;
       positions[location.key] = window.scrollY;
-
-      console.log('debug * 6 - 2', positions[location.key]);
     }
   }, [transition, location]);
 
   useBeforeUnload(
     React.useCallback(() => {
-      console.log('debug * 7', positions);
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
     }, [])
   );
@@ -114,19 +104,14 @@ function useScrollRestoration() {
         return;
       }
 
-      console.log('debug * 8', location);
-      console.log('debug * 9', positions[location.key]);
       let y = positions[location.key];
 
       // been here before, scroll to it
       if (y != undefined) {
-
-        console.log('debug * 10', y);
         setTimeout(() => {
           window.scrollTo(0, y);
-        }, 1000);
+        }, 80);
 
-        console.log('debug * 11', y);
         return;
       }
 

@@ -9,7 +9,7 @@ import {
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
+  // ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
 
@@ -23,7 +23,7 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
 import { ServerStyleContext, ClientStyleContext } from "./context"
 import styles from "./styles/global.css";
-// import { ScrollRestoration } from './ScrollRestoration';
+import { ScrollRestoration } from './ScrollRestoration';
 
 export const meta: MetaFunction = () => ({
   charset: "utf-8",

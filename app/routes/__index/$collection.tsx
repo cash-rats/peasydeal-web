@@ -1,5 +1,4 @@
-import { useState, useEffect, useLayoutEffect, useRef } from "react";
-import { flushSync } from 'react-dom';
+import { useState, useEffect, useRef } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
@@ -26,6 +25,14 @@ import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { organizeTo9ProdsPerRow } from "./utils";
+import {
+  getCategoryProductsMap,
+  initProductListInfoIfNotExists,
+  getCategoryProductListInfoFromLocalStorage,
+  writeCategoryProductMapToLocalStorage,
+  removeCategoryProductMapFromLocalStorage,
+} from './localstorage';
+import type { ProductListInfo, CollectionProducts } from './types';
 
 type LoaderType = {
   category: string,
@@ -103,56 +110,15 @@ export const CatchBoundary = () => {
   );
 };
 
-
-const LocalStorageCategoryProductsKey = 'category_products';
-
-type ProductListInfo = {
-  page: number;
-  products: Product[];
-  position: number;
-};
-
-type CollectionProducts = {
-  [key: string]: ProductListInfo;
-};
-
-const getCategoryProductsMap = (): CollectionProducts => {
-  const item = localStorage.getItem(LocalStorageCategoryProductsKey);
-  if (!item) return {};
-  return JSON.parse(item);
-};
-
-const initProductListInfoIfNotExists = (map: CollectionProducts, category: string) => {
-  if (!map[category]) {
-    map[category] = {
-      position: 0,
-      page: 1,
-      products: [],
-    }
-  }
-};
-
-const getCategoryProductListInfoFromLocalStorage = (map: CollectionProducts, category: string): ProductListInfo => {
-  return map[category] || {
-    page: 1,
-    products: [],
-    position: 0,
-  };
-};
-
-const writeCategoryProductMapToLocalStorage = (map: CollectionProducts) => {
-  localStorage.setItem(LocalStorageCategoryProductsKey, JSON.stringify(map));
-};
-
-const removeCategoryProductMapFromLocalStorage = () => {
-  localStorage.removeItem(LocalStorageCategoryProductsKey);
-};
-
 const getCategoryFromWindowPath = (window: Window): string => {
   const pathname = window.location.pathname;
   const category = pathname.substring(pathname.lastIndexOf('/') + 1);
   return category;
 };
+
+type CategoryProdRows = {
+  [key: string]: Product[][];
+}
 
 function CollectionList() {
   const { category } = useLoaderData<LoaderType>();
@@ -161,7 +127,8 @@ function CollectionList() {
   const catProdMap = useRef<CollectionProducts>({});
 
   // "productRows" is for displaying products on the screen, it's not being used in caching.
-  const [productRows, setProductRows] = useState<Product[][]>([]);
+  // const [productRows, setProductRows] = useState<Product[][]>([]);
+  const [productRows, setProductRows] = useState<CategoryProdRows>({});
 
   const [hasMore, setHasMore] = useState(true);
   const currPage = useRef(1);
@@ -174,25 +141,25 @@ function CollectionList() {
   // When component first mounted, we need to rehydrate product list data if it already exist in local storage.
   // When user switch category tab, this hook will not get trigger which ensures the rehydration only happen once.
   useEffect(() => {
-    // Restore cache from local storage.
+    // Restore cache from local storage. If given category is not in the cache, `getCategoryProductListInfoFromLocalStorage` will
+    // give a default one for web to render.
     catProdMap.current = getCategoryProductsMap();
     const productListInfo = getCategoryProductListInfoFromLocalStorage(catProdMap.current, category);
     currPage.current = productListInfo.page;
 
-    setProductRows(
-      organizeTo9ProdsPerRow(productListInfo.products),
-    );
-
-    // window.scrollTo(0, productListInfo.position);
-    return () => {
-      writeCategoryProductMapToLocalStorage(catProdMap.current);
-    }
+    setProductRows(prev => ({
+      ...prev,
+      [category]: organizeTo9ProdsPerRow(productListInfo.products)
+    }));
   }, []);
 
   useEffect(() => {
     if (transition.location) {
-      console.log('debug redirect', category, catProdMap.current[category]);
-      // catProdMap.current[category].position = window.scrollY;
+      // Cache product list info to local storage before leaving.
+      initProductListInfoIfNotExists(catProdMap.current, category);
+      catProdMap.current[category].position = window.scrollY;
+
+      writeCategoryProductMapToLocalStorage(catProdMap.current);
     }
   }, [transition, location]);
 
@@ -210,17 +177,18 @@ function CollectionList() {
     console.log('debug rehydrate', category, prodListInfo);
 
     if (prodListInfo) {
-      setProductRows(
-        organizeTo9ProdsPerRow(prodListInfo.products)
-      )
-
-      // setTimeout(() => {
-      console.log('debug setTimeout', prodListInfo);
-      window.scrollTo(0, prodListInfo.position);
-      // }, 1000);
-
       currPage.current = prodListInfo.page;
+      const position = prodListInfo.position;
+
       setHasMore(true);
+
+      // setProductRows(
+      //   organizeTo9ProdsPerRow({}prodListInfo.products)
+      // )
+
+      setTimeout(() => {
+        window.scrollTo(0, position);
+      }, 50);
 
       return;
     }
@@ -258,7 +226,10 @@ function CollectionList() {
       initProductListInfoIfNotExists(catProdMap.current, category);
       catProdMap.current[category].products = products;
 
-      setProductRows(organizeTo9ProdsPerRow(products));
+      setProductRows(prev => ({
+        ...prev,
+        [category]: organizeTo9ProdsPerRow(products),
+      }));
     }
   }, [fetcher.type])
 
@@ -267,10 +238,8 @@ function CollectionList() {
 
       const { products } = loadmoreFetcher.data as ActionType;
 
-      if (products.length <= 0) {
+      if (products.length < PAGE_LIMIT) {
         setHasMore(false);
-
-        return;
       }
 
       const incrementedPageNumber = currPage.current + 1;
@@ -278,11 +247,18 @@ function CollectionList() {
 
       initProductListInfoIfNotExists(catProdMap.current, category);
 
-      catProdMap.current[category].products = catProdMap.current[category].products.concat(products);
+      catProdMap.current[category].products = [
+        ...catProdMap.current[category].products,
+        ...products,
+      ];
       catProdMap.current[category].page = incrementedPageNumber;
 
       setProductRows(prev => {
-        return prev.concat(organizeTo9ProdsPerRow(products))
+        return {
+          ...prev,
+          [category]: prev[category].concat(organizeTo9ProdsPerRow(products))
+
+        };
       });
     }
   }, [loadmoreFetcher.type]);
@@ -340,7 +316,7 @@ function CollectionList() {
       </div>
 
       <ProductRowsContainer
-        productRows={productRows}
+        productRows={productRows[category]}
       />
 
       <fetcher.Form>
