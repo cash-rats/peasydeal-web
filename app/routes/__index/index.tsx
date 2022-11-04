@@ -138,7 +138,7 @@ export default function Index() {
 	return (
 		<div className="prod-list-container">
 			<ProductRowsContainer
-				loading
+				loading={fetcher.type !== 'done'}
 				productRows={productRows}
 				onClickProduct={handleClickProduct}
 			/>
