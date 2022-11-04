@@ -73,7 +73,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
               {
                 categories.map((category, index) => {
                   return (
-                    <div key={index} className="Header__CategoriesNav__all-cats-title">
+                    <div key={category.catId} className="Header__CategoriesNav__all-cats-title">
                       <Link prefetch='intent' to={`/${category.title}`}>
                         <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
                           {category.title}

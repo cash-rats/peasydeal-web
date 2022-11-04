@@ -312,6 +312,7 @@ function CollectionList() {
       </div>
 
       <ProductRowsContainer
+        loading={fetcher.type !== 'done'}
         productRows={productRows[category]}
       />
 
