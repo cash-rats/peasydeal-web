@@ -19,7 +19,7 @@ interface MediumGridProps {
 	productID: string;
 	image: string;
 	title: string;
-	description: string;
+	description?: string;
 	onClickProduct?: (productID: string) => void;
 };
 

@@ -32,7 +32,7 @@ import {
   writeCategoryProductMapToLocalStorage,
   removeCategoryProductMapFromLocalStorage,
 } from './localstorage';
-import type { ProductListInfo, CollectionProducts } from './types';
+import type { CollectionProducts } from './types';
 
 type LoaderType = {
   category: string,
@@ -127,7 +127,6 @@ function CollectionList() {
   const catProdMap = useRef<CollectionProducts>({});
 
   // "productRows" is for displaying products on the screen, it's not being used in caching.
-  // const [productRows, setProductRows] = useState<Product[][]>([]);
   const [productRows, setProductRows] = useState<CategoryProdRows>({});
 
   const [hasMore, setHasMore] = useState(true);
@@ -151,6 +150,10 @@ function CollectionList() {
       ...prev,
       [category]: organizeTo9ProdsPerRow(productListInfo.products)
     }));
+
+    setTimeout(() => {
+      window.scrollTo(0, productListInfo.position);
+    }, 50);
   }, []);
 
   useEffect(() => {
@@ -174,18 +177,11 @@ function CollectionList() {
     const cacheMap = catProdMap.current;
     const prodListInfo = cacheMap[category];
 
-    console.log('debug rehydrate', category, prodListInfo);
-
     if (prodListInfo) {
       currPage.current = prodListInfo.page;
       const position = prodListInfo.position;
 
       setHasMore(true);
-
-      // setProductRows(
-      //   organizeTo9ProdsPerRow({}prodListInfo.products)
-      // )
-
       setTimeout(() => {
         window.scrollTo(0, position);
       }, 50);

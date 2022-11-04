@@ -1,4 +1,4 @@
-import type { CollectionProducts } from './types';
+import type { CollectionProducts, ProductListInfo } from './types';
 
 export const LocalStorageCategoryProductsKey = 'category_products';
 

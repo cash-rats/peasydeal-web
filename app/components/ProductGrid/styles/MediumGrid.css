@@ -85,6 +85,13 @@
 
 .medium-grid-image {
   aspect-ratio: 1/1;
+  width: 599px;
+  height: 599px;
+}
+@media (min-width: 599px) {
+  .medium-grid-image {
+    width: 284px;
+  }
 }
 
 /*# sourceMappingURL=MediumGrid.css.map */

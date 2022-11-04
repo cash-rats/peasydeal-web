@@ -15,4 +15,3 @@ export const NormalSearchBar = Template.bind({});
 NormalSearchBar.args = {
   value: 1000,
 };
-
