@@ -38,6 +38,7 @@ export default function EvenRow({
 							<MediumGridSkeleton />
 							<MediumGridSkeleton />
 							<MediumGridSkeleton />
+							<MediumGridSkeleton />
 						</>
 					)
 					: (
