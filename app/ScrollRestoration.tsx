@@ -31,23 +31,18 @@ export function ScrollRestoration({ nonce = undefined }: { nonce?: string }) {
   // let the browser restore on it's own for refresh
   useBeforeUnload(
     React.useCallback(() => {
-
-      console.log('debug * 1 auto');
       window.history.scrollRestoration = "auto";
     }, [])
   );
 
   let restoreScroll = ((STORAGE_KEY: string) => {
-    console.log('debug * 1 - 1', window.history.state.key);
     if (!window.history.state || !window.history.state.key) {
-      console.log('debug * 1 - 2');
       let key = Math.random().toString(32).slice(2);
       window.history.replaceState({ key }, "");
     }
     try {
       let positions = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || "{}");
       let storedY = positions[window.history.state.key];
-      console.log('debug * 1 - 3', storedY);
       if (typeof storedY === "number") {
         window.scrollTo(0, storedY);
       }

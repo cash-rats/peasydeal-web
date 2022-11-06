@@ -1,6 +1,6 @@
 import type { Session } from '@remix-run/node';
 
-import { getSession } from '~/sessions';
+import { getSession } from '~/sessions/sessions';
 
 export const CartSessionKey = 'shopping_cart';
 

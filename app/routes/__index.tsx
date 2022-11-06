@@ -16,6 +16,9 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { getItemCount } from '~/utils/shoppingcart.session';
+
+import { getSession, commitSession } from '~/sessions/redis_session';
+
 import { fetchCategories } from '~/categories.server';
 
 import styles from "./styles/index.css";
@@ -41,6 +44,16 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();
 	const numOfItemsInCart = await getItemCount(request);
 
+	// return new Response(JSON.stringify({
+	// 	categories,
+	// 	numOfItemsInCart,
+	// }),
+	// 	{
+	// 		headers: {
+	// 			"Set-Cookie": await commitSession(exampleSession),
+	// 		}
+	// 	}
+	// )
 	return json<LoaderType>({
 		numOfItemsInCart,
 		categories: categories,

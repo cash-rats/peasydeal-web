@@ -4,7 +4,11 @@ import { useFetcher } from '@remix-run/react';
 import { json } from '@remix-run/node';
 
 import type { Product } from '~/shared/types';
-import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
+
+// Note: we don't need to import "style links" for this component
+// because route `__index/index` already loaded it. If we load it
+// again react would echo a error saying duplicate css being loaded
+import ProductRowsLayout from '~/components/ProductRowsLayout';
 import { organizeTo9ProdsPerRow } from '~/utils/products';
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 
@@ -14,7 +18,6 @@ import { fetchProductsByCategory } from '~/api';
 export const links: LinksFunction = () => {
   return [
     ...CssSpinnerLinks(),
-    ...ProductRowsLayoutLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };

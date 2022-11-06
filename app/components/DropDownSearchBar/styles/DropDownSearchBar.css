@@ -1,6 +1,7 @@
 .DropDownSearchBar__wrapper {
   width: 100%;
   position: relative;
+  z-index: 1;
 }
 
 .DropDownSearchBar__dropdown-wrapper {

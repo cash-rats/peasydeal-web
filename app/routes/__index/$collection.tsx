@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
@@ -15,33 +15,45 @@ import httpStatus from 'http-status-codes';
 
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
-import type { Product } from '~/shared/types';
+import type { CategoriesMap, Product } from '~/shared/types';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { normalizeToMap, fetchCategories } from '~/categories.server';
+import {
+  getCategoryProducts,
+  setCategoryProducts,
+  addCategoryProducts,
+} from '~/sessions/productlist.session';
+import { getCategories } from '~/sessions/categories.session';
+import { commitSession } from '~/sessions/redis_session';
 
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { organizeTo9ProdsPerRow } from "./utils";
-import {
-  getCategoryProductsMap,
-  initProductListInfoIfNotExists,
-  getCategoryProductListInfoFromLocalStorage,
-  writeCategoryProductMapToLocalStorage,
-  removeCategoryProductMapFromLocalStorage,
-} from './localstorage';
-import type { CollectionProducts } from './types';
+// import {
+//   getCategoryProductsMap,
+//   initProductListInfoIfNotExists,
+//   getCategoryProductListInfoFromLocalStorage,
+//   writeCategoryProductMapToLocalStorage,
+//   removeCategoryProductMapFromLocalStorage,
+// } from './localstorage';
+
 
 type LoaderType = {
+  categories: CategoriesMap,
+  products: Product[],
   category: string,
+  page: number,
+  has_more: boolean;
 };
 
 type ActionType = {
   products: Product[],
-  has_more: boolean,
   category: string,
+  page: number,
+  has_more: boolean,
 };
 
 export const links: LinksFunction = () => {
@@ -54,36 +66,75 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 };
-
-type __ActionType = 'redirect_to_prod' | 'load_category_products';
-
-export const loader: LoaderFunction = async ({ params, request }) => {
-  const { collection = '' } = params;
-
-  return json<LoaderType>({
-    category: collection,
-  });
+const __loadCategoriesMap = async (request: Request) => {
+  let catMap = await getCategories(request);
+  if (!catMap) {
+    catMap = normalizeToMap(await fetchCategories());;
+  }
+  return catMap;
 }
 
-const __loadCategoryProducts = async (category: string, page: number, perPage: number) => {
-  const catMap = normalizeToMap(await fetchCategories());
-  const targetCat = catMap[category];
-  if (!targetCat) {
-    throw json(`target category ${category} not found`, httpStatus.NOT_FOUND);
-  }
+const __loadCategoryProducts = async (category: string, page: number, perPage: number): Promise<{
+  products: Product[],
+  category: string,
+  has_more: boolean,
+}> => {
+
 
   const prods = await fetchProductsByCategory({
     perpage: perPage,
     page,
-    category: catMap[category].catId,
+    category,
   })
 
-  return json<ActionType>({
+  return {
     products: prods,
     has_more: prods.length === PAGE_LIMIT,
     category,
+  };
+}
+
+const checkHasMoreRecord = (count: number, divisor: number) => count % divisor === 0;
+
+
+export const loader: LoaderFunction = async ({ params, request }) => {
+  const { collection = '' } = params;
+  const catMap = await __loadCategoriesMap(request);
+
+  if (!catMap[collection]) {
+    throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
+  }
+
+  const cachedProds = await getCategoryProducts(request, collection);
+  if (cachedProds) {
+    return json<LoaderType>({
+      categories: catMap,
+      category: collection,
+      products: cachedProds.products,
+      page: cachedProds.page,
+      has_more: checkHasMoreRecord(cachedProds.products.length, PAGE_LIMIT),
+    })
+  }
+
+  // First time loaded so it must be first page.
+  const resp = await __loadCategoryProducts(collection, 1, PAGE_LIMIT);
+  const session = await setCategoryProducts(request, collection, resp.products);
+  // const cookieSession = await setCategories(request, catMap);
+
+  return json<LoaderType>({
+    categories: catMap,
+    products: resp.products,
+    page: 1,
+    category: collection,
+    has_more: checkHasMoreRecord(resp.products.length, PAGE_LIMIT),
+  }, {
+    headers: {
+      'Set-Cookie': await commitSession(session),
+    },
   });
 }
+
+type __ActionType = 'redirect_to_prod' | 'load_category_products';
 
 export const action: ActionFunction = async ({ request, params }) => {
   const body = await request.formData();
@@ -94,9 +145,25 @@ export const action: ActionFunction = async ({ request, params }) => {
     const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
     const { collection = '' } = params;
 
-    return __loadCategoryProducts(collection, page, perPage);
-  }
+    const resp = await __loadCategoryProducts(
+      collection,
+      page,
+      perPage,
+    );
 
+    const session = await addCategoryProducts(request, resp.products, collection, page);
+
+    return json<ActionType>({
+      products: resp.products,
+      category: collection,
+      page,
+      has_more: checkHasMoreRecord(resp.products.length, PAGE_LIMIT),
+    }, {
+      headers: {
+        'Set-Cookie': await commitSession(session),
+      },
+    });
+  }
 
   const productID = body.get("product_id");
   return redirect(`/product/${productID}`);
@@ -116,146 +183,36 @@ const getCategoryFromWindowPath = (window: Window): string => {
   return category;
 };
 
-type CategoryProdRows = {
-  [key: string]: Product[][];
-}
-
 function CollectionList() {
-  const { category } = useLoaderData<LoaderType>();
+  const { category, products, page, has_more, categories } = useLoaderData<LoaderType>();
 
-  // "catProdMap" a cached map that won't be used to display but to cache in local storage.
-  const catProdMap = useRef<CollectionProducts>({});
+  // "productRows" is for displaying products on the screen.
+  const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
 
-  // "productRows" is for displaying products on the screen, it's not being used in caching.
-  const [productRows, setProductRows] = useState<CategoryProdRows>({});
+  const [hasMore, setHasMore] = useState(has_more);
+  const currPage = useRef(page);
 
-  const [hasMore, setHasMore] = useState(true);
-  const currPage = useRef(1);
-
-  const fetcher = useFetcher();
   const loadmoreFetcher = useFetcher();
   const transition = useTransition();
-  const location = useLocation();
-
-  // When component first mounted, we need to rehydrate product list data if it already exist in local storage.
-  // When user switch category tab, this hook will not get trigger which ensures the rehydration only happen once.
-  useEffect(() => {
-    // Restore cache from local storage. If given category is not in the cache, `getCategoryProductListInfoFromLocalStorage` will
-    // give a default one for web to render.
-    catProdMap.current = getCategoryProductsMap();
-    const productListInfo = getCategoryProductListInfoFromLocalStorage(catProdMap.current, category);
-    currPage.current = productListInfo.page;
-
-    setProductRows(prev => ({
-      ...prev,
-      [category]: organizeTo9ProdsPerRow(productListInfo.products)
-    }));
-
-    setTimeout(() => {
-      window.scrollTo(0, productListInfo.position);
-    }, 50);
-  }, []);
-
-  useEffect(() => {
-    if (transition.location) {
-      // Cache product list info to local storage before leaving.
-      initProductListInfoIfNotExists(catProdMap.current, category);
-      catProdMap.current[category].position = window.scrollY;
-
-      writeCategoryProductMapToLocalStorage(catProdMap.current);
-    }
-  }, [transition, location]);
-
-  // Clear product list info when user refreshes so that we are in sync with the latest data.
-  useBeforeUnload(() => {
-    removeCategoryProductMapFromLocalStorage();
-  });
 
   // For any subsequent change of category, we will try to find category data in cache first.
   // If it is found, we render it. If category data not found in the cache, we'll need to fetch it from server.
   useEffect(() => {
-    const cacheMap = catProdMap.current;
-    const prodListInfo = cacheMap[category];
-
-    if (prodListInfo) {
-      currPage.current = prodListInfo.page;
-      const position = prodListInfo.position;
-
-      setHasMore(true);
-      setTimeout(() => {
-        window.scrollTo(0, position);
-      }, 50);
-
-      return;
-    }
-
-    setHasMore(true);
-
-    // When you reach this point, user chose a category that has not been loaded
-    // to cache before. Thus, we must be loading the first page of the category.
-    currPage.current = 1;
-
-    fetcher.submit(
-      {
-        __action: 'load_category_products',
-        page: '1',
-        per_page: PAGE_LIMIT.toString(),
-      },
-      {
-        method: 'post',
-        action: `/${category}`
-      },
-    );
-
+    setProductRows(organizeTo9ProdsPerRow(products));
+    currPage.current = page;
   }, [category]);
 
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
-      // Current page fetched successfully, increase page number getting ready to fetch next page.
-      const { products } = fetcher.data as ActionType;
-      if (products.length < PAGE_LIMIT) {
-        setHasMore(false);
-      }
-
-      // Cache newly fetched products. If category not yet in the cache, we initialize one for it.
-      initProductListInfoIfNotExists(catProdMap.current, category);
-      catProdMap.current[category].products = products;
-
-      setProductRows(prev => ({
-        ...prev,
-        [category]: organizeTo9ProdsPerRow(products),
-      }));
-    }
-  }, [fetcher.type])
-
-  useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
-
-      const { products } = loadmoreFetcher.data as ActionType;
-
-      if (products.length < PAGE_LIMIT) {
-        setHasMore(false);
+      const { products, has_more, page } = loadmoreFetcher.data as ActionType;
+      if (has_more) {
+        currPage.current = page;
       }
 
-      const incrementedPageNumber = currPage.current + 1;
-      currPage.current = incrementedPageNumber;
+      setHasMore(has_more);
 
-      initProductListInfoIfNotExists(catProdMap.current, category);
-
-      catProdMap.current[category].products = [
-        ...catProdMap.current[category].products,
-        ...products,
-      ];
-      catProdMap.current[category].page = incrementedPageNumber;
-
-      setProductRows(prev => {
-        return {
-          ...prev,
-          [category]: prev[category].concat(organizeTo9ProdsPerRow(products))
-
-        };
-      });
+      setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
     }
   }, [loadmoreFetcher.type]);
 
@@ -263,6 +220,8 @@ function CollectionList() {
 
   const handleLoadMore = () => {
     const category = getCategoryFromWindowPath(window);
+
+    console.log('debug 1', currPage.current);
     const nextPage = currPage.current + 1;
 
     loadmoreFetcher.submit(
@@ -279,6 +238,7 @@ function CollectionList() {
   };
 
   const handleManualLoad = () => {
+    const category = getCategoryFromWindowPath(window);
     const nextPage = currPage.current + 1;
     loadmoreFetcher.submit(
       {
@@ -293,56 +253,40 @@ function CollectionList() {
     );
   }
 
+  const showSkeleton = transition.state !== 'idle' &&
+    transition.location &&
+    categories.hasOwnProperty(
+      decodeURI(transition.location.pathname.substring(1))
+    );
+
   return (
     <div className="prod-list-container">
-      <div className="prod-list-breadcrumbs-container">
-        <Breadcrumbs breadcrumbs={[
-          <NavLink
-            className={({ isActive }) => (
-              isActive
-                ? "breadcrumbs-link breadcrumbs-link-active"
-                : "breadcrumbs-link"
-            )}
-            key='1'
-            to={`/${category}`}
-          >
-            {category}
-          </NavLink>,
-        ]} />
-      </div>
-
       <ProductRowsContainer
-        loading={fetcher.type !== 'done'}
-        productRows={productRows[category]}
+        loading={showSkeleton}
+        productRows={productRows}
       />
+      {/* <ProductRowsContainer loading /> */}
 
-      <fetcher.Form>
-        <input
-          type="hidden"
-          name="page"
-          value={currPage.current}
-        />
-
-        <div className="ProductList__loadmore-container">
-          {
-            hasMore
-              ? (
-                <LoadMore
-                  spinner={<CssSpinner scheme='spinner' />}
-                  loading={loadmoreFetcher.state !== 'idle'}
-                  callback={handleLoadMore}
-                  delay={100}
-                  offset={150}
-                />
-              )
-              : <LoadMoreButton
+      <div className="ProductList__loadmore-container">
+        {
+          hasMore
+            ? (
+              <LoadMore
+                spinner={<CssSpinner scheme='spinner' />}
                 loading={loadmoreFetcher.state !== 'idle'}
-                onClick={handleManualLoad}
-                text='Load more'
+                callback={handleLoadMore}
+                delay={100}
+                offset={150}
               />
-          }
-        </div>
-      </fetcher.Form>
+            )
+            :
+            <LoadMoreButton
+              loading={loadmoreFetcher.state !== 'idle'}
+              onClick={handleManualLoad}
+              text='Load more'
+            />
+        }
+      </div>
     </div>
   );
 

@@ -3,6 +3,7 @@ import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import clsx from 'clsx';
+
 import type { Category } from '~/shared/types';
 
 import styles from './styles/CategoriesNav.css';
@@ -38,9 +39,8 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
               categories.map((category) => (
                 <Link
                   key={category.catId}
-                  prefetch="intent"
+                  // prefetch="intent"
                   to={`/${category.title}`}
-                // state={{ key: category.title }}
                 >
                   <li className="CategoriesNav__item" >
                     {category.title}
@@ -71,10 +71,13 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
           openAllCategories && (
             <div className="Header__CategoriesNav__all-cats">
               {
-                categories.map((category, index) => {
+                categories.map((category) => {
                   return (
                     <div key={category.catId} className="Header__CategoriesNav__all-cats-title">
-                      <Link prefetch='intent' to={`/${category.title}`}>
+                      <Link
+                        prefetch='intent'
+                        to={`/${category.title}`}
+                      >
                         <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
                           {category.title}
                         </span>
