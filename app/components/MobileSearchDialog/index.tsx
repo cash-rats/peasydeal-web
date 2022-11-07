@@ -52,6 +52,18 @@ export default function MobileSearchDialog({
             />
           </div>
         </div>
+
+        <div className="MobileSearch__result-wrapper">
+          <ul className="MobileSearch__result-list">
+            <li className="MobileSearch__result-item">
+              Item A
+            </li>
+
+            <li className="MobileSearch__result-item">
+              Item B
+            </li>
+          </ul>
+        </div>
       </div>
     </Dialog>
   );

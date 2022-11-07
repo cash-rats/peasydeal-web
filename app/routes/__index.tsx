@@ -9,7 +9,6 @@ import {
 	useFetcher,
 } from "@remix-run/react";
 import { StatusCodes } from 'http-status-codes';
-import Dialog from '@mui/material/Dialog';
 
 import CategoryContext from '~/context/categories';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
@@ -18,6 +17,7 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { getItemCount } from '~/utils/shoppingcart.session';
+import MobileSearchDialog, { links as MobileSearchDialogLinks } from '~/components/MobileSearchDialog'
 
 import { fetchCategories } from '~/categories.server';
 
@@ -29,6 +29,7 @@ export const links: LinksFunction = () => {
 		...FooterLinks(),
 		...HeaderLinks(),
 		...CategoriesNavLinks(),
+		...MobileSearchDialogLinks(),
 
 		{ rel: 'stylesheet', href: styles }
 	];
@@ -73,13 +74,10 @@ export default function Index() {
 		<>
 			{/* sharethis popup for news letter subscription */}
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
-			<Dialog
-				fullScreen
+			<MobileSearchDialog
+				onBack={handleClose}
 				open={openSearchDialog}
-				onClose={handleClose}
-			>
-				hello world
-			</Dialog>
+			/>
 
 			<CategoryContext.Provider value={categories} >
 				<Form className="header-wrapper" action='/search'>

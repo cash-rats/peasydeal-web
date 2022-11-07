@@ -72,6 +72,8 @@ function SearchBar({
     })}>
       <div className="search-box">
         <InputBase
+          autoComplete='off'
+          aria-autocomplete='none'
           ref={ref}
           fullWidth
           placeholder={placeholder}

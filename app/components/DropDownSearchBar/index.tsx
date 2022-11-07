@@ -7,9 +7,9 @@ import { CgSearchFound } from 'react-icons/cg';
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import useBodyClick from '~/hooks/useBodyClick';
+import { rootNode } from '~/utils/trie';
 
 import styles from './styles/DropDownSearchBar.css';
-import { rootNode } from './trie';
 
 export const links: LinksFunction = () => {
   return [
@@ -221,12 +221,12 @@ export default function DropDownSearchBar({
                           key={index}
                           to={`/product/${suggest.data.productID}`}
                         >
-                          <div className="DropDownSearchBar__dropdown-item">
+                          <li className="DropDownSearchBar__dropdown-item">
                             <p>  {suggest.data.title}  </p>
                             <span className="DropDownSearchBar__dropdown-discount"> SAVE {
                               (Number(suggest.data.discount) * 100).toFixed(0)
                             }%</span>
-                          </div>
+                          </li>
                         </Link>
                       );
                     })
