@@ -33,7 +33,11 @@ export const meta: MetaFunction = () => ({
 
 export let links: LinksFunction = () => {
   return [
-    { rel: "stylesheet", href: tailwindStylesheetUrl },
+    { rel: 'apple-touch-icon', sizes: '180x180', href: 'assets/apple-touch-icon-180x180.png' },
+    { rel: 'icon', type: 'image/png', sizes: 'any', href: 'assets/favicon.ico' },
+    { rel: 'manifest', href: 'assets/manifest.webmanifest' },
+
+    { rel: 'stylesheet', href: tailwindStylesheetUrl },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
     {
@@ -44,6 +48,7 @@ export let links: LinksFunction = () => {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap'
     },
+
     { rel: 'stylesheet', href: styles },
   ]
 }

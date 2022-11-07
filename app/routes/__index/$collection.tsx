@@ -1,13 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
   useTransition,
-  useLocation,
   useFetcher,
   useLoaderData,
   NavLink,
-  useBeforeUnload,
 } from '@remix-run/react';
 import { ClientOnly } from 'remix-utils';
 import httpStatus from 'http-status-codes';
@@ -74,26 +72,7 @@ const __loadCategoriesMap = async (request: Request) => {
   return catMap;
 }
 
-const __loadCategoryProducts = async (category: string, page: number, perPage: number): Promise<{
-  products: Product[],
-  has_more: boolean,
-}> => {
-
-
-  const prods = await fetchProductsByCategory({
-    perpage: perPage,
-    page,
-    category,
-  })
-
-  return {
-    products: prods,
-    has_more: prods.length === PAGE_LIMIT,
-  };
-}
-
 const checkHasMoreRecord = (count: number, divisor: number) => count % divisor === 0;
-
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { collection = '' } = params;
@@ -102,7 +81,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
   }
-
   const cachedProds = await getCategoryProducts(request, collection);
   if (cachedProds) {
     return json<LoaderType>({
@@ -115,16 +93,21 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   }
 
   // First time loaded so it must be first page.
-  const resp = await __loadCategoryProducts(collection, 1, PAGE_LIMIT);
-  const session = await setCategoryProducts(request, collection, resp.products);
+  const prods = await fetchProductsByCategory({
+    perpage: PAGE_LIMIT,
+    page: 1,
+    category: Number(catMap[collection].catId),
+  })
+
+  const session = await setCategoryProducts(request, collection, prods);
   // const cookieSession = await setCategories(request, catMap);
 
   return json<LoaderType>({
     categories: catMap,
-    products: resp.products,
+    products: prods,
     page: 1,
     category: collection,
-    has_more: checkHasMoreRecord(resp.products.length, PAGE_LIMIT),
+    has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
   }, {
     headers: {
       'Set-Cookie': await commitSession(session),
@@ -140,22 +123,28 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   if (actionType === 'load_category_products') {
     const page = Number(body.get("page") || '1');
-    const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
+    const perpage = Number(body.get("per_page")) || PAGE_LIMIT;
     const { collection = '' } = params;
 
-    const resp = await __loadCategoryProducts(
-      collection,
-      page,
-      perPage,
-    );
+    const catMap = await __loadCategoriesMap(request);
 
-    const session = await addCategoryProducts(request, resp.products, collection, page);
+    if (!catMap[collection]) {
+      throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
+    }
+
+    const products = await fetchProductsByCategory({
+      perpage,
+      page,
+      category: catMap[collection].catId,
+    })
+
+    const session = await addCategoryProducts(request, products, collection, page);
 
     return json<ActionType>({
-      products: resp.products,
+      products,
       category: collection,
       page,
-      has_more: checkHasMoreRecord(resp.products.length, PAGE_LIMIT),
+      has_more: checkHasMoreRecord(products.length, PAGE_LIMIT),
     }, {
       headers: {
         'Set-Cookie': await commitSession(session),
@@ -257,11 +246,27 @@ function CollectionList() {
 
   return (
     <div className="prod-list-container">
+
+      <div className="prod-list-breadcrumbs-container">
+        <Breadcrumbs breadcrumbs={[
+          <NavLink
+            className={({ isActive }) => (
+              isActive
+                ? "breadcrumbs-link breadcrumbs-link-active"
+                : "breadcrumbs-link"
+            )}
+            key='1'
+            to={`/${category}`}
+          >
+            {category}
+          </NavLink>,
+        ]} />
+
+      </div>
       <ProductRowsContainer
         loading={showSkeleton}
         productRows={productRows}
       />
-      {/* <ProductRowsContainer loading /> */}
 
       <div className="ProductList__loadmore-container">
         {
