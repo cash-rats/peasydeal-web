@@ -76,7 +76,6 @@ const __loadCategoriesMap = async (request: Request) => {
 
 const __loadCategoryProducts = async (category: string, page: number, perPage: number): Promise<{
   products: Product[],
-  category: string,
   has_more: boolean,
 }> => {
 
@@ -90,7 +89,6 @@ const __loadCategoryProducts = async (category: string, page: number, perPage: n
   return {
     products: prods,
     has_more: prods.length === PAGE_LIMIT,
-    category,
   };
 }
 

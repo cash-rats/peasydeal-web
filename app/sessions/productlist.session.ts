@@ -43,7 +43,12 @@ export const addCategoryProducts = async (request: Request, products: Product[],
 
   const prodMap = session.get(ProductListKey) as CategoryProducts;
   if (!prodMap[category]) {
-    return await setCategoryProducts(request, category, products);
+    prodMap[category] = {
+      page: 1,
+      products,
+    };
+    session.set(ProductListKey, prodMap);
+    return session;
   }
 
   prodMap[category] = {
