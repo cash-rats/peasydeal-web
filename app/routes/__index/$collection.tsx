@@ -218,8 +218,6 @@ function CollectionList() {
 
   const handleLoadMore = () => {
     const category = getCategoryFromWindowPath(window);
-
-    console.log('debug 1', currPage.current);
     const nextPage = currPage.current + 1;
 
     loadmoreFetcher.submit(

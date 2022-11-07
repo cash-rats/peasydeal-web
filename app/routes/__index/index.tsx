@@ -40,8 +40,6 @@ export const action: ActionFunction = async ({ request }) => {
 	const page = Number(body.get("page") || '1');
 	const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
 
-	console.log('debug page', page);
-
 	const prods = await fetchProductsByCategory({
 		perpage: perPage,
 		page,
@@ -79,7 +77,6 @@ export default function Index() {
 	const handleLoadMore = useCallback(
 		() => {
 			const nextPage = currPage.current + 1;
-			console.log('debug nextPage', nextPage);
 			loadmoreFetcher.submit(
 				{
 					page: nextPage.toString(),

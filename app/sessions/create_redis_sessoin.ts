@@ -43,7 +43,6 @@ export function createRedisSessionStorage({
     cookie,
     async createData(data, expires) {
       const id = genRandomID();
-      console.log('debug redis create data', expires);
       if (expires) {
         await redis.set(
           id,
