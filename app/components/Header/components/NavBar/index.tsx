@@ -25,7 +25,7 @@ interface NavBarProps {
 	/*
 	 * Open full screen search bar on mobile view. (Only works on mobile view)
 	 */
-	onClickSearch?: { (evt: MouseEvent<HTMLSpanElement>): void },
+	onClickSearch?: { (evt: MouseEvent<HTMLButtonElement>): void },
 }
 
 // Load shopping cart items.
@@ -35,9 +35,9 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 			<ul className="nav-content-list">
 				{/* Search icon that only displays in mobile view */}
 				<li className="index_nav-search">
-					<span onClick={onClickSearch}>
+					<IconButton onClick={onClickSearch}>
 						<TbSearch color='white' fontSize={22} />
-					</span>
+					</IconButton>
 				</li>
 
 				{/* shopping cart */}

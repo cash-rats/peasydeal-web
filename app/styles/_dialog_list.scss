@@ -1,0 +1,15 @@
+@mixin dialog-list-wrapper {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@mixin dialog-list-title {
+  margin: 0px;
+  padding: 0.5rem 1rem;
+  font-size: 1.1rem;
+  background: rgb(244, 246, 249);
+  font-weight: 700;
+  color: rgb(52, 52, 52);
+  text-transform: uppercase;
+}

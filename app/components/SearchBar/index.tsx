@@ -17,7 +17,7 @@ export const links: LinksFunction = () => {
 
 interface SearchBarProps {
   form?: string | undefined;
-  onSearch?: (orderNum: string, evt: MouseEvent<HTMLSpanElement>) => void;
+  onSearch?: (criteria: string, evt: MouseEvent<HTMLSpanElement>) => void;
 
   onClear?: (evt: MouseEvent<HTMLSpanElement>) => void;
 

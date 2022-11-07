@@ -1,0 +1,14 @@
+@import 'styles/_dialog_list.scss';
+
+.MobileSearch__wrapper {
+  @include dialog-list-wrapper;
+}
+
+.MobileSearch__title {
+  @include dialog-list-title;
+}
+
+.MobileSearch__searchbar {
+  width: 100%;
+  margin-left: 10px;
+}

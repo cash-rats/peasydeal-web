@@ -32,6 +32,8 @@ interface HeaderProps {
   useSearchSuggests?: () => [SuggestItem[], SearchSuggest];
 
   onSearch?: (query: string, evt: MouseEvent<HTMLButtonElement>) => void;
+
+  onClickMobileSearch?: (evt: MouseEvent<HTMLButtonElement>) => void;
 };
 
 function Header({
@@ -40,6 +42,8 @@ function Header({
   numOfItemsInCart = 0,
   useSearchSuggests = () => ([[], () => { }]),
   onSearch = () => { },
+  onClickMobileSearch = () => { }
+
 }: HeaderProps) {
   const [suggests, searchSuggests] = useSearchSuggests();
 
@@ -60,7 +64,10 @@ function Header({
         {/* right status bar, cart, search icon...etc */}
         <div className="Header__nav-bar">
           <div className="Header__nav-bar-wrapper">
-            <NavBar cartItemCount={numOfItemsInCart} />
+            <NavBar
+              cartItemCount={numOfItemsInCart}
+              onClickSearch={onClickMobileSearch}
+            />
           </div>
         </div>
       </div>
