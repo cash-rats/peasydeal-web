@@ -16,7 +16,9 @@ module.exports = {
         "PEASY_DEAL_ENDPOINT": process.env.PEASY_DEAL_ENDPOINT,
         "STRIPE_PRIVATE_KEY": process.env.STRIPE_PRIVATE_KEY,
         "STRIPE_PUBLIC_KEY": process.env.STRIPE_PUBLIC_KEY,
-        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI
+        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI,
+        "REDIS_HOST": process.env.REDIS_HOST,
+        "REDIST_PORT": process.env.REDIST_PORT,
       },
 
       env_staging: {
@@ -28,7 +30,9 @@ module.exports = {
         "PEASY_DEAL_ENDPOINT": process.env.PEASY_DEAL_ENDPOINT,
         "STRIPE_PRIVATE_KEY": process.env.STRIPE_PRIVATE_KEY,
         "STRIPE_PUBLIC_KEY": process.env.STRIPE_PUBLIC_KEY,
-        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI
+        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI,
+        "REDIS_HOST": process.env.REDIS_HOST,
+        "REDIST_PORT": process.env.REDIST_PORT,
       },
 
       env_production: {
@@ -40,7 +44,9 @@ module.exports = {
         "PEASY_DEAL_ENDPOINT": process.env.PEASY_DEAL_ENDPOINT,
         "STRIPE_PRIVATE_KEY": process.env.STRIPE_PRIVATE_KEY,
         "STRIPE_PUBLIC_KEY": process.env.STRIPE_PUBLIC_KEY,
-        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI
+        "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI,
+        "REDIS_HOST": process.env.REDIS_HOST,
+        "REDIST_PORT": process.env.REDIST_PORT,
       },
     },
   ],
