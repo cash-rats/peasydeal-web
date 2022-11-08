@@ -131,6 +131,8 @@ export default function MobileSearchDialog({
   }, []);
 
   const handleSearch = useCallback((query: string) => {
+    if (!query) return;
+
     onBack();
     onSearch(query);
   }, []);
@@ -139,6 +141,7 @@ export default function MobileSearchDialog({
   const handleEnter = (evt: KeyboardEvent) => {
     if (evt.key === 'Enter' || evt.keyCode === 13) {
       const elem = evt.target as HTMLInputElement;
+      if (!elem.value) return;
       onBack();
       onSearch(elem.value);
     }
