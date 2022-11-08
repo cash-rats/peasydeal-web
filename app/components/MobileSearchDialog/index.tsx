@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, MutableRefObject } from 'react';
 import Dialog from '@mui/material/Dialog';
 import type { DialogProps } from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
@@ -47,6 +47,7 @@ export default function MobileSearchDialog({
   const [showSuggests, setShowSuggests] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState('');
+  let inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setSuggests(
@@ -134,6 +135,26 @@ export default function MobileSearchDialog({
     onSearch(query);
   }, []);
 
+
+  const handleEnter = (evt: KeyboardEvent) => {
+    if (evt.key === 'Enter') {
+      const elem = evt.target as HTMLInputElement;
+      onBack();
+      onSearch(elem.value);
+    }
+  }
+
+  useEffect(() => {
+    return () => inputRef?.current?.addEventListener('keypress', handleEnter);
+  }, []);
+
+
+  const handleOnMountRef = (ref: MutableRefObject<HTMLInputElement | null>) => {
+    if (!ref) return;
+    inputRef = ref;
+    inputRef?.current?.addEventListener('keypress', handleEnter);
+  }
+
   return (
     <Dialog
       fullScreen
@@ -147,10 +168,12 @@ export default function MobileSearchDialog({
 
           <div className="MobileSearch__searchbar">
             <SearchBar
+              ref={inputRef}
               placeholder='Search a product by name'
               onChange={handleChange}
               onClear={handleClear}
               onSearch={handleSearch}
+              onMountRef={handleOnMountRef}
             />
           </div>
         </div>

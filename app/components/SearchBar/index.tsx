@@ -1,5 +1,5 @@
-import type { Ref, MouseEvent, ChangeEvent, FocusEvent } from 'react';
-import { useState, forwardRef } from 'react';
+import type { MutableRefObject, MouseEvent, ChangeEvent, FocusEvent } from 'react';
+import { useEffect, useState, forwardRef, useRef } from 'react';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -19,7 +19,7 @@ interface SearchBarProps {
   form?: string | undefined;
 
   // When user clicks on magnifier icon.
-  onSearch?: (criteria: string, evt: MouseEvent<HTMLSpanElement>) => void;
+  onSearch?: (criteria: string, evt: MouseEvent<HTMLButtonElement>) => void;
 
   onClear?: (evt: MouseEvent<HTMLSpanElement>) => void;
 
@@ -33,6 +33,8 @@ interface SearchBarProps {
   onBlur?: (evt: FocusEvent<HTMLInputElement>) => void;
 
   placeholder?: string;
+
+  onMountRef?: (ref: MutableRefObject<HTMLInputElement | null>) => void;
 }
 
 const isStringEmpty = (str: string): boolean => str.trim().length === 0;
@@ -45,10 +47,21 @@ function SearchBar({
   onChange = () => { },
   onFocus = () => { },
   onBlur = () => { },
+  onMountRef = () => { },
   ...args
-}: SearchBarProps, ref: Ref<HTMLInputElement> | undefined) {
+}: SearchBarProps, ref: MutableRefObject<HTMLInputElement | null> | undefined) {
   const [content, setContent] = useState<string>('');
   const [focusSearch, setFocusSearch] = useState(false);
+  const myRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!ref) return;
+    ref = myRef;
+
+    if (!myRef || !myRef.current) return;
+    onMountRef(myRef);
+  }, []);
+
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setContent(evt.target.value);
     onChange(evt)
@@ -76,7 +89,7 @@ function SearchBar({
         <InputBase
           autoComplete='off'
           aria-autocomplete='none'
-          ref={ref}
+          ref={myRef}
           fullWidth
           placeholder={placeholder}
           size='small'
