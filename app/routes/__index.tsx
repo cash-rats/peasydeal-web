@@ -23,7 +23,6 @@ import { fetchProductsByCategory } from '~/api';
 
 import styles from "./styles/index.css";
 
-
 export const links: LinksFunction = () => {
 	return [
 		...FooterLinks(),
@@ -57,7 +56,6 @@ export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData<LoaderType>();
 	const search = useFetcher();
 	const [openSearchDialog, setOpenSearchDialog] = useState(false);
-	const [suggests, searchSuggests] = useSearchSuggests();
 
 	const handleSearch = (query: string) => {
 		search.submit({ query }, { method: 'post', action: '/search' });
@@ -102,6 +100,7 @@ export default function Index() {
 				onBack={handleClose}
 				open={openSearchDialog}
 				onSearchRequest={handleSearchRequest}
+				onSearch={handleSearch}
 			/>
 
 			<CategoryContext.Provider value={categories} >

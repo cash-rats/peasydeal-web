@@ -29,11 +29,16 @@ interface MobileSearchDialogProps extends DialogProps {
 
   items?: SuggestItem[];
 
+  // Invoke when user clicks on magnifier.
+  onSearch?: (query: string) => void;
+
+  // Invoke if query does not exist in trie cache.
   onSearchRequest?: (query: string) => Promise<SuggestItem[]>;
 }
 
 export default function MobileSearchDialog({
   onBack = () => { },
+  onSearch = (query: string) => { },
   onSearchRequest = (query: string) => Promise.resolve([]),
   items = [],
   ...args
@@ -42,7 +47,6 @@ export default function MobileSearchDialog({
   const [showSuggests, setShowSuggests] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState('');
-
 
   useEffect(() => {
     setSuggests(
@@ -125,6 +129,11 @@ export default function MobileSearchDialog({
     setSearchContent('');
   }, []);
 
+  const handleSearch = useCallback((query: string) => {
+    onBack();
+    onSearch(query);
+  }, []);
+
   return (
     <Dialog
       fullScreen
@@ -141,6 +150,7 @@ export default function MobileSearchDialog({
               placeholder='Search a product by name'
               onChange={handleChange}
               onClear={handleClear}
+              onSearch={handleSearch}
             />
           </div>
         </div>

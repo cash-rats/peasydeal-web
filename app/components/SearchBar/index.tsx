@@ -17,6 +17,8 @@ export const links: LinksFunction = () => {
 
 interface SearchBarProps {
   form?: string | undefined;
+
+  // When user clicks on magnifier icon.
   onSearch?: (criteria: string, evt: MouseEvent<HTMLSpanElement>) => void;
 
   onClear?: (evt: MouseEvent<HTMLSpanElement>) => void;
