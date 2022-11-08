@@ -8,6 +8,7 @@ import { CgSearchFound } from 'react-icons/cg';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import useBodyClick from '~/hooks/useBodyClick';
 import { rootNode } from '~/utils/trie';
+import type { ItemData, SuggestItem } from '~/shared/types';
 
 import styles from './styles/DropDownSearchBar.css';
 
@@ -20,17 +21,6 @@ export const links: LinksFunction = () => {
 
 type SearchingState = 'empty' | 'searching' | 'done' | 'error';
 
-export type ItemData = {
-  title: string;
-  image: string;
-  discount: number;
-  productID: string;
-};
-
-export type SuggestItem = {
-  title: string;
-  data: ItemData;
-};
 
 interface DropDownSearchBarProps {
   form?: string | undefined;
@@ -116,7 +106,7 @@ export default function DropDownSearchBar({
   }, [results, results.length]);
 
 
-  const timerRef = useRef(undefined);
+  const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   const handleChange = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
     if (timerRef.current) {
@@ -166,7 +156,7 @@ export default function DropDownSearchBar({
         timerRef.current = undefined;
         await onDropdownSearch(evt.target.value);
       } catch (error) {
-        setSearchContent('error');
+        setSearchingState('error');
       }
     }, 700);
   }, [])

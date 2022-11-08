@@ -12,14 +12,14 @@ import { StatusCodes } from 'http-status-codes';
 
 import CategoryContext from '~/context/categories';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import type { Category } from '~/shared/types';
+import type { Category, SuggestItem } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { getItemCount } from '~/utils/shoppingcart.session';
 import MobileSearchDialog, { links as MobileSearchDialogLinks } from '~/components/MobileSearchDialog'
-
 import { fetchCategories } from '~/categories.server';
+import { fetchProductsByCategory } from '~/api';
 
 import styles from "./styles/index.css";
 
@@ -57,6 +57,7 @@ export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData<LoaderType>();
 	const search = useFetcher();
 	const [openSearchDialog, setOpenSearchDialog] = useState(false);
+	const [suggests, searchSuggests] = useSearchSuggests();
 
 	const handleSearch = (query: string) => {
 		search.submit({ query }, { method: 'post', action: '/search' });
@@ -70,6 +71,29 @@ export default function Index() {
 		setOpenSearchDialog(false);
 	}
 
+	const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
+		const products = await fetchProductsByCategory({ title: query });
+
+		let suggestItems: SuggestItem[] = [];
+
+		if (products.length > 0) {
+			// Transform product result to suggest item.
+			suggestItems = products.map<SuggestItem>((product) => {
+				return {
+					title: product.title,
+					data: {
+						title: product.title,
+						image: product.main_pic,
+						discount: product.discount,
+						productID: product.productUUID,
+					},
+				};
+			});
+		}
+
+		return suggestItems;
+	}
+
 	return (
 		<>
 			{/* sharethis popup for news letter subscription */}
@@ -77,6 +101,7 @@ export default function Index() {
 			<MobileSearchDialog
 				onBack={handleClose}
 				open={openSearchDialog}
+				onSearchRequest={handleSearchRequest}
 			/>
 
 			<CategoryContext.Provider value={categories} >

@@ -6,11 +6,15 @@ import IconButton from '@mui/material/IconButton';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import MoonLoader from 'react-spinners/MoonLoader';
+import { CgSearchFound } from 'react-icons/cg';
 
 import SearchBar from '~/components/SearchBar';
 import { rootNode } from '~/utils/trie';
+import type { SuggestItem, ItemData } from '~/shared/types';
 
 import styles from './styles/MobileSearchDialog.css';
+import Louple from './images/loupe.png';
 
 export const links: LinksFunction = () => {
   return [
@@ -20,43 +24,27 @@ export const links: LinksFunction = () => {
 
 type SearchingState = 'empty' | 'searching' | 'done' | 'error';
 
-type ItemData = {
-  title: string;
-  image: string;
-  discount: number;
-  productID: string;
-};
-
-export type SuggestItem = {
-  title: string;
-  data: ItemData;
-};
-
 interface MobileSearchDialogProps extends DialogProps {
   onBack?: () => void;
 
-  // useSearchSuggests?: () => [SuggestItem[], SearchSuggest];
-
   items?: SuggestItem[];
 
-  onSearchRequest?: (query: string) => void;
+  onSearchRequest?: (query: string) => Promise<SuggestItem[]>;
 }
 
 export default function MobileSearchDialog({
   onBack = () => { },
-  onSearchRequest = (query: string) => ([]),
+  onSearchRequest = (query: string) => Promise.resolve([]),
   items = [],
   ...args
 }: MobileSearchDialogProps) {
-  const [sugguests, setSuggests] = useState<SuggestItem[]>(items);
+  const [sugguests, setSuggests] = useState<SuggestItem[]>([]);
   const [showSuggests, setShowSuggests] = useState(false);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState('');
 
-  useEffect(() => {
-    // if (searchingState === 'empty') return;
-    console.log('trigger set suggest');
 
+  useEffect(() => {
     setSuggests(
       items.length === 0
         ? []
@@ -71,11 +59,6 @@ export default function MobileSearchDialog({
   }, [JSON.stringify(items)]);
 
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
-
-  // const resetTimer = useCallback((timerRef) => {
-  //   timerRef
-
-  // }, [])
 
   const handleChange = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
     if (timerRef && timerRef.current) {
@@ -96,16 +79,22 @@ export default function MobileSearchDialog({
       return;
     }
 
-    setShowSuggests(true);
-
     setSearchingState('searching');
 
     const matches = rootNode.findAllMatchedWithData(evt.target.value);
+
+    if (evt.target.value.length < searchContent.length) {
+      setSuggests(matches.map(match => match.data));
+      setSearchingState('done');
+
+      return;
+    }
 
     // User increases search content, If matches are found in trie increase it.
     if (matches.length > 0) {
       setSuggests(matches);
       setSearchingState('done');
+      setShowSuggests(true);
 
       return;
     }
@@ -114,13 +103,26 @@ export default function MobileSearchDialog({
     timerRef.current = setTimeout(async () => {
       try {
         timerRef.current = undefined;
-        console.log('debug 1');
-        await onSearchRequest(evt.target.value);
+        const items = await onSearchRequest(evt.target.value);
+
+        if (items.length > 0) {
+          items.forEach(({ title, data }) => {
+            rootNode.populatePrefixTrie<ItemData>(title, data);
+          });
+        }
+
+        setSuggests(items);
+        setShowSuggests(true);
+        setSearchingState('done');
       } catch (error) {
         setSearchingState('error');
       }
 
     }, 700);
+  }, []);
+
+  const handleClear = useCallback(() => {
+    setSearchContent('');
   }, []);
 
   return (
@@ -138,28 +140,60 @@ export default function MobileSearchDialog({
             <SearchBar
               placeholder='Search a product by name'
               onChange={handleChange}
+              onClear={handleClear}
             />
           </div>
         </div>
 
         <div className="MobileSearch__result-wrapper">
-          <ul className="MobileSearch__result-list">
-            {
-              showSuggests && (
-                sugguests.map((suggest) => {
-                  return (
-                    <Link key={suggest.data.productID} to={`/product/${suggest.data.productID}`} >
-                      <li
-                        className="MobileSearch__result-item"
-                      >
-                        {suggest.title}
-                      </li>
-                    </Link>
-                  )
-                })
-              )
-            }
-          </ul>
+          {
+            searchContent && (
+              <div className="MobileSearch__dropdown-search-status">
+                <p className="MobileSearch__dropdown-content">
+                  Searching {searchContent}
+                </p>
+                <span className="MobileSearch__dropdown-state"> {
+                  searchingState === 'searching'
+                    ? <MoonLoader size={20} color="#009378" />
+                    : (
+                      searchingState === 'done' && sugguests.length === 0
+                        ? <img alt='no product found' src={Louple} width={24} height={24} />
+                        : <CgSearchFound fontSize={24} color='#009378' />
+
+                    )
+                } </span>
+              </div>
+            )
+          }
+
+          {
+            showSuggests && (
+              <ul className="MobileSearch__result-list">
+                {
+                  sugguests.length === 0 && searchingState === 'done'
+                    ? <p className="MobileSearch__dropdown-list-no-found">no results found</p>
+                    : (
+                      sugguests.map((suggest) => {
+                        return (
+                          <Link
+                            key={suggest.data.productID}
+                            to={`/product/${suggest.data.productID}`}
+                            onClick={(evt) => { onBack(); }}
+                          >
+                            <li
+                              className="MobileSearch__result-item"
+                            >
+                              {suggest.title}
+                            </li>
+                          </Link>
+                        )
+                      })
+                    )
+                }
+              </ul>
+            )
+          }
+
         </div>
       </div>
     </Dialog>

@@ -42,7 +42,6 @@ export const fetchProductsByCategory = async ({
 }: FetchProductsByCategoryParams): Promise<Product[]> => {
 	if (!perpage) perpage = 9;
 	if (!page) page = 0;
-
 	let endpoint = `${getMYFBEndpoint()}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}`;
 
 	if (category) {

@@ -2,7 +2,7 @@ import type { ReactNode, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
-import type { SuggestItem } from '~/components/DropDownSearchBar';
+import type { SuggestItem } from '~/shared/types';
 import type { SearchSuggest } from '~/routes/hooks/auto-complete-search';
 
 import LogoHeader, { links as LogoHeaderLinks } from "./components/LogoHeader";

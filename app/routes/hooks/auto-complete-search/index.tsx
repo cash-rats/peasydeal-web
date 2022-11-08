@@ -9,8 +9,7 @@ import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 
-import type { SuggestItem } from '~/components/DropDownSearchBar';
-import type { Product } from '~/shared/types';
+import type { Product, SuggestItem } from '~/shared/types';
 import { fetchProductsByCategory } from '~/api';
 
 type ActionType = {

@@ -39,3 +39,16 @@ export type Category = {
 export type CategoriesMap = {
   [key: string]: Category;
 };
+
+
+export type ItemData = {
+  title: string;
+  image: string;
+  discount: number;
+  productID: string;
+};
+
+export type SuggestItem = {
+  title: string;
+  data: ItemData;
+};
