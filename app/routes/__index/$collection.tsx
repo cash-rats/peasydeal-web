@@ -2,14 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
+  useLocation,
   useTransition,
   useFetcher,
   useLoaderData,
   NavLink,
 } from '@remix-run/react';
-import { ClientOnly } from 'remix-utils';
 import httpStatus from 'http-status-codes';
-
 
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -181,15 +180,33 @@ function CollectionList() {
 
   const loadmoreFetcher = useFetcher();
   const transition = useTransition();
+  const location = useLocation();
+
+
+  useEffect(() => {
+    if (
+      transition.state !== 'idle' &&
+      transition.location &&
+      categories.hasOwnProperty(
+        decodeURI(transition.location.pathname.substring(1))
+      )
+    ) {
+      window.scrollTo(0, 0);
+    }
+  }, [transition, location]);
 
   // For any subsequent change of category, we will try to find category data in cache first.
   // If it is found, we render it. If category data not found in the cache, we'll need to fetch it from server.
   useEffect(() => {
+    console.log('isChangingCategory', isChangingCategory);
+
+
     setProductRows(organizeTo9ProdsPerRow(products));
     currPage.current = page;
   }, [category]);
 
 
+  // If use changes category at the moment, don't add the products to the state.
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
       const { products, has_more, page } = loadmoreFetcher.data as ActionType;
@@ -202,7 +219,6 @@ function CollectionList() {
       setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
     }
   }, [loadmoreFetcher.type]);
-
 
 
   const handleLoadMore = () => {
@@ -238,7 +254,13 @@ function CollectionList() {
     );
   }
 
-  const showSkeleton = transition.state !== 'idle' &&
+  // const showSkeleton = transition.state !== 'idle' &&
+  //   transition.location &&
+  //   categories.hasOwnProperty(
+  //     decodeURI(transition.location.pathname.substring(1))
+  //   );
+
+  const isChangingCategory = transition.state !== 'idle' &&
     transition.location &&
     categories.hasOwnProperty(
       decodeURI(transition.location.pathname.substring(1))
@@ -264,7 +286,7 @@ function CollectionList() {
 
       </div>
       <ProductRowsContainer
-        loading={showSkeleton}
+        loading={isChangingCategory}
         productRows={productRows}
       />
 
@@ -293,12 +315,4 @@ function CollectionList() {
 
 }
 
-function CollectionWrapper() {
-  return (
-    <ClientOnly fallback={null}>
-      {() => <CollectionList />}
-    </ClientOnly>
-  )
-}
-
-export default CollectionWrapper;
+export default CollectionList;
