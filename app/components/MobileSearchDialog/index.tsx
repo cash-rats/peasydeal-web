@@ -137,7 +137,7 @@ export default function MobileSearchDialog({
 
 
   const handleEnter = (evt: KeyboardEvent) => {
-    if (evt.key === 'Enter') {
+    if (evt.key === 'Enter' || evt.keyCode === 13) {
       const elem = evt.target as HTMLInputElement;
       onBack();
       onSearch(elem.value);
