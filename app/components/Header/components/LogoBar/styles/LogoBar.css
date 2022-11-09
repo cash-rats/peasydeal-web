@@ -16,10 +16,12 @@
 .LogoBar__link {
   line-height: 20px;
   padding-right: 15px;
+  width: 100px;
+  height: 50px;
 }
 .LogoBar__link img {
-  width: 70px;
-  height: 70px;
+  width: 100px;
+  height: 50px;
 }
 
 .LogoBar__Category-title {

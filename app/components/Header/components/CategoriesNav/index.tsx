@@ -76,7 +76,8 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                   return (
                     <div key={category.catId} className="Header__CategoriesNav__all-cats-title">
                       <Link
-                        prefetch='intent'
+                        // prefetch='intent'
+                        state={{ scrollToTop: true }}
                         to={`/${category.title}`}
                       >
                         <span className="Header__CategoriesNav__all-cats-title-text fromLeft">

@@ -11,7 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import CategoryContext from '~/context/categories';
 
-import PeasyDeal from './images/logo_2.png';
+import PeasyDeal from './images/logo.png';
 import styles from './styles/LogoBar.css';
 
 export const links: LinksFunction = () => {

@@ -33,7 +33,7 @@ function LogoHeader({
           height: '100%',
           display: 'flex',
           alignItems: 'center',
-          width: '10rem',
+          width: '11rem',
         }}
       >
         <LogoBar />
