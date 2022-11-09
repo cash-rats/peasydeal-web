@@ -204,6 +204,9 @@ function Cart() {
 			return;
 		}
 
+		// We don't need to sync quantity if user has not changed anything.
+		if (cartItems[prodID] && Number(cartItems[prodID].quantity) === quantity) return;
+
 
 		// Update item quantity in session && Recalc price info from BE.
 		if (justSynced.current) {
@@ -283,12 +286,16 @@ function Cart() {
 	}
 
 	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, prodID: string) => {
-		const number = Number(evt.target.value)
-		if (isNaN(number)) return;
-		updateQuantity(prodID, number);
+		const quantity = Number(evt.target.value)
+		if (isNaN(quantity)) return;
+
+		updateQuantity(prodID, quantity);
 	}
 
 	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, prodID: string, number: number) => {
+		// If user hasn't changed anything. don't bother to update the quantity.
+		if (cartItems[prodID] && Number(cartItems[prodID].quantity) === number) return;
+
 		updateQuantity(prodID, number);
 
 		setSyncingPrice(true);
