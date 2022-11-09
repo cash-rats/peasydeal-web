@@ -41,3 +41,14 @@ bable plugin to fix this issue. However, remix official does not want any babel 
 
 ## Folder structure
 [folder structure](https://blog.webdevsimplified.com/2022-07/react-folder-structure/)
+
+## Disable restoring scroll position
+
+We can specify `scrollToTop: true` in `Link` component of remix:
+
+```tsx
+<Link state={{ scrollToTop: true }} to="path_B">
+```
+
+`ConditionalScrollRestoration` component would know that the next route redirected by this `Link`
+need to scroll to top. Thus, scroll restoration won't happen when we redirect from `path_A` to `path_B`.

@@ -75,11 +75,12 @@ const checkHasMoreRecord = (count: number, divisor: number) => count % divisor =
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { collection = '' } = params;
+  console.log('debug loader', collection);
   const catMap = await __loadCategoriesMap(request);
-
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
   }
+
   const cachedProds = await getCategoryProducts(request, collection);
   if (cachedProds) {
     return json<LoaderType>({
@@ -172,6 +173,8 @@ const getCategoryFromWindowPath = (window: Window): string => {
 function CollectionList() {
   const { category, products, page, has_more, categories } = useLoaderData<LoaderType>();
 
+  console.log('CollectionList', has_more);
+
   // "productRows" is for displaying products on the screen.
   const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
 
@@ -180,27 +183,10 @@ function CollectionList() {
 
   const loadmoreFetcher = useFetcher();
   const transition = useTransition();
-  const location = useLocation();
-
-
-  useEffect(() => {
-    if (
-      transition.state !== 'idle' &&
-      transition.location &&
-      categories.hasOwnProperty(
-        decodeURI(transition.location.pathname.substring(1))
-      )
-    ) {
-      window.scrollTo(0, 0);
-    }
-  }, [transition, location]);
 
   // For any subsequent change of category, we will try to find category data in cache first.
   // If it is found, we render it. If category data not found in the cache, we'll need to fetch it from server.
   useEffect(() => {
-    console.log('isChangingCategory', isChangingCategory);
-
-
     setProductRows(organizeTo9ProdsPerRow(products));
     currPage.current = page;
   }, [category]);
@@ -209,7 +195,11 @@ function CollectionList() {
   // If use changes category at the moment, don't add the products to the state.
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
-      const { products, has_more, page } = loadmoreFetcher.data as ActionType;
+      const { products, has_more, page, category } = loadmoreFetcher.data as ActionType;
+      console.log('debug has_more', has_more);
+      console.log('debug currPage', page);
+      console.log('debug category', category);
+
       if (has_more) {
         currPage.current = page;
       }
@@ -224,6 +214,8 @@ function CollectionList() {
   const handleLoadMore = () => {
     const category = getCategoryFromWindowPath(window);
     const nextPage = currPage.current + 1;
+
+    console.log('debug nextPage', nextPage);
 
     loadmoreFetcher.submit(
       {

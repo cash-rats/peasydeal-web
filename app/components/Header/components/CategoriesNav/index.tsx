@@ -38,8 +38,9 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
             {
               categories.map((category) => (
                 <Link
+                  replace
                   key={category.catId}
-                  // prefetch="intent"
+                  state={{ scrollToTop: true }}
                   to={`/${category.title}`}
                 >
                   <li className="CategoriesNav__item" >
