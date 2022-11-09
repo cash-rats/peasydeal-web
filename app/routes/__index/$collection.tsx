@@ -75,7 +75,6 @@ const checkHasMoreRecord = (count: number, divisor: number) => count % divisor =
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { collection = '' } = params;
-  console.log('debug loader', collection);
   const catMap = await __loadCategoriesMap(request);
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
@@ -173,8 +172,6 @@ const getCategoryFromWindowPath = (window: Window): string => {
 function CollectionList() {
   const { category, products, page, has_more, categories } = useLoaderData<LoaderType>();
 
-  console.log('CollectionList', has_more);
-
   // "productRows" is for displaying products on the screen.
   const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
 
@@ -195,27 +192,25 @@ function CollectionList() {
   // If use changes category at the moment, don't add the products to the state.
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
-      const { products, has_more, page, category } = loadmoreFetcher.data as ActionType;
-      console.log('debug has_more', has_more);
-      console.log('debug currPage', page);
-      console.log('debug category', category);
+      const { products, has_more, page, category: dataCat } = loadmoreFetcher.data as ActionType;
+      // If user change category while load more is happening, the newly loaded data
+      // would be appended to different category. Moreover, it would cause inconsistent
+      // page number. Thus, we abandon appending loaded data on to the product list
+      // if category of data is different from current viewing category.
+      if (dataCat !== category) return;
 
-      if (has_more) {
-        currPage.current = page;
-      }
+      currPage.current = page;
 
       setHasMore(has_more);
 
       setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
     }
-  }, [loadmoreFetcher.type]);
+  }, [loadmoreFetcher.type, category]);
 
 
   const handleLoadMore = () => {
     const category = getCategoryFromWindowPath(window);
     const nextPage = currPage.current + 1;
-
-    console.log('debug nextPage', nextPage);
 
     loadmoreFetcher.submit(
       {
