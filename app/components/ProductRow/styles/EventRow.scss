@@ -1,36 +1,19 @@
 @import 'styles/_breakpoints';
 
 .even-row-contianer {
-	display: flex;
-	flex-direction: row;
-	gap: 1.6rem;
-	flex-wrap: wrap;
-	margin: 0 auto;
-	justify-content: center;
 	max-width: 1180px;
+	display: inline-grid;
+	justify-content: center;
+	align-items: center;
+	gap: 1.2rem;
+	grid-template-columns: repeat(1, 1fr);
 
-	@media (min-width:#{$screen-md-min}) and (max-width:#{$screen-xl-min}) {
-		justify-content: center;
-		width: 670px;
-		flex-direction: row;
+
+	@media(min-width:#{$screen-xl-min}) {
+		grid-template-columns: repeat(3, 1fr);
 	}
 
-	@media (min-width:#{$screen-sm-min-600}) and (max-width:#{$screen-md-min}) {
-		justify-content: center;
-		flex-direction: row;
-	}
-
-	@media (max-width:#{$screen-phone-top-599}) {
-		flex-direction: column;
-	}
-
-	div {
-		@media (min-width:#{$screen-xl-min}) {
-			flex: 33.33%;
-		}
-
-		@media (min-width:#{$screen-phone-top-599}) and (max-width:#{$screen-xl-min}) {
-			flex: 50%;
-		}
+	@media (min-width:#{$screen-phone-top-599}) and (max-width:#{$screen-xl-min}) {
+		grid-template-columns: repeat(2, 1fr);
 	}
 }

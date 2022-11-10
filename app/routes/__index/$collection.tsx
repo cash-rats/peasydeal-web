@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
-  useLocation,
   useTransition,
   useFetcher,
   useLoaderData,
@@ -29,14 +28,6 @@ import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { organizeTo9ProdsPerRow } from "./utils";
-// import {
-//   getCategoryProductsMap,
-//   initProductListInfoIfNotExists,
-//   getCategoryProductListInfoFromLocalStorage,
-//   writeCategoryProductMapToLocalStorage,
-//   removeCategoryProductMapFromLocalStorage,
-// } from './localstorage';
-
 
 type LoaderType = {
   categories: CategoriesMap,
@@ -273,6 +264,7 @@ function CollectionList() {
 
       </div>
       <ProductRowsContainer
+        //   loading
         loading={isChangingCategory}
         productRows={productRows}
       />

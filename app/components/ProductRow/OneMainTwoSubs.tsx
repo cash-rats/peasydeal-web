@@ -31,7 +31,9 @@ interface LeftLayoutProps {
 function LeftLayout({ product, onClickProduct = () => { }, loading = false }: LeftLayoutProps) {
 	if (loading) {
 		return (
-			<LargeGridSkeleton />
+			<>
+				<LargeGridSkeleton />
+			</>
 		);
 	}
 
@@ -159,17 +161,15 @@ function OneMainTwoSubs({
 									reverse && enoughForReverse
 										? (
 											<>
-												<>
-													<RightLayout
-														products={[one, two]}
-														onClickProduct={onClickProduct}
-													/>
+												<RightLayout
+													products={[one, two]}
+													onClickProduct={onClickProduct}
+												/>
 
-													<LeftLayout
-														product={three}
-														onClickProduct={onClickProduct}
-													/>
-												</>
+												<LeftLayout
+													product={three}
+													onClickProduct={onClickProduct}
+												/>
 											</>
 										)
 										: (

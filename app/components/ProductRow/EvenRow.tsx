@@ -57,7 +57,8 @@ export default function EvenRow({
 								description={product.shortDescription}
 							/>
 						)
-						))
+						)
+					)
 			}
 		</div>
 	);

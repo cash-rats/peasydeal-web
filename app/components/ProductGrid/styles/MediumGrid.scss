@@ -10,14 +10,17 @@
 	overflow: hidden;
 	box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
 
-	@include sm-600 {
+	max-width: 720px;
+	max-height: 720px;
+
+	@media (min-width:#{$screen-720-min}) {
 		width: 346px;
 		height: 346px;
 	}
 
 	.image-container {
-		max-width: 600px;
-		max-height: 600px;
+		max-width: 720px;
+		max-height: 720px;
 
 		&:after {
 			content: '';
@@ -29,10 +32,9 @@
 			background: linear-gradient(to bottom, transparent 0%, black 170%);
 		}
 
-		@media (min-width: #{$screen-sm-min-600}) {
-			&:after {
-				position: relative;
-			}
+		@media (min-width:#{$screen-720-min}) {
+			width: 346px;
+			height: 346px;
 		}
 	}
 
@@ -44,9 +46,10 @@
 		left: 0;
 		bottom: 0;
 		min-height: 62px;
+		width: 100%;
+		box-sizing: border-box;
 
 		.prod-info {
-
 			p {
 				display: none;
 				color: white;
