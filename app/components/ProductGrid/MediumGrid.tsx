@@ -104,7 +104,6 @@ export default function MediumGrid({
 								/>
 							</div>
 
-							{/* Product Description */}
 							<div className="product-desc-container">
 								<div className="prod-info">
 									{/* topic */}
@@ -120,7 +119,7 @@ export default function MediumGrid({
 								<div className="view-btn-container">
 									<Link prefetch="intent" to={`/product/${productID}`}>
 										<RoundButton
-											colorScheme="blue"
+											colorScheme="view"
 											onClick={() => onClickProduct(productID)}
 											style={{
 												padding: '0.675rem 1.5rem'
@@ -131,6 +130,8 @@ export default function MediumGrid({
 									</Link>
 								</div>
 							</div>
+
+							{/* Product Description */}
 						</div>
 					)
 			}

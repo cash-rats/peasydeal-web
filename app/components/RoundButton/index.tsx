@@ -33,26 +33,29 @@ const AddToCartButton = styled(BasicRoundButton)({
   },
 }) as typeof LoadingButton;
 
+// d32d7d
 const BuyNowButton = styled(BasicRoundButton)({
   color: 'white',
   fontSize: '1.1rem',
   fontWeight: '700',
-  border: 'solid 1px #CF7135',
-  backgroundColor: '#CF7135',
+  border: 'solid 1px #D32D7D',
+  backgroundColor: '#D32D7D',
   boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
   '&:hover': {
     backgroundColor: 'rgba(207, 112, 53, 0.8)',
-    border: 'solid 1px #CF7135',
+    border: 'solid 1px #D32D7D',
   },
 }) as typeof LoadingButton;
 
 const ViewButton = styled(BasicRoundButton)({
-  backgroundColor: '#4880C8',
+  backgroundColor: '#D32D7D',
+  border: 'solid 1px #D32D7D',
   color: 'white',
   fontSize: '1.2rem',
   fontWeight: '700',
   '&:hover': {
-    backgroundColor: 'rgba(72, 128, 200, 0.8)',
+    backgroundColor: 'rgba(211, 45, 125, 0.8)',
+    border: 'solid 1px rgba(211, 45, 125, 0.8)',
   },
 }) as typeof LoadingButton;
 
@@ -69,7 +72,7 @@ const CheckoutButton = styled(BasicRoundButton)({
   },
 }) as typeof LoadingButton;
 
-type ColorScheme = 'buynow' | 'addtocart' | 'blue' | 'checkout';
+type ColorScheme = 'buynow' | 'addtocart' | 'checkout' | 'view';
 
 interface RoundButtonProps extends LoadingButtonProps {
   children?: ReactNode;
@@ -87,7 +90,7 @@ type ColorSchemeButtonMap = {
 const colorSchemeButton: ColorSchemeButtonMap = {
   'addtocart': AddToCartButton,
   'buynow': BuyNowButton,
-  'blue': ViewButton,
+  'view': ViewButton,
   'checkout': CheckoutButton,
 };
 
