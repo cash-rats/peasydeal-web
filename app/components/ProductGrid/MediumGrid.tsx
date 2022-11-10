@@ -119,7 +119,7 @@ export default function MediumGrid({
 								<div className="view-btn-container">
 									<Link prefetch="intent" to={`/product/${productID}`}>
 										<RoundButton
-											colorScheme="view"
+											colorScheme="cerise"
 											onClick={() => onClickProduct(productID)}
 											style={{
 												padding: '0.675rem 1.5rem'

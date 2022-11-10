@@ -27,7 +27,7 @@ export const BuyNow = () => (
 
 export const View = () => (
   <RoundButton
-    colorScheme='blue'
+    colorScheme='cerise'
     onClick={() => console.log('hello')}
   >
     View

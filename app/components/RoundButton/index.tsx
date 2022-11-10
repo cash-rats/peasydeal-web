@@ -72,7 +72,11 @@ const CheckoutButton = styled(BasicRoundButton)({
   },
 }) as typeof LoadingButton;
 
-type ColorScheme = 'buynow' | 'addtocart' | 'checkout' | 'view';
+type ColorScheme =
+  | 'buynow'
+  | 'addtocart'
+  | 'checkout'
+  | 'cerise';
 
 interface RoundButtonProps extends LoadingButtonProps {
   children?: ReactNode;
@@ -90,7 +94,7 @@ type ColorSchemeButtonMap = {
 const colorSchemeButton: ColorSchemeButtonMap = {
   'addtocart': AddToCartButton,
   'buynow': BuyNowButton,
-  'view': ViewButton,
+  'cerise': ViewButton,
   'checkout': CheckoutButton,
 };
 

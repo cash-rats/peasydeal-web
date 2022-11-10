@@ -93,7 +93,7 @@ function LargeGrid({
 										<div className="btn-container">
 											<Link prefetch="intent" to={`/product/${productID}`}>
 												<RoundButton
-													colorScheme="blue"
+													colorScheme="cerise"
 													onClick={() => onClickProduct(productID)}
 												>
 													View
