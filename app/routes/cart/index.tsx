@@ -173,11 +173,7 @@ function Cart() {
 	// corresponding loader can display empty cart page to user.
 	useEffect(() => {
 		if (removeItemFetcher.type === 'done') {
-			const { cart_item_count, price_info } = JSON.parse(removeItemFetcher.data);
-
-			if (cart_item_count === 0) {
-				removeItemFetcher.load('/cart?index');
-			}
+			const { price_info } = JSON.parse(removeItemFetcher.data);
 
 			setPriceInfo(price_info);
 			setSyncingPrice(false);
