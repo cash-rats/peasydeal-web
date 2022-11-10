@@ -1,6 +1,6 @@
 import type { Session } from '@remix-run/node';
 
-import { getSession } from '~/sessions/sessions';
+import { getSession } from '~/sessions/redis_session';
 
 export const CartSessionKey = 'shopping_cart';
 
@@ -62,6 +62,7 @@ export const insertItem = async (request: Request, item: ShoppingCartItem): Prom
     ...shoppingCart,
     [item.productUUID]: item,
   }
+
   session.set(CartSessionKey, newShoppingCart);
   return session;
 };

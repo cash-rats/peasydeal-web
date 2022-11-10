@@ -1,5 +1,4 @@
 import cookie from './cookie';
-
 import { createRedisSessionStorage } from './create_redis_sessoin';
 
 const { REDIS_HOST, REDIST_PORT } = process.env;
