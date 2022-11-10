@@ -8,6 +8,8 @@
 .productRowsContainer_product-row {
   width: 100%;
   margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: center;
 }
 
 /*# sourceMappingURL=ProductRowsContainer.css.map */
