@@ -26,7 +26,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, transparent 0%, black 170%);
 }
 @media (min-width: 720px) {
   .medium-grid-container .image-container {
@@ -69,7 +68,7 @@
 @media (min-width: 600px) {
   .medium-grid-container .product-desc-container .prod-info .headline {
     font-weight: 500;
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 }
 .medium-grid-container .product-desc-container .view-btn-container {
