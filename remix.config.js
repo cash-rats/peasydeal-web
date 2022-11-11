@@ -13,6 +13,7 @@ module.exports = {
     "**/stub.*",
     "**/api/*.*",
     "**/api.*",
-    "**/images/*.*"
+    "**/images/*.*",
+    "**/assets/*.*"
   ],
 };

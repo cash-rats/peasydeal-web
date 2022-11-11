@@ -18,6 +18,9 @@
   padding-right: 15px;
   width: 100px;
   height: 50px;
+  position: absolute;
+  left: 40px;
+  top: 17px;
 }
 .LogoBar__link img {
   width: 100px;

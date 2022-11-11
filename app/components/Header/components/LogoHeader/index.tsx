@@ -34,6 +34,7 @@ function LogoHeader({
           display: 'flex',
           alignItems: 'center',
           width: '11rem',
+          position: 'relative',
         }}
       >
         <LogoBar />
