@@ -11,12 +11,17 @@ export const links: LinksFunction = () => {
 };
 
 interface SunShineProps {
+  direction?: 'left' | 'right';
   text: ReactNode;
 };
 
-export default function SunShine({ text }: SunShineProps) {
+export default function SunShine({ direction = 'left', text }: SunShineProps) {
   return (
-    <div className="SunShineTag">
+    <div className={`SunShineTag ${direction === 'left'
+        ? 'SunShineTag__left'
+        : 'SunShineTag__right'
+
+      }`}>
       <div className="SunShineTag__img">
         <img alt='price off!' src={SunShinePng} />
       </div>

@@ -7,6 +7,7 @@ import RoundButton from '~/components/RoundButton';
 import { breakPoints } from '~/styles/breakpoints';
 import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
 import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
+import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 
 import type { TagsCombo, TagName } from './types';
 import { TagComboMap } from './types';
@@ -14,6 +15,7 @@ import styles from "./styles/MediumGrid.css";
 
 export const links: LinksFunction = () => {
 	return [
+		...SunShineLinks(),
 		...ScratchLinks(),
 		...TiltRibbonLinks(),
 		{ rel: 'stylesheet', href: styles },
@@ -86,8 +88,20 @@ export default function MediumGrid({
 							}
 
 							{
+								shouldRenderTags['NEW_RIGHT'] && (
+									<TiltRibbon text='new' direction='right' />
+								)
+							}
+
+							{
 								shouldRenderTags['SCRATCH_RIGHT'] && (
 									<Scratch text='50% off' direction='right' />
+								)
+							}
+
+							{
+								shouldRenderTags['SUN_LEFT'] && (
+									<SunShine text='50% off' direction='left' />
 								)
 							}
 
@@ -125,7 +139,6 @@ export default function MediumGrid({
 							}
 							className="medium-grid-container"
 						>
-
 							{
 
 								shouldRenderTags['NEW_LEFT'] && (
@@ -134,10 +147,24 @@ export default function MediumGrid({
 							}
 
 							{
+								shouldRenderTags['NEW_RIGHT'] && (
+									<TiltRibbon text='new' direction='right' />
+								)
+							}
+
+							{
 								shouldRenderTags['SCRATCH_RIGHT'] && (
 									<Scratch text='50% off' direction='right' />
 								)
 							}
+
+							{
+								shouldRenderTags['SUN_LEFT'] && (
+									<SunShine text='50% off' direction='left' />
+								)
+							}
+
+
 							{/* images */}
 							<div className="image-container">
 								<img
