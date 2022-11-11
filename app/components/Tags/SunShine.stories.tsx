@@ -7,4 +7,4 @@ export default {
   component: SunShine,
 } as ComponentMeta<typeof SunShine>;
 
-export const Basic = () => <SunShine text='50% price off' />;
+export const SunShineTag = () => <SunShine text='50% price off' />;

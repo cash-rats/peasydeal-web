@@ -5,12 +5,17 @@ import { Link } from '@remix-run/react';
 import MqNotifier from '~/components/MqNotifier';
 import RoundButton from '~/components/RoundButton';
 import { breakPoints } from '~/styles/breakpoints';
+import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
+import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 
+import type { TagsCombo, TagName } from './types';
+import { TagComboMap } from './types';
 import styles from "./styles/MediumGrid.css";
-
 
 export const links: LinksFunction = () => {
 	return [
+		...ScratchLinks(),
+		...TiltRibbonLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
 }
@@ -21,7 +26,9 @@ interface MediumGridProps {
 	title: string;
 	description?: string;
 	onClickProduct?: (productID: string) => void;
+	tagCombo?: TagsCombo;
 };
+
 
 // - [ ] Basic product grid. do not consider wrapper layout.
 // - [ ] breakpoint: > desktopUp, 1 row  has 3 columns
@@ -38,8 +45,19 @@ export default function MediumGrid({
 	title,
 	description,
 	onClickProduct = () => { },
+	tagCombo = 'none',
 }: MediumGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
+	// retrieve tags name in the provided combo.
+	const tagNames = TagComboMap[tagCombo];
+	const shouldRenderTags: {
+		[key in TagName]?: boolean
+	} = tagNames.reduce((prev, curr, index) => ({
+		...prev,
+		[curr]: true,
+	}), {});
+
+	console.log('shouldRenderTags', shouldRenderTags);
 
 	return (
 		<MqNotifier
@@ -61,6 +79,18 @@ export default function MediumGrid({
 							onClick={() => onClickProduct(productID)}
 							className="medium-grid-container"
 						>
+							{
+								shouldRenderTags['NEW_LEFT'] && (
+									<TiltRibbon text='new' direction='left' />
+								)
+							}
+
+							{
+								shouldRenderTags['SCRATCH_RIGHT'] && (
+									<Scratch text='50% off' direction='right' />
+								)
+							}
+
 							{/* images */}
 							<div className="image-container">
 								<img
@@ -95,6 +125,19 @@ export default function MediumGrid({
 							}
 							className="medium-grid-container"
 						>
+
+							{
+
+								shouldRenderTags['NEW_LEFT'] && (
+									<TiltRibbon text='new' direction='left' />
+								)
+							}
+
+							{
+								shouldRenderTags['SCRATCH_RIGHT'] && (
+									<Scratch text='50% off' direction='right' />
+								)
+							}
 							{/* images */}
 							<div className="image-container">
 								<img
