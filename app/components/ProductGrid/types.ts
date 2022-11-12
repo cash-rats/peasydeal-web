@@ -27,7 +27,7 @@ export const TagComboMap: Combination = {
   combo_a: ['SUN_LEFT', 'NEW_RIGHT'],
   combo_b: ['PENNANT_LEFT'],
   combo_c: ['SUN_RIGHT'],
-  combo_d: ['PENNANT_LEFT'],
+  combo_d: ['PENNANT_RIGHT'],
   combo_e: [],
   combo_f: ['SCRATCH_RIGHT', 'NEW_LEFT'],
 };

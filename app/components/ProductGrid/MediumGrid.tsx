@@ -10,7 +10,8 @@ import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
 
-import type { TagsCombo, TagName } from './types';
+import { normalizeTagsListToMap } from './utils';
+import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
 import styles from "./styles/MediumGrid.css";
 
@@ -54,12 +55,7 @@ export default function MediumGrid({
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 	// retrieve tags name in the provided combo.
 	const tagNames = TagComboMap[tagCombo];
-	const shouldRenderTags: {
-		[key in TagName]?: boolean
-	} = tagNames.reduce((prev, curr, index) => ({
-		...prev,
-		[curr]: true,
-	}), {});
+	const shouldRenderTags = normalizeTagsListToMap(tagNames);
 
 	return (
 		<MqNotifier
@@ -81,8 +77,6 @@ export default function MediumGrid({
 							onClick={() => onClickProduct(productID)}
 							className="medium-grid-container"
 						>
-
-
 							{
 								shouldRenderTags['NEW_LEFT'] && (
 									<TiltRibbon text='new' direction='left' />
