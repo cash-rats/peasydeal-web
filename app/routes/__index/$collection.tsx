@@ -18,11 +18,11 @@ import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadM
 import { normalizeToMap, fetchCategories } from '~/categories.server';
 import {
   getCategoryProducts,
-  setCategoryProducts,
   addCategoryProducts,
 } from '~/sessions/productlist.session';
 import { getCategories } from '~/sessions/categories.session';
 import { commitSession } from '~/sessions/redis_session';
+import { checkHasMoreRecord } from '~/utils';
 
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
@@ -62,8 +62,6 @@ const __loadCategoriesMap = async (request: Request) => {
   return catMap;
 }
 
-const checkHasMoreRecord = (count: number, divisor: number) => count % divisor === 0;
-
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { collection = '' } = params;
   const catMap = await __loadCategoriesMap(request);
@@ -73,13 +71,18 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   const cachedProds = await getCategoryProducts(request, collection);
   if (cachedProds) {
+    const prods = await fetchProductsByCategory({
+      perpage: PAGE_LIMIT * cachedProds.page,
+      category: catMap[collection].catId,
+    });
+
     return json<LoaderType>({
       categories: catMap,
       category: collection,
-      products: cachedProds.products,
+      products: prods,
       page: cachedProds.page,
-      has_more: checkHasMoreRecord(cachedProds.products.length, PAGE_LIMIT),
-    })
+      has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
+    });
   }
 
   // First time loaded so it must be first page.
@@ -89,7 +92,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     category: Number(catMap[collection].catId),
   })
 
-  const session = await setCategoryProducts(request, collection, prods);
+  const session = await addCategoryProducts(request, [], collection, 1);
   // const cookieSession = await setCategories(request, catMap);
 
   return json<LoaderType>({
@@ -128,7 +131,7 @@ export const action: ActionFunction = async ({ request, params }) => {
       category: catMap[collection].catId,
     })
 
-    const session = await addCategoryProducts(request, products, collection, page);
+    const session = await addCategoryProducts(request, [], collection, page);
 
     return json<ActionType>({
       products,
@@ -232,12 +235,6 @@ function CollectionList() {
     );
   }
 
-  // const showSkeleton = transition.state !== 'idle' &&
-  //   transition.location &&
-  //   categories.hasOwnProperty(
-  //     decodeURI(transition.location.pathname.substring(1))
-  //   );
-
   const isChangingCategory = transition.state !== 'idle' &&
     transition.location &&
     categories.hasOwnProperty(
@@ -263,8 +260,8 @@ function CollectionList() {
         ]} />
 
       </div>
+
       <ProductRowsContainer
-        //   loading
         loading={isChangingCategory}
         productRows={productRows}
       />
