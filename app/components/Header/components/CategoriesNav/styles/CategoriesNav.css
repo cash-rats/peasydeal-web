@@ -141,14 +141,13 @@
   align-items: center;
   position: relative;
   width: 12%;
-  border-right: solid 1px #e5e5e5;
   padding: 1rem 0;
   position: relative;
 }
 .Header__CategoriesNav__more .border-left {
   border-left: 2px solid #e5e5e5;
   position: absolute;
-  height: 50%;
+  height: 60%;
   width: 1px;
   left: 0;
 }

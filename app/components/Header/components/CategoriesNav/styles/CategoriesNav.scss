@@ -163,14 +163,13 @@
   align-items: center;
   position: relative;
   width: 12%;
-  border-right: solid 1px $border-color;
   padding: 1rem 0;
   position: relative;
 
   .border-left {
     border-left: 2px solid $border-color;
     position: absolute;
-    height: 50%;
+    height: 60%;
     width: 1px;
     left: 0;
   }
