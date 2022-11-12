@@ -8,6 +8,7 @@ import { breakPoints } from '~/styles/breakpoints';
 import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
 import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
+import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
 
 import type { TagsCombo, TagName } from './types';
 import { TagComboMap } from './types';
@@ -18,6 +19,7 @@ export const links: LinksFunction = () => {
 		...SunShineLinks(),
 		...ScratchLinks(),
 		...TiltRibbonLinks(),
+		...PennantLeftLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
 }
@@ -59,8 +61,6 @@ export default function MediumGrid({
 		[curr]: true,
 	}), {});
 
-	console.log('shouldRenderTags', shouldRenderTags);
-
 	return (
 		<MqNotifier
 			mqValidators={[
@@ -81,6 +81,8 @@ export default function MediumGrid({
 							onClick={() => onClickProduct(productID)}
 							className="medium-grid-container"
 						>
+
+
 							{
 								shouldRenderTags['NEW_LEFT'] && (
 									<TiltRibbon text='new' direction='left' />
@@ -102,6 +104,18 @@ export default function MediumGrid({
 							{
 								shouldRenderTags['SUN_LEFT'] && (
 									<SunShine text='50% off' direction='left' />
+								)
+							}
+
+							{
+								shouldRenderTags['SUN_RIGHT'] && (
+									<SunShine text='50% off' direction='right' />
+								)
+							}
+
+							{
+								shouldRenderTags['PENNANT_LEFT'] && (
+									<PennantLeft text1='price off' text2='20%' />
 								)
 							}
 
@@ -164,6 +178,17 @@ export default function MediumGrid({
 								)
 							}
 
+							{
+								shouldRenderTags['SUN_RIGHT'] && (
+									<SunShine text='50% off' direction='right' />
+								)
+							}
+
+							{
+								shouldRenderTags['PENNANT_LEFT'] && (
+									<PennantLeft text1='price off' text2='20%' />
+								)
+							}
 
 							{/* images */}
 							<div className="image-container">

@@ -25,6 +25,43 @@ export const TagComboA = () => (
   />
 )
 
+export const TagComboB = () => (
+  <MediumGrid
+    tagCombo='combo_b'
+    productID='someid'
+    image='https://cdn.shopify.com/s/files/1/0583/6590/2907/products/746984.jpg?v=1658301371'
+    title='Personalised Moon Lamp - Photo & Text Options'
+  />
+)
+
+
+export const TagComboC = () => (
+  <MediumGrid
+    tagCombo='combo_c'
+    productID='someid'
+    image='https://cdn.shopify.com/s/files/1/0583/6590/2907/products/746984.jpg?v=1658301371'
+    title='Personalised Moon Lamp - Photo & Text Options'
+  />
+)
+
+export const TagComboD = () => (
+  <MediumGrid
+    tagCombo='combo_d'
+    productID='someid'
+    image='https://cdn.shopify.com/s/files/1/0583/6590/2907/products/746984.jpg?v=1658301371'
+    title='Personalised Moon Lamp - Photo & Text Options'
+  />
+)
+
+export const TagComboE = () => (
+  <MediumGrid
+    tagCombo='combo_e'
+    productID='someid'
+    image='https://cdn.shopify.com/s/files/1/0583/6590/2907/products/746984.jpg?v=1658301371'
+    title='Personalised Moon Lamp - Photo & Text Options'
+  />
+)
+
 export const TagComboF = () => (
   <MediumGrid
     tagCombo='combo_f'
