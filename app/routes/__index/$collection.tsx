@@ -163,7 +163,7 @@ const getCategoryFromWindowPath = (window: Window): string => {
   return category;
 };
 
-function CollectionList() {
+function Collection() {
   const { category, products, page, has_more, categories } = useLoaderData<LoaderType>();
 
   // "productRows" is for displaying products on the screen.
@@ -243,7 +243,6 @@ function CollectionList() {
 
   return (
     <div className="prod-list-container">
-
       <div className="prod-list-breadcrumbs-container">
         <Breadcrumbs breadcrumbs={[
           <NavLink
@@ -291,4 +290,4 @@ function CollectionList() {
 
 }
 
-export default CollectionList;
+export default Collection;

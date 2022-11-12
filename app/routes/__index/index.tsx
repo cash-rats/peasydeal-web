@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
@@ -47,16 +47,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 			category: 1, // 1 is the id for category 'Hot Deal'
 		})
 
-
-		console.log('debug incache', prodInfo);
 		return json<LoaderType>({
 			products: prods,
 			page: prodInfo.page,
 			has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
 		});
 	}
-
-	console.log('debug not in cache', prodInfo);
 
 	const prods = await fetchProductsByCategory({
 		perpage: PAGE_LIMIT,
@@ -118,9 +114,7 @@ export default function Index() {
 	const currPage = useRef(page);
 	const [hasMore, setHasMore] = useState(has_more);
 	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
-
-	console.log('debug ~~', products.length);
-
+	const transition = useTransition();
 
 	// Transition to observe when preload the first page of the product list render
 	const loadmoreFetcher = useFetcher();
@@ -181,6 +175,7 @@ export default function Index() {
 		<div className="prod-list-container">
 
 			<ProductRowsContainer
+				loading={transition.type !== 'idle'}
 				productRows={productRows}
 				onClickProduct={handleClickProduct}
 			/>
