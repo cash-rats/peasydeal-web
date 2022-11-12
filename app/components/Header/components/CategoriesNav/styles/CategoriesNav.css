@@ -103,10 +103,6 @@
   transition: 100ms all linear 0s;
   color: black;
   padding: 1rem 1rem;
-  border-right: solid 1px #e5e5e5;
-}
-.categories-nav-container .featured-category-nav ul li:first-of-type {
-  border-left: solid 1px #e5e5e5;
 }
 .categories-nav-container .featured-category-nav ul li:hover {
   background-color: #E4E4E4;
@@ -130,6 +126,13 @@
 
 .CategoriesNav__item {
   white-space: nowrap;
+  background-image: linear-gradient(#e6007e, #e6007e);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  transition: background-size 1s;
+}
+.CategoriesNav__item:hover {
+  background-size: 100% 1px;
 }
 
 .Header__CategoriesNav__more {
@@ -139,8 +142,15 @@
   position: relative;
   width: 12%;
   border-right: solid 1px #e5e5e5;
-  border-left: solid 1px #e5e5e5;
   padding: 1rem 0;
+  position: relative;
+}
+.Header__CategoriesNav__more .border-left {
+  border-left: 2px solid #e5e5e5;
+  position: absolute;
+  height: 50%;
+  width: 1px;
+  left: 0;
 }
 
 .Header__CategoriesNav__arrow_wrapper {
@@ -197,7 +207,7 @@
   cursor: pointer;
   color: black;
   display: inline-block;
-  background-image: linear-gradient(#FC8A15, #FC8A15);
+  background-image: linear-gradient(#e6007e, #e6007e);
   background-size: 0% 1px;
   background-repeat: no-repeat;
   transition: background-size 0.3s;

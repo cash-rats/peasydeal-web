@@ -9,6 +9,7 @@
   margin: 0 auto;
   position: relative;
 
+
   // Hide category navbar
   @media (max-width:#{$screen-md-min}) {
     display: none;
@@ -117,12 +118,6 @@
         transition: 100ms all linear 0s;
         color: black;
         padding: 1rem 1rem;
-        border-right: solid 1px $border-color;
-
-        &:first-of-type {
-          border-left: solid 1px $border-color;
-        }
-
 
         &:hover {
           background-color: $gray-hover-bg;
@@ -151,6 +146,15 @@
 
 .CategoriesNav__item {
   white-space: nowrap;
+
+  background-image: linear-gradient($primary, $primary);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  transition: background-size 1s;
+
+  &:hover {
+    background-size: 100% 1px;
+  }
 }
 
 .Header__CategoriesNav__more {
@@ -160,8 +164,16 @@
   position: relative;
   width: 12%;
   border-right: solid 1px $border-color;
-  border-left: solid 1px $border-color;
   padding: 1rem 0;
+  position: relative;
+
+  .border-left {
+    border-left: 2px solid $border-color;
+    position: absolute;
+    height: 50%;
+    width: 1px;
+    left: 0;
+  }
 }
 
 .Header__CategoriesNav__arrow_wrapper {

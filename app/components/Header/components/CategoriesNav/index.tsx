@@ -43,8 +43,12 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                   state={{ scrollToTop: true }}
                   to={`/${category.title}`}
                 >
-                  <li className="CategoriesNav__item" >
+                  <li className="CategoriesNav__item fromLeft" >
                     {category.title}
+
+                    {/* <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
+                      {category.title}
+                    </span> */}
                   </li>
                 </Link>
               ))
@@ -58,6 +62,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
         onMouseEnter={toggleOpenAllCategory}
         onMouseLeave={toggleOpenAllCategory}
       >
+        <div className="border-left" />
         <span className="Header__CategoriesNav__text">
           More
         </span>

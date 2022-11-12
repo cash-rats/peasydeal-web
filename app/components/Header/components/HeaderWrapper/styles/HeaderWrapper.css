@@ -31,7 +31,7 @@
   width: 100%;
   height: 90px;
   box-sizing: border-box;
-  background: linear-gradient(#ee4d2d, #ff7337);
+  background: white;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -49,14 +49,14 @@
   justify-content: flex-start;
   align-items: center;
   padding: 0 1rem;
+  border-bottom: solid 1px #e5e5e5;
   width: 100%;
   height: 100%;
 }
 
 .header-wrapper_category-bar {
   width: 100%;
-  background-color: white;
-  border-bottom: solid 1px #e5e5e5;
+  background-color: #f0f0f0;
 }
 
 /*# sourceMappingURL=HeaderWrapper.css.map */

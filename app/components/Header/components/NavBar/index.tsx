@@ -36,7 +36,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 				{/* Search icon that only displays in mobile view */}
 				<li className="index_nav-search">
 					<IconButton onClick={onClickSearch}>
-						<TbSearch color='white' fontSize={22} />
+						<TbSearch color='primary' fontSize={22} />
 					</IconButton>
 				</li>
 
@@ -53,7 +53,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 					{/* TODO this isn't the right way to have ripple effect */}
 					<Link aria-label='shopping cart' to="/cart">
 						<IconButton>
-							<FiShoppingCart color='white' fontSize={26} />
+							<FiShoppingCart color='#e6007e' fontSize={26} />
 						</IconButton>
 					</Link>
 				</li>
@@ -62,7 +62,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 
 					<Link aria-label='track order' to="/tracking">
 						<IconButton>
-							<TbReportSearch color='white' fontSize={26} />
+							<TbReportSearch color='#e6007e' fontSize={26} />
 						</IconButton>
 					</Link>
 				</li>
