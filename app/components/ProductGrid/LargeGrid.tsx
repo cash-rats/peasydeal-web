@@ -45,7 +45,6 @@ function LargeGrid({
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 	const tagNames = TagComboMap[tagCombo];
 	const shouldRenderTags = normalizeTagsListToMap(tagNames);
-	console.log('shouldRenderTags', shouldRenderTags);
 
 	return (
 		<MqNotifier

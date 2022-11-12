@@ -1,14 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
-import { StatusCodes } from 'http-status-codes';
+import { useFetcher, useLoaderData } from "@remix-run/react";
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from "~/shared/types";
+import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
+import { checkHasMoreRecord } from '~/utils';
+import { commitSession } from '~/sessions/redis_session';
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from "./api";
@@ -25,6 +27,11 @@ export const links: LinksFunction = () => {
 	]
 }
 
+type LoaderType = {
+	products: Product[];
+	page: number;
+	has_more: boolean;
+}
 
 type ActionType = {
 	products: Product[];
@@ -32,7 +39,42 @@ type ActionType = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-	return null
+	const prodInfo = await getCategoryProducts(request, 'Hot Deal');
+
+	if (prodInfo) {
+		const prods = await fetchProductsByCategory({
+			perpage: prodInfo.page * PAGE_LIMIT,
+			category: 1, // 1 is the id for category 'Hot Deal'
+		})
+
+
+		console.log('debug incache', prodInfo);
+		return json<LoaderType>({
+			products: prods,
+			page: prodInfo.page,
+			has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
+		});
+	}
+
+	console.log('debug not in cache', prodInfo);
+
+	const prods = await fetchProductsByCategory({
+		perpage: PAGE_LIMIT,
+		page: 1,
+		category: 1, // 1 is the id for category 'Hot Deal'
+	})
+
+	const session = await addCategoryProducts(request, [], 'Hot Deal', 1);
+
+	return json<LoaderType>({
+		products: prods,
+		page: 1,
+		has_more: prods.length === PAGE_LIMIT,
+	}, {
+		headers: {
+			'Set-Cookie': await commitSession(session),
+		}
+	});
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -46,10 +88,16 @@ export const action: ActionFunction = async ({ request }) => {
 		category: 1, // 1 is the id for category 'Hot Deal'
 	})
 
+	const session = await addCategoryProducts(request, [], 'Hot Deal', page);
+
 	return json<ActionType>({
 		products: prods,
-		has_more: prods.length === PAGE_LIMIT,
-	}, { status: StatusCodes.OK });
+		has_more: prods.length === perPage,
+	}, {
+		headers: {
+			'Set-Cookie': await commitSession(session),
+		},
+	});
 }
 
 /*
@@ -66,12 +114,15 @@ export const action: ActionFunction = async ({ request }) => {
  * - [ ] Cache product list in local storage.
  */
 export default function Index() {
-	const currPage = useRef(1);
-	const [hasMore, setHasMore] = useState(true);
-	const [productRows, setProductRows] = useState<Product[][]>([]);
+	const { products, has_more, page } = useLoaderData<LoaderType>();
+	const currPage = useRef(page);
+	const [hasMore, setHasMore] = useState(has_more);
+	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
+
+	console.log('debug ~~', products.length);
+
 
 	// Transition to observe when preload the first page of the product list render
-	const fetcher = useFetcher();
 	const loadmoreFetcher = useFetcher();
 
 	const handleLoadMore = useCallback(
@@ -105,20 +156,6 @@ export default function Index() {
 		}, []);
 
 
-	useEffect(() => {
-		if (fetcher.type === 'done') {
-			const { products } = fetcher.data as ActionType;
-
-			if (products.length <= 0) {
-				setHasMore(false);
-			}
-
-			// Current page fetched successfully, increase page number getting ready to fetch next page.
-			currPage.current += 1;
-			setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
-		}
-	}, [fetcher.type])
-
 	// Append products to local state when fetcher type is in `done` state.
 	useEffect(() => {
 		if (loadmoreFetcher.type === 'done') {
@@ -135,19 +172,6 @@ export default function Index() {
 	}, [loadmoreFetcher.type])
 
 
-	useEffect(() => {
-		fetcher.submit(
-			{
-				page: currPage.current.toString(),
-				per_page: PAGE_LIMIT.toString(),
-			},
-			{
-				method: 'post',
-				action: '/?index',
-			},
-		);
-	}, []);
-
 	// Redirect to product detail page when click on product.
 	const handleClickProduct = (productUUID: string) => {
 		console.log('[ga] user clicks on:', productUUID);
@@ -155,18 +179,19 @@ export default function Index() {
 
 	return (
 		<div className="prod-list-container">
+
 			<ProductRowsContainer
-				loading={fetcher.type !== 'done'}
 				productRows={productRows}
 				onClickProduct={handleClickProduct}
 			/>
 
-			<fetcher.Form className="ProductList__loadmore-container" >
+			<loadmoreFetcher.Form className="ProductList__loadmore-container" >
 				<input
 					type="hidden"
 					name="page"
 					value={currPage.current}
 				/>
+
 				<div>
 					{
 						hasMore
@@ -188,7 +213,7 @@ export default function Index() {
 							)
 					}
 				</div>
-			</fetcher.Form>
+			</loadmoreFetcher.Form>
 		</div>
 	);
 }
