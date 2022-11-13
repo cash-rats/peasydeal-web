@@ -45,10 +45,6 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                 >
                   <li className="CategoriesNav__item fromLeft" >
                     {category.title}
-
-                    {/* <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
-                      {category.title}
-                    </span> */}
                   </li>
                 </Link>
               ))

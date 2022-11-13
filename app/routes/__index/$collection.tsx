@@ -191,7 +191,10 @@ function Collection() {
       // would be appended to different category. Moreover, it would cause inconsistent
       // page number. Thus, we abandon appending loaded data on to the product list
       // if category of data is different from current viewing category.
-      if (dataCat !== category) return;
+      if (
+        products.length === 0 ||
+        dataCat !== category
+      ) return;
 
       currPage.current = page;
 

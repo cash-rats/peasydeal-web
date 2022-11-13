@@ -45,7 +45,7 @@ function LogoBar() {
       <div className="LogoBar__menu">
         <div className="LogoBar__menu-button">
           <IconButton onClick={handleOpenMenu}>
-            <FiMenu fontSize={26} color='white' />
+            <FiMenu fontSize={26} color='#e6007e' />
           </IconButton>
           <Dialog
             fullWidth
