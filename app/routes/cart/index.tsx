@@ -411,7 +411,10 @@ function Cart() {
 										</div>
 
 										<div className="checkout-button">
-											<Link prefetch="intent" to="/checkout">
+											<Link
+												// prefetch="intent"
+												to="/checkout"
+											>
 												<RoundButton
 													size='large'
 													colorScheme='checkout'

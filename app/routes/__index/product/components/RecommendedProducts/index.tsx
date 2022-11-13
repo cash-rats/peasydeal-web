@@ -8,16 +8,17 @@ import type { Product } from '~/shared/types';
 // Note: we don't need to import "style links" for this component
 // because route `__index/index` already loaded it. If we load it
 // again react would echo a error saying duplicate css being loaded
-import ProductRowsLayout from '~/components/ProductRowsLayout';
+import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
 import { organizeTo9ProdsPerRow } from '~/utils/products';
-import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
+import { fetchCategories, normalizeToMap } from '~/categories.server';
+import { fetchProductsByCategory } from '~/api';
+import { PAGE_LIMIT } from '~/shared/constants';
 
 import styles from './styles/RecommendedProducts.css';
-import { fetchProductsByCategory } from '~/api';
 
 export const links: LinksFunction = () => {
   return [
-    ...CssSpinnerLinks(),
+    ...ProductRowsLayoutLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -34,8 +35,22 @@ function generateRandomInteger(min: number, max: number): number {
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const category = body.get('category') as string || '';
+
+  const categories = normalizeToMap(await fetchCategories());
+  const targetCat = categories[category];
+
+  if (!targetCat) {
+    return json<ActionDataType>({ products: [] });
+  }
+
   const randomPage = generateRandomInteger(1, 5);
-  const products = await fetchProductsByCategory({ category, page: randomPage });
+
+  const products = await fetchProductsByCategory({
+    category: targetCat.catId,
+    page: randomPage,
+    perpage: PAGE_LIMIT,
+  });
+
   return json<ActionDataType>({ products });
 }
 
@@ -48,6 +63,8 @@ interface RecommendedProductsProps {
 function RecommendedProducts({ category, onClickProduct }: RecommendedProductsProps) {
   const fetcher = useFetcher();
   const [rows, setRows] = useState<Product[][]>([]);
+
+  // console.log('debug fetcher', fetcher.type !== '');
 
   useEffect(() => {
     fetcher.submit({
@@ -75,15 +92,11 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
       </h2>
 
       {
-        fetcher.type !== 'done'
-          ? (
-            <div className="loader-wrapper">
-              <CssSpinner scheme="spinner" />
-            </div>
-          )
-          : (
-            <ProductRowsLayout onClickProduct={onClickProduct} productRows={rows} />
-          )
+        <ProductRowsLayout
+          loading={fetcher.type !== 'done'}
+          onClickProduct={onClickProduct}
+          productRows={rows}
+        />
       }
     </div>
   );

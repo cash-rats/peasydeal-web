@@ -175,7 +175,6 @@ export default function Index() {
 		<div className="prod-list-container">
 
 			<ProductRowsContainer
-				loading={transition.type !== 'idle'}
 				productRows={productRows}
 				onClickProduct={handleClickProduct}
 			/>
@@ -189,7 +188,7 @@ export default function Index() {
 
 				<div>
 					{
-						hasMore
+						hasMore && transition.state === 'idle'
 							? (
 								<LoadMore
 									spinner={<CssSpinner scheme="spinner" />}

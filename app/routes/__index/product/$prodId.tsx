@@ -95,6 +95,8 @@ function ProductDetailPage() {
 	const { product: productDetail } = useLoaderData<LoaderTypeProductDetail>();
 	const [mainCategory] = productDetail.categories;
 
+	// console.log('categories', productDetail.categories);
+
 	const selectCurrentVariation = (defaultVariationUUID: string, variations: ProductVariation[]): ProductVariation | undefined => {
 		return variations.find(
 			(variation) => defaultVariationUUID === variation.uuid);
@@ -230,6 +232,7 @@ function ProductDetailPage() {
 				open={openSuccessModal}
 				onClose={handleOnClose}
 			/>
+
 			<div className="productdetail-breadcrumbs">
 				<Breadcrumbs breadcrumbs={[
 					<NavLink
@@ -434,10 +437,11 @@ function ProductDetailPage() {
 					  - Hot deals
 						- New trend
 				*/}
-			{/* <RecommendedProducts
+
+			<RecommendedProducts
 				category={mainCategory.name}
 				onClickProduct={handleClickProduct}
-			/> */}
+			/>
 		</>
 	);
 };

@@ -184,7 +184,10 @@ function LargeGrid({
 								{
 									!clickableGrid && (
 										<div className="btn-container">
-											<Link prefetch="intent" to={`/product/${productID}`}>
+											<Link
+												// prefetch="intent"
+												to={`/product/${productID}`}
+											>
 												<RoundButton
 													colorScheme="cerise"
 													onClick={() => onClickProduct(productID)}

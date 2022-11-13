@@ -72,7 +72,7 @@ export default function MediumGrid({
 				clickableGrid
 					? (
 						<Link
-							prefetch='intent'
+							// prefetch='intent'
 							to={`/product/${productID}`}
 							onClick={() => onClickProduct(productID)}
 							className="medium-grid-container"
@@ -206,7 +206,10 @@ export default function MediumGrid({
 								</div>
 
 								<div className="view-btn-container">
-									<Link prefetch="intent" to={`/product/${productID}`}>
+									<Link
+										// prefetch="intent"
+										to={`/product/${productID}`}
+									>
 										<RoundButton
 											colorScheme="cerise"
 											onClick={() => onClickProduct(productID)}

@@ -73,17 +73,21 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 		<>
 			{/* Mobile view slider */}
 			<div className="product-carousel-container">
-				<Slider ref={sliderRef} {...settings}>
-					{
-						images.map((image, index) => {
-							return (
-								<div key={index}>
-									<img alt='product' className="product-carousel-image" src={image} />
-								</div>
-							)
-						})
-					}
-				</Slider>
+				<div className="product-carousel-image-wrapper" >
+					<Slider ref={sliderRef} {...settings}>
+						{
+							images.map((image, index) => {
+								return (
+									<div
+										key={index}
+									>
+										<img alt='product' className="product-carousel-image" src={image} />
+									</div>
+								)
+							})
+						}
+					</Slider>
+				</div>
 
 				<div className="ProductDetailSection__carousel-thumbnails">
 					{
