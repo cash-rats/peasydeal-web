@@ -14,13 +14,9 @@
 
 	.product-carousel-image {
 		width: 100%;
-		// height: 100%;
 		height: auto;
 		margin: 0 auto;
-
-		@include md {
-			aspect-ratio: 1/1;
-		}
+		aspect-ratio: 1/1;
 	}
 }
 
