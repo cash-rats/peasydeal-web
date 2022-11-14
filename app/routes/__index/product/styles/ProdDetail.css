@@ -67,7 +67,6 @@
   display: flex;
   align-items: baseline;
   justify-content: flex-start;
-  margin-top: 1rem;
 }
 .productdetail-container .product-content-wrapper .product-content .product-tag-bar .detail-amount {
   color: #e6007e;
@@ -146,6 +145,7 @@
 
 .product-features-container {
   padding: 0 10px;
+  overflow-x: scroll;
 }
 
 .product-return-policy p {
@@ -239,6 +239,23 @@
   .ProductDetail__desktop-ads-container {
     display: block;
   }
+}
+
+.ProductDetailPage__rating {
+  display: flex;
+  align-items: center;
+}
+
+.ProductDetailPage__annotation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ProductDetailPage__number-bought {
+  font-size: 1.2rem;
+  color: #e6007e;
+  text-transform: capitalize;
 }
 
 /*# sourceMappingURL=ProdDetail.css.map */

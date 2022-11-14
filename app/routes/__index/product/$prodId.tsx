@@ -5,6 +5,7 @@ import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
 import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
+import Rating from '@mui/material/Rating';
 
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
 import Divider, { links as DividerLinks } from '~/components/Divider';
@@ -291,7 +292,12 @@ function ProductDetailPage() {
 							</h1>
 
 							<div className="ProductDetailPage__rating">
-
+								<Rating
+									name="product-rating"
+									defaultValue={2.5}
+									precision={0.5}
+									readOnly
+								/>
 							</div>
 
 							<div className="product-tag-bar">
@@ -305,14 +311,20 @@ function ProductDetailPage() {
 
 							</div>
 
-							<p className="discount-amount">
-								YOU SAVE &nbsp;
-								{
-									currentVariation && currentVariation.discount && (
-										(Number(currentVariation.discount) * 100).toFixed(0)
-									)
-								}%!
-							</p>
+							<div className="ProductDetailPage__annotation">
+								<p className="discount-amount">
+									YOU SAVE &nbsp;
+									{
+										currentVariation && currentVariation.discount && (
+											(Number(currentVariation.discount) * 100).toFixed(0)
+										)
+									}%!
+								</p>
+
+								<p className="ProductDetailPage__number-bought">
+									63 bought
+								</p>
+							</div>
 
 
 							<div className="bought">

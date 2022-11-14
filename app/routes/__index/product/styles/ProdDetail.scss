@@ -64,7 +64,6 @@
 				display: flex;
 				align-items: baseline;
 				justify-content: flex-start;
-				margin-top: 1rem;
 
 				.detail-amount {
 					color: $primary;
@@ -157,6 +156,7 @@
 
 .product-features-container {
 	padding: 0 10px;
+	overflow-x: scroll;
 }
 
 .product-return-policy {
@@ -249,4 +249,21 @@
 	@media(min-width: #{$screen-1280-min}) {
 		display: block;
 	}
+}
+
+.ProductDetailPage__rating {
+	display: flex;
+	align-items: center;
+}
+
+.ProductDetailPage__annotation {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.ProductDetailPage__number-bought {
+	font-size: 1.2rem;
+	color: $primary;
+	text-transform: capitalize;
 }
