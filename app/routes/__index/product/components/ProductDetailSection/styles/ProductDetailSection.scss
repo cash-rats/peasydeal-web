@@ -27,8 +27,6 @@
 
 .product-detail-img-container {
 	img {
-		// width: 100%;
-
 		@include md {
 			max-width: 718px;
 		}

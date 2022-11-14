@@ -23,7 +23,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 12px;
   margin-top: 20px;
 }
 .thumbnails-container .product-thumbnail {
@@ -63,8 +63,8 @@
 }
 
 .carousel__thumbnail {
-  width: 60px;
-  height: 60px;
+  width: 61px;
+  height: 61px;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -98,6 +98,10 @@
   align-items: center;
   position: relative;
   transform: translateY(5%);
+  border-radius: 4px;
+  background-color: #a0a0a0;
+  margin-right: 4px;
+  overflow: hidden;
 }
 
 .ProductDetailSection__carousel-thumbnails {
@@ -105,9 +109,9 @@
   margin-top: 1rem;
   overflow-x: scroll;
   border-radius: 3px;
-  background-color: rgba(255, 115, 55, 0.3);
   white-space: nowrap;
   width: 100%;
+  background-color: white;
   /* Hide scrollbar for IE, Edge and Firefox */
   -ms-overflow-style: none;
   /* IE and Edge */
@@ -118,7 +122,7 @@
 @media (min-width: 1280px) {
   .ProductDetailSection__carousel-thumbnails {
     max-width: 570px;
-    margin: 0 auto;
+    margin: 1rem auto 0;
   }
 }
 .ProductDetailSection__carousel-thumbnails::-webkit-scrollbar {
@@ -126,7 +130,7 @@
 }
 
 .active-thumbnail {
-  background-color: #EC7272;
+  background-color: #e6007e;
 }
 
 /*# sourceMappingURL=Carousel.css.map */
