@@ -115,6 +115,12 @@
   /* Firefox */
   /* Hide scrollbar for Chrome, Safari and Opera */
 }
+@media (min-width: 1280px) {
+  .ProductDetailSection__carousel-thumbnails {
+    max-width: 570px;
+    margin: 0 auto;
+  }
+}
 .ProductDetailSection__carousel-thumbnails::-webkit-scrollbar {
   display: none;
 }

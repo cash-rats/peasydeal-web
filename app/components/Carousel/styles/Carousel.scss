@@ -120,6 +120,11 @@
 	white-space: nowrap;
 	width: 100%;
 
+	@media (min-width: $screen-1280-min) {
+		max-width: 570px;
+		margin: 0 auto;
+	}
+
 	/* Hide scrollbar for IE, Edge and Firefox */
 	-ms-overflow-style: none;
 	/* IE and Edge */

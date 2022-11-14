@@ -290,6 +290,10 @@ function ProductDetailPage() {
 								{productDetail?.title}
 							</h1>
 
+							<div className="ProductDetailPage__rating">
+
+							</div>
+
 							<div className="product-tag-bar">
 								<p className="detail-amount">
 									£{currentVariation?.sale_price}
