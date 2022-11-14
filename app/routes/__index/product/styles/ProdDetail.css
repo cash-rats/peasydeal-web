@@ -223,6 +223,7 @@
   .ProductDetail__main-wrapper {
     max-width: 900px;
     margin: 0 auto;
+    justify-content: center;
   }
 }
 @media (min-width: 768px) {
