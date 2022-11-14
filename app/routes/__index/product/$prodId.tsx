@@ -23,6 +23,7 @@ import ProductActionBar, { links as ProductActionBarLinks } from './components/P
 import ProductActionBarLeft, { links as ProductActionBarLeftLinks } from './components/ProductActionBarLeft';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
+import TopProductsColumn, { links as TopProductsColumnLinks } from './components/TopProductsColumn';
 
 export function links() {
 	return [
@@ -35,6 +36,7 @@ export function links() {
 		...ProductActionBarLeftLinks(),
 		...RecommendedProductsLinks(),
 		...SocialShareLinks(),
+		...TopProductsColumnLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
 };
@@ -272,163 +274,166 @@ function ProductDetailPage() {
 			</div>
 
 			<div className="productdetail-container">
-				<ProductDetailSection
-					description={productDetail?.description}
-					pics={productDetail.images}
-				/>
+				<div className="ProductDetail__main-wrapper">
+					<ProductDetailSection
+						description={productDetail?.description}
+						pics={productDetail.images}
+					/>
+					<div
+						ref={productContentWrapperRef}
+						className="product-content-wrapper"
+					>
+						<div className="product-content">
+							<h1 className="product-name">
+								{productDetail?.title}
+							</h1>
 
-				<div
-					ref={productContentWrapperRef}
-					className="product-content-wrapper"
-				>
+							<h1 className="product-subtitle">
+								{currentVariation?.spec_name}
+							</h1>
 
+							<div className="product-tag-bar">
+								<p className="detail-amount">
+									{
+										// TODO: enable currency
+										// currentVariation?.currency
+									} {currentVariation?.sale_price}
+								</p>
 
-					<div className="product-content">
-						<h1 className="product-name">
-							{productDetail?.title}
-						</h1>
+								<span className="actual-amount">
+									compared at {
 
-						<h1 className="product-subtitle">
-							{currentVariation?.spec_name}
-						</h1>
+										// TODO: enable currency
+										// currentVariation?.currency
+									} {currentVariation?.retail_price}
+								</span>
 
-						<div className="product-tag-bar">
-							<p className="detail-amount">
+							</div>
+
+							<p className="discount-amount">
+								YOU SAVE &nbsp;
 								{
-									// TODO: enable currency
-									// currentVariation?.currency
-								} {currentVariation?.sale_price}
+									currentVariation && currentVariation.discount && (
+										(Number(currentVariation.discount) * 100).toFixed(0)
+									)
+								}%!
 							</p>
 
-							<span className="actual-amount">
-								compared at {
 
-									// TODO: enable currency
-									// currentVariation?.currency
-								} {currentVariation?.retail_price}
-							</span>
+							<div className="bought">
+								<span className="bought-number">
+									{productDetail.bought}
+								</span>
+								<span className="bought-text"> bought </span>
 
-						</div>
-
-						<p className="discount-amount">
-							YOU SAVE &nbsp;
-							{
-								currentVariation && currentVariation.discount && (
-									(Number(currentVariation.discount) * 100).toFixed(0)
-								)
-							}%!
-						</p>
-
-
-						<div className="bought">
-							<span className="bought-number">
-								{productDetail.bought}
-							</span>
-							<span className="bought-text"> bought </span>
-
-							<span className="in-stock-text" > in-stock </span>
-						</div>
+								<span className="in-stock-text" > in-stock </span>
+							</div>
 
 
 
-						<Divider text="options" />
-						<div className="options-container">
-							{/* Variations */}
-							<ClientOnly>
-								<Select
-									inputId='variation_id'
-									instanceId='variation_id'
-									placeholder='select variation'
-									onChange={(v) => {
-										if (!v) return;
+							<Divider text="options" />
+							<div className="options-container">
+								{/* Variations */}
+								<ClientOnly>
+									<Select
+										inputId='variation_id'
+										instanceId='variation_id'
+										placeholder='select variation'
+										onChange={(v) => {
+											if (!v) return;
 
-										setVariation(v.value);
-									}}
-									options={
-										productDetail.variations.map(
-											(variation) => ({ value: variation.uuid, label: variation.spec_name })
-										)
-									}
-								/>
+											setVariation(v.value);
+										}}
+										options={
+											productDetail.variations.map(
+												(variation) => ({ value: variation.uuid, label: variation.spec_name })
+											)
+										}
+									/>
 
-								<p className="error">
-									{variationErr}
-								</p>
-							</ClientOnly>
+									<p className="error">
+										{variationErr}
+									</p>
+								</ClientOnly>
 
-							{/* Quantity */}
-							<div className="input-quantity-container">
-								<QuantityPicker
-									value={quantity}
-									onChange={handleUpdateQuantity}
-									onIncrease={increaseQuantity}
-									onDecrease={decreaseQuantity}
+								{/* Quantity */}
+								<div className="input-quantity-container">
+									<QuantityPicker
+										value={quantity}
+										onChange={handleUpdateQuantity}
+										onIncrease={increaseQuantity}
+										onDecrease={decreaseQuantity}
+									/>
+								</div>
+
+								<ProductActionBarLeft
+									onClickAddToCart={handleAddToCart}
+									onClickBuyNow={handleBuyNow}
+									loading={addToCart.state !== 'idle'}
 								/>
 							</div>
 
-							<ProductActionBarLeft
-								onClickAddToCart={handleAddToCart}
-								onClickBuyNow={handleBuyNow}
-								loading={addToCart.state !== 'idle'}
-							/>
-						</div>
 
-
-						{/*
+							{/*
 							- Facebook
 							- Twitter
 							- Whatsapp
 						*/}
-						<Divider text={
-							<span className="ProductDetail__divder-content">
-								<TbShare fontSize={20} /> share
-							</span>
-						} />
-
-						<SocialShare />
-
-						<div className="delivery-container">
-							<Divider text={(
+							<Divider text={
 								<span className="ProductDetail__divder-content">
-									<TbTruckDelivery fontSize={24} /> DELIVERY
+									<TbShare fontSize={20} /> share
 								</span>
-							)} />
+							} />
 
-							<div className="delivery-content">
-								<span> {currentVariation?.delivery_info} </span>
+							<SocialShare />
+
+							<div className="delivery-container">
+								<Divider text={(
+									<span className="ProductDetail__divder-content">
+										<TbTruckDelivery fontSize={24} /> DELIVERY
+									</span>
+								)} />
+
+								<div className="delivery-content">
+									<span> {currentVariation?.delivery_info} </span>
+								</div>
+							</div>
+
+
+							<div className="product-features-mobile">
+								<Divider text="product features" />
+
+								{/* TODO dangerous render html */}
+								<div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} className="product-features-container" />
+							</div>
+
+							<div className="product-return-policy">
+								<Divider text={(
+									<span className="ProductDetail__divder-content">
+										<TbTruckReturn fontSize={24} /> return policy
+									</span>
+								)} />
+
+								<p>
+									14 days cancellation period applies.
+								</p>
+							</div>
+
+							<div className="client-action-bar-wrapper">
+								<Divider />
+								<ProductActionBar
+									ref={mobileUserActionBarRef}
+									onClickAddToCart={handleAddToCart}
+									onClickBuyNow={handleBuyNow}
+									loading={addToCart.state !== 'idle'}
+								/>
 							</div>
 						</div>
-
-
-						<div className="product-features-mobile">
-							<Divider text="product features" />
-
-							{/* TODO dangerous render html */}
-							<div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} className="product-features-container" />
-						</div>
-
-						<div className="product-return-policy">
-							<Divider text={(
-								<span className="ProductDetail__divder-content">
-									<TbTruckReturn fontSize={24} /> return policy
-								</span>
-							)} />
-
-							<p>
-								14 days cancellation period applies.
-							</p>
-						</div>
-
-						<div className="client-action-bar-wrapper">
-							<Divider />
-							<ProductActionBar
-								ref={mobileUserActionBarRef}
-								onClickAddToCart={handleAddToCart}
-								onClickBuyNow={handleBuyNow}
-								loading={addToCart.state !== 'idle'}
-							/>
-						</div>
 					</div>
+				</div>
+
+				<div className="ProductDetail__desktop-ads-container">
+					<TopProductsColumn />
 				</div>
 			</div>
 			{/*

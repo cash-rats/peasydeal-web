@@ -99,7 +99,7 @@ export default function TopProductsColumn() {
 
       <div className="TopProductsColumn__banner-wrapper">
         <h2 className="TopProductsColumn__banner-wrapper-title">
-          you may also like
+          Super Deal
           <span className="TopProductsColumn__banner-wrapper-border" />
         </h2>
 
