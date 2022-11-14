@@ -1,14 +1,9 @@
 .product-detail {
   width: 100%;
 }
-@media (min-width: 768px) {
-  .product-detail {
-    width: 50%;
-  }
-}
 @media (min-width: 768px) and (max-width: 1280px) {
   .product-detail {
-    width: 66%;
+    width: 53%;
   }
 }
 .product-detail .product-detail-title {

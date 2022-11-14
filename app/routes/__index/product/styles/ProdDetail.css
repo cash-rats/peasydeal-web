@@ -21,7 +21,7 @@
 @media (min-width: 1200px) {
   .productdetail-container {
     margin: 0 auto;
-    max-width: 1770px;
+    max-width: 1400px;
   }
 }
 .productdetail-container .product-content-wrapper {
@@ -213,6 +213,17 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+@media (min-width: 1280px) {
+  .ProductDetail__main-wrapper {
+    max-width: 1360px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1280px) {
+  .ProductDetail__main-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+  }
 }
 @media (min-width: 768px) {
   .ProductDetail__main-wrapper {

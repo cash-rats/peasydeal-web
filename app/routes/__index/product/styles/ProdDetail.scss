@@ -22,7 +22,7 @@
 
 	@include xl {
 		margin: 0 auto;
-		max-width: 1770px;
+		max-width: 1400px;
 	}
 
 	.product-content-wrapper {
@@ -227,6 +227,15 @@
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;
+
+	@media (min-width: $screen-1280-min ) {
+		max-width: 1360px;
+	}
+
+	@media (min-width: $screen-md-min) and (max-width: $screen-1280-min) {
+		max-width: 900px;
+		margin: 0 auto;
+	}
 
 	@media (min-width: $screen-md-min) {
 		flex-direction: row;

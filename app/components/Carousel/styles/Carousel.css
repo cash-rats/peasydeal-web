@@ -7,6 +7,11 @@
   margin: 0 auto;
   aspect-ratio: 1/1;
 }
+@media (min-width: 768px) {
+  .product-carousel-container .product-carousel-image-wrapper {
+    max-width: 570px;
+  }
+}
 .product-carousel-container .product-carousel-image {
   width: 100%;
   height: auto;

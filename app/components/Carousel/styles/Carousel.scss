@@ -1,15 +1,21 @@
 @import 'styles/_mixins';
 @import 'styles/_colors';
+@import 'styles/_breakpoints';
 
 .product-carousel-container {
 	.product-carousel-image-wrapper {
 		box-shadow: rgb(0 0 0 / 40%) 0px 2px 5px 0px;
 		overflow: hidden;
 		border-radius: 0.5rem;
+
 		max-width: 717px;
 		height: auto;
 		margin: 0 auto;
 		aspect-ratio: 1/1;
+
+		@media (min-width: $screen-md-min) {
+			max-width: 570px;
+		}
 	}
 
 	.product-carousel-image {
