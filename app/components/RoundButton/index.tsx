@@ -33,7 +33,6 @@ const AddToCartButton = styled(BasicRoundButton)({
   },
 }) as typeof LoadingButton;
 
-// d32d7d
 const BuyNowButton = styled(BasicRoundButton)({
   color: 'white',
   fontSize: '1.1rem',
@@ -110,8 +109,8 @@ function RoundButton({
   const CustomButton = colorSchemeButton[colorScheme];
   return (
     <CustomButton
-      size={size}
       style={style}
+      size={size}
       fullWidth
       variant='outlined'
       onClick={onClick}
