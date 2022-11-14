@@ -125,10 +125,7 @@ function RoundButton({
     >
       <div className="RoundButton__Custom">
         {leftIcon && (<span>{leftIcon}</span>)}
-
-        <span>
-          {children}
-        </span>
+        {children}
       </div>
     </CustomButton>
   );

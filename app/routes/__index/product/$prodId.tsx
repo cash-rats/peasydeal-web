@@ -107,25 +107,26 @@ function ProductDetailPage() {
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 
-	const handleWindowScrolling = (evt: Event) => {
-		if (!window || !productContentWrapperRef.current || !mobileUserActionBarRef.current) return;
-		const windowDOM = window as Window;
-		const prodContentRect = productContentWrapperRef.current.getBoundingClientRect();
-
-		const isScrollAtDivBottom = windowDOM.innerHeight + windowDOM.scrollY >= prodContentRect.bottom + windowDOM.scrollY;
-
-		if (isScrollAtDivBottom) {
-			if (mobileUserActionBarRef.current.style.position === 'relative') return;
-			mobileUserActionBarRef.current.style.position = 'relative';
-		} else {
-
-			if (mobileUserActionBarRef.current.style.position === 'fixed') return;
-			mobileUserActionBarRef.current.style.position = 'fixed';
-		}
-	};
-
 	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
 	useEffect(() => {
+		const handleWindowScrolling = (evt: Event) => {
+			if (!window || !productContentWrapperRef.current || !mobileUserActionBarRef.current) return;
+
+			const windowDOM = window as Window;
+			const prodContentRect = productContentWrapperRef.current.getBoundingClientRect();
+
+
+			const isScrollAtDivBottom = windowDOM.innerHeight + windowDOM.scrollY >= prodContentRect.bottom + windowDOM.scrollY;
+
+			if (isScrollAtDivBottom) {
+				if (mobileUserActionBarRef.current.style.position === 'relative') return;
+				mobileUserActionBarRef.current.style.position = 'relative';
+			} else {
+				if (mobileUserActionBarRef.current.style.position === 'fixed') return;
+				mobileUserActionBarRef.current.style.position = 'fixed';
+			}
+		};
+
 		if (window) {
 			window.scrollTo(0, 0);
 
@@ -134,7 +135,7 @@ function ProductDetailPage() {
 			window.addEventListener('scroll', handleWindowScrolling);
 		}
 
-		return window.removeEventListener('scroll', handleWindowScrolling);
+		return () => window.removeEventListener('scroll', handleWindowScrolling);
 	}, []);
 
 	const currentVariation = selectCurrentVariation(productDetail.default_variation_uuid, productDetail.variations);

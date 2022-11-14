@@ -34,7 +34,9 @@ const ProductActionBar = forwardRef(({
           isLoading={loading}
           colorScheme='addtocart'
         >
-          Add To Cart
+          <p style={{ width: '100%', textAlign: 'center' }}>
+            Add To Cart
+          </p>
         </RoundButton>
       </div>
 
@@ -44,7 +46,9 @@ const ProductActionBar = forwardRef(({
           onClick={onClickBuyNow}
           colorScheme='buynow'
         >
-          Buy Now
+          <p style={{ width: '100%', textAlign: 'center' }}>
+            Buy Now
+          </p>
         </RoundButton>
       </div>
     </div>
