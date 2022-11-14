@@ -22,20 +22,24 @@ export default function ProductActionBarLeft({
 }: ProductActionBarLeftProps) {
   return (
     <div className="client-action-bar-large">
-      <div>
+      <div className="ProductActionBarLeft__btn">
         <RoundButton
+          fullWidth
           colorScheme='addtocart'
           onClick={onClickAddToCart}
           isLoading={loading}
+          style={{ whiteSpace: 'nowrap' }}
         >
           Add To Cart
         </RoundButton>
       </div>
 
-      <div>
+      <div className="ProductActionBarLeft__btn">
         <RoundButton
+          fullWidth
           colorScheme='buynow'
           onClick={onClickBuyNow}
+          style={{ whiteSpace: 'nowrap' }}
         >
           Buy Now
         </RoundButton>

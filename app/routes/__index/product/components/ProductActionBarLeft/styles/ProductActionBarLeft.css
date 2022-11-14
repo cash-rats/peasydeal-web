@@ -3,11 +3,16 @@
 }
 @media (min-width: 768px) {
   .client-action-bar-large {
-    margin-top: 15px;
+    margin-top: 1rem;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 15px;
+    justify-content: center;
   }
+}
+
+.ProductActionBarLeft__btn {
+  min-width: 105px;
 }
 
 /*# sourceMappingURL=ProductActionBarLeft.css.map */

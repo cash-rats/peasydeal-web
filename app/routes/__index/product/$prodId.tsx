@@ -345,6 +345,7 @@ function ProductDetailPage() {
 								</ClientOnly>
 
 								{/* Quantity */}
+								{/* <div className="ProductDetailPage__option-row"> */}
 								<div className="input-quantity-container">
 									<QuantityPicker
 										value={quantity}
@@ -359,6 +360,7 @@ function ProductDetailPage() {
 									onClickBuyNow={handleBuyNow}
 									loading={addToCart.state !== 'idle'}
 								/>
+								{/* </div> */}
 							</div>
 
 
