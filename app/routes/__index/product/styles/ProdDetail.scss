@@ -68,16 +68,16 @@
 				margin-top: 1rem;
 
 				.detail-amount {
-					color: $product-price;
+					color: $primary;
 					font-size: 40px;
 					font-weight: 700;
 					margin: 0;
 				}
 
 				.actual-amount {
-					color: $original-price;
-					font-size: 0.75rem;
-					margin-left: 0.5rem;
+					color: $cornflowerblue;
+					font-size: 1.25rem;
+					margin-left: 0.7rem;
 					text-decoration: line-through;
 				}
 			}
@@ -187,23 +187,17 @@
 	color: $number-bought;
 }
 
-.bought .bought-number {
-	font-size: 22px;
-	font-weight: 600;
-	line-height: 1em;
-}
-
-.bought .bought-text {
-	font-size: 14px;
-	font-weight: 600;
-	text-transform: capitalize;
+.bought .availability-text {
+	font-size: 1rem;
+	text-transform: uppercase;
+	color: $cornflowerblue;
 }
 
 .bought .in-stock-text {
-	color: $dark-green;
+	color: $primary;
 	margin-left: 0.3rem;
-	font-size: 18px;
-	font-weight: 600;
+	font-size: 1rem;
+	text-transform: uppercase;
 }
 
 .product-subtitle {

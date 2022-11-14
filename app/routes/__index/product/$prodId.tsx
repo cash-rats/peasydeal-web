@@ -279,6 +279,7 @@ function ProductDetailPage() {
 						description={productDetail?.description}
 						pics={productDetail.images}
 					/>
+
 					<div
 						ref={productContentWrapperRef}
 						className="product-content-wrapper"
@@ -288,24 +289,13 @@ function ProductDetailPage() {
 								{productDetail?.title}
 							</h1>
 
-							<h1 className="product-subtitle">
-								{currentVariation?.spec_name}
-							</h1>
-
 							<div className="product-tag-bar">
 								<p className="detail-amount">
-									{
-										// TODO: enable currency
-										// currentVariation?.currency
-									} {currentVariation?.sale_price}
+									£{currentVariation?.sale_price}
 								</p>
 
 								<span className="actual-amount">
-									compared at {
-
-										// TODO: enable currency
-										// currentVariation?.currency
-									} {currentVariation?.retail_price}
+									compared at £{currentVariation?.retail_price}
 								</span>
 
 							</div>
@@ -321,10 +311,7 @@ function ProductDetailPage() {
 
 
 							<div className="bought">
-								<span className="bought-number">
-									{productDetail.bought}
-								</span>
-								<span className="bought-text"> bought </span>
+								<span className="availability-text"> availability: </span>
 
 								<span className="in-stock-text" > in-stock </span>
 							</div>
