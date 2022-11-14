@@ -423,6 +423,7 @@ function ProductDetailPage() {
 					<TopProductsColumn />
 				</div>
 			</div>
+
 			{/*
 					Recommended products:
 						- Things you might like: other products that belongs to the same category.

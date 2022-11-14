@@ -64,8 +64,6 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
   const fetcher = useFetcher();
   const [rows, setRows] = useState<Product[][]>([]);
 
-  // console.log('debug fetcher', fetcher.type !== '');
-
   useEffect(() => {
     fetcher.submit({
       category
@@ -87,9 +85,9 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
 
   return (
     <div className="recommended-products-wrapper">
-      <h2 className="recommended-products-wrapper_title">
+      {/* <h2 className="recommended-products-wrapper_title">
         you may also like
-      </h2>
+      </h2> */}
 
       {
         <ProductRowsLayout
