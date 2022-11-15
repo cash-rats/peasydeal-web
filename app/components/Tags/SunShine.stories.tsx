@@ -3,7 +3,7 @@ import type { ComponentStory, ComponentMeta } from '@storybook/react';
 import SunShine from './SunShine';
 
 export default {
-  title: 'Price Tags',
+  title: 'Tags',
   component: SunShine,
 } as ComponentMeta<typeof SunShine>;
 

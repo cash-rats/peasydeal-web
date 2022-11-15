@@ -3,7 +3,7 @@ import type { ComponentStory, ComponentMeta } from '@storybook/react';
 import TiltRibbon from './TiltRibbon';
 
 export default {
-  title: 'Price Tags',
+  title: 'Tags',
   component: TiltRibbon,
 } as ComponentMeta<typeof TiltRibbon>;
 

@@ -3,7 +3,7 @@ import type { ComponentStory, ComponentMeta } from '@storybook/react';
 import Pennant from './Pennant';
 
 export default {
-  title: 'Price Tags',
+  title: 'Tags',
   component: Pennant,
 } as ComponentMeta<typeof Pennant>;
 

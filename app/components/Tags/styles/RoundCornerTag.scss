@@ -1,0 +1,15 @@
+@import 'styles/_colors';
+
+.RoundCornerTag {
+  background-color: $primary;
+  color: white;
+  max-width: 120px;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 60px;
+  box-shadow: $all-purpose-shadow;
+  font-size: 1rem;
+  font-weight: bold;
+  font-style: italic;
+}

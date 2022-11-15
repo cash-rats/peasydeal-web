@@ -1,7 +1,30 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, ActionFunction } from '@remix-run/node';
+
+import { fetchProductsByCategory } from '~/api';
+import type { Product } from '~/shared/types';
 
 import styles from './styles/TopProductsColumn.css';
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
+
+type ActionType = {
+  top_products: Product[];
+  super_deal_products: Product[];
+};
+
+export const action: ActionFunction = async ({ request }) => {
+  const topProds = await fetchProductsByCategory({
+    category: 22,
+    perpage: 5,
+  });
+
+  const superDealProds = await fetchProductsByCategory({
+    category: 2,
+    perpage: 4,
+  });
+  // Load 5 TOP products 22
+  // Load 4 Super deals 2
+  // You may also like 3
+};
 
 export const links: LinksFunction = () => {
   return [

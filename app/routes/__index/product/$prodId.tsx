@@ -15,6 +15,7 @@ import { commitSession } from '~/sessions/redis_session';
 import { insertItem } from '~/utils/shoppingcart.session';
 import type { ShoppingCartItem } from '~/utils/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
+import RoundCornerTag, { links as RoundCornerTagLinks } from '~/components/Tags/RoundCornerTag';
 
 import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -38,6 +39,7 @@ export function links() {
 		...RecommendedProductsLinks(),
 		...SocialShareLinks(),
 		...TopProductsColumnLinks(),
+		...RoundCornerTagLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
 };
@@ -97,8 +99,6 @@ export const action: ActionFunction = async ({ request }) => {
 function ProductDetailPage() {
 	const { product: productDetail } = useLoaderData<LoaderTypeProductDetail>();
 	const [mainCategory] = productDetail.categories;
-
-	// console.log('categories', productDetail.categories);
 
 	const selectCurrentVariation = (defaultVariationUUID: string, variations: ProductVariation[]): ProductVariation | undefined => {
 		return variations.find(
@@ -294,7 +294,7 @@ function ProductDetailPage() {
 							<div className="ProductDetailPage__rating">
 								<Rating
 									name="product-rating"
-									defaultValue={2.5}
+									defaultValue={5}
 									precision={0.5}
 									readOnly
 								/>
@@ -321,9 +321,9 @@ function ProductDetailPage() {
 									}%!
 								</p>
 
-								<p className="ProductDetailPage__number-bought">
-									63 bought
-								</p>
+								<div className="ProductDetailPage__number-bought">
+									<RoundCornerTag text='63 bought' />
+								</div>
 							</div>
 
 

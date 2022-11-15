@@ -39,7 +39,7 @@
 		}
 
 		@media(min-width: $screen-md-min) and (max-width: $screen-1280-min) {
-			max-width: 34%;
+			max-width: 44%;
 		}
 
 		@media(min-width: $screen-1280-min) {
@@ -221,7 +221,7 @@
 	flex-direction: column;
 	gap: 0.5rem;
 
-	@media (min-width: $screen-1280-min ) {
+	@media (min-width: $screen-1280-min) {
 		max-width: 1360px;
 	}
 
@@ -229,6 +229,7 @@
 		max-width: 900px;
 		margin: 0 auto;
 		justify-content: center;
+		gap: 1rem;
 	}
 
 	@media (min-width: $screen-md-min) {

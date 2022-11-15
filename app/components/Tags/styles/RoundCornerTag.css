@@ -1,0 +1,15 @@
+.RoundCornerTag {
+  background-color: #e6007e;
+  color: white;
+  max-width: 120px;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  border-radius: 60px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
+  font-size: 1rem;
+  font-weight: bold;
+  font-style: italic;
+}
+
+/*# sourceMappingURL=RoundCornerTag.css.map */

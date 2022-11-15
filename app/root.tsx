@@ -16,7 +16,6 @@ import {
 // TOOD deprecate chakra in favor of mui
 // import { ChakraProvider } from '@chakra-ui/react';
 
-
 // TODO deprecate it in favor of mui
 
 import Layout from './Layout';
