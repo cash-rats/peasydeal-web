@@ -52,3 +52,7 @@ We can specify `scrollToTop: true` in `Link` component of remix:
 
 `ConditionalScrollRestoration` component would know that the next route redirected by this `Link`
 need to scroll to top. Thus, scroll restoration won't happen when we redirect from `path_A` to `path_B`.
+
+## Name color
+
+[find name of a color](https://colors.artyclick.com/color-name-finder/)

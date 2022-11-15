@@ -30,7 +30,7 @@ function ProductDetailSection({
 			{/* product features. display > 768 */}
 			<div className="product-features-large-screen">
 				<h1>
-					Product Features
+					Details
 				</h1>
 				{/* TODO dangerous render html */}
 				<div dangerouslySetInnerHTML={{ __html: description || '' }} />

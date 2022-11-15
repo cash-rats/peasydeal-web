@@ -37,4 +37,24 @@
   }
 }
 
+.product-features-large-screen {
+  display: none;
+  padding: 1rem;
+  margin-top: 2.25rem;
+  border: solid 1px #ccc;
+  background-color: white;
+}
+.product-features-large-screen h1 {
+  font-weight: bold;
+  font-size: 1.714em;
+  text-transform: uppercase;
+}
+@media (min-width: 768px) {
+  .product-features-large-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+}
+
 /*# sourceMappingURL=ProductDetailSection.css.map */

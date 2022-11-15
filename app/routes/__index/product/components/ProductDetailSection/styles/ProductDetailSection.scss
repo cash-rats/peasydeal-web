@@ -1,5 +1,6 @@
 @import 'styles/_mixins';
 @import 'styles/_breakpoints';
+@import 'styles/_colors';
 
 .product-detail {
 	width: 100%;
@@ -40,5 +41,25 @@
 
 	@media (min-width: $screen-md-min) {
 		padding-left: 2rem;
+	}
+}
+
+.product-features-large-screen {
+	display: none;
+	padding: 1rem;
+	margin-top: 2.25rem;
+	border: solid 1px $pastel-grey;
+	background-color: white;
+
+	h1 {
+		font-weight: bold;
+		font-size: 1.714em;
+		text-transform: uppercase;
+	}
+
+	@include md {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
 	}
 }

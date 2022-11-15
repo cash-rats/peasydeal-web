@@ -121,24 +121,6 @@
 	margin: 10px 10px 0 0;
 }
 
-.product-features-large-screen {
-	display: none;
-	padding-top: 5px;
-	margin-top: 2.25rem;
-
-	h1 {
-		font-weight: bold;
-		font-size: 1.714em;
-		text-transform: uppercase;
-	}
-
-	@include md {
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-start;
-	}
-}
-
 .product-features-mobile {
 	display: block;
 
