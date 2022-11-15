@@ -19,7 +19,6 @@ body {
   background: #f6f6f6 !important;
   font-family: "Roboto", sans-serif !important;
   /* Sticky header top */
-  padding-top: 130px;
   height: auto;
   min-height: calc(100% - 130px);
 }

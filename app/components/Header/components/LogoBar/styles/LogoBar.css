@@ -4,12 +4,16 @@
 }
 
 .LogoBar__menu {
-  width: 40px;
+  width: 42px;
+  height: 42px;
 }
 
+.LogoBar__menu-button {
+  display: block;
+}
 @media (min-width: 768px) {
   .LogoBar__menu-button {
-    opacity: 0;
+    display: none;
   }
 }
 

@@ -1,6 +1,7 @@
 .productdetail-container {
   position: relative;
   width: 100%;
+  margin-top: 1.875rem;
 }
 @media (min-width: 1280px) {
   .productdetail-container {
@@ -11,6 +12,7 @@
 }
 @media (min-width: 768px) {
   .productdetail-container {
+    margin-top: 6.25rem;
     padding: 0 1rem 20px;
     flex-direction: row;
     justify-content: center;
@@ -20,7 +22,7 @@
 }
 @media (min-width: 1200px) {
   .productdetail-container {
-    margin: 0 auto;
+    margin: 6.25rem auto 0;
     max-width: 1400px;
   }
 }
