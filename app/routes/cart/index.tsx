@@ -227,13 +227,9 @@ function Cart() {
 		);
 	};
 
-	const handleRemoveItemResult = (res: boolean) => {
-		if (!res) return false;
-		if (!targetRemovalProdID.current) return;
-
-		// Remove cart item on the client side before mutating session.
+	const removeItem = (targetRemovalProdID: string) => {
 		const updatedCartItems = Object.keys(cartItems).reduce((newCartItems: ShoppingCart, prodID) => {
-			if (prodID === targetRemovalProdID.current) return newCartItems;
+			if (prodID === targetRemovalProdID) return newCartItems;
 			newCartItems[prodID] = cartItems[prodID];
 			return newCartItems
 		}, {})
@@ -246,13 +242,21 @@ function Cart() {
 		removeItemFetcher.submit(
 			{
 				__action: 'remove_cart_item',
-				prod_id: targetRemovalProdID.current
+				prod_id: targetRemovalProdID,
 			},
 			{
 				method: 'post',
 				action: '/cart?index',
 			},
 		)
+	}
+
+	const handleRemoveItemResult = (res: boolean) => {
+		if (!res) return false;
+		if (!targetRemovalProdID.current) return;
+
+		// Remove cart item on the client side before mutating session.
+		removeItem(targetRemovalProdID.current);
 
 		setOpenRemoveItemModal(false);
 	}
@@ -327,6 +331,10 @@ function Cart() {
 		));
 	}
 
+	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, prodID: string) => {
+		removeItem(prodID);
+	}
+
 	return (
 		<>
 			<LoadingBackdrop open={syncingPrice} />
@@ -358,6 +366,35 @@ function Cart() {
 								</h1>
 							)
 						}
+
+					</div>
+
+					{/* title row */}
+					<div className="Cart__title-row">
+
+						<div className="Cart__title-row-top" >
+							<div className="Cart__title-row-stuff" />
+
+							<h2 className="Cart__title-row-prodname">
+								Product Name
+							</h2>
+
+						</div>
+
+						<div className="Cart__title-row-bottom">
+							<h2 className="Cart__title-row-unitprice">
+								Unit Price
+							</h2>
+
+							<h2 className="Cart__title-row-quantity">
+								Quantity
+							</h2>
+
+							<h2 className="Cart__title-row-subtotal">
+								Subtotal
+							</h2>
+						</div>
+
 					</div>
 
 					<div className="cart-items-container">
@@ -378,10 +415,13 @@ function Cart() {
 										onClickQuantity={(evt, number) => handleOnClickQuantity(evt, prodID, number)}
 										onChangeQuantity={(evt) => handleOnChangeQuantity(evt, prodID)}
 										onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, prodID, number)}
+										onClickRemove={handleRemove}
 									/>
 								)
 							})
 						}
+
+
 
 						{/* result row */}
 						{
@@ -390,24 +430,29 @@ function Cart() {
 									<div className="left" />
 
 									<div className="right">
+										<h2 className="Cart__result-row-summary">
+											Summary
+										</h2>
 										<div className="subtotal">
-											<label> Subtotal </label>
-											<div className="result-value"> {priceInfo.sub_total} </div>
+											<label> Items </label>
+											<div className="result-value"> £{priceInfo.sub_total} </div>
 										</div>
 
 										<div className="tax">
 											<label> Tax ({TAX * 100}%) </label>
-											<div className="result-value"> {priceInfo.tax_amount} </div>
+											<div className="result-value"> £{priceInfo.tax_amount} </div>
 										</div>
 
 										<div className="shipping">
-											<label> Shipping </label>
-											<div className="result-value"> ${priceInfo.shipping_fee} </div>
+											<label> Est. Shipping </label>
+											<div className="result-value"> £{priceInfo.shipping_fee} </div>
 										</div>
 
 										<div className="grand-total">
-											<label> Total </label>
-											<div className="result-value"> ${priceInfo.total_amount} </div>
+											<label> <strong>Est. Total</strong> </label>
+											<div className="result-value">
+												<strong> £{priceInfo.total_amount} </strong>
+											</div>
 										</div>
 
 										<div className="checkout-button">

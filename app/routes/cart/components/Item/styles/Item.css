@@ -1,9 +1,10 @@
 .cart-item {
   display: flex;
   flex-direction: column;
+  align-items: center;
   margin-top: 15px;
-  padding-bottom: 0.75em;
-  border-bottom: 1px solid #E5E5E5;
+  padding: 1.875rem;
+  background-color: white;
 }
 @media (min-width: 768px) {
   .cart-item {
@@ -13,10 +14,14 @@
 .cart-item .top {
   display: flex;
   flex-direction: row-reverse;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
 }
 @media (min-width: 768px) {
   .cart-item .top {
-    justify-content: flex-end;
+    justify-content: flex-start;
+    gap: 2.25rem;
   }
 }
 .cart-item .top .product-image {
@@ -32,6 +37,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 330px;
   height: 100%;
 }
 .cart-item .top .product-description .product-title {
@@ -50,8 +56,9 @@
   margin-inline-end: 0px;
 }
 .cart-item .top .product-description .product-price-mobile {
-  display: block;
-  color: #e3472f;
+  display: flex;
+  align-items: baseline;
+  color: #e6007e;
   font-size: 18px;
   font-weight: bold;
 }
@@ -69,13 +76,23 @@
 .cart-item .bottom {
   display: flex;
   flex-direction: row;
-  padding-bottom: 8px;
+  align-items: center;
+  width: 100%;
 }
 .cart-item .bottom .product-price {
   width: 70px;
+  font-weight: 700;
+  display: none;
+}
+@media (min-width: 768px) {
+  .cart-item .bottom .product-price {
+    display: block;
+  }
 }
 .cart-item .bottom .product-quantity {
-  max-width: 65px;
+  max-width: 170px;
+  display: flex;
+  align-items: center;
 }
 .cart-item .bottom .product-total {
   display: none;
@@ -92,8 +109,30 @@
   }
   .cart-item .bottom .product-total {
     display: block;
-    width: 32%;
+    width: 40%;
     text-align: right;
+    font-weight: 700;
+  }
+}
+
+.CartItem__retail-price {
+  color: #888;
+  font-size: 1rem;
+  margin-left: 0.7rem;
+  text-decoration: line-through;
+}
+
+.CartItem__sale-price {
+  font-size: 1.25rem;
+}
+
+.CartItem__quantity-text {
+  margin-right: 10px;
+  font-weight: 500;
+}
+@media (min-width: 768px) {
+  .CartItem__quantity-text {
+    display: none;
   }
 }
 

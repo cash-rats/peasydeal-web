@@ -127,7 +127,7 @@
 
 .product-features-container {
   padding: 0 10px;
-  overflow-x: scroll;
+  overflow-x: auto;
 }
 
 .product-return-policy p {
