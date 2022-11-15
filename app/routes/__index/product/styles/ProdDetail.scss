@@ -183,7 +183,7 @@
 }
 
 .bought {
-	margin: 0.5rem 0;
+	margin-bottom: 0.5rem;
 	color: $number-bought;
 }
 
@@ -252,12 +252,14 @@
 
 .ProductDetailPage__annotation {
 	display: flex;
-	justify-content: space-between;
+	justify-content: flex-start;
 	align-items: center;
 }
 
 .ProductDetailPage__number-bought {
+	margin-left: 10px;
 	font-size: 1.2rem;
 	color: $primary;
 	text-transform: capitalize;
+	padding-bottom: 6px;
 }

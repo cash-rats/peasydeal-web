@@ -15,7 +15,7 @@ import { commitSession } from '~/sessions/redis_session';
 import { insertItem } from '~/utils/shoppingcart.session';
 import type { ShoppingCartItem } from '~/utils/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
-import RoundCornerTag, { links as RoundCornerTagLinks } from '~/components/Tags/RoundCornerTag';
+import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
 
 import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -39,7 +39,7 @@ export function links() {
 		...RecommendedProductsLinks(),
 		...SocialShareLinks(),
 		...TopProductsColumnLinks(),
-		...RoundCornerTagLinks(),
+		...RightTiltBoxLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
 };
@@ -322,18 +322,15 @@ function ProductDetailPage() {
 								</p>
 
 								<div className="ProductDetailPage__number-bought">
-									<RoundCornerTag text='63 bought' />
+									<RightTiltBox text='63 bought' />
 								</div>
 							</div>
 
 
 							<div className="bought">
 								<span className="availability-text"> availability: </span>
-
 								<span className="in-stock-text" > in-stock </span>
 							</div>
-
-
 
 							<Divider text="options" />
 							<div className="options-container">

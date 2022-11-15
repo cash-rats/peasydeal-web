@@ -1,0 +1,22 @@
+.RightTiltBox__text {
+  font-size: 12px;
+  color: white;
+  position: relative;
+  background-color: #e6007e;
+  max-width: 120px;
+  padding: 2px 6px 2px 7px;
+  text-transform: uppercase;
+  font-style: italic;
+}
+.RightTiltBox__text:after {
+  left: 100%;
+  border-bottom: 18px solid #e6007e;
+  border-right: 16px solid transparent;
+  content: "";
+  position: absolute;
+  bottom: 0;
+  width: 0;
+  height: 0;
+}
+
+/*# sourceMappingURL=RightTiltBox.css.map */

@@ -15,7 +15,7 @@ export default function SocialShare() {
     if (!st) {
       const script = document.createElement('script')
       script.id = 'sharethis'
-      script.src = `https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons`
+      script.src = 'https://platform-api.sharethis.com/js/sharethis.js#property=635a37810e0d03001fe8c1e9&product=inline-share-buttons'
       script.type = 'text/javascript';
       document.body.appendChild(script)
     } else if (typeof st.initialize === 'function') {
