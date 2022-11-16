@@ -1,4 +1,5 @@
 import { RemixBrowser } from "@remix-run/react";
+import React from "react";
 
 // @see https://github.com/remix-run/remix/discussions/2481
 export function RemixStub({ children }) {

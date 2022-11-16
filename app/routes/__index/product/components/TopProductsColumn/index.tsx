@@ -1,10 +1,14 @@
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
+import { useFetcher } from '@remix-run/react';
+import { json } from '@remix-run/node';
+import { useEffect, useState } from 'react';
 
 import { fetchProductsByCategory } from '~/api';
 import type { Product } from '~/shared/types';
 
 import styles from './styles/TopProductsColumn.css';
-import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
+import BannerProduct from './BannerProduct';
+import ProductsColumn from './ProductsColumn';
 
 type ActionType = {
   top_products: Product[];
@@ -24,175 +28,74 @@ export const action: ActionFunction = async ({ request }) => {
   // Load 5 TOP products 22
   // Load 4 Super deals 2
   // You may also like 3
+  return json<ActionType>({
+    top_products: topProds,
+    super_deal_products: superDealProds,
+  });
 };
 
 export const links: LinksFunction = () => {
   return [
-    ...RoundButtonLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
 
+interface AdsProducts extends ActionType {
+  banner_product: null | Product;
+}
+
 export default function TopProductsColumn() {
+  const [adsProds, setAdsProds] = useState<AdsProducts>({
+    banner_product: null,
+    top_products: [],
+    super_deal_products: [],
+  });
+
+  const fetcher = useFetcher();
+  useEffect(() => {
+    fetcher.submit(
+      {},
+      {
+        method: 'post',
+        action: '/product/components/TopProductsColumn?index',
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    if (fetcher.type === 'done') {
+      const prods = fetcher.data as ActionType;
+      const bannerProduct = prods.top_products[0];
+
+      setAdsProds({
+        banner_product: bannerProduct,
+        top_products: prods.top_products.slice(1),
+        super_deal_products: prods.super_deal_products,
+      });
+    }
+  }, [fetcher.type]);
+
   return (
     <div className="TopProductsColumn__wrapper">
-      <div className="TopProductsColumn__banner">
-        <p className="TopProductsColumn__banner-text">
-          Personalised Auto-Rotating Cordless Hair Curler
-        </p>
 
-        <RoundButton
-          style={{
-            width: '140px'
-          }}
-          colorScheme='cerise'
-        >
-          View
-        </RoundButton  >
-      </div>
+      <BannerProduct
+        productUUID={adsProds.banner_product?.productUUID}
+        loading={fetcher.type !== 'done'}
+        title={adsProds.banner_product?.title}
+        image={adsProds.banner_product?.main_pic}
+      />
 
-      <div className="TopProductsColumn__banner-wrapper">
-        <h2 className="TopProductsColumn__banner-wrapper-title">
-          top products
-          <span className="TopProductsColumn__banner-wrapper-border" />
-        </h2>
+      <ProductsColumn
+        columnTitle='top products'
+        loading={fetcher.type !== 'done'}
+        products={adsProds.top_products}
+      />
 
-        <div className="TopProductsColumn-grid-wrapper">
-          <div className="TopProductsColumn-grid">
-            <div className="TopProductsColumn-grid-left">
-              <img
-                alt='recommend product'
-                src="https://cdn.shopify.com/s/files/1/0257/7327/7233/products/IMG_8917-copy.jpg?v=1606378690"
-              />
-            </div>
-
-            <div className="TopProductsColumn-grid-right">
-              <p>
-                Chubby Blob Seal Pillow
-              </p>
-            </div>
-          </div>
-
-          <div className="TopProductsColumn-grid">
-            <div className="TopProductsColumn-grid-left">
-              <img
-                alt='recommend product'
-                src="https://cdn.shopify.com/s/files/1/0257/7327/7233/products/H9a7a1bc057eb47b49191facc0616a0c2C.jpg?v=1594998061"
-              />
-            </div>
-
-            <div className="TopProductsColumn-grid-right">
-              <p>
-                22 LED makeup mirror
-              </p>
-            </div>
-          </div>
-
-          <div className="TopProductsColumn-grid">
-            <div className="TopProductsColumn-grid-left">
-              <img
-                alt='recommend product'
-                src="https://cdn.shopify.com/s/files/1/0257/7327/7233/products/O1CN01Co4Agq2Lj1FK3yzA9__2210981359727-0-cib.jpg?v=1636598420"
-              />
-            </div>
-
-            <div className="TopProductsColumn-grid-right">
-              <p>
-                Personalised 3D Throw Face Pillow
-              </p>
-            </div>
-          </div>
-
-          <div className="TopProductsColumn-grid">
-            <div className="TopProductsColumn-grid-left">
-              <img
-                alt='recommend product'
-                src="https://cdn.shopify.com/s/files/1/0257/7327/7233/products/O1CN01Co4Agq2Lj1FK3yzA9__2210981359727-0-cib.jpg?v=1636598420"
-              />
-            </div>
-
-            <div className="TopProductsColumn-grid-right">
-              <p>
-                Personalised 3D Throw Face Pillow
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="TopProductsColumn__banner-wrapper">
-        <h2 className="TopProductsColumn__banner-wrapper-title">
-          Super Deal
-          <span className="TopProductsColumn__banner-wrapper-border" />
-        </h2>
-
-        <div className="TopProductsColumn-grid-wrapper">
-          <div className="TopProductsColumn-grid">
-            <div className="TopProductsColumn-grid-left">
-              <img
-                alt='recommend product'
-                src="https://cdn.shopify.com/s/files/1/0257/7327/7233/products/IMG_8917-copy.jpg?v=1606378690"
-              />
-            </div>
-
-            <div className="TopProductsColumn-grid-right">
-              <p>
-                Men's Cozy Linen Henley Shirt
-              </p>
-            </div>
-          </div>
-
-          <div className="TopProductsColumn-grid">
-            <div className="TopProductsColumn-grid-left">
-              <img
-                alt='recommend product'
-                src="https://cdn.shopify.com/s/files/1/0257/7327/7233/products/H9a7a1bc057eb47b49191facc0616a0c2C.jpg?v=1594998061"
-              />
-            </div>
-
-            <div className="TopProductsColumn-grid-right">
-              <p>
-                Personalized Moon Lamp - Photo & Text Option
-              </p>
-            </div>
-          </div>
-
-          <div className="TopProductsColumn-grid">
-            <div className="TopProductsColumn-grid-left">
-              <img
-                alt='recommend product'
-                src="https://cdn.shopify.com/s/files/1/0257/7327/7233/products/O1CN01Co4Agq2Lj1FK3yzA9__2210981359727-0-cib.jpg?v=1636598420"
-              />
-            </div>
-
-            <div className="TopProductsColumn-grid-right">
-              <p>
-                24pcs Ceramic Handle
-                Stainless Steel
-                Cutlery Set
-
-              </p>
-            </div>
-          </div>
-
-          <div className="TopProductsColumn-grid">
-            <div className="TopProductsColumn-grid-left">
-              <img
-                alt='recommend product'
-                src="https://cdn.shopify.com/s/files/1/0257/7327/7233/products/O1CN01Co4Agq2Lj1FK3yzA9__2210981359727-0-cib.jpg?v=1636598420"
-              />
-            </div>
-
-            <div className="TopProductsColumn-grid-right">
-              <p>
-                Cloud Shape Rug
-              </p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
+      <ProductsColumn
+        columnTitle='super deal'
+        loading={fetcher.type !== 'done'}
+        products={adsProds.super_deal_products}
+      />
     </div>
   );
 }

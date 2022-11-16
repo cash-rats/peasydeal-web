@@ -19,7 +19,6 @@ export default function LargeGridSkeleton() {
       </div>
 
       <div className="product-desc-container">
-
         <div className="info">
           <div className="headline">
             <Skeleton variant='text' width='80%' />

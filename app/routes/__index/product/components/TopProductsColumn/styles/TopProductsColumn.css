@@ -5,14 +5,10 @@
 }
 
 .TopProductsColumn__banner {
-  padding: 20px 0;
+  padding-bottom: 20px;
   width: 100%;
   height: 385px;
   border-radius: 0.5rem;
-  background-image: url("https://cdn.shopify.com/s/files/1/0583/6590/2907/products/746984.jpg?v=1658301371");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -22,6 +18,7 @@
 .TopProductsColumn__banner-text {
   color: white;
   text-align: center;
+  margin-bottom: 0.3rem;
 }
 
 .TopProductsColumn__banner-wrapper {
