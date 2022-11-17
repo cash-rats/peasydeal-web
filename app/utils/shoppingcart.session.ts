@@ -58,6 +58,7 @@ export const insertItem = async (request: Request, item: ShoppingCartItem): Prom
   if (session.has(CartSessionKey)) {
     shoppingCart = session.get(CartSessionKey);
   }
+
   const newShoppingCart = {
     ...shoppingCart,
     [item.productUUID]: item,

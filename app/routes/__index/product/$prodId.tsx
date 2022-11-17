@@ -72,6 +72,12 @@ export const action: ActionFunction = async ({ request }) => {
 	}
 
 	const cartObj = Object.fromEntries(form.entries()) as ShoppingCartItem;
+
+	// If item does not have a valid productUUID, don't insert it to shopping cart.
+	if (!cartObj || !cartObj.productUUID || cartObj.productUUID === 'undefined') {
+		return json('');
+	}
+
 	const session = await insertItem(request, cartObj);
 
 	if (formAction == 'buy_now') {

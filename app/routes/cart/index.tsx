@@ -8,7 +8,7 @@ import { BsBagCheck } from 'react-icons/bs';
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions/redis_session';
 import { getCart, removeItem, updateCart } from '~/utils/shoppingcart.session';
-import type { ShoppingCart } from '~/utils/shoppingcart.session';
+import type { ShoppingCart, ShoppingCartItem } from '~/utils/shoppingcart.session';
 // TODO: all script in this file should be removed.
 import { TAX } from '~/utils/checkout_accountant';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
@@ -32,13 +32,19 @@ export const links: LinksFunction = () => {
 type __action_type = 'remove_cart_item' | 'update_item_quantity';
 
 const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
-	return Object.keys(cart).map((productUUID): PriceQuery => {
-		const item = cart[productUUID];
-		return {
-			variation_uuid: item.variationUUID,
-			quantity: Number(item.quantity),
+	return Object.keys(cart).reduce((queries, prodUUID) => {
+		// Skip product with invalid product uuid.
+		if (!prodUUID || prodUUID === 'undefined') {
+			return queries;
 		}
-	});
+		const item: ShoppingCartItem = cart[prodUUID];
+		return queries.concat([
+			{
+				variation_uuid: item.variationUUID,
+				quantity: Number(item.quantity),
+			}
+		]);
+	}, [] as PriceQuery[]);
 }
 
 const __removeCartItemAction = async (prodID: string, request: Request) => {
@@ -124,9 +130,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 	// If cart contains no items, display empty cart page via CatchBoundary
 	const cart = await getCart(request);
 
+	console.log('debug 1 cart', cart);
+
 	if (!cart || Object.keys(cart).length === 0) {
 		return json<LoaderType>({ cart: {}, priceInfo: null });
 	}
+
 	const costQuery = convertShoppingCartToPriceQuery(cart);
 	const priceInfo = await fetchPriceInfo({ products: costQuery });
 
