@@ -13,6 +13,7 @@ import { checkHasMoreRecord } from '~/utils';
 import { commitSession } from '~/sessions/redis_session';
 import ActivityColumnLayout, { links as ActivityColumnLayoutLinks } from "~/components/ActivityColumnLayout/ActivityColumnLayout";
 import type { ActivityInfo } from "~/components/ActivityColumnLayout/ActivityColumnLayout";
+import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/ActivityRowLayout/ActivityRowLayout";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from "./api";
@@ -26,6 +27,7 @@ export const links: LinksFunction = () => {
 		...ProductRowsContainerLinks(),
 		...LoadMoreButtonLinks(),
 		...ActivityColumnLayoutLinks(),
+		...ActivityRowLayoutLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
 }
@@ -99,7 +101,7 @@ export const action: ActionFunction = async ({ request }) => {
 	});
 }
 
-const leftActivities: ActivityInfo[] = [
+const mockedActivities: ActivityInfo[] = [
 	{
 		src: 'https://static.wowcher.co.uk/binaries/DS%20Outlet%20Tile%20Mobile.jpg',
 		catId: 1,
@@ -200,10 +202,12 @@ export default function Index() {
 	return (
 		<div className="Index__wrapper">
 			<div className="Index__left-ads-wrapper">
-				<ActivityColumnLayout activities={leftActivities} />
+				<ActivityColumnLayout activities={mockedActivities} />
 			</div>
 
 			<div className="prod-list-container">
+				<ActivityRowLayout activities={mockedActivities} />
+
 				<ProductRowsContainer
 					productRows={productRows}
 					onClickProduct={handleClickProduct}
@@ -241,7 +245,7 @@ export default function Index() {
 			</div>
 
 			<div className="Index__right-ads-wrapper">
-				<ActivityColumnLayout activities={leftActivities} />
+				<ActivityColumnLayout activities={mockedActivities} />
 			</div>
 		</div>
 	);

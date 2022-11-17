@@ -1,0 +1,45 @@
+@import 'styles/_breakpoints';
+
+.ActivityRowLayout {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 0 auto 1.5rem;
+  width: 100%;
+  max-width: 712px;
+  gap: 5px;
+
+  @media (min-width: $screen-md-min) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    width: auto;
+  }
+
+  @media (min-width: $screen-xl-min) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    width: auto;
+    max-width: none;
+  }
+
+  @media(min-width: $screen-1600-min) {
+    display: none;
+  }
+}
+
+.ActivityRowLayout__grid {
+  aspect-ratio: 1/1;
+  height: auto;
+  border-radius: 5px;
+
+  @media (min-width: $screen-md-min) {
+    width: 165px;
+    max-width: none;
+  }
+
+  @media (min-width: $screen-xl-min) {
+    width: 257px;
+    max-width: none;
+  }
+}
