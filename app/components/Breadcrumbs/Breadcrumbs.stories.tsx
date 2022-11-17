@@ -2,7 +2,7 @@ import type { ComponentMeta } from '@storybook/react';
 import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 
-import Breadcrumbs from './index';
+import Breadcrumbs from './Breadcrumbs';
 
 export default {
   title: 'Breadcrumbs',

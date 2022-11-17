@@ -1,0 +1,6 @@
+{
+  "name": "activity_layout",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./ActivityGrid.tsx"
+}

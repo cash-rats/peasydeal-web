@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
 import Rating from '@mui/material/Rating';
 
-import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
+import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';

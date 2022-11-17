@@ -48,4 +48,35 @@
   font-weight: 600;
 }
 
+@media (min-width: 1600px) {
+  .Index__wrapper {
+    display: grid;
+    grid-template-columns: [left-ads] auto 1100px [right-ads] auto;
+  }
+}
+
+.Index__left-ads-wrapper {
+  display: none;
+}
+@media (min-width: 1600px) {
+  .Index__left-ads-wrapper {
+    margin-top: 10.7rem;
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 2rem;
+  }
+}
+
+.Index__right-ads-wrapper {
+  display: none;
+}
+@media (min-width: 1600px) {
+  .Index__right-ads-wrapper {
+    margin-top: 10.7rem;
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 2rem;
+  }
+}
+
 /*# sourceMappingURL=ProductList.css.map */

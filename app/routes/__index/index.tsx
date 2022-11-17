@@ -11,6 +11,8 @@ import type { Product } from "~/shared/types";
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { checkHasMoreRecord } from '~/utils';
 import { commitSession } from '~/sessions/redis_session';
+import ActivityColumnLayout, { links as ActivityColumnLayoutLinks } from "~/components/ActivityColumnLayout/ActivityColumnLayout";
+import type { ActivityInfo } from "~/components/ActivityColumnLayout/ActivityColumnLayout";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from "./api";
@@ -23,6 +25,7 @@ export const links: LinksFunction = () => {
 		...CssSpinnerLinks(),
 		...ProductRowsContainerLinks(),
 		...LoadMoreButtonLinks(),
+		...ActivityColumnLayoutLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
 }
@@ -95,6 +98,29 @@ export const action: ActionFunction = async ({ request }) => {
 		},
 	});
 }
+
+const leftActivities: ActivityInfo[] = [
+	{
+		src: 'https://static.wowcher.co.uk/binaries/DS%20Outlet%20Tile%20Mobile.jpg',
+		catId: 1,
+		title: 'some activity'
+	},
+	{
+		src: 'https://static.wowcher.co.uk/binaries/Christmas_Gift_guide-mobile.jpg',
+		catId: 1,
+		title: 'some activity'
+	},
+	{
+		src: 'https://static.wowcher.co.uk/binaries/Experiences-TILE-MOBILE.jpg',
+		catId: 1,
+		title: 'some activity'
+	},
+	{
+		src: 'https://static.wowcher.co.uk/binaries/BF-leaked-mobile-wow-tile.jpg',
+		catId: 1,
+		title: 'some activity'
+	}
+];
 
 /*
  * Product list page.
@@ -172,42 +198,51 @@ export default function Index() {
 	};
 
 	return (
-		<div className="prod-list-container">
+		<div className="Index__wrapper">
+			<div className="Index__left-ads-wrapper">
+				<ActivityColumnLayout activities={leftActivities} />
+			</div>
 
-			<ProductRowsContainer
-				productRows={productRows}
-				onClickProduct={handleClickProduct}
-			/>
-
-			<loadmoreFetcher.Form className="ProductList__loadmore-container" >
-				<input
-					type="hidden"
-					name="page"
-					value={currPage.current}
+			<div className="prod-list-container">
+				<ProductRowsContainer
+					productRows={productRows}
+					onClickProduct={handleClickProduct}
 				/>
 
-				<div>
-					{
-						hasMore && transition.state === 'idle'
-							? (
-								<LoadMore
-									spinner={<CssSpinner scheme="spinner" />}
-									loading={loadmoreFetcher.state !== 'idle'}
-									callback={handleLoadMore}
-									delay={100}
-									offset={150}
-								/>
-							)
-							: (
-								<LoadMoreButton
-									loading={loadmoreFetcher.state !== 'idle'}
-									text='Load more'
-									onClick={handleManualLoad}
-								/>
-							)
-					}
-				</div>
-			</loadmoreFetcher.Form>
+				<loadmoreFetcher.Form className="ProductList__loadmore-container" >
+					<input
+						type="hidden"
+						name="page"
+						value={currPage.current}
+					/>
+
+					<div>
+						{
+							hasMore && transition.state === 'idle'
+								? (
+									<LoadMore
+										spinner={<CssSpinner scheme="spinner" />}
+										loading={loadmoreFetcher.state !== 'idle'}
+										callback={handleLoadMore}
+										delay={100}
+										offset={150}
+									/>
+								)
+								: (
+									<LoadMoreButton
+										loading={loadmoreFetcher.state !== 'idle'}
+										text='Load more'
+										onClick={handleManualLoad}
+									/>
+								)
+						}
+					</div>
+				</loadmoreFetcher.Form>
+			</div>
+
+			<div className="Index__right-ads-wrapper">
+				<ActivityColumnLayout activities={leftActivities} />
+			</div>
 		</div>
 	);
 }

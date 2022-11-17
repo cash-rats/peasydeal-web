@@ -1,9 +1,9 @@
-import { ComponentStory, ComponentMeta } from '@storybook/react';
+import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import PicsCarousel from './index';
 
 export default {
-	title: 'PicsCarousel',
+	title: 'Pics Carousel',
 	component: PicsCarousel,
 } as ComponentMeta<typeof PicsCarousel>
 

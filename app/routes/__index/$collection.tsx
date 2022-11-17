@@ -13,7 +13,7 @@ import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { CategoriesMap, Product } from '~/shared/types';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
-import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs';
+import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { normalizeToMap, fetchCategories } from '~/categories.server';
 import {
