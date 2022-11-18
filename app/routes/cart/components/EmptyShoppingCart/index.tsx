@@ -5,6 +5,7 @@ import Button from '@mui/material/Button';
 
 import emptyCartSVG from './images/empty_cart.svg';
 import styles from './styles/EmptyShoppingCart.css';
+import HorizontalProductsLayout from '~/components/HorizontalProductsLayout';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }];
@@ -38,6 +39,15 @@ function EmptyShoppingCartPage() {
       </div>
 
       {/* Product Suggestion List */}
+
+      {/* Recommended products */}
+      <div className="Cart__rec-products">
+        <h1 className="Cart__rec-title">
+          top items
+        </h1>
+
+        <HorizontalProductsLayout />
+      </div>
     </section>
   );
 };

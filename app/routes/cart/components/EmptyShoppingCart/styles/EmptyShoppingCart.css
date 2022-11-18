@@ -1,7 +1,7 @@
 .empty-cart-container {
-  width: 50vw;
-  min-height: 35rem;
-  margin: 0 auto;
+  max-width: 1180px;
+  min-height: 40rem;
+  margin: 10rem auto 0;
   padding-top: 2.25rem;
   padding-bottom: 2.25rem;
 }

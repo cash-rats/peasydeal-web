@@ -486,13 +486,25 @@ function Cart() {
 					</div>
 				</div>
 
-				{/* Recommended products */}
+				{/* Recommended products - top items */}
 				<div className="Cart__rec-products">
 					<h1 className="Cart__rec-title">
-						top items
+						<span>top items </span>
+						<span className="Cart__rec-see-all"> see all </span>
 					</h1>
 
 					<HorizontalProductsLayout />
+				</div>
+
+				{/* Recommended products - new trend */}
+				<div className="Cart__rec-products">
+					<h1 className="Cart__rec-title">
+						<span> new trend </span>
+						<span className="Cart__rec-see-all"> see all </span>
+					</h1>
+
+					<HorizontalProductsLayout />
+					<i className="fas fa-caret-right"></i>
 				</div>
 			</section>
 		</>
