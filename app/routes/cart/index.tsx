@@ -203,6 +203,7 @@ function Cart() {
 	}, [updateItemQuantityFetcher]);
 
 	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, prodID: string, quantity: number) => {
+		console.log('trigger blur');
 		if (quantity === 0) {
 			targetRemovalProdID.current = prodID;
 
@@ -212,15 +213,16 @@ function Cart() {
 		}
 
 		// We don't need to sync quantity if user has not changed anything.
-		if (cartItems[prodID] && Number(cartItems[prodID].quantity) === quantity) return;
+		if (prevQuantity[prodID] && Number(prevQuantity[prodID]) === quantity) return;
 
 
-		// Update item quantity in session && Recalc price info from BE.
+		// Update item quantity in session && recalculate price info from BE.
 		if (justSynced.current) {
 			justSynced.current = false;
 
 			return;
 		}
+
 		updateQuantity(prodID, quantity);
 
 		setSyncingPrice(true);
@@ -297,16 +299,15 @@ function Cart() {
 	}
 
 	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, prodID: string) => {
+		console.log('debug ***');
 		const quantity = Number(evt.target.value)
 		if (isNaN(quantity)) return;
-
 		updateQuantity(prodID, quantity);
 	}
 
 	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, prodID: string, number: number) => {
 		// If user hasn't changed anything. don't bother to update the quantity.
 		if (cartItems[prodID] && Number(cartItems[prodID].quantity) === number) return;
-
 		updateQuantity(prodID, number);
 
 		setSyncingPrice(true);
@@ -326,6 +327,8 @@ function Cart() {
 	}
 
 	const updateQuantity = (prodID: string, number: number) => {
+		console.log('debug 3', prodID, number);
+		console.log('debug 4', prodID, cartItems[prodID].quantity);
 		setPrevQuantity(prev => ({
 			...prev,
 			[prodID]: cartItems[prodID].quantity,
