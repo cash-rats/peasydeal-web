@@ -101,6 +101,7 @@ export const action: ActionFunction = async ({ request }) => {
  * TODO
  *   - [ ] image should be changed to carousel images.
  *         Display carousel images if variation is greater than 1
+ *   - [ ]
  */
 function ProductDetailPage() {
 	const { product: productDetail } = useLoaderData<LoaderTypeProductDetail>();
@@ -283,161 +284,176 @@ function ProductDetailPage() {
 
 			<div className="productdetail-container">
 				<div className="ProductDetail__main-wrapper">
-					<ProductDetailSection
-						description={productDetail?.description}
-						pics={productDetail.images}
-					/>
+					<div className='ProductDetail__main-top'>
+						<ProductDetailSection
+							description={productDetail?.description}
+							pics={productDetail.images}
+						/>
 
-					<div
-						ref={productContentWrapperRef}
-						className="product-content-wrapper"
-					>
-						<div className="product-content">
-							<h1 className="product-name">
-								{productDetail?.title}
-							</h1>
+						<div
+							ref={productContentWrapperRef}
+							className="product-content-wrapper"
+						>
+							<div className="product-content">
+								<h1 className="product-name">
+									{productDetail?.title}
+								</h1>
 
-							<div className="ProductDetailPage__rating">
-								<Rating
-									name="product-rating"
-									defaultValue={5}
-									precision={0.5}
-									readOnly
-								/>
-							</div>
-
-							<div className="product-tag-bar">
-								<p className="detail-amount">
-									£{currentVariation?.sale_price}
-								</p>
-
-								<span className="actual-amount">
-									compared at £{currentVariation?.retail_price}
-								</span>
-
-							</div>
-
-							<div className="ProductDetailPage__annotation">
-								<p className="discount-amount">
-									YOU SAVE &nbsp;
-									{
-										currentVariation && currentVariation.discount && (
-											(Number(currentVariation.discount) * 100).toFixed(0)
-										)
-									}%!
-								</p>
-
-								<div className="ProductDetailPage__number-bought">
-									<RightTiltBox text='63 bought' />
-								</div>
-							</div>
-
-
-							<div className="bought">
-								<span className="availability-text"> availability: </span>
-								<span className="in-stock-text" > in-stock </span>
-							</div>
-
-							<Divider text="options" />
-							<div className="options-container">
-								{/* Variations */}
-								<ClientOnly>
-									<Select
-										inputId='variation_id'
-										instanceId='variation_id'
-										placeholder='select variation'
-										onChange={(v) => {
-											if (!v) return;
-
-											setVariation(v.value);
-										}}
-										options={
-											productDetail.variations.map(
-												(variation) => ({ value: variation.uuid, label: variation.spec_name })
-											)
-										}
+								<div className="ProductDetailPage__rating">
+									<Rating
+										name="product-rating"
+										defaultValue={5}
+										precision={0.5}
+										readOnly
 									/>
+								</div>
 
-									<p className="error">
-										{variationErr}
+								<div className="product-tag-bar">
+									<p className="detail-amount">
+										£{currentVariation?.sale_price}
 									</p>
-								</ClientOnly>
 
-								{/* Quantity */}
-								{/* <div className="ProductDetailPage__option-row"> */}
-								<div className="input-quantity-container">
-									<QuantityPicker
-										value={quantity}
-										onChange={handleUpdateQuantity}
-										onIncrease={increaseQuantity}
-										onDecrease={decreaseQuantity}
-									/>
+									<span className="actual-amount">
+										compared at £{currentVariation?.retail_price}
+									</span>
+
 								</div>
 
-								<ProductActionBarLeft
-									onClickAddToCart={handleAddToCart}
-									onClickBuyNow={handleBuyNow}
-									loading={addToCart.state !== 'idle'}
-								/>
-								{/* </div> */}
-							</div>
+								<div className="ProductDetailPage__annotation">
+									<p className="discount-amount">
+										YOU SAVE &nbsp;
+										{
+											currentVariation && currentVariation.discount && (
+												(Number(currentVariation.discount) * 100).toFixed(0)
+											)
+										}%!
+									</p>
+
+									<div className="ProductDetailPage__number-bought">
+										<RightTiltBox text='63 bought' />
+									</div>
+								</div>
 
 
-							{/*
+								<div className="bought">
+									<span className="availability-text"> availability: </span>
+									<span className="in-stock-text" > in-stock </span>
+								</div>
+
+								<Divider text="options" />
+								<div className="options-container">
+									{/* Variations */}
+									<ClientOnly>
+										<Select
+											inputId='variation_id'
+											instanceId='variation_id'
+											placeholder='select variation'
+											onChange={(v) => {
+												if (!v) return;
+
+												setVariation(v.value);
+											}}
+											options={
+												productDetail.variations.map(
+													(variation) => ({ value: variation.uuid, label: variation.spec_name })
+												)
+											}
+										/>
+
+										<p className="error">
+											{variationErr}
+										</p>
+									</ClientOnly>
+
+									{/* Quantity */}
+									{/* <div className="ProductDetailPage__option-row"> */}
+									<div className="input-quantity-container">
+										<QuantityPicker
+											value={quantity}
+											onChange={handleUpdateQuantity}
+											onIncrease={increaseQuantity}
+											onDecrease={decreaseQuantity}
+										/>
+									</div>
+
+									<ProductActionBarLeft
+										onClickAddToCart={handleAddToCart}
+										onClickBuyNow={handleBuyNow}
+										loading={addToCart.state !== 'idle'}
+									/>
+									{/* </div> */}
+								</div>
+
+
+								{/*
 							- Facebook
 							- Twitter
 							- Whatsapp
 						*/}
-							<Divider text={
-								<span className="ProductDetail__divder-content">
-									<TbShare fontSize={20} /> share
-								</span>
-							} />
-
-							<SocialShare />
-
-							<div className="delivery-container">
-								<Divider text={(
+								<Divider text={
 									<span className="ProductDetail__divder-content">
-										<TbTruckDelivery fontSize={24} /> DELIVERY
+										<TbShare fontSize={20} /> share
 									</span>
-								)} />
+								} />
 
-								<div className="delivery-content">
-									<span> {currentVariation?.delivery_info} </span>
+								<SocialShare />
+
+								<div className="delivery-container">
+									<Divider text={(
+										<span className="ProductDetail__divder-content">
+											<TbTruckDelivery fontSize={24} /> DELIVERY
+										</span>
+									)} />
+
+									<div className="delivery-content">
+										<span> {currentVariation?.delivery_info} </span>
+									</div>
+								</div>
+
+
+								<div className="product-features-mobile">
+									<Divider text="product features" />
+
+									{/* TODO dangerous render html */}
+									<div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} className="product-features-container" />
+								</div>
+
+								<div className="product-return-policy">
+									<Divider text={(
+										<span className="ProductDetail__divder-content">
+											<TbTruckReturn fontSize={24} /> return policy
+										</span>
+									)} />
+
+									<p>
+										14 days cancellation period applies.
+									</p>
+								</div>
+
+								<div className="client-action-bar-wrapper">
+									<Divider />
+									<ProductActionBar
+										ref={mobileUserActionBarRef}
+										onClickAddToCart={handleAddToCart}
+										onClickBuyNow={handleBuyNow}
+										loading={addToCart.state !== 'idle'}
+									/>
 								</div>
 							</div>
-
-
-							<div className="product-features-mobile">
-								<Divider text="product features" />
-
-								{/* TODO dangerous render html */}
-								<div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} className="product-features-container" />
-							</div>
-
-							<div className="product-return-policy">
-								<Divider text={(
-									<span className="ProductDetail__divder-content">
-										<TbTruckReturn fontSize={24} /> return policy
-									</span>
-								)} />
-
-								<p>
-									14 days cancellation period applies.
-								</p>
-							</div>
-
-							<div className="client-action-bar-wrapper">
-								<Divider />
-								<ProductActionBar
-									ref={mobileUserActionBarRef}
-									onClickAddToCart={handleAddToCart}
-									onClickBuyNow={handleBuyNow}
-									loading={addToCart.state !== 'idle'}
-								/>
-							</div>
 						</div>
+					</div>
+
+					{/*
+						Recommended products:
+							- Things you might like: other products that belongs to the same category.
+						  - Hot deals
+							- New trend
+					*/}
+					<div className="ProductDetail__main-bottom">
+						<RecommendedProducts
+							category={mainCategory.name}
+							onClickProduct={handleClickProduct}
+						/>
 					</div>
 				</div>
 
@@ -446,17 +462,6 @@ function ProductDetailPage() {
 				</div>
 			</div>
 
-			{/*
-					Recommended products:
-						- Things you might like: other products that belongs to the same category.
-					  - Hot deals
-						- New trend
-				*/}
-
-			<RecommendedProducts
-				category={mainCategory.name}
-				onClickProduct={handleClickProduct}
-			/>
 		</>
 	);
 };

@@ -4,6 +4,7 @@ import MediumGridSkeleton, { links as MediumGridSkeletonLinks } from "~/componen
 import type { Product } from "~/shared/types";
 
 import styles from './styles/EventRow.css';
+import type { TagsCombo } from '../ProductGrid/types';
 import { MediumGrid } from "../ProductGrid";
 
 export const links: LinksFunction = () => {
@@ -55,6 +56,7 @@ export default function EvenRow({
 								image={product.main_pic}
 								title={product.title}
 								description={product.shortDescription}
+								tagCombo={product.tabComboType as TagsCombo | null}
 							/>
 						)
 						)
