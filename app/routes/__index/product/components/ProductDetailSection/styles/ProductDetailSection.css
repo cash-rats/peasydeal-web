@@ -1,22 +1,18 @@
 .product-detail {
   width: 100%;
 }
-
 @media (min-width: 768px) and (max-width: 1280px) {
   .product-detail {
     width: 53%;
   }
 }
-
 .product-detail .product-detail-title {
   padding-left: 0;
 }
-
 .product-detail .product-detail-title h1 {
   font-size: 25px;
   color: #000;
 }
-
 .product-detail .product-detail-title h2 {
   font-size: 20px;
   line-height: 18px;
@@ -35,7 +31,6 @@
   padding: 0 1rem;
   margin: 0 auto;
 }
-
 @media (min-width: 768px) {
   .productdetail-breadcrumbs {
     padding-left: 2rem;
@@ -50,13 +45,11 @@
   background-color: white;
   word-break: break-all;
 }
-
 .product-features-large-screen h1 {
   font-weight: bold;
   font-size: 1.714em;
   text-transform: uppercase;
 }
-
 @media (min-width: 768px) {
   .product-features-large-screen {
     display: flex;
