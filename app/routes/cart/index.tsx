@@ -485,8 +485,13 @@ function Cart() {
 						}
 					</div>
 				</div>
+
 				{/* Recommended products */}
 				<div className="Cart__rec-products">
+					<h1 className="Cart__rec-title">
+						top items
+					</h1>
+
 					<HorizontalProductsLayout />
 				</div>
 			</section>

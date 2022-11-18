@@ -1,17 +1,10 @@
 .HorizontalProductsLayout__wrapper {
-  display: flex;
-  justify-content: flex-start;
-  gap: 0.7rem;
-  padding: 1rem 2rem;
-  background-color: white;
-  max-width: fit-content;
+  padding: 1rem 0;
   position: relative;
-  border-radius: 5px;
 }
 
 .HorizontalGrid__wrapper {
-  width: 240px;
-  height: 240px;
+  margin: 6px;
   position: relative;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
   overflow: hidden;
@@ -19,8 +12,7 @@
 }
 
 .HorizontalGrid__image-container {
-  max-width: 346px;
-  height: 346px;
+  height: auto;
   position: realtive;
 }
 .HorizontalGrid__image-container:after {

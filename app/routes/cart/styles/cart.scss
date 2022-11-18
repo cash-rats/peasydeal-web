@@ -3,7 +3,7 @@
 
 .shopping-cart-section {
 	width: 100%;
-	padding: 0 20px;
+	padding: 0 20px 3rem;
 	margin-top: 95px;
 
 	@media (min-width: $screen-md-min) {
@@ -218,5 +218,15 @@
 }
 
 .Cart__rec-products {
-	padding: 40px 20px;
+	max-width: 1180px;
+	padding: 40px 20px 20px 20px;
+	margin: 0 auto;
+	border-radius: 5px;
+	background-color: white;
+}
+
+.Cart__rec-title {
+	text-transform: uppercase;
+	font-size: 1.2rem;
+	font-weight: 500;
 }
