@@ -12,6 +12,7 @@ import type { ShoppingCart, ShoppingCartItem } from '~/utils/shoppingcart.sessio
 // TODO: all script in this file should be removed.
 import { TAX } from '~/utils/checkout_accountant';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
+import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/components/HorizontalProductsLayout';
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
@@ -25,6 +26,7 @@ export const links: LinksFunction = () => {
 		...RoundButtonLinks(),
 		...ItemLinks(),
 		...EmptyShippingCartLinks(),
+		...HorizontalProductsLayoutLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
@@ -348,16 +350,15 @@ function Cart() {
 		<>
 			<LoadingBackdrop open={syncingPrice} />
 
+			<RemoveItemModal
+				open={openRemoveItemModal}
+				itemName="some item"
+				onClose={handleCancelRemoval}
+				onResult={handleRemoveItemResult}
+			/>
+
 			<section className="shopping-cart-section">
-				<RemoveItemModal
-					open={openRemoveItemModal}
-					itemName="some item"
-					onClose={handleCancelRemoval}
-					onResult={handleRemoveItemResult}
-				/>
-
 				{/* <input type='hidden' name="recoverable-product-id" value= /> */}
-
 				<div className="shopping-cart-container">
 					{/* top bar, display back button and title */}
 					<div className="shopping-cart_topbar">
@@ -483,6 +484,10 @@ function Cart() {
 							)
 						}
 					</div>
+				</div>
+				{/* Recommended products */}
+				<div className="Cart__rec-products">
+					<HorizontalProductsLayout />
 				</div>
 			</section>
 		</>
