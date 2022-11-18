@@ -5,7 +5,9 @@ import type { Product } from "~/shared/types";
 import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';
 
-import MediumGrid, { links as MediumGridLinks } from "../ProductGrid/MediumGrid";
+
+import type { TagsCombo } from '~/components/ProductGrid/types';
+import MediumGrid, { links as MediumGridLinks } from "~/components/ProductGrid/MediumGrid";
 import MediumGridSkeleton, { links as MediumGridSkeletonLinks } from "~/components/ProductGrid/MediumGridSkeleton";
 import LargeGridSkeleton, { links as LargeGridSkeletonLinks } from "../ProductGrid/LargeGridSkeleton";
 import LargeGrid, { links as LargeGridLinks } from "../ProductGrid/LargeGrid";
@@ -67,6 +69,7 @@ function RightLayout({
 	onClickProduct = () => { }
 }: RightLayoutProps) {
 	const [one, two] = products;
+
 	if (loading) {
 		return (
 			<div className="right">
@@ -86,6 +89,7 @@ function RightLayout({
 						title={one.title}
 						description={one.shortDescription}
 						onClickProduct={onClickProduct}
+						tagCombo={one.tabComboType as TagsCombo | null}
 					/>
 				)
 			}

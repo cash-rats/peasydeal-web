@@ -11,6 +11,7 @@ export type Product = {
   title: string;
   subtitle: string;
   variationID: string;
+  tabComboType: string | null;
 };
 
 // Shopping cart item stored in session or from API.

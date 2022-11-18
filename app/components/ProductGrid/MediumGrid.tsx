@@ -31,7 +31,7 @@ interface MediumGridProps {
 	title: string;
 	description?: string;
 	onClickProduct?: (productID: string) => void;
-	tagCombo?: TagsCombo;
+	tagCombo?: TagsCombo | null;
 };
 
 
@@ -53,9 +53,12 @@ export default function MediumGrid({
 	tagCombo = 'none',
 }: MediumGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
-	// retrieve tags name in the provided combo.
-	const tagNames = TagComboMap[tagCombo];
-	const shouldRenderTags = normalizeTagsListToMap(tagNames);
+	// retrieve tags name in the provided combo. If given grid does not have
+	// any `tagCombo`, we initialize `tagNames` to empty array.
+	const shouldRenderTags = normalizeTagsListToMap(!tagCombo
+		? []
+		: TagComboMap[tagCombo]
+	);
 
 	return (
 		<MqNotifier

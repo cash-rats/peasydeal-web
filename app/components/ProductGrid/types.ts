@@ -28,6 +28,6 @@ export const TagComboMap: Combination = {
   combo_b: ['PENNANT_LEFT'],
   combo_c: ['SUN_RIGHT'],
   combo_d: ['PENNANT_RIGHT'],
-  combo_e: [],
+  combo_e: ['NEW_LEFT'],
   combo_f: ['SCRATCH_RIGHT', 'NEW_LEFT'],
 };

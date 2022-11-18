@@ -27,6 +27,7 @@ const transformData = (apiData: any[]): Product[] => {
 			subtitle: data.subTitle,
 			title: data.title,
 			variationID: data.variationId,
+			tabComboType: data.tag_combo_type,
 		};
 	})
 
