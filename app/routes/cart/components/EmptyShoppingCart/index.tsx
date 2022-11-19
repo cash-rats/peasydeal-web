@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 
 import emptyCartSVG from './images/empty_cart.svg';
 import styles from './styles/EmptyShoppingCart.css';
-import HorizontalProductsLayout from '~/components/HorizontalProductsLayout';
+import HorizontalProductsLayout from '~/routes/components/HorizontalProductsLayout';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }];

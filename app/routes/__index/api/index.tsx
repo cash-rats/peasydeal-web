@@ -7,6 +7,7 @@ export interface FetchProductsByCategoryParams {
 	perpage?: number;
 	page?: number;
 	title?: string;
+	random?: 0 | 1;
 }
 
 export interface FetchProductsByCategoryResponse {
@@ -39,11 +40,14 @@ export const fetchProductsByCategory = async ({
 	title,
 	category,
 	perpage,
-	page
+	page,
+	random
 }: FetchProductsByCategoryParams): Promise<Product[]> => {
 	if (!perpage) perpage = 9;
 	if (!page) page = 0;
-	let endpoint = `${getMYFBEndpoint()}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}`;
+	if (!random) random = 0;
+
+	let endpoint = `${getMYFBEndpoint()}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}&random=${random}`;
 
 	if (category) {
 		endpoint = `${endpoint}&cat=${encodeURI(category.toString())}`;

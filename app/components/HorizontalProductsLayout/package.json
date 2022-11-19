@@ -1,6 +1,0 @@
-{
-  "name": "horizontal_products_layout",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./HorizontalProductsLayout.tsx"
-}

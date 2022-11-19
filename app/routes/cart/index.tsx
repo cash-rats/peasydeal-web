@@ -12,7 +12,7 @@ import type { ShoppingCart, ShoppingCartItem } from '~/utils/shoppingcart.sessio
 // TODO: all script in this file should be removed.
 import { TAX } from '~/utils/checkout_accountant';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
-import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/components/HorizontalProductsLayout';
+import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 import { fetchProductsByCategory } from '~/api';
 import type { Product } from '~/shared/types';
 
@@ -34,7 +34,6 @@ export const links: LinksFunction = () => {
 };
 
 type __action_type =
-	| 'load_recommanded_products'
 	| 'remove_cart_item'
 	| 'update_item_quantity';
 
@@ -102,28 +101,6 @@ const __updateItemQuantity = async (prodID: string, quantity: string, request: R
 	});
 }
 
-type ActionTypeRecommendedProducts = {
-	newTrends: Product[];
-	hotDeals: Product[];
-}
-
-const __loadRecommandedProducts = async () => {
-	// Fetch top seller & new trend.
-	const newTrends = await fetchProductsByCategory({
-		category: 2,
-		perpage: 12,
-	});
-
-	const hotDeals = await fetchProductsByCategory({
-		category: 1,
-		perpage: 12,
-	});
-
-	return json<ActionTypeRecommendedProducts>({
-		newTrends,
-		hotDeals,
-	});
-}
 
 
 // TODOs:
@@ -143,10 +120,6 @@ export const action: ActionFunction = async ({ request }) => {
 		const prodID = formEntries['prodID'] as string || '';
 		const quantity = formEntries['quantity'] as string;
 		return __updateItemQuantity(prodID, quantity, request);
-	}
-
-	if (actionType === 'load_recommanded_products') {
-		return await __loadRecommandedProducts();
 	}
 
 	// Unknown action
@@ -209,18 +182,10 @@ function Cart() {
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 
 	const removeItemFetcher = useFetcher();
-	const recommendProdsFetcher = useFetcher();
 	const updateItemQuantityFetcher = useFetcher();
 
 	const targetRemovalProdID = useRef<null | string>(null);
 	const justSynced = useRef<boolean>(false);
-
-	// useEffect(() => {
-	// 	recommendProdsFetcher.submit(
-	// 		{},
-	// 		{method},
-	// 	);
-	// }, []);
 
 	// If cart item contains no item, we simply redirect user to `/cart` so that
 	// corresponding loader can display empty cart page to user.
@@ -538,7 +503,8 @@ function Cart() {
 						<span className="Cart__rec-see-all"> see all </span>
 					</h1>
 
-					<HorizontalProductsLayout />
+					{/* @TODO catID should not be hardcoded here */}
+					<HorizontalProductsLayout catID={1} />
 				</div>
 
 				{/* Recommended products - new trend */}
@@ -548,8 +514,8 @@ function Cart() {
 						<span className="Cart__rec-see-all"> see all </span>
 					</h1>
 
-					<HorizontalProductsLayout />
-					<i className="fas fa-caret-right"></i>
+					{/* @TODO catID should not be hardcoded here */}
+					<HorizontalProductsLayout catID={2} />
 				</div>
 			</section>
 		</>

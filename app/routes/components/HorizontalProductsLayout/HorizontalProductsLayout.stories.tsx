@@ -1,6 +1,6 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import HorizontalProductsLayout from './HorizontalProductsLayout';
+import HorizontalProductsLayout from '.';
 import HorizontalGrid from './HorizontalGrid';
 
 export default {
