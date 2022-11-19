@@ -1,5 +1,6 @@
-import Skeleton from '@mui/material/Skeleton';
+import type { MouseEvent } from 'react';
 import { Link } from '@remix-run/react';
+import Skeleton from '@mui/material/Skeleton';
 
 interface HorizontalGridProps {
   loading?: boolean;
@@ -7,6 +8,7 @@ interface HorizontalGridProps {
   title?: string;
   price?: number;
   productUUID?: string;
+  onClick: (evt: MouseEvent<HTMLDivElement>, productUUID: string) => void;
 }
 
 function HorizontalGridSkeleton() {
@@ -29,9 +31,9 @@ export default function HorizontalGrid({
   src = '',
   title = '',
   productUUID = '',
+  onClick = () => { },
 }: HorizontalGridProps) {
   return (
-
     <div className="HorizontalGrid__wrapper">
       {
         loading
@@ -39,34 +41,36 @@ export default function HorizontalGrid({
             <HorizontalGridSkeleton />
           )
           : (
-            <Link to={`/product/${productUUID}`}>
-              <div className="HorizontalGrid__image-container">
-                {
-                  !src
-                    ? null
-                    : (
-                      <img
-                        alt="some alt"
-                        className="HorizontalGrid__image"
-                        srcSet={src}
-                      />
-                    )
-                }
-              </div>
+            <>
+              <Link to={`/product/${productUUID}`}>
+                <div onClick={(evt) => onClick(evt, productUUID)} className="HorizontalGrid__image-container">
+                  {
+                    !src
+                      ? null
+                      : (
+                        <img
+                          alt="some alt"
+                          className="HorizontalGrid__image"
+                          srcSet={src}
+                        />
+                      )
+                  }
+                </div>
 
-              <div className="HorizontalGrid__desc-container">
-                {
-                  loading
-                    ? null
-                    : (
-                      <div className="HorizontalGrid__desc" >
-                        <p className="HorizontalGrid__text">{title} </p>
-                        <span className="HorizontalGrid__price">  </span>
-                      </div>
-                    )
-                }
-              </div>
-            </Link>
+                <div className="HorizontalGrid__desc-container">
+                  {
+                    loading
+                      ? null
+                      : (
+                        <div className="HorizontalGrid__desc" >
+                          <p className="HorizontalGrid__text">{title} </p>
+                          <span className="HorizontalGrid__price">  </span>
+                        </div>
+                      )
+                  }
+                </div>
+              </Link>
+            </>
           )
       }
     </div>

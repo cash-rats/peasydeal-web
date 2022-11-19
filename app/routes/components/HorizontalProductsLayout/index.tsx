@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import type { MouseEvent } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
@@ -51,12 +52,28 @@ interface HorizontalProductsLayoutProps {
 export default function HorizontalProductsLayout({ catID = 2 }: HorizontalProductsLayoutProps) {
   const fetcher = useFetcher();
   const [recProds, setRecProds] = useState<Product[]>(loadingGrids);
+  const gestureZone = useRef<HTMLDivElement | null>(null);
+
 
   useEffect(() => {
     fetcher.submit(
       { catID: catID.toString() },
       { method: 'post', action: '/components/HorizontalProductsLayout?index' }
     );
+
+    const handleTouch = () => {
+      console.log('[gesture] prevent swipping from triggering onClick event ');
+    }
+
+    const gestureZoneDom = gestureZone.current;
+    if (!gestureZoneDom) return;
+    gestureZoneDom.addEventListener('touchstart', handleTouch, false);
+    gestureZoneDom.addEventListener('touchend', handleTouch, false);
+
+    return () => {
+      gestureZoneDom.removeEventListener('touchstart', handleTouch);
+      gestureZoneDom.removeEventListener('touchend', handleTouch);
+    }
   }, []);
 
   useEffect(() => {
@@ -73,8 +90,12 @@ export default function HorizontalProductsLayout({ catID = 2 }: HorizontalProduc
     slidesToScroll: 4,
   }
 
+  const handleClickGrid = (evt: MouseEvent<HTMLDivElement>, prodUUID: string) => {
+    console.log('[ga] click on product', prodUUID);
+  }
+
   return (
-    <div className="HorizontalProductsLayout__wrapper">
+    <div ref={gestureZone} className="HorizontalProductsLayout__wrapper">
       <Slider {...settings}>
         {
           recProds.map((prod, index) => {
@@ -86,6 +107,7 @@ export default function HorizontalProductsLayout({ catID = 2 }: HorizontalProduc
                 title={prod.title}
                 price={prod.salePrice}
                 productUUID={prod.productUUID}
+                onClick={handleClickGrid}
               />
             )
           })
