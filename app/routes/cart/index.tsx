@@ -13,6 +13,8 @@ import type { ShoppingCart, ShoppingCartItem } from '~/utils/shoppingcart.sessio
 import { TAX } from '~/utils/checkout_accountant';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/components/HorizontalProductsLayout';
+import { fetchProductsByCategory } from '~/api';
+import type { Product } from '~/shared/types';
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
@@ -31,7 +33,10 @@ export const links: LinksFunction = () => {
 	];
 };
 
-type __action_type = 'remove_cart_item' | 'update_item_quantity';
+type __action_type =
+	| 'load_recommanded_products'
+	| 'remove_cart_item'
+	| 'update_item_quantity';
 
 const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
 	return Object.keys(cart).reduce((queries, prodUUID) => {
@@ -97,6 +102,30 @@ const __updateItemQuantity = async (prodID: string, quantity: string, request: R
 	});
 }
 
+type ActionTypeRecommendedProducts = {
+	newTrends: Product[];
+	hotDeals: Product[];
+}
+
+const __loadRecommandedProducts = async () => {
+	// Fetch top seller & new trend.
+	const newTrends = await fetchProductsByCategory({
+		category: 2,
+		perpage: 12,
+	});
+
+	const hotDeals = await fetchProductsByCategory({
+		category: 1,
+		perpage: 12,
+	});
+
+	return json<ActionTypeRecommendedProducts>({
+		newTrends,
+		hotDeals,
+	});
+}
+
+
 // TODOs:
 //   - handle prod_id is falsey value
 //   - handle session key not exists
@@ -116,6 +145,10 @@ export const action: ActionFunction = async ({ request }) => {
 		return __updateItemQuantity(prodID, quantity, request);
 	}
 
+	if (actionType === 'load_recommanded_products') {
+		return await __loadRecommandedProducts();
+	}
+
 	// Unknown action
 	return null;
 }
@@ -132,14 +165,16 @@ export const loader: LoaderFunction = async ({ request }) => {
 	// If cart contains no items, display empty cart page via CatchBoundary
 	const cart = await getCart(request);
 
-	console.log('debug 1 cart', cart);
-
 	if (!cart || Object.keys(cart).length === 0) {
-		return json<LoaderType>({ cart: {}, priceInfo: null });
+		return json<LoaderType>({
+			cart: {},
+			priceInfo: null,
+		});
 	}
 
 	const costQuery = convertShoppingCartToPriceQuery(cart);
 	const priceInfo = await fetchPriceInfo({ products: costQuery });
+
 
 	return json<LoaderType>({ cart, priceInfo });
 };
@@ -166,7 +201,6 @@ type PreviousQuantity = {
  */
 function Cart() {
 	const preloadData = useLoaderData<LoaderType>();
-
 	const [cartItems, setCartItems] = useState<ShoppingCart>(preloadData.cart);
 	const [prevQuantity, setPrevQuantity] = useState<PreviousQuantity>({});
 	const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
@@ -175,10 +209,18 @@ function Cart() {
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 
 	const removeItemFetcher = useFetcher();
+	const recommendProdsFetcher = useFetcher();
 	const updateItemQuantityFetcher = useFetcher();
 
 	const targetRemovalProdID = useRef<null | string>(null);
 	const justSynced = useRef<boolean>(false);
+
+	// useEffect(() => {
+	// 	recommendProdsFetcher.submit(
+	// 		{},
+	// 		{method},
+	// 	);
+	// }, []);
 
 	// If cart item contains no item, we simply redirect user to `/cart` so that
 	// corresponding loader can display empty cart page to user.
