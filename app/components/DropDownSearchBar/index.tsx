@@ -47,8 +47,9 @@ interface DropDownSearchBarProps {
 // 5. Hide dropdown list when is unfocused.
 //
 // TODOs:
-//  - show most recent search.
-//  - have timeout mechanism.
+//  - [ ] show most recent search.
+//  - [ ] have timeout mechanism.
+//  - [ ] outer ref is often undefined.
 export default function DropDownSearchBar({
   form,
   placeholder = '',

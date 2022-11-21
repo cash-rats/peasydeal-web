@@ -5,22 +5,27 @@ import { json, redirect } from '@remix-run/node';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
+import { Form } from '@remix-run/react';
 
-import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
+import CategoryContext from '~/context/categories';
 import Footer, { links as FooterLinks } from '~/components/Footer';
+import Header, { links as HeaderLinks } from '~/components/Header';
 import { createPaymentIntent } from '~/utils/stripe.server';
-import { getCart } from '~/utils/shoppingcart.session';
+import { getCart, getItemCount } from '~/utils/shoppingcart.session';
 import { fetchCategories } from '~/categories.server';
 import type { Category } from '~/shared/types';
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
+import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 
 import styles from './styles/index.css';
+import { useSearchSuggests } from './hooks/auto-complete-search';
 
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: styles },
     ...FooterLinks(),
-    ...LogoHeaderLinks(),
+    ...HeaderLinks(),
+    ...CategoriesNavLinks(),
   ];
 };
 
@@ -28,6 +33,7 @@ type LoaderType = {
   client_secret?: string | undefined;
   payment_intend_id: string;
   categories: Category[];
+  item_count: number;
   total: number;
 };
 
@@ -39,6 +45,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   const categories = await fetchCategories();
+
+  const itemCount = await getItemCount(request);
 
   // TODO this number should be coming from BE instead.
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
@@ -59,6 +67,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     payment_intend_id: paymentIntent.id,
     categories,
     total: priceInfo.total_amount,
+    item_count: itemCount,
   });
 }
 
@@ -74,6 +83,8 @@ function CheckoutLayout() {
     client_secret: clientSecret = '',
     payment_intend_id,
     total,
+    categories,
+    item_count,
   } = useLoaderData<LoaderType>();
 
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
@@ -97,7 +108,15 @@ function CheckoutLayout() {
 
   return (
     <>
-      <LogoHeader />
+      <CategoryContext.Provider value={categories}>
+        <Form className="header-wrapper" action='/search'>
+          <Header
+            numOfItemsInCart={item_count}
+            useSearchSuggests={useSearchSuggests}
+            categoriesBar={<CategoriesNav categories={categories} />}
+          />
+        </Form>
+      </CategoryContext.Provider>
 
       <main style={{ minHeight: '35rem' }} className="Checkout__main">
         {

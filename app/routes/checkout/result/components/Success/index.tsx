@@ -21,9 +21,11 @@ export const links: LinksFunction = () => {
   ];
 }
 
-
-
 // Load order information by stripe `client_secret` and it's relative items.
+/*
+  TODOs:
+   - [ ] Remove items from shopping cart once payment success.
+*/
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const orderUUID = url.searchParams.get('order_uuid');

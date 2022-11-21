@@ -12,10 +12,11 @@ import Divider from '@mui/material/Divider';
 import httpStatus from 'http-status-codes';
 import Alert from '@mui/material/Alert';
 
-import type { ApiErrorResponse, Product } from '~/shared/types';
+import type { ApiErrorResponse } from '~/shared/types';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
-import { getCart, ShoppingCart } from '~/utils/shoppingcart.session';
+import { getCart } from '~/utils/shoppingcart.session';
+import type { ShoppingCart } from '~/utils/shoppingcart.session';
 
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
@@ -246,12 +247,16 @@ function CheckoutPage() {
                     return (
                       <Fragment key={prodID}>
                         <div className="product-tile">
+                          <div className="Checkout__thumbnail-wrapper">
+                            <img
+                              className="Checkout__thumbnail"
+                              src={cartItem.image}
+                              alt={`#${cartItem.variationUUID}`}
+                            />
+                          </div>
                           <div className="product-desc">
-                            <h3>
-                              {cartItem.title}
-                            </h3>
                             <p>
-                              {cartItem.subTitle}
+                              {cartItem.title}
                             </p>
                           </div>
                           <h2 className="product-price">

@@ -87,8 +87,8 @@ const __updateItemQuantity = async (prodID: string, quantity: string, request: R
 
 
 // TODOs:
-//   - handle prod_id is falsey value
-//   - handle session key not exists
+//   - [ ] handle prod_id is falsey value
+//   - [ ] handle session key not exists
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
 	const formEntries = Object.fromEntries(form.entries());
@@ -150,9 +150,8 @@ type PreviousQuantity = {
  * container width: max-width: 1180px;
  *
  * - [x] show empty shopping cart when no item existed yet, empty shipping cart should be a component instead of a route.
- * - [ ] Remember selected quantity and sales price for each item so that we can calculate total price in result row.
  * - [ ] Add `~~$99.98 Now $49.99 You Saved $50` text.
- * - [ ] When quantity is deducted to 0, popup a notification that the item is going to be removed.
+ * - [x] When quantity is deducted to 0, popup a notification that the item is going to be removed.
  * - [x] Checkout flow.
  */
 function Cart() {
