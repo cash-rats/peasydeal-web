@@ -9,7 +9,7 @@
 }
 @media (min-width: 768px) {
   .product-carousel-container .product-carousel-image-wrapper {
-    max-width: 570;
+    max-width: 570px;
   }
 }
 .product-carousel-container .product-carousel-image {

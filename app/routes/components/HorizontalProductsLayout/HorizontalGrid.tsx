@@ -48,7 +48,7 @@ export default function HorizontalGrid({
   }, [productUUID]);
 
   const handleGesture = useCallback((evt: MouseEvent) => {
-    if (touchendY === touchstartY) {
+    if (touchendY === touchstartY && touchstartX === touchendX) {
       onClick(evt, productUUID);
     } else {
       console.log('user opts swipes gesture, ignore');
@@ -67,9 +67,8 @@ export default function HorizontalGrid({
       touchendY = evt.pageY
 
       handleGesture(evt);
-    },
-    [productUUID],
-  )
+    }, [productUUID]
+  );
 
   useEffect(() => {
     const gestureZoneDom = gesturezoneRef.current;
