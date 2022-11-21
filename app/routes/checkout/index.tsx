@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react';
 import type { FormEvent, ReactElement } from 'react';
 import type { LoaderFunction, LinksFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { useLoaderData, useFetcher, Link } from '@remix-run/react';
 import {
   useStripe,
   useElements,
@@ -237,7 +237,12 @@ function CheckoutPage() {
             {/* product summary TODO add edit link */}
             <div className="pricing-panel">
               <h1 className="form-title">
-                Cart Summary
+                <span>Cart Summary</span>
+                <Link to="/cart">
+                  <span className="Checkout__pricing-panel-edit">
+                    edit
+                  </span>
+                </Link>
               </h1>
 
               <div className="product-tiles">

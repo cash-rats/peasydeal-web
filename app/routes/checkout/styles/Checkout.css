@@ -189,4 +189,11 @@
   aspect-ratio: 1/1;
 }
 
+.Checkout__pricing-panel-edit {
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  margin-left: 1rem;
+  font-weight: 400;
+}
+
 /*# sourceMappingURL=Checkout.css.map */
