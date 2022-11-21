@@ -7,14 +7,14 @@
 	font-size: 28px;
 	padding: 2.25rem 0.75rem 1.125rem;
 	min-height: 35rem;
-	margin-top: 9rem;
+	margin-top: 7rem;
 
 	@media (min-width: $screen-min-899) {
-		margin-top: 8rem;
+		margin-top: 10rem;
 	}
 
 	@media(min-width: #{$screen-xl-min}) {
-		margin: 8rem auto 0;
+		margin: 10rem auto 0;
 		width: 1180px;
 		gap: 15px;
 	}

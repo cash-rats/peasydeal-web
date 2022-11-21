@@ -52,11 +52,11 @@ const __removeCartItemAction = async (prodID: string, request: Request) => {
 
 	// `cart_item_count` tells frontend when to perform page refresh. When `cart_item_count`
 	// equals 0, frontend will trigger load of the current route which displays empty bag page.
-	return new Response(
-		JSON.stringify({
+	return json(
+		{
 			cart_item_count: itemCount,
 			price_info: priceInfo,
-		}),
+		},
 		{
 			headers: {
 				"Set-Cookie": await commitSession(session),
@@ -130,7 +130,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	const costQuery = convertShoppingCartToPriceQuery(cart);
 	const priceInfo = await fetchPriceInfo({ products: costQuery });
-
 
 	return json<LoaderType>({ cart, priceInfo });
 };
@@ -481,7 +480,9 @@ function Cart() {
 				<div className="Cart__rec-products">
 					<h1 className="Cart__rec-title">
 						<span>top items </span>
-						<span className="Cart__rec-see-all"> see all </span>
+						<Link to="/Hot Deal">
+							<span className="Cart__rec-see-all"> see all </span>
+						</Link>
 					</h1>
 
 					{/* @TODO catID should not be hardcoded here */}
@@ -492,7 +493,9 @@ function Cart() {
 				<div className="Cart__rec-products">
 					<h1 className="Cart__rec-title">
 						<span> new trend </span>
-						<span className="Cart__rec-see-all"> see all </span>
+						<Link to="/New Trend">
+							<span className="Cart__rec-see-all"> see all </span>
+						</Link>
 					</h1>
 
 					{/* @TODO catID should not be hardcoded here */}
