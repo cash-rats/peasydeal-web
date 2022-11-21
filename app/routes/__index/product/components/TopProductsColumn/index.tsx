@@ -19,11 +19,13 @@ export const action: ActionFunction = async ({ request }) => {
   const topProds = await fetchProductsByCategory({
     category: 22,
     perpage: 5,
+    random: 1,
   });
 
   const superDealProds = await fetchProductsByCategory({
     category: 2,
     perpage: 4,
+    random: 1,
   });
   // Load 5 TOP products 22
   // Load 4 Super deals 2
