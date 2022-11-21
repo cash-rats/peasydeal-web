@@ -12,11 +12,10 @@ import Divider from '@mui/material/Divider';
 import httpStatus from 'http-status-codes';
 import Alert from '@mui/material/Alert';
 
-import { calcGrandTotal } from '~/utils/checkout_accountant';
-import type { ApiErrorResponse } from '~/shared/types';
+import type { ApiErrorResponse, Product } from '~/shared/types';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
-import { getCart } from '~/utils/shoppingcart.session';
+import { getCart, ShoppingCart } from '~/utils/shoppingcart.session';
 
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
@@ -35,6 +34,10 @@ export const links: LinksFunction = () => {
   ];
 };
 
+type LoaderType = {
+  cart_items: ShoppingCart;
+}
+
 export const loader: LoaderFunction = async ({ request }) => {
   const cart = await getCart(request);
 
@@ -44,12 +47,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
   // In stripe, the base unit is 1 cent, not 1 dollar.
-  const amount = Number(calcGrandTotal(cart).toFixed(2))
 
-  return json({
-    amount,
-    cart_items: cart,
-  });
+  return json<LoaderType>({ cart_items: cart });
 };
 
 type ActionPayload = {
@@ -112,11 +111,8 @@ export const action: ActionFunction = async ({ request }) => {
     - [ ] add search bar header
 */
 function CheckoutPage() {
-  const {
-    amount,
-    cart_items: cartItems,
-  } = useLoaderData();
-  const { paymentIntendID } = useContext();
+  const { cart_items: cartItems } = useLoaderData();
+  const { paymentIntendID, total } = useContext();
   const element = useElements();
   const stripe = useStripe();
 
@@ -271,7 +267,7 @@ function CheckoutPage() {
 
               {/* Subtotal */}
               <div className="subtotal">
-                Total: &nbsp; <span>${amount}</span>
+                Total: &nbsp; <span>£{total}</span>
               </div>
             </div>
           </div>

@@ -8,11 +8,11 @@ import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 
 import LogoHeader, { links as LogoHeaderLinks } from '~/components/Header/components/LogoHeader';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import { calcGrandTotal } from '~/utils/checkout_accountant';
 import { createPaymentIntent } from '~/utils/stripe.server';
 import { getCart } from '~/utils/shoppingcart.session';
 import { fetchCategories } from '~/categories.server';
 import type { Category } from '~/shared/types';
+import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
 
 import styles from './styles/index.css';
 
@@ -25,9 +25,10 @@ export const links: LinksFunction = () => {
 };
 
 type LoaderType = {
-  client_secret?: string | null;
+  client_secret?: string | undefined;
   payment_intend_id: string;
   categories: Category[];
+  total: number;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -42,29 +43,37 @@ export const loader: LoaderFunction = async ({ request }) => {
   // TODO this number should be coming from BE instead.
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
   // In stripe, the base unit is 1 cent, not 1 dollar.
-  const amount = Number(calcGrandTotal(cartItems).toFixed(2))
+  // const amount = Number(calcGrandTotal(cartItems).toFixed(2))
+  const priceQuery = convertShoppingCartToPriceQuery(cartItems);
+  const priceInfo = await fetchPriceInfo({ products: priceQuery });
 
   // Construct stripe `PaymentIntend`
   const paymentIntent = await createPaymentIntent({
-    amount: Math.round(amount * 100),
+    amount: Math.round(priceInfo.total_amount * 100),
     currency: 'GBP'
   });
 
 
   return json<LoaderType>({
-    client_secret: paymentIntent.client_secret,
+    client_secret: paymentIntent.client_secret || undefined,
     payment_intend_id: paymentIntent.id,
     categories,
+    total: priceInfo.total_amount,
   });
 }
 
-type ContextType = { clientSecret: string, paymentIntendID: string };
+type ContextType = {
+  clientSecret: string;
+  paymentIntendID: string;
+  total: number;
+};
 
 function CheckoutLayout() {
   const {
     /* Stripe payment intend client secret, every secret is different every time we refresh the page */
-    client_secret: clientSecret,
+    client_secret: clientSecret = '',
     payment_intend_id,
+    total,
   } = useLoaderData<LoaderType>();
 
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
@@ -97,7 +106,10 @@ function CheckoutLayout() {
               stripe={stripePromise}
               options={options}
             >
-              <Outlet context={{ paymentIntendID: payment_intend_id }} />
+              <Outlet context={{
+                paymentIntendID: payment_intend_id,
+                total,
+              }} />
             </Elements>
           )
         }

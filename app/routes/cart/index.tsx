@@ -8,7 +8,7 @@ import { BsBagCheck } from 'react-icons/bs';
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions/redis_session';
 import { getCart, removeItem, updateCart } from '~/utils/shoppingcart.session';
-import type { ShoppingCart, ShoppingCartItem } from '~/utils/shoppingcart.session';
+import type { ShoppingCart } from '~/utils/shoppingcart.session';
 // TODO: all script in this file should be removed.
 import { TAX } from '~/utils/checkout_accountant';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
@@ -17,8 +17,8 @@ import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
 import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
-import { fetchPriceInfo } from './cart.server';
-import type { PriceInfo, PriceQuery } from './cart.server';
+import { fetchPriceInfo, convertShoppingCartToPriceQuery } from './cart.server';
+import type { PriceInfo } from './cart.server';
 import styles from './styles/cart.css';
 
 export const links: LinksFunction = () => {
@@ -35,21 +35,6 @@ type __action_type =
 	| 'remove_cart_item'
 	| 'update_item_quantity';
 
-const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
-	return Object.keys(cart).reduce((queries, prodUUID) => {
-		// Skip product with invalid product uuid.
-		if (!prodUUID || prodUUID === 'undefined') {
-			return queries;
-		}
-		const item: ShoppingCartItem = cart[prodUUID];
-		return queries.concat([
-			{
-				variation_uuid: item.variationUUID,
-				quantity: Number(item.quantity),
-			}
-		]);
-	}, [] as PriceQuery[]);
-}
 
 const __removeCartItemAction = async (prodID: string, request: Request) => {
 	const session = await removeItem(request, prodID);
