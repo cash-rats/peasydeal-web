@@ -88,7 +88,7 @@ export const action: ActionFunction = async ({ request }) => {
 		});
 	}
 
-	return new Response('', {
+	return json('', {
 		headers: {
 			"Set-Cookie": await commitSession(session),
 		}

@@ -12,6 +12,10 @@
 		height: auto;
 		margin: 0 auto;
 		aspect-ratio: 1/1;
+
+		@media (min-width: $screen-md-min) {
+			max-width: 570;
+		}
 	}
 
 	.product-carousel-image {

@@ -210,7 +210,6 @@ function Cart() {
 	}, [updateItemQuantityFetcher]);
 
 	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, prodID: string, quantity: number) => {
-		console.log('trigger blur');
 		if (quantity === 0) {
 			targetRemovalProdID.current = prodID;
 

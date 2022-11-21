@@ -3,15 +3,17 @@ import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import Button from '@mui/material/Button';
 
+import HorizontalProductsLayout from '~/routes/components/HorizontalProductsLayout';
+
 import emptyCartSVG from './images/empty_cart.svg';
 import styles from './styles/EmptyShoppingCart.css';
-import HorizontalProductsLayout from '~/routes/components/HorizontalProductsLayout';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }];
 }
 
 function EmptyShoppingCartPage() {
+
   return (
     <section className="empty-cart-container">
       <div className="empty-cart-image">
@@ -46,7 +48,15 @@ function EmptyShoppingCartPage() {
           top items
         </h1>
 
-        <HorizontalProductsLayout />
+        <HorizontalProductsLayout catID={1} />
+      </div>
+
+      <div className="Cart__rec-products">
+        <h1 className="Cart__rec-title">
+          new trend
+        </h1>
+
+        <HorizontalProductsLayout catID={2} />
       </div>
     </section>
   );

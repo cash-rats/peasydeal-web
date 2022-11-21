@@ -14,6 +14,7 @@ import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
 import styles from './styles/HorizontalProductsLayout.css';
 import Grid from './HorizontalGrid';
 
+
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: styles },
@@ -51,29 +52,16 @@ interface HorizontalProductsLayoutProps {
 
 export default function HorizontalProductsLayout({ catID = 2 }: HorizontalProductsLayoutProps) {
   const fetcher = useFetcher();
+  const clickRecProd = useFetcher();
+
   const [recProds, setRecProds] = useState<Product[]>(loadingGrids);
   const gestureZone = useRef<HTMLDivElement | null>(null);
-
 
   useEffect(() => {
     fetcher.submit(
       { catID: catID.toString() },
       { method: 'post', action: '/components/HorizontalProductsLayout?index' }
     );
-
-    const handleTouch = () => {
-      console.log('[gesture] prevent swipping from triggering onClick event ');
-    }
-
-    const gestureZoneDom = gestureZone.current;
-    if (!gestureZoneDom) return;
-    gestureZoneDom.addEventListener('touchstart', handleTouch, false);
-    gestureZoneDom.addEventListener('touchend', handleTouch, false);
-
-    return () => {
-      gestureZoneDom.removeEventListener('touchstart', handleTouch);
-      gestureZoneDom.removeEventListener('touchend', handleTouch);
-    }
   }, []);
 
   useEffect(() => {
@@ -90,8 +78,13 @@ export default function HorizontalProductsLayout({ catID = 2 }: HorizontalProduc
     slidesToScroll: 4,
   }
 
-  const handleClickGrid = (evt: MouseEvent<HTMLDivElement>, prodUUID: string) => {
+  const handleClickGrid = (evt: MouseEvent, prodUUID: string) => {
     console.log('[ga] click on product', prodUUID);
+
+    clickRecProd.submit(
+      { __action: 'to_product_detail', productUUID: prodUUID },
+      { method: 'post', action: `/product/${prodUUID}` },
+    );
   }
 
   return (
