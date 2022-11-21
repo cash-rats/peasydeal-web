@@ -1,6 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import { getMYFBEndpoint } from '~/utils/endpoints';
+import type { ShoppingCart, ShoppingCartItem } from '~/utils/shoppingcart.session';
 
 export type PriceQuery = {
   variation_uuid: string;
@@ -37,4 +38,20 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
   }
 
   return respJSON;
+}
+
+export const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
+  return Object.keys(cart).reduce((queries, prodUUID) => {
+    // Skip product with invalid product uuid.
+    if (!prodUUID || prodUUID === 'undefined') {
+      return queries;
+    }
+    const item: ShoppingCartItem = cart[prodUUID];
+    return queries.concat([
+      {
+        variation_uuid: item.variationUUID,
+        quantity: Number(item.quantity),
+      }
+    ]);
+  }, [] as PriceQuery[]);
 }

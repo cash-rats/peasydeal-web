@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { json } from "@remix-run/node";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import {
@@ -12,14 +11,12 @@ import { StatusCodes } from 'http-status-codes';
 
 import CategoryContext from '~/context/categories';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import type { Category, SuggestItem } from '~/shared/types';
+import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { getItemCount } from '~/utils/shoppingcart.session';
-import MobileSearchDialog, { links as MobileSearchDialogLinks } from '~/components/MobileSearchDialog'
 import { fetchCategories } from '~/categories.server';
-import { fetchProductsByCategory } from '~/api';
 
 import styles from "./styles/index.css";
 
@@ -28,7 +25,6 @@ export const links: LinksFunction = () => {
 		...FooterLinks(),
 		...HeaderLinks(),
 		...CategoriesNavLinks(),
-		...MobileSearchDialogLinks(),
 
 		{ rel: 'stylesheet', href: styles }
 	];
@@ -55,53 +51,15 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData<LoaderType>();
 	const search = useFetcher();
-	const [openSearchDialog, setOpenSearchDialog] = useState(false);
 
 	const handleSearch = (query: string) => {
 		search.submit({ query }, { method: 'post', action: '/search' });
 	};
 
-	const handleOnClickMobileSearch = () => {
-		setOpenSearchDialog(true);
-	};
-
-	const handleClose = () => {
-		setOpenSearchDialog(false);
-	}
-
-	const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
-		const products = await fetchProductsByCategory({ title: query });
-
-		let suggestItems: SuggestItem[] = [];
-
-		if (products.length > 0) {
-			// Transform product result to suggest item.
-			suggestItems = products.map<SuggestItem>((product) => {
-				return {
-					title: product.title,
-					data: {
-						title: product.title,
-						image: product.main_pic,
-						discount: product.discount,
-						productID: product.productUUID,
-					},
-				};
-			});
-		}
-
-		return suggestItems;
-	}
-
 	return (
 		<>
 			{/* sharethis popup for news letter subscription */}
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
-			<MobileSearchDialog
-				onBack={handleClose}
-				open={openSearchDialog}
-				onSearchRequest={handleSearchRequest}
-				onSearch={handleSearch}
-			/>
 
 			<CategoryContext.Provider value={categories} >
 				<Form className="header-wrapper" action='/search'>
@@ -111,7 +69,6 @@ export default function Index() {
 						numOfItemsInCart={numOfItemsInCart}
 						useSearchSuggests={useSearchSuggests}
 						onSearch={handleSearch}
-						onClickMobileSearch={handleOnClickMobileSearch}
 					/>
 				</Form>
 			</CategoryContext.Provider >

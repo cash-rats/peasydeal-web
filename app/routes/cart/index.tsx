@@ -13,8 +13,6 @@ import type { ShoppingCart, ShoppingCartItem } from '~/utils/shoppingcart.sessio
 import { TAX } from '~/utils/checkout_accountant';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
-import { fetchProductsByCategory } from '~/api';
-import type { Product } from '~/shared/types';
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';

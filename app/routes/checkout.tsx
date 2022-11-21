@@ -11,9 +11,10 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import { calcGrandTotal } from '~/utils/checkout_accountant';
 import { createPaymentIntent } from '~/utils/stripe.server';
 import { getCart } from '~/utils/shoppingcart.session';
+import { fetchCategories } from '~/categories.server';
+import type { Category } from '~/shared/types';
 
 import styles from './styles/index.css';
-
 
 export const links: LinksFunction = () => {
   return [
@@ -26,6 +27,7 @@ export const links: LinksFunction = () => {
 type LoaderType = {
   client_secret?: string | null;
   payment_intend_id: string;
+  categories: Category[];
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -34,6 +36,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!cartItems || Object.keys(cartItems).length === 0) {
     throw redirect("/cart");
   }
+
+  const categories = await fetchCategories();
 
   // TODO this number should be coming from BE instead.
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
@@ -47,7 +51,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 
 
-  return json<LoaderType>({ client_secret: paymentIntent.client_secret, payment_intend_id: paymentIntent.id });
+  return json<LoaderType>({
+    client_secret: paymentIntent.client_secret,
+    payment_intend_id: paymentIntent.id,
+    categories,
+  });
 }
 
 type ContextType = { clientSecret: string, paymentIntendID: string };

@@ -1,10 +1,3 @@
-/*
-  TODOs
-    - [ ] order amount should be calculated and send from backend.
-    - [ ] `client_secret` should be move to action.
-    - [x] Redirect to successful page.
-*/
-
 import { Fragment, useEffect, useState } from 'react';
 import type { FormEvent, ReactElement } from 'react';
 import type { LoaderFunction, LinksFunction, ActionFunction } from '@remix-run/node';
@@ -17,10 +10,10 @@ import {
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
 import Divider from '@mui/material/Divider';
 import httpStatus from 'http-status-codes';
+import Alert from '@mui/material/Alert';
 
 import { calcGrandTotal } from '~/utils/checkout_accountant';
 import type { ApiErrorResponse } from '~/shared/types';
-import { useErrorSnackbar } from '~/components/Snackbar';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
 import { getCart } from '~/utils/shoppingcart.session';
@@ -109,8 +102,14 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 /*
-TODOs:
-  - [ ] add search bar header
+
+  TODOs
+    - [ ] order amount should be calculated and send from backend.
+    - [ ] `client_secret` should be move to action.
+    - [ ] Add edit cart
+    - [x] Redirect to successful page.
+    - [x] Fix error snackbar.
+    - [ ] add search bar header
 */
 function CheckoutPage() {
   const {
@@ -121,13 +120,13 @@ function CheckoutPage() {
   const element = useElements();
   const stripe = useStripe();
 
-  const [openErrorSnackbar] = useErrorSnackbar();
   const createOrderFetcher = useFetcher();
 
   // Store orderUUID when is newly created. There might be an senario where shipping information is valid but not billing info.
   // When customer submit payment again, a new order will be created again. Thus, if orderID exists we should not create a new order again.
   const [orderUUID, setOrderUUID] = useState<string | null>();
   const [isPaying, setIsPaying] = useState(false);
+  const [errorAlert, setErrorAlert] = useState('');
 
   const [shippingDetailFormValues, setShippingDetailFormValues] = useState<ShippingDetailFormType>({
     email: '',
@@ -158,7 +157,8 @@ function CheckoutPage() {
     });
 
     if (error.type === "card_error" || error.type === "validation_error") {
-      openErrorSnackbar(error.message);
+      // openErrorSnackbar(error.message);
+      console.log('error', error.message);
     } else {
       // TODO log to remote API if error happens
       console.log(`An unexpected error occurred. ${error.message}`);
@@ -173,7 +173,7 @@ function CheckoutPage() {
         if (createOrderFetcher.data.err_code) {
           const errResp = createOrderFetcher.data as ApiErrorResponse;
 
-          openErrorSnackbar(`Failed to create order, please try again later, error code: ${errResp.err_code}`);
+          setErrorAlert(`Failed to create order, please try again later, error code: ${errResp.err_code}`);
 
           return;
         }
@@ -221,6 +221,16 @@ function CheckoutPage() {
   return (
     <section className="checkout-page-container">
       <h1 className="title"> Shipping Information </h1>
+      {
+        errorAlert
+          ? (
+            <Alert severity='warning' >
+              {errorAlert}
+            </Alert>
+          )
+          : null
+      }
+
       <div className="checkout-content">
         <div className="left">
 
@@ -272,6 +282,9 @@ function CheckoutPage() {
 
           <createOrderFetcher.Form
             onChange={(evt: FormEvent<HTMLFormElement>) => {
+              // Remove error alert when submitting error.
+              setErrorAlert('');
+
               let target = evt.target as HTMLInputElement;
 
               const fieldName = target.name;
@@ -334,8 +347,7 @@ function CheckoutPage() {
                     // When create order action is triggered in `CheckoutForm`, current loader will be triggered to realod client secret causing display of the warning.
                     // The following is a temperary solution.
                     // @docs https://stackoverflow.com/questions/70864433/integration-of-stripe-paymentelement-warning-unsupported-prop-change-options-c
-                    <CheckoutForm loading={createOrderFetcher.state !== 'idle' || isPaying}
-                    />
+                    <CheckoutForm loading={createOrderFetcher.state !== 'idle' || isPaying} />
                   }
                 </div>
               </div>
