@@ -60,7 +60,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
       >
         <div className="border-left" />
         <span className="Header__CategoriesNav__text">
-          More
+          all
         </span>
 
         <div className="Header__CategoriesNav__arrow_wrapper">
