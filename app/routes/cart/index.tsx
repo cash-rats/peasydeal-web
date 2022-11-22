@@ -171,8 +171,7 @@ function Cart() {
 	// corresponding loader can display empty cart page to user.
 	useEffect(() => {
 		if (removeItemFetcher.type === 'done') {
-			const { price_info } = JSON.parse(removeItemFetcher.data);
-
+			const { price_info } = removeItemFetcher.data;
 			setPriceInfo(price_info);
 			setSyncingPrice(false);
 		}
@@ -399,8 +398,6 @@ function Cart() {
 							Object.keys(cartItems).map((prodID) => {
 								const item = cartItems[prodID];
 								const variationUUID = item.variationUUID;
-
-								console.log('debug variationUUID', variationUUID);
 
 								return (
 									<CartItem
