@@ -161,11 +161,12 @@
 }
 
 .Cart__title-row-stuff {
-  width: 120px;
+  width: 150px;
 }
 
 .Cart__title-row-prodname {
   width: 65%;
+  text-align: left;
 }
 
 .Cart__title-row-bottom {

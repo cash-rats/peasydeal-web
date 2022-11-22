@@ -86,7 +86,6 @@ export default function QuantityDropDown({
                       console.log('trigger onMouseUp');
                     }}
                     onMouseDown={(evt) => {
-                      evt.preventDefault();
                       handleClickNumber(evt, v)
                     }}
                   >

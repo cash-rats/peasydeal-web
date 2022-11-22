@@ -151,6 +151,7 @@ type PreviousQuantity = {
  * - [ ] Add `~~$99.98 Now $49.99 You Saved $50` text.
  * - [x] When quantity is deducted to 0, popup a notification that the item is going to be removed.
  * - [x] Checkout flow.
+ * - [ ] 重複點擊同個 quantity 會 重新 calculate price。
  */
 function Cart() {
 	const preloadData = useLoaderData<LoaderType>();
