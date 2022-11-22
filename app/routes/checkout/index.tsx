@@ -146,22 +146,26 @@ function CheckoutPage() {
   const stripeConfirmPayment = async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
     setIsPaying(true);
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${getBrowserDomainUrl()}/checkout/result?order_uuid=${orderUUID}`,
-      },
-    });
+    try {
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${getBrowserDomainUrl()}/checkout/result?order_uuid=${orderUUID}`,
+        },
+      });
 
-    if (error.type === "card_error" || error.type === "validation_error") {
-      // openErrorSnackbar(error.message);
-      console.log('error', error.message);
-    } else {
-      // TODO log to remote API if error happens
-      console.log(`An unexpected error occurred. ${error.message}`);
+      if (error.type === "card_error" || error.type === "validation_error") {
+        throw new Error(error.message);
+      } else {
+        // TODO log to remote API if error happens
+        throw new Error(`An unexpected error occurred. ${error.message}`);
+      }
+
+    } catch (error: any) {
+      setErrorAlert(`An unexpected error occurred. ${error.message}`);
+    } finally {
+      setIsPaying(false);
     }
-
-    setIsPaying(false);
   }
 
   useEffect(
@@ -177,6 +181,7 @@ function CheckoutPage() {
 
         // Order is created, confirm payment on stripe.
         if (!element || !stripe) return;
+
 
         const { order_uuid: orderUUID } = createOrderFetcher.data;
         setOrderUUID(orderUUID);
