@@ -12,7 +12,7 @@ import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import { commitSession } from '~/sessions/redis_session';
-import { insertItem } from '~/utils/shoppingcart.session';
+import { insertItem, getCart } from '~/utils/shoppingcart.session';
 import type { ShoppingCartItem } from '~/utils/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
@@ -58,23 +58,26 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 	return json<LoaderTypeProductDetail>({ product: prodDetail });
 };
 
+type __action_type = 'to_product_detail' | 'add_item_to_cart' | 'buy_now';
+
 
 // TODO
 //  - [x] store shopping cart items in session storage if user has not logged in yet.
 //  - [ ] what is error?
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
-	const formAction = form.get('__action');
+	const formObj = Object.fromEntries(form.entries());
+	const formAction = formObj['__action'] as __action_type;
 
 	if (formAction === 'to_product_detail') {
-		let prodUuid: FormDataEntryValue | null = form.get('productUUID');
+		let prodUuid: FormDataEntryValue | null = formObj['productUUID'];
 		return redirect(`product/${prodUuid}`);
 	}
 
 	const cartObj = Object.fromEntries(form.entries()) as ShoppingCartItem;
 
 	// If item does not have a valid productUUID, don't insert it to shopping cart.
-	if (!cartObj || !cartObj.productUUID || cartObj.productUUID === 'undefined') {
+	if (!cartObj || !cartObj.variationUUID || cartObj.variationUUID === 'undefined') {
 		return json('');
 	}
 
@@ -88,11 +91,16 @@ export const action: ActionFunction = async ({ request }) => {
 		});
 	}
 
-	return json('', {
-		headers: {
-			"Set-Cookie": await commitSession(session),
-		}
-	});
+	if (formAction === 'add_item_to_cart') {
+		return json('', {
+			headers: {
+				"Set-Cookie": await commitSession(session),
+			}
+		});
+	}
+
+	// unknown action type.
+	return null;
 }
 
 /*
@@ -106,11 +114,6 @@ export const action: ActionFunction = async ({ request }) => {
 function ProductDetailPage() {
 	const { product: productDetail } = useLoaderData<LoaderTypeProductDetail>();
 	const [mainCategory] = productDetail.categories;
-
-	const selectCurrentVariation = (defaultVariationUUID: string, variations: ProductVariation[]): ProductVariation | undefined => {
-		return variations.find(
-			(variation) => defaultVariationUUID === variation.uuid);
-	};
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
@@ -146,9 +149,13 @@ function ProductDetailPage() {
 		return () => window.removeEventListener('scroll', handleWindowScrolling);
 	}, []);
 
-	const currentVariation = selectCurrentVariation(productDetail.default_variation_uuid, productDetail.variations);
 	const [quantity, updateQuantity] = useState<number>(1);
-	const [variation, setVariation] = useState<string>('');
+	const [variation, setVariation] = useState<ProductVariation | undefined>(
+		productDetail.variations.find(
+			variation => productDetail.default_variation_uuid === variation.uuid
+		)
+	);
+
 	const [variationErr, setVariationErr] = useState<string>('');
 	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
@@ -170,18 +177,18 @@ function ProductDetailPage() {
 
 	const extractProductInfo = useCallback(() => (
 		{
-			salePrice: currentVariation?.sale_price.toString() || '',
-			retailPrice: currentVariation?.retail_price.toString() || '',
+			salePrice: variation?.sale_price.toString() || '',
+			retailPrice: variation?.retail_price.toString() || '',
 			productUUID: productDetail.uuid,
-			variationUUID: currentVariation?.uuid || '',
+			variationUUID: variation?.uuid || '',
 
 			// product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
 			image: productDetail.images[0] || '',
 			quantity: quantity.toString(),
 			title: productDetail?.title || '',
-			specName: currentVariation?.spec_name || '',
+			specName: variation?.spec_name || '',
 		}
-	), [currentVariation, productDetail, quantity]);
+	), [productDetail, quantity, variation]);
 
 	const handleAddToCart = () => {
 		if (!variation) {
@@ -191,9 +198,13 @@ function ProductDetailPage() {
 		}
 		setVariationErr('');
 
+		const orderInfo = { ...extractProductInfo() };
 		addToCart.submit(
-			{ ...extractProductInfo() },
-			{ method: 'post', action: '/product/$prodId' },
+			{
+				__action: 'add_item_to_cart',
+				...extractProductInfo(),
+			} as ShoppingCartItem & { __action: __action_type },
+			{ method: 'post', action: `/product/${orderInfo.productUUID}` },
 		);
 	};
 
@@ -310,11 +321,11 @@ function ProductDetailPage() {
 
 								<div className="product-tag-bar">
 									<p className="detail-amount">
-										£{currentVariation?.sale_price}
+										£{variation?.sale_price}
 									</p>
 
 									<span className="actual-amount">
-										compared at £{currentVariation?.retail_price}
+										compared at £{variation?.retail_price}
 									</span>
 
 								</div>
@@ -323,8 +334,8 @@ function ProductDetailPage() {
 									<p className="discount-amount">
 										YOU SAVE &nbsp;
 										{
-											currentVariation && currentVariation.discount && (
-												(Number(currentVariation.discount) * 100).toFixed(0)
+											variation && variation.discount && (
+												(Number(variation.discount) * 100).toFixed(0)
 											)
 										}%!
 									</p>
@@ -350,8 +361,9 @@ function ProductDetailPage() {
 											placeholder='select variation'
 											onChange={(v) => {
 												if (!v) return;
-
-												setVariation(v.value);
+												setVariation(
+													productDetail.variations.find(variation => variation.uuid === v.value)
+												);
 											}}
 											options={
 												productDetail.variations.map(
@@ -366,7 +378,6 @@ function ProductDetailPage() {
 									</ClientOnly>
 
 									{/* Quantity */}
-									{/* <div className="ProductDetailPage__option-row"> */}
 									<div className="input-quantity-container">
 										<QuantityPicker
 											value={quantity}
@@ -381,15 +392,8 @@ function ProductDetailPage() {
 										onClickBuyNow={handleBuyNow}
 										loading={addToCart.state !== 'idle'}
 									/>
-									{/* </div> */}
 								</div>
 
-
-								{/*
-							- Facebook
-							- Twitter
-							- Whatsapp
-						*/}
 								<Divider text={
 									<span className="ProductDetail__divder-content">
 										<TbShare fontSize={20} /> share
@@ -406,7 +410,7 @@ function ProductDetailPage() {
 									)} />
 
 									<div className="delivery-content">
-										<span> {currentVariation?.delivery_info} </span>
+										<span> {variation?.delivery_info} </span>
 									</div>
 								</div>
 

@@ -41,12 +41,12 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
 }
 
 export const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
-  return Object.keys(cart).reduce((queries, prodUUID) => {
+  return Object.keys(cart).reduce((queries, variationUUID) => {
     // Skip product with invalid product uuid.
-    if (!prodUUID || prodUUID === 'undefined') {
+    if (!variationUUID || variationUUID === 'undefined') {
       return queries;
     }
-    const item: ShoppingCartItem = cart[prodUUID];
+    const item: ShoppingCartItem = cart[variationUUID];
     return queries.concat([
       {
         variation_uuid: item.variationUUID,

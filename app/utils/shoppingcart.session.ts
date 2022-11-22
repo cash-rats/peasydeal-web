@@ -5,7 +5,7 @@ import { getSession } from '~/sessions/redis_session';
 export const CartSessionKey = 'shopping_cart';
 
 export type ShoppingCart = {
-  [prodUUID: string]: ShoppingCartItem;
+  [variationUUID: string]: ShoppingCartItem;
 };
 
 export type ShoppingCartItem = {
@@ -38,11 +38,12 @@ export const updateCart = async (request: Request, cart: ShoppingCart): Promise<
   return session;
 }
 
-export const getItem = async (request: Request, prodUUID: string): Promise<ShoppingCartItem | undefined> => {
+// - [ ] updated
+export const getItem = async (request: Request, variationUUID: string): Promise<ShoppingCartItem | undefined> => {
   const session = await getSessionCookie(request);
   if (!session.has(CartSessionKey)) return undefined;
   const shoppingCart = session.get('shopping_cart') as ShoppingCart;
-  const item = shoppingCart[prodUUID];
+  const item = shoppingCart[variationUUID];
   return item;
 }
 
@@ -52,6 +53,7 @@ export const getItemCount = async (request: Request): Promise<number> => {
   return !cart ? 0 : Object.keys(cart).length;
 }
 
+// - [x] updated
 export const insertItem = async (request: Request, item: ShoppingCartItem): Promise<Session> => {
   const session = await getSessionCookie(request);
   let shoppingCart: ShoppingCart = {};
@@ -61,33 +63,35 @@ export const insertItem = async (request: Request, item: ShoppingCartItem): Prom
 
   const newShoppingCart = {
     ...shoppingCart,
-    [item.productUUID]: item,
+    [item.variationUUID]: item,
   }
 
   session.set(CartSessionKey, newShoppingCart);
   return session;
 };
 
-export const removeItem = async (request: Request, prodUUID: string): Promise<Session> => {
+//  - [x] updated
+export const removeItem = async (request: Request, variationUUID: string): Promise<Session> => {
   const session = await getSessionCookie(request);
   const cart = await getCart(request);
   if (!cart || Object.keys(cart).length === 0) return session;
-  if (cart.hasOwnProperty(prodUUID)) {
-    delete cart[prodUUID];
+  if (cart.hasOwnProperty(variationUUID)) {
+    delete cart[variationUUID];
     const newShoppingCart = { ...cart };
     session.set(CartSessionKey, newShoppingCart);
   }
   return session;
 }
 
+// - [ ] updated
 export const updateItem = async (request: Request, item: ShoppingCartItem): Promise<Session> => {
   const session = await getSessionCookie(request);
-  const itemInCart = await getItem(request, item.productUUID);
+  const itemInCart = await getItem(request, item.variationUUID);
   if (!itemInCart) {
     return insertItem(request, item);
   };
   const cart = session.get(CartSessionKey);
-  cart[item.productUUID] = item;
+  cart[item.variationUUID] = item;
   session.set(CartSessionKey, cart);
   return session;
 }

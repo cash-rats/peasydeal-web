@@ -26,11 +26,11 @@ export default function ProductsColumn({ columnTitle = '', products = [], loadin
                 loadingItems.map((_, index) => <TopProductsColumnGrid key={index} loading />)
               )
               : (
-                products.map((prod) => {
+                products.map((prod, index) => {
                   return (
                     <TopProductsColumnGrid
                       productUUID={prod.productUUID}
-                      key={prod.productUUID}
+                      key={index}
                       title={prod.title}
                       image={prod.main_pic}
                     />

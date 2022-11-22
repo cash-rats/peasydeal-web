@@ -14,6 +14,7 @@ export const links: LinksFunction = () => {
 };
 interface CartItemProps {
 	prodID: string;
+	variationUUID: string;
 	image: string;
 	title: string;
 	description: string;
@@ -30,6 +31,7 @@ interface CartItemProps {
 
 function CartItem({
 	prodID,
+	variationUUID,
 	image,
 	title,
 	description,
@@ -80,7 +82,7 @@ function CartItem({
 					/>
 
 					<div className="CartItem__remove-btn">
-						<IconButton onClick={(evt) => onClickRemove(evt, prodID)}>
+						<IconButton onClick={(evt) => onClickRemove(evt, variationUUID)}>
 							<BsTrash />
 						</IconButton>
 					</div>

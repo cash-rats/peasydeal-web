@@ -36,8 +36,8 @@ type __action_type =
 	| 'update_item_quantity';
 
 
-const __removeCartItemAction = async (prodID: string, request: Request) => {
-	const session = await removeItem(request, prodID);
+const __removeCartItemAction = async (variationUUID: string, request: Request) => {
+	const session = await removeItem(request, variationUUID);
 	const cart = session.get('shopping_cart');
 
 	// Recalc price info.
@@ -64,11 +64,11 @@ const __removeCartItemAction = async (prodID: string, request: Request) => {
 		});
 }
 
-const __updateItemQuantity = async (prodID: string, quantity: string, request: Request) => {
+const __updateItemQuantity = async (variationUUID: string, quantity: string, request: Request) => {
 	// Recalc price info
 	const cart = await getCart(request);
 	if (!cart || Object.keys(cart).length === 0) return null;
-	const item = cart[prodID]
+	const item = cart[variationUUID]
 	if (!item) return null;
 	item.quantity = quantity;
 
@@ -84,8 +84,6 @@ const __updateItemQuantity = async (prodID: string, quantity: string, request: R
 	});
 }
 
-
-
 // TODOs:
 //   - [ ] handle prod_id is falsey value
 //   - [ ] handle session key not exists
@@ -95,14 +93,14 @@ export const action: ActionFunction = async ({ request }) => {
 	const actionType = formEntries['__action'] as __action_type || 'remove_cart_item'
 
 	if (actionType === 'remove_cart_item') {
-		const prodID = formEntries['prod_id'] as string || '';
-		return await __removeCartItemAction(prodID, request);
+		const variationUUID = formEntries['variation_uuid'] as string || '';
+		return await __removeCartItemAction(variationUUID, request);
 	}
 
 	if (actionType === 'update_item_quantity') {
-		const prodID = formEntries['prodID'] as string || '';
+		const variationUUID = formEntries['variation_uuid'] as string || '';
 		const quantity = formEntries['quantity'] as string;
-		return __updateItemQuantity(prodID, quantity, request);
+		return __updateItemQuantity(variationUUID, quantity, request);
 	}
 
 	// Unknown action
@@ -165,7 +163,7 @@ function Cart() {
 	const removeItemFetcher = useFetcher();
 	const updateItemQuantityFetcher = useFetcher();
 
-	const targetRemovalProdID = useRef<null | string>(null);
+	const targetRemovalVariationUUID = useRef<null | string>(null);
 	const justSynced = useRef<boolean>(false);
 
 	// If cart item contains no item, we simply redirect user to `/cart` so that
@@ -190,9 +188,9 @@ function Cart() {
 		}
 	}, [updateItemQuantityFetcher]);
 
-	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, prodID: string, quantity: number) => {
+	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, variationUUID: string, quantity: number) => {
 		if (quantity === 0) {
-			targetRemovalProdID.current = prodID;
+			targetRemovalVariationUUID.current = variationUUID;
 
 			setOpenRemoveItemModal(true);
 
@@ -200,7 +198,7 @@ function Cart() {
 		}
 
 		// We don't need to sync quantity if user has not changed anything.
-		if (prevQuantity[prodID] && Number(prevQuantity[prodID]) === quantity) return;
+		if (prevQuantity[variationUUID] && Number(prevQuantity[variationUUID]) === quantity) return;
 
 
 		// Update item quantity in session && recalculate price info from BE.
@@ -210,14 +208,14 @@ function Cart() {
 			return;
 		}
 
-		updateQuantity(prodID, quantity);
+		updateQuantity(variationUUID, quantity);
 
 		setSyncingPrice(true);
 
 		updateItemQuantityFetcher.submit(
 			{
 				__action: 'update_item_quantity',
-				prodID,
+				variation_uuid: variationUUID,
 				quantity: quantity.toString()
 			},
 			{
@@ -227,10 +225,10 @@ function Cart() {
 		);
 	};
 
-	const removeItem = (targetRemovalProdID: string) => {
-		const updatedCartItems = Object.keys(cartItems).reduce((newCartItems: ShoppingCart, prodID) => {
-			if (prodID === targetRemovalProdID) return newCartItems;
-			newCartItems[prodID] = cartItems[prodID];
+	const removeItem = (targetRemovalVariationUUID: string) => {
+		const updatedCartItems = Object.keys(cartItems).reduce((newCartItems: ShoppingCart, variationUUID) => {
+			if (variationUUID === targetRemovalVariationUUID) return newCartItems;
+			newCartItems[variationUUID] = cartItems[variationUUID];
 			return newCartItems
 		}, {})
 
@@ -242,7 +240,7 @@ function Cart() {
 		removeItemFetcher.submit(
 			{
 				__action: 'remove_cart_item',
-				prod_id: targetRemovalProdID,
+				variation_uuid: targetRemovalVariationUUID,
 			},
 			{
 				method: 'post',
@@ -253,10 +251,10 @@ function Cart() {
 
 	const handleRemoveItemResult = (res: boolean) => {
 		if (!res) return false;
-		if (!targetRemovalProdID.current) return;
+		if (!targetRemovalVariationUUID.current) return;
 
 		// Remove cart item on the client side before mutating session.
-		removeItem(targetRemovalProdID.current);
+		removeItem(targetRemovalVariationUUID.current);
 
 		setOpenRemoveItemModal(false);
 	}
@@ -269,15 +267,15 @@ function Cart() {
 
 	const handleCancelRemoval = () => {
 		// User decide not to cancel, revert cartitem in session.
-		if (!targetRemovalProdID || !targetRemovalProdID.current) return;
-		const prodID = targetRemovalProdID.current;
+		if (!targetRemovalVariationUUID || !targetRemovalVariationUUID.current) return;
+		const variationUUID = targetRemovalVariationUUID.current;
 
 		setCartItems((prev) => (
 			{
 				...prev,
-				[prodID]: {
-					...prev[prodID],
-					quantity: prevQuantity[prodID],
+				[variationUUID]: {
+					...prev[variationUUID],
+					quantity: prevQuantity[variationUUID],
 				}
 			}
 		));
@@ -285,23 +283,22 @@ function Cart() {
 		setOpenRemoveItemModal(false);
 	}
 
-	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, prodID: string) => {
-		console.log('debug ***');
+	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, variationUUID: string) => {
 		const quantity = Number(evt.target.value)
 		if (isNaN(quantity)) return;
-		updateQuantity(prodID, quantity);
+		updateQuantity(variationUUID, quantity);
 	}
 
-	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, prodID: string, number: number) => {
+	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, variationUUID: string, number: number) => {
 		// If user hasn't changed anything. don't bother to update the quantity.
-		if (cartItems[prodID] && Number(cartItems[prodID].quantity) === number) return;
-		updateQuantity(prodID, number);
+		if (cartItems[variationUUID] && Number(cartItems[variationUUID].quantity) === number) return;
+		updateQuantity(variationUUID, number);
 
 		setSyncingPrice(true);
 		updateItemQuantityFetcher.submit(
 			{
 				__action: 'update_item_quantity',
-				prodID,
+				variationUUID,
 				quantity: number.toString()
 			},
 			{
@@ -313,27 +310,25 @@ function Cart() {
 		justSynced.current = true;
 	}
 
-	const updateQuantity = (prodID: string, number: number) => {
-		console.log('debug 3', prodID, number);
-		console.log('debug 4', prodID, cartItems[prodID].quantity);
+	const updateQuantity = (variationUUID: string, number: number) => {
 		setPrevQuantity(prev => ({
 			...prev,
-			[prodID]: cartItems[prodID].quantity,
+			[variationUUID]: cartItems[variationUUID].quantity,
 		}));
 
 		setCartItems((prev) => (
 			{
 				...prev,
-				[prodID]: {
-					...prev[prodID],
+				[variationUUID]: {
+					...prev[variationUUID],
 					quantity: number.toString(),
 				}
 			}
 		));
 	}
 
-	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, prodID: string) => {
-		removeItem(prodID);
+	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) => {
+		removeItem(variationUUID);
 	}
 
 	return (
@@ -402,19 +397,22 @@ function Cart() {
 							// TODO: add typescript to item.
 							Object.keys(cartItems).map((prodID) => {
 								const item = cartItems[prodID];
+								const variationUUID = item.variationUUID;
+
 								return (
 									<CartItem
-										key={prodID}
+										key={variationUUID}
 										prodID={prodID}
+										variationUUID={variationUUID}
 										image={item.image}
 										title={item.title}
 										description={item.specName}
 										salePrice={Number(item.salePrice)}
 										retailPrice={Number(item.retailPrice)}
 										quantity={Number(item.quantity)}
-										onClickQuantity={(evt, number) => handleOnClickQuantity(evt, prodID, number)}
-										onChangeQuantity={(evt) => handleOnChangeQuantity(evt, prodID)}
-										onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, prodID, number)}
+										onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
+										onChangeQuantity={(evt) => handleOnChangeQuantity(evt, variationUUID)}
+										onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}
 										onClickRemove={handleRemove}
 									/>
 								)
