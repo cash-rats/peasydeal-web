@@ -222,6 +222,12 @@ function CheckoutPage() {
 
   return (
     <section className="checkout-page-container">
+      <form>
+        <input type='email' required />
+        <button type='submit' >
+          submit
+        </button >
+      </form>
       <h1 className="title"> Shipping Information </h1>
       {
         errorAlert
