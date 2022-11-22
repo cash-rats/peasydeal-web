@@ -99,6 +99,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	if (actionType === 'update_item_quantity') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
+		console.log('debug ~update_item_quantity', variationUUID);
 		const quantity = formEntries['quantity'] as string;
 		return __updateItemQuantity(variationUUID, quantity, request);
 	}
@@ -298,7 +299,7 @@ function Cart() {
 		updateItemQuantityFetcher.submit(
 			{
 				__action: 'update_item_quantity',
-				variationUUID,
+				variation_uuid: variationUUID,
 				quantity: number.toString()
 			},
 			{
@@ -398,6 +399,8 @@ function Cart() {
 							Object.keys(cartItems).map((prodID) => {
 								const item = cartItems[prodID];
 								const variationUUID = item.variationUUID;
+
+								console.log('debug variationUUID', variationUUID);
 
 								return (
 									<CartItem
