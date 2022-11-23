@@ -27,9 +27,9 @@ export const meta: MetaFunction = () => ({
 
 export let links: LinksFunction = () => {
   return [
-    { rel: 'apple-touch-icon', sizes: '180x180', href: 'assets/apple-touch-icon-180x180.png' },
-    { rel: 'icon', type: 'image/png', href: 'assets/favicon.ico' },
-    // { rel: 'manifest', href: 'assets/manifest.webmanifest' },
+    { rel: 'icon', type: 'image/x-icon', sizes: 'any', href: '/favicon.ico' },
+    { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon-180x180.png' },
+    { rel: 'manifest', href: '/assets/manifest.webmanifest' },
 
     { rel: 'stylesheet', href: tailwindStylesheetUrl },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
