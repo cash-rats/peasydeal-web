@@ -1,4 +1,5 @@
 import { getPeasyDealEndpoint } from '~/utils/endpoints';
+import type { PriceInfo } from '~/shared/cart';
 
 type CreateOrderParams = {
   email: string;
@@ -10,8 +11,9 @@ type CreateOrderParams = {
   postal: string;
   payment_secret: string;
   products: any;
-  contact_name: string,
-  phone_value: string,
+  contact_name: string;
+  phone_value: string;
+  price_info: PriceInfo;
 }
 
 export const createOrder = async ({
@@ -23,9 +25,10 @@ export const createOrder = async ({
   city,
   postal,
   payment_secret,
-  products,
   contact_name,
   phone_value,
+  products,
+  price_info,
 }: CreateOrderParams): Promise<Response> => {
   return fetch(`${getPeasyDealEndpoint()}/v1/orders`, {
     method: 'POST',
@@ -41,9 +44,10 @@ export const createOrder = async ({
       city,
       postal,
       payment_secret,
-      products,
       contact_name,
       phone_value,
+      products,
+      price_info
     }),
   });
 };

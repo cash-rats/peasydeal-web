@@ -99,7 +99,6 @@ export const action: ActionFunction = async ({ request }) => {
 
 	if (actionType === 'update_item_quantity') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
-		console.log('debug ~update_item_quantity', variationUUID);
 		const quantity = formEntries['quantity'] as string;
 		return __updateItemQuantity(variationUUID, quantity, request);
 	}

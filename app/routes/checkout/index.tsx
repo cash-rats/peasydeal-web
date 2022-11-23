@@ -13,6 +13,8 @@ import httpStatus from 'http-status-codes';
 import Alert from '@mui/material/Alert';
 
 import type { ApiErrorResponse } from '~/shared/types';
+import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
+import type { PriceInfo } from '~/shared/cart';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
 import { getCart } from '~/utils/shoppingcart.session';
@@ -37,6 +39,7 @@ export const links: LinksFunction = () => {
 
 type LoaderType = {
   cart_items: ShoppingCart;
+  price_info: PriceInfo;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -46,18 +49,21 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw redirect("/cart");
   }
 
+  const cartParams = convertShoppingCartToPriceQuery(cart);
+  const priceInfo = await fetchPriceInfo({ products: cartParams });
+
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
   // In stripe, the base unit is 1 cent, not 1 dollar.
-
-  return json<LoaderType>({ cart_items: cart });
+  return json<LoaderType>({ cart_items: cart, price_info: priceInfo });
 };
 
 type ActionPayload = {
   [k: string]: FormDataEntryValue;
-  shipping_form: string,
-  contact_info_form: string,
+  shipping_form: string;
+  contact_info_form: string;
   cart_items: string,
   payment_secret: string;
+  price_info: string;
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -68,13 +74,16 @@ export const action: ActionFunction = async ({ request }) => {
     shipping_form: shippingForm,
     contact_info_form: contactInfoForm,
     cart_items: cartItems,
+    price_info: priceInfo,
     payment_secret,
   } = formObj as ActionPayload;
 
   const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
   const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
+  const priceInfoObj: PriceInfo = JSON.parse(priceInfo);
   const cartItemsObj = JSON.parse(cartItems);
   const trfItemsObj = transformOrderDetail(cartItemsObj);
+
 
   const resp = await createOrder({
     email: shippingFormObj.email,
@@ -87,9 +96,10 @@ export const action: ActionFunction = async ({ request }) => {
 
     contact_name: contactInfoFormObj.contact_name,
     phone_value: contactInfoFormObj.phone_value,
-
     payment_secret,
+
     products: trfItemsObj,
+    price_info: priceInfoObj,
   });
 
   const respJSON = await resp.json();
@@ -112,7 +122,7 @@ export const action: ActionFunction = async ({ request }) => {
     - [ ] add search bar header
 */
 function CheckoutPage() {
-  const { cart_items: cartItems } = useLoaderData();
+  const { cart_items: cartItems, price_info: priceInfo } = useLoaderData<LoaderType>();
   const { paymentIntendID, total } = useContext();
   const element = useElements();
   const stripe = useStripe();
@@ -182,7 +192,6 @@ function CheckoutPage() {
         // Order is created, confirm payment on stripe.
         if (!element || !stripe) return;
 
-
         const { order_uuid: orderUUID } = createOrderFetcher.data;
         setOrderUUID(orderUUID);
 
@@ -209,9 +218,11 @@ function CheckoutPage() {
       createOrderFetcher.submit({
         shipping_form: JSON.stringify(shippingDetailFormValues),
         contact_info_form: JSON.stringify(contactInfoFormValues),
+        price_info: JSON.stringify(priceInfo),
         cart_items: JSON.stringify(cartItems),
         payment_secret: paymentIntendID,
       }, { method: 'post', action: '/checkout?index' });
+
       return;
     }
 
