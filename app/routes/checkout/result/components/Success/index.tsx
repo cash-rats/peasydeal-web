@@ -21,8 +21,9 @@ export const links: LinksFunction = () => {
   ];
 }
 
-// Load order information by stripe `client_secret` and it's relative items.
 /*
+  Load order information by stripe `client_secret` and it's relative items.
+
   TODOs:
    - [ ] Remove items from shopping cart once payment success.
 */

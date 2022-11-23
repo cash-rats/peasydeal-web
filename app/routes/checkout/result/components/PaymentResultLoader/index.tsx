@@ -8,35 +8,22 @@ import { useEffect, useState } from 'react';
 import { useStripe } from '@stripe/react-stripe-js';
 import type { PaymentIntent } from '@stripe/stripe-js';
 import type { LinksFunction } from '@remix-run/node';
-import Skeleton from '@mui/material/Skeleton';
 
+import LoadingSkeleton, { links as LoadingSkeletonLinks } from '../LoadingSkeleton';
 import Success, { links as SuccessLinks } from '../Success';
 import Failed, { links as FailedLinks } from '../Failed';
 
+import styles from './styles/PaymentResultLoading.css';
+
 export const links: LinksFunction = () => {
   return [
+    { href: styles, rel: 'stylesheet' },
     ...SuccessLinks(),
     ...FailedLinks(),
+    ...LoadingSkeletonLinks(),
   ];
 };
 
-function LoadingSkeleton() {
-  return (
-    <div className='skeleton-container'>
-
-      {/* For variant="text", adjust the height via font-size */}
-      <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-      <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
-
-      {/* For other variants, adjust the size with `width` and `height` */}
-      <Skeleton variant="text" width={160} height={40} />
-      <Skeleton variant="rectangular" height={60} />
-      <Skeleton variant="rounded" height={60} />
-      <Skeleton variant="rectangular" height={60} />
-      <Skeleton variant="rectangular" height={60} />
-    </div>
-  );
-}
 
 function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
   const stripe = useStripe();

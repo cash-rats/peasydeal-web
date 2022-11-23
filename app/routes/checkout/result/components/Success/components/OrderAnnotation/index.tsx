@@ -20,7 +20,7 @@ function OrderAnnotation({ email, orderUUID }: OrderAnnotationProps) {
       <div className="success-icon">
         <CheckCircleIcon
           color="success"
-          sx={{ fontSize: 60 }}
+          sx={{ fontSize: 120 }}
         />
       </div>
 
