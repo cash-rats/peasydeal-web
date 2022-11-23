@@ -2,15 +2,16 @@ import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
+import LogoHeader, { links as LogoHeaderLinks } from "~/components/Header/components/LogoHeader";
 
 import styles from './styles/TrackOrderHeader.css';
-import LogoBar, { links as LogoBarLinks } from '../LogoBar';
-import HeaderWrapper, { links as HeaderWrapperLinks } from '../HeaderWrapper';
+// import LogoBar, { links as LogoBarLinks } from '../Header/components/LogoBar';
+import HeaderWrapper, { links as HeaderWrapperLinks } from '../Header/components/HeaderWrapper';
 
 export const links: LinksFunction = () => {
   return [
     ...SearchBarLinks(),
-    ...LogoBarLinks(),
+    ...LogoHeaderLinks(),
     ...HeaderWrapperLinks(),
     { rel: 'stylesheet', href: styles },
   ];
@@ -23,11 +24,8 @@ interface TrackOrderHeaderProps {
 
 function TrackOrderHeader({ onSearch, onClear }: TrackOrderHeaderProps) {
   return (
-    <HeaderWrapper>
-      <div className="track-order-header">
-        <div className="logo-bar-container">
-          <LogoBar />
-        </div>
+    <>
+      <LogoHeader>
         <div className="search-bar-container">
           <SearchBar
             onSearch={onSearch}
@@ -35,8 +33,22 @@ function TrackOrderHeader({ onSearch, onClear }: TrackOrderHeaderProps) {
             placeholder="Search order id "
           />
         </div>
-      </div>
-    </HeaderWrapper>
+      </LogoHeader>
+    </>
+    // <HeaderWrapper>
+    //   <div className="track-order-header">
+    //     <div className="logo-bar-container">
+    //       <LogoBar />
+    //     </div>
+    //     <div className="search-bar-container">
+    //       <SearchBar
+    //         onSearch={onSearch}
+    //         onClear={onClear}
+    //         placeholder="Search order id "
+    //       />
+    //     </div>
+    //   </div>
+    // </HeaderWrapper>
   );
 }
 

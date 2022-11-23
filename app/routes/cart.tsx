@@ -8,6 +8,7 @@ import { getItemCount } from '~/utils/shoppingcart.session';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { fetchCategories } from '~/categories.server';
 import type { Category } from '~/shared/types';
@@ -31,12 +32,14 @@ export const links: LinksFunction = () => {
     ...CategoriesNavLinks(),
     ...HeaderLinks(),
     ...FooterLinks(),
+    ...DropDownSearchBarLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
 
 function CartLayout() {
   const { cartItemCount, categories } = useLoaderData<LoaderType>();
+  const [suggests, searchSuggests] = useSearchSuggests();
 
   const search = useFetcher();
   const handleSearch = (query: string) => {
@@ -50,7 +53,15 @@ function CartLayout() {
           <Header
             form='cart-search-products'
             numOfItemsInCart={cartItemCount}
-            useSearchSuggests={useSearchSuggests}
+            searchBar={
+              <DropDownSearchBar
+                form='cart-search-products'
+                placeholder='Search products by name'
+                onDropdownSearch={searchSuggests}
+                results={suggests}
+                onSearch={handleSearch}
+              />
+            }
             onSearch={handleSearch}
             categoriesBar={<CategoriesNav categories={categories} />}
           />

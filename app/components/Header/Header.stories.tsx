@@ -1,6 +1,6 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import TrackOrderHeader from './components/TrackOrderHeader';
+import TrackOrderHeader from '../TrackOrderHeader';
 import Header from './index';
 
 export default {

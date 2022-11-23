@@ -16,6 +16,7 @@ import { fetchCategories } from '~/categories.server';
 import type { Category } from '~/shared/types';
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 
 import styles from './styles/index.css';
 import { useSearchSuggests } from './hooks/auto-complete-search';
@@ -25,6 +26,7 @@ export const links: LinksFunction = () => {
     ...FooterLinks(),
     ...HeaderLinks(),
     ...CategoriesNavLinks(),
+    ...DropDownSearchBarLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -86,8 +88,8 @@ function CheckoutLayout() {
     categories,
     item_count,
   } = useLoaderData<LoaderType>();
-
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
+  const [suggests, searchSuggests] = useSearchSuggests();
 
   const options: StripeElementsOptions = {
     // passing the client secret obtained in step 2
@@ -112,7 +114,14 @@ function CheckoutLayout() {
         <Form className="header-wrapper" action='/search'>
           <Header
             numOfItemsInCart={item_count}
-            useSearchSuggests={useSearchSuggests}
+            searchBar={
+              <DropDownSearchBar
+                form='index-search-product'
+                placeholder='Search products by name'
+                onDropdownSearch={searchSuggests}
+                results={suggests}
+              />
+            }
             categoriesBar={<CategoriesNav categories={categories} />}
           />
         </Form>

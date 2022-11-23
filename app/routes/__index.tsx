@@ -14,6 +14,7 @@ import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { getItemCount } from '~/utils/shoppingcart.session';
 import { fetchCategories } from '~/categories.server';
@@ -25,6 +26,7 @@ export const links: LinksFunction = () => {
 		...FooterLinks(),
 		...HeaderLinks(),
 		...CategoriesNavLinks(),
+		...DropDownSearchBarLinks(),
 
 		{ rel: 'stylesheet', href: styles }
 	];
@@ -51,6 +53,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Index() {
 	const { numOfItemsInCart, categories } = useLoaderData<LoaderType>();
 	const search = useFetcher();
+	const [suggests, searchSuggests] = useSearchSuggests();
 
 	const handleSearch = (query: string) => {
 		search.submit({ query }, { method: 'post', action: '/search' });
@@ -64,9 +67,19 @@ export default function Index() {
 				<Form className="header-wrapper" action='/search'>
 					<Header
 						form='index-search-product'
-						categoriesBar={<CategoriesNav categories={categories} />}
+						categoriesBar={
+							<CategoriesNav categories={categories} />
+						}
+						searchBar={
+							<DropDownSearchBar
+								form='index-search-product'
+								placeholder='Search products by name'
+								onDropdownSearch={searchSuggests}
+								results={suggests}
+								onSearch={handleSearch}
+							/>
+						}
 						numOfItemsInCart={numOfItemsInCart}
-						useSearchSuggests={useSearchSuggests}
 						onSearch={handleSearch}
 					/>
 				</Form>
