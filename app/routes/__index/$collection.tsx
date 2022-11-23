@@ -180,6 +180,7 @@ function Collection() {
   useEffect(() => {
     setProductRows(organizeTo9ProdsPerRow(products));
     currPage.current = page;
+    setHasMore(has_more);
   }, [category]);
 
 
