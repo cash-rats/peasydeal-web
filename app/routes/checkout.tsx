@@ -22,10 +22,10 @@ import { useSearchSuggests } from './hooks/auto-complete-search';
 
 export const links: LinksFunction = () => {
   return [
-    { rel: 'stylesheet', href: styles },
     ...FooterLinks(),
     ...HeaderLinks(),
     ...CategoriesNavLinks(),
+    { rel: 'stylesheet', href: styles },
   ];
 };
 

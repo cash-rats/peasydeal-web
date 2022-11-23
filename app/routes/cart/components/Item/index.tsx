@@ -13,7 +13,6 @@ export const links: LinksFunction = () => {
 	];
 };
 interface CartItemProps {
-	prodID: string;
 	variationUUID: string;
 	image: string;
 	title: string;
@@ -30,7 +29,6 @@ interface CartItemProps {
 }
 
 function CartItem({
-	prodID,
 	variationUUID,
 	image,
 	title,

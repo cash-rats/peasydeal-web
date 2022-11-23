@@ -29,7 +29,6 @@ export default function QuantityDropDown({
   const [open, setOpen] = useState(false);
   const numArr = new Array(maxNum).fill(0).map((_, i) => i + 1);
   useBodyClick((evt: MouseEvent<HTMLBodyElement>) => {
-    evt.preventDefault();
     if (!dropDownListRef || !dropDownListRef.current) return;
 
     if (dropDownListRef.current !== evt.target && !dropDownListRef.current.contains(evt.target)) {
