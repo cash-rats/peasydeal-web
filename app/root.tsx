@@ -9,14 +9,8 @@ import {
   Meta,
   Outlet,
   Scripts,
-  // ScrollRestoration,
   useLoaderData,
 } from "@remix-run/react";
-
-// TOOD deprecate chakra in favor of mui
-// import { ChakraProvider } from '@chakra-ui/react';
-
-// TODO deprecate it in favor of mui
 
 import Layout from './Layout';
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -34,8 +28,8 @@ export const meta: MetaFunction = () => ({
 export let links: LinksFunction = () => {
   return [
     { rel: 'apple-touch-icon', sizes: '180x180', href: 'assets/apple-touch-icon-180x180.png' },
-    { rel: 'icon', type: 'image/png', sizes: 'any', href: 'assets/favicon.ico' },
-    { rel: 'manifest', href: 'assets/manifest.webmanifest' },
+    { rel: 'icon', type: 'image/png', href: 'assets/favicon.ico' },
+    // { rel: 'manifest', href: 'assets/manifest.webmanifest' },
 
     { rel: 'stylesheet', href: tailwindStylesheetUrl },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
