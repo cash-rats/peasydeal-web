@@ -6,7 +6,8 @@
 }
 @media (min-width: 599px) {
   .problematic-page {
-    min-height: 560px;
+    min-height: 620px;
+    margin: 7rem auto 0;
   }
 }
 .problematic-page .error-title {

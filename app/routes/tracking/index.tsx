@@ -4,7 +4,6 @@ import { json, redirect } from '@remix-run/node';
 import { Form, useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 
-import TrackOrderHeader, { links as TrackOrderHeaderLinks } from '~/components/TrackOrderHeader';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { error } from '~/utils/error';
@@ -22,12 +21,15 @@ type LoaderDataType = {
   numOfItemsInCart: number;
 };
 
+type ErrorBoundaryDataType = {
+  errMessage: string;
+  numOfItemsInCart: number;
+}
+
 export const links: LinksFunction = () => {
   return [
     ...FooterLinks(),
-
     ...HeaderLinks(),
-    ...TrackOrderHeaderLinks(),
 
     ...TrackingOrderInfoLinks(),
     ...TrackingOrderErrorPageLinks(),
@@ -64,7 +66,10 @@ export const loader: LoaderFunction = async ({ request }) => {
       numOfItemsInCart,
     });
   } catch (err) {
-    throw json(`Result for order ${orderID} is not found`, httpStatus.NOT_FOUND);
+    throw json<ErrorBoundaryDataType>({
+      errMessage: `Result for order ${orderID} is not found`,
+      numOfItemsInCart,
+    }, httpStatus.NOT_FOUND);
   }
 }
 
@@ -81,6 +86,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const CatchBoundary = () => {
   const caught = useCatch();
+  const caughtData: ErrorBoundaryDataType = caught.data;
   const trackOrderFetcher = useFetcher();
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
@@ -106,6 +112,7 @@ export const CatchBoundary = () => {
     <>
       <Form action='/tracking?index'>
         <Header
+          numOfItemsInCart={caughtData.numOfItemsInCart}
           searchBar={
             <SearchBar
               onSearch={handleOnSearch}
@@ -116,7 +123,7 @@ export const CatchBoundary = () => {
         />
       </Form>
 
-      <TrackingOrderErrorPage message={caught.data} />
+      <TrackingOrderErrorPage message={caughtData.errMessage} />
 
       <Footer />
     </>
@@ -125,7 +132,7 @@ export const CatchBoundary = () => {
 
 
 function TrackingOrder() {
-  const { order } = useLoaderData<LoaderDataType>();
+  const { order, numOfItemsInCart } = useLoaderData<LoaderDataType>();
   const trackOrderFetcher = useFetcher();
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
@@ -153,6 +160,7 @@ function TrackingOrder() {
     <>
       <Form action='/tracking?index'>
         <Header
+          numOfItemsInCart={numOfItemsInCart}
           searchBar={
             <SearchBar
               onSearch={handleOnSearch}

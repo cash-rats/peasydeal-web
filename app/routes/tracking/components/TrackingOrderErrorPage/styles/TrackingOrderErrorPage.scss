@@ -6,8 +6,10 @@
   padding: 2rem 1rem 3rem 2rem;
   margin: 0 auto;
 
+
   @media (min-width: #{$screen-phone-top-599}) {
-    min-height: 560px;
+    min-height: 620px;
+    margin: 7rem auto 0;
   }
 
   .error-title {
