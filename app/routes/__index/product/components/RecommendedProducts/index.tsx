@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher, useTransition } from '@remix-run/react';
 import { json } from '@remix-run/node';
 
 import type { Product } from '~/shared/types';
@@ -27,11 +27,6 @@ type ActionDataType = {
   products: Product[];
 }
 
-// generateRandomInteger random page number to recommand
-function generateRandomInteger(min: number, max: number): number {
-  return Math.floor(min + Math.random() * (max - min) + 1);
-}
-
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const category = body.get('category') as string || '';
@@ -43,11 +38,10 @@ export const action: ActionFunction = async ({ request }) => {
     return json<ActionDataType>({ products: [] });
   }
 
-  const randomPage = generateRandomInteger(1, 5);
 
   const products = await fetchProductsByCategory({
     category: targetCat.catId,
-    page: randomPage,
+    random: 1,
     perpage: PAGE_LIMIT,
   });
 
@@ -62,7 +56,17 @@ interface RecommendedProductsProps {
 
 function RecommendedProducts({ category, onClickProduct }: RecommendedProductsProps) {
   const fetcher = useFetcher();
+
   const [rows, setRows] = useState<Product[][]>([]);
+  const transition = useTransition();
+
+  useEffect(() => {
+    if (transition.state !== 'idle') {
+      fetcher.submit({
+        category
+      }, { method: 'post', action: '/product/components/RecommendedProducts?index' });
+    }
+  }, [transition.state])
 
   useEffect(() => {
     fetcher.submit({
@@ -85,10 +89,6 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
 
   return (
     <div className="recommended-products-wrapper">
-      {/* <h2 className="recommended-products-wrapper_title">
-        you may also like
-      </h2> */}
-
       {
         <ProductRowsLayout
           loading={fetcher.type !== 'done'}
