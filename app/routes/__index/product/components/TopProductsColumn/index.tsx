@@ -1,5 +1,5 @@
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher, useTransition } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { useEffect, useState } from 'react';
 
@@ -55,7 +55,23 @@ export default function TopProductsColumn() {
     super_deal_products: [],
   });
 
+
   const fetcher = useFetcher();
+
+  const transition = useTransition();
+  useEffect(() => {
+    if (transition.state !== 'idle') {
+      fetcher.submit(
+        {},
+        {
+          method: 'post',
+          action: '/product/components/TopProductsColumn?index',
+        }
+      );
+
+    }
+  }, [transition.state]);
+
   useEffect(() => {
     fetcher.submit(
       {},
