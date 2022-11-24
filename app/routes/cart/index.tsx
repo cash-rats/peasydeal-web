@@ -398,7 +398,10 @@ function Cart() {
 
 								return (
 									<CartItem
-										calculating={updateItemQuantityFetcher.state !== 'idle'}
+										calculating={
+											updateItemQuantityFetcher.state !== 'idle' ||
+											removeItemFetcher.state !== 'idle'
+										}
 										key={variationUUID}
 										variationUUID={variationUUID}
 										image={item.image}
@@ -420,7 +423,10 @@ function Cart() {
 							priceInfo && (
 								<PriceResult
 									priceInfo={priceInfo}
-									calculating={updateItemQuantityFetcher.state !== 'idle'}
+									calculating={
+										updateItemQuantityFetcher.state !== 'idle' ||
+										removeItemFetcher.state !== 'idle'
+									}
 								/>
 							)
 						}
