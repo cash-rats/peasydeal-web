@@ -10,9 +10,11 @@ import type { Product } from '~/shared/types';
 import { fetchProductsByCategory } from '~/api';
 import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
+import { breakPoints } from '~/styles/breakpoints';
 
 import styles from './styles/HorizontalProductsLayout.css';
 import Grid from './HorizontalGrid';
+import { breakpoints } from '@mui/system';
 
 
 export const links: LinksFunction = () => {
@@ -76,6 +78,30 @@ export default function HorizontalProductsLayout({ catID = 2 }: HorizontalProduc
     infinite: true,
     slidesToShow: 4,
     slidesToScroll: 4,
+    responsive: [
+      {
+        breakpoint: breakPoints.screen1024min,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        }
+      },
+      {
+        breakpoint: breakPoints.screen768min,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: breakPoints.screen600min,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ],
   }
 
   const handleClickGrid = (evt: MouseEvent, prodUUID: string) => {

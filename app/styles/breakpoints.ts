@@ -2,29 +2,29 @@
 
 
 const phoneTop = 599
-
 const tabletPortraitBottom = 600;
 const tabletPortraitTop = 767;
-
 const largeTabletBottom = 991;
-
 const normalScreenBottom = 768;
 const normalScreenTop = 1199;
-
 const desktopBottom = 1200;
-
+const screen1024min = 1024;
+const screen768min = 768;
+const screen600min = 600;
+const screen499min = 499;
 
 export const breakPoints = {
   phoneTop,
-
   tabletPortraitTop,
   tabletPortraitBottom,
   largeTabletBottom,
-
   normalScreenTop,
   normalScreenBottom,
-
   desktopBottom,
+  screen1024min,
+  screen600min,
+  screen768min,
+  screen499min,
 };
 
 export const devices = {
