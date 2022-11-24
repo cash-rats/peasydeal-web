@@ -395,12 +395,17 @@ function Cart() {
 								const item = cartItems[prodID];
 								const variationUUID = item.variationUUID;
 
+								const isCalculating = (
+									updateItemQuantityFetcher.state !== 'idle' &&
+									updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
+								) || (
+										removeItemFetcher.state !== 'idle' &&
+										removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
+									)
+
 								return (
 									<CartItem
-										calculating={
-											updateItemQuantityFetcher.state !== 'idle' ||
-											removeItemFetcher.state !== 'idle'
-										}
+										calculating={isCalculating}
 										key={variationUUID}
 										variationUUID={variationUUID}
 										image={item.image}
@@ -433,30 +438,20 @@ function Cart() {
 				</div>
 
 				{/* Recommended products - top items */}
-				<div className="Cart__rec-products">
-					<h1 className="Cart__rec-title">
-						<span>top items </span>
-						<Link to="/Hot Deal">
-							<span className="Cart__rec-see-all"> see all </span>
-						</Link>
-					</h1>
-
-					{/* @TODO catID should not be hardcoded here */}
-					<HorizontalProductsLayout catID={1} />
-				</div>
+				{/* @TODO catID should not be hardcoded here */}
+				<HorizontalProductsLayout
+					catID={1}
+					title='top items'
+					seeAllLinkTo='/Hot Deal'
+				/>
 
 				{/* Recommended products - new trend */}
-				<div className="Cart__rec-products">
-					<h1 className="Cart__rec-title">
-						<span> new trend </span>
-						<Link to="/New Trend">
-							<span className="Cart__rec-see-all"> see all </span>
-						</Link>
-					</h1>
-
-					{/* @TODO catID should not be hardcoded here */}
-					<HorizontalProductsLayout catID={2} />
-				</div>
+				{/* @TODO catID should not be hardcoded here */}
+				<HorizontalProductsLayout
+					catID={2}
+					title='new trend'
+					seeAllLinkTo='/New Trend'
+				/>
 			</section>
 		</>
 	);

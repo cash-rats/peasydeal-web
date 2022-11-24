@@ -31,7 +31,7 @@ interface PicsCarouselProps {
  *  - [ ] 當移動 slide 到 thumbnail 看不到的位置，要 scroll thumbnail bar.
  */
 function PicsCarousel({ images }: PicsCarouselProps) {
-	const sliderRef = useRef<Slider>();
+	const sliderRef = useRef<Slider | null>(null);
 	const [activeSlide, setActiveSlide] = useState(0);
 
 	const handleClickNext = () => console.log('next');

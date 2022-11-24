@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import type { MouseEvent } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher, Link } from '@remix-run/react';
 import type { Settings } from 'react-slick';
 import Slider from 'react-slick';
 
@@ -14,7 +14,6 @@ import { breakPoints } from '~/styles/breakpoints';
 
 import styles from './styles/HorizontalProductsLayout.css';
 import Grid from './HorizontalGrid';
-import { breakpoints } from '@mui/system';
 
 
 export const links: LinksFunction = () => {
@@ -50,14 +49,17 @@ export const action: ActionFunction = async ({ request }) => {
 
 interface HorizontalProductsLayoutProps {
   catID?: number;
+  title?: string;
+  seeAllLinkTo: string;
 }
 
-export default function HorizontalProductsLayout({ catID = 2 }: HorizontalProductsLayoutProps) {
+export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkTo }: HorizontalProductsLayoutProps) {
   const fetcher = useFetcher();
   const clickRecProd = useFetcher();
 
   const [recProds, setRecProds] = useState<Product[]>(loadingGrids);
   const gestureZone = useRef<HTMLDivElement | null>(null);
+  const sliderRef = useRef<Slider | null>(null);
 
   useEffect(() => {
     fetcher.submit(
@@ -114,24 +116,44 @@ export default function HorizontalProductsLayout({ catID = 2 }: HorizontalProduc
   }
 
   return (
-    <div ref={gestureZone} className="HorizontalProductsLayout__wrapper">
-      <Slider {...settings}>
-        {
-          recProds.map((prod, index) => {
-            return (
-              <Grid
-                loading={fetcher.type !== 'done'}
-                key={index}
-                src={prod.main_pic}
-                title={prod.title}
-                price={prod.salePrice}
-                productUUID={prod.productUUID}
-                onClick={handleClickGrid}
-              />
-            )
-          })
-        }
-      </Slider>
+
+    <div className="HorizontalGrid__rec-products">
+      <h1 className="HorizontalGrid__rec-title">
+
+        <div className="HorizontalGrid__rec-title-left">
+          <span>{title} </span>
+          <Link to={seeAllLinkTo}>
+            <span className="HorizontalGrid__rec-see-all"> see all </span>
+          </Link>
+        </div>
+
+        <div className="HorizontalGrid__rec-title-right">
+          {/* <span className="HorizontalGrid__pagination-bullet" />
+          <span className="HorizontalGrid__pagination-bullet" />
+          <span className="HorizontalGrid__pagination-bullet" />
+          <span className="HorizontalGrid__pagination-bullet" />
+          <span className="HorizontalGrid__pagination-bullet" /> */}
+        </div>
+      </h1>
+      <div ref={gestureZone} className="HorizontalProductsLayout__wrapper">
+        <Slider ref={sliderRef} {...settings}>
+          {
+            recProds.map((prod, index) => {
+              return (
+                <Grid
+                  loading={fetcher.type !== 'done'}
+                  key={index}
+                  src={prod.main_pic}
+                  title={prod.title}
+                  price={prod.salePrice}
+                  productUUID={prod.productUUID}
+                  onClick={handleClickGrid}
+                />
+              )
+            })
+          }
+        </Slider>
+      </div>
     </div>
   );
 }

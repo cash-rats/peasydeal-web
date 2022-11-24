@@ -196,25 +196,4 @@
   border-bottom: solid 1px #ccc;
 }
 
-.Cart__rec-products {
-  max-width: 1180px;
-  padding: 40px 20px 20px 20px;
-  margin: 2rem auto 0;
-  border-radius: 5px;
-  background-color: white;
-}
-
-.Cart__rec-title {
-  text-transform: uppercase;
-  font-size: 1.2rem;
-  font-weight: 500;
-}
-
-.Cart__rec-see-all {
-  text-transform: uppercase;
-  font-size: 0.8rem;
-  margin-left: 1rem;
-  font-weight: 400;
-}
-
 /*# sourceMappingURL=cart.css.map */
