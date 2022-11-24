@@ -372,32 +372,39 @@ function ProductDetailPage() {
 
 								<Divider text="options" />
 								<div className="options-container">
-									{/* Variations */}
 									<ClientOnly>
-										<Select
-											inputId='variation_id'
-											instanceId='variation_id'
-											placeholder='select variation'
-											value={{
-												value: variation?.uuid,
-												label: variation?.spec_name,
-											}}
-											onChange={(v) => {
-												if (!v) return;
-												setVariation(
-													productDetail.variations.find(variation => variation.uuid === v.value)
-												);
-											}}
-											options={
-												productDetail.variations.map(
-													(variation) => ({ value: variation.uuid, label: variation.spec_name })
-												)
-											}
-										/>
+										{
+											productDetail.variations.length > 1
+												? (
+													<>
+														<Select
+															inputId='variation_id'
+															instanceId='variation_id'
+															placeholder='select variation'
+															value={{
+																value: variation?.uuid,
+																label: variation?.spec_name,
+															}}
+															onChange={(v) => {
+																if (!v) return;
+																setVariation(
+																	productDetail.variations.find(variation => variation.uuid === v.value)
+																);
+															}}
+															options={
+																productDetail.variations.map(
+																	(variation) => ({ value: variation.uuid, label: variation.spec_name })
+																)
+															}
+														/>
 
-										<p className="error">
-											{variationErr}
-										</p>
+														<p className="error">
+															{variationErr}
+														</p>
+													</>
+												)
+												: null
+										}
 									</ClientOnly>
 
 									{/* Quantity */}
