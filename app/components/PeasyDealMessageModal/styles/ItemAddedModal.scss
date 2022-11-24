@@ -1,3 +1,5 @@
+@import 'styles/_colors';
+
 .ItemAddedModal__wrapper {
   display: flex;
   flex-direction: column;
@@ -7,6 +9,7 @@
 }
 
 .ItemAddedModal__message {
+  margin-top: 1rem;
   font-size: 1.2rem;
   color: white;
 }
