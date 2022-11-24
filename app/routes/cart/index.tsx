@@ -3,30 +3,27 @@ import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, Link, useFetcher } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction, ActionFunction, } from '@remix-run/node';
-import { BsBagCheck } from 'react-icons/bs';
-
-import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 import { commitSession } from '~/sessions/redis_session';
 import { getCart, removeItem, updateCart } from '~/utils/shoppingcart.session';
 import type { ShoppingCart } from '~/utils/shoppingcart.session';
 // TODO: all script in this file should be removed.
-import { TAX } from '~/utils/checkout_accountant';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
 import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
+import PriceResult, { links as PriceResultLinks } from './components/PriceResult';
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from './cart.server';
 import type { PriceInfo } from './cart.server';
 import styles from './styles/cart.css';
 
 export const links: LinksFunction = () => {
 	return [
-		...RoundButtonLinks(),
 		...ItemLinks(),
 		...EmptyShippingCartLinks(),
 		...HorizontalProductsLayoutLinks(),
+		...PriceResultLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
@@ -419,56 +416,12 @@ function Cart() {
 							})
 						}
 
-
-
-						{/* result row */}
 						{
 							priceInfo && (
-								<div className="result-row">
-									<div className="left" />
-
-									<div className="right">
-										<h2 className="Cart__result-row-summary">
-											Summary
-										</h2>
-										<div className="subtotal">
-											<label> Items </label>
-											<div className="result-value"> £{priceInfo.sub_total} </div>
-										</div>
-
-										<div className="tax">
-											<label> Tax ({TAX * 100}%) </label>
-											<div className="result-value"> £{priceInfo.tax_amount} </div>
-										</div>
-
-										<div className="shipping">
-											<label> Est. Shipping </label>
-											<div className="result-value"> £{priceInfo.shipping_fee} </div>
-										</div>
-
-										<div className="grand-total">
-											<label> <strong>Est. Total</strong> </label>
-											<div className="result-value">
-												<strong> £{priceInfo.total_amount} </strong>
-											</div>
-										</div>
-
-										<div className="checkout-button">
-											<Link
-												// prefetch="intent"
-												to="/checkout"
-											>
-												<RoundButton
-													size='large'
-													colorScheme='checkout'
-													leftIcon={<BsBagCheck fontSize={22} />}
-												>
-													<b>Proceed Checkout</b>
-												</RoundButton>
-											</Link>
-										</div>
-									</div>
-								</div>
+								<PriceResult
+									priceInfo={priceInfo}
+									calculating={updateItemQuantityFetcher.state !== 'idle'}
+								/>
 							)
 						}
 					</div>
