@@ -1,4 +1,9 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import {
+	useCallback,
+	useState,
+	useEffect,
+	useRef,
+} from 'react';
 import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
@@ -109,14 +114,15 @@ export const action: ActionFunction = async ({ request }) => {
  * TODO
  *   - [ ] image should be changed to carousel images.
  *         Display carousel images if variation is greater than 1
- *   - [ ]
  */
 function ProductDetailPage() {
-	const { product: productDetail } = useLoaderData<LoaderTypeProductDetail>();
+	const data = useLoaderData<LoaderTypeProductDetail>();
+	const [productDetail, setProductDetail] = useState<ProductDetail>(data.product);
 	const [mainCategory] = productDetail.categories;
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
+
 
 	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
 	useEffect(() => {
@@ -146,9 +152,8 @@ function ProductDetailPage() {
 			window.addEventListener('scroll', handleWindowScrolling);
 		}
 
-		return () => {
-			window.removeEventListener('scroll', handleWindowScrolling);
-		}
+		return () => window.removeEventListener('scroll', handleWindowScrolling);
+
 	}, []);
 
 	const [quantity, updateQuantity] = useState<number>(1);
@@ -157,6 +162,18 @@ function ProductDetailPage() {
 			variation => productDetail.default_variation_uuid === variation.uuid
 		)
 	);
+
+	useEffect(() => {
+		setProductDetail(data.product);
+	}, [data]);
+
+	useEffect(() => {
+		const currentVariation = productDetail.variations.find(
+			variation => productDetail.default_variation_uuid === variation.uuid
+		)
+
+		setVariation(currentVariation);
+	}, [productDetail]);
 
 	const [variationErr, setVariationErr] = useState<string>('');
 	const [openSuccessModal, setOpenSuccessModal] = useState(false);
@@ -361,7 +378,7 @@ function ProductDetailPage() {
 											inputId='variation_id'
 											instanceId='variation_id'
 											placeholder='select variation'
-											defaultValue={{
+											value={{
 												value: variation?.uuid,
 												label: variation?.spec_name,
 											}}
