@@ -146,7 +146,9 @@ function ProductDetailPage() {
 			window.addEventListener('scroll', handleWindowScrolling);
 		}
 
-		return () => window.removeEventListener('scroll', handleWindowScrolling);
+		return () => {
+			window.removeEventListener('scroll', handleWindowScrolling);
+		}
 	}, []);
 
 	const [quantity, updateQuantity] = useState<number>(1);
@@ -233,7 +235,7 @@ function ProductDetailPage() {
 				setOpenSuccessModal(false);
 			}, 1000)
 		}
-	}, [addToCart])
+	}, [addToCart.type])
 
 	const toProductDetailFetcher = useFetcher();
 

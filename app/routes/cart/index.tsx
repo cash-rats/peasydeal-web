@@ -6,7 +6,6 @@ import type { LinksFunction, LoaderFunction, ActionFunction, } from '@remix-run/
 import { commitSession } from '~/sessions/redis_session';
 import { getCart, removeItem, updateCart } from '~/utils/shoppingcart.session';
 import type { ShoppingCart } from '~/utils/shoppingcart.session';
-// TODO: all script in this file should be removed.
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 
