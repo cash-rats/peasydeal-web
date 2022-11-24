@@ -401,8 +401,8 @@ function Cart() {
 
 								return (
 									<CartItem
+										calculating={updateItemQuantityFetcher.state !== 'idle'}
 										key={variationUUID}
-										prodID={prodID}
 										variationUUID={variationUUID}
 										image={item.image}
 										title={item.title}

@@ -117,11 +117,11 @@
 			}
 
 			.product-total {
-				display: block;
+				display: flex;
 				width: 40%;
-				text-align: right;
 				font-weight: 700;
-				text-align: center;
+				justify-content: center;
+				align-items: center;
 			}
 		}
 	}

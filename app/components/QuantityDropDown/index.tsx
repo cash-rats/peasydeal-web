@@ -16,6 +16,7 @@ interface QuantityDropDownProps {
   onChange?: (evt: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>, number: number) => void;
   onClickNumber?: (evt: MouseEvent<HTMLLIElement>, number: number) => void;
+  disabled?: boolean;
 }
 
 export default function QuantityDropDown({
@@ -24,6 +25,7 @@ export default function QuantityDropDown({
   onChange = () => { },
   onBlur = () => { },
   onClickNumber = () => { },
+  disabled = false,
 }: QuantityDropDownProps) {
   const dropDownListRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
@@ -71,6 +73,7 @@ export default function QuantityDropDown({
         value={value}
         onChange={handleOnChange}
         onBlur={handleOnBlur}
+        disabled={disabled}
       />
 
       {

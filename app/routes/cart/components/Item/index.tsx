@@ -3,6 +3,7 @@ import type { LinksFunction } from '@remix-run/node';
 import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
 import { BsTrash } from 'react-icons/bs';
 import IconButton from '@mui/material/IconButton';
+import Skeleton from '@mui/material/Skeleton';
 
 import styles from './styles/Item.css';
 
@@ -13,6 +14,7 @@ export const links: LinksFunction = () => {
 	];
 };
 interface CartItemProps {
+	calculating?: boolean;
 	variationUUID: string;
 	image: string;
 	title: string;
@@ -29,6 +31,7 @@ interface CartItemProps {
 }
 
 function CartItem({
+	calculating = false,
 	variationUUID,
 	image,
 	title,
@@ -77,6 +80,7 @@ function CartItem({
 						onClickNumber={onClickQuantity}
 						onChange={onChangeQuantity}
 						onBlur={onBlurQuantity}
+						disabled={calculating}
 					/>
 
 					<div className="CartItem__remove-btn">
@@ -87,7 +91,16 @@ function CartItem({
 				</div>
 
 				<div className="product-total">
-					£{(quantity * salePrice).toFixed(2)}
+					{
+						calculating
+							? (
+								<>
+									£ &nbsp; <Skeleton width={40} height={35} />
+								</>
+							)
+							: `£${(quantity * salePrice).toFixed(2)}`
+					}
+
 				</div>
 			</div>
 		</div>
