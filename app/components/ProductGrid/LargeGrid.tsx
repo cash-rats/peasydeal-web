@@ -32,6 +32,7 @@ interface LargeGridProps {
 	description?: string;
 	onClickProduct?: (productID: string) => void;
 	tagCombo?: TagsCombo;
+	discount?: number;
 }
 
 function LargeGrid({
@@ -41,10 +42,12 @@ function LargeGrid({
 	description,
 	onClickProduct = () => { },
 	tagCombo = 'none',
+	discount = 0,
 }: LargeGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 	const tagNames = TagComboMap[tagCombo];
 	const shouldRenderTags = normalizeTagsListToMap(tagNames);
+	const nDiscount = ~~(discount * 100);
 
 	return (
 		<MqNotifier
@@ -81,19 +84,19 @@ function LargeGrid({
 
 							{
 								shouldRenderTags['SCRATCH_RIGHT'] && (
-									<Scratch text='50% off' direction='right' />
+									<Scratch text={`${nDiscount}% off`} direction='right' />
 								)
 							}
 
 							{
 								shouldRenderTags['SUN_LEFT'] && (
-									<SunShine text='50% off' direction='left' />
+									<SunShine text={`${nDiscount}% off`} direction='left' />
 								)
 							}
 
 							{
 								shouldRenderTags['SUN_RIGHT'] && (
-									<SunShine text='50% off' direction='right' />
+									<SunShine text={`${nDiscount}% off`} direction='right' />
 								)
 							}
 
@@ -137,31 +140,31 @@ function LargeGrid({
 
 							{
 								shouldRenderTags['SCRATCH_RIGHT'] && (
-									<Scratch text='50% off' direction='right' />
+									<Scratch text={`${nDiscount}% off`} direction='right' />
 								)
 							}
 
 							{
 								shouldRenderTags['SUN_LEFT'] && (
-									<SunShine text='50% off' direction='left' />
+									<SunShine text={`${nDiscount}% off`} direction='left' />
 								)
 							}
 
 							{
 								shouldRenderTags['SUN_RIGHT'] && (
-									<SunShine text='50% off' direction='right' />
+									<SunShine text={`${nDiscount}% off`} direction='right' />
 								)
 							}
 
 							{
 								shouldRenderTags['PENNANT_LEFT'] && (
-									<PennantLeft text1='price off' text2='20%' />
+									<PennantLeft text1='price off' text2={`${nDiscount}%`} />
 								)
 							}
 
 							{
 								shouldRenderTags['PENNANT_RIGHT'] && (
-									<PennantLeft text1='price off' text2='20%' direction='right' />
+									<PennantLeft text1='price off' text2={`${nDiscount} %`} direction='right' />
 								)
 							}
 							<input type='hidden' name="product-id" value={productID} />

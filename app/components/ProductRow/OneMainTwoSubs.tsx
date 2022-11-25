@@ -90,6 +90,7 @@ function RightLayout({
 						description={one.shortDescription}
 						onClickProduct={onClickProduct}
 						tagCombo={one.tabComboType as TagsCombo | null}
+						discount={one.discount}
 					/>
 				)
 			}
@@ -102,6 +103,7 @@ function RightLayout({
 						title={two.title}
 						description={two.shortDescription}
 						onClickProduct={onClickProduct}
+						discount={two.discount}
 					/>
 				)
 			}

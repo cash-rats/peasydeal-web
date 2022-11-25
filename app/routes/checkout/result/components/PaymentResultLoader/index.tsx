@@ -1,9 +1,3 @@
-/*
-  TODOs
-    - [ ] Show failed screen if payment status isn't success.
-    - [ ] Style loading page.
-*/
-
 import { useEffect, useState } from 'react';
 import { useStripe } from '@stripe/react-stripe-js';
 import type { PaymentIntent } from '@stripe/stripe-js';
@@ -24,7 +18,11 @@ export const links: LinksFunction = () => {
   ];
 };
 
-
+/*
+  TODOs
+    - [ ] Show failed screen if payment status isn't success.
+    - [ ] Style loading page.
+*/
 function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
   const stripe = useStripe();
   const [stripePaymentStatus, setStripePaymentStatus] = useState<PaymentIntent.Status | null | undefined>(null);

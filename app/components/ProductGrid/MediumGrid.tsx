@@ -32,6 +32,7 @@ interface MediumGridProps {
 	description?: string;
 	onClickProduct?: (productID: string) => void;
 	tagCombo?: TagsCombo | null;
+	discount?: number;
 };
 
 
@@ -51,6 +52,7 @@ export default function MediumGrid({
 	description,
 	onClickProduct = () => { },
 	tagCombo = 'none',
+	discount = 0,
 }: MediumGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 	// retrieve tags name in the provided combo. If given grid does not have
@@ -59,6 +61,7 @@ export default function MediumGrid({
 		? []
 		: TagComboMap[tagCombo]
 	);
+	const nDiscount = ~~(discount * 100);
 
 	return (
 		<MqNotifier
@@ -94,25 +97,25 @@ export default function MediumGrid({
 
 							{
 								shouldRenderTags['SCRATCH_RIGHT'] && (
-									<Scratch text='50% off' direction='right' />
+									<Scratch text={`${nDiscount}% off`} direction='right' />
 								)
 							}
 
 							{
 								shouldRenderTags['SUN_LEFT'] && (
-									<SunShine text='50% off' direction='left' />
+									<SunShine text={`${nDiscount} % off`} direction='left' />
 								)
 							}
 
 							{
 								shouldRenderTags['SUN_RIGHT'] && (
-									<SunShine text='50% off' direction='right' />
+									<SunShine text={`${nDiscount}% off`} direction='right' />
 								)
 							}
 
 							{
 								shouldRenderTags['PENNANT_LEFT'] && (
-									<PennantLeft text1='price off' text2='20%' />
+									<PennantLeft text1='price off' text2={`${nDiscount}%`} />
 								)
 							}
 
@@ -141,7 +144,6 @@ export default function MediumGrid({
 						</Link>
 					)
 					: (
-
 						<div
 							onClick={
 								clickableGrid
@@ -165,25 +167,25 @@ export default function MediumGrid({
 
 							{
 								shouldRenderTags['SCRATCH_RIGHT'] && (
-									<Scratch text='50% off' direction='right' />
+									<Scratch text={`${nDiscount}% off`} direction='right' />
 								)
 							}
 
 							{
 								shouldRenderTags['SUN_LEFT'] && (
-									<SunShine text='50% off' direction='left' />
+									<SunShine text={`${nDiscount}% off`} direction='left' />
 								)
 							}
 
 							{
 								shouldRenderTags['SUN_RIGHT'] && (
-									<SunShine text='50% off' direction='right' />
+									<SunShine text={`${nDiscount}% off`} direction='right' />
 								)
 							}
 
 							{
 								shouldRenderTags['PENNANT_LEFT'] && (
-									<PennantLeft text1='price off' text2='20%' />
+									<PennantLeft text1='price off' text2={`${nDiscount}%`} />
 								)
 							}
 
@@ -209,10 +211,7 @@ export default function MediumGrid({
 								</div>
 
 								<div className="view-btn-container">
-									<Link
-										// prefetch="intent"
-										to={`/product/${productID}`}
-									>
+									<Link to={`/product/${productID}`} >
 										<RoundButton
 											colorScheme="cerise"
 											onClick={() => onClickProduct(productID)}

@@ -32,6 +32,7 @@ export default function EvenRow({
 	products = [],
 	onClickProduct = () => { },
 }: EvenRowProps) {
+
 	return (
 		<div className="even-row-contianer">
 			{
@@ -57,6 +58,7 @@ export default function EvenRow({
 								title={product.title}
 								description={product.shortDescription}
 								tagCombo={product.tabComboType as TagsCombo | null}
+								discount={product.discount}
 							/>
 						)
 						)

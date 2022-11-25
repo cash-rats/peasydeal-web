@@ -9,8 +9,8 @@ import OrderDetail, { links as OrderDetailLinks } from './components/OrderDetail
 import ProductSummary, { links as ProductSummaryLinks } from './components/ProductSummary';
 import OrderInformation, { links as OrderInformationLinks } from './components/OrderInformation';
 import type { SuccessOrderDetail } from './types';
-
 import { fetchOrder } from './api';
+import LoadingSkeleton from '../LoadingSkeleton';
 
 export const links: LinksFunction = () => {
   return [
@@ -66,7 +66,7 @@ function Success() {
     <div className="checkout-result-container">
       <div className="checkout-result-content">
         {
-          orderDetail && orderFetcher.type === 'done' && (
+          orderDetail && orderFetcher.type === 'done' ? (
             <>
               <OrderAnnotation
                 email={orderDetail.email}
@@ -97,6 +97,7 @@ function Success() {
               />
             </>
           )
+            : (<LoadingSkeleton />)
         }
       </div>
     </div>
