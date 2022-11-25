@@ -56,6 +56,7 @@ need to scroll to top. Thus, scroll restoration won't happen when we redirect fr
 ## How to implement route changing progress bar?
 
 https://sergiodxa.com/articles/use-nprogress-in-a-remix-app
+https://dev.to/gugaguichard/add-a-global-progress-indicator-to-your-remix-app-2m52
 
 ## Name color
 
