@@ -65,7 +65,6 @@ export const loader: LoaderFunction = async ({ params, context }) => {
 
 type __action_type = 'to_product_detail' | 'add_item_to_cart' | 'buy_now';
 
-
 // TODO
 //  - [x] store shopping cart items in session storage if user has not logged in yet.
 //  - [ ] what is error?
