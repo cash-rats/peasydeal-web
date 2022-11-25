@@ -12,7 +12,7 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 
-import Layout from './Layout';
+import Layout, { links as LayoutLinks } from './Layout';
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
 import { ServerStyleContext, ClientStyleContext } from "./context"
@@ -44,6 +44,7 @@ export let links: LinksFunction = () => {
     },
 
     { rel: 'stylesheet', href: styles },
+    ...LayoutLinks(),
   ]
 }
 
