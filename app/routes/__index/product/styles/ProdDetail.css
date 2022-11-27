@@ -59,6 +59,7 @@
   margin-bottom: 1rem;
   position: sticky;
   top: 145px;
+  word-break: break-all;
 }
 @media (min-width: 768px) {
   .productdetail-container .product-content-wrapper .product-content {

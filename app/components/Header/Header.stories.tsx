@@ -1,22 +1,24 @@
-import type { ComponentStory, ComponentMeta } from '@storybook/react';
+// import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import TrackOrderHeader from '../TrackOrderHeader';
-import Header from './index';
+// import RemixStub from '~/packages/remix-stubs';
 
-export default {
-  title: 'Headers',
-  component: TrackOrderHeader,
-} as ComponentMeta<typeof TrackOrderHeader>
+// import TrackOrderHeader from '../TrackOrderHeader';
+// import Header from './index';
 
-const TrackOrderHeaderTemplate: ComponentStory<typeof TrackOrderHeader> = (args) => (
-  <TrackOrderHeader />
-);
+// export default {
+//   title: 'Headers',
+//   component: TrackOrderHeader,
+// } as ComponentMeta<typeof TrackOrderHeader>
 
-export const TrackOrderHeaderStory = TrackOrderHeaderTemplate.bind({});
+// const TrackOrderHeaderTemplate: ComponentStory<typeof TrackOrderHeader> = (args) => (
+//   <TrackOrderHeader />
+// );
 
-TrackOrderHeader.args = {
-  value: 1000,
-};
+// export const TrackOrderHeaderStory = TrackOrderHeaderTemplate.bind({});
 
-export const FullHeader = () => (<Header />)
+// TrackOrderHeader.args = {
+//   value: 1000,
+// };
+
+// export const FullHeader = () => (<Header />)
 

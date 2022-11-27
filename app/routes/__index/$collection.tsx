@@ -23,6 +23,7 @@ import {
 import { getCategories } from '~/sessions/categories.session';
 import { commitSession } from '~/sessions/redis_session';
 import { checkHasMoreRecord } from '~/utils';
+import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
 
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
@@ -46,6 +47,7 @@ type ActionType = {
 
 export const links: LinksFunction = () => {
   return [
+    ...PageTitleLinks(),
     ...CssSpinnerLinks(),
     ...ProductRowsContainerLinks(),
     ...LoadmoreLinks(),
@@ -247,7 +249,7 @@ function Collection() {
 
   return (
     <div className="prod-list-container">
-      <div className="prod-list-breadcrumbs-container">
+      {/* <div className="prod-list-breadcrumbs-container">
         <Breadcrumbs breadcrumbs={[
           <NavLink
             className={({ isActive }) => (
@@ -261,13 +263,15 @@ function Collection() {
             {category}
           </NavLink>,
         ]} />
+      </div> */}
+      <PageTitle title={category} />
 
+      <div className="ProductList__container">
+        <ProductRowsContainer
+          loading={isChangingCategory}
+          productRows={productRows}
+        />
       </div>
-
-      <ProductRowsContainer
-        loading={isChangingCategory}
-        productRows={productRows}
-      />
 
       <div className="ProductList__loadmore-container">
         {

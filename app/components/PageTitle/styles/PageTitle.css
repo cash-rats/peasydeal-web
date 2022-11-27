@@ -1,0 +1,38 @@
+.PageTitle__wrapper {
+  padding: 8px 30px 0 20px;
+  width: 98%;
+  box-sizing: border-box;
+  border-bottom: solid 1px;
+}
+
+.PageTitle__title {
+  float: left;
+  margin: 0;
+  padding: 0;
+}
+
+.PageTitle__text {
+  display: block;
+  box-sizing: border-box;
+  max-width: 500px;
+  border-bottom: 5px solid #3b4a65;
+  color: #3c4a65;
+  font: 700 24px/32px Open Sans Condensed, Helvetica Narrow, arial, helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.PageTitle__limit-string {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+.ProductList__container {
+  padding-top: 32px;
+}
+
+/*# sourceMappingURL=PageTitle.css.map */
