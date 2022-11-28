@@ -200,53 +200,56 @@ export default function Index() {
 	};
 
 	return (
-		<div className="Index__wrapper">
-			<div className="Index__left-ads-wrapper">
-				<ActivityColumnLayout activities={mockedActivities} />
-			</div>
+		<>
+			<div className="Index__wrapper">
+				<div className="Index__left-ads-wrapper">
+					<ActivityColumnLayout activities={mockedActivities} />
+				</div>
 
-			<div className="prod-list-container">
-				<ActivityRowLayout activities={mockedActivities} />
+				<div className="prod-list-container">
+					{/* <ActivityRowLayout activities={mockedActivities} /> */}
+					<div className="Index__stuff" />
 
-				<ProductRowsContainer
-					productRows={productRows}
-					onClickProduct={handleClickProduct}
-				/>
-
-				<loadmoreFetcher.Form className="ProductList__loadmore-container" >
-					<input
-						type="hidden"
-						name="page"
-						value={currPage.current}
+					<ProductRowsContainer
+						productRows={productRows}
+						onClickProduct={handleClickProduct}
 					/>
 
-					<div>
-						{
-							hasMore && transition.state === 'idle'
-								? (
-									<LoadMore
-										spinner={<CssSpinner scheme="spinner" />}
-										loading={loadmoreFetcher.state !== 'idle'}
-										callback={handleLoadMore}
-										delay={100}
-										offset={150}
-									/>
-								)
-								: (
-									<LoadMoreButton
-										loading={loadmoreFetcher.state !== 'idle'}
-										text='Load more'
-										onClick={handleManualLoad}
-									/>
-								)
-						}
-					</div>
-				</loadmoreFetcher.Form>
-			</div>
+					<loadmoreFetcher.Form className="ProductList__loadmore-container" >
+						<input
+							type="hidden"
+							name="page"
+							value={currPage.current}
+						/>
 
-			<div className="Index__right-ads-wrapper">
-				<ActivityColumnLayout activities={mockedActivities} />
+						<div>
+							{
+								hasMore && transition.state === 'idle'
+									? (
+										<LoadMore
+											spinner={<CssSpinner scheme="spinner" />}
+											loading={loadmoreFetcher.state !== 'idle'}
+											callback={handleLoadMore}
+											delay={100}
+											offset={150}
+										/>
+									)
+									: (
+										<LoadMoreButton
+											loading={loadmoreFetcher.state !== 'idle'}
+											text='Load more'
+											onClick={handleManualLoad}
+										/>
+									)
+							}
+						</div>
+					</loadmoreFetcher.Form>
+				</div>
+
+				<div className="Index__right-ads-wrapper">
+					<ActivityColumnLayout activities={mockedActivities} />
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }
