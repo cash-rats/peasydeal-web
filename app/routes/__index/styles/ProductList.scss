@@ -9,27 +9,30 @@
 	justify-content: center;
 	flex-wrap: wrap;
 	align-items: center;
-	margin-top: 7.25rem;
+	margin-top: 65px;
 
 	@media (min-width: #{$screen-md-min}) and (max-width: #{$screen-xl-min}) {
 		max-width: 992px;
-
-		margin-top: 170px;
+		margin-top: 125px;
 	}
 
 	@include xl {
-		margin-top: 170px;
+		margin-top: 120px;
 		width: 1100px;
 	}
 }
 
 .prod-list-breadcrumbs-container {
+	width: 100%;
+	padding: 10px;
+
 	@media (min-width: $screen-sm-min-600) {
-		width: 600px;
+		max-width: 712px;
+		margin: 0 auto;
 	}
 
 	@media (min-width: $screen-xl-min) {
-		width: 912px;
+		max-width: 1080px;
 	}
 }
 

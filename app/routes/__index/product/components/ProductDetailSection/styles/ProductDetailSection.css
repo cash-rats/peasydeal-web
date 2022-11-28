@@ -26,13 +26,18 @@
   }
 }
 
-.productdetail-breadcrumbs {
+.ProductDetail__breadcrumbs {
   max-width: 1180px;
   padding: 0 1rem;
-  margin: 0 auto;
+  margin-top: 5rem;
 }
 @media (min-width: 768px) {
-  .productdetail-breadcrumbs {
+  .ProductDetail__breadcrumbs {
+    margin-top: 8rem;
+  }
+}
+@media (min-width: 768px) {
+  .ProductDetail__breadcrumbs {
     padding-left: 2rem;
   }
 }

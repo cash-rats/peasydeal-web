@@ -273,7 +273,7 @@ function ProductDetailPage() {
 				onClose={handleOnClose}
 			/>
 
-			<div className="productdetail-breadcrumbs">
+			<div className="ProductDetail__breadcrumbs">
 				<Breadcrumbs breadcrumbs={[
 					<NavLink
 						className={({ isActive }) => (

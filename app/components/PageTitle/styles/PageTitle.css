@@ -1,8 +1,14 @@
 .PageTitle__wrapper {
   padding: 8px 30px 0 20px;
-  width: 98%;
   box-sizing: border-box;
   border-bottom: solid 1px;
+  max-width: 712px;
+  width: 100%;
+}
+@media (min-width: 1200px) {
+  .PageTitle__wrapper {
+    max-width: none;
+  }
 }
 
 .PageTitle__title {

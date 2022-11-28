@@ -10,10 +10,18 @@ export default {
 } as ComponentMeta<typeof Breadcrumbs>;
 
 const breadcrumbs = [
-  <Link underline="hover" key="1" color="inherit" href="/" onClick={() => { console.log('1') }}>
+  <Link
+    className="breadcrumbs-link"
+    underline="hover"
+    key="1"
+    color="inherit"
+    href="/"
+    onClick={() => { console.log('1') }}
+  >
     MUI
   </Link>,
   <Link
+    className="breadcrumbs-link"
     underline="hover"
     key="2"
     color="inherit"
@@ -22,9 +30,9 @@ const breadcrumbs = [
   >
     Core
   </Link>,
-  <Typography key="3" color="text.primary">
+  <p className="breadcrumbs-link-active" key="3" color="text.primary">
     Breadcrumb
-  </Typography>,
+  </p>,
 ];
 
 export const basic = () => <Breadcrumbs breadcrumbs={breadcrumbs} />;

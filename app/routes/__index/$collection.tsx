@@ -249,24 +249,31 @@ function Collection() {
 
   return (
     <div className="prod-list-container">
-      {/* <div className="prod-list-breadcrumbs-container">
-        <Breadcrumbs breadcrumbs={[
-          <NavLink
-            className={({ isActive }) => (
-              isActive
-                ? "breadcrumbs-link breadcrumbs-link-active"
-                : "breadcrumbs-link"
-            )}
-            key='1'
-            to={`/${category}`}
-          >
-            {category}
-          </NavLink>,
-        ]} />
-      </div> */}
+      <div className="prod-list-breadcrumbs-container">
+        <Breadcrumbs breadcrumbs={
+          [
+            <NavLink
+              key='1'
+              className="breadcrumbs-link"
+              to='/'
+            >
+              Home
+            </NavLink>,
+            <NavLink
+              className="breadcrumbs-link-active"
+              key='1'
+              to={`/${category}`}
+            >
+              {category}
+            </NavLink>,
+          ]
+        } />
+      </div>
+
       <PageTitle title={category} />
 
       <div className="ProductList__container">
+
         <ProductRowsContainer
           loading={isChangingCategory}
           productRows={productRows}

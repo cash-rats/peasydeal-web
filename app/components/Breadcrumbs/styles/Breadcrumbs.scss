@@ -8,6 +8,7 @@
   width: 100%;
   min-height: 4.875rem;
 
+
 }
 
 .breadscrum-back {
@@ -30,6 +31,7 @@
 
 .breadcrumbs-link {
   font-weight: 500;
+  font-size: 14px;
   cursor: pointer;
   text-transform: capitalize;
 
@@ -39,6 +41,8 @@
 }
 
 .breadcrumbs-link-active {
-  color: $dark-green;
+  font-size: 16px;
+  font-weight: bold;
   text-decoration: none !important;
+  color: $raisin-black;
 }

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { FiChevronRight } from 'react-icons/fi';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import type { LinksFunction } from '@remix-run/node';
 
@@ -42,7 +42,7 @@ export default function BreadcrumsNav({
         )
       }
 
-      <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+      <Breadcrumbs separator={<FiChevronRight fontSize={12} />} aria-label="breadcrumb">
         {breadcrumbs}
       </Breadcrumbs>
     </div>
