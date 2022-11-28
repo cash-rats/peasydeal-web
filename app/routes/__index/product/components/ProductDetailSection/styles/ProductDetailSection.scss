@@ -35,17 +35,19 @@
 }
 
 .ProductDetail__breadcrumbs {
-	max-width: 1180px;
 	padding: 0 1rem;
-	margin-top: 5rem;
+	margin: 5rem auto 0;
+	max-width: 1060px;
 
 	@media (min-width: $screen-md-min) {
-		margin-top: 8rem;
+		margin: 8rem auto 0;
 	}
 
-	@media (min-width: $screen-md-min) {
+	@media (min-width: $screen-1280-min) {
+		max-width: 1416px;
 		padding-left: 2rem;
 	}
+
 }
 
 .product-features-large-screen {

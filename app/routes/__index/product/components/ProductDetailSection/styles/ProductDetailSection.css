@@ -27,17 +27,18 @@
 }
 
 .ProductDetail__breadcrumbs {
-  max-width: 1180px;
   padding: 0 1rem;
-  margin-top: 5rem;
+  margin: 5rem auto 0;
+  max-width: 1060px;
 }
 @media (min-width: 768px) {
   .ProductDetail__breadcrumbs {
-    margin-top: 8rem;
+    margin: 8rem auto 0;
   }
 }
-@media (min-width: 768px) {
+@media (min-width: 1280px) {
   .ProductDetail__breadcrumbs {
+    max-width: 1416px;
     padding-left: 2rem;
   }
 }
