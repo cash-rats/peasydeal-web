@@ -17,20 +17,6 @@ export const links: LinksFunction = () => {
   ];
 };
 
-const validate = (values) => {
-  const errors = {}
-
-  if (!values.contact_name_same && !values.contact_name) {
-    errors.contact_name = 'contact name required';
-  }
-
-  if (!values.phone) {
-    errors.phone = 'required';
-  }
-
-  return errors;
-}
-
 interface ContactInfoFormProps {
   values: ContactInfoFormType;
   onChange?: (v: ContactInfoFormType) => void;

@@ -11,7 +11,6 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import CategoryContext from '~/context/categories';
 
-// import PeasyDeal from './images/peasydeal_logo.png';
 import PeasyDeal from './images/peasy logo.svg';
 import styles from './styles/LogoBar.css';
 

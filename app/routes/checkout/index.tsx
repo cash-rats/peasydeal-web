@@ -213,6 +213,10 @@ function CheckoutPage() {
       return;
     }
 
+    if (contactInfoFormValues.contact_name_same) {
+      contactInfoFormValues.contact_name = `${shippingDetailFormValues.firstname} ${shippingDetailFormValues.lastname}`
+    }
+
     // Submit forms to action, only create a new order if order hasn't been created yet.
     if (!orderUUID) {
       createOrderFetcher.submit({

@@ -44,17 +44,6 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
       <div className="shipping-form-fields fields--2">
         <TextField
           required
-          id="lastname"
-          label="lastname"
-          name="lastname"
-          variant="outlined"
-          aria-describedby="lastname"
-          fullWidth
-          value={values.lastname}
-        />
-
-        <TextField
-          required
           id="firstname"
           label="firstname"
           name="firstname"
@@ -62,6 +51,17 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
           aria-describedby="firstname"
           fullWidth
           value={values.firstname}
+        />
+
+        <TextField
+          required
+          id="lastname"
+          label="lastname"
+          name="lastname"
+          variant="outlined"
+          aria-describedby="lastname"
+          fullWidth
+          value={values.lastname}
         />
       </div>
 
