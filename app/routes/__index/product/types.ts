@@ -28,4 +28,7 @@ export interface ProductDetail {
   images: string[];
   variations: ProductVariation[];
   description: string;
+  order_count: number;
+  rating: number;
+  num_of_raters: number;
 };

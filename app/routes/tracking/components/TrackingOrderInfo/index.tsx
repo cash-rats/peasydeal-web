@@ -87,7 +87,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
 
               <div className="right">
                 <div className="price-qty">
-                  <p>{product.sale_price}</p>
+                  <p>£{product.sale_price}</p>
                   <p>Qty: {product.order_quantity}</p>
                 </div>
               </div>
@@ -155,7 +155,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
         <div className="subtotal">
           <p>Subtotal</p>
           <p>
-            ${orderInfo.subtotal} &nbsp;
+            £{orderInfo.subtotal} &nbsp;
             <span className="discount">
               Saved ${orderInfo.discount_amount} !
             </span>
@@ -167,7 +167,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
             <span className="title-with-info">
               <p> Shipping Fee </p>
             </span>
-            <p> + ${orderInfo.shipping_fee} </p>
+            <p> + £{orderInfo.shipping_fee} </p>
           </span>
 
           <span className="price-info">
@@ -182,13 +182,13 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
               </span>
             </span>
 
-            <p> + ${orderInfo.tax_amount} </p>
+            <p> + £{orderInfo.tax_amount} </p>
           </span>
         </div>
 
         <div className="total">
           <p> Total </p>
-          <p> ${orderInfo.total_amount} </p>
+          <p> £{orderInfo.total_amount} </p>
         </div>
       </div>
     </div >

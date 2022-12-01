@@ -122,7 +122,6 @@ function ProductDetailPage() {
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 
-
 	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
 	useEffect(() => {
 		const handleWindowScrolling = (evt: Event) => {
@@ -193,8 +192,14 @@ function ProductDetailPage() {
 	const addToCart = useFetcher();
 	const buyNow = useFetcher();
 
-	const extractProductInfo = useCallback(() => (
-		{
+	const extractProductInfo = useCallback(() => {
+		// A product doesn't have any `spec_name` if the product has 1 variation only
+		// other wise `Default Title` would appeared in `/cart`.
+		const specName = productDetail.variations.length === 1
+			? ''
+			: variation?.spec_name || ''
+
+		return {
 			salePrice: variation?.sale_price.toString() || '',
 			retailPrice: variation?.retail_price.toString() || '',
 			productUUID: productDetail.uuid,
@@ -204,9 +209,9 @@ function ProductDetailPage() {
 			image: productDetail.images[0] || '',
 			quantity: quantity.toString(),
 			title: productDetail?.title || '',
-			specName: variation?.spec_name || '',
+			specName: specName,
 		}
-	), [productDetail, quantity, variation]);
+	}, [productDetail, quantity, variation]);
 
 	const handleAddToCart = () => {
 		if (!variation) {
@@ -328,14 +333,27 @@ function ProductDetailPage() {
 									{productDetail?.title}
 								</h1>
 
-								<div className="ProductDetailPage__rating">
-									<Rating
-										name="product-rating"
-										defaultValue={5}
-										precision={0.5}
-										readOnly
-									/>
-								</div>
+								{
+									productDetail.num_of_raters > 0
+										? (
+
+											<div className="ProductDetailPage__rating">
+												<Rating
+													name="product-rating"
+													defaultValue={productDetail.rating}
+													precision={0.1}
+													readOnly
+												/>
+
+												<span className="ProductDetailPage__review-count">
+													({productDetail.num_of_raters} reviews)
+												</span>
+											</div>
+
+										)
+										: null
+								}
+
 
 								<div className="product-tag-bar">
 									<p className="detail-amount">
@@ -359,7 +377,7 @@ function ProductDetailPage() {
 									</p>
 
 									<div className="ProductDetailPage__number-bought">
-										<RightTiltBox text='63 bought' />
+										<RightTiltBox text={`${productDetail.order_count} bought`} />
 									</div>
 								</div>
 

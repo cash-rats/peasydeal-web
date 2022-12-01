@@ -11,7 +11,7 @@
 @media (min-width: 768px) and (max-width: 1200px) {
   .prod-list-container {
     max-width: 992px;
-    margin-top: 125px;
+    margin-top: 135px;
   }
 }
 @media (min-width: 1200px) {

@@ -254,4 +254,12 @@
   }
 }
 
+.ProductDetailPage__review-count {
+  color: #626669;
+  display: inline-block;
+  vertical-align: text-bottom;
+  font-weight: 400;
+  margin-left: 5px;
+}
+
 /*# sourceMappingURL=ProdDetail.css.map */
