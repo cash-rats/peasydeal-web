@@ -103,7 +103,6 @@ function CheckoutLayout() {
 
   useEffect(() => {
     if (window) {
-      console.log('debug window.ENV.ENV.STRIPE_PUBLIC_KEY', window.ENV.ENV.STRIPE_PUBLIC_KEY);
       setStripePromise(loadStripe(window.ENV.ENV.STRIPE_PUBLIC_KEY));
     }
   }, []);
