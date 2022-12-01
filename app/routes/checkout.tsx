@@ -63,7 +63,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     currency: 'GBP'
   });
 
-
   return json<LoaderType>({
     client_secret: paymentIntent.client_secret || undefined,
     payment_intend_id: paymentIntent.id,
@@ -104,6 +103,7 @@ function CheckoutLayout() {
 
   useEffect(() => {
     if (window) {
+      console.log('debug window.ENV.ENV.STRIPE_PUBLIC_KEY', window.ENV.ENV.STRIPE_PUBLIC_KEY);
       setStripePromise(loadStripe(window.ENV.ENV.STRIPE_PUBLIC_KEY));
     }
   }, []);
