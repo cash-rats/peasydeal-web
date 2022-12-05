@@ -139,6 +139,7 @@ const mockedActivities: ActivityInfo[] = [
  */
 export default function Index() {
 	const { products, has_more, page } = useLoaderData<LoaderType>();
+	console.log('debug * 1', products);
 	const currPage = useRef(page);
 	const [hasMore, setHasMore] = useState(has_more);
 	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));

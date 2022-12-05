@@ -130,6 +130,7 @@
   background-size: 0% 1px;
   background-repeat: no-repeat;
   transition: background-size 1s;
+  font-size: 1.1rem;
 }
 .CategoriesNav__item:hover {
   background-size: 100% 1px;
@@ -162,6 +163,7 @@
   margin-right: 0.3rem;
   text-transform: capitalize;
   cursor: pointer;
+  font-size: 1.2rem;
 }
 
 .Header__CategoriesNav__arrow-up {

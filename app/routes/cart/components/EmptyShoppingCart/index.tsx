@@ -48,7 +48,10 @@ function EmptyShoppingCartPage() {
           top items
         </h1>
 
-        <HorizontalProductsLayout catID={1} />
+        <HorizontalProductsLayout
+          catID={1}
+          seeAllLinkTo='/Hot Deal'
+        />
       </div>
 
       <div className="Cart__rec-products">
@@ -56,7 +59,10 @@ function EmptyShoppingCartPage() {
           new trend
         </h1>
 
-        <HorizontalProductsLayout catID={2} />
+        <HorizontalProductsLayout
+          catID={2}
+          seeAllLinkTo='New Trend'
+        />
       </div>
     </section>
   );

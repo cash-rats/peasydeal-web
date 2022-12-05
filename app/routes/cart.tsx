@@ -24,6 +24,7 @@ type LoaderType = {
 export const loader: LoaderFunction = async ({ request }) => {
   const categories = await fetchCategories();
   const cartItemCount = await getItemCount(request);
+
   return json<LoaderType>({ cartItemCount, categories });
 }
 
@@ -68,6 +69,7 @@ function CartLayout() {
         </Form>
       </CategoryContext.Provider>
       <main>
+        {/* aaa */}
         <Outlet />
       </main>
       <Footer />

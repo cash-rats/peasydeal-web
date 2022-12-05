@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+  <loc>https://www.peasydeal.com/</loc>
+  <lastmod>2022-12-05T08:50:19.788408Z</lastmod>
+  <changefreq>always</changefreq>
+  <priority>1</priority>
+</url>
+<url>
+  <loc>https://www.peasydeal.com/cart</loc>
+  <lastmod>2022-12-05T08:50:19.788408Z</lastmod>
+  <changefreq>always</changefreq>
+  <priority>0.8</priority>
+</url>
+<url>
+  <loc>https://www.peasydeal.com/tracking</loc>
+  <lastmod>2022-12-05T08:50:19.788408Z</lastmod>
+  <changefreq>always</changefreq>
+  <priority>0.7</priority>
+</url>
+</urlset>

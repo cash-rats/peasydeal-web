@@ -457,7 +457,7 @@ function ProductDetailPage() {
 									)} />
 
 									<div className="delivery-content">
-										<span> {variation?.delivery_info} </span>
+										<strong> {variation?.delivery_info} </strong>
 									</div>
 								</div>
 

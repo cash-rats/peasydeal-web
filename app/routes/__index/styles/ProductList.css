@@ -6,17 +6,17 @@
   justify-content: center;
   flex-wrap: wrap;
   align-items: center;
-  margin-top: 65px;
+  margin-top: 80px;
 }
 @media (min-width: 768px) and (max-width: 1200px) {
   .prod-list-container {
     max-width: 992px;
-    margin-top: 135px;
+    margin-top: 145px;
   }
 }
 @media (min-width: 1200px) {
   .prod-list-container {
-    margin-top: 120px;
+    margin-top: 142px;
     width: 1100px;
   }
 }

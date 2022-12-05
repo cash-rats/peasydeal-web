@@ -1,8 +1,10 @@
 import { useEffect, useState, useRef } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { json } from '@remix-run/node';
-import { useLoaderData, Link, useFetcher } from '@remix-run/react';
+import { useLoaderData, useFetcher } from '@remix-run/react';
 import type { LinksFunction, LoaderFunction, ActionFunction, } from '@remix-run/node';
+import httpStatus from 'http-status-codes';
+
 import { commitSession } from '~/sessions/redis_session';
 import { getCart, removeItem, updateCart } from '~/utils/shoppingcart.session';
 import type { ShoppingCart } from '~/utils/shoppingcart.session';
@@ -112,14 +114,12 @@ type LoaderType = {
  * Fetch cart items from product list when user is not logged in.
  */
 export const loader: LoaderFunction = async ({ request }) => {
+	console.log('debug 1');
 	// If cart contains no items, display empty cart page via CatchBoundary
 	const cart = await getCart(request);
 
 	if (!cart || Object.keys(cart).length === 0) {
-		return json<LoaderType>({
-			cart: {},
-			priceInfo: null,
-		});
+		throw new Response('Shopping cart empty', { status: httpStatus.NOT_FOUND });
 	}
 
 	const costQuery = convertShoppingCartToPriceQuery(cart);

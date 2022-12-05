@@ -3,7 +3,7 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  min-height: 4.875rem;
+  padding: 6px 0;
 }
 
 .breadscrum-back {
