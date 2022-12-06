@@ -1,14 +1,16 @@
 import type { MouseEvent } from 'react';
-import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
+import type { DynamicLinksFunction } from 'remix-utils';
 
 import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { error } from '~/utils/error';
 import { getItemCount } from '~/utils/shoppingcart.session';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
+import { getCanonicalDomain, getTrackingTitleText } from '~/utils';
 
 import TrackingOrderInfo, { links as TrackingOrderInfoLinks } from './components/TrackingOrderInfo';
 import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
@@ -19,6 +21,7 @@ import type { TrackOrder } from './types';
 type LoaderDataType = {
   order: TrackOrder | null
   numOfItemsInCart: number;
+  canonicalLink: string;
 };
 
 type ErrorBoundaryDataType = {
@@ -26,11 +29,23 @@ type ErrorBoundaryDataType = {
   numOfItemsInCart: number;
 }
 
+const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
+  return [
+    {
+      rel: 'canonical', href: data.canonicalLink,
+    },
+  ];
+}
+export const handle = { dynamicLinks };
+
+export const meta: MetaFunction = () => ({
+  title: getTrackingTitleText(),
+})
+
 export const links: LinksFunction = () => {
   return [
     ...FooterLinks(),
     ...HeaderLinks(),
-
     ...TrackingOrderInfoLinks(),
     ...TrackingOrderErrorPageLinks(),
     ...TrackingOrderInitPageLinks(),
@@ -48,6 +63,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return json<LoaderDataType>({
       order: null,
       numOfItemsInCart,
+      canonicalLink: `${getCanonicalDomain(request)}/tracking`
     });
   }
 
@@ -64,6 +80,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return json<LoaderDataType>({
       order,
       numOfItemsInCart,
+      canonicalLink: `${getCanonicalDomain(request)}/tracking`
     });
   } catch (err) {
     throw json<ErrorBoundaryDataType>({

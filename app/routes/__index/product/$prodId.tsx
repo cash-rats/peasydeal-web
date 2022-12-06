@@ -5,12 +5,13 @@ import {
 	useRef,
 } from 'react';
 import type { ChangeEvent } from 'react';
-import type { LoaderFunction, ActionFunction } from '@remix-run/node';
+import type { LoaderFunction, ActionFunction, MetaFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
 import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
 import Rating from '@mui/material/Rating';
+import type { DynamicLinksFunction } from 'remix-utils';
 
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
 import Divider, { links as DividerLinks } from '~/components/Divider';
@@ -21,6 +22,12 @@ import { insertItem } from '~/utils/shoppingcart.session';
 import type { ShoppingCartItem } from '~/utils/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
+import {
+	getCanonicalDomain,
+	getProdDetailTitleText,
+	getProdDetailDescText,
+	getProdDetailDescTextWithoutPrice,
+} from '~/utils';
 
 import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -32,7 +39,30 @@ import RecommendedProducts, { links as RecommendedProductsLinks } from './compon
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
 import TopProductsColumn, { links as TopProductsColumnLinks } from './components/TopProductsColumn';
 
-export function links() {
+type LoaderTypeProductDetail = {
+	product: ProductDetail;
+	canonical_url: string;
+};
+
+export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
+	const defaultVariation: ProductVariation | undefined = data.product.variations.find(variation => variation.uuid === data.product.default_variation_uuid);
+
+	let description = getProdDetailDescTextWithoutPrice(data.product.title)
+	if (defaultVariation) {
+		description = getProdDetailDescText(
+			data.product.title,
+			defaultVariation.retail_price,
+			defaultVariation.sale_price,
+		)
+	}
+
+	return {
+		title: getProdDetailTitleText(data.product.title, data.product.uuid),
+		description,
+	}
+};
+
+export const links: LinksFunction = () => {
 	return [
 		...ItemAddedModalLinks(),
 		...QuantityPickerLinks(),
@@ -49,18 +79,27 @@ export function links() {
 	];
 };
 
-type LoaderTypeProductDetail = {
-	product: ProductDetail;
-};
+
+const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) => {
+	return [
+		{
+			rel: 'canonical', href: data.canonical_url,
+		},
+	];
+}
+export const handle = { dynamicLinks };
 
 // Fetch product detail data.
-export const loader: LoaderFunction = async ({ params, context }) => {
+export const loader: LoaderFunction = async ({ params, request }) => {
 	const { prodId } = params;
 	if (!prodId) return redirect('/');
 
 	const prodDetail = await fetchProductDetail(prodId)
 
-	return json<LoaderTypeProductDetail>({ product: prodDetail });
+	return json<LoaderTypeProductDetail>({
+		product: prodDetail,
+		canonical_url: `${getCanonicalDomain(request)}/product/${prodId}`
+	});
 };
 
 type __action_type = 'to_product_detail' | 'add_item_to_cart' | 'buy_now';

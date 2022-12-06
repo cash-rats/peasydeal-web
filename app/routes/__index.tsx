@@ -21,6 +21,13 @@ import { fetchCategories } from '~/categories.server';
 
 import styles from "./styles/index.css";
 
+type LoaderType = {
+	numOfItemsInCart: number;
+	categories: Category[];
+};
+
+
+
 export const links: LinksFunction = () => {
 	return [
 		...FooterLinks(),
@@ -33,10 +40,6 @@ export const links: LinksFunction = () => {
 };
 
 type ContextType = { categories: Category[] };
-type LoaderType = {
-	numOfItemsInCart: number;
-	categories: Category[];
-};
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();

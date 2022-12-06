@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
   useTransition,
@@ -8,6 +8,7 @@ import {
   NavLink,
 } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
+import type { DynamicLinksFunction } from 'remix-utils';
 
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -16,13 +17,10 @@ import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { normalizeToMap, fetchCategories } from '~/categories.server';
-import {
-  getCategoryProducts,
-  addCategoryProducts,
-} from '~/sessions/productlist.session';
+import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { getCategories } from '~/sessions/categories.session';
 import { commitSession } from '~/sessions/redis_session';
-import { checkHasMoreRecord } from '~/utils';
+import { checkHasMoreRecord, getCanonicalDomain, getCollectionDescText, getCollectionTitleText } from '~/utils';
 import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
 
 import styles from './styles/ProductList.css';
@@ -31,10 +29,11 @@ import ProductRowsContainer, { links as ProductRowsContainerLinks } from './comp
 import { organizeTo9ProdsPerRow } from "./utils";
 
 type LoaderType = {
-  categories: CategoriesMap,
-  products: Product[],
-  category: string,
-  page: number,
+  categories: CategoriesMap;
+  products: Product[];
+  category: string;
+  page: number;
+  canonical_link: string;
   has_more: boolean;
 };
 
@@ -44,6 +43,19 @@ type ActionType = {
   page: number,
   has_more: boolean,
 };
+
+const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
+  return [
+    {
+      rel: 'canonical', href: data.canonical_link,
+    },
+  ];
+}
+export const handle = { dynamicLinks }
+export const meta: MetaFunction = ({ data }: { data: LoaderType }) => ({
+  title: getCollectionTitleText(data.category),
+  description: getCollectionDescText(data.category),
+});
 
 export const links: LinksFunction = () => {
   return [
@@ -83,6 +95,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       category: collection,
       products: prods,
       page: cachedProds.page,
+      canonical_link: `${getCanonicalDomain(request)}/${collection}`,
       has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
     });
   }
@@ -102,6 +115,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     products: prods,
     page: 1,
     category: collection,
+    canonical_link: `${getCanonicalDomain(request)}/${collection}`,
     has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
   }, {
     headers: {

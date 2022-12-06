@@ -11,6 +11,9 @@ import {
   Scripts,
   useLoaderData,
 } from "@remix-run/react";
+import { DynamicLinks } from 'remix-utils'
+
+import { getIndexTitleText, getIndexDescText } from '~/utils'
 
 import Layout, { links as LayoutLinks } from './Layout';
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -20,9 +23,20 @@ import styles from "./styles/global.css";
 import ScrollRestoration from './ConditionalScrollRestoration';
 
 export const meta: MetaFunction = () => ({
+  // default tags
   charset: "utf-8",
-  title: "Peasy Deals",
+  title: getIndexTitleText(),
   viewport: "width=device-width,initial-scale=1",
+
+  // App wide SEO tags.
+  description: getIndexDescText(),
+
+  contentType: {
+    httpEquiv: 'content-type',
+    content: 'text/html; charset=UTF-8',
+  },
+
+  robots: 'index,follow',
 });
 
 export let links: LinksFunction = () => {
@@ -87,6 +101,7 @@ const Document = withEmotionCache(
       <html lang="en">
         <head>
           <Meta />
+          <DynamicLinks />
           <Links />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
           {serverStyleData?.map(({ key, ids, css }) => (

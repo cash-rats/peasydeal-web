@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
 import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
+import type { DynamicLinksFunction } from 'remix-utils';
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
@@ -9,7 +10,7 @@ import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadM
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from "~/shared/types";
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
-import { checkHasMoreRecord } from '~/utils';
+import { checkHasMoreRecord, getCanonicalDomain } from '~/utils';
 import { commitSession } from '~/sessions/redis_session';
 import ActivityColumnLayout, { links as ActivityColumnLayoutLinks } from "~/components/ActivityColumnLayout/ActivityColumnLayout";
 import type { ActivityInfo } from "~/components/ActivityColumnLayout/ActivityColumnLayout";
@@ -19,6 +20,18 @@ import ProductRowsContainer, { links as ProductRowsContainerLinks } from './comp
 import { fetchProductsByCategory } from "./api";
 import styles from "./styles/ProductList.css";
 import { organizeTo9ProdsPerRow } from './utils';
+
+type LoaderType = {
+	products: Product[];
+	page: number;
+	canonical_link: string;
+	has_more: boolean;
+}
+
+type ActionType = {
+	products: Product[];
+	has_more: boolean;
+};
 
 export const links: LinksFunction = () => {
 	return [
@@ -32,16 +45,14 @@ export const links: LinksFunction = () => {
 	]
 }
 
-type LoaderType = {
-	products: Product[];
-	page: number;
-	has_more: boolean;
+const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
+	return [
+		{
+			rel: 'canonical', href: data.canonical_link,
+		},
+	];
 }
-
-type ActionType = {
-	products: Product[];
-	has_more: boolean;
-};
+export const handle = { dynamicLinks }
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const prodInfo = await getCategoryProducts(request, 'Hot Deal');
@@ -55,6 +66,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		return json<LoaderType>({
 			products: prods,
 			page: prodInfo.page,
+			canonical_link: getCanonicalDomain(request),
 			has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
 		});
 	}
@@ -70,6 +82,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	return json<LoaderType>({
 		products: prods,
 		page: 1,
+		canonical_link: getCanonicalDomain(request),
 		has_more: prods.length === PAGE_LIMIT,
 	}, {
 		headers: {
@@ -135,11 +148,9 @@ const mockedActivities: ActivityInfo[] = [
  * - [x] Fetch more.
  * - [x] When number of data fetched is less than limit(9), it reaches the end. stop triggering loadmore but displays a button
  *       letting the user triggering loadmore manually.
- * - [ ] Cache product list in local storage.
  */
 export default function Index() {
 	const { products, has_more, page } = useLoaderData<LoaderType>();
-	console.log('debug * 1', products);
 	const currPage = useRef(page);
 	const [hasMore, setHasMore] = useState(has_more);
 	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
@@ -208,7 +219,7 @@ export default function Index() {
 				</div>
 
 				<div className="prod-list-container">
-					{/* <ActivityRowLayout activities={mockedActivities} /> */}
+					<ActivityRowLayout activities={mockedActivities} />
 					<div className="Index__stuff" />
 
 					<ProductRowsContainer
