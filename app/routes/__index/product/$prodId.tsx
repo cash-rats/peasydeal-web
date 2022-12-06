@@ -98,7 +98,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 	return json<LoaderTypeProductDetail>({
 		product: prodDetail,
-		canonical_url: `${getCanonicalDomain(request)}/product/${prodId}`
+		canonical_url: `${getCanonicalDomain()}/product/${prodId}`
 	});
 };
 

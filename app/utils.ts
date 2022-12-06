@@ -1,6 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
+import getEnvSource from '~/utils/get_env_source';
 import type { User } from "~/models/user.server";
 
 const DEFAULT_REDIRECT = "/";
@@ -73,14 +74,7 @@ export function validateEmail(email: unknown): email is string {
 
 export const checkHasMoreRecord = (count: number, divisor: number) => count % divisor === 0;
 
-export const getCanonicalDomain = (request: Request): string => {
-  const url = new URL(request.url);
-  let domain = `${url.protocol}//${url.hostname}`
-  if (url.port) {
-    domain = `${domain}:${url.port}`
-  }
-  return domain
-};
+export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https://peasydeal.com';
 
 // SEO index page
 export const getIndexTitleText = () => 'peasydeal.com | premium selected car accessories, gadgets, home & gardening products, clothes and more at a great price!';

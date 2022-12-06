@@ -95,7 +95,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       category: collection,
       products: prods,
       page: cachedProds.page,
-      canonical_link: `${getCanonicalDomain(request)}/${collection}`,
+      canonical_link: `${getCanonicalDomain()}/${collection}`,
       has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
     });
   }
@@ -115,7 +115,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     products: prods,
     page: 1,
     category: collection,
-    canonical_link: `${getCanonicalDomain(request)}/${collection}`,
+    canonical_link: `${getCanonicalDomain()}/${collection}`,
     has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
   }, {
     headers: {

@@ -143,7 +143,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	return json<LoaderType>({
 		cart,
 		priceInfo,
-		canonicalLink: `${getCanonicalDomain(request)}/cart`
+		canonicalLink: `${getCanonicalDomain()}/cart`
 	});
 };
 

@@ -8,7 +8,8 @@ module.exports = {
       watch: true,
       args: "start",
       env: {
-        "PORT": 3000,
+        "PORT": process.env.PORT,
+        "DOMAIN": process.env.DOMAIN,
         "NODE_ENV": "development",
         "DATABASE_URL": process.env.DATABASE_URL,
         "SESSION_SECRET": process.env.SESSION_SECRET,
@@ -22,7 +23,8 @@ module.exports = {
       },
 
       env_staging: {
-        "PORT": 3000,
+        "PORT": process.env.PORT,
+        "DOMAIN": process.env.DOMAIN,
         "NODE_ENV": "staging",
         "DATABASE_URL": process.env.DATABASE_URL,
         "SESSION_SECRET": process.env.SESSION_SECRET,
@@ -36,7 +38,8 @@ module.exports = {
       },
 
       env_production: {
-        "PORT": 3000,
+        "PORT": process.env.PORT,
+        "DOMAIN": process.env.DOMAIN,
         "NODE_ENV": "production",
         "DATABASE_URL": process.env.DATABASE_URL,
         "SESSION_SECRET": process.env.SESSION_SECRET,

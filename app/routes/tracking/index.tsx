@@ -63,7 +63,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return json<LoaderDataType>({
       order: null,
       numOfItemsInCart,
-      canonicalLink: `${getCanonicalDomain(request)}/tracking`
+      canonicalLink: `${getCanonicalDomain()}/tracking`
     });
   }
 
@@ -80,7 +80,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return json<LoaderDataType>({
       order,
       numOfItemsInCart,
-      canonicalLink: `${getCanonicalDomain(request)}/tracking`
+      canonicalLink: `${getCanonicalDomain()}/tracking`
     });
   } catch (err) {
     throw json<ErrorBoundaryDataType>({

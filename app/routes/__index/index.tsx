@@ -66,7 +66,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		return json<LoaderType>({
 			products: prods,
 			page: prodInfo.page,
-			canonical_link: getCanonicalDomain(request),
+			canonical_link: getCanonicalDomain(),
 			has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
 		});
 	}
@@ -82,7 +82,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	return json<LoaderType>({
 		products: prods,
 		page: 1,
-		canonical_link: getCanonicalDomain(request),
+		canonical_link: getCanonicalDomain(),
 		has_more: prods.length === PAGE_LIMIT,
 	}, {
 		headers: {
