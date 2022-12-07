@@ -20,25 +20,26 @@ interface HeaderProps {
 };
 
 export default function HeaderWrapper({ children, categoryBar, style }: HeaderProps) {
-	const [enableBgColor, setEnableBgColor] = useState(false);
+	// TODO: disable header color toggling.
+	// const [enableBgColor, setEnableBgColor] = useState(true);
 
-	useEffect(() => {
-		const handleScroll = (evt: Event) => {
-			const windowDOM = window as Window;
-			setEnableBgColor(windowDOM.scrollY > 0);
-		}
+	// useEffect(() => {
+	// 	const handleScroll = (evt: Event) => {
+	// 		const windowDOM = window as Window;
+	// 		setEnableBgColor(windowDOM.scrollY > 0);
+	// 	}
 
-		if (!window) return;
-		window.addEventListener('scroll', handleScroll);
+	// 	if (!window) return;
+	// 	window.addEventListener('scroll', handleScroll);
 
-		return () => window.removeEventListener('scroll', handleScroll)
-	}, []);
+	// 	return () => window.removeEventListener('scroll', handleScroll)
+	// }, []);
 
 	return (
 		<>
 			<header style={style} className="header-container">
 				<div className={clsx("header-content-container", {
-					"HeaderWrapp__header-content-container-scrolled": enableBgColor,
+					"HeaderWrapp__header-content-container-scrolled": true,
 				})}>
 					<div className="header-wrapper_top">
 						{children}
