@@ -1,4 +1,5 @@
 @import 'styles/_breakpoints';
+@import 'styles/_colors';
 
 .main-container {
 	min-height: 100%;
@@ -10,5 +11,14 @@
 
 	@media (min-width: $screen-md-min) {
 		padding-top: 160px;
+	}
+
+	background-position: 50% 50%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-image: url("/images/home-gradient-light-sm.png");
+
+	@media (min-width:$screen-sm-min-600) {
+		background-image: url("/images/home-gradient-light.png");
 	}
 }

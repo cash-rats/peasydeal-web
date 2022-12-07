@@ -32,13 +32,5 @@ body {
     height: auto;
     min-height: calc(100% - 130px);
 
-    background-position: 50% 50%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-image: url("/images/home-gradient-light-sm.png");
-    background-color: $secondary;
-
-    @media (min-width:$screen-sm-min-600) {
-        background-image: url("/images/home-gradient-light.png");
-    }
+    background-color: $secondary !important;
 }
