@@ -1,5 +1,10 @@
 @import "styles/_breakpoints.scss";
 @import "styles/_mixins.scss";
+@import "styles/_colors";
+
+body {
+	background: $secondary !important;
+}
 
 .shopping-cart-section {
 	width: 100%;
