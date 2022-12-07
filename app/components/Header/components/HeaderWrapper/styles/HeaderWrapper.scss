@@ -39,13 +39,17 @@
 		width: 100%;
 		height: 80px;
 		box-sizing: border-box;
-		background: white;
-
+		background-color: transparent;
 		margin: 0 auto;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
+}
+
+.HeaderWrapp__header-content-container-scrolled {
+	background-color: white !important;
+	transition: background-color 200ms linear;
 }
 
 .header-content-container {
