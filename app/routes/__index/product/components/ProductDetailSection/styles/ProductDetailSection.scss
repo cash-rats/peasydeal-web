@@ -36,12 +36,8 @@
 
 .ProductDetail__breadcrumbs {
 	padding: 0 1rem;
-	margin: 5rem auto 0;
+	margin: 0 auto;
 	max-width: 1060px;
-
-	@media (min-width: $screen-md-min) {
-		margin: 8rem auto 0;
-	}
 
 	@media (min-width: $screen-1280-min) {
 		max-width: 1416px;

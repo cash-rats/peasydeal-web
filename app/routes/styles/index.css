@@ -2,4 +2,13 @@
   min-height: 100%;
   min-height: 35rem;
 }
+
+.__Index__wrapper {
+  padding-top: 110px;
+}
+@media (min-width: 768px) {
+  .__Index__wrapper {
+    padding-top: 160px;
+  }
+}
 /*# sourceMappingURL=index.css.map */
