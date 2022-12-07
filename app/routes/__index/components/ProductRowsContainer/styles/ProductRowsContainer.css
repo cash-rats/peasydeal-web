@@ -6,9 +6,13 @@
 
 .productRowsContainer_product-row {
   width: 100%;
-  margin-bottom: 1.25rem;
   display: flex;
   justify-content: center;
+}
+@media (min-width: 599px) {
+  .productRowsContainer_product-row {
+    margin-bottom: 1rem;
+  }
 }
 
 /*# sourceMappingURL=ProductRowsContainer.css.map */

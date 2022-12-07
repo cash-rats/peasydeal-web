@@ -1,3 +1,5 @@
+@import 'styles/_breakpoints';
+
 .productRowsContainer_wrapper {
 	display: flex;
 	flex-direction: column;
@@ -6,7 +8,10 @@
 
 .productRowsContainer_product-row {
 	width: 100%;
-	margin-bottom: 1.25rem;
 	display: flex;
 	justify-content: center;
+
+	@media (min-width: $screen-phone-top-599) {
+		margin-bottom: 1rem;
+	}
 }

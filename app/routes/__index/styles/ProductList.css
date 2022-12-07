@@ -61,6 +61,7 @@
   display: none;
   position: relative;
   width: 257px;
+  justify-self: end;
 }
 @media (min-width: 1600px) {
   .Index__left-ads-wrapper {
@@ -74,6 +75,7 @@
   display: none;
   position: relative;
   width: 257px;
+  justify-self: start;
 }
 @media (min-width: 1600px) {
   .Index__right-ads-wrapper {

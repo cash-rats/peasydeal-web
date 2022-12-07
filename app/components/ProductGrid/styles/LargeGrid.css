@@ -2,10 +2,14 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
   max-width: 712px;
+}
+@media (min-width: 599px) {
+  .large-grid-container {
+    border-radius: 10px;
+  }
 }
 .large-grid-container .product-desc-container {
   display: flex;

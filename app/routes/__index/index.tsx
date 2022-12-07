@@ -157,8 +157,8 @@ export default function Index() {
 	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
 	const transition = useTransition();
 
-	const leftAdsCol = useRef<HTMLDivElement>(null);
-	const rightAdsCol = useRef<HTMLDivElement>(null);
+	// const leftAdsCol = useRef<HTMLDivElement>(null);
+	// const rightAdsCol = useRef<HTMLDivElement>(null);
 
 	// Transition to observe when preload the first page of the product list render
 	const loadmoreFetcher = useFetcher();
@@ -215,15 +215,15 @@ export default function Index() {
 		console.log('[ga] user clicks on:', productUUID);
 	};
 
-	useStickyDivs(leftAdsCol, 20);
-	useStickyDivs(rightAdsCol, 20);
+	// useStickyDivs(leftAdsCol, 20);
+	// useStickyDivs(rightAdsCol, 20);
 
 	return (
 		<>
 			<div className="Index__wrapper">
 				{/* Display when width > 1600  */}
 				<div className="Index__left-ads-wrapper">
-					<ActivityColumnLayout ref={leftAdsCol} activities={mockedActivities} />
+					<ActivityColumnLayout activities={mockedActivities} />
 				</div>
 
 				<div className="prod-list-container">
@@ -266,7 +266,7 @@ export default function Index() {
 				</div>
 
 				<div className="Index__right-ads-wrapper">
-					<ActivityColumnLayout ref={rightAdsCol} activities={mockedActivities} />
+					<ActivityColumnLayout activities={mockedActivities} />
 				</div>
 			</div>
 		</>

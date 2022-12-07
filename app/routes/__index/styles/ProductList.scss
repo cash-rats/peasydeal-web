@@ -61,6 +61,7 @@
 	display: none;
 	position: relative;
 	width: 257px;
+	justify-self: end;
 
 	@media (min-width: $screen-1600-min) {
 		display: flex;
@@ -73,6 +74,7 @@
 	display: none;
 	position: relative;
 	width: 257px;
+	justify-self: start;
 
 	@media (min-width: $screen-1600-min) {
 		display: flex;

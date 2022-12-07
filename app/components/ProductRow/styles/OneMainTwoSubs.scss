@@ -3,21 +3,18 @@
 
 .one-main-two-subs-container {
 	display: flex;
-	gap: 20px 20px;
 	justify-content: center;
 	flex-direction: column;
 	align-items: center;
 
-	@media (max-width: #{$screen-sm-min-600}) {
+	@media (min-width: #{$screen-sm-min-600}) {
 		flex-direction: column;
-	}
-
-	@media (min-width: #{$screen-sm-min-600}) and (max-width: #{$screen-md-min}) {
-		flex-direction: column;
+		row-gap: 20px;
 	}
 
 	@include xl {
 		flex-direction: row;
+		column-gap: 20px;
 	}
 
 	.left {
@@ -29,22 +26,19 @@
 		display: flex;
 		justify-content: center;
 		flex-direction: column;
-		gap: 20px;
 
 		@media (max-width: #{$screen-sm-min-600}) {
 			flex-direction: column;
 		}
 
-		@media (min-width: #{$screen-sm-min-600}) and (max-width: #{$screen-md-min}) {
+		@media (min-width: #{$screen-sm-min-600}) and (max-width: #{$screen-xl-min}) {
 			flex-direction: row;
-		}
-
-		@media (min-width: #{$screen-md-min}) and (max-width: #{$screen-xl-min}) {
-			flex-direction: row;
+			column-gap: 20px;
 		}
 
 		@include xl {
 			flex-direction: column;
+			row-gap: 20px;
 		}
 	}
 }
