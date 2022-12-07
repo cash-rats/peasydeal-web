@@ -20,6 +20,7 @@ import ProductRowsContainer, { links as ProductRowsContainerLinks } from './comp
 import { fetchProductsByCategory } from "./api";
 import styles from "./styles/ProductList.css";
 import { organizeTo9ProdsPerRow } from './utils';
+import useStickyDivs from './hooks/useStickyDiv';
 
 type LoaderType = {
 	products: Product[];
@@ -156,6 +157,9 @@ export default function Index() {
 	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
 	const transition = useTransition();
 
+	const leftAdsCol = useRef<HTMLDivElement>(null);
+	const rightAdsCol = useRef<HTMLDivElement>(null);
+
 	// Transition to observe when preload the first page of the product list render
 	const loadmoreFetcher = useFetcher();
 
@@ -211,11 +215,15 @@ export default function Index() {
 		console.log('[ga] user clicks on:', productUUID);
 	};
 
+	useStickyDivs(leftAdsCol, 20);
+	useStickyDivs(rightAdsCol, 20);
+
 	return (
 		<>
 			<div className="Index__wrapper">
+				{/* Display when width > 1600  */}
 				<div className="Index__left-ads-wrapper">
-					<ActivityColumnLayout activities={mockedActivities} />
+					<ActivityColumnLayout ref={leftAdsCol} activities={mockedActivities} />
 				</div>
 
 				<div className="prod-list-container">
@@ -258,7 +266,7 @@ export default function Index() {
 				</div>
 
 				<div className="Index__right-ads-wrapper">
-					<ActivityColumnLayout activities={mockedActivities} />
+					<ActivityColumnLayout ref={rightAdsCol} activities={mockedActivities} />
 				</div>
 			</div>
 		</>

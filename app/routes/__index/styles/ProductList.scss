@@ -59,6 +59,8 @@
 
 .Index__left-ads-wrapper {
 	display: none;
+	position: relative;
+	width: 257px;
 
 	@media (min-width: $screen-1600-min) {
 		display: flex;
@@ -69,6 +71,8 @@
 
 .Index__right-ads-wrapper {
 	display: none;
+	position: relative;
+	width: 257px;
 
 	@media (min-width: $screen-1600-min) {
 		display: flex;
@@ -76,7 +80,3 @@
 		margin-left: 2rem;
 	}
 }
-
-// .Index__stuff {
-// 	height: 50px;
-// }

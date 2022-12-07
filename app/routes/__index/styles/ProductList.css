@@ -59,6 +59,8 @@
 
 .Index__left-ads-wrapper {
   display: none;
+  position: relative;
+  width: 257px;
 }
 @media (min-width: 1600px) {
   .Index__left-ads-wrapper {
@@ -70,6 +72,8 @@
 
 .Index__right-ads-wrapper {
   display: none;
+  position: relative;
+  width: 257px;
 }
 @media (min-width: 1600px) {
   .Index__right-ads-wrapper {

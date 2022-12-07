@@ -1,4 +1,4 @@
-import type { MutableRefObject, MouseEvent, ChangeEvent, FocusEvent } from 'react';
+import type { ForwardedRef, MutableRefObject, MouseEvent, ChangeEvent, FocusEvent } from 'react';
 import { useEffect, useState, forwardRef, useRef } from 'react';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -49,7 +49,7 @@ function SearchBar({
   onBlur = () => { },
   onMountRef = () => { },
   ...args
-}: SearchBarProps, ref: MutableRefObject<HTMLInputElement | null> | undefined) {
+}: SearchBarProps, ref: ForwardedRef<HTMLInputElement>) {
   const [content, setContent] = useState<string>('');
   const [focusSearch, setFocusSearch] = useState(false);
   const myRef = useRef<HTMLInputElement | null>(null);
@@ -133,4 +133,4 @@ function SearchBar({
   );
 }
 
-export default forwardRef(SearchBar);
+export default forwardRef<SearchBarProps, HTMLInputElement>(SearchBar);

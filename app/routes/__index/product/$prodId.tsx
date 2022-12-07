@@ -169,7 +169,6 @@ function ProductDetailPage() {
 			const windowDOM = window as Window;
 			const prodContentRect = productContentWrapperRef.current.getBoundingClientRect();
 
-
 			const isScrollAtDivBottom = windowDOM.innerHeight + windowDOM.scrollY >= prodContentRect.bottom + windowDOM.scrollY;
 
 			if (isScrollAtDivBottom) {
