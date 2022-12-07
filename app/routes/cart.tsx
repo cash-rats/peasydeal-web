@@ -69,7 +69,6 @@ function CartLayout() {
         </Form>
       </CategoryContext.Provider>
       <main>
-        {/* aaa */}
         <Outlet />
       </main>
       <Footer />

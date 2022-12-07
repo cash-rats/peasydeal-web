@@ -220,7 +220,6 @@ export default function Index() {
 
 				<div className="prod-list-container">
 					<ActivityRowLayout activities={mockedActivities} />
-					<div className="Index__stuff" />
 
 					<ProductRowsContainer
 						productRows={productRows}
