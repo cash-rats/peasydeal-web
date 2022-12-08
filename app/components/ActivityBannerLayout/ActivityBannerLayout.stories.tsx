@@ -1,6 +1,6 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import ActivityBannerLayout from './ActivityBannerLayout';
+import ActivityBannerLayout from '.';
 
 export default {
   title: 'Activity Banner Layout ',

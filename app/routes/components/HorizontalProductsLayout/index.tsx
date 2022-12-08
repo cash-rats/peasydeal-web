@@ -80,6 +80,7 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
     infinite: true,
     slidesToShow: 4,
     slidesToScroll: 4,
+    arrows: false,
     responsive: [
       {
         breakpoint: breakPoints.screen1024min,
@@ -116,7 +117,6 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
   }
 
   return (
-
     <div className="HorizontalGrid__rec-products">
       <h1 className="HorizontalGrid__rec-title">
 

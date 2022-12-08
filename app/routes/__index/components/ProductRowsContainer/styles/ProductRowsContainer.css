@@ -1,18 +1,23 @@
-.productRowsContainer_wrapper {
+.productRowsContainer__wrapper {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
+  width: 100%;
 }
 
-.productRowsContainer_product-row {
+.productRowsContainer__product-row {
   width: 100%;
   display: flex;
   justify-content: center;
 }
 @media (min-width: 599px) {
-  .productRowsContainer_product-row {
+  .productRowsContainer__product-row {
     margin-bottom: 1rem;
   }
+}
+
+.ProductRowsContainer__activity-banner-wrapper {
+  padding: 40px 20px;
 }
 
 /*# sourceMappingURL=ProductRowsContainer.css.map */

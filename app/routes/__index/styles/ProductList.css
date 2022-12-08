@@ -12,11 +12,6 @@
     max-width: 992px;
   }
 }
-@media (min-width: 1600px) {
-  .prod-list-container {
-    width: 1100px;
-  }
-}
 
 .prod-list-breadcrumbs-container {
   width: 100%;
@@ -50,11 +45,8 @@
   font-weight: 600;
 }
 
-@media (min-width: 1600px) {
-  .Index__wrapper {
-    display: grid;
-    grid-template-columns: [left-ads] auto 1100px [right-ads] auto;
-  }
+.Index__wrapper {
+  width: 100%;
 }
 
 .Index__left-ads-wrapper {

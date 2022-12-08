@@ -1,6 +1,0 @@
-{
-  "name": "activity_banner",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./ActivityBanner.tsx"
-}

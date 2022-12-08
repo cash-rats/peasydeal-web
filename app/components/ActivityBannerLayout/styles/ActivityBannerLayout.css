@@ -1,18 +1,44 @@
 .ActivityBannerLayout__wrapper {
   height: auto;
   position: relative;
+  max-width: 1080px;
 }
 
 .ActivityBanner__image-container {
+  position: relative;
   margin: 6px;
   overflow: hidden;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
+  background: white;
+}
+.ActivityBanner__image-container:after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 69%, black 120%);
 }
 
 .ActivityBanner__image {
   width: 100%;
-  aspect-ratio: 2.75/1;
+  aspect-ratio: 2/1;
+}
+
+.ActivityBannerLayout__up {
+  text-align: left;
+}
+
+.ActivityBannerLayout__title-text {
+  font-size: 2rem;
+  font-weight: 500;
+  color: white;
+}
+
+.ActivityBannerLayout__slides {
+  margin-top: 10px;
 }
 
 /*# sourceMappingURL=ActivityBannerLayout.css.map */

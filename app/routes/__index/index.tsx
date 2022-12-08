@@ -17,7 +17,9 @@ import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalCol
 import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/SeasonalRowLayout/SeasonalRowLayout";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { fetchProductsByCategory } from "./api";
+import { fetchProductsByCategory, fetchActivityBanners } from "./api";
+import type { ActivityBanner } from "./types";
+
 import styles from "./styles/ProductList.css";
 import { organizeTo9ProdsPerRow } from './utils';
 
@@ -26,6 +28,7 @@ type LoaderType = {
 	page: number;
 	canonical_link: string;
 	has_more: boolean;
+	activity_banners: ActivityBanner[];
 }
 
 type ActionType = {
@@ -55,7 +58,10 @@ const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
 export const handle = { dynamicLinks }
 
 export const loader: LoaderFunction = async ({ request }) => {
-	const prodInfo = await getCategoryProducts(request, 'Hot Deal');
+	const [prodInfo, activityBanners] = await Promise.all([
+		await getCategoryProducts(request, 'Hot Deal'),
+		await fetchActivityBanners(),
+	])
 
 	if (prodInfo) {
 		const prods = await fetchProductsByCategory({
@@ -68,22 +74,26 @@ export const loader: LoaderFunction = async ({ request }) => {
 			page: prodInfo.page,
 			canonical_link: getCanonicalDomain(),
 			has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
+			activity_banners: activityBanners,
 		});
 	}
 
-	const prods = await fetchProductsByCategory({
-		perpage: PAGE_LIMIT,
-		page: 1,
-		category: 1, // 1 is the id for category 'Hot Deal'
-	})
+	const [prods, session] = await Promise.all([
+		await fetchProductsByCategory({
+			perpage: PAGE_LIMIT,
+			page: 1,
+			category: 1, // 1 is the id for category 'Hot Deal'
 
-	const session = await addCategoryProducts(request, [], 'Hot Deal', 1);
+		}),
+		await addCategoryProducts(request, [], 'Hot Deal', 1),
+	]);
 
 	return json<LoaderType>({
 		products: prods,
 		page: 1,
 		canonical_link: getCanonicalDomain(),
 		has_more: prods.length === PAGE_LIMIT,
+		activity_banners: activityBanners,
 	}, {
 		headers: {
 			'Set-Cookie': await commitSession(session),
@@ -150,14 +160,11 @@ const mockedActivities: SeasonalInfo[] = [
  *       letting the user triggering loadmore manually.
  */
 export default function Index() {
-	const { products, has_more, page } = useLoaderData<LoaderType>();
+	const { products, has_more, page, activity_banners } = useLoaderData<LoaderType>();
 	const currPage = useRef(page);
 	const [hasMore, setHasMore] = useState(has_more);
 	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
 	const transition = useTransition();
-
-	// const leftAdsCol = useRef<HTMLDivElement>(null);
-	// const rightAdsCol = useRef<HTMLDivElement>(null);
 
 	// Transition to observe when preload the first page of the product list render
 	const loadmoreFetcher = useFetcher();
@@ -214,22 +221,20 @@ export default function Index() {
 		console.log('[ga] user clicks on:', productUUID);
 	};
 
-	// useStickyDivs(leftAdsCol, 20);
-	// useStickyDivs(rightAdsCol, 20);
-
 	return (
 		<>
 			<div className="Index__wrapper">
 				{/* Display when width > 1600  */}
-				<div className="Index__left-ads-wrapper">
+				{/* <div className="Index__left-ads-wrapper">
 					<ActivityColumnLayout activities={mockedActivities} />
-				</div>
+				</div> */}
 
 				<div className="prod-list-container">
 					<ActivityRowLayout activities={mockedActivities} />
 
 					<ProductRowsContainer
 						productRows={productRows}
+						activityBanners={activity_banners}
 						onClickProduct={handleClickProduct}
 					/>
 
@@ -264,9 +269,9 @@ export default function Index() {
 					</loadmoreFetcher.Form>
 				</div>
 
-				<div className="Index__right-ads-wrapper">
+				{/* <div className="Index__right-ads-wrapper">
 					<ActivityColumnLayout activities={mockedActivities} />
-				</div>
+				</div> */}
 			</div>
 		</>
 	);

@@ -1,6 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
+import type { ActivityBanner } from '../types';
 import { getMYFBEndpoint } from '~/utils/endpoints';
 export interface FetchProductsByCategoryParams {
 	category?: string | number;
@@ -69,4 +70,22 @@ export const fetchProductsByCategory = async ({
 	const prods = transformData(respJSON.products);
 
 	return prods;
+}
+
+// We will interweave activity banners in between products list to make the screen
+// more contentful.
+
+export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
+	const endpoint = `${getMYFBEndpoint()}/data-server/ec/activity_banners`;
+
+	const resp = await fetch(endpoint);
+	const respJSON = await resp.json();
+
+	if (resp.status !== httpStatus.OK) {
+		const errResp = respJSON as ApiErrorResponse;
+
+		throw new Error(errResp.err_message);
+	}
+
+	return respJSON as ActivityBanner[];
 }

@@ -9,3 +9,22 @@ export type ProductListInfo = {
 export type CollectionProducts = {
   [key: string]: ProductListInfo;
 };
+
+export type ActivityItem = {
+  variationUuid: string;
+  productUuid: string;
+  title: string;
+  mainPic: string;
+  retailPrice: number;
+  salePrice: number;
+  discountOff: number;
+  currency: string;
+  tag_combo_type: string;
+}
+
+export type ActivityBanner = {
+  position: number;
+  title: string;
+  banner_url: string;
+  items: ActivityItem[];
+};

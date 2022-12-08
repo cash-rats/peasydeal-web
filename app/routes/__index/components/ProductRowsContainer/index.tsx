@@ -5,14 +5,17 @@ import type { LinksFunction } from '@remix-run/node';
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
+import ActivityBannerLayout, { links as ActivityBannerLayoutLinks } from '~/components/ActivityBannerLayout';
 import type { Product } from '~/shared/types';
 
+import type { ActivityBanner } from '../../types';
 import styles from './styles/ProductRowsContainer.css';
 
 export const links: LinksFunction = () => {
   return [
     ...OneMainTwoSubsLinks(),
     ...EvenRowLinks(),
+    ...ActivityBannerLayoutLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -21,11 +24,11 @@ export const links: LinksFunction = () => {
 const LoadingRows = () => {
   return (
     <>
-      <div className="productRowsContainer_product-row">
+      <div className="productRowsContainer__product-row">
         <OneMainTwoSubs loading />
       </div>
 
-      <div className="productRowsContainer_product-row">
+      <div className="productRowsContainer__product-row">
         <EvenRow loading />
       </div>
     </>
@@ -35,17 +38,29 @@ const LoadingRows = () => {
 
 interface RealRowsProps {
   productRows?: Product[][];
+  activityBanners?: ActivityBanner[];
   onClickProduct?: (prodID: string) => void;
 }
 
 const RealRows = ({
   productRows = [],
+  activityBanners = [],
   onClickProduct = () => { },
 }: RealRowsProps) => {
   return (
     <>
       {
         productRows.map((row: Product[], index: number): ReactNode => {
+          // There should only 4 banners to show in `activityBanners` array.
+          // thus, pop activity banner out of the array when `index` is <= 3
+          let banner: ActivityBanner | null = null;
+
+          if (index <= 2 && activityBanners[index]) {
+            banner = activityBanners[index];
+          }
+
+          console.log('debug banner', banner);
+
           // A complete row has 9 products.
           // A incomplete row contains less than 9 products
           //
@@ -64,7 +79,7 @@ const RealRows = ({
 
             return (
               <Fragment key={index}>
-                <div className="productRowsContainer_product-row">
+                <div className="productRowsContainer__product-row">
                   <OneMainTwoSubs
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
@@ -72,12 +87,30 @@ const RealRows = ({
                   />
                 </div>
 
-                <div className="productRowsContainer_product-row">
+                <div className="productRowsContainer__product-row">
                   <EvenRow
                     products={EvenRowProdData}
                     onClickProduct={onClickProduct}
                   />
                 </div>
+
+                {
+                  banner
+                    ? (
+                      <div style={{
+                        backgroundImage: `linear-gradient(to bottom, transparent 60%, black 120%), url(${banner.banner_url})`,
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: 'cover',
+                      }} className="productRowsContainer__product-row ProductRowsContainer__activity-banner-wrapper">
+                        <ActivityBannerLayout
+                          title={banner.title}
+                          activityProds={banner.items}
+                        />
+                      </div>
+                    )
+                    : null
+                }
               </Fragment>
             )
           } else {
@@ -85,7 +118,7 @@ const RealRows = ({
 
             if (oneMainTwoSubsProdData.length < 3) {
               return (
-                <div key={index} className="productRowsContainer_product-row">
+                <div key={index} className="productRowsContainer__product-row">
                   <OneMainTwoSubs
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
@@ -99,7 +132,7 @@ const RealRows = ({
 
             return (
               <Fragment key={index}>
-                <div className="productRowsContainer_product-row">
+                <div className="productRowsContainer__product-row">
                   <OneMainTwoSubs
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
@@ -107,7 +140,7 @@ const RealRows = ({
                   />
                 </div>
 
-                <div className="productRowsContainer_product-row">
+                <div className="productRowsContainer__product-row">
                   <EvenRow
                     products={evenRowProdData}
                     onClickProduct={onClickProduct}
@@ -125,23 +158,28 @@ const RealRows = ({
 interface ProductRowsContainerProps {
   onClickProduct?: (prodID: string) => void;
   productRows?: Product[][];
+  activityBanners?: ActivityBanner[];
   loading?: boolean;
 }
 
 function ProductRowsContainer({
   onClickProduct = () => { },
   productRows = [],
+  activityBanners = [],
   loading = false,
 }: ProductRowsContainerProps) {
+  // For every set of row "even row" + "1 main 2 sub" a subsequent activity banner would
+  // be rendered.
 
   return (
-    <div className="productRowsContainer_wrapper">
+    <div className="productRowsContainer__wrapper">
       {
         loading
           ? (<LoadingRows />)
           : (
             <RealRows
               productRows={productRows}
+              activityBanners={activityBanners}
               onClickProduct={onClickProduct}
             />
           )
