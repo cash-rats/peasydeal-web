@@ -1,14 +1,14 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import ActivityGrid from './ActivityGrid';
+import SeasonalGrid from './SeasonalGrid';
 
 export default {
   title: 'Activity Grid',
-  component: ActivityGrid,
-} as ComponentMeta<typeof ActivityGrid>;
+  component: SeasonalGrid,
+} as ComponentMeta<typeof SeasonalGrid>;
 
 export const Basic = () => (
-  <ActivityGrid
+  <SeasonalGrid
     src='https://static.wowcher.co.uk/binaries/DS%20Outlet%20Tile%20Mobile.jpg'
   />
 )

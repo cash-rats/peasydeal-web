@@ -1,8 +1,8 @@
 import type { LinksFunction } from '@remix-run/node';
 import type { Category } from '~/shared/types';
 
-import ActivityGrid from './ActivityGrid';
-import styles from './styles/ActivityRowLayout.css';
+import SeasonalGrid from './SeasonalGrid';
+import styles from './styles/SeasonalRowLayout.css';
 
 export const links: LinksFunction = () => {
   return [
@@ -10,20 +10,20 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export type ActivityInfo = {
+export type SeasonalInfo = {
   src?: string;
 } & Category;
 
-interface ActivityRowLayoutProps {
-  activities: ActivityInfo[];
+interface SeasonalRowLayoutProps {
+  activities: SeasonalInfo[];
 }
 
-export default function ActivityRowLayout({ activities = [] }: ActivityRowLayoutProps) {
+export default function ActivityRowLayout({ activities = [] }: SeasonalRowLayoutProps) {
   return (
     <div className="ActivityRowLayout">
       {
         activities.map((activity, index) => {
-          return (<ActivityGrid key={index} src={activity.src} />)
+          return (<SeasonalGrid key={index} src={activity.src} />)
         })
       }
     </div>

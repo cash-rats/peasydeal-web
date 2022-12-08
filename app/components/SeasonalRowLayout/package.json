@@ -1,0 +1,6 @@
+{
+  "name": "seasonal_row_layout",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./SeasonalRowLayout.tsx"
+}

@@ -4,8 +4,8 @@ import type { LinksFunction } from '@remix-run/node';
 
 import type { Category } from '~/shared/types';
 
-import styles from './styles/ActivityColumnLayout.css';
-import ActivityGrid, { links as ActivityGridLinks } from './components/ActivityGrid/ActivityGrid';
+import styles from './styles/SeasonalColumnLayout.css';
+import ActivityGrid, { links as ActivityGridLinks } from './components/SeasonalGrid/SeasonalGrid';
 
 export const links: LinksFunction = () => {
   return [
@@ -14,12 +14,12 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export type ActivityInfo = {
+export type SeasonalInfo = {
   src: string;
 } & Category;
 
 interface ActivityLayoutProps {
-  activities?: ActivityInfo[];
+  activities?: SeasonalInfo[];
 };
 
 function ActivityColumnLayout({ activities = [] }: ActivityLayoutProps, ref: ForwardedRef<HTMLDivElement>) {

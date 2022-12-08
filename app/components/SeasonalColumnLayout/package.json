@@ -1,0 +1,6 @@
+{
+  "name": "seasonal_column_layout",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./SeasonalColumnLayout.tsx"
+}

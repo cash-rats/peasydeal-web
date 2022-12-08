@@ -41,29 +41,18 @@ function EmptyShoppingCartPage() {
       </div>
 
       {/* Product Suggestion List */}
-
       {/* Recommended products */}
-      <div className="Cart__rec-products">
-        <h1 className="Cart__rec-title">
-          top items
-        </h1>
+      <HorizontalProductsLayout
+        catID={1}
+        title='top items'
+        seeAllLinkTo='/Hot Deal'
+      />
 
-        <HorizontalProductsLayout
-          catID={1}
-          seeAllLinkTo='/Hot Deal'
-        />
-      </div>
-
-      <div className="Cart__rec-products">
-        <h1 className="Cart__rec-title">
-          new trend
-        </h1>
-
-        <HorizontalProductsLayout
-          catID={2}
-          seeAllLinkTo='New Trend'
-        />
-      </div>
+      <HorizontalProductsLayout
+        catID={2}
+        title='new trend'
+        seeAllLinkTo='New Trend'
+      />
     </section>
   );
 };

@@ -1,0 +1,6 @@
+{
+  "name": "seasonal_grid",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./SeasonalGrid.tsx"
+}

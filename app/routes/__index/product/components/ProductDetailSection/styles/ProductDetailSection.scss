@@ -53,6 +53,8 @@
 	border: solid 1px $pastel-grey;
 	background-color: white;
 	word-break: break-all;
+	overflow-x: auto;
+	max-width: 575px;
 
 	h1 {
 		font-weight: bold;

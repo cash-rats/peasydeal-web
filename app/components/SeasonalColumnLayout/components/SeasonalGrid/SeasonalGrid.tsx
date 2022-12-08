@@ -1,6 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 
-import styles from './styles/ActivityGrid.css';
+import styles from './styles/SeasonalGrid.css';
 
 export const links: LinksFunction = () => {
   return [
@@ -8,7 +8,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-interface ActivityGridProps {
+interface SeasonalGridProps {
   title?: string;
   src?: string;
   catID?: string;
@@ -18,7 +18,7 @@ export default function ActivityGrid({
   title = '',
   src = '',
   catID = '',
-}: ActivityGridProps) {
+}: SeasonalGridProps) {
   return (
     <div
       style={{

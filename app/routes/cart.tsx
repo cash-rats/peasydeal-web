@@ -1,7 +1,8 @@
 import { Outlet } from "@remix-run/react";
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Form, useFetcher } from '@remix-run/react';
+import type { DynamicLinksFunction } from 'remix-utils';
 
 import CategoryContext from '~/context/categories';
 import { getItemCount } from '~/utils/shoppingcart.session';
@@ -12,20 +13,39 @@ import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { fetchCategories } from '~/categories.server';
 import type { Category } from '~/shared/types';
+import { getCartTitleText, getCanonicalDomain } from '~/utils';
 
 import styles from './styles/index.css';
+import cartStyles from './styles/cart.css';
+
+export const meta: MetaFunction = () => ({
+  title: getCartTitleText(),
+});
+
+const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
+  return [
+    {
+      rel: 'canonical', href: data.canonicalLink,
+    },
+  ];
+}
+export const handle = { dynamicLinks };
 
 type LoaderType = {
   cartItemCount: number;
   categories: Category[];
-
+  canonicalLink: string;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const categories = await fetchCategories();
   const cartItemCount = await getItemCount(request);
 
-  return json<LoaderType>({ cartItemCount, categories });
+  return json<LoaderType>({
+    cartItemCount,
+    categories,
+    canonicalLink: `${getCanonicalDomain()}/cart`
+  });
 }
 
 export const links: LinksFunction = () => {
@@ -35,6 +55,7 @@ export const links: LinksFunction = () => {
     ...FooterLinks(),
     ...DropDownSearchBarLinks(),
     { rel: 'stylesheet', href: styles },
+    { rel: 'stylesheet', href: cartStyles },
   ];
 };
 
@@ -48,7 +69,7 @@ function CartLayout() {
   }
 
   return (
-    <>
+    <div className="Cart__wrapper">
       <CategoryContext.Provider value={categories}>
         <Form action='/search' >
           <Header
@@ -72,7 +93,7 @@ function CartLayout() {
         <Outlet />
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
 

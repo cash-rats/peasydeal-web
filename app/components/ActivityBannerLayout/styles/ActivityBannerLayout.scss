@@ -1,0 +1,16 @@
+.ActivityBannerLayout__wrapper {
+  height: auto;
+  position: relative;
+}
+
+.ActivityBanner__image-container {
+  margin: 6px;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px;
+}
+
+.ActivityBanner__image {
+  width: 100%;
+  aspect-ratio: 2.75/1;
+}

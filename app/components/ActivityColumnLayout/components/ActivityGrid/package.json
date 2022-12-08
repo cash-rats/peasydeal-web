@@ -1,6 +1,0 @@
-{
-  "name": "activity_grid",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./ActivityGrid.tsx"
-}

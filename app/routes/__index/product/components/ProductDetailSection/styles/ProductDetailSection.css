@@ -45,6 +45,8 @@
   border: solid 1px #ccc;
   background-color: white;
   word-break: break-all;
+  overflow-x: auto;
+  max-width: 575px;
 }
 .product-features-large-screen h1 {
   font-weight: bold;

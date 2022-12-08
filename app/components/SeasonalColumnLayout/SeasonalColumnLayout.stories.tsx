@@ -1,16 +1,16 @@
 import type { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import ActivityLayout from './ActivityColumnLayout';
+import SeasonalColumnLayout from './SeasonalColumnLayout';
 
 export default {
   title: 'Activity Layout',
-  component: ActivityLayout,
-} as ComponentMeta<typeof ActivityLayout>;
+  component: SeasonalColumnLayout,
+} as ComponentMeta<typeof SeasonalColumnLayout>;
 
 
-const Template: ComponentStory<typeof ActivityLayout> = (args) => {
+const Template: ComponentStory<typeof SeasonalColumnLayout> = (args) => {
   return (
-    <ActivityLayout activities={args.activities} />
+    <SeasonalColumnLayout activities={args.activities} />
   )
 }
 

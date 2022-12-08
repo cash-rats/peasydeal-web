@@ -1,7 +1,7 @@
 
 import type { LinksFunction } from '@remix-run/node';
 
-import styles from './styles/ActivityRowLayout.css';
+import styles from './styles/SeasonalRowLayout.css';
 
 export const links: LinksFunction = () => {
   return [

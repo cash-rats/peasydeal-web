@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
-import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
 import { commitSession } from '~/sessions/redis_session';
@@ -10,8 +10,6 @@ import { getCart, removeItem, updateCart } from '~/utils/shoppingcart.session';
 import type { ShoppingCart } from '~/utils/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
-import { getCartTitleText, getCanonicalDomain } from '~/utils';
-import type { DynamicLinksFunction } from 'remix-utils';
 
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
@@ -20,19 +18,6 @@ import PriceResult, { links as PriceResultLinks } from './components/PriceResult
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from './cart.server';
 import type { PriceInfo } from './cart.server';
 import styles from './styles/cart.css';
-
-export const meta: MetaFunction = () => ({
-	title: getCartTitleText(),
-});
-
-const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
-	return [
-		{
-			rel: 'canonical', href: data.canonicalLink,
-		},
-	];
-}
-export const handle = { dynamicLinks };
 
 export const links: LinksFunction = () => {
 	return [
@@ -123,7 +108,6 @@ export const action: ActionFunction = async ({ request }) => {
 type LoaderType = {
 	cart: ShoppingCart | {};
 	priceInfo: PriceInfo | null;
-	canonicalLink: string;
 };
 
 /*
@@ -143,7 +127,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 	return json<LoaderType>({
 		cart,
 		priceInfo,
-		canonicalLink: `${getCanonicalDomain()}/cart`
 	});
 };
 

@@ -12,15 +12,14 @@ import type { Product } from "~/shared/types";
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { checkHasMoreRecord, getCanonicalDomain } from '~/utils';
 import { commitSession } from '~/sessions/redis_session';
-import ActivityColumnLayout, { links as ActivityColumnLayoutLinks } from "~/components/ActivityColumnLayout/ActivityColumnLayout";
-import type { ActivityInfo } from "~/components/ActivityColumnLayout/ActivityColumnLayout";
-import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/ActivityRowLayout/ActivityRowLayout";
+import ActivityColumnLayout, { links as ActivityColumnLayoutLinks } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
+import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
+import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/SeasonalRowLayout/SeasonalRowLayout";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from "./api";
 import styles from "./styles/ProductList.css";
 import { organizeTo9ProdsPerRow } from './utils';
-import useStickyDivs from './hooks/useStickyDiv';
 
 type LoaderType = {
 	products: Product[];
@@ -115,7 +114,7 @@ export const action: ActionFunction = async ({ request }) => {
 	});
 }
 
-const mockedActivities: ActivityInfo[] = [
+const mockedActivities: SeasonalInfo[] = [
 	{
 		src: 'https://static.wowcher.co.uk/binaries/DS%20Outlet%20Tile%20Mobile.jpg',
 		catId: 1,

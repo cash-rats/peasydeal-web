@@ -13,7 +13,7 @@
 
 .HorizontalGrid__image-container {
   height: auto;
-  position: realtive;
+  position: relative;
 }
 .HorizontalGrid__image-container:after {
   content: "";
