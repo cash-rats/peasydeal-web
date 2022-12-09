@@ -31,7 +31,7 @@ type LoaderType = {
 	activity_banners: ActivityBanner[];
 }
 
-type ActionType = {
+type ActionDataType = {
 	products: Product[];
 	has_more: boolean;
 };
@@ -58,51 +58,55 @@ const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
 export const handle = { dynamicLinks }
 
 export const loader: LoaderFunction = async ({ request }) => {
-	const [prodInfo, activityBanners] = await Promise.all([
-		await getCategoryProducts(request, 'Hot Deal'),
-		await fetchActivityBanners(),
-	])
+	try {
+		const [prodInfo, activityBanners] = await Promise.all([
+			await getCategoryProducts(request, 'Hot Deal'),
+			await fetchActivityBanners(),
+		])
 
-	if (prodInfo) {
-		const prods = await fetchProductsByCategory({
-			perpage: prodInfo.page * PAGE_LIMIT,
-			category: 1, // 1 is the id for category 'Hot Deal'
-		})
+		if (prodInfo) {
+			const prods = await fetchProductsByCategory({
+				perpage: prodInfo.page * PAGE_LIMIT,
+				category: 1, // 1 is the id for category 'Hot Deal'
+			})
+
+			return json<LoaderType>({
+				products: prods,
+				page: prodInfo.page,
+				canonical_link: getCanonicalDomain(),
+				has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
+				activity_banners: activityBanners,
+			});
+		}
+
+		const [prods, session] = await Promise.all([
+			await fetchProductsByCategory({
+				perpage: PAGE_LIMIT,
+				page: 1,
+				category: 1, // 1 is the id for category 'Hot Deal'
+			}),
+			await addCategoryProducts(request, [], 'Hot Deal', 1),
+		]);
 
 		return json<LoaderType>({
 			products: prods,
-			page: prodInfo.page,
-			canonical_link: getCanonicalDomain(),
-			has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
-			activity_banners: activityBanners,
-		});
-	}
-
-	const [prods, session] = await Promise.all([
-		await fetchProductsByCategory({
-			perpage: PAGE_LIMIT,
 			page: 1,
-			category: 1, // 1 is the id for category 'Hot Deal'
-
-		}),
-		await addCategoryProducts(request, [], 'Hot Deal', 1),
-	]);
-
-	return json<LoaderType>({
-		products: prods,
-		page: 1,
-		canonical_link: getCanonicalDomain(),
-		has_more: prods.length === PAGE_LIMIT,
-		activity_banners: activityBanners,
-	}, {
-		headers: {
-			'Set-Cookie': await commitSession(session),
-		}
-	});
+			canonical_link: getCanonicalDomain(),
+			has_more: prods.length === PAGE_LIMIT,
+			activity_banners: activityBanners,
+		}, {
+			headers: {
+				'Set-Cookie': await commitSession(session),
+			}
+		});
+	} catch (err) {
+		console.log('err', err);
+	}
 };
 
 export const action: ActionFunction = async ({ request }) => {
 	const body = await request.formData();
+
 	const page = Number(body.get("page") || '1');
 	const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
 
@@ -114,7 +118,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const session = await addCategoryProducts(request, [], 'Hot Deal', page);
 
-	return json<ActionType>({
+	return json<ActionDataType>({
 		products: prods,
 		has_more: prods.length === perPage,
 	}, {
@@ -203,7 +207,7 @@ export default function Index() {
 	// Append products to local state when fetcher type is in `done` state.
 	useEffect(() => {
 		if (loadmoreFetcher.type === 'done') {
-			const { products } = loadmoreFetcher.data as ActionType;
+			const { products } = loadmoreFetcher.data as ActionDataType;
 
 			if (products.length <= 0) {
 				setHasMore(false);
@@ -221,6 +225,10 @@ export default function Index() {
 		console.log('[ga] user clicks on:', productUUID);
 	};
 
+	const handleClickShopNow = (catID: number, catTitle: string) => {
+		console.log('user clicks on:', catID, catTitle);
+	}
+
 	return (
 		<>
 			<div className="Index__wrapper">
@@ -236,9 +244,10 @@ export default function Index() {
 						productRows={productRows}
 						activityBanners={activity_banners}
 						onClickProduct={handleClickProduct}
+						onClickShopNow={handleClickShopNow}
 					/>
 
-					<loadmoreFetcher.Form className="ProductList__loadmore-container" >
+					<div className="ProductList__loadmore-container" >
 						<input
 							type="hidden"
 							name="page"
@@ -266,7 +275,7 @@ export default function Index() {
 									)
 							}
 						</div>
-					</loadmoreFetcher.Form>
+					</div>
 				</div>
 
 				{/* <div className="Index__right-ads-wrapper">

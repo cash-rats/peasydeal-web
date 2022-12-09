@@ -64,6 +64,7 @@ const CheckoutButton = styled(BasicRoundButton)({
   color: 'black',
   boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
   fontSize: '1rem',
+  fontWeight: '500',
   '&:hover': {
     backgroundColor: '#F39834',
     color: '#222',
@@ -71,11 +72,24 @@ const CheckoutButton = styled(BasicRoundButton)({
   },
 }) as typeof LoadingButton;
 
+const BlackContainedButton = styled(BasicRoundButton)({
+  backgroundColor: '#101010',
+  color: 'white',
+  fontSize: '1rem',
+  textTransform: 'uppercase',
+  '&:hover': {
+    backgroundColor: 'white',
+    color: '#101010',
+    borderColor: '#101010',
+  },
+}) as typeof LoadingButton;
+
 type ColorScheme =
   | 'buynow'
   | 'addtocart'
   | 'checkout'
-  | 'cerise';
+  | 'cerise'
+  | 'blackcontained';
 
 interface RoundButtonProps extends LoadingButtonProps {
   children?: ReactNode;
@@ -95,6 +109,7 @@ const colorSchemeButton: ColorSchemeButtonMap = {
   'buynow': BuyNowButton,
   'cerise': ViewButton,
   'checkout': CheckoutButton,
+  'blackcontained': BlackContainedButton,
 };
 
 function RoundButton({

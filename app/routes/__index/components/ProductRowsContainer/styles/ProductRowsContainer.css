@@ -17,7 +17,13 @@
 }
 
 .ProductRowsContainer__activity-banner-wrapper {
+  width: 100%;
   padding: 40px 20px;
+}
+@media (min-width: 599px) {
+  .ProductRowsContainer__activity-banner-wrapper {
+    margin-bottom: 1rem;
+  }
 }
 
 /*# sourceMappingURL=ProductRowsContainer.css.map */

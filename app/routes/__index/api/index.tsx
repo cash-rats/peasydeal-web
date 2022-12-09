@@ -50,6 +50,8 @@ export const fetchProductsByCategory = async ({
 
 	let endpoint = `${getMYFBEndpoint()}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}&random=${random}`;
 
+	// console.log('debug endpoint', endpoint);
+
 	if (category) {
 		endpoint = `${endpoint}&cat=${encodeURI(category.toString())}`;
 	}

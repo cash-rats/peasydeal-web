@@ -126,6 +126,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 type __ActionType = 'redirect_to_prod' | 'load_category_products';
 
+// TODO: extract action type logic to independent function.
 export const action: ActionFunction = async ({ request, params }) => {
   const body = await request.formData();
   const actionType = body.get("__action") as __ActionType;

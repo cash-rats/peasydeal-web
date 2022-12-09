@@ -51,6 +51,8 @@ const RealRows = ({
     <>
       {
         productRows.map((row: Product[], index: number): ReactNode => {
+          // For every set of row "even row" + "1 main 2 sub" a subsequent activity banner would
+          // be rendered.
           // There should only 4 banners to show in `activityBanners` array.
           // thus, pop activity banner out of the array when `index` is <= 3
           let banner: ActivityBanner | null = null;
@@ -58,8 +60,6 @@ const RealRows = ({
           if (index <= 2 && activityBanners[index]) {
             banner = activityBanners[index];
           }
-
-          console.log('debug banner', banner);
 
           // A complete row has 9 products.
           // A incomplete row contains less than 9 products
@@ -102,9 +102,13 @@ const RealRows = ({
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
                         backgroundSize: 'cover',
-                      }} className="productRowsContainer__product-row ProductRowsContainer__activity-banner-wrapper">
+                      }} className="ProductRowsContainer__activity-banner-wrapper ProductRowsContainer__activity-banner-wrapper">
                         <ActivityBannerLayout
-                          title={banner.title}
+                          activityInfo={{
+                            title: banner.title,
+                            catID: banner.cat_id,
+                            catTitle: banner.cat_title,
+                          }}
                           activityProds={banner.items}
                         />
                       </div>
@@ -160,6 +164,10 @@ interface ProductRowsContainerProps {
   productRows?: Product[][];
   activityBanners?: ActivityBanner[];
   loading?: boolean;
+  onClickAddToCart?: (prodID: string) => void;
+
+  // Reacts shopnow button in activity banner.
+  onClickShopNow?: (catID: number, catTitle: string) => void;
 }
 
 function ProductRowsContainer({
@@ -167,10 +175,9 @@ function ProductRowsContainer({
   productRows = [],
   activityBanners = [],
   loading = false,
-}: ProductRowsContainerProps) {
-  // For every set of row "even row" + "1 main 2 sub" a subsequent activity banner would
-  // be rendered.
 
+  onClickAddToCart = () => { },
+}: ProductRowsContainerProps) {
   return (
     <div className="productRowsContainer__wrapper">
       {

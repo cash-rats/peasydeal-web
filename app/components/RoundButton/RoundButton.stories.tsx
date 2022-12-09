@@ -33,3 +33,12 @@ export const View = () => (
     View
   </RoundButton>
 )
+
+export const BlackContained = () => (
+  <RoundButton
+    colorScheme='blackcontained'
+    onClick={() => console.log('hello')}
+  >
+    shop now!
+  </RoundButton>
+)

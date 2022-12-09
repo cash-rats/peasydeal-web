@@ -23,6 +23,8 @@ export type ActivityItem = {
 }
 
 export type ActivityBanner = {
+  cat_id: number;
+  cat_title: string;
   position: number;
   title: string;
   banner_url: string;

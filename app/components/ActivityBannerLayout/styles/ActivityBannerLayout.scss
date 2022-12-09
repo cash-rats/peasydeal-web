@@ -1,7 +1,23 @@
+@import 'styles/_breakpoints';
+
 .ActivityBannerLayout__wrapper {
   height: auto;
   position: relative;
   max-width: 1080px;
+  margin: 0 auto;
+  overflow: hidden;
+
+  @media(min-width: $screen-md-min) and (max-width: $screen-xl-min) {
+    max-width: 714px;
+  }
+
+  @media(min-width: $screen-xl-min) {
+    max-width: 1080px;
+  }
+}
+
+.ActivityBanner__wrapper {
+  position: relative;
 }
 
 .ActivityBanner__image-container {
@@ -25,20 +41,67 @@
 
 .ActivityBanner__image {
   width: 100%;
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 1 / 1;
 
+  @media (min-width: $screen-md-min) and (max-width: $screen-xl-min) {
+    width: 346px;
+    aspect-ratio: 1 / 1;
+  }
+
+  @media (min-width:$screen-xl-min) {
+    aspect-ratio: 2 / 1;
+  }
 }
 
 .ActivityBannerLayout__up {
-  text-align: left;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ActivityBannerLayout__buy-now {
+  b {
+    text-transform: uppercase;
+  }
 }
 
 .ActivityBannerLayout__title-text {
   font-size: 2rem;
   font-weight: 500;
-  color: white;
+  color: black;
 }
 
 .ActivityBannerLayout__slides {
   margin-top: 10px;
+}
+
+.ActivityBannerLayout__desc {
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  min-height: 62px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ActivityBannerLayout__title {
+  color: white;
+  font-weight: 500;
+  font-size: 1rem;
+  flex: 2;
+  padding: 6px;
+}
+
+.ActivityBannerLayout__btn {
+  flex: 1;
+  padding: 6px;
+
+  p {
+    font-size: 1rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
 }
