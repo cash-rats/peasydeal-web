@@ -1,19 +1,20 @@
 import { useState } from 'react';
 import { Link } from '@remix-run/react';
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import RoundButton from '~/components/RoundButton';
 import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';
-
-import styles from "./styles/LargeGrid.css";
-import type { TagsCombo } from './types';
-import { TagComboMap } from './types';
-import { normalizeTagsListToMap } from './utils';
-
 import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
 import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
+
+import LargeGridSkeleton from './LargeGridSkeleton';
+import styles from "./styles/LargeGrid.css";
+import type { TagsCombo } from './types';
+import { TagComboMap } from './types';
+import { normalizeTagsListToMap } from './utils';
 
 export function links() {
 	return [
@@ -108,7 +109,12 @@ function LargeGrid({
 							<input type='hidden' name="product-id" value={productID} />
 							{/* image */}
 							<div className="image-container">
-								<img alt={title} className="large-grid-image" src={image} />
+								<LazyLoadImage
+									placeholder={<LargeGridSkeleton />}
+									src={image}
+									className='large-grid-image'
+									alt={title}
+								/>
 							</div>
 
 							<div className="product-desc-container">
@@ -170,7 +176,12 @@ function LargeGrid({
 							<input type='hidden' name="product-id" value={productID} />
 							{/* image */}
 							<div className="image-container">
-								<img alt={title} className="large-grid-image" src={image} />
+								<LazyLoadImage
+									placeholder={<LargeGridSkeleton />}
+									src={image}
+									className='large-grid-image'
+									alt={title}
+								/>
 							</div>
 
 							<div className="product-desc-container">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 import MqNotifier from '~/components/MqNotifier';
 import RoundButton from '~/components/RoundButton';
@@ -10,6 +11,7 @@ import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
 
+import MediumGridSkeleton from './MediumGridSkeleton';
 import { normalizeTagsListToMap } from './utils';
 import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
@@ -121,7 +123,8 @@ export default function MediumGrid({
 
 							{/* images */}
 							<div className="image-container">
-								<img
+								<LazyLoadImage
+									placeholder={<MediumGridSkeleton />}
 									alt={title}
 									className="medium-grid-image"
 									src={image}
@@ -191,7 +194,8 @@ export default function MediumGrid({
 
 							{/* images */}
 							<div className="image-container">
-								<img
+								<LazyLoadImage
+									placeholder={<MediumGridSkeleton />}
 									alt={title}
 									className="medium-grid-image"
 									src={image}

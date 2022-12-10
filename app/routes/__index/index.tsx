@@ -248,12 +248,6 @@ export default function Index() {
 					/>
 
 					<div className="ProductList__loadmore-container" >
-						<input
-							type="hidden"
-							name="page"
-							value={currPage.current}
-						/>
-
 						<div>
 							{
 								hasMore && transition.state === 'idle'
