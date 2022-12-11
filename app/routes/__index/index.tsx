@@ -243,17 +243,18 @@ function Index({ scrollPosition }: IndexProps) {
 				</div> */}
 
 				<div className="prod-list-container">
-					<ActivityRowLayout activities={mockedActivities} />
+					{/* <ActivityRowLayout activities={mockedActivities} /> */}
 
 					<ProductRowsContainer
-						productRows={productRows}
+						productRows={productRows.slice(0, 1)}
+						// productRows={productRows}
 						activityBanners={activity_banners}
 						onClickProduct={handleClickProduct}
 						onClickShopNow={handleClickShopNow}
 						scrollPosition={scrollPosition}
 					/>
 
-					<div className="ProductList__loadmore-container" >
+					{/* <div className="ProductList__loadmore-container" >
 						<div>
 							{
 								hasMore && transition.state === 'idle'
@@ -275,7 +276,7 @@ function Index({ scrollPosition }: IndexProps) {
 									)
 							}
 						</div>
-					</div>
+					</div> */}
 				</div>
 
 				{/* <div className="Index__right-ads-wrapper">

@@ -54,6 +54,8 @@ const RealRows = ({
     <>
       {
         productRows.map((row: Product[], index: number): ReactNode => {
+
+          console.log('debug productRows', row);
           // For every set of row "even row" + "1 main 2 sub" a subsequent activity banner would
           // be rendered.
           // There should only 4 banners to show in `activityBanners` array.
