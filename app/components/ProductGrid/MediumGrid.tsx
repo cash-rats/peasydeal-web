@@ -2,6 +2,7 @@ import { useState } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import type { ScrollPosition } from 'react-lazy-load-image-component';
 
 import MqNotifier from '~/components/MqNotifier';
 import RoundButton from '~/components/RoundButton';
@@ -35,6 +36,7 @@ interface MediumGridProps {
 	onClickProduct?: (productID: string) => void;
 	tagCombo?: TagsCombo | null;
 	discount?: number;
+	scrollPosition?: ScrollPosition;
 };
 
 
@@ -55,6 +57,7 @@ export default function MediumGrid({
 	onClickProduct = () => { },
 	tagCombo = 'none',
 	discount = 0,
+	scrollPosition,
 }: MediumGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 	// retrieve tags name in the provided combo. If given grid does not have
@@ -128,6 +131,7 @@ export default function MediumGrid({
 									alt={title}
 									className="medium-grid-image"
 									src={image}
+									scrollPosition={scrollPosition}
 								/>
 							</div>
 
@@ -199,6 +203,7 @@ export default function MediumGrid({
 									alt={title}
 									className="medium-grid-image"
 									src={image}
+									scrollPosition={scrollPosition}
 								/>
 							</div>
 

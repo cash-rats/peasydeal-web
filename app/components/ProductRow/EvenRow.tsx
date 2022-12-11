@@ -1,4 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
+import type { ScrollPosition } from 'react-lazy-load-image-component'
 
 import MediumGridSkeleton, { links as MediumGridSkeletonLinks } from "~/components/ProductGrid/MediumGridSkeleton";
 import type { Product } from "~/shared/types";
@@ -14,23 +15,21 @@ export const links: LinksFunction = () => {
 	];
 }
 
-// const Skele
-
 interface EvenRowProps {
-	/*
-	 *  Take at most 6 products. Render proper layout based on view port size.
-	 */
+	// Take at most 6 products. Render proper layout based on view port size.
 	products?: Product[];
 
 	onClickProduct?: (productID: string) => void;
 
 	loading?: boolean;
+	scrollPosition?: ScrollPosition;
 }
 
 export default function EvenRow({
 	loading = false,
 	products = [],
 	onClickProduct = () => { },
+	scrollPosition,
 }: EvenRowProps) {
 
 	return (
@@ -59,6 +58,7 @@ export default function EvenRow({
 								description={product.shortDescription}
 								tagCombo={product.tabComboType as TagsCombo | null}
 								discount={product.discount}
+								scrollPosition={scrollPosition}
 							/>
 						)
 						)

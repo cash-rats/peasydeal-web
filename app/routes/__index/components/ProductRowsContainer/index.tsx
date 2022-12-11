@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
+import type { ScrollPosition } from 'react-lazy-load-image-component';
 
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
@@ -39,12 +40,14 @@ const LoadingRows = () => {
 interface RealRowsProps {
   productRows?: Product[][];
   activityBanners?: ActivityBanner[];
+  scrollPosition?: ScrollPosition;
   onClickProduct?: (prodID: string) => void;
 }
 
 const RealRows = ({
   productRows = [],
   activityBanners = [],
+  scrollPosition,
   onClickProduct = () => { },
 }: RealRowsProps) => {
   return (
@@ -84,6 +87,7 @@ const RealRows = ({
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
                     onClickProduct={onClickProduct}
+                    scrollPosition={scrollPosition}
                   />
                 </div>
 
@@ -91,6 +95,7 @@ const RealRows = ({
                   <EvenRow
                     products={EvenRowProdData}
                     onClickProduct={onClickProduct}
+                    scrollPosition={scrollPosition}
                   />
                 </div>
 
@@ -127,6 +132,7 @@ const RealRows = ({
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
                     onClickProduct={onClickProduct}
+                    scrollPosition={scrollPosition}
                   />
                 </div>
               );
@@ -141,6 +147,7 @@ const RealRows = ({
                     reverse={shouldReverese}
                     products={oneMainTwoSubsProdData}
                     onClickProduct={onClickProduct}
+                    scrollPosition={scrollPosition}
                   />
                 </div>
 
@@ -148,6 +155,7 @@ const RealRows = ({
                   <EvenRow
                     products={evenRowProdData}
                     onClickProduct={onClickProduct}
+                    scrollPosition={scrollPosition}
                   />
                 </div>
               </Fragment>
@@ -164,6 +172,10 @@ interface ProductRowsContainerProps {
   productRows?: Product[][];
   activityBanners?: ActivityBanner[];
   loading?: boolean;
+
+  // Used to improve performance for react-lazy-load-image-component
+  scrollPosition?: ScrollPosition;
+
   onClickAddToCart?: (prodID: string) => void;
 
   // Reacts shopnow button in activity banner.
@@ -175,6 +187,7 @@ function ProductRowsContainer({
   productRows = [],
   activityBanners = [],
   loading = false,
+  scrollPosition,
 
   onClickAddToCart = () => { },
 }: ProductRowsContainerProps) {
@@ -185,6 +198,7 @@ function ProductRowsContainer({
           ? (<LoadingRows />)
           : (
             <RealRows
+              scrollPosition={scrollPosition}
               productRows={productRows}
               activityBanners={activityBanners}
               onClickProduct={onClickProduct}

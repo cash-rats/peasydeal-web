@@ -4,12 +4,14 @@ import type { LinksFunction } from '@remix-run/node';
 import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
 import { Link } from '@remix-run/react';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import { breakPoints } from '~/styles/breakpoints';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 
 import RoundButton from '../RoundButton';
 import styles from './styles/ActivityBannerLayout.css';
+import ActivityBannerSkeleton from './ActivityItemSkeleton';
 
 export const links: LinksFunction = () => {
   return [
@@ -94,14 +96,13 @@ const ActivityBannerLayout = ({
               const nDiscount = ~~(prod.discountOff * 100);
               return (
                 <div key={idx} className="ActivityBanner__wrapper">
-
                   <div className="ActivityBanner__image-container" >
-
                     <SunShine text={`${nDiscount}% off`} direction='right' />
-                    <img
+                    <LazyLoadImage
                       alt={prod.title}
                       className="ActivityBanner__image"
                       src={prod.mainPic}
+                      placeholder={<ActivityBannerSkeleton />}
                     />
                   </div>
 

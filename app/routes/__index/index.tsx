@@ -3,6 +3,8 @@ import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
 import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
 import type { DynamicLinksFunction } from 'remix-utils';
+import { trackWindowScroll } from 'react-lazy-load-image-component';
+import type { LazyComponentProps } from 'react-lazy-load-image-component';
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
@@ -163,7 +165,10 @@ const mockedActivities: SeasonalInfo[] = [
  * - [x] When number of data fetched is less than limit(9), it reaches the end. stop triggering loadmore but displays a button
  *       letting the user triggering loadmore manually.
  */
-export default function Index() {
+
+type IndexProps = {} & LazyComponentProps;
+
+function Index({ scrollPosition }: IndexProps) {
 	const { products, has_more, page, activity_banners } = useLoaderData<LoaderType>();
 	const currPage = useRef(page);
 	const [hasMore, setHasMore] = useState(has_more);
@@ -279,3 +284,5 @@ export default function Index() {
 		</>
 	);
 }
+
+export default trackWindowScroll(Index);

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from '@remix-run/react';
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import type { ScrollPosition } from "react-lazy-load-image-component";
+
 
 import RoundButton from '~/components/RoundButton';
 import MqNotifier from '~/components/MqNotifier';
@@ -34,6 +36,7 @@ interface LargeGridProps {
 	onClickProduct?: (productID: string) => void;
 	tagCombo?: TagsCombo;
 	discount?: number;
+	scrollPosition?: ScrollPosition;
 }
 
 function LargeGrid({
@@ -44,6 +47,7 @@ function LargeGrid({
 	onClickProduct = () => { },
 	tagCombo = 'none',
 	discount = 0,
+	scrollPosition,
 }: LargeGridProps) {
 	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 	const tagNames = TagComboMap[tagCombo];
@@ -114,6 +118,7 @@ function LargeGrid({
 									src={image}
 									className='large-grid-image'
 									alt={title}
+									scrollPosition={scrollPosition}
 								/>
 							</div>
 
@@ -181,6 +186,7 @@ function LargeGrid({
 									src={image}
 									className='large-grid-image'
 									alt={title}
+									scrollPosition={scrollPosition}
 								/>
 							</div>
 
