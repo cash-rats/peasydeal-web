@@ -38,6 +38,7 @@ import ProductActionBarLeft, { links as ProductActionBarLeftLinks } from './comp
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
 import TopProductsColumn, { links as TopProductsColumnLinks } from './components/TopProductsColumn';
+import useStickyActionBar from './hooks/useStickyActionBar';
 
 type LoaderTypeProductDetail = {
 	product: ProductDetail;
@@ -161,37 +162,7 @@ function ProductDetailPage() {
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 
-	// Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
-	useEffect(() => {
-		const handleWindowScrolling = (evt: Event) => {
-			if (!window || !productContentWrapperRef.current || !mobileUserActionBarRef.current) return;
-
-			const windowDOM = window as Window;
-			const prodContentRect = productContentWrapperRef.current.getBoundingClientRect();
-
-			const isScrollAtDivBottom = windowDOM.innerHeight + windowDOM.scrollY >= prodContentRect.bottom + windowDOM.scrollY;
-
-			if (isScrollAtDivBottom) {
-				if (mobileUserActionBarRef.current.style.position === 'relative') return;
-				mobileUserActionBarRef.current.style.position = 'relative';
-			} else {
-				if (mobileUserActionBarRef.current.style.position === 'fixed') return;
-				mobileUserActionBarRef.current.style.position = 'fixed';
-			}
-		};
-
-		if (window) {
-			window.scrollTo(0, 0);
-
-			// Listen to scroll position of window, if window scroll bottom is at bottom position of productContentWrapperRef
-			// change position of `productContentWrapperRef` from `fixed` to `relative`.
-			window.addEventListener('scroll', handleWindowScrolling);
-		}
-
-		return () => window.removeEventListener('scroll', handleWindowScrolling);
-
-	}, []);
-
+	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 	const [quantity, updateQuantity] = useState<number>(1);
 	const [variation, setVariation] = useState<ProductVariation | undefined>(
 		productDetail.variations.find(
@@ -360,6 +331,7 @@ function ProductDetailPage() {
 						<ProductDetailSection
 							description={productDetail?.description}
 							pics={productDetail.images}
+							title={productDetail?.title}
 						/>
 
 						<div

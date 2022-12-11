@@ -14,9 +14,11 @@ export const links: LinksFunction = () => {
 interface ProductDetailSectionProps {
 	description?: string;
 	pics: string[],
+	title?: string,
 }
 
 function ProductDetailSection({
+	title = '',
 	description = '',
 	pics = [],
 }: ProductDetailSectionProps) {
@@ -24,7 +26,7 @@ function ProductDetailSection({
 		<div className="product-detail">
 			{/* Image container */}
 			<div className="product-detail-img-container">
-				<PicsCarousel images={pics} />
+				<PicsCarousel title={title} images={pics} />
 			</div>
 
 			{/* product features. display > 768 */}

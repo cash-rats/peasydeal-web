@@ -9,6 +9,8 @@ import {
 } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
+import { trackWindowScroll } from "react-lazy-load-image-component";
+import type { LazyComponentProps } from "react-lazy-load-image-component";
 
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -180,7 +182,9 @@ const getCategoryFromWindowPath = (window: Window): string => {
   return category;
 };
 
-function Collection() {
+type CollectionProps = {} & LazyComponentProps;
+
+function Collection({ scrollPosition }: CollectionProps) {
   const { category, products, page, has_more, categories } = useLoaderData<LoaderType>();
 
   // "productRows" is for displaying products on the screen.
@@ -288,10 +292,10 @@ function Collection() {
       <PageTitle title={category} />
 
       <div className="ProductList__container">
-
         <ProductRowsContainer
           loading={isChangingCategory}
           productRows={productRows}
+          scrollPosition={scrollPosition}
         />
       </div>
 
@@ -320,4 +324,4 @@ function Collection() {
 
 }
 
-export default Collection;
+export default trackWindowScroll(Collection);

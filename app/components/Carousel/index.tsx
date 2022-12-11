@@ -4,6 +4,8 @@ import Slider from 'react-slick';
 import type { Settings } from 'react-slick';
 import type { LinksFunction } from '@remix-run/node';
 import clsx from 'clsx';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import Skeleton from '@mui/material/Skeleton';
 
 import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
@@ -22,6 +24,7 @@ export const links: LinksFunction = () => {
 
 interface PicsCarouselProps {
 	images: string[];
+	title?: string;
 };
 
 /*
@@ -30,7 +33,7 @@ interface PicsCarouselProps {
  * 	- [x] clicks on thumbnail should display that image.
  *  - [ ] 當移動 slide 到 thumbnail 看不到的位置，要 scroll thumbnail bar.
  */
-function PicsCarousel({ images }: PicsCarouselProps) {
+function PicsCarousel({ images, title = '' }: PicsCarouselProps) {
 	const sliderRef = useRef<Slider | null>(null);
 	const [activeSlide, setActiveSlide] = useState(0);
 
@@ -78,10 +81,18 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 						{
 							images.map((image, index) => {
 								return (
-									<div
-										key={index}
-									>
-										<img alt='product' className="product-carousel-image" src={image} />
+									<div key={index}>
+										<LazyLoadImage
+											placeholder={
+												<Skeleton
+													className="product-carousel-image"
+													variant='rectangular'
+												/>
+											}
+											alt={title}
+											className="product-carousel-image"
+											src={image}
+										/>
 									</div>
 								)
 							})
@@ -105,7 +116,14 @@ function PicsCarousel({ images }: PicsCarouselProps) {
 										handleChooseSlide(index, evt)
 									}}
 								>
-									<img
+									<LazyLoadImage
+										placeholder={
+											<Skeleton
+												variant='rectangular'
+												height='100%'
+												width='100%'
+											/>
+										}
 										alt='product thumbnail'
 										className="carousel__thumbnail"
 										src={image}

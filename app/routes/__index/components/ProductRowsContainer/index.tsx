@@ -109,6 +109,7 @@ const RealRows = ({
                         backgroundSize: 'cover',
                       }} className="ProductRowsContainer__activity-banner-wrapper ProductRowsContainer__activity-banner-wrapper">
                         <ActivityBannerLayout
+                          scrollPosition={scrollPosition}
                           activityInfo={{
                             title: banner.title,
                             catID: banner.cat_id,
