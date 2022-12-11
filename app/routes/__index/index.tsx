@@ -250,6 +250,7 @@ function Index({ scrollPosition }: IndexProps) {
 						activityBanners={activity_banners}
 						onClickProduct={handleClickProduct}
 						onClickShopNow={handleClickShopNow}
+						scrollPosition={scrollPosition}
 					/>
 
 					<div className="ProductList__loadmore-container" >

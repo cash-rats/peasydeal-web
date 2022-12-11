@@ -5,6 +5,7 @@ import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
 import { Link } from '@remix-run/react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import type { ScrollPosition } from 'react-lazy-load-image-component';
 
 import { breakPoints } from '~/styles/breakpoints';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
@@ -40,8 +41,7 @@ type ActivityBannerLayoutProps = {
 
   activityProds?: ActivityGridProps[];
 
-  // Reacts viewing product detail.
-  onClickView?: (prodID: string) => void;
+  scrollPosition?: ScrollPosition;
 
   // [WIP] Reacts to add to cart button.
   onClickAddToCart?: () => void;
@@ -58,6 +58,7 @@ type ActivityBannerLayoutProps = {
 const ActivityBannerLayout = ({
   activityInfo,
   activityProds = [],
+  scrollPosition,
 }: ActivityBannerLayoutProps) => {
   const settings: Settings = {
     dots: true,
@@ -103,6 +104,7 @@ const ActivityBannerLayout = ({
                       className="ActivityBanner__image"
                       src={prod.mainPic}
                       placeholder={<ActivityBannerSkeleton />}
+                      scrollPosition={scrollPosition}
                     />
                   </div>
 
