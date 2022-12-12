@@ -239,15 +239,16 @@ function Index({ scrollPosition }: IndexProps) {
 			<div className="Index__wrapper">
 				{/* Display when width > 1600  */}
 				{/* <div className="Index__left-ads-wrapper">
-					<ActivityColumnLayout activities={mockedActivities} />
+					<ActivityColumnLayout seasonals={mockedActivities} />
 				</div> */}
 
 				<div className="prod-list-container">
-					{/* <ActivityRowLayout activities={mockedActivities} /> */}
+					<ActivityRowLayout activities={mockedActivities} />
 
 					<ProductRowsContainer
 						productRows={productRows}
 						activityBanners={activity_banners}
+						seasonals={mockedActivities}
 						onClickProduct={handleClickProduct}
 						onClickShopNow={handleClickShopNow}
 						scrollPosition={scrollPosition}

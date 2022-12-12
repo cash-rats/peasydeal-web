@@ -18,17 +18,17 @@ export type SeasonalInfo = {
   src: string;
 } & Category;
 
-interface ActivityLayoutProps {
-  activities?: SeasonalInfo[];
+interface SeasonalLayoutProps {
+  seasonals?: SeasonalInfo[];
 };
 
-function ActivityColumnLayout({ activities = [] }: ActivityLayoutProps, ref: ForwardedRef<HTMLDivElement>) {
+function ActivityColumnLayout({ seasonals = [] }: SeasonalLayoutProps, ref: ForwardedRef<HTMLDivElement>) {
   return (
     <div ref={ref} className="ActivityLayout__wrapper">
       {
-        activities.map((activity, index) => {
+        seasonals.map((seasonal, index) => {
           return (
-            <ActivityGrid key={index} src={activity.src} />
+            <ActivityGrid key={index} src={seasonal.src} />
           )
         })
       }
@@ -36,4 +36,4 @@ function ActivityColumnLayout({ activities = [] }: ActivityLayoutProps, ref: For
   );
 }
 
-export default forwardRef<HTMLDivElement, ActivityLayoutProps>(ActivityColumnLayout);
+export default forwardRef<HTMLDivElement, SeasonalLayoutProps>(ActivityColumnLayout);

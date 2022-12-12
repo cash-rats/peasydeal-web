@@ -8,6 +8,8 @@ import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwo
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import ActivityBannerLayout, { links as ActivityBannerLayoutLinks } from '~/components/ActivityBannerLayout';
 import type { Product } from '~/shared/types';
+import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
+import ActivityColumnLayout, { links as ActivityColumnLayoutLinks } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
 
 import type { ActivityBanner } from '../../types';
 import styles from './styles/ProductRowsContainer.css';
@@ -17,6 +19,7 @@ export const links: LinksFunction = () => {
     ...OneMainTwoSubsLinks(),
     ...EvenRowLinks(),
     ...ActivityBannerLayoutLinks(),
+    ...ActivityColumnLayoutLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -40,6 +43,7 @@ const LoadingRows = () => {
 interface RealRowsProps {
   productRows?: Product[][];
   activityBanners?: ActivityBanner[];
+  seasonals?: SeasonalInfo[];
   scrollPosition?: ScrollPosition;
   onClickProduct?: (prodID: string) => void;
 }
@@ -47,6 +51,7 @@ interface RealRowsProps {
 const RealRows = ({
   productRows = [],
   activityBanners = [],
+  seasonals = [],
   scrollPosition,
   onClickProduct = () => { },
 }: RealRowsProps) => {
@@ -54,8 +59,6 @@ const RealRows = ({
     <>
       {
         productRows.map((row: Product[], index: number): ReactNode => {
-
-          console.log('debug productRows', row);
           // For every set of row "even row" + "1 main 2 sub" a subsequent activity banner would
           // be rendered.
           // There should only 4 banners to show in `activityBanners` array.
@@ -77,66 +80,98 @@ const RealRows = ({
           // we'll need to decided if we have enough products to render `OneMainTwoSubs` and `EvenRow`
           const shouldReverese = index % 2 !== 0;
 
+
+          // Render seasonal items on the first `ProductRowsContainer__row-wrapper`.
+
           if (row.length === 9) {
             // We can rest assure that we have enough products to render both `OneMainTwoSubs` and `EvenRow`
             const oneMainTwoSubsProdData = row.slice(0, 3)
             const EvenRowProdData = row.slice(3)
 
             return (
-              <Fragment key={index}>
-                <div className="productRowsContainer__product-row">
-                  <OneMainTwoSubs
-                    reverse={shouldReverese}
-                    products={oneMainTwoSubsProdData}
-                    onClickProduct={onClickProduct}
-                    scrollPosition={scrollPosition}
-                  />
-                </div>
-
-                <div className="productRowsContainer__product-row">
-                  <EvenRow
-                    products={EvenRowProdData}
-                    onClickProduct={onClickProduct}
-                    scrollPosition={scrollPosition}
-                  />
-                </div>
-
+              <div
+                key={index}
+                className="ProductRowsContainer__row-wrapper"
+              >
                 {
-                  banner
+                  index === 0
                     ? (
-                      <div style={{
-                        backgroundImage: `linear-gradient(to bottom, transparent 60%, black 120%), url(${banner.banner_url})`,
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundSize: 'cover',
-                      }} className="ProductRowsContainer__activity-banner-wrapper ProductRowsContainer__activity-banner-wrapper">
-                        <ActivityBannerLayout
-                          scrollPosition={scrollPosition}
-                          activityInfo={{
-                            title: banner.title,
-                            catID: banner.cat_id,
-                            catTitle: banner.cat_title,
-                          }}
-                          activityProds={banner.items}
-                        />
+                      <div className="ProductRowsContainer__row-wrapper__left-seasonal-wrapper">
+                        <ActivityColumnLayout seasonals={seasonals} />
                       </div>
                     )
                     : null
                 }
-              </Fragment>
+                <div className="productRowsContainer__product-row-set">
+                  <div className="productRowsContainer__product-row">
+                    <OneMainTwoSubs
+                      reverse={shouldReverese}
+                      products={oneMainTwoSubsProdData}
+                      onClickProduct={onClickProduct}
+                      scrollPosition={scrollPosition}
+                    />
+
+                  </div>
+
+                  <div className="productRowsContainer__product-row">
+                    <EvenRow
+                      products={EvenRowProdData}
+                      onClickProduct={onClickProduct}
+                      scrollPosition={scrollPosition}
+                    />
+                  </div>
+
+                  {
+                    banner
+                      ? (
+                        <div style={{
+                          backgroundImage: `linear-gradient(to bottom, transparent 60%, black 120%), url(${banner.banner_url})`,
+                          backgroundPosition: 'center',
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: 'cover',
+                        }} className="ProductRowsContainer__activity-banner-wrapper">
+                          <ActivityBannerLayout
+                            scrollPosition={scrollPosition}
+                            activityInfo={{
+                              title: banner.title,
+                              catID: banner.cat_id,
+                              catTitle: banner.cat_title,
+                            }}
+                            activityProds={banner.items}
+                          />
+                        </div>
+                      )
+                      : null
+                  }
+                </div>
+
+                {
+                  index === 0
+                    ? (
+                      <div className="ProductRowsContainer__row-wrapper__right-seasonal-wrapper">
+                        <ActivityColumnLayout seasonals={seasonals} />
+                      </div>
+                    )
+                    : null
+                }
+              </div>
             )
           } else {
             const oneMainTwoSubsProdData = row.slice(0, 3)
 
             if (oneMainTwoSubsProdData.length < 3) {
               return (
-                <div key={index} className="productRowsContainer__product-row">
-                  <OneMainTwoSubs
-                    reverse={shouldReverese}
-                    products={oneMainTwoSubsProdData}
-                    onClickProduct={onClickProduct}
-                    scrollPosition={scrollPosition}
-                  />
+                <div className="ProductRowsContainer__row-wrapper">
+                  <div key={index} className="productRowsContainer__product-row-set">
+                    <div className="productRowsContainer__product-row">
+                      <OneMainTwoSubs
+                        reverse={shouldReverese}
+                        products={oneMainTwoSubsProdData}
+                        onClickProduct={onClickProduct}
+                        scrollPosition={scrollPosition}
+                      />
+                    </div>
+                  </div>
                 </div>
               );
             }
@@ -144,24 +179,30 @@ const RealRows = ({
             const evenRowProdData = row.slice(3)
 
             return (
-              <Fragment key={index}>
-                <div className="productRowsContainer__product-row">
-                  <OneMainTwoSubs
-                    reverse={shouldReverese}
-                    products={oneMainTwoSubsProdData}
-                    onClickProduct={onClickProduct}
-                    scrollPosition={scrollPosition}
-                  />
-                </div>
+              <div
+                key={index}
+                className="ProductRowsContainer__row-wrapper"
+              >
 
-                <div className="productRowsContainer__product-row">
-                  <EvenRow
-                    products={evenRowProdData}
-                    onClickProduct={onClickProduct}
-                    scrollPosition={scrollPosition}
-                  />
+                <div className="productRowsContainer__product-row-set">
+                  <div className="productRowsContainer__product-row">
+                    <OneMainTwoSubs
+                      reverse={shouldReverese}
+                      products={oneMainTwoSubsProdData}
+                      onClickProduct={onClickProduct}
+                      scrollPosition={scrollPosition}
+                    />
+                  </div>
+
+                  <div className="productRowsContainer__product-row">
+                    <EvenRow
+                      products={evenRowProdData}
+                      onClickProduct={onClickProduct}
+                      scrollPosition={scrollPosition}
+                    />
+                  </div>
                 </div>
-              </Fragment>
+              </div>
             );
           }
         })
@@ -174,6 +215,7 @@ interface ProductRowsContainerProps {
   onClickProduct?: (prodID: string) => void;
   productRows?: Product[][];
   activityBanners?: ActivityBanner[];
+  seasonals?: SeasonalInfo[];
   loading?: boolean;
 
   // Used to improve performance for react-lazy-load-image-component
@@ -189,6 +231,8 @@ function ProductRowsContainer({
   onClickProduct = () => { },
   productRows = [],
   activityBanners = [],
+  seasonals = [],
+
   loading = false,
   scrollPosition,
 
@@ -204,6 +248,7 @@ function ProductRowsContainer({
               scrollPosition={scrollPosition}
               productRows={productRows}
               activityBanners={activityBanners}
+              seasonals={seasonals}
               onClickProduct={onClickProduct}
             />
           )
