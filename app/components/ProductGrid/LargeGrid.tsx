@@ -122,9 +122,7 @@ function LargeGrid({
 	return (
 		<Link
 			// prefetch='intent'
-			className={clsx("large-grid-container", {
-				'LargeGrid__disable-clickable-grid': !clickableGrid,
-			})}
+			className={"large-grid-container"}
 			to={`/product/${productID}`}
 			onClick={(evt) => {
 				if (!isClickableGrid()) {
@@ -171,7 +169,8 @@ function LargeGrid({
 						<RoundButton
 							type='submit'
 							colorScheme="cerise"
-							onClick={() => {
+							onClick={(evt) => {
+								evt.stopPropagation();
 								onClickProduct(productID)
 							}}
 						>

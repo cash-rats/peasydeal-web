@@ -1,4 +1,4 @@
-import type { ReactNode, CSSProperties } from 'react';
+import type { ReactNode, CSSProperties, MouseEvent } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import type { LoadingButtonProps } from '@mui/lab/LoadingButton';
 import { styled } from '@mui/material/styles';
@@ -95,7 +95,7 @@ interface RoundButtonProps extends LoadingButtonProps {
   children?: ReactNode;
   style?: CSSProperties;
   colorScheme?: ColorScheme;
-  onClick?: () => void;
+  onClick?: (evt: MouseEvent<HTMLButtonElement>) => void;
   isLoading?: boolean;
   leftIcon?: ReactNode;
 }
@@ -120,10 +120,12 @@ function RoundButton({
   isLoading = false,
   children,
   leftIcon,
+  type,
 }: RoundButtonProps) {
   const CustomButton = colorSchemeButton[colorScheme];
   return (
     <CustomButton
+      type={type}
       style={style}
       size={size}
       fullWidth

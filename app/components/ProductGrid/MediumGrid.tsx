@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import type { LinksFunction } from '@remix-run/node';
-import { Link } from '@remix-run/react';
+import { Link, Form } from '@remix-run/react';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 
-import MqNotifier from '~/components/MqNotifier';
 import RoundButton from '~/components/RoundButton';
 import { breakPoints } from '~/styles/breakpoints';
 import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
@@ -12,11 +11,12 @@ import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
 
-import MediumGridSkeleton from './MediumGridSkeleton';
 import { normalizeTagsListToMap } from './utils';
+import type { RenderableTagMap } from './utils';
 import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
 import styles from "./styles/MediumGrid.css";
+import placeholderSVG from './images/placeholder.svg';
 
 export const links: LinksFunction = () => {
 	return [
@@ -68,176 +68,121 @@ export default function MediumGrid({
 	);
 	const nDiscount = ~~(discount * 100);
 
-	return (
-		<MqNotifier
-			mqValidators={[
+	const renderTags = (shouldRenderTags: RenderableTagMap, discount: number) => {
+		return (
+			<>
+
 				{
-					condition: () => true,
-					callback: (dom) => setClickableGrid(
-						dom.innerWidth <= breakPoints.phoneTop
-					),
+					shouldRenderTags['NEW_LEFT'] && (
+						<TiltRibbon text='new' direction='left' />
+					)
 				}
-			]}
+
+				{
+					shouldRenderTags['NEW_RIGHT'] && (
+						<TiltRibbon text='new' direction='right' />
+					)
+				}
+
+				{
+					shouldRenderTags['SCRATCH_RIGHT'] && (
+						<Scratch text={`${discount}% off`} direction='right' />
+					)
+				}
+
+				{
+					shouldRenderTags['SUN_LEFT'] && (
+						<SunShine text={`${discount} % off`} direction='left' />
+					)
+				}
+
+				{
+					shouldRenderTags['SUN_RIGHT'] && (
+						<SunShine text={`${discount}% off`} direction='right' />
+					)
+				}
+
+				{
+					shouldRenderTags['PENNANT_LEFT'] && (
+						<PennantLeft text1='price off' text2={`${discount}%`} />
+					)
+				}
+			</>
+
+		)
+
+	}
+
+	const isClickableGrid = (): boolean => {
+		const windowDOM = window as Window;
+		if (!windowDOM) return false;
+		return windowDOM.innerWidth <= breakPoints.phoneTop;
+	}
+
+	return (
+		<Link
+			// prefetch='intent'
+			to={`/product/${productID}`}
+			onClick={(evt) => {
+				if (!isClickableGrid()) {
+					evt.preventDefault();
+					return;
+				}
+
+				onClickProduct(productID)
+			}}
+			className="medium-grid-container"
 		>
-			{
-				clickableGrid
-					? (
-						<Link
-							// prefetch='intent'
-							to={`/product/${productID}`}
-							onClick={() => onClickProduct(productID)}
-							className="medium-grid-container"
+			{renderTags(shouldRenderTags, nDiscount)}
+
+			{/* images */}
+			<div className="image-container">
+				<LazyLoadImage
+					placeholder={
+						<img
+							src={placeholderSVG}
+							alt={title}
+							className="medium-grid-image"
+						/>
+					}
+					alt={title}
+					className="medium-grid-image"
+					src={image}
+					scrollPosition={scrollPosition}
+				/>
+			</div>
+
+			{/* Product Description */}
+			<div className="product-desc-container">
+				<div className="prod-info">
+					{/* topic */}
+					<div className="headline">
+						{title}
+					</div>
+
+					<p>
+						{description}
+					</p>
+				</div>
+
+				<div className="view-btn-container">
+					<Form method='get' action={`/product/${productID}`}>
+						<RoundButton
+							type='submit'
+							colorScheme="cerise"
+							onClick={(evt) => {
+								evt.stopPropagation();
+								onClickProduct(productID)
+							}}
+							style={{
+								padding: '0.675rem 1.5rem'
+							}}
 						>
-							{
-								shouldRenderTags['NEW_LEFT'] && (
-									<TiltRibbon text='new' direction='left' />
-								)
-							}
-
-							{
-								shouldRenderTags['NEW_RIGHT'] && (
-									<TiltRibbon text='new' direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['SCRATCH_RIGHT'] && (
-									<Scratch text={`${nDiscount}% off`} direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['SUN_LEFT'] && (
-									<SunShine text={`${nDiscount} % off`} direction='left' />
-								)
-							}
-
-							{
-								shouldRenderTags['SUN_RIGHT'] && (
-									<SunShine text={`${nDiscount}% off`} direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['PENNANT_LEFT'] && (
-									<PennantLeft text1='price off' text2={`${nDiscount}%`} />
-								)
-							}
-
-							{/* images */}
-							<div className="image-container">
-								<LazyLoadImage
-									placeholder={<MediumGridSkeleton />}
-									alt={title}
-									className="medium-grid-image"
-									src={image}
-									scrollPosition={scrollPosition}
-								/>
-							</div>
-
-							{/* Product Description */}
-							<div className="product-desc-container">
-								<div className="prod-info">
-									{/* topic */}
-									<div className="headline">
-										{title}
-									</div>
-
-									<p>
-										{description}
-									</p>
-								</div>
-							</div>
-						</Link>
-					)
-					: (
-						<div
-							onClick={
-								clickableGrid
-									? () => onClickProduct(productID)
-									: () => { }
-							}
-							className="medium-grid-container"
-						>
-							{
-
-								shouldRenderTags['NEW_LEFT'] && (
-									<TiltRibbon text='new' direction='left' />
-								)
-							}
-
-							{
-								shouldRenderTags['NEW_RIGHT'] && (
-									<TiltRibbon text='new' direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['SCRATCH_RIGHT'] && (
-									<Scratch text={`${nDiscount}% off`} direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['SUN_LEFT'] && (
-									<SunShine text={`${nDiscount}% off`} direction='left' />
-								)
-							}
-
-							{
-								shouldRenderTags['SUN_RIGHT'] && (
-									<SunShine text={`${nDiscount}% off`} direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['PENNANT_LEFT'] && (
-									<PennantLeft text1='price off' text2={`${nDiscount}%`} />
-								)
-							}
-
-							{/* images */}
-							<div className="image-container">
-								<LazyLoadImage
-									placeholder={<MediumGridSkeleton />}
-									alt={title}
-									className="medium-grid-image"
-									src={image}
-									scrollPosition={scrollPosition}
-								/>
-							</div>
-
-							<div className="product-desc-container">
-								<div className="prod-info">
-									{/* topic */}
-									<div className="headline">
-										{title}
-									</div>
-
-									<p>
-										{description}
-									</p>
-								</div>
-
-								<div className="view-btn-container">
-									<Link to={`/product/${productID}`} >
-										<RoundButton
-											colorScheme="cerise"
-											onClick={() => onClickProduct(productID)}
-											style={{
-												padding: '0.675rem 1.5rem'
-											}}
-										>
-											View
-										</RoundButton>
-									</Link>
-								</div>
-							</div>
-
-							{/* Product Description */}
-						</div>
-					)
-			}
-		</MqNotifier>
+							View
+						</RoundButton>
+					</Form>
+				</div>
+			</div>
+		</Link>
 	);
 };
