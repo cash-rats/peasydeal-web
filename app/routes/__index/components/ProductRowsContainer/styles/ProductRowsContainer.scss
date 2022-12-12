@@ -9,13 +9,12 @@
 
 .ProductRowsContainer__row-wrapper {
 	display: flex;
-	// grid-template-columns: 1180px;
 	justify-content: center;
 	width: 100%;
 
 	@media (min-width: $screen-1600-min) {
 		display: grid;
-		grid-template-columns: [left-ads] auto 1100px [right-ads] auto;
+		grid-template-columns: [left-ads] 1fr 1100px [right-ads] 1fr;
 	}
 }
 

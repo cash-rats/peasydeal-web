@@ -97,10 +97,10 @@ const RealRows = ({
                   index === 0
                     ? (
                       <div className="ProductRowsContainer__row-wrapper__left-seasonal-wrapper">
-                        <ActivityColumnLayout seasonals={seasonals} />
+                        <ActivityColumnLayout seasonals={seasonals.slice(0, 2)} />
                       </div>
                     )
-                    : null
+                    : <div />
                 }
                 <div className="productRowsContainer__product-row-set">
                   <div className="productRowsContainer__product-row">
@@ -149,10 +149,10 @@ const RealRows = ({
                   index === 0
                     ? (
                       <div className="ProductRowsContainer__row-wrapper__right-seasonal-wrapper">
-                        <ActivityColumnLayout seasonals={seasonals} />
+                        <ActivityColumnLayout seasonals={seasonals.slice(2)} />
                       </div>
                     )
-                    : null
+                    : <div />
                 }
               </div>
             )

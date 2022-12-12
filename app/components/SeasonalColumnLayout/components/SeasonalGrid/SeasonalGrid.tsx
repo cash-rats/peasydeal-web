@@ -11,14 +11,16 @@ export const links: LinksFunction = () => {
 interface SeasonalGridProps {
   title?: string;
   src?: string;
-  catID?: string;
+  catId?: string;
 }
 
 export default function ActivityGrid({
   title = '',
   src = '',
-  catID = '',
+  catId = '',
 }: SeasonalGridProps) {
+  console.log('debug catID', catId);
+
   return (
     <div
       style={{

@@ -44,32 +44,4 @@
   width: 100%;
 }
 
-.Index__left-ads-wrapper {
-  display: none;
-  position: relative;
-  width: 257px;
-  justify-self: end;
-}
-@media (min-width: 1600px) {
-  .Index__left-ads-wrapper {
-    display: flex;
-    justify-content: flex-end;
-    margin-right: 2rem;
-  }
-}
-
-.Index__right-ads-wrapper {
-  display: none;
-  position: relative;
-  width: 257px;
-  justify-self: start;
-}
-@media (min-width: 1600px) {
-  .Index__right-ads-wrapper {
-    display: flex;
-    justify-content: flex-start;
-    margin-left: 2rem;
-  }
-}
-
 /*# sourceMappingURL=ProductList.css.map */

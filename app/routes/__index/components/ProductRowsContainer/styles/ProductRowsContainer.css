@@ -13,7 +13,7 @@
 @media (min-width: 1600px) {
   .ProductRowsContainer__row-wrapper {
     display: grid;
-    grid-template-columns: [left-ads] auto 1100px [right-ads] auto;
+    grid-template-columns: [left-ads] 1fr 1100px [right-ads] 1fr;
   }
 }
 

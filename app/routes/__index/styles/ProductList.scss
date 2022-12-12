@@ -44,34 +44,4 @@
 
 .Index__wrapper {
 	width: 100%;
-	// @media (min-width: $screen-1600-min) {
-	// 	display: grid;
-	// 	grid-template-columns: [left-ads] auto 1100px [right-ads] auto;
-	// }
-}
-
-.Index__left-ads-wrapper {
-	display: none;
-	position: relative;
-	width: 257px;
-	justify-self: end;
-
-	@media (min-width: $screen-1600-min) {
-		display: flex;
-		justify-content: flex-end;
-		margin-right: 2rem;
-	}
-}
-
-.Index__right-ads-wrapper {
-	display: none;
-	position: relative;
-	width: 257px;
-	justify-self: start;
-
-	@media (min-width: $screen-1600-min) {
-		display: flex;
-		justify-content: flex-start;
-		margin-left: 2rem;
-	}
 }

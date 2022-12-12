@@ -130,26 +130,27 @@ export const action: ActionFunction = async ({ request }) => {
 	});
 }
 
+// TODO: this this should be
 const mockedActivities: SeasonalInfo[] = [
 	{
-		src: 'https://static.wowcher.co.uk/binaries/DS%20Outlet%20Tile%20Mobile.jpg',
-		catId: 1,
-		title: 'some activity'
+		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/2023trend.jpg',
+		catId: 2,
+		title: '2023 Trend'
 	},
 	{
-		src: 'https://static.wowcher.co.uk/binaries/Christmas_Gift_guide-mobile.jpg',
-		catId: 1,
-		title: 'some activity'
+		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/boxingday.jpg',
+		catId: 24,
+		title: 'Boxing Day'
 	},
 	{
-		src: 'https://static.wowcher.co.uk/binaries/Experiences-TILE-MOBILE.jpg',
-		catId: 1,
-		title: 'some activity'
+		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/christmas.jpg',
+		catId: 23,
+		title: 'Christmas'
 	},
 	{
-		src: 'https://static.wowcher.co.uk/binaries/BF-leaked-mobile-wow-tile.jpg',
-		catId: 1,
-		title: 'some activity'
+		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/clearance.jpg',
+		catId: 3,
+		title: 'clearance'
 	}
 ];
 
@@ -237,10 +238,6 @@ function Index({ scrollPosition }: IndexProps) {
 	return (
 		<>
 			<div className="Index__wrapper">
-				{/* Display when width > 1600  */}
-				{/* <div className="Index__left-ads-wrapper">
-					<ActivityColumnLayout seasonals={mockedActivities} />
-				</div> */}
 
 				<div className="prod-list-container">
 					<ActivityRowLayout activities={mockedActivities} />
@@ -278,10 +275,6 @@ function Index({ scrollPosition }: IndexProps) {
 						</div>
 					</div>
 				</div>
-
-				{/* <div className="Index__right-ads-wrapper">
-					<ActivityColumnLayout activities={mockedActivities} />
-				</div> */}
 			</div>
 		</>
 	);
