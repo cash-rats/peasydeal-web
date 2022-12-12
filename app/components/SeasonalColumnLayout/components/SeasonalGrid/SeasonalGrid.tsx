@@ -20,18 +20,17 @@ export default function ActivityGrid({
   src = '',
   catId,
 }: SeasonalGridProps) {
-  console.log('debug catID', catId);
-  console.log('debug title', title);
-
   return (
-    <div
-      style={{
-        backgroundImage: `url(${src})`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-      }}
-      className="ActivityGrid"
-    />
+    <Link to={`/${title}`}>
+      <div
+        style={{
+          backgroundImage: `url(${src})`,
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover',
+        }}
+        className="ActivityGrid"
+      />
+    </Link>
   );
 }
