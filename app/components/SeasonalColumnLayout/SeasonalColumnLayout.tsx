@@ -23,13 +23,17 @@ interface SeasonalLayoutProps {
 };
 
 function ActivityColumnLayout({ seasonals = [] }: SeasonalLayoutProps, ref: ForwardedRef<HTMLDivElement>) {
-  console.log('debug seasonal', seasonals);
+  console.log('debug seasonals', seasonals);
   return (
     <div ref={ref} className="ActivityLayout__wrapper">
       {
         seasonals.map((seasonal, index) => {
           return (
-            <ActivityGrid key={index} src={seasonal.src} />
+            <ActivityGrid
+              catId={seasonal.catId}
+              title={seasonal.title}
+              key={index} src={seasonal.src}
+            />
           )
         })
       }

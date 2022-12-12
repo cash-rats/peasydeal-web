@@ -10,8 +10,14 @@
   justify-content: center;
   width: 100%;
 }
+
+.ProductRowsContainer__row-wrapper-with-seasonals {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 @media (min-width: 1600px) {
-  .ProductRowsContainer__row-wrapper {
+  .ProductRowsContainer__row-wrapper-with-seasonals {
     display: grid;
     grid-template-columns: [left-ads] 1fr 1100px [right-ads] 1fr;
   }

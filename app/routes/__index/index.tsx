@@ -135,22 +135,22 @@ const mockedActivities: SeasonalInfo[] = [
 	{
 		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/2023trend.jpg',
 		catId: 2,
-		title: '2023 Trend'
+		title: 'New Trend'
 	},
 	{
 		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/boxingday.jpg',
 		catId: 24,
-		title: 'Boxing Day'
+		title: 'Activity-Boxing Day'
 	},
 	{
 		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/christmas.jpg',
 		catId: 23,
-		title: 'Christmas'
+		title: 'Activity-Christmas'
 	},
 	{
 		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/clearance.jpg',
 		catId: 3,
-		title: 'clearance'
+		title: 'Hot Deal'
 	}
 ];
 

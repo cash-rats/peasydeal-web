@@ -11,6 +11,12 @@
 	display: flex;
 	justify-content: center;
 	width: 100%;
+}
+
+.ProductRowsContainer__row-wrapper-with-seasonals {
+	display: flex;
+	justify-content: center;
+	width: 100%;
 
 	@media (min-width: $screen-1600-min) {
 		display: grid;

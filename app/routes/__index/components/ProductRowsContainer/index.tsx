@@ -1,7 +1,7 @@
-import { Fragment } from 'react';
 import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
+import clsx from 'clsx';
 
 import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
@@ -91,10 +91,12 @@ const RealRows = ({
             return (
               <div
                 key={index}
-                className="ProductRowsContainer__row-wrapper"
+                className={clsx("ProductRowsContainer__row-wrapper", {
+                  'ProductRowsContainer__row-wrapper-with-seasonals': index === 0 && (seasonals.length > 0),
+                })}
               >
                 {
-                  index === 0
+                  index === 0 && (seasonals.length > 0)
                     ? (
                       <div className="ProductRowsContainer__row-wrapper__left-seasonal-wrapper">
                         <ActivityColumnLayout seasonals={seasonals.slice(0, 2)} />
@@ -146,7 +148,7 @@ const RealRows = ({
                 </div>
 
                 {
-                  index === 0
+                  index === 0 && (seasonals.length > 0)
                     ? (
                       <div className="ProductRowsContainer__row-wrapper__right-seasonal-wrapper">
                         <ActivityColumnLayout seasonals={seasonals.slice(2)} />
