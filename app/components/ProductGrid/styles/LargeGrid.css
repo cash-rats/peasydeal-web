@@ -43,11 +43,20 @@
     display: block;
   }
 }
+.large-grid-container .product-desc-container .btn-container {
+  display: none;
+}
 .large-grid-container .product-desc-container .btn-container a {
   text-decoration: none;
 }
+@media (min-width: 600px) {
+  .large-grid-container .product-desc-container .btn-container {
+    display: block;
+  }
+}
 
 .large-grid-image {
+  background-color: #FFF;
   aspect-ratio: 1/1;
   width: 712px;
 }
@@ -71,6 +80,10 @@
     max-width: 712px;
     max-height: 712px;
   }
+}
+
+.LargeGrid__disable-clickable-grid {
+  cursor: none;
 }
 
 /*# sourceMappingURL=LargeGrid.css.map */

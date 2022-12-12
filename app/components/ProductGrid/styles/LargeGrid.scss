@@ -49,14 +49,21 @@
 		}
 
 		.btn-container {
+			display: none;
+
 			a {
 				text-decoration: none;
+			}
+
+			@media (min-width: #{$screen-sm-min-600}) {
+				display: block;
 			}
 		}
 	}
 }
 
 .large-grid-image {
+	background-color: #FFF;
 	aspect-ratio: 1/1;
 	width: 712px;
 }
@@ -81,4 +88,8 @@
 		max-width: 712px;
 		max-height: 712px;
 	}
+}
+
+.LargeGrid__disable-clickable-grid {
+	cursor: none;
 }

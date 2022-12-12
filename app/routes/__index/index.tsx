@@ -246,8 +246,8 @@ function Index({ scrollPosition }: IndexProps) {
 					{/* <ActivityRowLayout activities={mockedActivities} /> */}
 
 					<ProductRowsContainer
-						productRows={productRows.slice(0, 1)}
-						// productRows={productRows}
+						// productRows={productRows.slice(0, 1)}
+						productRows={productRows}
 						activityBanners={activity_banners}
 						onClickProduct={handleClickProduct}
 						onClickShopNow={handleClickShopNow}

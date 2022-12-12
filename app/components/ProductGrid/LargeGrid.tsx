@@ -1,22 +1,22 @@
-import { useState } from 'react';
-import { Link } from '@remix-run/react';
+import { useState, useEffect } from 'react';
+import { Link, Form } from '@remix-run/react';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import type { ScrollPosition } from "react-lazy-load-image-component";
-
+import clsx from 'clsx';
 
 import RoundButton from '~/components/RoundButton';
-import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';
 import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
 import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
 
-import LargeGridSkeleton from './LargeGridSkeleton';
 import styles from "./styles/LargeGrid.css";
 import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
 import { normalizeTagsListToMap } from './utils';
+import type { RenderableTagMap } from './utils';
+import placeholder from './images/placeholder.svg';
 
 export function links() {
 	return [
@@ -26,6 +26,55 @@ export function links() {
 		...PennantLeftLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
+}
+
+const renderTags = (shouldRenderTags: RenderableTagMap, discount: number) => {
+	return (
+		<>
+			{
+				shouldRenderTags['NEW_LEFT'] && (
+					<TiltRibbon text='new' direction='left' />
+				)
+			}
+
+			{
+				shouldRenderTags['NEW_RIGHT'] && (
+					<TiltRibbon text='new' direction='right' />
+				)
+			}
+
+			{
+				shouldRenderTags['SCRATCH_RIGHT'] && (
+					<Scratch text={`${discount}% off`} direction='right' />
+				)
+			}
+
+			{
+				shouldRenderTags['SUN_LEFT'] && (
+					<SunShine text={`${discount}% off`} direction='left' />
+				)
+			}
+
+			{
+				shouldRenderTags['SUN_RIGHT'] && (
+					<SunShine text={`${discount}% off`} direction='right' />
+				)
+			}
+
+			{
+				shouldRenderTags['PENNANT_LEFT'] && (
+					<PennantLeft text1='price off' text2={`${discount}%`} />
+				)
+			}
+
+			{
+				shouldRenderTags['PENNANT_RIGHT'] && (
+					<PennantLeft text1='price off' text2={`${discount} %`} direction='right' />
+				)
+			}
+		</>
+
+	)
 }
 
 interface LargeGridProps {
@@ -54,175 +103,84 @@ function LargeGrid({
 	const shouldRenderTags = normalizeTagsListToMap(tagNames);
 	const nDiscount = ~~(discount * 100);
 
+	const isClickableGrid = (): boolean => {
+		const windowDOM = window as Window;
+		if (!windowDOM) return false;
+		return windowDOM.innerWidth <= breakPoints.phoneTop;
+	}
+
+	useEffect(() => {
+		const handleResize = () => {
+			setClickableGrid(isClickableGrid());
+		};
+		if (window) {
+			setClickableGrid(isClickableGrid());
+			window.addEventListener('resize', handleResize);
+		}
+	}, []);
+
 	return (
-		<MqNotifier
-			mqValidators={[
-				{
-					condition: () => true,
-					callback: (dom) => setClickableGrid(
-						dom.innerWidth <= breakPoints.phoneTop
-					)
-				},
-			]}
+		<Link
+			// prefetch='intent'
+			className={clsx("large-grid-container", {
+				'LargeGrid__disable-clickable-grid': !clickableGrid,
+			})}
+			to={`/product/${productID}`}
+			onClick={(evt) => {
+				if (!isClickableGrid()) {
+					evt.preventDefault();
+					return;
+				}
+
+				onClickProduct(productID)
+			}}
 		>
 			{
-				clickableGrid
-					? (
-						<Link
-							prefetch='intent'
-							className="large-grid-container"
-							to={`/product/${productID}`}
-							onClick={() => onClickProduct(productID)
-							}
-						>
-							{
-								shouldRenderTags['NEW_LEFT'] && (
-									<TiltRibbon text='new' direction='left' />
-								)
-							}
-
-							{
-								shouldRenderTags['NEW_RIGHT'] && (
-									<TiltRibbon text='new' direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['SCRATCH_RIGHT'] && (
-									<Scratch text={`${nDiscount}% off`} direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['SUN_LEFT'] && (
-									<SunShine text={`${nDiscount}% off`} direction='left' />
-								)
-							}
-
-							{
-								shouldRenderTags['SUN_RIGHT'] && (
-									<SunShine text={`${nDiscount}% off`} direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['PENNANT_LEFT'] && (
-									<PennantLeft text1='price off' text2='20%' />
-								)
-							}
-							<input type='hidden' name="product-id" value={productID} />
-							{/* image */}
-							<div className="image-container">
-								<LazyLoadImage
-									placeholder={<LargeGridSkeleton />}
-									src={image}
-									className='large-grid-image'
-									alt={title}
-									scrollPosition={scrollPosition}
-								/>
-							</div>
-
-							<div className="product-desc-container">
-								<div className="info">
-									<div className="headline">
-										{title}
-									</div>
-									<div className="desc">
-										{description}
-									</div>
-								</div>
-							</div>
-						</Link>
-					)
-					: (
-						<div className="large-grid-container" >
-
-							{
-								shouldRenderTags['NEW_LEFT'] && (
-									<TiltRibbon text='new' direction='left' />
-								)
-							}
-
-							{
-								shouldRenderTags['NEW_RIGHT'] && (
-									<TiltRibbon text='new' direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['SCRATCH_RIGHT'] && (
-									<Scratch text={`${nDiscount}% off`} direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['SUN_LEFT'] && (
-									<SunShine text={`${nDiscount}% off`} direction='left' />
-								)
-							}
-
-							{
-								shouldRenderTags['SUN_RIGHT'] && (
-									<SunShine text={`${nDiscount}% off`} direction='right' />
-								)
-							}
-
-							{
-								shouldRenderTags['PENNANT_LEFT'] && (
-									<PennantLeft text1='price off' text2={`${nDiscount}%`} />
-								)
-							}
-
-							{
-								shouldRenderTags['PENNANT_RIGHT'] && (
-									<PennantLeft text1='price off' text2={`${nDiscount} %`} direction='right' />
-								)
-							}
-							<input type='hidden' name="product-id" value={productID} />
-							{/* image */}
-							<div className="image-container">
-								<LazyLoadImage
-									placeholder={<LargeGridSkeleton />}
-									src={image}
-									className='large-grid-image'
-									alt={title}
-									scrollPosition={scrollPosition}
-								/>
-							</div>
-
-							<div className="product-desc-container">
-								<div className="info">
-									<div className="headline">
-										{title}
-									</div>
-									<div className="desc">
-										{description}
-									</div>
-								</div>
-
-
-								{
-									!clickableGrid && (
-										<div className="btn-container">
-											<Link
-												// prefetch="intent"
-												to={`/product/${productID}`}
-											>
-												<RoundButton
-													colorScheme="cerise"
-													onClick={() => onClickProduct(productID)}
-												>
-													View
-												</RoundButton>
-											</Link>
-										</div>
-									)
-								}
-							</div>
-						</div>
-					)
+				renderTags(shouldRenderTags, nDiscount)
 			}
-		</MqNotifier>
+			<input type='hidden' name="product-id" value={productID} />
+			{/* image */}
+			<div className="image-container">
+				<LazyLoadImage
+					src={image}
+					className='large-grid-image'
+					alt={title}
+					scrollPosition={scrollPosition}
+					placeholder={
+						<img
+							alt={title}
+							src={placeholder}
+							className='large-grid-image'
+						/>
+					}
+				/>
+			</div>
+
+			<div className="product-desc-container">
+				<div className="info">
+					<div className="headline">
+						{title}
+					</div>
+					<div className="desc">
+						{description}
+					</div>
+				</div>
+
+				<div className="btn-container">
+					<Form action={`/product/${productID}`} method='get'>
+						<RoundButton
+							type='submit'
+							colorScheme="cerise"
+							onClick={() => {
+								onClickProduct(productID)
+							}}
+						>
+							View
+						</RoundButton>
+					</Form>
+				</div>
+			</div>
+		</Link>
 	);
 }
 
