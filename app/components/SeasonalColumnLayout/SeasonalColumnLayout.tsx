@@ -23,7 +23,6 @@ interface SeasonalLayoutProps {
 };
 
 function ActivityColumnLayout({ seasonals = [] }: SeasonalLayoutProps, ref: ForwardedRef<HTMLDivElement>) {
-  console.log('debug seasonals', seasonals);
   return (
     <div ref={ref} className="ActivityLayout__wrapper">
       {

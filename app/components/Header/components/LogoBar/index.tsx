@@ -21,7 +21,6 @@ export const links: LinksFunction = () => {
 };
 
 function LogoBar() {
-  console.log('debug svg ', PeasyDeal);
   const [openMenu, setOpenMenu] = useState(false);
   const location = useLocation();
 
