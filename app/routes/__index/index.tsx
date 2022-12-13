@@ -14,7 +14,6 @@ import type { Product } from "~/shared/types";
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { checkHasMoreRecord, getCanonicalDomain } from '~/utils';
 import { commitSession } from '~/sessions/redis_session';
-import ActivityColumnLayout, { links as ActivityColumnLayoutLinks } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
 import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
 import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/SeasonalRowLayout/SeasonalRowLayout";
 
@@ -44,7 +43,6 @@ export const links: LinksFunction = () => {
 		...CssSpinnerLinks(),
 		...ProductRowsContainerLinks(),
 		...LoadMoreButtonLinks(),
-		...ActivityColumnLayoutLinks(),
 		...ActivityRowLayoutLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
@@ -238,7 +236,6 @@ function Index({ scrollPosition }: IndexProps) {
 	return (
 		<>
 			<div className="Index__wrapper">
-
 				<div className="prod-list-container">
 					<ActivityRowLayout activities={mockedActivities} />
 

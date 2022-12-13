@@ -23,7 +23,11 @@ export default function ActivityRowLayout({ activities = [] }: SeasonalRowLayout
     <div className="ActivityRowLayout">
       {
         activities.map((activity, index) => {
-          return (<SeasonalGrid key={index} src={activity.src} />)
+          return (<SeasonalGrid
+            key={index}
+            src={activity.src}
+            title={activity.title}
+          />)
         })
       }
     </div>

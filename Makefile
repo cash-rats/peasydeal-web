@@ -23,12 +23,6 @@ deploy_staging: build
 	npm run build:patched && \
 	make start_staging'
 
-deploy_staging_2: build
-	ssh -p $(REMOTE_PORT) -t $(SERVER_USER)@$(SERVER_HOST) 'source ~/.nvm/nvm.sh && \
-	cd $(REMOTE_APP_PATH) && \
-	npm run build:patched && \
-	make start_staging'
-
 build:
 	npm run build:patched
 
