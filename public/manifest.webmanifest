@@ -1,4 +1,7 @@
 {
+  "short_name": "PeasyDeal",
+  "name": "PeasyDeal - Makes your shopping experience a breeze.",
+  "description": "Premium selected solar-powered lights, gadgets, home & gardening products, apparel and more at the best price possible.",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -10,5 +13,10 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ]
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#04844B",
+  "background_color": "#f6f6f6"
 }
