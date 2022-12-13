@@ -1,8 +1,4 @@
-
-import { RemixStub as RemixMockSetup } from '~/components/RemixStub';
-// import { BrowserRouter } from 'react-router-dom';
-import { RemixBrowser } from '@remix-run/react';
-import type { Meta, ComponentMeta, StoryFn } from '@storybook/react';
+import type { Meta, StoryFn } from '@storybook/react';
 
 import { createRemixStub } from '~/packages/remix-stubs';
 import { useArgs } from '@storybook/client-api';
@@ -18,11 +14,7 @@ let story: Meta<typeof TopProductsColumn> = {
       const [args, updateArgs] = useArgs();
       const RemixStub = createRemixStub([
         {
-          element: (
-            <RemixMockSetup>
-              <Story />
-            </RemixMockSetup>
-          ),
+          element: (<Story />),
           path: 'product/1234',
           loader: () => { return null },
           action: async ({ request }) => {
@@ -31,7 +23,7 @@ let story: Meta<typeof TopProductsColumn> = {
         }
       ]);
 
-      return (<RemixStub initialEntries={["/post/1234"]} />);
+      return (<RemixStub initialEntries={["product/1234"]} />);
     }
   ],
 };

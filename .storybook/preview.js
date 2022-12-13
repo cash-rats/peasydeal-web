@@ -12,9 +12,9 @@ export const parameters = {
 }
 
 export const decorators = [
-  (Story) => (
-    <RemixStub>
-      <Story />
-    </RemixStub>
-  )
+  // (Story) => (
+  //   <RemixStub>
+  //     <Story />
+  //   </RemixStub>
+  // )
 ];
