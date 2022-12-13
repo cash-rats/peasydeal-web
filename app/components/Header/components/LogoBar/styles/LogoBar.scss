@@ -20,28 +20,19 @@
 
 .LogoBar__link {
   line-height: 20px;
-  padding-right: 15px;
-  width: 100px;
-  height: 50px;
-  position: absolute;
+  width: 173px;
+  height: 60px;
   left: 40px;
   top: 10px;
-
-  img {
-    width: 100px;
-    height: 50px;
-  }
+  display: flex;
+  align-items: center;
 }
-
-.LogoBar__Category-container {}
 
 .LogoBar__Category-title {
   padding: 0.5rem;
   display: flex;
   justify-content: flex-end;
 }
-
-.LogoBar__Category-list-wrapper {}
 
 .LogoBar__Category-list-title {
   margin: 0px;

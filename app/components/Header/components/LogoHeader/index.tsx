@@ -3,23 +3,31 @@ import type { LinksFunction } from '@remix-run/node';
 
 import LogoBar, { links as LogoBarLinks } from '~/components/Header/components/LogoBar';
 
+import styles from './styles/LogoHeader.css';
 import HeaderWrapper, { links as HeaderWarpperLinks } from "../HeaderWrapper";
 
 export const links: LinksFunction = () => {
   return [
+    { rel: 'stylesheet', href: styles },
     ...LogoBarLinks(),
     ...HeaderWarpperLinks(),
   ];
 };
 
 interface LogoHeaderProps {
-  children?: ReactNode;
+  searchBar?: ReactNode;
+
+  navBar?: ReactNode;
+
   categoriesBar?: ReactNode;
   style?: CSSProperties | undefined;
 };
 
+
+// Wraps Logo and
 function LogoHeader({
-  children = null,
+  searchBar = null,
+  navBar = null,
   categoriesBar = null,
   style,
 }: LogoHeaderProps) {
@@ -28,19 +36,19 @@ function LogoHeader({
       categoryBar={categoriesBar}
       style={style}
     >
-      <div
-        style={{
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          width: '11rem',
-          position: 'relative',
-        }}
-      >
-        <LogoBar />
-      </div>
+      <LogoBar />
 
-      {children}
+      {
+        searchBar && (
+          <div className="LogoHeader__searchBar-mq">
+            {searchBar}
+          </div>
+        )
+      }
+
+      <div className="flex items-center">
+        {navBar}
+      </div>
     </HeaderWrapper>
   )
 }

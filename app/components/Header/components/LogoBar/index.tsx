@@ -11,7 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import CategoryContext from '~/context/categories';
 
-import PeasyDeal from './images/peasydeal_logo.png';
+import PeasyDeal from './images/peasydeal_logo_2.svg';
 import styles from './styles/LogoBar.css';
 
 export const links: LinksFunction = () => {
@@ -21,6 +21,7 @@ export const links: LinksFunction = () => {
 };
 
 function LogoBar() {
+  console.log('debug svg ', PeasyDeal);
   const [openMenu, setOpenMenu] = useState(false);
   const location = useLocation();
 
@@ -93,7 +94,10 @@ function LogoBar() {
       </div>
 
       <Link to='/' className="LogoBar__link">
-        <img alt='peasydeal shop' src={PeasyDeal} />
+        <picture>
+          <source type="image/svg+xml" srcSet={PeasyDeal} />
+          <img alt='PeasyDeal Logo' src={PeasyDeal} />
+        </picture>
       </Link>
     </div>
   );

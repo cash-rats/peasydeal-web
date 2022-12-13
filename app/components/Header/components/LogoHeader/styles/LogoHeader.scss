@@ -1,0 +1,11 @@
+@import 'styles/_breakpoints';
+
+.LogoHeader__searchBar-mq {
+  display: none;
+
+  @media (min-width: $screen-md-min) {
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+  }
+}

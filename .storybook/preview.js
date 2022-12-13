@@ -1,4 +1,5 @@
-import { RemixStub } from "./RemixStub";
+import { RemixStub } from './RemixStub';
+// import { MemoryRouter } from 'react-router-dom';
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -15,5 +16,5 @@ export const decorators = [
     <RemixStub>
       <Story />
     </RemixStub>
-  ),
+  )
 ];

@@ -85,19 +85,12 @@ function Header({
         onSearch={onSearch}
       />
 
-      <LogoHeader categoriesBar={categoriesBar} >
+      <LogoHeader
+        // center search bar
+        searchBar={searchBar}
 
-        <div className="Header__content">
-          {/* search bar */}
-          {
-            searchBar && (
-              <div className="Header__search-bar">
-                {searchBar}
-              </div>
-            )
-          }
-
-          {/* right status bar, cart, search icon...etc */}
+        // right status bar, cart, search icon...etc
+        navBar={
           <div className="Header__nav-bar">
             <div className="Header__nav-bar-wrapper">
               <NavBar
@@ -106,8 +99,12 @@ function Header({
               />
             </div>
           </div>
-        </div>
-      </LogoHeader>
+        }
+
+        // bottom category bar
+        categoriesBar={categoriesBar}
+      />
+
     </>
   );
 };

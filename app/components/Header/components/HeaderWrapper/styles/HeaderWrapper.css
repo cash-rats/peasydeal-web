@@ -49,14 +49,15 @@
 }
 
 .header-wrapper_top {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 0 1rem;
-  border-bottom: solid 1px #e5e5e5;
+  display: grid;
+  grid-template-columns: 220px auto;
   width: 100%;
   height: 100%;
+}
+@media (min-width: 768px) {
+  .header-wrapper_top {
+    grid-template-columns: 220px 3fr 1fr;
+  }
 }
 
 .header-wrapper_category-bar {

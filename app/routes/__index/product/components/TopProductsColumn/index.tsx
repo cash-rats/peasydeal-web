@@ -57,7 +57,6 @@ export default function TopProductsColumn() {
 
 
   const fetcher = useFetcher();
-
   const transition = useTransition();
   useEffect(() => {
     if (transition.state !== 'idle') {
@@ -97,7 +96,6 @@ export default function TopProductsColumn() {
 
   return (
     <div className="TopProductsColumn__wrapper">
-
       <BannerProduct
         productUUID={adsProds.banner_product?.productUUID}
         loading={fetcher.type !== 'done'}
