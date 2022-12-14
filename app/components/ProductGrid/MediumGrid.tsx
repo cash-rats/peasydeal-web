@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link, Form } from '@remix-run/react';
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -59,7 +58,6 @@ export default function MediumGrid({
 	discount = 0,
 	scrollPosition,
 }: MediumGridProps) {
-	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 	// retrieve tags name in the provided combo. If given grid does not have
 	// any `tagCombo`, we initialize `tagNames` to empty array.
 	const shouldRenderTags = normalizeTagsListToMap(!tagCombo

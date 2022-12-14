@@ -60,10 +60,13 @@
 .productRowsContainer__product-row {
 	display: flex;
 	justify-content: center;
-	margin-top: 1rem;
 
 	&:first-of-type {
 		margin-top: 0;
+	}
+
+	@media (min-width: $screen-phone-top-599) {
+		margin-top: 1rem;
 	}
 }
 

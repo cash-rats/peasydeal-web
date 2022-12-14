@@ -61,10 +61,14 @@
 .productRowsContainer__product-row {
   display: flex;
   justify-content: center;
-  margin-top: 1rem;
 }
 .productRowsContainer__product-row:first-of-type {
   margin-top: 0;
+}
+@media (min-width: 599px) {
+  .productRowsContainer__product-row {
+    margin-top: 1rem;
+  }
 }
 
 .ProductRowsContainer__activity-banner-wrapper {
