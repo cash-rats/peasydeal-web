@@ -96,7 +96,8 @@ export default function TopProductsColumn() {
 
   return (
     <div className="TopProductsColumn__wrapper">
-      <BannerProduct
+      testing
+      {/* <BannerProduct
         productUUID={adsProds.banner_product?.productUUID}
         loading={fetcher.type !== 'done'}
         title={adsProds.banner_product?.title}
@@ -113,7 +114,7 @@ export default function TopProductsColumn() {
         columnTitle='super deal'
         loading={fetcher.type !== 'done'}
         products={adsProds.super_deal_products}
-      />
+      /> */}
     </div>
   );
 }

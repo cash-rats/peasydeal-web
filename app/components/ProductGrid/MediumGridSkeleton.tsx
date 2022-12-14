@@ -1,5 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
-import Skeleton from '@mui/material/Skeleton';
+import placeholderSVG from './images/placeholder.svg';
 
 import styles from './styles/MediumGrid.css';
 
@@ -14,9 +14,11 @@ export default function MediumGridSkeleton() {
   return (
     <div className="medium-grid-container">
       <div className="image-container">
-        <div className="medium-grid-image">
-          <Skeleton variant='rectangular' height='100%' />
-        </div>
+        <img
+          src={placeholderSVG}
+          alt="loading"
+          className="medium-grid-image"
+        />
       </div>
     </div>
   );

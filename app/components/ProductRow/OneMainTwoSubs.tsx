@@ -39,7 +39,11 @@ function LeftLayout({
 	scrollPosition,
 }: LeftLayoutProps) {
 	if (loading) {
-		return (<LargeGridSkeleton />);
+		return (
+			<div className="left">
+				<LargeGridSkeleton />
+			</div>
+		);
 	}
 
 	return (

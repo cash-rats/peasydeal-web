@@ -122,7 +122,7 @@ function LargeGrid({
 	return (
 		<Link
 			// prefetch='intent'
-			className={"large-grid-container"}
+			className="large-grid-container"
 			to={`/product/${productID}`}
 			onClick={(evt) => {
 				if (!isClickableGrid()) {

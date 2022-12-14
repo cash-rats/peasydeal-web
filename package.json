@@ -8,7 +8,7 @@
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
     "dev": "run-p dev:*",
-    "dev:patched": "concurrently \"npm run watch:sass\" \"npm run watch:postcss\" \"npm run dev:remix\"",
+    "dev:patched": "concurrently \"npm run watch:sass\" \"npm run watch:postcss\" \"npm run dev:css\" \"npm run dev:remix\"",
     "dev:css": "npm run generate:css -- --watch",
     "dev:remix": "cross-env NODE_ENV=development binode --require ./mocks -- @remix-run/dev:remix dev",
     "format": "prettier --write .",

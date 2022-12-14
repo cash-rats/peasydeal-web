@@ -1,6 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
-import Skeleton from '@mui/material/Skeleton';
 
+import PlaceHolder from './images/placeholder.svg';
 import styles from './styles/LargeGrid.css';
 
 export const links: LinksFunction = () => {
@@ -13,25 +13,11 @@ export default function LargeGridSkeleton() {
   return (
     <div className='large-grid-container'>
       <div className="image-container">
-        <div className="large-grid-image">
-          <Skeleton variant='rectangular' height='100%' />
-        </div>
-      </div>
-
-      <div className="product-desc-container">
-        <div className="info">
-          <div className="headline">
-            <Skeleton variant='text' width='80%' />
-          </div>
-
-          <div className="desc">
-            <Skeleton variant='text' width='80%' />
-          </div>
-        </div>
-
-        <div className="btn-container">
-          <Skeleton variant='text' height='60px' />
-        </div>
+        <img
+          alt='loading'
+          src={PlaceHolder}
+          className='large-grid-image'
+        />
       </div>
     </div>
   );

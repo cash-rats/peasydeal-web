@@ -23,7 +23,7 @@ let story: Meta<typeof TopProductsColumn> = {
         }
       ]);
 
-      return (<RemixStub initialEntries={["product/1234"]} />);
+      return (<RemixStub initialLoaderData={{ "product/1234": null }} initialEntries={["product/1234"]} />);
     }
   ],
 };
