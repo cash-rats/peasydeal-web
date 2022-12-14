@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import { getMYFBEndpoint } from '~/utils/endpoints';
-import type { ShoppingCart, ShoppingCartItem } from '~/utils/shoppingcart.session';
+import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
 export type PriceQuery = {
   variation_uuid: string;

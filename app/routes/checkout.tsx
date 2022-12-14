@@ -11,7 +11,7 @@ import CategoryContext from '~/context/categories';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import { createPaymentIntent } from '~/utils/stripe.server';
-import { getCart, getItemCount } from '~/utils/shoppingcart.session';
+import { getCart, getItemCount } from '~/sessions/shoppingcart.session';
 import { fetchCategories } from '~/categories.server';
 import type { Category } from '~/shared/types';
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';

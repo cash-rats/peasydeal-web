@@ -5,7 +5,7 @@ import { useLoaderData, Form, useFetcher } from '@remix-run/react';
 import type { DynamicLinksFunction } from 'remix-utils';
 
 import CategoryContext from '~/context/categories';
-import { getItemCount } from '~/utils/shoppingcart.session';
+import { getItemCount } from '~/sessions/shoppingcart.session';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';

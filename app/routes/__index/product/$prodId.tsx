@@ -18,8 +18,8 @@ import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import { commitSession } from '~/sessions/redis_session';
-import { insertItem } from '~/utils/shoppingcart.session';
-import type { ShoppingCartItem } from '~/utils/shoppingcart.session';
+import { insertItem } from '~/sessions/shoppingcart.session';
+import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
 import {

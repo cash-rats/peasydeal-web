@@ -16,7 +16,7 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
-import { getItemCount } from '~/utils/shoppingcart.session';
+import { getItemCount } from '~/sessions/shoppingcart.session';
 import { fetchCategories } from '~/categories.server';
 
 import styles from "./styles/index.css";

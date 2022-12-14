@@ -8,7 +8,7 @@ import type { DynamicLinksFunction } from 'remix-utils';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { error } from '~/utils/error';
-import { getItemCount } from '~/utils/shoppingcart.session';
+import { getItemCount } from '~/sessions/shoppingcart.session';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText } from '~/utils';
 

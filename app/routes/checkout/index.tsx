@@ -17,8 +17,8 @@ import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
 import type { PriceInfo } from '~/shared/cart';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
-import { getCart } from '~/utils/shoppingcart.session';
-import type { ShoppingCart } from '~/utils/shoppingcart.session';
+import { getCart } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';

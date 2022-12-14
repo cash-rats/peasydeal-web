@@ -6,8 +6,8 @@ import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/n
 import httpStatus from 'http-status-codes';
 
 import { commitSession } from '~/sessions/redis_session';
-import { getCart, removeItem, updateCart } from '~/utils/shoppingcart.session';
-import type { ShoppingCart } from '~/utils/shoppingcart.session';
+import { getCart, removeItem, updateCart } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 

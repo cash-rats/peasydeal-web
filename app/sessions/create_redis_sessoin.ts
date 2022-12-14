@@ -2,9 +2,10 @@ import type { SessionIdStorageStrategy, SessionStorage } from "@remix-run/server
 import { createSessionStorage } from '@remix-run/node';
 
 import type { RedisOptions, Redis } from 'ioredis';
-
 import crypto from "crypto";
 import IORedis from "ioredis";
+
+import { ioredis as redis } from '~/redis.server';
 
 function genRandomID(): string {
   const randomBytes = crypto.randomBytes(8);
@@ -18,27 +19,11 @@ const expiresToSeconds = (expires: Date) => {
   return secondsDelta < 0 ? 0 : secondsDelta;
 };
 
-type redisSessionArguments = {
+type RedisSessionArguments = {
   cookie: SessionIdStorageStrategy["cookie"];
-  options: {
-    redisConfig?: RedisOptions,
-    redisClient?: Redis
-  }
 };
 
-export function createRedisSessionStorage({
-  cookie,
-  options
-}: redisSessionArguments): SessionStorage {
-  let redis: Redis
-  if (options.redisClient) {
-    redis = options.redisClient
-  } else if (options.redisConfig) {
-    redis = new IORedis(options.redisConfig);
-  } else {
-    throw new Error("Need to provide either options.RedisConfig or options.redisClient")
-  }
-
+export function createRedisSessionStorage({ cookie }: RedisSessionArguments): SessionStorage {
   return createSessionStorage({
     cookie,
     async createData(data, expires) {
