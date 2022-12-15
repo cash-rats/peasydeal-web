@@ -94,7 +94,6 @@ export default function Index() {
 				</main>
 
 				<Footer />
-
 			</div>
 		</>
 	);

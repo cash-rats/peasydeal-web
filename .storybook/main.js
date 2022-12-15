@@ -23,6 +23,9 @@ module.exports = {
         fs: false,
         stream: false,
         os: false,
+        dns: false,
+        net: false,
+        tls: false,
       },
     }
 

@@ -46,17 +46,18 @@ type ActionType = {
   has_more: boolean,
 };
 
-const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
-  return [
-    {
-      rel: 'canonical', href: data.canonical_link,
-    },
-  ];
-}
+const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => ([
+  {
+    rel: 'canonical', href: data
+      ? data.canonical_link
+      : getCanonicalDomain(),
+  },
+])
+
 export const handle = { dynamicLinks }
 export const meta: MetaFunction = ({ data }: { data: LoaderType }) => ({
-  title: getCollectionTitleText(data.category),
-  description: getCollectionDescText(data.category),
+  title: getCollectionTitleText(data?.category),
+  description: getCollectionDescText(data?.category),
 });
 
 export const links: LinksFunction = () => {
@@ -70,17 +71,9 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 };
-const __loadCategoriesMap = async (request: Request) => {
-  let catMap = await getCategories(request);
-  if (!catMap) {
-    catMap = normalizeToMap(await fetchCategories());;
-  }
-  return catMap;
-}
-
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { collection = '' } = params;
-  const catMap = await __loadCategoriesMap(request);
+  const catMap = await normalizeToMap(await fetchCategories());
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
   }
@@ -138,7 +131,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     const perpage = Number(body.get("per_page")) || PAGE_LIMIT;
     const { collection = '' } = params;
 
-    const catMap = await __loadCategoriesMap(request);
+    const catMap = await normalizeToMap(await fetchCategories());
 
     if (!catMap[collection]) {
       throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
@@ -166,14 +159,6 @@ export const action: ActionFunction = async ({ request, params }) => {
 
   const productID = body.get("product_id");
   return redirect(`/product/${productID}`);
-};
-
-export const CatchBoundary = () => {
-  return (
-    <div>
-      category not found.
-    </div>
-  );
 };
 
 const getCategoryFromWindowPath = (window: Window): string => {

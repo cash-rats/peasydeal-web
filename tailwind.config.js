@@ -18,7 +18,18 @@ module.exports = {
       '2xl': '1536px',
       // => @media (min-width: 1536px) { ... }
     },
-    extend: {},
+    extend: {
+      keyframes: {
+        mountainsmoke: {
+          '100%': {
+            'background-position': '-51.75rem',
+          },
+        }
+      },
+      animation: {
+        play: 'animation',
+      },
+    },
   },
   plugins: [],
 };

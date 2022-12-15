@@ -61,3 +61,32 @@ https://dev.to/gugaguichard/add-a-global-progress-indicator-to-your-remix-app-2m
 ## Name color
 
 [find name of a color](https://colors.artyclick.com/color-name-finder/)
+
+## 404 Not Found Page
+
+`/some/path/nothere` :
+
+```
+app
+	|--- route
+	       |--- $.tsx
+```
+
+`/some-cat`
+
+```
+app
+	|--- route
+	       |--- $collection#catchBoundary
+
+```
+
+`/product/some-product`
+
+```
+app
+	|--- route
+	       |--- __index
+				          |--- product
+									        | --- $prodid#catchBoundary
+```

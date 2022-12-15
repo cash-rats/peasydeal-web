@@ -1,0 +1,71 @@
+@value light,
+size20,
+size24 from '../../styles/font.css';
+
+.root {
+  overflow: hidden;
+  width: 100%;
+  height: 100vh;
+  background-color: #bbefef;
+  background-image: url(../../images/404pagenotfound/combine/BG_bottom.png);
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+.top {
+  display: flex;
+  margin-top: 4.4px;
+  flex-direction: column;
+}
+
+.title {
+  overflow: hidden;
+  height: 193px;
+  background-image: url(../../images/404pagenotfound/combine/BG_top.png);
+  background-position: center bottom;
+  background-repeat: no-repeat;
+}
+
+.indication {
+  composes: size20;
+  color: #406455;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  z-index: 100;
+}
+
+.homeLink {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.powerLine {
+  composes: size24;
+  composes: light;
+  margin-bottom: 0.5rem;
+  color: #007e62;
+  line-height: 2;
+}
+
+.mountain {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 8.625rem;
+  height: 8.875rem;
+  margin: 0 auto;
+  animation-duration: 2.5s;
+  animation-iteration-count: infinite;
+  animation-name: play;
+  animation-timing-function: steps(6);
+  background-image: url(./images/404pagenotfound/combine/mountain_sprite.png);
+  background-repeat: no-repeat;
+}
+
+@keyframes play {
+  100% {
+    background-position: -51.75rem;
+  }
+}
