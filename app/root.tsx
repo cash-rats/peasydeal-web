@@ -71,6 +71,7 @@ export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
     ENV: {
+      DOMAIN: process.env.DOMAIN,
       MYFB_ENDPOINT: process.env.MYFB_ENDPOINT,
       PEASY_DEAL_ENDPOINT: process.env.PEASY_DEAL_ENDPOINT,
       STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,

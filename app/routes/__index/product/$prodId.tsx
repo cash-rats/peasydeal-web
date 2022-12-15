@@ -95,7 +95,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 	const { prodId } = params;
 	if (!prodId) return redirect('/');
 
+	console.log('debug 1', prodId);
 	const prodDetail = await fetchProductDetail(prodId)
+	console.log('debug 2', prodDetail);
 
 	return json<LoaderTypeProductDetail>({
 		product: prodDetail,

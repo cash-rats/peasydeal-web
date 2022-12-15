@@ -27,7 +27,6 @@ interface HeaderProps {
 
   form?: string | undefined;
 
-
   /*
    * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
    */

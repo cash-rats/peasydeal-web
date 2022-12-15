@@ -4,8 +4,6 @@ import type { LinksFunction } from '@remix-run/node';
 import { useLocation } from '@remix-run/react';
 import IconButton from '@mui/material/IconButton';
 import { FiMenu } from 'react-icons/fi';
-
-// Dialog related
 import Dialog from '@mui/material/Dialog';
 import CloseIcon from '@mui/icons-material/Close';
 

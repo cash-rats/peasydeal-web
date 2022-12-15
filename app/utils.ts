@@ -71,11 +71,12 @@ export function validateEmail(email: unknown): email is string {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
 
-
 export const checkHasMoreRecord = (count: number, divisor: number) => count % divisor === 0;
 
 export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https://peasydeal.com';
 
+// TODO: The following content getters should be moved elsewhere.
+// ------------------ SEO ------------------
 // SEO index page
 export const getIndexTitleText = () => 'peasydeal.com | premium selected car accessories, gadgets, home & gardening products, clothes and more at a great price!';
 export const getIndexDescText = () => `PeasyDeal makes your shopping experience a breeze. Premium selected solar-powered lights, gadgets, home & gardening products, apparel and more at a best price possible. Responsive customer service, fast processing and shipping time.`;
@@ -95,3 +96,4 @@ export const getTrackingDescText = () => 'track your order delivering status wit
 
 // SEO cart page
 export const getCartTitleText = () => 'Shopping Cart| peasydeal.com';
+// ------------------ END SEO ------------------

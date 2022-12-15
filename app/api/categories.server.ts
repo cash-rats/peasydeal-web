@@ -1,7 +1,10 @@
 import { getMYFBEndpoint } from '~/utils/endpoints';
 import type { Category, CategoriesMap } from '~/shared/types';
+import { ioredis as redis } from '~/redis.server';
 
-const fetchCategories = async (): Promise<Category[]> => {
+export const RedisCategoriesKey = 'categories';
+
+const fetchCategoriesFromServer = async (): Promise<Category[]> => {
   const resp = await fetch(`${getMYFBEndpoint()}/data-server/ec/cat`);
   const respJSON = await resp.json();
   let categories: Category[] = []
@@ -29,6 +32,22 @@ const normalizeToMap = (cats: Category[]): CategoriesMap => cats.reduce((prev, c
     [curr.title]: curr,
   }
 }, {})
+
+const fetchCategories = async (): Promise<Category[]> => {
+  // Retrieve categories from redis
+  const catsstr = await redis.get(RedisCategoriesKey);
+
+  // If it exists, return it.
+  if (catsstr) {
+    return normalize(JSON.parse(catsstr));
+  }
+
+  // If it doesn't exist, fetch from server and cache to redis.
+  const cats = await fetchCategoriesFromServer()
+  await redis.set(RedisCategoriesKey, JSON.stringify(cats));
+
+  return cats;
+}
 
 
 export { fetchCategories, normalizeToMap };

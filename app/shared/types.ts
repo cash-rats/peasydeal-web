@@ -35,6 +35,7 @@ export type Category = {
   catId: string | number;
   title: string;
   url?: string;
+  show?: boolean;
 };
 
 export type CategoriesMap = {

@@ -18,7 +18,7 @@ import type { CategoriesMap, Product } from '~/shared/types';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
-import { normalizeToMap, fetchCategories } from '~/categories.server';
+import { normalizeToMap, fetchCategories } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { getCategories } from '~/sessions/categories.session';
 import { commitSession } from '~/sessions/redis_session';

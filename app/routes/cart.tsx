@@ -11,7 +11,7 @@ import Header, { links as HeaderLinks } from '~/components/Header';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
-import { fetchCategories } from '~/categories.server';
+import { fetchCategories } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import { getCartTitleText, getCanonicalDomain } from '~/utils';
 

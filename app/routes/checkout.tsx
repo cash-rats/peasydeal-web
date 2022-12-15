@@ -12,7 +12,7 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import { createPaymentIntent } from '~/utils/stripe.server';
 import { getCart, getItemCount } from '~/sessions/shoppingcart.session';
-import { fetchCategories } from '~/categories.server';
+import { fetchCategories } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
