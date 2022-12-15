@@ -1,4 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
+import { Link } from '@remix-run/react';
 
 import BGBottom from './images/BG_bottom.png';
 import BGTop from './images/BG_top.png';
@@ -22,17 +23,16 @@ export default function NotFound() {
         />
 
         {/* indication */}
-        <div className="text-sm text-[#406455] font-[500] leading-normal text-center z-100 ">
+        <div className="text-sm text-[#343434] font-[500] leading-normal text-center z-100 ">
           {/* power line */}
-          <div className="text-2xl mb-2 text-[#007e62] leading-3">
-            Oops, how'd you get here?!
+          <div className="text-2xl mt-3 mb-2 text-[#343434] leading-3">
+            Sorry, the page you're looking for cannot be accessed
           </div>
 
-          <div> Something went wrong,</div>
-
-          <div>return to&nbsp;
-            <span>
-              Home Page
+          <div className="mt-5 text-[#343434]">
+            Either check the URL or go to
+            <span className="text-xl text-[#f0b021]">
+              <Link to='/'> Home Page </Link>
             </span>
           </div>
         </div>
@@ -41,7 +41,7 @@ export default function NotFound() {
       <div className="PageNotFound__mountain" style={{ backgroundImage: `url(${MountainSprite})` }} />
 
       <div
-        className="absolute w-[100%] h-[200px] bottom-0 left-0 translate-y-[-50%] overflow-hidden  bg-bbefef bg-center bg-no-repeat"
+        className="absolute w-[100%] h-[200px] bottom-0 left-0 translate-y-[-85%] overflow-hidden  bg-bbefef bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${BGBottom})` }}
       />
     </div>
