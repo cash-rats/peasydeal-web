@@ -1,11 +1,8 @@
 .PageNotFound__mountain {
   position: absolute;
-  top: 50%;
+  bottom: 9%;
   left: 50%;
   transform: translate(-50%, -50%);
-  // right: 0;
-  // bottom: 0;
-  // left: 0;
   width: 8.625rem;
   height: 8.875rem;
   margin: 0 auto;
@@ -15,6 +12,7 @@
   animation-timing-function: steps(6);
   // background-image: url("./images/mountain_sprite.png");
   background-repeat: no-repeat;
+  z-index: 1;
 }
 
 @keyframes play {

@@ -1,6 +1,6 @@
 .PageNotFound__mountain {
   position: absolute;
-  top: 50%;
+  bottom: 9%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 8.625rem;
@@ -11,6 +11,7 @@
   animation-name: play;
   animation-timing-function: steps(6);
   background-repeat: no-repeat;
+  z-index: 1;
 }
 
 @keyframes play {
