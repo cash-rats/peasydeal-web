@@ -28,7 +28,7 @@ type LoaderDataType = {
   categories: Category[];
 };
 
-type ErrorBoundaryDataType = {
+type CatchBoundaryDataType = {
   errMessage: string;
   numOfItemsInCart: number;
   canonicalLink: string;
@@ -92,7 +92,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       categories,
     });
   } catch (err) {
-    throw json<ErrorBoundaryDataType>({
+    throw json<CatchBoundaryDataType>({
       errMessage: `Result for order ${orderID} is not found`,
       numOfItemsInCart,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
@@ -114,7 +114,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const CatchBoundary = () => {
   const caught = useCatch();
-  const caughtData: ErrorBoundaryDataType = caught.data;
+  const caughtData: CatchBoundaryDataType = caught.data;
   const trackOrderFetcher = useFetcher();
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();

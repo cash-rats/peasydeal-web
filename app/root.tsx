@@ -14,6 +14,8 @@ import {
 import { DynamicLinks } from 'remix-utils'
 
 import { getIndexTitleText, getIndexDescText } from '~/utils'
+import FiveHundredError from './components/FiveHundreError';
+import FourOhFour from './components/FourOhFour';
 
 import Layout, { links as LayoutLinks } from './Layout';
 import tailwindStylesheetUrl from "./styles/tailwind.css";
@@ -138,6 +140,27 @@ const Document = withEmotionCache(
     );
   }
 );
+
+export function CatchBoundary() {
+
+  return (
+    <Document>
+      <Layout>
+        <FourOhFour />
+      </Layout>
+    </Document>
+  );
+};
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  return (
+    <Document>
+      <Layout>
+        <FiveHundredError message={error.message} />
+      </Layout>
+    </Document>
+  );
+}
 
 export default function App() {
   return (
