@@ -20,10 +20,10 @@ import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { normalizeToMap, fetchCategories } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
-import { getCategories } from '~/sessions/categories.session';
 import { commitSession } from '~/sessions/redis_session';
 import { checkHasMoreRecord, getCanonicalDomain, getCollectionDescText, getCollectionTitleText } from '~/utils';
 import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
+import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategory } from "./api";
@@ -62,6 +62,7 @@ export const meta: MetaFunction = ({ data }: { data: LoaderType }) => ({
 
 export const links: LinksFunction = () => {
   return [
+    ...FourOhFourLinks(),
     ...PageTitleLinks(),
     ...CssSpinnerLinks(),
     ...ProductRowsContainerLinks(),
@@ -160,6 +161,9 @@ export const action: ActionFunction = async ({ request, params }) => {
   const productID = body.get("product_id");
   return redirect(`/product/${productID}`);
 };
+
+// When collection is not found
+export const CatchBoundary = () => (<FourOhFour />);
 
 const getCategoryFromWindowPath = (window: Window): string => {
   const pathname = window.location.pathname;

@@ -64,6 +64,8 @@ https://dev.to/gugaguichard/add-a-global-progress-indicator-to-your-remix-app-2m
 
 ## 404 Not Found Page
 
+### Global Not found page
+
 `/some/path/nothere` :
 
 ```
@@ -72,14 +74,17 @@ app
 	       |--- $.tsx
 ```
 
+### Category not found page
 `/some-cat`
 
 ```
 app
 	|--- route
-	       |--- $collection#catchBoundary
+	       |--- $collection#CatchBoundary
 
 ```
+
+### Product not found page
 
 `/product/some-product`
 
@@ -88,5 +93,5 @@ app
 	|--- route
 	       |--- __index
 				          |--- product
-									        | --- $prodid#catchBoundary
+									        | --- $prodid#CatchBoundary
 ```

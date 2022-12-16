@@ -12,7 +12,9 @@ import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
 import Rating from '@mui/material/Rating';
 import type { DynamicLinksFunction } from 'remix-utils';
+import httpStatus from 'http-status-codes';
 
+import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
 import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
@@ -45,9 +47,11 @@ type LoaderTypeProductDetail = {
 	canonical_url: string;
 };
 
-export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
-	const defaultVariation: ProductVariation | undefined = data.product.variations.find(variation => variation.uuid === data.product.default_variation_uuid);
+type LoaderErrorType = { error: any }
 
+export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
+	if (!data) return { title: '404' };
+	const defaultVariation: ProductVariation | undefined = data.product.variations.find(variation => variation.uuid === data.product.default_variation_uuid);
 	let description = getProdDetailDescTextWithoutPrice(data.product.title)
 	if (defaultVariation) {
 		description = getProdDetailDescText(
@@ -65,6 +69,7 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 
 export const links: LinksFunction = () => {
 	return [
+		...FourOhFourLinks(),
 		...ItemAddedModalLinks(),
 		...QuantityPickerLinks(),
 		...ProductDetailSectionLinks(),
@@ -82,11 +87,13 @@ export const links: LinksFunction = () => {
 
 
 const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) => {
-	return [
-		{
-			rel: 'canonical', href: data.canonical_url,
-		},
-	];
+	return data
+		? [
+			{
+				rel: 'canonical', href: data.canonical_url,
+			},
+		]
+		: [];
 }
 export const handle = { dynamicLinks };
 
@@ -94,15 +101,18 @@ export const handle = { dynamicLinks };
 export const loader: LoaderFunction = async ({ params, request }) => {
 	const { prodId } = params;
 	if (!prodId) return redirect('/');
-
-	console.log('debug 1', prodId);
-	const prodDetail = await fetchProductDetail(prodId)
-	console.log('debug 2', prodDetail);
-
-	return json<LoaderTypeProductDetail>({
-		product: prodDetail,
-		canonical_url: `${getCanonicalDomain()}/product/${prodId}`
-	});
+	try {
+		const prodDetail = await fetchProductDetail(prodId)
+		return json<LoaderTypeProductDetail>({
+			product: prodDetail,
+			canonical_url: `${getCanonicalDomain()}/product/${prodId}`
+		});
+	} catch (error: any) {
+		throw json<LoaderErrorType>(
+			{ error },
+			{ status: httpStatus.NOT_FOUND }
+		);
+	}
 };
 
 type __action_type = 'to_product_detail' | 'add_item_to_cart' | 'buy_now';
@@ -148,6 +158,9 @@ export const action: ActionFunction = async ({ request }) => {
 	// unknown action type.
 	return null;
 }
+
+export const CatchBoundary = () => (<FourOhFour />);
+
 
 /*
  * Emulate discount expert

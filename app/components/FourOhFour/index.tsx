@@ -4,7 +4,7 @@ import { Link } from '@remix-run/react';
 import BGBottom from './images/BG_bottom.png';
 import BGTop from './images/BG_top.png';
 import MountainSprite from "./images/mountain_sprite.png";
-import styles from './404.css';
+import styles from './FourOhFour.css';
 
 export const links: LinksFunction = () => {
   return [
@@ -41,7 +41,7 @@ export default function NotFound() {
       <div className="PageNotFound__mountain" style={{ backgroundImage: `url(${MountainSprite})` }} />
 
       <div
-        className="absolute w-[100%] h-[200px] bottom-0 left-0 translate-y-[-77%] overflow-hidden  bg-bbefef bg-center bg-no-repeat"
+        className="absolute w-[100%] h-52 bottom-0 left-0 translate-y-[-77%] overflow-hidden  bg-bbefef bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${BGBottom})` }}
       />
     </div>

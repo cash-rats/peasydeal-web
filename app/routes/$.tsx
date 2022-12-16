@@ -1,4 +1,4 @@
-import FourOhFour, { links as FourOhFourLinks } from '~/components/404';
+import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 
