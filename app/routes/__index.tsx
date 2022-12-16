@@ -7,7 +7,6 @@ import {
 	Form,
 	useFetcher,
 } from "@remix-run/react";
-import { StatusCodes } from 'http-status-codes';
 
 import CategoryContext from '~/context/categories';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
@@ -19,14 +18,10 @@ import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { getItemCount } from '~/sessions/shoppingcart.session';
 import { fetchCategories } from '~/api/categories.server';
 
-import styles from "./styles/index.css";
-
 type LoaderType = {
 	numOfItemsInCart: number;
 	categories: Category[];
 };
-
-
 
 export const links: LinksFunction = () => {
 	return [
@@ -34,8 +29,6 @@ export const links: LinksFunction = () => {
 		...HeaderLinks(),
 		...CategoriesNavLinks(),
 		...DropDownSearchBarLinks(),
-
-		{ rel: 'stylesheet', href: styles }
 	];
 };
 
@@ -48,8 +41,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 	return json<LoaderType>({
 		numOfItemsInCart,
 		categories: categories,
-	}, {
-		status: StatusCodes.OK,
 	});
 };
 
@@ -66,7 +57,7 @@ export default function Index() {
 		<>
 			{/* sharethis popup for news letter subscription */}
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
-			<div className="__Index__wrapper">
+			<div className="pt-28 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light">
 				<CategoryContext.Provider value={categories} >
 					<Form className="header-wrapper" action='/search'>
 						<Header
@@ -89,7 +80,7 @@ export default function Index() {
 					</Form>
 				</CategoryContext.Provider >
 
-				<main className="main-container">
+				<main className="min-h-[35rem]">
 					<Outlet context={{ categories: categories }} />
 				</main>
 

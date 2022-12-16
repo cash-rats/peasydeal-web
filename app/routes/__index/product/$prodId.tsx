@@ -161,7 +161,6 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const CatchBoundary = () => (<FourOhFour />);
 
-
 /*
  * Emulate discount expert
  * @see https://www.discountexperts.com/deal/uptfll2cfs/Breathable_Air_Cushion_Trainers___6_Colours___Sizes
