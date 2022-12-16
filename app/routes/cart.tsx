@@ -15,7 +15,6 @@ import { fetchCategories } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import { getCartTitleText, getCanonicalDomain } from '~/utils';
 
-import styles from './styles/index.css';
 import cartStyles from './styles/cart.css';
 
 export const meta: MetaFunction = () => ({
@@ -54,7 +53,6 @@ export const links: LinksFunction = () => {
     ...HeaderLinks(),
     ...FooterLinks(),
     ...DropDownSearchBarLinks(),
-    { rel: 'stylesheet', href: styles },
     { rel: 'stylesheet', href: cartStyles },
   ];
 };

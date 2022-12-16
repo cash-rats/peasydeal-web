@@ -18,7 +18,6 @@ import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 
-import styles from './styles/index.css';
 import { useSearchSuggests } from './hooks/auto-complete-search';
 
 export const links: LinksFunction = () => {
@@ -27,7 +26,6 @@ export const links: LinksFunction = () => {
     ...HeaderLinks(),
     ...CategoriesNavLinks(),
     ...DropDownSearchBarLinks(),
-    { rel: 'stylesheet', href: styles },
   ];
 };
 
