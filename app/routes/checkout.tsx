@@ -108,7 +108,7 @@ function CheckoutLayout() {
   return (
     <>
       <CategoryContext.Provider value={categories}>
-        <Form className="header-wrapper" action='/search'>
+        <Form action='/search'>
           <Header
             numOfItemsInCart={item_count}
             searchBar={

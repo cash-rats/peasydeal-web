@@ -59,7 +59,7 @@ export default function Index() {
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
 			<div className="pt-28 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light">
 				<CategoryContext.Provider value={categories} >
-					<Form className="header-wrapper" action='/search'>
+					<Form action='/search'>
 						<Header
 							form='index-search-product'
 							categoriesBar={

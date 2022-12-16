@@ -61,7 +61,7 @@ export function useSearchSuggests(): [SuggestItem[], SearchSuggest] {
 
       setSuggests(suggestItems);
     }
-  }, [fetcher])
+  }, [fetcher.type])
 
   return [suggests, searchSuggests];
 }

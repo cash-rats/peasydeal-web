@@ -1,9 +1,7 @@
 import type { SessionIdStorageStrategy, SessionStorage } from "@remix-run/server-runtime";
 import { createSessionStorage } from '@remix-run/node';
 
-import type { RedisOptions, Redis } from 'ioredis';
 import crypto from "crypto";
-import IORedis from "ioredis";
 
 import { ioredis as redis } from '~/redis.server';
 
