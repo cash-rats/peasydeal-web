@@ -4,7 +4,11 @@
 
 `npm run dev`
 
-## Start React Cosmos
+## Stroybook
+
+`npm run storybook`
+
+## ~~Start React Cosmos~~
 
 **react-cosmos** is a UI sandbox for developing UI component in isolation.
 
@@ -13,8 +17,7 @@ npm run cosmos
 ```
 
 sandbox will be hosted on `localhost:5001` specified in `./cosmos.config.json`
-
-## Styled component SSR checksome BUG
+## ~~Styled component SSR checksome BUG~~
 
 styled component on remix run would lead to `componentId` difference between server and client side, [check the issue here](https://github.com/remix-run/remix/issues/1032). Thus, we need [babel-plugin-styled-components](https://github.com/styled-components/babel-plugin-styled-components)
 
@@ -33,10 +36,13 @@ bable plugin to fix this issue. However, remix official does not want any babel 
 
 ## Routes
 
-** / ** :
-	Home route with list of products.
+`/` :
+Home route with list of products.
 
-** /$prod_id **
+`/$collection`:
+Products of given category. e.g. `/Hot%20Deal` `/SexToy`
+
+`/$prod_id`
 	Product route with product detail
 
 ## Folder structure
