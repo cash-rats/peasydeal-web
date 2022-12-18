@@ -6,11 +6,11 @@ module.exports = {
   theme: {
     screens: {
       // default theme includes:
-      // => @media (min-width: 640px) { ... }
-      // => @media (min-width: 768px) { ... }
-      // => @media (min-width: 1024px) { ... }
-      // => @media (min-width: 1280px) { ... }
-      // => @media (min-width: 1536px) { ... }
+      // sm => @media (min-width: 640px) { ... }
+      // md => @media (min-width: 768px) { ... }
+      // lg => @media (min-width: 1024px) { ... }
+      // xl => @media (min-width: 1280px) { ... }
+      // 2xl => @media (min-width: 1536px) { ... }
       ...defaultTheme.screens,
 
       '499': '499px',
