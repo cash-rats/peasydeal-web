@@ -453,13 +453,17 @@ function ProductDetailPage() {
 									</ClientOnly>
 
 									{/* Quantity */}
-									<div className="input-quantity-container">
+									<div className="flex flex-col justify-start items-center w-full mt-3">
 										<QuantityPicker
 											value={quantity}
 											onChange={handleUpdateQuantity}
 											onIncrease={increaseQuantity}
 											onDecrease={decreaseQuantity}
 										/>
+
+										<span className="w-full mt-2 text-[#757575] font-sm">
+											Max {variation?.purchase_limit} pieces on every purchase.
+										</span>
 									</div>
 
 									<ProductActionBarLeft
