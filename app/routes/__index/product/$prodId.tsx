@@ -164,9 +164,6 @@ export const CatchBoundary = () => (<FourOhFour />);
 /*
  * Emulate discount expert
  * @see https://www.discountexperts.com/deal/uptfll2cfs/Breathable_Air_Cushion_Trainers___6_Colours___Sizes
- * TODO
- *   - [ ] image should be changed to carousel images.
- *         Display carousel images if variation is greater than 1
  */
 function ProductDetailPage() {
 	const data = useLoaderData<LoaderTypeProductDetail>();
@@ -204,6 +201,9 @@ function ProductDetailPage() {
 	};
 
 	const increaseQuantity = () => {
+		if (!variation) return;
+		const { purchase_limit } = variation;
+		if (quantity === purchase_limit) return;
 		updateQuantity(prev => prev + 1);
 	};
 

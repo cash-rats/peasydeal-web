@@ -11,6 +11,7 @@ export interface ProductVariation {
   currency: string;
   discount: number;
   delivery_info: string;
+  purchase_limit: number;
 };
 
 export interface Category {
