@@ -4,6 +4,9 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 module.exports = {
   content: ["./app/**/*.{ts,tsx,jsx,js}"],
   theme: {
+    fontFamily: {
+      lato: 'Lato, sans-serif',
+    },
     screens: {
       // default theme includes:
       // sm => @media (min-width: 640px) { ... }

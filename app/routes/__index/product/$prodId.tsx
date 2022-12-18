@@ -16,7 +16,6 @@ import httpStatus from 'http-status-codes';
 
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
-import Divider, { links as DividerLinks } from '~/components/Divider';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import { commitSession } from '~/sessions/redis_session';
@@ -31,6 +30,7 @@ import {
 	getProdDetailDescTextWithoutPrice,
 } from '~/utils';
 
+import Divider from './components/DividerContent';
 import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
@@ -73,7 +73,6 @@ export const links: LinksFunction = () => {
 		...ItemAddedModalLinks(),
 		...QuantityPickerLinks(),
 		...ProductDetailSectionLinks(),
-		...DividerLinks(),
 		...BreadCrumbsLinks(),
 		...ProductActionBarLinks(),
 		...ProductActionBarLeftLinks(),
@@ -462,7 +461,7 @@ function ProductDetailPage() {
 										/>
 
 										<span className="w-full mt-2 text-[#757575] font-sm">
-											Max {variation?.purchase_limit} pieces on every purchase.
+											Max {variation?.purchase_limit} pieces of this item on every purchase.
 										</span>
 									</div>
 
@@ -473,20 +472,18 @@ function ProductDetailPage() {
 									/>
 								</div>
 
-								<Divider text={
-									<span className="ProductDetail__divder-content">
-										<TbShare fontSize={20} /> share
-									</span>
-								} />
+								<Divider
+									icon={<TbShare fontSize={20} />}
+									text="share"
+								/>
 
 								<SocialShare />
 
 								<div className="delivery-container">
-									<Divider text={(
-										<span className="ProductDetail__divder-content">
-											<TbTruckDelivery fontSize={24} /> DELIVERY
-										</span>
-									)} />
+									<Divider
+										icon={<TbTruckDelivery fontSize={24} />}
+										text="delivery"
+									/>
 
 									<div className="delivery-content">
 										<strong> {variation?.delivery_info} </strong>
@@ -502,11 +499,10 @@ function ProductDetailPage() {
 								</div>
 
 								<div className="product-return-policy">
-									<Divider text={(
-										<span className="ProductDetail__divder-content">
-											<TbTruckReturn fontSize={24} /> return policy
-										</span>
-									)} />
+									<Divider
+										text="return policy"
+										icon={<TbTruckReturn fontSize={24} />}
+									/>
 
 									<p>
 										14 days cancellation period applies.
