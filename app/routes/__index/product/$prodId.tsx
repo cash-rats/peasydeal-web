@@ -197,7 +197,11 @@ function ProductDetailPage() {
 	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
 	const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
-		updateQuantity(Number(evt.target.value));
+		if (!variation) return;
+		const { purchase_limit } = variation;
+		const newQuant = Number(evt.target.value);
+		if (newQuant > purchase_limit) return;
+		updateQuantity(newQuant);
 	};
 
 	const increaseQuantity = () => {
