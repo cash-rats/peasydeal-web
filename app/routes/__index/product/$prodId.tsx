@@ -485,8 +485,12 @@ function ProductDetailPage() {
 										text="delivery"
 									/>
 
-									<div className="delivery-content">
-										<strong> {variation?.delivery_info} </strong>
+									<div className="flex px-3 justify-center items-center gap-1">
+										<strong> {
+											variation
+												? `Estimated Shipping Cost: ${variation?.shipping_fee + (quantity * 1)}`
+												: null
+										}  </strong>
 									</div>
 								</div>
 
