@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
@@ -13,15 +14,20 @@ export const links: LinksFunction = () => {
 		{ rel: 'stylesheet', href: styles },
 	];
 };
-interface CartItemProps {
-	calculating?: boolean;
+
+type ItemProps = {
 	variationUUID: string;
 	image: string;
 	title: string;
 	description: string;
 	salePrice: number;
 	retailPrice: number;
-	quantity?: number;
+	quantity: number;
+	purchaseLimit: number;
+}
+interface CartItemProps {
+	item: ItemProps;
+	calculating?: boolean;
 	onMinus?: (quantity: number, prodID: string, askRemoval: boolean) => void;
 	onPlus?: (quantity: number, prodID: string) => void;
 	onClickQuantity?: (evt: MouseEvent<HTMLLIElement>, number: number) => void;
@@ -32,63 +38,100 @@ interface CartItemProps {
 
 function CartItem({
 	calculating = false,
-	variationUUID,
-	image,
-	title,
-	description,
-	salePrice,
-	retailPrice,
-	quantity = 1,
+	item = {
+		variationUUID: '',
+		image: '',
+		title: '',
+		description: '',
+		salePrice: 0,
+		retailPrice: 0,
+		quantity: 1,
+		purchaseLimit: 10,
+	},
 	onChangeQuantity = () => { },
 	onClickQuantity = () => { },
 	onBlurQuantity = (evt: FocusEvent<HTMLInputElement>, quantity: number) => { },
 	onClickRemove = (evt: MouseEvent<HTMLButtonElement>, prodID: string) => { },
 }: CartItemProps) {
+	const [exceedMaxMsg, setExceedMaxMsg] = useState('');
+
+	const handleChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, quantity: number) => {
+		setExceedMaxMsg('');
+		if (quantity > item.purchaseLimit) {
+			setExceedMaxMsg(`Max ${item.purchaseLimit} pieces`);
+			return;
+		}
+		onChangeQuantity(evt, quantity);
+	};
+
+	const handleBlurQuantity = (evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>, quantity: number) => {
+		setExceedMaxMsg('');
+		if (quantity > item.purchaseLimit) {
+			setExceedMaxMsg(`Max ${item.purchaseLimit} pieces`);
+			return;
+		};
+		onBlurQuantity(evt, quantity);
+	};
+
 	return (
 		<div className="cart-item">
 			{/* Item image */}
 			<div className="top">
 				<div className="product-image">
-					<img alt={title} src={image} />
+					<img alt={item.title} src={item.image} />
 				</div>
 
 				<div className="product-description">
 					<div className="product-title">
-						{title}
+						{item.title}
 					</div>
 
 					<p className="product-description-text">
-						{description}
+						{item.description}
 					</p>
 
 					<div className="product-price-mobile">
-						<span className="CartItem__sale-price">£{salePrice}</span> &nbsp;
-						<span className="CartItem__retail-price">£{retailPrice}</span>
+						<span className="CartItem__sale-price">£{item.salePrice}</span> &nbsp;
+						<span className="CartItem__retail-price">£{item.retailPrice}</span>
 					</div>
 				</div>
 			</div>
 
 			<div className="bottom">
+
 				<div className="product-price">
-					£{salePrice}
+					£{item.salePrice}
 				</div>
 
-				<div className="product-quantity">
-					<span className="CartItem__quantity-text"> QTY </span>
-					<QuantityDropDown
-						value={quantity}
-						onClickNumber={onClickQuantity}
-						onChange={onChangeQuantity}
-						onBlur={onBlurQuantity}
-						disabled={calculating}
-					/>
+				<div className="relative max-w-full flex flex-col items-center md:w-[40%]">
+					<div className="flex flex-row items-center" >
+						<span className="CartItem__quantity-text"> QTY </span>
+						<div className="flex flex-col">
+							<QuantityDropDown
+								value={item.quantity}
+								onClickNumber={onClickQuantity}
+								onChange={handleChangeQuantity}
+								onBlur={handleBlurQuantity}
+								disabled={calculating}
+							/>
+						</div>
 
-					<div className="CartItem__remove-btn">
-						<IconButton onClick={(evt) => onClickRemove(evt, variationUUID)}>
-							<BsTrash />
-						</IconButton>
+						<div className="CartItem__remove-btn">
+							<IconButton onClick={(evt) => onClickRemove(evt, item.variationUUID)}>
+								<BsTrash />
+							</IconButton>
+						</div>
 					</div>
+
+					{
+						exceedMaxMsg && (
+							<p className="mt-0 w-full mt text-[#757575] font-sm md:absolute top-[-25px]">
+								Max {item.purchaseLimit} pieces
+							</p>
+						)
+					}
 				</div>
+
 
 				<div className="product-total">
 					{
@@ -98,7 +141,7 @@ function CartItem({
 									£ &nbsp; <Skeleton width={40} height={35} />
 								</>
 							)
-							: `£${(quantity * salePrice).toFixed(2)}`
+							: `£${(item.quantity * item.salePrice).toFixed(2)}`
 					}
 
 				</div>

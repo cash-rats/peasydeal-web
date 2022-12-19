@@ -89,11 +89,6 @@
     display: block;
   }
 }
-.cart-item .bottom .product-quantity {
-  max-width: 170px;
-  display: flex;
-  align-items: center;
-}
 .cart-item .bottom .product-total {
   display: none;
 }
@@ -103,9 +98,6 @@
   }
   .cart-item .bottom .product-price {
     width: 28%;
-  }
-  .cart-item .bottom .product-quantity {
-    width: 40%;
   }
   .cart-item .bottom .product-total {
     display: flex;

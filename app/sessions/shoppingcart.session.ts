@@ -19,6 +19,7 @@ export type ShoppingCartItem = {
   quantity: string;
   title: string;
   specName: string
+  purchaseLimit: string;
 };
 
 const getSessionCookie = async (request: Request): Promise<Session> => {

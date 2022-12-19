@@ -13,7 +13,7 @@ export default function ProductDetailBreadcrumbs({ categoryTitle, productTitle, 
   return (
     <div className="
     px-4 mx-auto max-w-[1060px]
-    1280:max-w-[1416px] 1280:pl-8"
+    xl:max-w-[1416px] xl:pl-8"
     >
       <Breadcrumbs
         breadcrumbs={[

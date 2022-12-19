@@ -189,9 +189,7 @@ function Cart() {
 	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, variationUUID: string, quantity: number) => {
 		if (quantity === 0) {
 			targetRemovalVariationUUID.current = variationUUID;
-
 			setOpenRemoveItemModal(true);
-
 			return;
 		}
 
@@ -406,15 +404,18 @@ function Cart() {
 
 								return (
 									<CartItem
+										item={{
+											variationUUID,
+											image: item.image,
+											title: item.title,
+											description: item.specName,
+											salePrice: Number(item.salePrice),
+											retailPrice: Number(item.retailPrice),
+											quantity: Number(item.quantity),
+											purchaseLimit: Number(item.purchaseLimit),
+										}}
 										calculating={isCalculating}
 										key={variationUUID}
-										variationUUID={variationUUID}
-										image={item.image}
-										title={item.title}
-										description={item.specName}
-										salePrice={Number(item.salePrice)}
-										retailPrice={Number(item.retailPrice)}
-										quantity={Number(item.quantity)}
 										onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
 										onChangeQuantity={(evt, number) => handleOnChangeQuantity(evt, variationUUID, number)}
 										onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}

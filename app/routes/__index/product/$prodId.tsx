@@ -224,6 +224,8 @@ function ProductDetailPage() {
 			? ''
 			: variation?.spec_name || ''
 
+		console.log('debug extractProductInfo', variation?.purchase_limit);
+
 		return {
 			salePrice: variation?.sale_price.toString() || '',
 			retailPrice: variation?.retail_price.toString() || '',
@@ -235,13 +237,13 @@ function ProductDetailPage() {
 			quantity: quantity.toString(),
 			title: productDetail?.title || '',
 			specName: specName,
+			purchaseLimit: variation?.purchase_limit.toString() || '',
 		}
 	}, [productDetail, quantity, variation]);
 
 	const handleAddToCart = () => {
 		if (!variation) {
 			setVariationErr('Please pick a variation');
-
 			return;
 		}
 		setVariationErr('');
