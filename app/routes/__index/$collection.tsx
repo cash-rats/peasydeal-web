@@ -16,7 +16,7 @@ import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { CategoriesMap, Product } from '~/shared/types';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
-import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { normalizeToMap, fetchCategories } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
@@ -67,7 +67,6 @@ export const links: LinksFunction = () => {
     ...CssSpinnerLinks(),
     ...ProductRowsContainerLinks(),
     ...LoadmoreLinks(),
-    ...BreadCrumbsLinks(),
     ...LoadMoreButtonLinks(),
     { rel: 'stylesheet', href: styles },
   ];

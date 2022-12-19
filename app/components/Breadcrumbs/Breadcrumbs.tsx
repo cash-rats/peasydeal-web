@@ -3,16 +3,6 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import { FiChevronRight } from 'react-icons/fi';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import type { LinksFunction } from '@remix-run/node';
-
-import styles from './styles/Breadcrumbs.css';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
-
 
 interface BreadcrumbsNavProps {
   breadcrumbs: ReactNode | ReactNode[];

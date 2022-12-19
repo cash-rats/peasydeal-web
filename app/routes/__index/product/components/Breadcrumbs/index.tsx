@@ -1,20 +1,13 @@
 import type { ReactNode } from 'react';
 import { NavLink } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
 
-import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 
 type ProductDetailBreadcrumbsProps = {
   categoryTitle?: ReactNode;
   productTitle?: ReactNode;
   productUuid?: string;
 }
-
-export const links: LinksFunction = () => {
-  return [
-    ...BreadCrumbsLinks(),
-  ];
-};
 
 export default function ProductDetailBreadcrumbs({ categoryTitle, productTitle, productUuid }: ProductDetailBreadcrumbsProps) {
   return (

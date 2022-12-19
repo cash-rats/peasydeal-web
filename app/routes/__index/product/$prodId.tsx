@@ -29,7 +29,7 @@ import {
 	getProdDetailDescTextWithoutPrice,
 } from '~/utils';
 
-import Breadcrumbs, { links as BreadCrumbsLinks } from './components/Breadcrumbs';
+import Breadcrumbs from './components/Breadcrumbs';
 import Divider from './components/DividerContent';
 import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -73,7 +73,6 @@ export const links: LinksFunction = () => {
 		...ItemAddedModalLinks(),
 		...QuantityPickerLinks(),
 		...ProductDetailSectionLinks(),
-		...BreadCrumbsLinks(),
 		...ProductActionBarLinks(),
 		...ProductActionBarLeftLinks(),
 		...RecommendedProductsLinks(),
