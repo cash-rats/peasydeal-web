@@ -63,7 +63,7 @@ export default function PriceResult({ priceInfo, calculating = false }: PriceRes
         </div>
 
         <div className="shipping">
-          <label> Est. Shipping </label>
+          <label> Shipping Cost </label>
           <div className="result-value">
             {
               calculating

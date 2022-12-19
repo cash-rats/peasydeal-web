@@ -26,17 +26,18 @@ export default function BreadcrumsNav({
   onClickBack = () => { },
 }: BreadcrumbsNavProps) {
   return (
-    <div className="breadscrum">
+    <div className="flex flex-row items-center w-full py-2">
       {
         showBack && (
-          <span className="breadscrum-back" >
+          <span className="mr-7 flex items-center cursor-pointer" >
             <Link
+              className="flex items-center"
               underline='hover'
               color="inherit"
               onClick={onClickBack}
             >
               <ArrowBackIcon color='action' fontSize="medium" />
-              <p className="back-text">Back</p>
+              <p className="m-0 ml-3 font-medium">Back</p>
             </Link>
           </span>
         )

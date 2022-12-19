@@ -1,6 +1,6 @@
 CURRENT_DIR = $(shell pwd)
 
-# Export variable in .app.env.
+# Export variable in .env.
 ifneq (,$(wildcard ./.env))
 	include .env
 	export

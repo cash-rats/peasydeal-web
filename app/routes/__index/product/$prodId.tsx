@@ -7,7 +7,7 @@ import {
 import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction, MetaFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher, NavLink } from '@remix-run/react';
+import { useLoaderData, useFetcher } from '@remix-run/react';
 import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
 import Rating from '@mui/material/Rating';
@@ -15,7 +15,6 @@ import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
 
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
-import Breadcrumbs, { links as BreadCrumbsLinks } from '~/components/Breadcrumbs/Breadcrumbs';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import { commitSession } from '~/sessions/redis_session';
@@ -30,6 +29,7 @@ import {
 	getProdDetailDescTextWithoutPrice,
 } from '~/utils';
 
+import Breadcrumbs, { links as BreadCrumbsLinks } from './components/Breadcrumbs';
 import Divider from './components/DividerContent';
 import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -304,43 +304,11 @@ function ProductDetailPage() {
 				onClose={handleOnClose}
 			/>
 
-			<div className="ProductDetail__breadcrumbs">
-				<Breadcrumbs breadcrumbs={[
-					<NavLink
-						className={({ isActive }) => (
-							isActive
-								? "breadcrumbs-link breadcrumbs-link-active"
-								: "breadcrumbs-link"
-						)}
-						key='1'
-						to='/'
-					>
-						Home
-					</NavLink>,
-					<NavLink
-						className={({ isActive }) => (
-							isActive
-								? "breadcrumbs-link breadcrumbs-link-active"
-								: "breadcrumbs-link"
-						)}
-						key='2'
-						to={`/${mainCategory.name}`}
-					>
-						{mainCategory.name}
-					</NavLink>,
-					<NavLink
-						className={({ isActive }) => (
-							isActive
-								? "breadcrumbs-link breadcrumbs-link-active"
-								: "breadcrumbs-link"
-						)}
-						key='3'
-						to={`/product/${productDetail.uuid}`}
-					>
-						{productDetail?.title}
-					</NavLink>,
-				]} />
-			</div>
+			<Breadcrumbs
+				categoryTitle={mainCategory.name}
+				productTitle={productDetail.title}
+				productUuid={productDetail.uuid}
+			/>
 
 			<div className="productdetail-container">
 				<div className="ProductDetail__main-wrapper">
@@ -479,7 +447,7 @@ function ProductDetailPage() {
 
 								<SocialShare />
 
-								<div className="delivery-container">
+								<div>
 									<Divider
 										icon={<TbTruckDelivery fontSize={24} />}
 										text="delivery"

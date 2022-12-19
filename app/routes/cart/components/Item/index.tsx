@@ -25,7 +25,7 @@ interface CartItemProps {
 	onMinus?: (quantity: number, prodID: string, askRemoval: boolean) => void;
 	onPlus?: (quantity: number, prodID: string) => void;
 	onClickQuantity?: (evt: MouseEvent<HTMLLIElement>, number: number) => void;
-	onChangeQuantity?: (evt: ChangeEvent<HTMLInputElement>) => void;
+	onChangeQuantity?: (evt: ChangeEvent<HTMLInputElement>, quantity: number) => void;
 	onBlurQuantity?: (evt: FocusEvent<HTMLInputElement>, number: number) => void;
 	onClickRemove?: (evt: MouseEvent<HTMLButtonElement>, prodID: string) => void;
 }

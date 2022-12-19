@@ -281,8 +281,7 @@ function Cart() {
 		setOpenRemoveItemModal(false);
 	}
 
-	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, variationUUID: string) => {
-		const quantity = Number(evt.target.value)
+	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, variationUUID: string, quantity: number) => {
 		if (isNaN(quantity)) return;
 		updateQuantity(variationUUID, quantity);
 	}
@@ -417,7 +416,7 @@ function Cart() {
 										retailPrice={Number(item.retailPrice)}
 										quantity={Number(item.quantity)}
 										onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
-										onChangeQuantity={(evt) => handleOnChangeQuantity(evt, variationUUID)}
+										onChangeQuantity={(evt, number) => handleOnChangeQuantity(evt, variationUUID, number)}
 										onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}
 										onClickRemove={handleRemove}
 									/>

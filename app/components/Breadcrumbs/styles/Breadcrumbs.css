@@ -23,21 +23,4 @@
   font-weight: 500;
 }
 
-.breadcrumbs-link {
-  font-weight: 500;
-  font-size: 14px;
-  cursor: pointer;
-  text-transform: capitalize;
-}
-.breadcrumbs-link:hover {
-  text-decoration: underline;
-}
-
-.breadcrumbs-link-active {
-  font-size: 16px;
-  font-weight: bold;
-  text-decoration: none !important;
-  color: #212121;
-}
-
 /*# sourceMappingURL=Breadcrumbs.css.map */

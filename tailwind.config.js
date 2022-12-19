@@ -23,6 +23,7 @@ module.exports = {
       '899': '899px',
       '992': '992px',
       '1200': '1200px',
+      '1280': '1280px',
       '1600': '1600px',
     },
     extend: {
@@ -36,11 +37,14 @@ module.exports = {
       animation: {
         play: 'animation',
       },
+      backgroundImage: (theme) => ({
+        'home-gradient-light-sm': "url('/images/home-gradient-light-sm.png')",
+        'home-gradient-light': "url('/images/home-gradient-light.png')",
+      }),
+      colors: {
+        'raisin-black': '#212121',
+      },
     },
-    backgroundImage: {
-      'home-gradient-light-sm': "url('/images/home-gradient-light-sm.png')",
-      'home-gradient-light': "url('/images/home-gradient-light.png')",
-    }
   },
   plugins: [],
 };
