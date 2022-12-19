@@ -103,7 +103,7 @@ function CartItem({
 					£{item.salePrice}
 				</div>
 
-				<div className="relative max-w-full flex flex-col items-center md:w-[40%]">
+				<div className="relative max-w-[170px] flex flex-col items-center md:w-[40%]">
 					<div className="flex flex-row items-center" >
 						<span className="CartItem__quantity-text"> QTY </span>
 						<div className="flex flex-col">
