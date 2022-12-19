@@ -453,11 +453,13 @@ function ProductDetailPage() {
 									/>
 
 									<div className="flex px-3 justify-center items-center gap-1">
-										<strong> {
-											variation
-												? `Estimated Shipping Cost: ${variation?.shipping_fee + (quantity * 1)}`
-												: null
-										}  </strong>
+										<strong>
+											{
+												variation
+													? `Lowest Shipping Cost At: £${variation?.shipping_fee}`
+													: null
+											}
+										</strong>
 									</div>
 								</div>
 
