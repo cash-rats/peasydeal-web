@@ -6,7 +6,7 @@ import { useArgs } from '@storybook/client-api';
 import TopProductsColumn from './index';
 import BannerProduct from './BannerProduct';
 
-let story: Meta<typeof TopProductsColumn> = {
+const story: Meta<typeof TopProductsColumn> = {
   title: 'Top Products Column',
   component: TopProductsColumn,
   decorators: [

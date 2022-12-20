@@ -42,7 +42,11 @@ module.exports = {
       }),
       colors: {
         'raisin-black': '#212121',
+        'gray-hover-bg-2': '#D8D8D8',
       },
+      boxShadow: {
+        dropdown: '0 0 3px 0 rgb(73 143 226 / 50%)',
+      }
     },
   },
   plugins: [],

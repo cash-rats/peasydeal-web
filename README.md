@@ -8,7 +8,7 @@
 
 `npm run storybook`
 
-## ~~Start React Cosmos~~
+## Start React Cosmos~~
 
 **react-cosmos** is a UI sandbox for developing UI component in isolation.
 
@@ -101,3 +101,8 @@ app
 				          |--- product
 									        | --- $prodid#CatchBoundary
 ```
+
+## Misc
+
+- [Remix cosmos integration](https://dev.to/rzmz/react-cosmos-with-remix-7go)
+- [react-cosmos mock routes in Remix](https://www.vixalien.com/blog/remix-in-the-cosmos)

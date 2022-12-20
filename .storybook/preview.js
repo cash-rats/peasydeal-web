@@ -1,5 +1,4 @@
-import { RemixStub } from './RemixStub';
-// import { MemoryRouter } from 'react-router-dom';
+import '!style-loader!css-loader!postcss-loader!../app/styles/tailwind.css';
 
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
@@ -11,10 +10,4 @@ export const parameters = {
   },
 }
 
-export const decorators = [
-  // (Story) => (
-  //   <RemixStub>
-  //     <Story />
-  //   </RemixStub>
-  // )
-];
+export const decorators = [];

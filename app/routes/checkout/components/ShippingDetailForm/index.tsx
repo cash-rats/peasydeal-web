@@ -20,6 +20,7 @@ interface ShippingDetailFormProps {
   values: ShippingDetailFormType;
 }
 
+// When user finish typing postal code, request remote API for address autocompletion.
 const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
   return (
     <>
@@ -38,7 +39,6 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
           value={values.email}
         />
       </div>
-
 
       {/* Name */}
       <div className="shipping-form-fields fields--2">

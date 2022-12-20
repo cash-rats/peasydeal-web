@@ -1,16 +1,22 @@
 {
-	"staticPath": "public",
-	"watchDirs": ["app"],
-	"webpack": {
+  "staticPath": "public",
+  "watchDirs": [
+    "app"
+  ],
+  "webpack": {
     "overridePath": "./webpack.override.js"
   },
-	"userDepsFilePath": "app/cosmos.userdeps.js",
-	"experimentalRendererUrl": "http://localhost:3000/cosmos",
-	"port": 5001,
-	"ui": {
+  "userDepsFilePath": "app/cosmos.userdeps.js",
+  "experimentalRendererUrl": "http://localhost:3000/cosmos",
+  "port": 5001,
+  "ui": {
     "responsivePreview": {
       "devices": [
-        { "label": "< 768", "width": 767, "height": 1080 }
+        {
+          "label": "< 768",
+          "width": 767,
+          "height": 1080
+        }
       ]
     }
   }
