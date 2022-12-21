@@ -78,7 +78,6 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
   const handleChangePostal = (evt: ChangeEvent<HTMLTextAreaElement>) => {
     const value = evt.target.value;
     if (!value) return;
-    console.log('debug value', value);
     debounce(() => loadAddrOptions(value));
   };
 
@@ -150,6 +149,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
       <div className="shipping-form-fields field--1">
         <TextDropdownField
           options={state.line1s.options}
+          defaultOption={state.line1s.defaultOption}
           autoComplete="off"
           required
           id="address1"
@@ -166,6 +166,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
       <div className="shipping-form-fields field--1">
         <TextDropdownField
           options={state.line2s.options}
+          defaultOption={state.line2s.defaultOption}
           autoComplete="off"
           id="address2"
           label="address line 2"
@@ -182,6 +183,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
         {/* Might need a dropdown list for city selection for GB */}
         <TextDropdownField
           options={state.cities.options}
+          defaultOption={state.cities.defaultOption}
           required
           autoComplete='off'
           id="city"

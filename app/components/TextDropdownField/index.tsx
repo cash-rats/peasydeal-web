@@ -1,5 +1,5 @@
 import type { ChangeEvent, MouseEvent } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { TextField } from '@mui/material';
 import type { TextFieldProps } from '@mui/material';
 
@@ -9,23 +9,28 @@ export type Option = {
 };
 
 type TextDropdownFieldProps = {
-  defaultValue?: string;
+  defaultOption?: Option | null;
   options?: Option[],
 
   onChange?: (v: ChangeEvent<HTMLInputElement>) => void;
-  onSelect?: (v: string) => void;
+  onSelect?: (v: Option) => void;
 } & TextFieldProps;
 
 // - [ ] enable dropdown when onfocus and options is not empty.
 export default function TextDropdownField({
   options = [],
-  defaultValue = '',
+  defaultOption = null,
   onChange = () => { },
   onSelect = () => { },
   ...props
 }: TextDropdownFieldProps) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(defaultValue);
+  const [value, setValue] = useState(defaultOption?.label || '');
+
+  useEffect(() => {
+    if (!defaultOption) return;
+    setValue(defaultOption.label);
+  }, [defaultOption]);
 
   const handleFocus = () => {
     if (options.length === 0) return;
@@ -40,7 +45,9 @@ export default function TextDropdownField({
     onChange(evt);
   }
   const handleSelect = (evt: MouseEvent<HTMLLIElement>, option: Option) => {
-    setValue(option.value);
+    if (!option) return;
+    setValue(option.label);
+    onSelect(option);
   }
 
   return (
