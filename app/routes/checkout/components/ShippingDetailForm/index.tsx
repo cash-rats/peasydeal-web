@@ -6,16 +6,19 @@
 */
 import { useEffect, useReducer } from 'react';
 import type { ChangeEvent } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import { TextField } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import type { ActionFunction } from '@remix-run/node';
 import useDebounce from 'react-debounced';
 
 import TextDropdownField from '~/components/TextDropdownField';
 
+import { fetchAddressOptionsByPostal } from './api.server';
+import type { AddressPartialOptions } from './api.server';
 import styles from './styles/ShippingDetailForm.css';
+import { inistialState, addressOptionsReducer, AddressOptionsActionTypes } from './reducer';
 import type { ShippingDetailFormType } from '../../types';
 
 export const links: LinksFunction = () => {
@@ -24,11 +27,20 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const action: ActionFunction = () => {
-  console.log('debug trigger action');
 
-  return null;
+export const action: ActionFunction = async ({ request }) => {
+  const form = await request.formData();
+  const formEntries = Object.fromEntries(form.entries());
+  const postal = formEntries.postal as string;
+  if (!postal) return null;
+  try {
+    const options = await fetchAddressOptionsByPostal({ postal });
+    return json<AddressPartialOptions>(options);
+  } catch (err) {
+    return null;
+  }
 }
+
 
 interface ShippingDetailFormProps {
   values: ShippingDetailFormType;
@@ -38,19 +50,30 @@ interface ShippingDetailFormProps {
 const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
   const debounce = useDebounce(400);
   const loadAddrFetcher = useFetcher();
+  const [state, dispatch] = useReducer(addressOptionsReducer, inistialState);
 
   useEffect(() => {
     if (loadAddrFetcher.type === 'done') {
-      console.log('debug loadAddrFetcher done');
+      dispatch({
+        type: AddressOptionsActionTypes.update_all_options,
+        payload: loadAddrFetcher.data,
+      });
     }
   }, [loadAddrFetcher.type]);
 
-  const loadAddrOptions = () => {
-    console.log('debug askAddressOption');
-    loadAddrFetcher.submit(null, { method: 'post', action: 'checkout/components/ShippingDetailForm?index' });
+  const loadAddrOptions = (postal: string) => {
+    loadAddrFetcher.submit(
+      { postal },
+      { method: 'post', action: 'checkout/components/ShippingDetailForm?index' }
+    );
   };
 
-  const handleChangePostal = (evt: ChangeEvent<HTMLTextAreaElement>) => debounce(loadAddrOptions);
+  const handleChangePostal = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    const value = evt.target.value;
+    if (!value) return;
+    console.log('debug value', value);
+    debounce(() => loadAddrOptions(value));
+  };
 
   return (
     <>
@@ -119,12 +142,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
       {/* Address line */}
       <div className="shipping-form-fields field--1">
         <TextDropdownField
-          options={
-            new Array(9).fill(0).map((_, i) => ({
-              label: `some address${i}`,
-              value: `some address${i}`,
-            }))
-          }
+          options={state.line1s}
           autoComplete="off"
           required
           id="address1"
@@ -140,12 +158,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
       {/* Address line 2 (optional) */}
       <div className="shipping-form-fields field--1">
         <TextDropdownField
-          options={
-            new Array(9).fill(0).map((_, i) => ({
-              label: `some address${i}`,
-              value: `some address${i}`,
-            }))
-          }
+          options={state.line2s}
           autoComplete="off"
           id="address2"
           label="address line 2"
@@ -159,15 +172,9 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
 
       {/* Postal code & City */}
       <div className="shipping-form-fields fields--1">
-
         {/* Might need a dropdown list for city selection for GB */}
         <TextDropdownField
-          options={
-            new Array(9).fill(0).map((_, i) => ({
-              label: `some address${i}`,
-              value: `some address${i}`,
-            }))
-          }
+          options={state.cities}
           required
           autoComplete='off'
           id="city"
