@@ -9,10 +9,12 @@ import type { ChangeEvent } from 'react';
 import { json } from '@remix-run/node';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
-import { TextField } from '@mui/material';
+import { InputAdornment, TextField } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import useDebounce from 'react-debounced';
+import MoonLoader from 'react-spinners/MoonLoader';
 
+import CssSpinner from '~/components/CssSpinner';
 import TextDropdownField from '~/components/TextDropdownField';
 
 import { fetchAddressOptionsByPostal, } from './api.server';
@@ -45,7 +47,6 @@ export const action: ActionFunction = async ({ request }) => {
     });
   }
 }
-
 
 interface ShippingDetailFormProps {
   values: ShippingDetailFormType;
@@ -159,6 +160,17 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
           aria-describedby="address1"
           fullWidth
           value={values.address1}
+          disabled={loadAddrFetcher.state !== 'idle'}
+          InputProps={{
+            endAdornment: (
+              <MoonLoader
+                size={20} cssOverride={{
+                  color: '#009378'
+                }}
+                loading={loadAddrFetcher.state !== 'idle'}
+              />
+            ),
+          }}
         />
       </div>
 
@@ -175,6 +187,17 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
           aria-describedby="address2"
           fullWidth
           value={values.address2}
+          disabled={loadAddrFetcher.state !== 'idle'}
+          InputProps={{
+            endAdornment: (
+              <MoonLoader
+                size={20} cssOverride={{
+                  color: '#009378'
+                }}
+                loading={loadAddrFetcher.state !== 'idle'}
+              />
+            ),
+          }}
         />
       </div>
 
@@ -193,6 +216,17 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
           aria-describedby="city"
           fullWidth
           value={values.city}
+          disabled={loadAddrFetcher.state !== 'idle'}
+          InputProps={{
+            endAdornment: (
+              <MoonLoader
+                size={20} cssOverride={{
+                  color: '#009378'
+                }}
+                loading={loadAddrFetcher.state !== 'idle'}
+              />
+            ),
+          }}
         />
       </div>
     </>
