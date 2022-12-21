@@ -56,18 +56,20 @@ export default function TextDropdownField({
       {
         open && (
           <ul className="
-        border-solid border py-1 m-0 border-gray-300 rounded-sm
-        flex flex-col items-center justify-center shadow-dropdown
-        absolute w-full bg-white z-1
-      "
+          border-solid border py-1 m-0
+          border-gray-300 rounded-sm
+          flex flex-col items-center justify-center
+          shadow-dropdown absolute w-full bg-white z-10
+          overflow-hidden max-h-[220px] overflow-y-auto
+          "
           >
             {
               options.map((option, index) => {
                 return (
                   <li className="
-                cursor-pointer h-full w-full py-2
-                text-center box-border
-                hover:bg-gray-hover-bg-2
+                cursor-pointer h-full w-full py-2 px-2
+                box-border bg-white text-base
+                font-normal hover:bg-gray-hover-bg-2
                 "
                     key={index}
                     onMouseUp={(evt) => {

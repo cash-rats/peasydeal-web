@@ -1,22 +1,10 @@
 import TextDropdownField from './index';
 import type { Option } from './index';
 
-const options: Option[] =
-  [
-    {
-      label: 'some address1',
-      value: 'some address1',
-    },
-    {
-      label: 'some address2',
-      value: 'some address2',
-    },
-
-    {
-      label: 'some address3',
-      value: 'some address3',
-    }
-  ];
+const options: Option[] = new Array(9).fill(0).map((_, i) => ({
+  label: `some address${i}`,
+  value: `some address${i}`,
+}));
 
 export default (
   <div className="w-full h-screen flex items-center justify-center">
