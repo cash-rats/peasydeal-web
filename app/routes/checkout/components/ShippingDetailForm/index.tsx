@@ -15,7 +15,7 @@ import useDebounce from 'react-debounced';
 
 import TextDropdownField from '~/components/TextDropdownField';
 
-import { fetchAddressOptionsByPostal } from './api.server';
+import { fetchAddressOptionsByPostal, } from './api.server';
 import type { AddressPartialOptions } from './api.server';
 import styles from './styles/ShippingDetailForm.css';
 import { inistialState, addressOptionsReducer, AddressOptionsActionTypes } from './reducer';
@@ -27,7 +27,6 @@ export const links: LinksFunction = () => {
   ];
 };
 
-
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formEntries = Object.fromEntries(form.entries());
@@ -37,7 +36,13 @@ export const action: ActionFunction = async ({ request }) => {
     const options = await fetchAddressOptionsByPostal({ postal });
     return json<AddressPartialOptions>(options);
   } catch (err) {
-    return null;
+    return json<AddressPartialOptions>({
+      line1s: [],
+      line2s: [],
+      cities: [],
+      counties: [],
+      countries: [],
+    });
   }
 }
 
@@ -47,6 +52,8 @@ interface ShippingDetailFormProps {
 }
 
 // When user finish typing postal code, request remote API for address autocompletion.
+// - [ ] display loading UI when fetching address options.
+// - [ ] give default value when done loading address options.
 const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
   const debounce = useDebounce(400);
   const loadAddrFetcher = useFetcher();
@@ -142,7 +149,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
       {/* Address line */}
       <div className="shipping-form-fields field--1">
         <TextDropdownField
-          options={state.line1s}
+          options={state.line1s.options}
           autoComplete="off"
           required
           id="address1"
@@ -158,7 +165,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
       {/* Address line 2 (optional) */}
       <div className="shipping-form-fields field--1">
         <TextDropdownField
-          options={state.line2s}
+          options={state.line2s.options}
           autoComplete="off"
           id="address2"
           label="address line 2"
@@ -174,7 +181,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
       <div className="shipping-form-fields fields--1">
         {/* Might need a dropdown list for city selection for GB */}
         <TextDropdownField
-          options={state.cities}
+          options={state.cities.options}
           required
           autoComplete='off'
           id="city"
