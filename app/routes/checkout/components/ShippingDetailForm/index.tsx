@@ -11,6 +11,8 @@ import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import { TextField } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
+import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import Tooltip from '@mui/material/Tooltip';
 import useDebounce from 'react-debounced';
 import MoonLoader from 'react-spinners/MoonLoader';
 
@@ -101,12 +103,24 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             disabled={loadAddrFetcher.state !== 'idle'}
             InputProps={{
               endAdornment: (
-                <MoonLoader
-                  size={20} cssOverride={{
-                    color: '#009378'
-                  }}
-                  loading={loadAddrFetcher.state !== 'idle'}
-                />
+                <>
+                  {
+                    loadAddrFetcher.state !== 'idle' && (
+                      <MoonLoader size={20} cssOverride={{ color: '#009378' }} />
+                    )
+                  }
+
+                  {
+                    loadAddrFetcher.type === 'done' && state.options.length === 0 && (
+                      <Tooltip title="no address suggestions">
+                        <QuestionMarkIcon style={{
+                          fontSize: '1.5rem',
+                          color: '#009378',
+                        }} />
+                      </Tooltip>
+                    )
+                  }
+                </>
               ),
             }}
           />
