@@ -85,6 +85,7 @@ export const action: ActionFunction = async ({ request }) => {
   const cartItemsObj = JSON.parse(cartItems);
   const trfItemsObj = transformOrderDetail(cartItemsObj);
 
+  console.log('debug payment_secret', payment_secret);
 
   const resp = await createOrder({
     firstname: shippingFormObj.firstname,

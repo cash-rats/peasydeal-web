@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext, ShouldReloadFunction } from "@remix-run/react";
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Elements } from '@stripe/react-stripe-js';
@@ -36,6 +36,16 @@ type LoaderType = {
   item_count: number;
   total: number;
 };
+
+// Loading addresses via postal in `ShipingDetailForm` will trigger loader which generates
+// a new stripe payment intend secret which causes stripe and the app uses different
+// payment secret. Stripe uses the old one and the app uses the new one. To prevent
+// payment secret inconformity, we prevent trigger loader when form submission is coming
+//  from `components/ShippingDetailForm`.
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => !submission
+  ?.action
+  .includes('components/ShippingDetailForm');
+
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cartItems = await getCart(request);
@@ -103,7 +113,7 @@ function CheckoutLayout() {
     if (window) {
       setStripePromise(loadStripe(window.ENV.ENV.STRIPE_PUBLIC_KEY));
     }
-  }, []);
+  }, [payment_intend_id]);
 
   return (
     <>
