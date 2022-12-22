@@ -1,72 +1,54 @@
-import type { Option, AddressPartialOptions } from './api.server';
+import type { Option } from './api.server';
 
-type AddressParts = 'line1s' | 'line2s' | 'cities' | 'counties' | 'countries';
+export type AddressOptions = {
+  label: string;
+  value: Option;
+}
 
 type StateShape = {
-  [key in AddressParts]: {
-    options: Option[];
-    defaultOption: Option | null;
-  };
+  options: AddressOptions[];
+  selectedOption: AddressOptions | null;
 };
 
 export const inistialState: StateShape = {
-  line1s: {
-    options: [],
-    defaultOption: null,
-  },
-  line2s: {
-    options: [],
-    defaultOption: null,
-  },
-  cities: {
-    options: [],
-    defaultOption: null,
-  },
-  counties: {
-    options: [],
-    defaultOption: null,
-  },
-  countries: {
-    options: [],
-    defaultOption: null,
-  },
-}
+  options: [],
+  selectedOption: null,
+};
 
 export enum AddressOptionsActionTypes {
   update_all_options = 'update_all_options',
+  select_option = 'select_option',
 }
+
+type PayloadType = Option[] | Option;
 
 interface AddressOptionsAction {
   type: AddressOptionsActionTypes;
-  payload: AddressPartialOptions;
+  payload: PayloadType;
 }
 
 export const addressOptionsReducer = (state: StateShape, action: AddressOptionsAction): StateShape => {
   switch (action.type) {
     case 'update_all_options': {
+      const payload = action.payload as Option[];
       return {
         ...state,
-        line1s: {
-          options: action.payload.line1s,
-          defaultOption: action.payload.line1s[0] || null
+        options: payload.map((option) => ({
+          label: `${option.line1}, ${option.line2}, ${option.city}`,
+          value: option,
+        })),
+      };
+    }
+    case 'select_option': {
+      const payload = action.payload as Option;
+
+      return {
+        ...state,
+        selectedOption: {
+          label: `${payload.line1}, ${payload.line2}, ${payload.city}`,
+          value: payload,
         },
-        line2s: {
-          options: action.payload.line1s,
-          defaultOption: action.payload.line2s[0] || null
-        },
-        cities: {
-          options: action.payload.line1s,
-          defaultOption: action.payload.cities[0] || null
-        },
-        counties: {
-          options: action.payload.line1s,
-          defaultOption: action.payload.counties[0] || null
-        },
-        countries: {
-          options: action.payload.line1s,
-          defaultOption: action.payload.countries[0] || null
-        },
-      }
+      };
     }
     default: {
       return state

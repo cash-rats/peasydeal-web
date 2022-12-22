@@ -1,36 +1,47 @@
 import type { ChangeEvent, MouseEvent } from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { TextField } from '@mui/material';
 import type { TextFieldProps } from '@mui/material';
 
-export type Option = {
-  value: string;
+export type Option<T> = {
+  value: T;
   label: string;
 };
 
-type TextDropdownFieldProps = {
-  defaultOption?: Option | null;
-  options?: Option[],
+type TextDropdownFieldProps<T> = {
+  defaultOption?: Option<T> | null;
+  options?: Option<T>[],
+  preventSelectChangeValue?: boolean,
 
-  onChange?: (v: ChangeEvent<HTMLInputElement>) => void;
-  onSelect?: (v: Option) => void;
+  onChange?: (v: ChangeEvent<HTMLTextAreaElement>) => void;
+  onSelect?: (v: Option<T>) => void;
 } & TextFieldProps;
 
 // - [ ] enable dropdown when onfocus and options is not empty.
-export default function TextDropdownField({
+export default function TextDropdownField<T>({
   options = [],
   defaultOption = null,
+  preventSelectChangeValue = false,
   onChange = () => { },
   onSelect = () => { },
   ...props
-}: TextDropdownFieldProps) {
+}: TextDropdownFieldProps<T>) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(defaultOption?.label || '');
+  const fieldRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!defaultOption) return;
     setValue(defaultOption.label);
   }, [defaultOption]);
+
+  useEffect(() => {
+    if (options.length <= 0) return;
+    setOpen(true);
+
+    if (!fieldRef.current) return;
+    fieldRef.current.focus();
+  }, [options])
 
   const handleFocus = () => {
     if (options.length === 0) return;
@@ -44,9 +55,11 @@ export default function TextDropdownField({
     setValue(evt.target.value);
     onChange(evt);
   }
-  const handleSelect = (evt: MouseEvent<HTMLLIElement>, option: Option) => {
+  const handleSelect = (evt: MouseEvent<HTMLLIElement>, option: Option<T>) => {
     if (!option) return;
-    setValue(option.label);
+    if (!preventSelectChangeValue) {
+      setValue(option.label);
+    }
     onSelect(option);
   }
 
@@ -54,6 +67,7 @@ export default function TextDropdownField({
     <div className="relative">
       <TextField
         {...props}
+        inputRef={fieldRef}
         value={value}
         onFocus={handleFocus}
         onBlur={handleBlur}

@@ -9,16 +9,16 @@ import type { ChangeEvent } from 'react';
 import { json } from '@remix-run/node';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
-import { InputAdornment, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 import useDebounce from 'react-debounced';
 import MoonLoader from 'react-spinners/MoonLoader';
 
-import CssSpinner from '~/components/CssSpinner';
 import TextDropdownField from '~/components/TextDropdownField';
+import type { Option as DropdownOption } from '~/components/TextDropdownField';
 
 import { fetchAddressOptionsByPostal, } from './api.server';
-import type { AddressPartialOptions } from './api.server';
+import type { Option } from './api.server';
 import styles from './styles/ShippingDetailForm.css';
 import { inistialState, addressOptionsReducer, AddressOptionsActionTypes } from './reducer';
 import type { ShippingDetailFormType } from '../../types';
@@ -36,26 +36,21 @@ export const action: ActionFunction = async ({ request }) => {
   if (!postal) return null;
   try {
     const options = await fetchAddressOptionsByPostal({ postal });
-    return json<AddressPartialOptions>(options);
+    return json<Option[]>(options);
   } catch (err) {
-    return json<AddressPartialOptions>({
-      line1s: [],
-      line2s: [],
-      cities: [],
-      counties: [],
-      countries: [],
-    });
+    return json<Option[]>([]);
   }
 }
 
 interface ShippingDetailFormProps {
   values: ShippingDetailFormType;
+  onSelectAddress?: (option: Option) => void;
 }
 
 // When user finish typing postal code, request remote API for address autocompletion.
 // - [ ] display loading UI when fetching address options.
 // - [ ] give default value when done loading address options.
-const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
+const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDetailFormProps) => {
   const debounce = useDebounce(400);
   const loadAddrFetcher = useFetcher();
   const [state, dispatch] = useReducer(addressOptionsReducer, inistialState);
@@ -82,11 +77,16 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
     debounce(() => loadAddrOptions(value));
   };
 
+  const handleSelectOption = (option: DropdownOption<Option>) => {
+    onSelectAddress({ ...option.value });
+  };
+
   return (
     <>
       <div className="shipping-form-fields field--1">
         <div>
-          <TextField
+          <TextDropdownField<Option>
+            options={state.options}
             required
             id="postalcode"
             label="postal"
@@ -96,6 +96,19 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
             fullWidth
             value={values.postal}
             onChange={handleChangePostal}
+            onSelect={handleSelectOption}
+            preventSelectChangeValue
+            disabled={loadAddrFetcher.state !== 'idle'}
+            InputProps={{
+              endAdornment: (
+                <MoonLoader
+                  size={20} cssOverride={{
+                    color: '#009378'
+                  }}
+                  loading={loadAddrFetcher.state !== 'idle'}
+                />
+              ),
+            }}
           />
 
           <p className="flex items-center m-0 py-2 text-sm font-light gap-2">
@@ -148,9 +161,7 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
 
       {/* Address line */}
       <div className="shipping-form-fields field--1">
-        <TextDropdownField
-          options={state.line1s.options}
-          defaultOption={state.line1s.defaultOption}
+        <TextField
           autoComplete="off"
           required
           id="address1"
@@ -160,25 +171,12 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
           aria-describedby="address1"
           fullWidth
           value={values.address1}
-          disabled={loadAddrFetcher.state !== 'idle'}
-          InputProps={{
-            endAdornment: (
-              <MoonLoader
-                size={20} cssOverride={{
-                  color: '#009378'
-                }}
-                loading={loadAddrFetcher.state !== 'idle'}
-              />
-            ),
-          }}
         />
       </div>
 
       {/* Address line 2 (optional) */}
       <div className="shipping-form-fields field--1">
-        <TextDropdownField
-          options={state.line2s.options}
-          defaultOption={state.line2s.defaultOption}
+        <TextField
           autoComplete="off"
           id="address2"
           label="address line 2"
@@ -187,26 +185,13 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
           aria-describedby="address2"
           fullWidth
           value={values.address2}
-          disabled={loadAddrFetcher.state !== 'idle'}
-          InputProps={{
-            endAdornment: (
-              <MoonLoader
-                size={20} cssOverride={{
-                  color: '#009378'
-                }}
-                loading={loadAddrFetcher.state !== 'idle'}
-              />
-            ),
-          }}
         />
       </div>
 
       {/* Postal code & City */}
       <div className="shipping-form-fields fields--1">
         {/* Might need a dropdown list for city selection for GB */}
-        <TextDropdownField
-          options={state.cities.options}
-          defaultOption={state.cities.defaultOption}
+        <TextField
           required
           autoComplete='off'
           id="city"
@@ -216,17 +201,6 @@ const ShippingDetailForm = ({ values }: ShippingDetailFormProps) => {
           aria-describedby="city"
           fullWidth
           value={values.city}
-          disabled={loadAddrFetcher.state !== 'idle'}
-          InputProps={{
-            endAdornment: (
-              <MoonLoader
-                size={20} cssOverride={{
-                  color: '#009378'
-                }}
-                loading={loadAddrFetcher.state !== 'idle'}
-              />
-            ),
-          }}
         />
       </div>
     </>

@@ -23,6 +23,7 @@ import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
 import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
+import type { Option } from './components/ShippingDetailForm/api.server';
 import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
 import type { ShippingDetailFormType, ContactInfoFormType } from './types';
 import { transformOrderDetail } from './utils';
@@ -235,6 +236,15 @@ function CheckoutPage() {
     stripeConfirmPayment(orderUUID, element, stripe);
   }
 
+  const handleSelectAddress = (option: Option) => {
+    setShippingDetailFormValues({
+      ...shippingDetailFormValues,
+      address1: option.line1,
+      address2: option.line2,
+      city: option.city,
+    })
+  }
+
   return (
     <div className="checkout-page-container">
       <h1 className="title"> Shipping Information </h1>
@@ -339,6 +349,7 @@ function CheckoutPage() {
                 <div className="shipping-form-container">
                   <ShippingDetailForm
                     values={shippingDetailFormValues}
+                    onSelectAddress={handleSelectAddress}
                   />
                 </div>
               </div>
