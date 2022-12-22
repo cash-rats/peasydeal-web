@@ -127,7 +127,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
 
           <p className="flex items-center m-0 py-2 text-sm font-light gap-2">
             <span> <InfoIcon fontSize='small' color='success' /> </span>
-            Address options will be generated after prompted postal code.
+            Auto lookup address by postal code
           </p>
         </div>
       </div>
