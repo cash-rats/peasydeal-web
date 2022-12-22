@@ -106,7 +106,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
                 <>
                   {
                     loadAddrFetcher.state !== 'idle' && (
-                      <MoonLoader size={20} cssOverride={{ color: '#009378' }} />
+                      <MoonLoader size={20} cssOverride={{ color: '#009378', backgroundColor: 'transparent' }} />
                     )
                   }
 
@@ -130,22 +130,6 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             Auto lookup address by postal code
           </p>
         </div>
-      </div>
-
-      {/* Email */}
-      <div className="shipping-form-fields field--1">
-        <TextField
-          required
-          type='email'
-          id='email'
-          label="email"
-          name='email'
-          placeholder='e.g. elonmusk@gmail.com'
-          variant='outlined'
-          aria-describedby='my-helper-text'
-          fullWidth
-          value={values.email}
-        />
       </div>
 
       {/* Name */}

@@ -87,7 +87,6 @@ export const action: ActionFunction = async ({ request }) => {
 
 
   const resp = await createOrder({
-    email: shippingFormObj.email,
     firstname: shippingFormObj.firstname,
     lastname: shippingFormObj.lastname,
     address1: shippingFormObj.address1,
@@ -95,6 +94,7 @@ export const action: ActionFunction = async ({ request }) => {
     city: shippingFormObj.city,
     postal: shippingFormObj.postal,
 
+    email: contactInfoFormObj.email,
     contact_name: contactInfoFormObj.contact_name,
     phone_value: contactInfoFormObj.phone_value,
     payment_secret,
@@ -137,7 +137,7 @@ function CheckoutPage() {
   const [errorAlert, setErrorAlert] = useState('');
 
   const [shippingDetailFormValues, setShippingDetailFormValues] = useState<ShippingDetailFormType>({
-    email: '',
+    // email: '',
     lastname: '',
     firstname: '',
     address1: '',
@@ -147,6 +147,7 @@ function CheckoutPage() {
   });
 
   const [contactInfoFormValues, setContactInfoFormValues] = useState<ContactInfoFormType>({
+    email: '',
     country_data: {},
     phone_value: '',
     contact_name_same: true,

@@ -1,7 +1,7 @@
 import type { CountryData } from 'react-phone-input-2'
 
 export type ShippingDetailFormType = {
-  email: string;
+  // email: string;
   lastname: string;
   firstname: string;
   address1: string,
@@ -11,6 +11,7 @@ export type ShippingDetailFormType = {
 };
 
 export type ContactInfoFormType = {
+  email: string;
   country_data: CountryData | {},
   phone_value: string,
   contact_name_same: boolean,

@@ -89,6 +89,22 @@ const ContactInfoForm = ({ values, onChange = () => { } }: ContactInfoFormProps)
         )
       }
 
+      <div className="mb-4">
+        <TextField
+          required
+          type='email'
+          id='email'
+          label="email"
+          name='email'
+          placeholder='e.g. elonmusk@gmail.com'
+          variant='outlined'
+          aria-describedby='my-helper-text'
+          fullWidth
+          value={formValues.email}
+          onChange={handleChange}
+        />
+      </div>
+
       <PhoneInput
         country='gb'
         inputProps={{
