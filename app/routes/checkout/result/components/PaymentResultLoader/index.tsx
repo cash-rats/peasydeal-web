@@ -3,14 +3,13 @@ import { useStripe } from '@stripe/react-stripe-js';
 import type { PaymentIntent } from '@stripe/stripe-js';
 import type { LinksFunction } from '@remix-run/node';
 
-import LoadingSkeleton, { links as LoadingSkeletonLinks } from '../LoadingSkeleton';
+import LoadingSkeleton from '../LoadingSkeleton';
 import Success, { links as SuccessLinks } from '../Success';
 import Failed from '../Failed';
 
 export const links: LinksFunction = () => {
   return [
     ...SuccessLinks(),
-    ...LoadingSkeletonLinks(),
   ];
 };
 
