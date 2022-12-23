@@ -42,6 +42,7 @@ module.exports = {
       }),
       colors: {
         'raisin-black': '#212121',
+        'gray-hover-bg': '#E4E4E4',
         'gray-hover-bg-2': '#D8D8D8',
       },
       boxShadow: {

@@ -7,11 +7,8 @@ import LoadingSkeleton, { links as LoadingSkeletonLinks } from '../LoadingSkelet
 import Success, { links as SuccessLinks } from '../Success';
 import Failed, { links as FailedLinks } from '../Failed';
 
-import styles from './styles/PaymentResultLoading.css';
-
 export const links: LinksFunction = () => {
   return [
-    { href: styles, rel: 'stylesheet' },
     ...SuccessLinks(),
     ...FailedLinks(),
     ...LoadingSkeletonLinks(),
@@ -66,7 +63,7 @@ function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
   }
 
   return (
-    <div className="PaymentResultLoader__wrapper">
+    <div className="mt-44">
       {renderResult(stripePaymentStatus)}
     </div>
   );

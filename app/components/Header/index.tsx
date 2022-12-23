@@ -3,18 +3,14 @@ import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import type { SuggestItem } from '~/shared/types';
-import MobileSearchDialog, { links as MobileSearchDialogLinks } from '~/components/MobileSearchDialog'
+import MobileSearchDialog from '~/components/MobileSearchDialog'
 import { fetchProductsByCategory } from '~/api';
 
 import LogoHeader, { links as LogoHeaderLinks } from "./components/LogoHeader";
 import NavBar, { links as NavBarLinks } from './components/NavBar';
 
-import styles from './styles/Header.css';
-
 export const links: LinksFunction = () => {
   return [
-    { href: styles, rel: 'stylesheet' },
-    ...MobileSearchDialogLinks(),
     ...LogoHeaderLinks(),
     ...NavBarLinks(),
   ];
@@ -90,8 +86,8 @@ function Header({
 
         // right status bar, cart, search icon...etc
         navBar={
-          <div className="Header__nav-bar">
-            <div className="Header__nav-bar-wrapper">
+          <div className="flex flex-1 justify-end pl-4 md:w-[15%] md:justify-start">
+            <div className="flex items-center md:w-full">
               <NavBar
                 cartItemCount={numOfItemsInCart}
                 onClickSearch={handleOnClickMobileSearch}

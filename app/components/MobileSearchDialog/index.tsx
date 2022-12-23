@@ -3,7 +3,6 @@ import type { ChangeEvent, MutableRefObject } from 'react';
 import Dialog from '@mui/material/Dialog';
 import type { DialogProps } from '@mui/material/Dialog';
 import IconButton from '@mui/material/IconButton';
-import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MoonLoader from 'react-spinners/MoonLoader';
@@ -13,14 +12,7 @@ import SearchBar from '~/components/SearchBar';
 import { rootNode } from '~/utils/trie';
 import type { SuggestItem, ItemData } from '~/shared/types';
 
-import styles from './styles/MobileSearchDialog.css';
 import Louple from './images/loupe.png';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 type SearchingState = 'empty' | 'searching' | 'done' | 'error';
 
@@ -163,13 +155,13 @@ export default function MobileSearchDialog({
       fullScreen
       {...args}
     >
-      <div className="SearchDialog__wrapper">
-        <div className="MobileSearch__wrapper">
+      <div>
+        <div className="p-2 flex justify-end">
           <IconButton onClick={onBack} >
-            <ArrowBackIcon fontSize='32' />
+            <ArrowBackIcon style={{ fontSize: '32px' }} />
           </IconButton>
 
-          <div className="MobileSearch__searchbar">
+          <div className="w-full ml-[10px]">
             <SearchBar
               ref={inputRef}
               placeholder='Search a product by name'
@@ -181,33 +173,37 @@ export default function MobileSearchDialog({
           </div>
         </div>
 
-        <div className="MobileSearch__result-wrapper">
+        <div className="mt-4">
           {
             searchContent && (
-              <div className="MobileSearch__dropdown-search-status">
-                <p className="MobileSearch__dropdown-content">
+              <div className="grid grid-cols-2">
+                <p className="py-2 px-4 flex justify-start items-center">
                   Searching {searchContent}
                 </p>
-                <span className="MobileSearch__dropdown-state"> {
-                  searchingState === 'searching'
-                    ? <MoonLoader size={20} color="#009378" />
-                    : (
-                      searchingState === 'done' && sugguests.length === 0
-                        ? <img alt='no product found' src={Louple} width={24} height={24} />
-                        : <CgSearchFound fontSize={24} color='#009378' />
+                <span className="py-2 px-4 flex justify-end items-center">
+                  {
+                    searchingState === 'searching'
+                      ? <MoonLoader size={20} color="#009378" />
+                      : (
+                        searchingState === 'done' && sugguests.length === 0
+                          ? <img alt='no product found' src={Louple} width={24} height={24} />
+                          : <CgSearchFound fontSize={24} color='#009378' />
 
-                    )
-                } </span>
+                      )
+                  }
+                </span>
               </div>
             )
           }
 
           {
             showSuggests && (
-              <ul className="MobileSearch__result-list">
+              <ul className="list-none p-0 m-0">
                 {
                   sugguests.length === 0 && searchingState === 'done'
-                    ? <p className="MobileSearch__dropdown-list-no-found">no results found</p>
+                    ? <p className="m-0 py-2 px-4 font-medium text-center capitalize">
+                      no results found
+                    </p>
                     : (
                       sugguests.map((suggest) => {
                         return (
@@ -216,8 +212,11 @@ export default function MobileSearchDialog({
                             to={`/product/${suggest.data.productID}`}
                             onClick={(evt) => { onBack(); }}
                           >
-                            <li
-                              className="MobileSearch__result-item"
+                            <li className="
+                                py-3 px-4 cursor-pointer
+                                leading-5 flex justify-between items-center
+                                hover:bg-gray-hover-bg
+                              "
                             >
                               {suggest.title}
                             </li>

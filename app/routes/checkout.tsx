@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useLoaderData, useOutletContext, ShouldReloadFunction } from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
+import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
-import { Form } from '@remix-run/react';
 
 import CategoryContext from '~/context/categories';
 import Footer, { links as FooterLinks } from '~/components/Footer';
@@ -134,7 +134,7 @@ function CheckoutLayout() {
         </Form>
       </CategoryContext.Provider>
 
-      <main style={{ minHeight: '35rem' }} className="Checkout__main">
+      <main className="min-h-[35rem]">
         {
           stripePromise && (
             <Elements
