@@ -3,10 +3,9 @@ import IORedis from 'ioredis';
 
 let ioredis: Redis;
 let options: RedisOptions = {
-  port: Number(process.env.REDIST_PORT),
+  port: Number(process.env.REDIS_PORT),
   host: process.env.REDIS_HOST,
 }
-
 declare global {
   var __redis__: Redis;
 }
