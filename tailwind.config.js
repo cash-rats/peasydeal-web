@@ -44,6 +44,8 @@ module.exports = {
         'raisin-black': '#212121',
         'gray-hover-bg': '#E4E4E4',
         'gray-hover-bg-2': '#D8D8D8',
+        'header-border': 'rgba(180, 180, 180, 0.4)',
+        'gallery': '#f0f0f0',
       },
       boxShadow: {
         dropdown: '0 0 3px 0 rgb(73 143 226 / 50%)',

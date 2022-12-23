@@ -1,15 +1,5 @@
-import { useEffect, useState } from 'react';
 import type { ReactNode, CSSProperties } from 'react';
-import type { LinksFunction } from "@remix-run/node";
 import clsx from 'clsx';
-
-import styles from "./styles/HeaderWrapper.css";
-
-export const links: LinksFunction = () => {
-	return [
-		{ rel: 'stylesheet', href: styles },
-	];
-};
 
 interface HeaderProps {
 	children: ReactNode;
@@ -37,18 +27,17 @@ export default function HeaderWrapper({ children, categoryBar, style }: HeaderPr
 
 	return (
 		<>
-			<header style={style} className="header-container">
-				<div className={clsx("header-content-container", {
-					"HeaderWrapp__header-content-container-scrolled": true,
-				})}>
-					<div className="header-wrapper_top">
+			<header style={style} className="flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border"
+			>
+				<div className={clsx("w-full h-20 box-border bg-white my-0 mx-auto flex justify-center items-center")}>
+					<div className="w-full h-full grid grid-cols-[220px_auto] md:grid-cols-[220px_3fr_1fr]">
 						{children}
 					</div>
 				</div>
 
 				{
 					categoryBar && (
-						<div className="header-wrapper_category-bar">
+						<div className="w-full bg-gallery">
 							{categoryBar}
 						</div>
 					)

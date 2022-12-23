@@ -3,15 +3,10 @@ import type { LinksFunction } from '@remix-run/node';
 
 import LogoBar, { links as LogoBarLinks } from '~/components/Header/components/LogoBar';
 
-import styles from './styles/LogoHeader.css';
-import HeaderWrapper, { links as HeaderWarpperLinks } from "../HeaderWrapper";
+import HeaderWrapper from "../HeaderWrapper";
 
 export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-    ...LogoBarLinks(),
-    ...HeaderWarpperLinks(),
-  ];
+  return [...LogoBarLinks()];
 };
 
 interface LogoHeaderProps {
@@ -40,7 +35,7 @@ function LogoHeader({
 
       {
         searchBar && (
-          <div className="LogoHeader__searchBar-mq">
+          <div className="hidden md:flex md:items-center md:py-0 md:px-1 ">
             {searchBar}
           </div>
         )
