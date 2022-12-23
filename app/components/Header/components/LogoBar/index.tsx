@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Link, } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
 import { useLocation } from '@remix-run/react';
 import IconButton from '@mui/material/IconButton';
 import { FiMenu } from 'react-icons/fi';
@@ -10,13 +9,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import CategoryContext from '~/context/categories';
 
 import PeasyDeal from './images/peasydeal_logo_2.svg';
-import styles from './styles/LogoBar.css';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 function LogoBar() {
   const [openMenu, setOpenMenu] = useState(false);
@@ -38,9 +30,9 @@ function LogoBar() {
   }, [location])
 
   return (
-    <div className="LogoBar__wrapper">
-      <div className="LogoBar__menu">
-        <div className="LogoBar__menu-button">
+    <div className="flex items-center">
+      <div className="w-[42px] h-[42px]">
+        <div className="block md:hidden">
           <IconButton onClick={handleOpenMenu}>
             <FiMenu fontSize={26} color='#e6007e' />
           </IconButton>
@@ -50,30 +42,30 @@ function LogoBar() {
             onClose={handleCloseMenu}
             PaperProps={{ sx: { width: "86%" } }}
           >
-            <div className="LogoBar__Category-container">
-              <div className="LogoBar__Category-title">
+            <div>
+              <div className="p-2">
                 <IconButton onClick={handleCloseMenu}>
-                  <CloseIcon fontSize='32' />
+                  <CloseIcon style={{ fontSize: 32 }} />
                 </IconButton>
               </div>
-              <div className="LogoBar__Category-list-wrapper">
-                <h1 className="LogoBar__Category-list-title">
+              <div>
+                <h1 className="m-0 py-2 px-4 text-lg bg-white-smoke text-dune font-bold uppercase ">
                   Shop By Category
                 </h1>
 
                 <CategoryContext.Consumer>
                   {(categories) => {
                     return (
-                      <ul className="LogoBar__Category-list">
+                      <ul>
                         {
                           categories.map((category) => {
                             return (
                               <Link
-                                prefetch='intent'
+                                // prefetch='intent'
                                 key={category.catId}
                                 to={`/${category.title}`}
                               >
-                                <li>
+                                <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
                                   {category.title}
                                 </li>
                               </Link>
@@ -90,7 +82,7 @@ function LogoBar() {
         </div>
       </div>
 
-      <Link to='/' className="LogoBar__link">
+      <Link to='/' className="leading-[20px] w-[173px] h-[60px] left-10 top-[10px] flex items-center">
         <picture>
           <source type="image/svg+xml" srcSet={PeasyDeal} />
           <img alt='PeasyDeal Logo' src={PeasyDeal} />

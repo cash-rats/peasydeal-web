@@ -6,14 +6,11 @@ import type { SuggestItem } from '~/shared/types';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import { fetchProductsByCategory } from '~/api';
 
-import LogoHeader, { links as LogoHeaderLinks } from "./components/LogoHeader";
+import LogoHeader from "./components/LogoHeader";
 import NavBar, { links as NavBarLinks } from './components/NavBar';
 
 export const links: LinksFunction = () => {
-  return [
-    ...LogoHeaderLinks(),
-    ...NavBarLinks(),
-  ];
+  return [...NavBarLinks(),];
 };
 
 interface HeaderProps {

@@ -1,13 +1,8 @@
 import type { ReactNode, CSSProperties } from 'react';
-import type { LinksFunction } from '@remix-run/node';
 
-import LogoBar, { links as LogoBarLinks } from '~/components/Header/components/LogoBar';
+import LogoBar from '~/components/Header/components/LogoBar';
 
 import HeaderWrapper from "../HeaderWrapper";
-
-export const links: LinksFunction = () => {
-  return [...LogoBarLinks()];
-};
 
 interface LogoHeaderProps {
   searchBar?: ReactNode;
