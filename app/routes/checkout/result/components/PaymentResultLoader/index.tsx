@@ -40,10 +40,13 @@ function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
     }
 
     if (paymentStatus === 'requires_payment_method') {
+      // Redirect your user back to your payment page to attempt collecting
+      // payment again
       return (
         <Failed
           reason="Payment failed. Please try another payment method."
           solution="You will be redirected to checkout to input proper payment method"
+          paymentStatus={paymentStatus}
         />
       );
     }
@@ -53,6 +56,7 @@ function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
         <Failed
           reason="Payment processing. We'll update you when payment is received."
           solution="You'll receive an email about your order detail once payment is processed"
+          paymentStatus={paymentStatus}
         />
       );
     }

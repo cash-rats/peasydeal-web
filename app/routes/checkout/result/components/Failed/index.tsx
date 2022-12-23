@@ -1,13 +1,17 @@
+import Button from '@mui/material/Button';
 import ErrorIcon from '@mui/icons-material/Error';
+import type { PaymentIntent } from '@stripe/stripe-js';
+
 interface FailedProps {
   reason?: string;
   solution?: string;
+  paymentStatus: PaymentIntent.Status;
 };
 
 const defaultReason = 'Whoops... looks like problem occurred on your payment';
 const defaultSolution = 'Don\'t worry, nothing has been charged. Try checkout again, or contact customer service.';
 
-function Failed({ reason = defaultReason, solution = defaultSolution }: FailedProps) {
+function Failed({ reason = defaultReason, solution = defaultSolution, paymentStatus }: FailedProps) {
   return (
     <div className="flex min-h-[35rem] bg-white-smoke pt-0 px-[10x] pb-4">
       <div className="max-w-[650px] my-0 mx-auto flex flex-col justify-center items-center">
@@ -25,6 +29,20 @@ function Failed({ reason = defaultReason, solution = defaultSolution }: FailedPr
         <p className="mt-6 text-center text-base text-[#7f7f7f]">
           {solution}
         </p>
+
+        {
+          paymentStatus === 'requires_payment_method' && (
+            <div className="mt-3">
+              <Button
+                size='large'
+                color='info'
+                variant="contained"
+              >
+                checkout again
+              </Button>
+            </div>
+          )
+        }
       </div>
     </div>
   );
