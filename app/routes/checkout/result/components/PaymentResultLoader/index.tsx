@@ -5,12 +5,11 @@ import type { LinksFunction } from '@remix-run/node';
 
 import LoadingSkeleton, { links as LoadingSkeletonLinks } from '../LoadingSkeleton';
 import Success, { links as SuccessLinks } from '../Success';
-import Failed, { links as FailedLinks } from '../Failed';
+import Failed from '../Failed';
 
 export const links: LinksFunction = () => {
   return [
     ...SuccessLinks(),
-    ...FailedLinks(),
     ...LoadingSkeletonLinks(),
   ];
 };

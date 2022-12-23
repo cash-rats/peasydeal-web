@@ -7,12 +7,9 @@ import IconButton from '@mui/material/IconButton';
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
 
-import styles from './styles/NavBar.css';
-
 export const links: LinksFunction = () => {
 	return [
 		...RedDotLinks(),
-		{ rel: 'stylesheet', href: styles }
 	];
 };
 
@@ -31,17 +28,17 @@ interface NavBarProps {
 // Load shopping cart items.
 function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 	return (
-		<nav className="nav-container">
-			<ul className="nav-content-list">
+		<nav className="flex flex-1">
+			<ul className="list-none p-0 items-center flex justify-start gap-5">
 				{/* Search icon that only displays in mobile view */}
-				<li className="index_nav-search">
+				<li className="block md:hidden">
 					<IconButton onClick={onClickSearch}>
 						<TbSearch color='#e6007e' fontSize={22} />
 					</IconButton>
 				</li>
 
 				{/* shopping cart */}
-				<li className="nav-content-item">
+				<li className="flex items-center h-10 my-0 mx-1 relative transition-all ease-linear">
 					{
 						cartItemCount > 0 && (
 							<RedDot

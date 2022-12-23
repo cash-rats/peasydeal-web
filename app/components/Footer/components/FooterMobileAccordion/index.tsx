@@ -38,10 +38,10 @@ type PanelStatus = {
 function FooterListTitle({ onClick, isActive = false, title }: FooterListTitleProps) {
   return (
     <div
-      className="footer-list-title"
+      className="flex justify-between items-center w-full h-10 cursor-pointer"
       onClick={onClick}
     >
-      <h3>
+      <h3 className="m-0 font-medium text-base">
         {title}
       </h3>
       <span>
@@ -65,10 +65,16 @@ interface FooterListContentProps {
 function FooterListContent({ children, isActive }: FooterListContentProps) {
   return (
     <div
-      className={clsx("footer-list-content", {
-        "footer-item-grow": isActive,
-      }
-      )}
+      // className={
+      //   clsx("footer-list-content", {
+      //   "footer-item-grow": isActive,
+      // }
+
+      className={
+        clsx("transition-all w-full max-h-0 overflow-hidden duration-300", {
+          "max-h-[300px]": isActive,
+        }
+        )}
     >
       {children}
     </div>
@@ -83,11 +89,10 @@ function FooterMobileAccordion() {
   });
 
   return (
-
-    <ul className="footer-list">
+    <ul className="list-none py-0 px-4">
       <li
+        className="box-border pt-[10px] pb-[10px] flex flex-col items-center"
         id="panel1"
-        className="footer-list-panel"
       >
         <FooterListTitle
           onClick={() => {

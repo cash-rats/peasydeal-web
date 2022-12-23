@@ -134,7 +134,7 @@ function CheckoutLayout() {
         </Form>
       </CategoryContext.Provider>
 
-      <main className="min-h-[35rem]">
+      <main className="min-h-[35rem] pt-36 flex justify-center">
         {
           stripePromise && (
             <Elements
