@@ -34,7 +34,7 @@ export default function LoadingSkeleton() {
               </div>
 
               <div className="flex justify-end flex-1">
-                <Skeleton variant='text' width={50} sx={{ fontSize: '1rem' }} />
+                <Skeleton variant='text' width={70} sx={{ fontSize: '1rem' }} />
               </div>
             </div>
 
