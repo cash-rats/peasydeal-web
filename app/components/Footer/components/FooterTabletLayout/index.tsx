@@ -1,6 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
+import type { ReactNode } from 'react';
 
-import styles from './styles/FooterTabletLayout.css';
 import {
   PolicyContent,
   ServiceContent,
@@ -12,9 +12,16 @@ import {
 export const links: LinksFunction = () => {
   return [
     ...FooterContentLinks(),
-    { rel: 'stylesheet', href: styles },
   ];
 };
+
+function TabletFooterContent({ children }: { children: ReactNode }) {
+  return (
+    <div className="px-2 last:border-r-0">
+      {children}
+    </div>
+  )
+}
 
 /*
   TODOs:
@@ -22,19 +29,29 @@ export const links: LinksFunction = () => {
 */
 function FooterTabletLayout() {
   return (
-    <div className="footer-tablet-layout">
-      <div className="tablet-footer-content">
+    <div className="
+      grid grid-cols-[50%_50%] pt-7 px-4
+      pb-0 bg-[#ededed] border-solid
+    border-[#e5e5e5]
+      lg:grid-cols-[25%_25%_25%_25%]
+    border-r-[#e5e5e5]
+    "
+    >
+      <TabletFooterContent>
         <PolicyContent />
-      </div>
-      <div className="tablet-footer-content">
+      </TabletFooterContent>
+
+      <TabletFooterContent>
         <ServiceContent />
-      </div>
-      <div className="tablet-footer-content">
+      </TabletFooterContent>
+
+      <TabletFooterContent>
         <ContactUsContent />
-      </div>
-      <div className="tablet-footer-content">
+      </TabletFooterContent>
+
+      <TabletFooterContent>
         <SubscribeContent />
-      </div>
+      </TabletFooterContent>
     </div>
   );
 }
