@@ -3,16 +3,10 @@
   font-size: 28px;
   padding: 2.25rem 0.75rem 1.125rem;
   min-height: 35rem;
-  margin-top: 7rem;
-}
-@media (min-width: 899px) {
-  .checkout-page-container {
-    margin-top: 10rem;
-  }
 }
 @media (min-width: 1200px) {
   .checkout-page-container {
-    margin: 10rem auto 0;
+    margin: 0 auto;
     width: 1180px;
     gap: 15px;
   }
