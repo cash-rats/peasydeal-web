@@ -61,7 +61,7 @@ function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
   }
 
   return (
-    <div className="mt-44">
+    <div>
       {renderResult(stripePaymentStatus)}
     </div>
   );
