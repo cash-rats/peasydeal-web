@@ -54,7 +54,8 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
   // Payment success would clear all items in shopping cart. It consequently
   // triggers redirection to `/cart` since shopping cart is empty causes
   // user not seeing `Success` page after payment success. The following check
-  // ignores form submission coming from '/checkout/result/component/Success'.
+  // ignores form submission coming from '/checkout/result/component/Success'
+  // triggers loader.
   if (
     submission
       ?.action
