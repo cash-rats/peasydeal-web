@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useFetcher } from '@remix-run/react';
 import { json } from '@remix-run/node';
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
+import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import parseISO from 'date-fns/parseISO';
+
+import { clearCart } from '~/sessions/shoppingcart.session';
+import { commitSession } from '~/sessions/redis_session';
 
 import OrderAnnotation, { links as OrderAnnotationLinks } from './components/OrderAnnotation';
 import OrderDetail, { links as OrderDetailLinks } from './components/OrderDetail';
@@ -27,15 +30,23 @@ export const links: LinksFunction = () => {
   TODOs:
    - [ ] Remove items from shopping cart once payment success.
 */
-export const loader: LoaderFunction = async ({ request }) => {
+export const action: ActionFunction = async ({ request }) => {
   const url = new URL(request.url);
   const orderUUID = url.searchParams.get('order_uuid');
 
   if (!orderUUID) {
     throw Error('no order id presented in query params');
   }
-  const successOrderDetail = await fetchOrder(orderUUID)
-  return json<SuccessOrderDetail>(successOrderDetail);
+
+  return json<SuccessOrderDetail>(
+    await fetchOrder(orderUUID),
+    {
+      headers: {
+        // Clear shopping cart once payment success.
+        'Set-Cookie': await commitSession(await clearCart(request)),
+      }
+    }
+  );
 }
 
 function Success() {
@@ -50,7 +61,7 @@ function Success() {
       orderFetcher.submit(
         {},
         {
-          method: 'get',
+          method: 'post',
           action: `/checkout/result/components/Success?index&order_uuid=${orderUUID}`
         });
     }

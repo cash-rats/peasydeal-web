@@ -37,20 +37,41 @@ type LoaderType = {
   total: number;
 };
 
-// Loading addresses via postal in `ShipingDetailForm` will trigger loader which generates
-// a new stripe payment intend secret which causes stripe and the app uses different
-// payment secret. Stripe uses the old one and the app uses the new one. To prevent
-// payment secret inconformity, we prevent trigger loader when form submission is coming
-//  from `components/ShippingDetailForm`.
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => !submission
-  ?.action
-  .includes('components/ShippingDetailForm');
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+  // Loading addresses via postal in `ShipingDetailForm` will trigger loader which generates
+  // a new stripe payment intend secret which causes stripe and the app uses different
+  // payment secret. Stripe uses the old one and the app uses the new one. To prevent
+  // payment secret inconformity, we prevent trigger loader when form submission is coming
+  //  from `components/ShippingDetailForm`.
+  if (
+    submission
+      ?.action
+      .includes('components/ShippingDetailForm')
+  ) {
+    return false;
+  }
 
+  // Payment success would clear all items in shopping cart. It consequently
+  // triggers redirection to `/cart` since shopping cart is empty causes
+  // user not seeing `Success` page after payment success. The following check
+  // ignores form submission coming from '/checkout/result/component/Success'.
+  if (
+    submission
+      ?.action
+      .includes('/checkout/result/components/Success')
+  ) {
+    return false
+  }
+
+
+  return true;
+}
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cartItems = await getCart(request);
 
   if (!cartItems || Object.keys(cartItems).length === 0) {
+    console.log('debug ** 2');
     throw redirect("/cart");
   }
 

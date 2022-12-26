@@ -84,7 +84,6 @@ export const removeItem = async (request: Request, variationUUID: string): Promi
   return session;
 }
 
-// - [ ] updated
 export const updateItem = async (request: Request, item: ShoppingCartItem): Promise<Session> => {
   const session = await getSessionCookie(request);
   const itemInCart = await getItem(request, item.variationUUID);
@@ -94,5 +93,11 @@ export const updateItem = async (request: Request, item: ShoppingCartItem): Prom
   const cart = session.get(CartSessionKey);
   cart[item.variationUUID] = item;
   session.set(CartSessionKey, cart);
+  return session;
+}
+
+export const clearCart = async (request: Request): Promise<Session> => {
+  const session = await getSessionCookie(request);
+  session.unset(CartSessionKey);
   return session;
 }
