@@ -9,6 +9,7 @@ import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibb
 import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
+import { composeProductDetailURL } from '~/utils';
 
 import { normalizeTagsListToMap } from './utils';
 import type { RenderableTagMap } from './utils';
@@ -120,7 +121,7 @@ export default function MediumGrid({
 	return (
 		<Link
 			// prefetch='intent'
-			to={`/product/${productID}`}
+			to={composeProductDetailURL({ productName: title, variationUUID: productID })}
 			onClick={(evt) => {
 				if (!isClickableGrid()) {
 					evt.preventDefault();
@@ -164,7 +165,10 @@ export default function MediumGrid({
 				</div>
 
 				<div className="view-btn-container">
-					<Form method='get' action={`/product/${productID}`}>
+					<Form
+						method='get'
+						action={composeProductDetailURL({ productName: title, variationUUID: productID })}
+					>
 						<RoundButton
 							type='submit'
 							colorScheme="cerise"

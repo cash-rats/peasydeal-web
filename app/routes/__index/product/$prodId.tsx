@@ -27,6 +27,8 @@ import {
 	getProdDetailTitleText,
 	getProdDetailDescText,
 	getProdDetailDescTextWithoutPrice,
+	composeProductDetailURL,
+	decomposeProductDetailURL,
 } from '~/utils';
 
 import Breadcrumbs from './components/Breadcrumbs';
@@ -96,14 +98,22 @@ const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) =
 export const handle = { dynamicLinks };
 
 // Fetch product detail data.
-export const loader: LoaderFunction = async ({ params, request }) => {
-	const { prodId } = params;
-	if (!prodId) return redirect('/');
+export const loader: LoaderFunction = async ({ request }) => {
+	const url = new URL(request.url);
+	const decompURL = decomposeProductDetailURL(url);
+
+	if (!decompURL.variationUUID) {
+		throw json<LoaderErrorType>(
+			{ error: 'variationUUID is not found.' },
+			{ status: httpStatus.NOT_FOUND },
+		)
+	}
+
 	try {
-		const prodDetail = await fetchProductDetail(prodId)
+		const prodDetail = await fetchProductDetail(decompURL.variationUUID)
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
-			canonical_url: `${getCanonicalDomain()}/product/${prodId}`
+			canonical_url: `${getCanonicalDomain()}${url.pathname}`
 		});
 	} catch (error: any) {
 		throw json<LoaderErrorType>(
@@ -124,8 +134,12 @@ export const action: ActionFunction = async ({ request }) => {
 	const formAction = formObj['__action'] as __action_type;
 
 	if (formAction === 'to_product_detail') {
-		let prodUuid: FormDataEntryValue | null = formObj['productUUID'];
-		return redirect(`product/${prodUuid}`);
+		return redirect(
+			composeProductDetailURL({
+				productName: formObj['productName'] as string,
+				variationUUID: formObj['productUUID'] as string
+			})
+		);
 	}
 
 	const cartObj = Object.fromEntries(form.entries()) as ShoppingCartItem;

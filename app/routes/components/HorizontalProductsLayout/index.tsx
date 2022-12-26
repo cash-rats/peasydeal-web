@@ -6,6 +6,7 @@ import { useFetcher, Link } from '@remix-run/react';
 import type { Settings } from 'react-slick';
 import Slider from 'react-slick';
 
+import { composeProductDetailURL } from '~/utils';
 import type { Product } from '~/shared/types';
 import { fetchProductsByCategory } from '~/api';
 import slickStyles from "slick-carousel/slick/slick.css";
@@ -42,9 +43,7 @@ export const action: ActionFunction = async ({ request }) => {
     random: 1,
   });
 
-  return json<ActionType>({
-    recProds,
-  });
+  return json<ActionType>({ recProds });
 }
 
 interface HorizontalProductsLayoutProps {
@@ -107,12 +106,12 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
     ],
   }
 
-  const handleClickGrid = (evt: MouseEvent, prodUUID: string) => {
-    console.log('[ga] click on product', prodUUID);
+  const handleClickGrid = (evt: MouseEvent, title: string, prodUUID: string) => {
+    console.log('[ga] click on product', title, prodUUID);
 
     clickRecProd.submit(
-      { __action: 'to_product_detail', productUUID: prodUUID },
-      { method: 'post', action: `/product/${prodUUID}` },
+      { __action: 'to_product_detail', productUUID: prodUUID, productName: title },
+      { method: 'post', action: composeProductDetailURL({ productName: title, variationUUID: prodUUID }) },
     );
   }
 

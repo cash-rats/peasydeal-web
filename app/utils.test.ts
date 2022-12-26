@@ -1,4 +1,5 @@
-import { validateEmail } from "./utils";
+import { expect } from 'vitest';
+import { validateEmail, composeProductDetailURL, decomposeProductDetailURL } from "./utils";
 
 test("validateEmail returns false for non-emails", () => {
   expect(validateEmail(undefined)).toBe(false);
@@ -10,4 +11,23 @@ test("validateEmail returns false for non-emails", () => {
 
 test("validateEmail returns true for emails", () => {
   expect(validateEmail("kody@example.com")).toBe(true);
+});
+
+test("composeProductDetailURL returns correct URL", () => {
+  const prodName = 'Women Swimwear Cover-up Linen Loose Beach Top'
+  const variationUUID = '7725810647266';
+  const url = composeProductDetailURL({ productName: prodName, variationUUID })
+  expect(url).toEqual(`/product/Women-Swimwear-Cover-up-Linen-Loose-Beach-Top-i.${variationUUID}`);
+});
+
+test('decompose url to retrieve product variation uuid', () => {
+  const url = 'https://peasydeal.com/product/Women-Swimwear-Cover-up-Linen-Loose-Beach-Top-i.7725810647266'
+  const decompURL = decomposeProductDetailURL(new URL(url));
+  expect(decompURL.variationUUID).toEqual('7725810647266');
+})
+
+test('decompose url but not able to retrieve variation uuid', () => {
+  const url = 'https://google.com';
+  const decompURL = decomposeProductDetailURL(new URL(url));
+  expect(decompURL.variationUUID).toEqual('');
 });

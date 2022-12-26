@@ -2,6 +2,8 @@ import type { ReactNode } from 'react';
 import { Link } from '@remix-run/react';
 import Skeleton from '@mui/material/Skeleton';
 
+import { composeProductDetailURL } from '~/utils';
+
 interface TopProductsColumnGridProps {
   productUUID?: string;
   title?: ReactNode;
@@ -20,7 +22,10 @@ export default function TopProductsColumnGrid({ productUUID = '', title = '', im
             )
             : (
               <>
-                <Link to={`/product/${productUUID}`}>
+                <Link to={composeProductDetailURL({
+                  productName: title as string,
+                  variationUUID: productUUID
+                })}>
                   <img
                     alt='recommend product'
                     src={image}

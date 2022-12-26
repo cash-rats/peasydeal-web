@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, Form } from '@remix-run/react';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import type { ScrollPosition } from "react-lazy-load-image-component";
-import clsx from 'clsx';
 
 import RoundButton from '~/components/RoundButton';
 import { breakPoints } from '~/styles/breakpoints';
@@ -10,6 +9,7 @@ import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibb
 import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
+import { composeProductDetailURL } from '~/utils';
 
 import styles from "./styles/LargeGrid.css";
 import type { TagsCombo } from './types';
@@ -123,7 +123,7 @@ function LargeGrid({
 		<Link
 			// prefetch='intent'
 			className="large-grid-container"
-			to={`/product/${productID}`}
+			to={composeProductDetailURL({ productName: title, variationUUID: productID })}
 			onClick={(evt) => {
 				if (!isClickableGrid()) {
 					evt.preventDefault();
@@ -165,7 +165,10 @@ function LargeGrid({
 				</div>
 
 				<div className="btn-container">
-					<Form action={`/product/${productID}`} method='get'>
+					<Form
+						action={composeProductDetailURL({ productName: title, variationUUID: productID })}
+						method='get'
+					>
 						<RoundButton
 							type='submit'
 							colorScheme="cerise"

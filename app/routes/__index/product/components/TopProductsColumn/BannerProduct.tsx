@@ -2,6 +2,7 @@ import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import Skeleton from '@mui/material/Skeleton';
 
+import { composeProductDetailURL } from '~/utils';
 import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
 
 export const links: LinksFunction = () => {
@@ -47,7 +48,7 @@ export default function BannerProduct({
                 {title}
               </p>
 
-              <Link to={`/product/${productUUID}`}>
+              <Link to={composeProductDetailURL({ productName: title, variationUUID: productUUID })}>
                 <RoundButton
                   style={{
                     width: '140px'

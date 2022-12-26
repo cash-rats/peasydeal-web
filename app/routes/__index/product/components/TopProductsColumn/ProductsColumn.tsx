@@ -1,5 +1,6 @@
 import type { Product } from '~/shared/types';
 
+
 import TopProductsColumnGrid from './TopProductsColumnGrid';
 
 interface TopProductsProps {

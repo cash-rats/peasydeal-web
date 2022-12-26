@@ -6,7 +6,7 @@ interface HorizontalGridProps {
   title?: string;
   price?: number;
   productUUID?: string;
-  onClick?: (evt: MouseEvent, productUUID: string) => void;
+  onClick?: (evt: MouseEvent, title: string, productUUID: string) => void;
 }
 
 function HorizontalGridSkeleton() {
@@ -49,7 +49,7 @@ export default function HorizontalGrid({
 
   const handleGesture = useCallback((evt: MouseEvent) => {
     if (touchendY === touchstartY && touchstartX === touchendX) {
-      onClick(evt, productUUID);
+      onClick(evt, title, productUUID);
     } else {
       console.log('user opts swipes gesture, ignore');
     }
@@ -87,9 +87,7 @@ export default function HorizontalGrid({
     >
       {
         loading
-          ? (
-            <HorizontalGridSkeleton />
-          )
+          ? (<HorizontalGridSkeleton />)
           : (
             <>
               <div className="HorizontalGrid__image-container">

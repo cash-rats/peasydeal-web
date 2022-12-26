@@ -75,6 +75,20 @@ export const checkHasMoreRecord = (count: number, divisor: number) => count % di
 
 export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https://peasydeal.com';
 
+// composeProductDetailURL takes product name and url to compose a product detail url in following format:
+// `https://peasydeal.com/product/some-google-product-i.{VARIATION_UUID}`
+export const composeProductDetailURL = ({ productName, variationUUID }: { productName: string, variationUUID: string }) => {
+  // replace empty space with '-'
+  const prodName = productName.replace(/\s+/g, '-')
+  const url = `/product/${prodName}-i.${variationUUID}`;
+  return url;
+}
+
+export const decomposeProductDetailURL = (url: URL) => {
+  const [productName, variationUUID = ''] = url.pathname.split('-i.');
+  return { productName, variationUUID };
+}
+
 // TODO: The following content getters should be moved elsewhere.
 // ------------------ SEO ------------------
 // SEO index page

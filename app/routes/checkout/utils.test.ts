@@ -76,7 +76,6 @@ describe('checkout utils function', () => {
       }
       return accu;
     }, 0)
-    console.log('itemsForApi', itemsForApi);
     expect(sameProdCount).toBe(3);
   })
 });
