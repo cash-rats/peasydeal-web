@@ -510,7 +510,7 @@ function ProductDetailPage() {
 						  - Hot deals
 							- New trend
 					*/}
-					<div className="ProductDetail__main-bottom">
+					<div className="flex justify-center xl:justify-start">
 						<RecommendedProducts
 							category={mainCategory.name}
 							onClickProduct={handleClickProduct}
@@ -518,7 +518,7 @@ function ProductDetailPage() {
 					</div>
 				</div>
 
-				<div className="ProductDetail__desktop-ads-container">
+				<div className="aspect-[254/385] xl:w-[12rem] 1348:w-[15.875rem] hidden xl:block">
 					<TopProductsColumn />
 				</div>
 			</div>

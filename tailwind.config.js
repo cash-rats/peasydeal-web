@@ -23,6 +23,7 @@ module.exports = {
       '899': '899px',
       '992': '992px',
       '1200': '1200px',
+      '1348': '1348px',
       '1600': '1600px',
     },
     extend: {
@@ -48,6 +49,8 @@ module.exports = {
         'gallery': '#f0f0f0',
         'white-smoke': 'rgb(244, 246, 249)',
         'dune': '#343434',
+        'mercury': '#e5e5e5',
+        'cornflower-blue': '#888',
       },
       boxShadow: {
         dropdown: '0 0 3px 0 rgb(73 143 226 / 50%)',
