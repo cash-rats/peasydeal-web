@@ -110,7 +110,7 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
     console.log('[ga] click on product', title, prodUUID);
 
     clickRecProd.submit(
-      { __action: 'to_product_detail', productUUID: prodUUID, productName: title },
+      { __action: 'to_product_detail' },
       { method: 'post', action: composeProductDetailURL({ productName: title, variationUUID: prodUUID }) },
     );
   }

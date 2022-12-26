@@ -27,7 +27,6 @@ import {
 	getProdDetailTitleText,
 	getProdDetailDescText,
 	getProdDetailDescTextWithoutPrice,
-	composeProductDetailURL,
 	decomposeProductDetailURL,
 } from '~/utils';
 
@@ -134,12 +133,8 @@ export const action: ActionFunction = async ({ request }) => {
 	const formAction = formObj['__action'] as __action_type;
 
 	if (formAction === 'to_product_detail') {
-		return redirect(
-			composeProductDetailURL({
-				productName: formObj['productName'] as string,
-				variationUUID: formObj['productUUID'] as string
-			})
-		);
+		const url = new URL(request.url);
+		return redirect(url.pathname);
 	}
 
 	const cartObj = Object.fromEntries(form.entries()) as ShoppingCartItem;
