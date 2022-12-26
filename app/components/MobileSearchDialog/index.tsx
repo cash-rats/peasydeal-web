@@ -10,6 +10,7 @@ import { CgSearchFound } from 'react-icons/cg';
 
 import SearchBar from '~/components/SearchBar';
 import { rootNode } from '~/utils/trie';
+import { composeProductDetailURL } from '~/utils';
 import type { SuggestItem, ItemData } from '~/shared/types';
 
 import Louple from './images/loupe.png';
@@ -209,7 +210,10 @@ export default function MobileSearchDialog({
                         return (
                           <Link
                             key={suggest.data.productID}
-                            to={`/product/${suggest.data.productID}`}
+                            to={composeProductDetailURL({
+                              productName: suggest.data.title,
+                              variationUUID: suggest.data.productID,
+                            })}
                             onClick={(evt) => { onBack(); }}
                           >
                             <li className="

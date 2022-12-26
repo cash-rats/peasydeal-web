@@ -36,6 +36,7 @@ function LogoBar() {
           <IconButton onClick={handleOpenMenu}>
             <FiMenu fontSize={26} color='#e6007e' />
           </IconButton>
+
           <Dialog
             fullWidth
             open={openMenu}
