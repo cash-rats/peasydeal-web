@@ -51,7 +51,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 interface RecommendedProductsProps {
   category: string;
-  onClickProduct: (productID: string) => void;
+  onClickProduct: (title: string, productID: string) => void;
 }
 
 function RecommendedProducts({ category, onClickProduct }: RecommendedProductsProps) {

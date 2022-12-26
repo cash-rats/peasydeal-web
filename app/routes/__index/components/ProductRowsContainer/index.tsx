@@ -45,7 +45,7 @@ interface RealRowsProps {
   activityBanners?: ActivityBanner[];
   seasonals?: SeasonalInfo[];
   scrollPosition?: ScrollPosition;
-  onClickProduct?: (prodID: string) => void;
+  onClickProduct?: (title: string, prodID: string) => void;
 }
 
 const RealRows = ({
@@ -214,7 +214,7 @@ const RealRows = ({
 }
 
 interface ProductRowsContainerProps {
-  onClickProduct?: (prodID: string) => void;
+  onClickProduct?: (title: string, prodID: string) => void;
   productRows?: Product[][];
   activityBanners?: ActivityBanner[];
   seasonals?: SeasonalInfo[];

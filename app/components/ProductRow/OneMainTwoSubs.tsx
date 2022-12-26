@@ -27,7 +27,7 @@ export const links: LinksFunction = () => {
 
 interface LeftLayoutProps {
 	product?: Product;
-	onClickProduct?: (productUUID: string) => void;
+	onClickProduct?: (title: string, productUUID: string) => void;
 	loading?: boolean
 	scrollPosition?: ScrollPosition;
 };
@@ -66,7 +66,7 @@ function LeftLayout({
 
 interface RightLayoutProps {
 	products?: Product[];
-	onClickProduct?: (productUUID: string) => void;
+	onClickProduct?: (title: string, productUUID: string) => void;
 	loading?: boolean;
 	scrollPosition?: ScrollPosition;
 };
@@ -137,7 +137,7 @@ interface OneMainTwoSubsProps {
 	/*
 	 * Callback when clicks on product.
 	 */
-	onClickProduct?: (productID: string) => void;
+	onClickProduct?: (title: string, productID: string) => void;
 
 	loading?: boolean;
 

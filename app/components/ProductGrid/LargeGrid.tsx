@@ -82,7 +82,7 @@ interface LargeGridProps {
 	image: string;
 	title: string;
 	description?: string;
-	onClickProduct?: (productID: string) => void;
+	onClickProduct?: (title: string, productID: string) => void;
 	tagCombo?: TagsCombo;
 	discount?: number;
 	scrollPosition?: ScrollPosition;
@@ -130,7 +130,7 @@ function LargeGrid({
 					return;
 				}
 
-				onClickProduct(productID)
+				onClickProduct(title, productID)
 			}}
 		>
 			{
@@ -174,7 +174,7 @@ function LargeGrid({
 							colorScheme="cerise"
 							onClick={(evt) => {
 								evt.stopPropagation();
-								onClickProduct(productID)
+								onClickProduct(title, productID)
 							}}
 						>
 							View

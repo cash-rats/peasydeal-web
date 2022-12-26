@@ -89,12 +89,10 @@ export default function TopProductsColumn() {
   }, [fetcher.type]);
 
   return (
-    // <div className="aspect-[254/385] w-[15.875rem] flex flex-col">
-    <div className="w-full flex flex-col">
+    <div className="xl:w-[12rem] 1348:w-[15.875rem] flex flex-col">
       <BannerProduct
         productUUID={adsProds.banner_product?.productUUID}
         loading={fetcher.type !== 'done'}
-        // loading
         title={adsProds.banner_product?.title}
         image={adsProds.banner_product?.main_pic}
       />
@@ -103,14 +101,12 @@ export default function TopProductsColumn() {
         columnTitle='top products'
         loading={fetcher.type !== 'done'}
 
-        // loading
         products={adsProds.top_products}
       />
 
       <ProductsColumn
         columnTitle='super deal'
         loading={fetcher.type !== 'done'}
-        // loading
         products={adsProds.super_deal_products}
       />
     </div>

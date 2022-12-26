@@ -28,6 +28,7 @@ import {
 	getProdDetailDescText,
 	getProdDetailDescTextWithoutPrice,
 	decomposeProductDetailURL,
+	composeProductDetailURL,
 } from '~/utils';
 
 import Breadcrumbs from './components/Breadcrumbs';
@@ -132,8 +133,10 @@ export const action: ActionFunction = async ({ request }) => {
 	const formAction = formObj['__action'] as __action_type;
 
 	if (formAction === 'to_product_detail') {
-		const url = new URL(request.url);
-		return redirect(url.pathname);
+		return redirect(composeProductDetailURL({
+			productName: formObj['productName'] as string,
+			variationUUID: formObj['variationUUID'] as string,
+		}));
 	}
 
 	const cartObj = Object.fromEntries(form.entries()) as ShoppingCartItem;
@@ -291,13 +294,9 @@ function ProductDetailPage() {
 		}
 	}, [addToCart.type])
 
-	const toProductDetailFetcher = useFetcher();
 
-	const handleClickProduct = (productUUID: string) => {
-		toProductDetailFetcher.submit({
-			__action: 'to_product_detail',
-			productUUID,
-		}, { method: 'post' });
+	const handleClickProduct = (title: string, productUUID: string) => {
+		console.log('ga[recommended_product]', title, productUUID);
 	}
 
 	const handleOnClose = () => {
@@ -517,7 +516,7 @@ function ProductDetailPage() {
 					</div>
 				</div>
 
-				<div className="aspect-[254/385] xl:w-[12rem] 1348:w-[15.875rem] hidden xl:block">
+				<div className="xl:w-[12rem] 1348:w-[15.875rem] hidden xl:block">
 					<TopProductsColumn />
 				</div>
 			</div>

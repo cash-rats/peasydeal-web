@@ -33,7 +33,7 @@ interface MediumGridProps {
 	image: string;
 	title: string;
 	description?: string;
-	onClickProduct?: (productID: string) => void;
+	onClickProduct?: (title: string, productID: string) => void;
 	tagCombo?: TagsCombo | null;
 	discount?: number;
 	scrollPosition?: ScrollPosition;
@@ -128,7 +128,7 @@ export default function MediumGrid({
 					return;
 				}
 
-				onClickProduct(productID)
+				onClickProduct(title, productID)
 			}}
 			className="medium-grid-container"
 		>
@@ -174,7 +174,7 @@ export default function MediumGrid({
 							colorScheme="cerise"
 							onClick={(evt) => {
 								evt.stopPropagation();
-								onClickProduct(productID)
+								onClickProduct(title, productID)
 							}}
 							style={{
 								padding: '0.675rem 1.5rem'

@@ -19,7 +19,7 @@ interface EvenRowProps {
 	// Take at most 6 products. Render proper layout based on view port size.
 	products?: Product[];
 
-	onClickProduct?: (productID: string) => void;
+	onClickProduct?: (title: string, productID: string) => void;
 
 	loading?: boolean;
 	scrollPosition?: ScrollPosition;
