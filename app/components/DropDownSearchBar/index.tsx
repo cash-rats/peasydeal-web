@@ -8,6 +8,7 @@ import { CgSearchFound } from 'react-icons/cg';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import useBodyClick from '~/hooks/useBodyClick';
 import { rootNode } from '~/utils/trie';
+import { composeProductDetailURL } from '~/utils';
 import type { ItemData, SuggestItem } from '~/shared/types';
 
 import styles from './styles/DropDownSearchBar.css';
@@ -210,7 +211,10 @@ export default function DropDownSearchBar({
                         <Link
                           onClick={(evt) => { setShowDropdown(false); }}
                           key={index}
-                          to={`/product/${suggest.data.productID}`}
+                          to={composeProductDetailURL({
+                            variationUUID: suggest.data.productID,
+                            productName: suggest.data.title,
+                          })}
                         >
                           <li className="DropDownSearchBar__dropdown-item">
                             <p>  {suggest.data.title}  </p>
