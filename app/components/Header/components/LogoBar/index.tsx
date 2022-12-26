@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import CategoryContext from '~/context/categories';
 
-import PeasyDeal from './images/peasydeal_logo_2.svg';
+import PeasyDeal from './images/peasydeal_logo.svg';
 
 function LogoBar() {
   const [openMenu, setOpenMenu] = useState(false);
