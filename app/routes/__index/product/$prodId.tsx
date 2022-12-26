@@ -40,7 +40,7 @@ import ProductActionBar, { links as ProductActionBarLinks } from './components/P
 import ProductActionBarLeft, { links as ProductActionBarLeftLinks } from './components/ProductActionBarLeft';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
-import TopProductsColumn, { links as TopProductsColumnLinks } from './components/TopProductsColumn';
+import TopProductsColumn from './components/TopProductsColumn';
 import useStickyActionBar from './hooks/useStickyActionBar';
 
 type LoaderTypeProductDetail = {
@@ -78,7 +78,6 @@ export const links: LinksFunction = () => {
 		...ProductActionBarLeftLinks(),
 		...RecommendedProductsLinks(),
 		...SocialShareLinks(),
-		...TopProductsColumnLinks(),
 		...RightTiltBoxLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
@@ -480,18 +479,18 @@ function ProductDetailPage() {
 									<div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} className="product-features-container" />
 								</div>
 
-								<div className="product-return-policy">
+								<div>
 									<Divider
 										text="return policy"
 										icon={<TbTruckReturn fontSize={24} />}
 									/>
 
-									<p>
+									<p className="text-center py-0 px-[10px]">
 										14 days cancellation period applies.
 									</p>
 								</div>
 
-								<div className="client-action-bar-wrapper">
+								<div className="h-[100px] md:hidden">
 									<Divider />
 									<ProductActionBar
 										ref={mobileUserActionBarRef}

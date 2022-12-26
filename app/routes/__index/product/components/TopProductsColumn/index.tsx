@@ -1,4 +1,4 @@
-import type { LinksFunction, ActionFunction } from '@remix-run/node';
+import type { ActionFunction } from '@remix-run/node';
 import { useFetcher, useTransition } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { useEffect, useState } from 'react';
@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 import { fetchProductsByCategory } from '~/api';
 import type { Product } from '~/shared/types';
 
-import styles from './styles/TopProductsColumn.css';
 import BannerProduct from './BannerProduct';
 import ProductsColumn from './ProductsColumn';
 
@@ -38,11 +37,6 @@ export const action: ActionFunction = async ({ request }) => {
   });
 };
 
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 interface AdsProducts extends ActionType {
   banner_product: null | Product;

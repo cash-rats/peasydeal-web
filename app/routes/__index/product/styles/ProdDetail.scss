@@ -130,22 +130,6 @@
 	overflow-x: auto;
 }
 
-.product-return-policy {
-
-	p {
-		text-align: center;
-		padding: 0 10px;
-	}
-}
-
-.client-action-bar-wrapper {
-	height: 100px;
-
-	@include md {
-		display: none;
-	}
-}
-
 .product-name {
 	font-size: 2rem;
 	text-align: left;

@@ -126,20 +126,6 @@
   overflow-x: auto;
 }
 
-.product-return-policy p {
-  text-align: center;
-  padding: 0 10px;
-}
-
-.client-action-bar-wrapper {
-  height: 100px;
-}
-@media (min-width: 768px) {
-  .client-action-bar-wrapper {
-    display: none;
-  }
-}
-
 .product-name {
   font-size: 2rem;
   text-align: left;

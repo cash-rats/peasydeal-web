@@ -29,7 +29,7 @@ export default function BannerProduct({
       {
         loading
           ? (
-            <div className="TopProductsColumn__banner">
+            <div className="pb-5 w-full h-96 rounded-lg flex flex-col justify-end items-center">
               <Skeleton
                 variant='rectangular'
                 height='100%'
@@ -43,8 +43,8 @@ export default function BannerProduct({
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat',
               backgroundSize: 'cover',
-            }} className="TopProductsColumn__banner">
-              <p className="TopProductsColumn__banner-text">
+            }} className="pb-5 w-full h-96 rounded-lg flex flex-col justify-end items-center">
+              <p className="text-[white] text-center mb-[0.3rem]">
                 {title}
               </p>
 
