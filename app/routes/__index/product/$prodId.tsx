@@ -190,9 +190,12 @@ function ProductDetailPage() {
 		)
 	);
 
+	// User changes the variation.
 	useEffect(() => {
 		setProductDetail(data.product);
-	}, [data]);
+		if (!window) return;
+		window.scrollTo(0, 0);
+	}, [data.product.uuid]);
 
 	useEffect(() => {
 		const currentVariation = productDetail.variations.find(
