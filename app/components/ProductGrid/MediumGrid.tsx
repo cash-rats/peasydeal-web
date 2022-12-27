@@ -16,7 +16,6 @@ import type { RenderableTagMap } from './utils';
 import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
 import styles from "./styles/MediumGrid.css";
-import placeholderSVG from './images/placeholder.svg';
 
 export const links: LinksFunction = () => {
 	return [
@@ -139,7 +138,7 @@ export default function MediumGrid({
 				<LazyLoadImage
 					placeholder={
 						<img
-							src={placeholderSVG}
+							src="/images/placeholder.svg"
 							alt={title}
 							className="medium-grid-image"
 						/>

@@ -1,5 +1,4 @@
 import type { LinksFunction } from '@remix-run/node';
-import placeholderSVG from './images/placeholder.svg';
 
 import styles from './styles/MediumGrid.css';
 
@@ -15,7 +14,7 @@ export default function MediumGridSkeleton() {
     <div className="medium-grid-container">
       <div className="image-container">
         <img
-          src={placeholderSVG}
+          src='/images/placeholder.svg'
           alt="loading"
           className="medium-grid-image"
         />

@@ -85,7 +85,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
 
   return (
     <>
-      <div className="shipping-form-fields field--1">
+      <div className="shipping-form-fields field--2">
         <div>
           <TextDropdownField<Option>
             options={state.options}
@@ -125,11 +125,9 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             }}
           />
 
-          <p className="flex items-center m-0 py-2 text-sm font-light gap-2">
-            <span> <InfoIcon fontSize='small' color='success' /> </span>
-            Auto lookup address by postal code
-          </p>
+          {/* <button></button> */}
         </div>
+
       </div>
 
       {/* Name */}

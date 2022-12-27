@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from '@remix-run/react';
 import Skeleton from '@mui/material/Skeleton';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import { composeProductDetailURL } from '~/utils';
 
@@ -26,10 +27,17 @@ export default function TopProductsColumnGrid({ productUUID = '', title = '', im
                   productName: title as string,
                   variationUUID: productUUID
                 })}>
-                  <img
-                    className="w-[90px] h-[90px]"
-                    alt='recommend product'
+                  <LazyLoadImage
                     src={image}
+                    className="w-[90px] h-[90px]"
+                    alt={title as string}
+                    placeholder={
+                      <img
+                        alt={title as string}
+                        src="/images/placeholder.svg"
+                        className="w-[90px] h-[90px]"
+                      />
+                    }
                   />
                 </Link>
               </>

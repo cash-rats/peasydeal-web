@@ -1,6 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
 
-import PlaceHolder from './images/placeholder.svg';
 import styles from './styles/LargeGrid.css';
 
 export const links: LinksFunction = () => {
@@ -15,7 +14,7 @@ export default function LargeGridSkeleton() {
       <div className="image-container">
         <img
           alt='loading'
-          src={PlaceHolder}
+          src='/images/placeholder.svg'
           className='large-grid-image'
         />
       </div>

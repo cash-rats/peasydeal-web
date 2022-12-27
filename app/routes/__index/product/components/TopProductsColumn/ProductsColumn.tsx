@@ -13,12 +13,11 @@ const loadingItems = new Array(4).fill(0)
 export default function ProductsColumn({ columnTitle = '', products = [], loading = false }: TopProductsProps) {
   return (
     <div className="mt-6">
-      {/* <h2 className="TopProductsColumn__banner-wrapper-title"> */}
-      <h2 className="uppercase text-[1.375rem] font-normal py-4 pt-2 pb-0 m-0 border-b-[1px] border-[black] ">
+      <h2 className="uppercase text-[1.375rem] font-normal py-4 pt-2 pb-0 m-0 border-b-[1px] border-[black]">
         {columnTitle}
       </h2>
 
-      <div className="flex flex-col mt-4 gap-5">
+      <div className="flex flex-col mt-4">
         <>
           {
             loading

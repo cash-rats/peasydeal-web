@@ -16,7 +16,6 @@ import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
 import { normalizeTagsListToMap } from './utils';
 import type { RenderableTagMap } from './utils';
-import placeholder from './images/placeholder.svg';
 
 export function links() {
 	return [
@@ -147,7 +146,7 @@ function LargeGrid({
 					placeholder={
 						<img
 							alt={title}
-							src={placeholder}
+							src="/images/placeholder.svg"
 							className='large-grid-image'
 						/>
 					}

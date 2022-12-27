@@ -136,7 +136,6 @@ function CheckoutPage() {
   const [errorAlert, setErrorAlert] = useState('');
 
   const [shippingDetailFormValues, setShippingDetailFormValues] = useState<ShippingDetailFormType>({
-    // email: '',
     lastname: '',
     firstname: '',
     address1: '',

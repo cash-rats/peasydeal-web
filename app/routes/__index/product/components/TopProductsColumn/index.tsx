@@ -100,7 +100,6 @@ export default function TopProductsColumn() {
       <ProductsColumn
         columnTitle='top products'
         loading={fetcher.type !== 'done'}
-
         products={adsProds.top_products}
       />
 
