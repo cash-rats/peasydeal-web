@@ -84,13 +84,14 @@ function PicsCarousel({ images, title = '' }: PicsCarouselProps) {
 									<div key={index}>
 										<LazyLoadImage
 											placeholder={
-												<Skeleton
-													className="product-carousel-image"
-													variant='rectangular'
+												<img
+													alt={title}
+													src='/images/placeholder.svg'
+													className="w-full h-auto my-0 m-auto aspect-[1/1]"
 												/>
 											}
 											alt={title}
-											className="product-carousel-image"
+											className="w-full h-auto my-0 m-auto aspect-[1/1]"
 											src={image}
 										/>
 									</div>

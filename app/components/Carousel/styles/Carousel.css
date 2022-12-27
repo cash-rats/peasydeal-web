@@ -12,12 +12,6 @@
     max-width: 570px;
   }
 }
-.product-carousel-container .product-carousel-image {
-  width: 100%;
-  height: auto;
-  margin: 0 auto;
-  aspect-ratio: 1/1;
-}
 
 .thumbnails-container {
   display: flex;
