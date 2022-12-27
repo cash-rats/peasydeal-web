@@ -13,7 +13,7 @@ export const links: LinksFunction = () => {
   return [...NavBarLinks(),];
 };
 
-interface HeaderProps {
+export interface HeaderProps {
   categoriesBar?: ReactNode;
 
   searchBar?: ReactNode;

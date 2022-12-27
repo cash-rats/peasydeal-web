@@ -9,9 +9,9 @@ import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 
 import CategoryContext from '~/context/categories';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import { createPaymentIntent } from '~/utils/stripe.server';
-import { getCart, getItemCount } from '~/sessions/shoppingcart.session';
+import { getCart } from '~/sessions/shoppingcart.session';
 import { fetchCategories } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
@@ -33,7 +33,6 @@ type LoaderType = {
   client_secret?: string | undefined;
   payment_intend_id: string;
   categories: Category[];
-  item_count: number;
   total: number;
 };
 
@@ -72,18 +71,15 @@ export const loader: LoaderFunction = async ({ request }) => {
   const cartItems = await getCart(request);
 
   if (!cartItems || Object.keys(cartItems).length === 0) {
-    console.log('debug ** 2');
     throw redirect("/cart");
   }
 
   const categories = await fetchCategories();
 
-  const itemCount = await getItemCount(request);
 
   // TODO this number should be coming from BE instead.
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
   // In stripe, the base unit is 1 cent, not 1 dollar.
-  // const amount = Number(calcGrandTotal(cartItems).toFixed(2))
   const priceQuery = convertShoppingCartToPriceQuery(cartItems);
   const priceInfo = await fetchPriceInfo({ products: priceQuery });
 
@@ -98,7 +94,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     payment_intend_id: paymentIntent.id,
     categories,
     total: priceInfo.total_amount,
-    item_count: itemCount,
   });
 }
 
@@ -115,7 +110,6 @@ function CheckoutLayout() {
     payment_intend_id,
     total,
     categories,
-    item_count,
   } = useLoaderData<LoaderType>();
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [suggests, searchSuggests] = useSearchSuggests();
@@ -142,7 +136,6 @@ function CheckoutLayout() {
       <CategoryContext.Provider value={categories}>
         <Form action='/search'>
           <Header
-            numOfItemsInCart={item_count}
             searchBar={
               <DropDownSearchBar
                 form='index-search-product'

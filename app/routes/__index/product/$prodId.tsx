@@ -230,6 +230,7 @@ function ProductDetailPage() {
 
 	const addToCart = useFetcher();
 	const buyNow = useFetcher();
+	const reloadCartItemCount = useFetcher();
 
 	const extractProductInfo = useCallback(() => {
 		// A product doesn't have any `spec_name` if the product has 1 variation only
@@ -294,6 +295,8 @@ function ProductDetailPage() {
 			setTimeout(() => {
 				setOpenSuccessModal(false);
 			}, 1000)
+
+			reloadCartItemCount.submit(null, { action: '/components/Header?index' })
 		}
 	}, [addToCart.type])
 

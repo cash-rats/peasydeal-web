@@ -12,14 +12,12 @@ import CategoryContext from '~/context/categories';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
-import { getItemCount } from '~/sessions/shoppingcart.session';
 import { fetchCategories } from '~/api/categories.server';
 
 type LoaderType = {
-	numOfItemsInCart: number;
 	categories: Category[];
 };
 
@@ -36,16 +34,12 @@ type ContextType = { categories: Category[] };
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();
-	const numOfItemsInCart = await getItemCount(request);
 
-	return json<LoaderType>({
-		numOfItemsInCart,
-		categories: categories,
-	});
+	return json<LoaderType>({ categories: categories });
 };
 
 export default function Index() {
-	const { numOfItemsInCart, categories } = useLoaderData<LoaderType>();
+	const { categories } = useLoaderData<LoaderType>();
 	const search = useFetcher();
 	const [suggests, searchSuggests] = useSearchSuggests();
 
@@ -74,7 +68,6 @@ export default function Index() {
 									onSearch={handleSearch}
 								/>
 							}
-							numOfItemsInCart={numOfItemsInCart}
 							onSearch={handleSearch}
 						/>
 					</Form>
