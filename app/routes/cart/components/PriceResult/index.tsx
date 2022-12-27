@@ -1,18 +1,11 @@
 import { Link } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
 import { BsBagCheck } from 'react-icons/bs';
 import Skeleton from '@mui/material/Skeleton';
 
 import { TAX } from '~/utils/checkout_accountant';
-import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
+import RoundButton from '~/components/RoundButton';
 
 import type { PriceInfo } from '../../cart.server';
-
-export const links: LinksFunction = () => {
-  return [
-    ...RoundButtonLinks(),
-  ];
-};
 
 type PriceResultProps = {
   priceInfo: PriceInfo;

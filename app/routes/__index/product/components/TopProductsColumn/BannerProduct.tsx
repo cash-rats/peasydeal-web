@@ -1,16 +1,8 @@
-import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import Skeleton from '@mui/material/Skeleton';
 
 import { composeProductDetailURL } from '~/utils';
-import RoundButton, { links as RoundButtonLinks } from '~/components/RoundButton';
-
-export const links: LinksFunction = () => {
-  return [
-    ...RoundButtonLinks(),
-  ];
-};
-
+import RoundButton from '~/components/RoundButton';
 interface BannerProductProps {
   productUUID?: string;
   title?: string;
@@ -64,3 +56,5 @@ export default function BannerProduct({
     </>
   )
 }
+
+BannerProduct.displayName = 'BannerProduct';

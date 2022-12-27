@@ -14,7 +14,7 @@ import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
 import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
-import PriceResult, { links as PriceResultLinks } from './components/PriceResult';
+import PriceResult from './components/PriceResult';
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from './cart.server';
 import type { PriceInfo } from './cart.server';
 import styles from './styles/cart.css';
@@ -24,7 +24,6 @@ export const links: LinksFunction = () => {
 		...ItemLinks(),
 		...EmptyShippingCartLinks(),
 		...HorizontalProductsLayoutLinks(),
-		...PriceResultLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };

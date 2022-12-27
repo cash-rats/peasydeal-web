@@ -2,16 +2,7 @@ import type { ReactNode, CSSProperties, MouseEvent } from 'react';
 import LoadingButton from '@mui/lab/LoadingButton';
 import type { LoadingButtonProps } from '@mui/lab/LoadingButton';
 import { styled } from '@mui/material/styles';
-import type { LinksFunction } from '@remix-run/node';
 import MoonLoader from 'react-spinners/MoonLoader';
-
-import styles from './styles/RoundButton.css';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 const BasicRoundButton = styled(LoadingButton)({
   padding: '0.875rem 2rem',
@@ -140,12 +131,14 @@ function RoundButton({
         />
       }
     >
-      <div className="RoundButton__Custom">
+      <div className="flex items-center gap-[0.45rem]">
         {leftIcon && (<span>{leftIcon}</span>)}
         {children}
       </div>
     </CustomButton>
   );
 };
+
+RoundButton.displayName = 'RoundButton';
 
 export default RoundButton
