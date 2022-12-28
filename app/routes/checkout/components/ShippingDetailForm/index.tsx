@@ -10,12 +10,11 @@ import { json } from '@remix-run/node';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import { TextField } from '@mui/material';
-import InfoIcon from '@mui/icons-material/Info';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Tooltip from '@mui/material/Tooltip';
-import useDebounce from 'react-debounced';
 import MoonLoader from 'react-spinners/MoonLoader';
 
+import RoundButton from '~/components/RoundButton';
 import TextDropdownField from '~/components/TextDropdownField';
 import type { Option as DropdownOption } from '~/components/TextDropdownField';
 
@@ -53,7 +52,6 @@ interface ShippingDetailFormProps {
 // - [ ] display loading UI when fetching address options.
 // - [ ] give default value when done loading address options.
 const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDetailFormProps) => {
-  const debounce = useDebounce(400);
   const loadAddrFetcher = useFetcher();
   const [state, dispatch] = useReducer(addressOptionsReducer, inistialState);
 
@@ -73,11 +71,16 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
     );
   };
 
+  // Deprecate this method in favor of lookup address button.
   const handleChangePostal = (evt: ChangeEvent<HTMLTextAreaElement>) => {
-    const value = evt.target.value;
-    if (!value) return;
-    debounce(() => loadAddrOptions(value));
+    dispatch({
+      type: AddressOptionsActionTypes.on_change_postal,
+      payload: evt.target.value,
+    })
   };
+  const handleSearchAddress = () => {
+    loadAddrOptions(state.postal);
+  }
 
   const handleSelectOption = (option: DropdownOption<Option>) => {
     onSelectAddress({ ...option.value });
@@ -97,8 +100,8 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             aria-describedby="postalcode"
             fullWidth
             value={values.postal}
-            onChange={handleChangePostal}
             onSelect={handleSelectOption}
+            onChange={handleChangePostal}
             preventSelectChangeValue
             disabled={loadAddrFetcher.state !== 'idle'}
             InputProps={{
@@ -125,7 +128,18 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             }}
           />
 
-          {/* <button></button> */}
+          <div className="max-w-[13.5rem] flex items-center m-0 py-2 text-sm font-light gap-2">
+            <RoundButton
+              colorScheme='green'
+              size='small'
+              onClick={handleSearchAddress}
+              loading={loadAddrFetcher.state !== 'idle'}
+            >
+              <span className="capitalize">
+                lookup address
+              </span>
+            </RoundButton >
+          </div>
         </div>
 
       </div>

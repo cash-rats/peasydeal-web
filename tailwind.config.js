@@ -51,6 +51,8 @@ module.exports = {
         'dune': '#343434',
         'mercury': '#e5e5e5',
         'cornflower-blue': '#888',
+        'dark-pastel-green': '#50B04C',
+        'dark-mint-green': '#00C441',
       },
       boxShadow: {
         dropdown: '0 0 3px 0 rgb(73 143 226 / 50%)',

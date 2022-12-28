@@ -53,7 +53,7 @@ function HeaderRoute(props: HeaderRouteProps) {
     if (fetcher.type === 'done') {
       setNumOfItemsInCart(Number(fetcher.data.numOfItemsInCart));
     }
-  }, [fetcher.type, numOfItemsInCart]);
+  }, [fetcher.type]);
 
   useEffect(() => {
     if (addToCartFetcher?.type === 'actionReload') {

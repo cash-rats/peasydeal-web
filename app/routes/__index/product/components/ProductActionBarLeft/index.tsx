@@ -27,7 +27,7 @@ export default function ProductActionBarLeft({
           fullWidth
           colorScheme='addtocart'
           onClick={onClickAddToCart}
-          isLoading={loading}
+          loading={loading}
           style={{ whiteSpace: 'nowrap' }}
         >
           Add To Cart

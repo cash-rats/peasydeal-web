@@ -31,7 +31,7 @@ const ProductActionBar = forwardRef(({
         <RoundButton
           onClick={onClickAddToCart}
           fullWidth
-          isLoading={loading}
+          loading={loading}
           colorScheme='addtocart'
         >
           <p style={{ width: '100%', textAlign: 'center' }}>

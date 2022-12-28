@@ -49,6 +49,20 @@ const ViewButton = styled(BasicRoundButton)({
   },
 }) as typeof LoadingButton;
 
+const GreenButton = styled(BasicRoundButton)({
+  backgroundColor: '#50B04C',
+  border: 'solid 1px #50B04C',
+  color: 'white',
+  fontSize: '1.2rem',
+  fontWeight: '700',
+  boxSizing: 'border-box',
+  boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
+  '&:hover': {
+    backgroundColor: '#00c441',
+    border: 'solid 1px #00c441',
+  },
+}) as typeof LoadingButton;
+
 const CheckoutButton = styled(BasicRoundButton)({
   backgroundColor: '#ffa33a',
   borderColor: '#c60',
@@ -80,14 +94,15 @@ type ColorScheme =
   | 'addtocart'
   | 'checkout'
   | 'cerise'
-  | 'blackcontained';
+  | 'blackcontained'
+  | 'green';
 
 interface RoundButtonProps extends LoadingButtonProps {
   children?: ReactNode;
   style?: CSSProperties;
   colorScheme?: ColorScheme;
   onClick?: (evt: MouseEvent<HTMLButtonElement>) => void;
-  isLoading?: boolean;
+  loading?: boolean;
   leftIcon?: ReactNode;
 }
 
@@ -101,6 +116,7 @@ const colorSchemeButton: ColorSchemeButtonMap = {
   'cerise': ViewButton,
   'checkout': CheckoutButton,
   'blackcontained': BlackContainedButton,
+  'green': GreenButton,
 };
 
 function RoundButton({
@@ -108,7 +124,7 @@ function RoundButton({
   style,
   colorScheme = 'addtocart',
   onClick = () => { },
-  isLoading = false,
+  loading = false,
   children,
   leftIcon,
   type,
@@ -122,7 +138,7 @@ function RoundButton({
       fullWidth
       variant='outlined'
       onClick={onClick}
-      loading={isLoading}
+      loading={loading}
       loadingIndicator={
         <MoonLoader
           color='#fff'
