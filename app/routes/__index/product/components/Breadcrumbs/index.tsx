@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { NavLink } from '@remix-run/react';
 
+import { composeProductDetailURL } from '~/utils';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 
 type ProductDetailBreadcrumbsProps = {
@@ -43,10 +44,13 @@ export default function ProductDetailBreadcrumbs({ categoryTitle, productTitle, 
             <NavLink
               className={({ isActive }) => (
                 isActive
-                  ? "font-medium text-base cursor-pointer capitalize hover:underline"
+                  ? "font-medium text-base no-underline cursor-default pointer-events-none capitalize hover:underline"
                   : "text-sm font-bold no-underline text-raisin-black"
               )}
-              to={`/product/${productUuid}`}
+              to={composeProductDetailURL({
+                productName: productTitle as string,
+                variationUUID: productUuid as string,
+              })}
               key='2'
             > {productTitle}
             </NavLink>
