@@ -96,7 +96,6 @@ class TrieNode {
 
       // If character does not exists in children, create a mapping
       if (!node.children[char]) {
-
         node.children[char] = new TrieNode(char);
         node.children[char].parent = node;
       }
@@ -129,14 +128,16 @@ class TrieNode {
     // find a trie node with it's key that doesn't match current char in prefix.
     // the decendents of the this trie node will be all matched strings.
     for (let i = 0; i < prefix.length; i++) {
+      if (!node) break;
       const char = prefix[i];
       node = node.children[char];
-      if (!node) return [];
     }
 
     const matches = [];
 
-    findAllMatches(node, matches);
+    if (node) {
+      findAllMatches(node, matches);
+    }
 
     return matches;
   }

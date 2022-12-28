@@ -21,6 +21,7 @@ describe('preffix trie node', () => {
     root.populatePrefixTrie('shit');
     root.populatePrefixTrie('test');
     root.populatePrefixTrie('teac');
+    root.populatePrefixTrie('tEac');
     root.populatePrefixTrie('teaccc');
 
     // should output test, teac
