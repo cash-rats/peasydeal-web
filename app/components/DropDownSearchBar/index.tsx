@@ -78,8 +78,8 @@ export default function DropDownSearchBar({
 
   useEffect(() => {
     const handleEnter = (evt: KeyboardEvent) => {
-      setShowDropdown(false);
       if (evt.key === 'Enter') {
+        setShowDropdown(false);
         const elem = evt.target as HTMLElement;
         elem?.blur();
       }

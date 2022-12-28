@@ -1,4 +1,4 @@
-import type { ForwardedRef, MutableRefObject, MouseEvent, ChangeEvent, FocusEvent } from 'react';
+import type { ForwardedRef, MouseEvent, ChangeEvent, FocusEvent } from 'react';
 import { useEffect, useState, forwardRef, useRef } from 'react';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -34,7 +34,7 @@ interface SearchBarProps {
 
   placeholder?: string;
 
-  onMountRef?: (ref: MutableRefObject<HTMLInputElement | null>) => void;
+  onMountRef?: (ref: ForwardedRef<HTMLInputElement>) => void;
 }
 
 const isStringEmpty = (str: string): boolean => str.trim().length === 0;
@@ -89,7 +89,11 @@ function SearchBar({
         <InputBase
           autoComplete='off'
           aria-autocomplete='none'
-          ref={myRef}
+          ref={(inputRef) => {
+            myRef.current = inputRef
+            if (!ref) return;
+            ref.current = inputRef
+          }}
           fullWidth
           placeholder={placeholder}
           size='small'
