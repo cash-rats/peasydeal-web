@@ -128,17 +128,26 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             }}
           />
 
-          <div className="max-w-[13.5rem] flex items-center m-0 py-2 text-sm font-light gap-2">
-            <RoundButton
-              colorScheme='green'
-              size='small'
-              onClick={handleSearchAddress}
-              loading={loadAddrFetcher.state !== 'idle'}
-            >
-              <span className="capitalize">
-                lookup address
-              </span>
-            </RoundButton >
+          <div className="flex items-center m-0 py-2 text-sm font-light gap-2">
+            <div className="max-w-[13.5rem] ">
+              <RoundButton
+                colorScheme='green'
+                size='small'
+                onClick={handleSearchAddress}
+                loading={loadAddrFetcher.state !== 'idle'}
+              >
+                <span className="capitalize">
+                  lookup address
+                </span>
+              </RoundButton >
+            </div>
+            {
+              loadAddrFetcher.type === 'done' && state.options.length === 0 && (
+                <p className="ml-4">
+                  No address found, please input address manually.
+                </p>
+              )
+            }
           </div>
         </div>
 
