@@ -7,6 +7,7 @@ import { Link } from '@remix-run/react';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 
+import { composeProductDetailURL } from '~/utils';
 import { breakPoints } from '~/styles/breakpoints';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
 
@@ -113,7 +114,10 @@ const ActivityBannerLayout = ({
                       {prod.title}
                     </p>
                     <div className="ActivityBannerLayout__btn">
-                      <Link to={`/product/${prod.productUuid}`}>
+                      <Link to={composeProductDetailURL({
+                        productName: prod.title,
+                        variationUUID: prod.productUuid,
+                      })}>
                         <RoundButton
                           colorScheme='cerise'
                         >
