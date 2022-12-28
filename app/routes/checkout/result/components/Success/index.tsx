@@ -51,6 +51,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 function Success() {
   const orderFetcher = useFetcher();
+  const cartItemCountFetcher = useFetcher();
   const [orderDetail, setOrderDetail] = useState<SuccessOrderDetail | null>(null);
 
   useEffect(() => {
@@ -64,6 +65,16 @@ function Success() {
           method: 'post',
           action: `/checkout/result/components/Success?index&order_uuid=${orderUUID}`
         });
+
+      // Notify Header component to reload cart item count.
+      cartItemCountFetcher.submit(
+        null,
+        {
+          method: 'post',
+          action: '/components/Header?index',
+          replace: true,
+        },
+      )
     }
   }, []);
 

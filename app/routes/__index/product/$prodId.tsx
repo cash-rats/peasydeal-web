@@ -296,7 +296,13 @@ function ProductDetailPage() {
 				setOpenSuccessModal(false);
 			}, 1000)
 
-			reloadCartItemCount.submit(null, { action: '/components/Header?index' })
+			reloadCartItemCount.submit(
+				null,
+				{
+					method: 'post',
+					action: '/components/Header?index',
+					replace: true,
+				})
 		}
 	}, [addToCart.type])
 
