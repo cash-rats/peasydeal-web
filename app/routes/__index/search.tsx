@@ -10,6 +10,7 @@ import LoadMore, { links as LoadMoreLinks } from '~/components/LoadMore';
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 
+import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from './api';
 import productListStyles from './styles/ProductList.css';
@@ -18,6 +19,7 @@ import { organizeTo9ProdsPerRow } from './utils';
 
 export const links: LinksFunction = () => {
   return [
+    ...PageTitleLinks(),
     ...LoadMoreButtonLinks(),
     ...LoadMoreLinks(),
     ...ProductRowsContainerLinks(),
@@ -159,30 +161,15 @@ export default function Search() {
   }
 
   return (
-    <div className="prod-collection-container">
-      {/* <div className="prod-list-breadcrumbs-container">
-        <Breadcrumbs breadcrumbs={[
-          <NavLink
-            className={({ isActive }) => (
-              isActive
-                ? "breadcrumbs-link breadcrumbs-link-active"
-                : "breadcrumbs-link"
-            )}
-            key='1'
-            to={`/${category}`}
-          >
-            {category}
-          </NavLink>,
-        ]} />
-      </div> */}
-      <div className="Search__title-wrapper">
-        <p> Search results for "{query}" </p>
-      </div>
+    <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">
+      <PageTitle title={`Search results for "${query}"`} />
 
-      <ProductRowsContainer
-        productRows={productRows}
-        onClickProduct={handleClickProduct}
-      />
+      <div className="pt-8">
+        <ProductRowsContainer
+          productRows={productRows}
+          onClickProduct={handleClickProduct}
+        />
+      </div>
 
       <loadMoreFetcher.Form>
         <div className="ProductList__loadmore-container">
