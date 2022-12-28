@@ -63,6 +63,13 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
     return false
   }
 
+  if (
+    submission
+      ?.action
+      .includes('/components/Header')
+  ) {
+    return false;
+  }
 
   return true;
 }
