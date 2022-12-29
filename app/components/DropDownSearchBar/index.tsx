@@ -18,7 +18,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type SearchingState = 'empty' | 'searching' | 'done' | 'error';
+export type SearchingState = 'empty' | 'searching' | 'done' | 'error';
 
 
 interface DropDownSearchBarProps {
@@ -49,7 +49,7 @@ interface DropDownSearchBarProps {
 //  - [ ] show most recent search.
 //  - [ ] have timeout mechanism.
 //  - [ ] outer ref is often undefined.
-export default function DropDownSearchBar({
+function DropDownSearchBar({
   form,
   placeholder = '',
   onDropdownSearch = () => { },
@@ -163,7 +163,7 @@ export default function DropDownSearchBar({
 
   const handleFocus = () => {
     // if user has not enter any search content, we don't show dropdown.
-    if (!searchContent) return;
+    // if (!searchContent) return;
 
     if (suggests.length > 0) {
       setShowDropdown(true);
@@ -183,7 +183,7 @@ export default function DropDownSearchBar({
 
       {
         showDropdown && (
-          <div className="py-2 px-0 mt-1 bg-[white] rounded-lg shadow-[dropdown] absolute w-full z-10">
+          <div className="py-2 px-0 mt-1 bg-[white] rounded-lg shadow-[dropdown] absolute w-full z-10 border-solid border-[1px] border-header-border">
             {
               searchContent && (
                 <div className="grid grid-cols-2">
@@ -216,14 +216,35 @@ export default function DropDownSearchBar({
                         >
                           <li className="
                           py-2 px-4 cursor-pointer leading-5
-                          flex justify-between items-center
+                          grid grid-cols-2
                           hover:bg-gray-hover-bg
                           "
                           >
-                            <p className="m-0">  {suggest.data.title}  </p>
-                            <span className="font-semibold leading-6 text-price-off-red"> SAVE {
-                              (Number(suggest.data.discount) * 100).toFixed(0)
-                            }%</span>
+                            <div className="flex flex-row">
+                              <div>
+                                <img
+                                  className="w-[120px] h-[120px]"
+                                  alt={suggest.data.title}
+                                  src={suggest.data.image}
+                                />
+                              </div>
+                              <div className="flex flex-col justify-center items-start ml-2 gap-2">
+                                <span className="text-[1.3rem] font-medium">
+                                  {suggest.data.title}
+                                </span>
+                                <span className="text-[1.2rem]">
+                                  rating
+                                </span>
+                              </div>
+                            </div>
+                            <div className="flex justify-end items-end">
+                              <span className="font-semibold leading-6 text-price-off-red">
+                                SAVE &nbsp;
+                                {
+                                  (Number(suggest.data.discount) * 100).toFixed(0)
+                                }%
+                              </span>
+                            </div>
                           </li>
                         </Link>
                       );
@@ -237,3 +258,7 @@ export default function DropDownSearchBar({
     </div>
   );
 };
+
+DropDownSearchBar.displayName = 'DropDownSearchBar';
+
+export default DropDownSearchBar
