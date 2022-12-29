@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ChangeEvent, MouseEvent as ReactMouseEvent } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { CgSearchFound } from 'react-icons/cg';
+import { BsArrowRightShort } from 'react-icons/bs';
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import useBodyClick from '~/hooks/useBodyClick';
@@ -26,7 +27,7 @@ interface DropDownSearchBarProps {
 
   placeholder?: string;
 
-  onSearch?: (query: string, evt: ReactMouseEvent<HTMLButtonElement>) => void;
+  onSearch?: (query: string, evt: MouseEvent<HTMLElement>) => void;
 
   onDropdownSearch?: (query: string) => void;
 
@@ -170,6 +171,11 @@ function DropDownSearchBar({
     }
   }
 
+  const handleViewAllResults = (evt: MouseEvent<HTMLDivElement>) => {
+    setShowDropdown(false);
+    onSearch(searchContent, evt);
+  }
+
   return (
     <div ref={dropdownListRef} className="w-full relative z-2" >
       <SearchBar
@@ -223,16 +229,16 @@ function DropDownSearchBar({
                             <div className="flex flex-row">
                               <div>
                                 <img
-                                  className="w-[120px] h-[120px]"
+                                  className="w-[100px] h-[100px]"
                                   alt={suggest.data.title}
                                   src={suggest.data.image}
                                 />
                               </div>
                               <div className="flex flex-col justify-center items-start ml-2 gap-2">
-                                <span className="text-[1.3rem] font-medium">
+                                <span className="text-[1.1rem] font-medium">
                                   {suggest.data.title}
                                 </span>
-                                <span className="text-[1.2rem]">
+                                <span className="text-[1rem]">
                                   rating
                                 </span>
                               </div>
@@ -252,6 +258,20 @@ function DropDownSearchBar({
                   )
               }
             </ul>
+
+            {
+              suggests.length > 0 && searchingState === 'done' && (
+                <div
+                  className="py-1 hover:bg-gray-hover-bg flex justify-center items-center text-xl font-medium uppercase cursor-pointer"
+                  onClick={handleViewAllResults}
+                >
+                  view all results
+                  <span className="ml-1">
+                    <BsArrowRightShort fontSize={36} />
+                  </span>
+                </div>
+              )
+            }
           </div>
         )
       }

@@ -16,7 +16,7 @@ const results: SuggestItem[] = new Array(6).fill(0).map((_, index) => {
 
 export default (
   <div className="relative w-[1080px] h-screen">
-    <div className="w-full absolute top-[30%] left-[15%]">
+    <div className="w-full absolute top-[10%] left-[15%]">
       <DropDownSearchBar results={results} />
     </div>
   </div>

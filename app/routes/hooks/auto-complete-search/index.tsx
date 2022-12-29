@@ -24,7 +24,7 @@ export const action: ActionFunction = async ({ request }) => {
     return null;
   }
 
-  const results = await fetchProductsByCategory({ title: query });
+  const results = await fetchProductsByCategory({ title: query, perpage: 6 });
 
   return json<ActionType>({ results });
 };
