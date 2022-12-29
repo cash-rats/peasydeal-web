@@ -11,12 +11,10 @@ import { rootNode } from '~/utils/trie';
 import { composeProductDetailURL } from '~/utils';
 import type { ItemData, SuggestItem } from '~/shared/types';
 
-import styles from './styles/DropDownSearchBar.css';
 
 export const links: LinksFunction = () => {
   return [
     ...SearchBarLinks(),
-    { href: styles, rel: 'stylesheet' },
   ];
 };
 
@@ -173,7 +171,7 @@ export default function DropDownSearchBar({
   }
 
   return (
-    <div ref={dropdownListRef} className="DropDownSearchBar__wrapper" >
+    <div ref={dropdownListRef} className="w-full relative z-2" >
       <SearchBar
         form={form}
         ref={searchInputRef}
@@ -185,14 +183,14 @@ export default function DropDownSearchBar({
 
       {
         showDropdown && (
-          <div className="DropDownSearchBar__dropdown-wrapper">
+          <div className="py-2 px-0 mt-1 bg-[white] rounded-lg shadow-[dropdown] absolute w-full z-10">
             {
               searchContent && (
-                <div className="DropDownSearchBar__dropdown-search-status">
-                  <p className="DropDownSearchBar__dropdown-content">
+                <div className="grid grid-cols-2">
+                  <p className="py-2 px-4 flex flex-start items-center">
                     Searching {searchContent}
                   </p>
-                  <span className="DropDownSearchBar__dropdown-state"> {
+                  <span className="py-2 px-4 flex justify-end items-center"> {
                     searchingState === 'searching'
                       ? <MoonLoader size={20} color="#009378" />
                       : <CgSearchFound fontSize={24} color='#009378' />
@@ -201,10 +199,10 @@ export default function DropDownSearchBar({
               )
             }
 
-            <ul className="DropDownSearchBar__dropdown-list">
+            <ul className="list-none p-0 m-0">
               {
                 suggests.length === 0 && searchingState === 'done'
-                  ? <p className="DropDownSearchBar__dropdown-list-no-found">no result found</p>
+                  ? <p className="m-0 py-2 px-4 font-medium text-center capitalize">no result found</p>
                   : (
                     suggests.map((suggest, index) => {
                       return (
@@ -216,9 +214,14 @@ export default function DropDownSearchBar({
                             productName: suggest.data.title,
                           })}
                         >
-                          <li className="DropDownSearchBar__dropdown-item">
-                            <p>  {suggest.data.title}  </p>
-                            <span className="DropDownSearchBar__dropdown-discount"> SAVE {
+                          <li className="
+                          py-2 px-4 cursor-pointer leading-5
+                          flex justify-between items-center
+                          hover:bg-gray-hover-bg
+                          "
+                          >
+                            <p className="m-0">  {suggest.data.title}  </p>
+                            <span className="font-semibold leading-6 text-price-off-red"> SAVE {
                               (Number(suggest.data.discount) * 100).toFixed(0)
                             }%</span>
                           </li>

@@ -41,13 +41,12 @@ export default function TopProductsColumnGrid({ productUUID = '', title = '', im
                   />
                 </Link>
               </>
-
             )
         }
       </div>
 
       <div className="w-[164px] py-0 px-[0.6rem] box-border">
-        <p className="leading-[1.6rem] text-[13px] m-0 text-[cornflower-blue]">
+        <p className="leading-[1.2rem] text-[13px] m-0 text-[cornflower-blue]">
           {
             loading
               ? (

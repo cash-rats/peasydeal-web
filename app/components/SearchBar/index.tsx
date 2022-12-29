@@ -82,10 +82,16 @@ function SearchBar({
   }
 
   return (
-    <div className={clsx("nav-search-box", {
-      "SearchBar__focus": focusSearch,
+    <div className={clsx("flex flex-1", {
+      "border-solid border-[1px] border-light-green rounded-[4px] shadow-searchbar-focus": focusSearch,
     })}>
-      <div className="search-box">
+      {/* <div className="search-box"> */}
+      <div className="
+      bg-white rounded-sm border-solid border-[1px]
+      border-grey-cloud py-[0.875rem]
+      pr-[1.25rem] pl-[1rem] h-[2.625rem] w-full relative
+      flex items-center shadow-searchbox box-border"
+      >
         <InputBase
           autoComplete='off'
           aria-autocomplete='none'
@@ -107,7 +113,7 @@ function SearchBar({
         {
           !isStringEmpty(content) && (
             <span
-              className="clear-icon"
+              className="cursor-pointer p-[10px]"
               onClick={handleClear}
             >
               <ClearIcon color='action' />
@@ -124,7 +130,10 @@ function SearchBar({
             }
             onSearch(content, evt)
           }}
-          className="search-icon"
+          className="cursor-pointer absolute right-0 w-[3.75rem] h-full
+          flex items-center justify-center border-solid border-[1px] border-white
+          bg-white
+          "
         >
           <SearchIcon color={
             isStringEmpty(content)

@@ -53,9 +53,14 @@ module.exports = {
         'cornflower-blue': '#888',
         'dark-pastel-green': '#50B04C',
         'dark-mint-green': '#00C441',
+        'light-green': '#1EE494',
+        'grey-cloud': '#b4b4b4',
+        'price-off-red': '#e81120',
       },
       boxShadow: {
-        dropdown: '0 0 3px 0 rgb(73 143 226 / 50%)',
+        'dropdown': '0 0 3px 0 rgb(73 143 226 / 50%)',
+        'searchbar-focus': '0 0 0 4px #cce9e4;',
+        'searchbox': 'rgb(0 0 0 / 12%) 1px 2px 8px 1px;',
       }
     },
   },

@@ -63,6 +63,8 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
     return false
   }
 
+  // Any component that request Header reload  cart item count would potentially trigger redirection
+  // to `/cart` if cart has no item.
   if (
     submission
       ?.action
