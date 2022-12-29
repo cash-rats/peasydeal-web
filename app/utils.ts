@@ -79,7 +79,8 @@ export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https:
 // `https://peasydeal.com/product/some-google-product-i.{VARIATION_UUID}`
 export const composeProductDetailURL = ({ productName, variationUUID }: { productName: string, variationUUID: string }) => {
   // replace empty space with '-'
-  const prodName = productName.replace(/\s+/g, '-')
+  let prodName = productName.replace(/\s+/g, '-')
+  prodName = prodName.replace(/\//g, '%2F')
   const url = `/product/${prodName}-i.${variationUUID}`;
   return url;
 }
