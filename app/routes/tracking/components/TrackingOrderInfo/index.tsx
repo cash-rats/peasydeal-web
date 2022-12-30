@@ -6,6 +6,8 @@ import format from 'date-fns/format';
 import add from 'date-fns/add';
 import Tooltip from '@mui/material/Tooltip';
 
+import InfoPiece from './components/InfoPiece';
+import PriceInfo from './components/PriceInfo';
 import styles from './styles/Tracking.css';
 import type { TrackOrder } from '../../types';
 
@@ -28,6 +30,8 @@ const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => {
   TODOs:
     - [x] Search order by order number.
     - [ ] Deliver & Tax should have tooltips when hover over the icon.
+    - [ ] show payment status.
+    - [ ] Hide.
 */
 
 interface TrackingOrderIndexProps {
@@ -38,17 +42,23 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
   orderInfo = parseTrackOrderCreatedAt(orderInfo);
 
   return (
-    <div className="tracking-order-container">
-      <h1 className="order-title">
+    <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4 mt-[6.5rem]">
+      <h1 className="font-bold text-2xl leading-[1.875rem] mb-4">
         Order ID: {orderInfo.order_uuid}
       </h1>
 
-      <div className="order-subtitle">
-        <span className="order-subtitle-info">
+      <div className="flex mb-4">
+        <span className="flex text-sm text-battleship-grey
+          first:pr-4 last:pl-4 text-[rbg(0,179,59)]
+          border-r-[1px]"
+        >
           Order date: &nbsp; <b>{format(orderInfo.parsed_created_at, 'MMM, d, yyyy')}</b>
         </span>
 
-        <span className="order-subtitle-info">
+        <span className="flex text-sm text-battleship-grey
+        first:pr-4 first:border-solid first:border-[1px] first:border-border-color
+        last:pl-4 text-[rbg(0,179,59)]
+      ">
           {/* Estimated delivery would be 10 days after order is made */}
           <FaShippingFast fontSize={20} color='#00b33b' /> &nbsp;
           Estimated delivery: &nbsp;
@@ -64,31 +74,41 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       </div>
 
       {/* Products */}
-      <div className="order-products-container">
+      {/* <div className="order-products-container"> */}
+      <div className="border-[1px] border-solid border-border-color py-4 px-0 flex flex-col gap-4 mb-4 bg-white">
         {
           orderInfo.products.map((product) => (
             <div
               key={product.uuid}
-              className="order-product"
+              className="w-full flex flex-row justify-between
+              items-center pt-0 px-4 pb-4 border-b-[1px]
+              border-solid border-border-color
+              last:border-b-0 last:pb-0"
+
             >
-              <div className="left">
-                <div className="product-img">
+              <div className="w-[70%] flex flex-row justify-start items-center">
+                <div className="mr-3">
                   <img
                     alt={product.title}
                     src={product.url}
+                    className="w-[75px] h-[75px]"
                   />
                 </div>
 
-                <div className="product-spec-info">
-                  <p className="product-name"> {product.title} </p>
-                  <p className="product-spec"> {product.spec_name} </p>
+                <div>
+                  <p className="text-base font-medium"> {product.title} </p>
+                  <p className="text-xs font-normal text-[rgb(130,129,131)]"> {product.spec_name} </p>
                 </div>
               </div>
 
-              <div className="right">
-                <div className="price-qty">
-                  <p>£{product.sale_price}</p>
-                  <p>Qty: {product.order_quantity}</p>
+              <div className="w-[30%] flex justify-end">
+                <div className="flex flex-col items-end">
+                  <p className="text-xl font-medium">
+                    £{product.sale_price}
+                  </p>
+                  <p className="text-base font-normala text-[rgb(130,129,131)]">
+                    Qty: {product.order_quantity}
+                  </p>
                 </div>
               </div>
             </div>
@@ -97,98 +117,93 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       </div>
 
       {/* Delivery */}
-      <div className="deliver-info-container ">
-        <h1>Delivery Information</h1>
+      <div className="p-2 border-[1px] border-border-color border-b-0 bg-white">
+        <h1 className="text-xl font-normal mb-[0.7rem]">
+          Delivery Information
+        </h1>
 
-        <div className="info-piece">
-          <h4>Contact Name</h4>
-          <p>
-            {orderInfo.contact_name}
-          </p>
+        <InfoPiece
+          title='Contact Name'
+          info={orderInfo.contact_name}
+        />
 
-        </div>
+        <InfoPiece
+          title='Address'
+          info={(
+            <p>
+              {orderInfo.address} &nbsp;
+              {orderInfo.address2} <br />
+              {orderInfo.city} <br />
+              {orderInfo.postalcode}<br />
+              {orderInfo.country}
+            </p>
+          )}
+        />
 
-        <div className="info-piece">
-          <h4>Address</h4>
 
-          {/*
-              UK address example format:
+        <InfoPiece
+          title='Shipping Status'
+          info={orderInfo.shipping_status}
+        />
 
-                Mrs Smith 71 Cherry Court SOUTHAMPTON SO53 5PD UK
-            */}
-          <p>
-            {orderInfo.address} &nbsp;
-            {orderInfo.address2} <br />
-            {orderInfo.city} <br />
-            {orderInfo.postalcode}<br />
-            {orderInfo.country}
-          </p>
+        <InfoPiece
+          title='Tracking Number'
+          info={orderInfo.tracking_number}
+        />
 
-        </div>
-
-        <div className="info-piece">
-          <h4>Shipping Status</h4>
-          <p>
-            {orderInfo.shipping_status}
-          </p>
-        </div>
-
-        <div className="info-piece">
-          <h4>Tracking Number</h4>
-          <p>
-            {orderInfo.tracking_number}
-          </p>
-        </div>
-
-        <div className="info-piece">
-          <h4>Carrier</h4>
-          <p>
-            {orderInfo.carrier}
-          </p>
-        </div>
+        <InfoPiece
+          title='Carrier'
+          info={orderInfo.carrier}
+        />
       </div>
 
       {/* Order Summary  */}
-      <div className="deliver-info-container ">
-        <h1> Order Summary </h1>
-
-        <div className="subtotal">
-          <p>Subtotal</p>
-          <p>
-            £{orderInfo.subtotal} &nbsp;
-            <span className="discount">
-              Saved ${orderInfo.discount_amount} !
+      <div className="p-4 border-[1px] border-b-0 bg-white">
+        <h1 className="text-[1.2rem] font-normal mb-[0.7rem]"> Order Summary </h1>
+        <PriceInfo
+          title={(
+            <span className="text-base text-black capitalize">
+              subtotal &nbsp;
             </span>
-          </p>
-        </div>
+          )}
+          priceInfo={(
+            <p className="mt-2">
+              <span className="text-base font-normal text-black">
+                £{orderInfo.subtotal} &nbsp;
+              </span>
+              <span className="uppercase  text-[rgb(0,179,59)] text-base font-medium ">
+                Saved ${orderInfo.discount_amount} !
+              </span>
+            </p>
+          )}
+        />
 
-        <div className="cost-info-box info-piece">
-          <span className="price-info">
-            <span className="title-with-info">
-              <p> Shipping Fee </p>
-            </span>
-            <p> + £{orderInfo.shipping_fee} </p>
-          </span>
+        <div className="mt-2 border-b-[1px] border-border-color pb-4 flex flex-col gap-[0.3rem]">
+          <PriceInfo
+            title='Shipping Fee'
+            priceInfo={`+ £${orderInfo.shipping_fee}`}
+          />
 
-          <span className="price-info">
-            <span className="title-with-info">
-              <p> Tax </p>
-              <span>
+          <PriceInfo
+            title={(
+              <span className="flex flex-row items-center">
+                <span className="mr-1">
+                  Tax
+                </span>
                 <Tooltip title="20% VAT" arrow>
                   <span>
                     <BsFillInfoCircleFill />
                   </span>
                 </Tooltip>
               </span>
-            </span>
-
-            <p> + £{orderInfo.tax_amount} </p>
-          </span>
+            )}
+            priceInfo={`+ £${orderInfo.tax_amount}`}
+          />
         </div>
 
-        <div className="total">
-          <p> Total </p>
-          <p> £{orderInfo.total_amount} </p>
+        <div className="flex mt-2">
+          <p className="flex-1"> Total </p>
+          <p className="flex justify-end font-medium text-base"> £{orderInfo.total_amount} </p>
         </div>
       </div>
     </div >

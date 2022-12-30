@@ -56,6 +56,8 @@ module.exports = {
         'light-green': '#1EE494',
         'grey-cloud': '#b4b4b4',
         'price-off-red': '#e81120',
+        'border-color': '#e5e5e5',
+        'battleship-grey': '#828183',
       },
       boxShadow: {
         'dropdown': '0 0 3px 0 rgb(73 143 226 / 50%)',

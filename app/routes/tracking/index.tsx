@@ -196,12 +196,11 @@ function TrackingOrder() {
               <SearchBar
                 onSearch={handleOnSearch}
                 onClear={handleOnClear}
-                placeholder='Search by order id'
+                placeholder='Search by order id, e.g. 4T7f_2p4g'
               />
             }
           />
         </Form>
-
       </CategoryContext.Provider>
 
       <main>
