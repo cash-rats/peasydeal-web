@@ -26,5 +26,7 @@ export type TrackOrder = {
   parsed_created_at: Date;
   carrier: string;
   tracking_number: string;
+  tracking_link: string;
+  payment_status: 'paid' | 'unpaid';
   products: TrackOrderProduct[];
 }

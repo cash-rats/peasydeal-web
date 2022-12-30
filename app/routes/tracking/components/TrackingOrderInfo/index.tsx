@@ -1,4 +1,3 @@
-import type { LinksFunction } from '@remix-run/node';
 import { FaShippingFast } from 'react-icons/fa';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 import parseISO from 'date-fns/parseISO';
@@ -6,16 +5,10 @@ import format from 'date-fns/format';
 import add from 'date-fns/add';
 import Tooltip from '@mui/material/Tooltip';
 
-import InfoPiece from './components/InfoPiece';
 import PriceInfo from './components/PriceInfo';
-import styles from './styles/Tracking.css';
+import DeliveryInfo from './components/DeliveryInfo';
 import type { TrackOrder } from '../../types';
 
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => {
   order.parsed_created_at = parseISO(order.created_at);
@@ -50,7 +43,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       <div className="flex mb-4">
         <span className="flex text-sm text-battleship-grey
           first:pr-4 last:pl-4 text-[rbg(0,179,59)]
-          border-r-[1px]"
+          border-r-"
         >
           Order date: &nbsp; <b>{format(orderInfo.parsed_created_at, 'MMM, d, yyyy')}</b>
         </span>
@@ -117,45 +110,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       </div>
 
       {/* Delivery */}
-      <div className="p-2 border-[1px] border-border-color border-b-0 bg-white">
-        <h1 className="text-xl font-normal mb-[0.7rem]">
-          Delivery Information
-        </h1>
-
-        <InfoPiece
-          title='Contact Name'
-          info={orderInfo.contact_name}
-        />
-
-        <InfoPiece
-          title='Address'
-          info={(
-            <p>
-              {orderInfo.address} &nbsp;
-              {orderInfo.address2} <br />
-              {orderInfo.city} <br />
-              {orderInfo.postalcode}<br />
-              {orderInfo.country}
-            </p>
-          )}
-        />
-
-
-        <InfoPiece
-          title='Shipping Status'
-          info={orderInfo.shipping_status}
-        />
-
-        <InfoPiece
-          title='Tracking Number'
-          info={orderInfo.tracking_number}
-        />
-
-        <InfoPiece
-          title='Carrier'
-          info={orderInfo.carrier}
-        />
-      </div>
+      <DeliveryInfo orderInfo={orderInfo} />
 
       {/* Order Summary  */}
       <div className="p-4 border-[1px] border-b-0 bg-white">

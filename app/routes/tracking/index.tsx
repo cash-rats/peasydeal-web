@@ -15,7 +15,7 @@ import { fetchCategories } from '~/api';
 import type { Category } from '~/shared/types';
 import CategoryContext from '~/context/categories';
 
-import TrackingOrderInfo, { links as TrackingOrderInfoLinks } from './components/TrackingOrderInfo';
+import TrackingOrderInfo from './components/TrackingOrderInfo';
 import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
 import TrackingOrderInitPage, { links as TrackingOrderInitPageLinks } from './components/TrackingOrderInitPage';
 import { trackOrder } from './api';
@@ -36,7 +36,6 @@ type CatchBoundaryDataType = {
 }
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
-  console.log(`debug canonical ${getCanonicalDomain()}/tracking`);
   return [
     {
       rel: 'canonical', href: `${getCanonicalDomain()}/tracking`,
@@ -53,7 +52,6 @@ export const links: LinksFunction = () => {
   return [
     ...FooterLinks(),
     ...HeaderLinks(),
-    ...TrackingOrderInfoLinks(),
     ...TrackingOrderErrorPageLinks(),
     ...TrackingOrderInitPageLinks(),
     ...SearchBarLinks(),
