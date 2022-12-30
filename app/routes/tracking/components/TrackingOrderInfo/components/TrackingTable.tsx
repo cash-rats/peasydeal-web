@@ -20,7 +20,7 @@ function TrackingTable({ trackings }: TrackingTableProps) {
   return (
     <div className="w-full">
       <h1 className="font-medium mb-2">
-        Your shippment trackings:
+        Shipment trackings:
       </h1>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="shippment tracking table">
