@@ -12,7 +12,7 @@ import OrderDetail from './components/OrderDetail';
 import ProductSummary from './components/ProductSummary';
 import OrderInformation from './components/OrderInformation';
 import type { SuccessOrderDetail } from './types';
-import { fetchOrder } from './api';
+import { fetchOrder } from './api.server';
 import LoadingSkeleton from '../LoadingSkeleton';
 
 /*
@@ -53,7 +53,7 @@ function Success({ orderId }: { orderId: string }) {
       {},
       {
         method: 'post',
-        action: `/checkout/result/components/Success?index&order_uuid=${orderId}`
+        action: `/payment/components/Success?index&order_uuid=${orderId}`
       });
 
     // Notify Header component to reload cart item count.
