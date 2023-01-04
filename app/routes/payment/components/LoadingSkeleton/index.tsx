@@ -2,7 +2,7 @@ import Skeleton from '@mui/material/Skeleton';
 
 export default function LoadingSkeleton() {
   return (
-    <div className="pt-8 aspect-[3/4] w-[600px]">
+    <div className="aspect-[3/4] w-[600px]">
       <div className="flex flex-col items-center">
         <div className="text-center">
           <Skeleton variant='circular' width={120} height={120} />

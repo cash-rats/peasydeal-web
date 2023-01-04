@@ -160,7 +160,7 @@ function CheckoutPage() {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${getBrowserDomainUrl()}/checkout/result?order_uuid=${orderUUID}`,
+          return_url: `${getBrowserDomainUrl()}/payment/${orderUUID}`,
         },
       });
 

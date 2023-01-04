@@ -9,10 +9,9 @@ export default function Payment() {
     <>
       <Header />
 
-      <div className="min-h-[35rem]">
+      <div className="pt-[83px] min-h-[35rem] flex justify-center">
         <Outlet />
       </div>
-
       <Footer />
     </>
   );

@@ -1,24 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useStripe } from '@stripe/react-stripe-js';
 import type { PaymentIntent } from '@stripe/stripe-js';
-import type { LinksFunction } from '@remix-run/node';
 
 import LoadingSkeleton from '../LoadingSkeleton';
-import Success, { links as SuccessLinks } from '../Success';
+import Success from '../Success';
 import Failed from '../Failed';
-
-export const links: LinksFunction = () => {
-  return [
-    ...SuccessLinks(),
-  ];
-};
 
 /*
   TODOs
     - [ ] Show failed screen if payment status isn't success.
     - [ ] Style loading page.
 */
-function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
+interface PaymentResultLoaderProps {
+  clientSecret: string;
+  orderId: string;
+};
+
+function PaymentResultLoader({ clientSecret, orderId }: PaymentResultLoaderProps) {
   const stripe = useStripe();
   const [stripePaymentStatus, setStripePaymentStatus] = useState<PaymentIntent.Status | null | undefined>(null);
 
@@ -36,7 +34,7 @@ function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
 
   function renderResult(paymentStatus: PaymentIntent.Status | null | undefined) {
     if (paymentStatus === 'succeeded') {
-      return (<Success />);
+      return (<Success orderId={orderId} />);
     }
 
     if (paymentStatus === 'requires_payment_method') {
@@ -61,7 +59,11 @@ function PaymentResultLoader({ clientSecret }: { clientSecret: string }) {
       );
     }
 
-    return (<LoadingSkeleton />)
+    return (
+      <div className="pt-8">
+        <LoadingSkeleton />
+      </div>
+    )
   }
 
   return (

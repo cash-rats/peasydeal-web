@@ -10,6 +10,7 @@ import PaymentResultLoader from './components/PaymentResultLoader';
 
 type LoaderDataType = {
   clientSecret: string;
+  orderId: string;
 };
 
 export const loader: LoaderFunction = async ({ params, request }) => {
@@ -27,12 +28,15 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     throw redirect('/cart');
   }
 
-  return json<LoaderDataType>({ clientSecret });
+  return json<LoaderDataType>({ clientSecret, orderId });
 }
 
 export default function PaymentResult() {
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-  const { clientSecret = '' } = useLoaderData();
+  const {
+    clientSecret = '',
+    orderId,
+  } = useLoaderData<LoaderDataType>();
 
   useEffect(() => {
     if (window) {
@@ -61,7 +65,7 @@ export default function PaymentResult() {
             options={options}
           >
             {
-              <PaymentResultLoader clientSecret={clientSecret} />
+              <PaymentResultLoader orderId={orderId} clientSecret={clientSecret} />
             }
           </Elements>
         )

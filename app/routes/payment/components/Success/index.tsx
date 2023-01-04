@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFetcher } from '@remix-run/react';
 import { json } from '@remix-run/node';
-import type { LinksFunction, ActionFunction } from '@remix-run/node';
+import type { ActionFunction } from '@remix-run/node';
 import parseISO from 'date-fns/parseISO';
 
 import { clearCart } from '~/sessions/shoppingcart.session';
@@ -40,34 +40,32 @@ export const action: ActionFunction = async ({ request }) => {
   );
 }
 
-function Success() {
+function Success({ orderId }: { orderId: string }) {
   const orderFetcher = useFetcher();
   const cartItemCountFetcher = useFetcher();
   const [orderDetail, setOrderDetail] = useState<SuccessOrderDetail | null>(null);
 
   useEffect(() => {
-    if (window) {
-      const orderUUID = new URLSearchParams(window.location.search).get('order_uuid');
+    if (!orderId) return;
 
-      // Retrieve order information via loader.
-      orderFetcher.submit(
-        {},
-        {
-          method: 'post',
-          action: `/checkout/result/components/Success?index&order_uuid=${orderUUID}`
-        });
+    // Retrieve order information via loader.
+    orderFetcher.submit(
+      {},
+      {
+        method: 'post',
+        action: `/checkout/result/components/Success?index&order_uuid=${orderId}`
+      });
 
-      // Notify Header component to reload cart item count.
-      cartItemCountFetcher.submit(
-        null,
-        {
-          method: 'post',
-          action: '/components/Header?index',
-          replace: true,
-        },
-      )
-    }
-  }, []);
+    // Notify Header component to reload cart item count.
+    cartItemCountFetcher.submit(
+      null,
+      {
+        method: 'post',
+        action: '/components/Header?index',
+        replace: true,
+      },
+    )
+  }, [orderId]);
 
   useEffect(() => {
     if (orderFetcher.type === 'done') {
@@ -77,7 +75,7 @@ function Success() {
 
   return (
     <div className="w-screen bg-[#f6f6f6] pt-8 px-[10px] pb-14">
-      <div className="m-w-[650px] my-0 mx-auto flex flex-col justify-center items-center">
+      <div className="max-w-[650px] my-0 mx-auto flex flex-col justify-center items-center">
         {
           orderDetail && orderFetcher.type === 'done' ? (
             <>
