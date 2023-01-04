@@ -24,6 +24,16 @@ import { ServerStyleContext, ClientStyleContext } from "./context"
 import styles from "./styles/global.css";
 import ScrollRestoration from './ConditionalScrollRestoration';
 
+declare global {
+  interface Window {
+    ENV: {
+      ENV: {
+        STRIPE_PUBLIC_KEY: string;
+      }
+    }
+  }
+}
+
 export const meta: MetaFunction = () => ({
   // default tags
   charset: "utf-8",

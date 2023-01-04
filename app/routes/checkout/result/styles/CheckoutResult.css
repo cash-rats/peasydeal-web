@@ -1,32 +1,3 @@
-.checkout-result-container {
-  width: 100vw;
-  background-color: #F6F6F6;
-  padding: 2rem 10px 3.5rem;
-}
-.checkout-result-container .checkout-result-content {
-  max-width: 650px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-.checkout-result-container .title {
-  text-align: center;
-  font-weight: 600;
-  font-size: 1.7rem;
-  margin-top: 1rem;
-}
-.checkout-result-container .text {
-  margin-top: 0.5rem;
-  text-align: center;
-  font-size: 1rem;
-  color: #7F7F7F;
-}
-.checkout-result-container .continue-shopping-btn {
-  margin-top: 1.5rem;
-}
-
 .skeleton-container {
   width: 42rem;
   height: 650px;
