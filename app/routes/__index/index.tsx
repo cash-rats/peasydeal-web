@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { json } from "@remix-run/node";
-import type { LoaderFunction, LinksFunction, ActionFunction } from "@remix-run/node";
+import type { LoaderFunction, LinksFunction } from "@remix-run/node";
 import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
 import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from 'react-lazy-load-image-component';
@@ -13,29 +13,26 @@ import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from "~/shared/types";
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { checkHasMoreRecord, getCanonicalDomain } from '~/utils';
-import { commitSession } from '~/sessions/redis_session';
+import { commitSession } from '~/sessions/sessions';
 import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
 import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/SeasonalRowLayout/SeasonalRowLayout";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { fetchProductsByCategory, fetchActivityBanners, fetchProductsByCategoryV2 } from "./api";
+import { fetchActivityBanners, fetchProductsByCategoryV2 } from "./api";
 import type { ActivityBanner } from "./types";
 
 import styles from "./styles/ProductList.css";
 import { organizeTo9ProdsPerRow } from './utils';
 
-type LoaderType = {
+type LoaderType = 'loadmore';
+
+type LoaderDataType = {
 	products: Product[];
 	page: number;
 	canonical_link: string;
 	has_more: boolean;
 	activity_banners: ActivityBanner[];
 }
-
-type ActionDataType = {
-	products: Product[];
-	has_more: boolean;
-};
 
 export const links: LinksFunction = () => {
 	return [
@@ -48,7 +45,7 @@ export const links: LinksFunction = () => {
 	]
 }
 
-const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
+const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
 	return [
 		{
 			rel: 'canonical', href: data.canonical_link,
@@ -57,20 +54,51 @@ const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
 }
 export const handle = { dynamicLinks }
 
+type LoaderLoadmoreDateType = {
+	products: Product[];
+	has_more: boolean;
+}
+const _loadmoreLoader = async (request: Request, page: number, perPage: number) => {
+	const prods = await fetchProductsByCategoryV2({
+		perpage: perPage,
+		page,
+		category: 1, // 1 is the id for category 'Hot Deal'
+	})
+
+	const session = await addCategoryProducts(request, [], 'Hot Deal', page);
+	return json<LoaderLoadmoreDateType>({
+		products: prods,
+		has_more: prods.length === perPage,
+	}, {
+		headers: {
+			'Set-Cookie': await commitSession(session),
+		},
+	});
+}
+
 export const loader: LoaderFunction = async ({ request }) => {
+	const url = new URL(request.url);
+	const actionType = url.searchParams.get('action_type') as LoaderType;
+	if (actionType === 'loadmore') {
+		const page = Number(url.searchParams.get('page')) || 1;
+		const perPage = Number(url.searchParams.get('per_page')) || 9;
+
+		return _loadmoreLoader(request, page, perPage)
+	}
+
 	try {
 		const [prodInfo, activityBanners] = await Promise.all([
 			await getCategoryProducts(request, 'Hot Deal'),
-			await fetchActivityBanners(),
+			await fetchActivityBanners()
 		])
 
 		if (prodInfo) {
-			const prods = await fetchProductsByCategory({
+			const prods = await fetchProductsByCategoryV2({
 				perpage: prodInfo.page * PAGE_LIMIT,
 				category: 1, // 1 is the id for category 'Hot Deal'
 			})
 
-			return json<LoaderType>({
+			return json<LoaderDataType>({
 				products: prods,
 				page: prodInfo.page,
 				canonical_link: getCanonicalDomain(),
@@ -88,7 +116,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			await addCategoryProducts(request, [], 'Hot Deal', 1),
 		]);
 
-		return json<LoaderType>({
+		return json<LoaderDataType>({
 			products: prods,
 			page: 1,
 			canonical_link: getCanonicalDomain(),
@@ -103,29 +131,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 		console.log('err', err);
 	}
 };
-
-export const action: ActionFunction = async ({ request }) => {
-	const body = await request.formData();
-	const page = Number(body.get("page") || '1');
-	const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
-
-	const prods = await fetchProductsByCategoryV2({
-		perpage: perPage,
-		page,
-		category: 1, // 1 is the id for category 'Hot Deal'
-	})
-
-	const session = await addCategoryProducts(request, [], 'Hot Deal', page);
-
-	return json<ActionDataType>({
-		products: prods,
-		has_more: prods.length === perPage,
-	}, {
-		headers: {
-			'Set-Cookie': await commitSession(session),
-		},
-	});
-}
 
 // TODO: this this should be
 const mockedActivities: SeasonalInfo[] = [
@@ -167,7 +172,7 @@ const mockedActivities: SeasonalInfo[] = [
 type IndexProps = {} & LazyComponentProps;
 
 function Index({ scrollPosition }: IndexProps) {
-	const { products, has_more, page, activity_banners } = useLoaderData<LoaderType>();
+	const { products, has_more, page, activity_banners } = useLoaderData<LoaderDataType>();
 	const currPage = useRef(page);
 	const [hasMore, setHasMore] = useState(has_more);
 	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
@@ -181,20 +186,18 @@ function Index({ scrollPosition }: IndexProps) {
 			const nextPage = currPage.current + 1;
 			loadmoreFetcher.submit(
 				{
+					action_type: 'loadmore',
 					page: nextPage.toString(),
 					per_page: PAGE_LIMIT.toString(),
 				},
-				{
-					method: 'post',
-					action: '/?index'
-				}
+				{ action: '/?index' }
 			);
 		}, []);
 
 	// Append products to local state when fetcher type is in `done` state.
 	useEffect(() => {
 		if (loadmoreFetcher.type === 'done') {
-			const { products } = loadmoreFetcher.data as ActionDataType;
+			const { products } = loadmoreFetcher.data as LoaderLoadmoreDateType;
 
 			if (products.length <= 0) {
 				setHasMore(false);

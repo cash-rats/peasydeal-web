@@ -1,7 +1,7 @@
 import type { Session } from '@remix-run/node';
 
 import type { Product } from '~/shared/types';
-import { getSession } from '~/sessions/redis_session';
+import { getSession } from '~/sessions/sessions';
 
 export const ProductListKey = 'product_list';
 

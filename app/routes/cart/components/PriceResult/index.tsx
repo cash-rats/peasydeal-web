@@ -73,7 +73,7 @@ export default function PriceResult({ priceInfo, calculating = false }: PriceRes
         </div>
 
         <div className="grand-total">
-          <label> <strong>Est. Total</strong> </label>
+          <label> <strong>Total</strong> </label>
           <div className="result-value">
             <strong>
               {
