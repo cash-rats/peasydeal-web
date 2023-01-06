@@ -34,7 +34,6 @@ type ContextType = { categories: Category[] };
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();
-
 	return json<LoaderType>({ categories: categories });
 };
 

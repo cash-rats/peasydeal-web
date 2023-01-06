@@ -18,7 +18,7 @@ import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalCol
 import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/SeasonalRowLayout/SeasonalRowLayout";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { fetchProductsByCategory, fetchActivityBanners } from "./api";
+import { fetchProductsByCategory, fetchActivityBanners, fetchProductsByCategoryV2 } from "./api";
 import type { ActivityBanner } from "./types";
 
 import styles from "./styles/ProductList.css";
@@ -80,7 +80,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 		}
 
 		const [prods, session] = await Promise.all([
-			await fetchProductsByCategory({
+			await fetchProductsByCategoryV2({
 				perpage: PAGE_LIMIT,
 				page: 1,
 				category: 1, // 1 is the id for category 'Hot Deal'
@@ -106,11 +106,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
 	const body = await request.formData();
-
 	const page = Number(body.get("page") || '1');
 	const perPage = Number(body.get("per_page")) || PAGE_LIMIT;
 
-	const prods = await fetchProductsByCategory({
+	const prods = await fetchProductsByCategoryV2({
 		perpage: perPage,
 		page,
 		category: 1, // 1 is the id for category 'Hot Deal'
@@ -192,22 +191,6 @@ function Index({ scrollPosition }: IndexProps) {
 			);
 		}, []);
 
-	const handleManualLoad = useCallback(
-		() => {
-			const nextPage = currPage.current + 1;
-			loadmoreFetcher.submit(
-				{
-					page: nextPage.toString(),
-					per_page: PAGE_LIMIT.toString(),
-				},
-				{
-					method: 'post',
-					action: '/?index'
-				}
-			);
-		}, []);
-
-
 	// Append products to local state when fetcher type is in `done` state.
 	useEffect(() => {
 		if (loadmoreFetcher.type === 'done') {
@@ -221,7 +204,7 @@ function Index({ scrollPosition }: IndexProps) {
 			currPage.current += 1;
 			setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
 		}
-	}, [loadmoreFetcher.type])
+	}, [loadmoreFetcher])
 
 
 	// Redirect to product detail page when click on product.
@@ -265,7 +248,7 @@ function Index({ scrollPosition }: IndexProps) {
 										<LoadMoreButton
 											loading={loadmoreFetcher.state !== 'idle'}
 											text='Load more'
-											onClick={handleManualLoad}
+											onClick={handleLoadMore}
 										/>
 									)
 							}

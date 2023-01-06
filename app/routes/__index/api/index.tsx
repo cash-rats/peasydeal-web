@@ -2,7 +2,7 @@ import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
 import type { ActivityBanner } from '../types';
-import { getMYFBEndpoint } from '~/utils/endpoints';
+import { getMYFBEndpoint, getPeasyDealEndpoint } from '~/utils/endpoints';
 export interface FetchProductsByCategoryParams {
 	category?: string | number;
 	perpage?: number;
@@ -88,4 +88,36 @@ export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 	}
 
 	return respJSON as ActivityBanner[];
+}
+
+interface FetchProductsByCategoryV2Params {
+	category: number;
+	perpage: number;
+	page: number;
+}
+
+export const fetchProductsByCategoryV2 = async ({
+	category,
+	perpage,
+	page,
+}: FetchProductsByCategoryV2Params) => {
+	if (!perpage) perpage = 9;
+	if (!page) page = 0;
+	if (!category) category = 1;
+
+	let endpoint = `${getPeasyDealEndpoint()}/v1/products?per_page=${perpage}&page=${page}&category=${category}`;
+
+	console.log('debug endpoint', endpoint);
+
+	const resp = await fetch(endpoint);
+	const respJSON = await resp.json();
+
+	if (resp.status !== httpStatus.OK) {
+		const errResp = respJSON as ApiErrorResponse;
+
+		throw new Error(errResp.err_message);
+	}
+
+	const prods = transformData(respJSON.products);
+	return prods;
 }
