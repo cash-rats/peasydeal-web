@@ -81,7 +81,9 @@ const ActivityBannerLayout = ({
   return (
     <div className="ActivityBannerLayout__wrapper">
       <div className="ActivityBannerLayout__up">
-        <span className="ActivityBannerLayout__title-text"> {activityInfo.title} </span>
+        <span className="ActivityBannerLayout__title-text">
+          {activityInfo.title}
+        </span>
         <div className="ActivityBannerLayout__buy-now">
           <Link to={`/${activityInfo.catTitle}`}>
             <RoundButton colorScheme='blackcontained'>

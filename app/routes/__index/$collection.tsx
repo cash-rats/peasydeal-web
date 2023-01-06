@@ -20,17 +20,17 @@ import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { normalizeToMap, fetchCategories } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
-import { commitSession } from '~/sessions/redis_session';
+import { commitSession } from '~/sessions/sessions';
 import { checkHasMoreRecord, getCanonicalDomain, getCollectionDescText, getCollectionTitleText } from '~/utils';
 import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
 import styles from './styles/ProductList.css';
-import { fetchProductsByCategory } from "./api";
+import { fetchProductsByCategoryV2 } from "./api";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { organizeTo9ProdsPerRow } from "./utils";
 
-type LoaderType = {
+type LoaderDataType = {
   categories: CategoriesMap;
   products: Product[];
   category: string;
@@ -39,14 +39,14 @@ type LoaderType = {
   has_more: boolean;
 };
 
-type ActionType = {
+type ActionDataType = {
   products: Product[],
   category: string,
   page: number,
   has_more: boolean,
 };
 
-const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => ([
+const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
   {
     rel: 'canonical', href: data
       ? data.canonical_link
@@ -55,7 +55,7 @@ const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => ([
 ])
 
 export const handle = { dynamicLinks }
-export const meta: MetaFunction = ({ data }: { data: LoaderType }) => ({
+export const meta: MetaFunction = ({ data }: { data: LoaderDataType }) => ({
   title: getCollectionTitleText(data?.category),
   description: getCollectionDescText(data?.category),
 });
@@ -71,8 +71,46 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 };
+
+type LoaderType = 'load_category_products';
+
+const _loadMoreLoader = async (request: Request, collection: string, page: number, perPage: number) => {
+  const catMap = await normalizeToMap(await fetchCategories());
+  if (!catMap[collection]) {
+    throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
+  }
+
+  const products = await fetchProductsByCategoryV2({
+    perpage: perPage,
+    page,
+    category: Number(catMap[collection].catId),
+  })
+
+  return json<ActionDataType>({
+    products,
+    category: collection,
+    page,
+    has_more: checkHasMoreRecord(products.length, PAGE_LIMIT),
+  }, {
+    headers: {
+      'Set-Cookie': await commitSession(
+        await addCategoryProducts(request, [], collection, page)
+      ),
+    },
+  });
+};
+
 export const loader: LoaderFunction = async ({ params, request }) => {
+  const url = new URL(request.url);
+  const actinType = url.searchParams.get('action_type') as LoaderType;
   const { collection = '' } = params;
+
+  if (actinType === 'load_category_products') {
+    const page = Number(url.searchParams.get('page'));
+    const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
+    return _loadMoreLoader(request, collection, page, perpage);
+  }
+
   const catMap = await normalizeToMap(await fetchCategories());
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
@@ -80,12 +118,12 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   const cachedProds = await getCategoryProducts(request, collection);
   if (cachedProds) {
-    const prods = await fetchProductsByCategory({
+    const prods = await fetchProductsByCategoryV2({
       perpage: PAGE_LIMIT * cachedProds.page,
-      category: catMap[collection].catId,
+      category: Number(catMap[collection].catId),
     });
 
-    return json<LoaderType>({
+    return json<LoaderDataType>({
       categories: catMap,
       category: collection,
       products: prods,
@@ -96,7 +134,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   }
 
   // First time loaded so it must be first page.
-  const prods = await fetchProductsByCategory({
+  const prods = await fetchProductsByCategoryV2({
     perpage: PAGE_LIMIT,
     page: 1,
     category: Number(catMap[collection].catId),
@@ -105,7 +143,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const session = await addCategoryProducts(request, [], collection, 1);
   // const cookieSession = await setCategories(request, catMap);
 
-  return json<LoaderType>({
+  return json<LoaderDataType>({
     categories: catMap,
     products: prods,
     page: 1,
@@ -119,44 +157,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
 }
 
-type __ActionType = 'redirect_to_prod' | 'load_category_products';
-
 // TODO: extract action type logic to independent function.
 export const action: ActionFunction = async ({ request, params }) => {
   const body = await request.formData();
-  const actionType = body.get("__action") as __ActionType;
-
-  if (actionType === 'load_category_products') {
-    const page = Number(body.get("page") || '1');
-    const perpage = Number(body.get("per_page")) || PAGE_LIMIT;
-    const { collection = '' } = params;
-
-    const catMap = await normalizeToMap(await fetchCategories());
-
-    if (!catMap[collection]) {
-      throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
-    }
-
-    const products = await fetchProductsByCategory({
-      perpage,
-      page,
-      category: catMap[collection].catId,
-    })
-
-    const session = await addCategoryProducts(request, [], collection, page);
-
-    return json<ActionType>({
-      products,
-      category: collection,
-      page,
-      has_more: checkHasMoreRecord(products.length, PAGE_LIMIT),
-    }, {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
-    });
-  }
-
   const productID = body.get("product_id");
   return redirect(`/product/${productID}`);
 };
@@ -173,7 +176,7 @@ const getCategoryFromWindowPath = (window: Window): string => {
 type CollectionProps = {} & LazyComponentProps;
 
 function Collection({ scrollPosition }: CollectionProps) {
-  const { category, products, page, has_more, categories } = useLoaderData<LoaderType>();
+  const { category, products, page, has_more, categories } = useLoaderData<LoaderDataType>();
 
   // "productRows" is for displaying products on the screen.
   const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
@@ -196,7 +199,7 @@ function Collection({ scrollPosition }: CollectionProps) {
   // If use changes category at the moment, don't add the products to the state.
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
-      const { products, has_more, page, category: dataCat } = loadmoreFetcher.data as ActionType;
+      const { products, has_more, page, category: dataCat } = loadmoreFetcher.data as ActionDataType;
       // If user change category while load more is happening, the newly loaded data
       // would be appended to different category. Moreover, it would cause inconsistent
       // page number. Thus, we abandon appending loaded data on to the product list
@@ -221,32 +224,13 @@ function Collection({ scrollPosition }: CollectionProps) {
 
     loadmoreFetcher.submit(
       {
-        __action: 'load_category_products',
+        action_type: 'load_category_products',
         page: nextPage.toString(),
         per_page: PAGE_LIMIT.toString(),
       },
-      {
-        method: 'post',
-        action: `/${decodeURI(category)}`,
-      },
+      { action: `/${decodeURI(category)}` },
     );
   };
-
-  const handleManualLoad = () => {
-    const category = getCategoryFromWindowPath(window);
-    const nextPage = currPage.current + 1;
-    loadmoreFetcher.submit(
-      {
-        __action: 'load_category_products',
-        page: nextPage.toString(),
-        per_page: PAGE_LIMIT.toString(),
-      },
-      {
-        method: 'post',
-        action: `/${category}`
-      },
-    );
-  }
 
   const isChangingCategory = transition.state !== 'idle' &&
     transition.location &&
@@ -302,7 +286,7 @@ function Collection({ scrollPosition }: CollectionProps) {
             :
             <LoadMoreButton
               loading={loadmoreFetcher.state !== 'idle'}
-              onClick={handleManualLoad}
+              onClick={handleLoadMore}
               text='Load more'
             />
         }
