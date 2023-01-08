@@ -4,7 +4,6 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 
 import RoundButton from '~/components/RoundButton';
-import { breakPoints } from '~/styles/breakpoints';
 import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
 import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
 import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';

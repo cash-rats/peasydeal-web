@@ -11,7 +11,7 @@ import type { Product } from '~/shared/types';
 import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
 import { organizeTo9ProdsPerRow } from '~/utils/products';
 import { fetchCategories, normalizeToMap } from '~/api/categories.server';
-import { fetchProductsByCategory } from '~/api';
+import { fetchProductsByCategoryV2 } from '~/api';
 import { PAGE_LIMIT } from '~/shared/constants';
 
 import styles from './styles/RecommendedProducts.css';
@@ -39,9 +39,9 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
 
-  const products = await fetchProductsByCategory({
-    category: targetCat.catId,
-    random: 1,
+  const products = await fetchProductsByCategoryV2({
+    category: Number(targetCat.catId),
+    random: true,
     perpage: PAGE_LIMIT,
   });
 
@@ -89,6 +89,10 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
 
   return (
     <div className="recommended-products-wrapper">
+      <h1 className="uppercase font-bold text-3xl mb-6">
+        you may also like
+      </h1>
+
       {
         <ProductRowsLayout
           loading={fetcher.type !== 'done'}
