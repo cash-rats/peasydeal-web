@@ -111,21 +111,15 @@ export default function MediumGrid({
 
 	}
 
-	const isClickableGrid = (): boolean => {
-		const windowDOM = window as Window;
-		if (!windowDOM) return false;
-		return windowDOM.innerWidth <= breakPoints.phoneTop;
-	}
-
 	return (
 		<Link
 			// prefetch='intent'
 			to={composeProductDetailURL({ productName: title, variationUUID: productID })}
 			onClick={(evt) => {
-				if (!isClickableGrid()) {
-					evt.preventDefault();
-					return;
-				}
+				// if (!isClickableGrid()) {
+				// 	evt.preventDefault();
+				// 	return;
+				// }
 
 				onClickProduct(title, productID)
 			}}

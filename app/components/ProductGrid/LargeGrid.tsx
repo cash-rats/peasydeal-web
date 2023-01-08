@@ -97,26 +97,9 @@ function LargeGrid({
 	discount = 0,
 	scrollPosition,
 }: LargeGridProps) {
-	const [clickableGrid, setClickableGrid] = useState<boolean>(false);
 	const tagNames = TagComboMap[tagCombo];
 	const shouldRenderTags = normalizeTagsListToMap(tagNames);
 	const nDiscount = ~~(discount * 100);
-
-	const isClickableGrid = (): boolean => {
-		const windowDOM = window as Window;
-		if (!windowDOM) return false;
-		return windowDOM.innerWidth <= breakPoints.phoneTop;
-	}
-
-	useEffect(() => {
-		const handleResize = () => {
-			setClickableGrid(isClickableGrid());
-		};
-		if (window) {
-			setClickableGrid(isClickableGrid());
-			window.addEventListener('resize', handleResize);
-		}
-	}, []);
 
 	return (
 		<Link
@@ -124,10 +107,9 @@ function LargeGrid({
 			className="large-grid-container"
 			to={composeProductDetailURL({ productName: title, variationUUID: productID })}
 			onClick={(evt) => {
-				if (!isClickableGrid()) {
-					evt.preventDefault();
-					return;
-				}
+				// The following code prevents redirection triggered by view button
+				// evt.preventDefault();
+				// return;
 
 				onClickProduct(title, productID)
 			}}
@@ -173,6 +155,8 @@ function LargeGrid({
 							colorScheme="cerise"
 							onClick={(evt) => {
 								evt.stopPropagation();
+
+								// TA recording.
 								onClickProduct(title, productID)
 							}}
 						>
