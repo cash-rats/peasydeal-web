@@ -1,6 +1,7 @@
 import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
+import { TbSearch } from "react-icons/tb";
 import IconButton from '@mui/material/IconButton';
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
