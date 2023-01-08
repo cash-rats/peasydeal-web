@@ -14,12 +14,10 @@ import { fetchCategories, normalizeToMap } from '~/api/categories.server';
 import { fetchProductsByCategoryV2 } from '~/api';
 import { PAGE_LIMIT } from '~/shared/constants';
 
-import styles from './styles/RecommendedProducts.css';
 
 export const links: LinksFunction = () => {
   return [
     ...ProductRowsLayoutLinks(),
-    { rel: 'stylesheet', href: styles },
   ];
 };
 
@@ -88,7 +86,7 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
   }, [fetcher])
 
   return (
-    <div className="recommended-products-wrapper">
+    <div className="mt-6">
       <h1 className="uppercase font-bold text-3xl mb-6">
         you may also like
       </h1>
