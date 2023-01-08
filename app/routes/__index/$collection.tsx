@@ -121,6 +121,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     const prods = await fetchProductsByCategoryV2({
       perpage: PAGE_LIMIT * cachedProds.page,
       category: Number(catMap[collection].catId),
+      random: false,
     });
 
     return json<LoaderDataType>({

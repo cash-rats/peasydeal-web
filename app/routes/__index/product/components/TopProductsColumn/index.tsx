@@ -3,7 +3,7 @@ import { useFetcher, useTransition } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { useEffect, useState } from 'react';
 
-import { fetchProductsByCategory } from '~/api';
+import { fetchProductsByCategory, fetchProductsByCategoryV2 } from '~/api';
 import type { Product } from '~/shared/types';
 
 import BannerProduct from './BannerProduct';
@@ -16,10 +16,10 @@ type ActionType = {
 
 export const action: ActionFunction = async ({ request }) => {
   const [topProds, superDealProds] = await Promise.all([
-    await fetchProductsByCategory({
+    await fetchProductsByCategoryV2({
       category: 22,
       perpage: 5,
-      random: 1,
+      random: true,
     }),
     await fetchProductsByCategory({
       category: 2,

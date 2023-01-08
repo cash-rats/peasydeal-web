@@ -90,22 +90,24 @@ export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 	return respJSON as ActivityBanner[];
 }
 
-interface FetchProductsByCategoryV2Params {
+export interface FetchProductsByCategoryV2Params {
 	category?: number;
 	perpage?: number;
 	page?: number;
+	random?: boolean;
 }
 
 export const fetchProductsByCategoryV2 = async ({
 	category,
 	perpage,
 	page,
+	random,
 }: FetchProductsByCategoryV2Params) => {
 	if (!perpage) perpage = 9;
 	if (!page) page = 1;
 	if (!category) category = 1;
 
-	let endpoint = `${getPeasyDealEndpoint()}/v1/products?per_page=${perpage}&page=${page}&category=${category}`;
+	let endpoint = `${getPeasyDealEndpoint()}/v1/products?per_page=${perpage}&page=${page}&category=${category}&random=${random ? 'true' : 'false'}`;
 
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();

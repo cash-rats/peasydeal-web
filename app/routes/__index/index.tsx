@@ -112,6 +112,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 				perpage: PAGE_LIMIT,
 				page: 1,
 				category: 1, // 1 is the id for category 'Hot Deal'
+				random: false,
 			}),
 			await addCategoryProducts(request, [], 'Hot Deal', 1),
 		]);
