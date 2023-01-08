@@ -42,6 +42,7 @@ module.exports = {
         'home-gradient-light': "url('/images/home-gradient-light.png')",
       }),
       colors: {
+        'primary': '#e6007e',
         'raisin-black': '#212121',
         'gray-hover-bg': '#E4E4E4',
         'gray-hover-bg-2': '#D8D8D8',
