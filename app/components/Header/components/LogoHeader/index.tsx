@@ -1,8 +1,7 @@
 import type { ReactNode, CSSProperties } from 'react';
 
 import LogoBar from '~/components/Header/components/LogoBar';
-
-import HeaderWrapper from "../HeaderWrapper";
+import SearchBar from '~/components/SearchBar';
 
 interface LogoHeaderProps {
   searchBar?: ReactNode;
@@ -22,24 +21,45 @@ function LogoHeader({
   style,
 }: LogoHeaderProps) {
   return (
-    <HeaderWrapper
-      categoryBar={categoriesBar}
-      style={style}
-    >
-      <LogoBar />
+    <>
 
-      {
-        searchBar && (
-          <div className="hidden md:flex md:items-center md:py-0 md:px-1 ">
-            {searchBar}
+      <header style={style} className="flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border">
+        <div className="w-full box-border
+        bg-white my-0 mx-auto
+        flex flex-col justify-center items-center
+        "
+        >
+          <div className="w-full h-full grid grid-cols-[220px_auto] md:grid-cols-[220px_3fr_1fr]">
+            <LogoBar />
+
+            {
+              searchBar && (
+                <div className="hidden md:flex md:items-center md:py-0 md:px-1 ">
+                  {searchBar}
+                </div>
+              )
+            }
+
+            <div className="flex items-center">
+              {navBar}
+            </div>
           </div>
-        )
-      }
 
-      <div className="flex items-center">
-        {navBar}
-      </div>
-    </HeaderWrapper>
+          <div className="w-full 540:hidden py-1 px-2 bg-white">
+            <SearchBar />
+          </div>
+        </div>
+
+        {
+          categoriesBar && (
+            <div className="w-full bg-gallery">
+              {categoriesBar}
+            </div>
+          )
+        }
+
+      </header>
+    </>
   )
 }
 

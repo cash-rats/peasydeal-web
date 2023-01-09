@@ -30,7 +30,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 		<nav className="flex flex-1">
 			<ul className="list-none p-0 items-center flex justify-start gap-5">
 				{/* Search icon that only displays in mobile view */}
-				<li className="block md:hidden">
+				<li className="hidden 540:block md:hidden">
 					<IconButton onClick={onClickSearch}>
 						<TbSearch color='#e6007e' fontSize={22} />
 					</IconButton>
