@@ -50,7 +50,10 @@ export default function Index() {
 		<>
 			{/* sharethis popup for news letter subscription */}
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
-			<div className="pt-20 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light">
+			<div className="pt-32 bg-center bg-cover bg-no-repeat
+				540:pt-20
+				bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light"
+			>
 				<CategoryContext.Provider value={categories} >
 					<Form action='/search'>
 						<Header

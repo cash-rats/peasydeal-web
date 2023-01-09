@@ -22,6 +22,7 @@ interface NavBarProps {
 	 * Open full screen search bar on mobile view. (Only works on mobile view)
 	 */
 	onClickSearch?: { (evt: MouseEvent<HTMLButtonElement>): void },
+
 }
 
 // Load shopping cart items.

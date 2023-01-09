@@ -1,6 +1,7 @@
 import type { ForwardedRef, MouseEvent, ChangeEvent, FocusEvent } from 'react';
 import { useEffect, useState, forwardRef, useRef } from 'react';
 import InputBase from '@mui/material/InputBase';
+import type { InputBaseProps } from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import clsx from 'clsx';
@@ -15,8 +16,10 @@ export const links: LinksFunction = () => {
   ];
 };
 
-interface SearchBarProps {
+type SearchBarProps = {
   form?: string | undefined;
+
+  onClick?: (evt: MouseEvent<HTMLDivElement>) => void;
 
   // When user clicks on magnifier icon.
   onSearch?: (criteria: string, evt: MouseEvent<HTMLButtonElement>) => void;
@@ -35,12 +38,13 @@ interface SearchBarProps {
   placeholder?: string;
 
   onMountRef?: (ref: ForwardedRef<HTMLInputElement>) => void;
-}
+} & InputBaseProps;
 
 const isStringEmpty = (str: string): boolean => str.trim().length === 0;
 
 function SearchBar({
   form,
+  onClick = () => { },
   onSearch = () => { },
   onClear = () => { },
   placeholder = '',
@@ -93,9 +97,10 @@ function SearchBar({
       flex items-center shadow-searchbox box-border"
       >
         <InputBase
+          {...args}
           autoComplete='off'
           aria-autocomplete='none'
-          ref={(inputRef) => {
+          inputRef={(inputRef) => {
             myRef.current = inputRef
             if (!ref) return;
             ref.current = inputRef
@@ -105,6 +110,7 @@ function SearchBar({
           size='small'
           value={content}
           name='query'
+          onClick={onClick}
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleChange}

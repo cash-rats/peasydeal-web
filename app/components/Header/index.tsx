@@ -80,6 +80,7 @@ function Header({
       <LogoHeader
         // center search bar
         searchBar={searchBar}
+        onClickMobileSearchBar={handleOnClickMobileSearch}
 
         // right status bar, cart, search icon...etc
         navBar={
