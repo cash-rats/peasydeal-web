@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import type { MouseEvent } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
@@ -5,6 +6,8 @@ import { Form, useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 
+import { breakPoints } from '~/styles/breakpoints';
+import MqNotifier from '~/components/MqNotifier';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { error } from '~/utils/error';
@@ -101,6 +104,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
+
   const orderUUID = body.get('query') as string || '';
 
   if (!orderUUID) {
@@ -114,6 +118,8 @@ export const CatchBoundary = () => {
   const caught = useCatch();
   const caughtData: CatchBoundaryDataType = caught.data;
   const trackOrderFetcher = useFetcher();
+  const [disableDesktopSearchBar, setDisableDesktopSearchBar] = useState(false);
+
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
 
@@ -135,14 +141,28 @@ export const CatchBoundary = () => {
     );
   }
   return (
-    <>
+    <MqNotifier mqValidators={[
+      {
+        condition: (dom) => dom.innerWidth < breakPoints.screen768min,
+        callback: (dom) => {
+          setDisableDesktopSearchBar(true)
+        }
+      },
+      {
+        condition: (dom) => dom.innerWidth >= breakPoints.screen768min,
+        callback: (dom) => {
+          setDisableDesktopSearchBar(false)
+        }
+      }
+    ]}>
       <CategoryContext.Provider value={caughtData.categories}>
-        <Form action='/tracking?index'>
+        <Form action='/tracking'>
           <Header
             headerType='order_search'
             numOfItemsInCart={caughtData.numOfItemsInCart}
             searchBar={
               <SearchBar
+                disabled={disableDesktopSearchBar}
                 onSearch={handleOnSearch}
                 onClear={handleOnClear}
                 placeholder='Search by order id'
@@ -155,7 +175,7 @@ export const CatchBoundary = () => {
       <TrackingOrderErrorPage message={caughtData.errMessage} />
 
       <Footer />
-    </>
+    </MqNotifier>
   )
 }
 
@@ -163,6 +183,8 @@ export const CatchBoundary = () => {
 function TrackingOrder() {
   const { order, numOfItemsInCart, categories } = useLoaderData<LoaderDataType>();
   const trackOrderFetcher = useFetcher();
+  const [disableDesktopSearchBar, setDisableDesktopSearchBar] = useState(false);
+
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
@@ -186,18 +208,32 @@ function TrackingOrder() {
   }
 
   return (
-    <>
+    <MqNotifier mqValidators={[
+      {
+        condition: (dom) => dom.innerWidth < breakPoints.screen768min,
+        callback: (dom) => {
+          setDisableDesktopSearchBar(true)
+        }
+      },
+      {
+        condition: (dom) => dom.innerWidth >= breakPoints.screen768min,
+        callback: (dom) => {
+          setDisableDesktopSearchBar(false)
+        }
+      }
+    ]}>
       <CategoryContext.Provider value={categories}>
-        <Form action='/tracking?index'>
+        <Form action='/tracking'>
           <Header
             headerType='order_search'
             numOfItemsInCart={numOfItemsInCart}
             mobileSearchBarPlaceholder='Search by order id...'
             searchBar={
               <SearchBar
+                disabled={disableDesktopSearchBar}
                 onSearch={handleOnSearch}
                 onClear={handleOnClear}
-                placeholder='Search by order id, e.g. 4T7f_2p4g'
+                placeholder='Search by order id'
               />
             }
           />
@@ -213,7 +249,7 @@ function TrackingOrder() {
       </main>
 
       <Footer />
-    </>
+    </MqNotifier>
   );
 }
 

@@ -33,7 +33,6 @@ function MqNotifier({
 		if (window) {
 			// Trigger callback when components renders and the conditions are met.
 			invokeCallbackWhenConditionsMet(window);
-
 			window.addEventListener('resize', mqNotifier);
 		}
 
@@ -42,7 +41,7 @@ function MqNotifier({
 
 	return (
 		<>
-			{ children }
+			{children}
 		</>
 	);
 }

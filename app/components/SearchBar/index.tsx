@@ -19,6 +19,8 @@ export const links: LinksFunction = () => {
 type SearchBarProps = {
   form?: string | undefined;
 
+  name?: string;
+
   onClick?: (evt: MouseEvent<HTMLDivElement>) => void;
 
   // When user clicks on magnifier icon.
@@ -44,6 +46,7 @@ const isStringEmpty = (str: string): boolean => str.trim().length === 0;
 
 function SearchBar({
   form,
+  name = 'query',
   onClick = () => { },
   onSearch = () => { },
   onClear = () => { },
@@ -89,7 +92,6 @@ function SearchBar({
     <div className={clsx("flex flex-1", {
       "border-solid border-[1px] border-light-green rounded-[4px] shadow-searchbar-focus": focusSearch,
     })}>
-      {/* <div className="search-box"> */}
       <div className="
       bg-white rounded-sm border-solid border-[1px]
       border-grey-cloud py-[0.875rem]
@@ -109,7 +111,7 @@ function SearchBar({
           placeholder={placeholder}
           size='small'
           value={content}
-          name='query'
+          name={name}
           onClick={onClick}
           onFocus={handleFocus}
           onBlur={handleBlur}

@@ -11,7 +11,7 @@ interface LogoHeaderProps {
   disableMobileSearchBar: boolean;
 
   mobileSearchBarPlaceHolder?: string;
-  onClickMobileSearchBar?: { (evt: MouseEvent<HTMLDivElement>): void }
+  onClickMobileSearchBar?: { (evt: MouseEvent<HTMLDivElement>): void };
 };
 
 
@@ -37,7 +37,7 @@ function LogoHeader({
 
           {
             searchBar && (
-              <div className="hidden md:flex md:items-center md:py-0 md:px-1 ">
+              <div className="hidden md:flex md:items-center md:py-0 md:px-1">
                 {searchBar}
               </div>
             )
