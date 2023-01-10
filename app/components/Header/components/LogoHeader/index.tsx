@@ -26,7 +26,10 @@ function LogoHeader({
   disableMobileSearchBar,
 }: LogoHeaderProps) {
   return (
-    <header style={style} className="flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border">
+    <header
+      style={style}
+      className="h-[120px] flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border"
+    >
       <div className="w-full box-border
         bg-white my-0 mx-auto
         flex flex-col justify-center items-center
