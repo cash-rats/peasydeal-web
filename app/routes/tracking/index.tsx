@@ -139,6 +139,7 @@ export const CatchBoundary = () => {
       <CategoryContext.Provider value={caughtData.categories}>
         <Form action='/tracking?index'>
           <Header
+            headerType='order_search'
             numOfItemsInCart={caughtData.numOfItemsInCart}
             searchBar={
               <SearchBar
@@ -189,7 +190,9 @@ function TrackingOrder() {
       <CategoryContext.Provider value={categories}>
         <Form action='/tracking?index'>
           <Header
+            headerType='order_search'
             numOfItemsInCart={numOfItemsInCart}
+            mobileSearchBarPlaceholder='Search by order id...'
             searchBar={
               <SearchBar
                 onSearch={handleOnSearch}

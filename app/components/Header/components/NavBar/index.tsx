@@ -1,8 +1,8 @@
 import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
-import { TbSearch } from "react-icons/tb";
-import IconButton from '@mui/material/IconButton';
+// import { TbSearch } from "react-icons/tb";
+// import IconButton from '@mui/material/IconButton';
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
 
@@ -31,11 +31,11 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 		<nav className="flex flex-1">
 			<ul className="list-none p-0 items-center flex justify-start gap-5">
 				{/* Search icon that only displays in mobile view */}
-				<li className="hidden 540:block md:hidden">
+				{/* <li className="hidden 540:block md:hidden">
 					<IconButton onClick={onClickSearch}>
 						<TbSearch color='#e6007e' fontSize={22} />
 					</IconButton>
-				</li>
+				</li> */}
 
 				{/* shopping cart */}
 				<li className="flex items-center h-10 my-0 mx-1 relative transition-all ease-linear">

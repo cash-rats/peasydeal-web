@@ -13,12 +13,12 @@ export const links: LinksFunction = () => {
   return [...NavBarLinks(),];
 };
 
+type HeaderType = 'product_search' | 'order_search';
+
 export interface HeaderProps {
   categoriesBar?: ReactNode;
 
   searchBar?: ReactNode;
-
-  form?: string | undefined;
 
   /*
    * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
@@ -26,14 +26,24 @@ export interface HeaderProps {
   numOfItemsInCart?: number;
 
   onSearch?: (query: string) => void;
+
+  mobileSearchBarPlaceholder?: string;
+
+  // headerType effects how `onClickMobileSearchBar` is handled.
+  // when we are at `/tracking`, we don't want to open the search dialog
+  // like other pages.
+  // When `HeaderType` is 'order_search' the search bar will be an normal input.
+  // When it's 'product_search' the search bar will open `MobileSearchDialog`.
+  headerType?: HeaderType;
 };
 
 function Header({
-  form,
   categoriesBar,
   searchBar,
   numOfItemsInCart = 0,
   onSearch = () => { },
+  mobileSearchBarPlaceholder,
+  headerType = 'product_search',
 }: HeaderProps) {
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
 
@@ -68,6 +78,10 @@ function Header({
     return suggestItems;
   }
 
+  const onClickMobileSearchHandler = headerType === 'order_search'
+    ? () => { }
+    : handleOnClickMobileSearch;
+
   return (
     <>
       <MobileSearchDialog
@@ -78,9 +92,10 @@ function Header({
       />
 
       <LogoHeader
-        // center search bar
         searchBar={searchBar}
-        onClickMobileSearchBar={handleOnClickMobileSearch}
+        onClickMobileSearchBar={onClickMobileSearchHandler}
+        mobileSearchBarPlaceHolder={mobileSearchBarPlaceholder}
+        disableMobileSearchBar={headerType === 'product_search'}
 
         // right status bar, cart, search icon...etc
         navBar={
@@ -97,7 +112,6 @@ function Header({
         // bottom category bar
         categoriesBar={categoriesBar}
       />
-
     </>
   );
 };

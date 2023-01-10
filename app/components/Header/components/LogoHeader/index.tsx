@@ -8,9 +8,10 @@ interface LogoHeaderProps {
   navBar?: ReactNode;
   categoriesBar?: ReactNode;
   style?: CSSProperties | undefined;
+  disableMobileSearchBar: boolean;
 
   mobileSearchBarPlaceHolder?: string;
-  onClickMobileSearchBar: { (evt: MouseEvent<HTMLDivElement>): void }
+  onClickMobileSearchBar?: { (evt: MouseEvent<HTMLDivElement>): void }
 };
 
 
@@ -21,7 +22,8 @@ function LogoHeader({
   categoriesBar = null,
   style,
   mobileSearchBarPlaceHolder = 'Search keywords...',
-  onClickMobileSearchBar = () => { },
+  onClickMobileSearchBar,
+  disableMobileSearchBar,
 }: LogoHeaderProps) {
   return (
     <header style={style} className="flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border">
@@ -46,11 +48,11 @@ function LogoHeader({
           </div>
         </div>
 
-        <div className="w-full 540:hidden py-1 px-2 bg-white">
+        <div className="w-full py-1 px-2 bg-white md:hidden">
           <SearchBar
             placeholder={mobileSearchBarPlaceHolder}
             onClick={onClickMobileSearchBar}
-            disabled
+            disabled={disableMobileSearchBar}
           />
         </div>
       </div>
