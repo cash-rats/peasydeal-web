@@ -1,6 +1,8 @@
 import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
+import { FiShoppingCart } from 'react-icons/fi';
+import { RiTruckLine } from 'react-icons/ri';
 // import { TbSearch } from "react-icons/tb";
 // import IconButton from '@mui/material/IconButton';
 
@@ -42,23 +44,25 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 					{
 						cartItemCount > 0 && (
 							<RedDot
-								dotStyle={{ left: '24px', top: '-1px' }}
+								dotStyle={{ left: '18px', top: '-1px' }}
 								value={cartItemCount}
 							/>
 						)
 					}
 					{/* TODO this isn't the right way to have ripple effect */}
-					<Link aria-label='shopping cart' to="/cart">
-						<span className="text-sm font-bold capitalize hover:text-primary px-2">
-							cart
+					<Link aria-label='shopping cart' className={`flex space-x-${cartItemCount > 0 ? '4' : '2'} items-center`} to="/cart">
+						<FiShoppingCart color='#e6007e' fontSize={26} className='flex-1' />
+						<span className='text-sm font-bold capitalize hover:text-primary flex-1'>
+							Cart
 						</span>
 					</Link>
 				</li>
 
 				<li>
 
-					<Link aria-label='track order' to="/tracking">
-						<span className="text-sm font-bold capitalize hover:text-primary whitespace-nowrap px-2">
+					<Link aria-label='track order' className='flex space-x-2 items-center' to="/tracking">
+						<RiTruckLine color='#e6007e' fontSize={26} className='flex-1' />
+						<span className="text-sm font-bold capitalize hover:text-primary whitespace-nowrap">
 							Track Order
 						</span>
 					</Link>
