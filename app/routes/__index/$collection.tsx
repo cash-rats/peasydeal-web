@@ -197,7 +197,7 @@ function Collection({ scrollPosition }: CollectionProps) {
   }, [category]);
 
 
-  // If use changes category at the moment, don't add the products to the state.
+  // If user changes category at the moment, don't add the products to the state.
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
       const { products, has_more, page, category: dataCat } = loadmoreFetcher.data as ActionDataType;

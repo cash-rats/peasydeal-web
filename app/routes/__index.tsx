@@ -30,7 +30,6 @@ export const links: LinksFunction = () => {
 	];
 };
 
-type ContextType = { categories: Category[] };
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const categories = await fetchCategories();
@@ -83,6 +82,8 @@ export default function Index() {
 		</>
 	);
 }
+
+type ContextType = { categories: Category[] };
 
 export function useContext() {
 	return useOutletContext<ContextType>();

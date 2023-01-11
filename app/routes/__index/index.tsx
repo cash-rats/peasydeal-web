@@ -87,7 +87,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}
 
 	try {
-		const [prodInfo, activityBanners] = await Promise.all([
+		const [prodInfo, activityBanners = []] = await Promise.all([
 			await getCategoryProducts(request, 'Hot Deal'),
 			await fetchActivityBanners()
 		])
@@ -208,7 +208,7 @@ function Index({ scrollPosition }: IndexProps) {
 			currPage.current += 1;
 			setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
 		}
-	}, [loadmoreFetcher])
+	}, [loadmoreFetcher.type])
 
 
 	// Redirect to product detail page when click on product.
@@ -221,46 +221,44 @@ function Index({ scrollPosition }: IndexProps) {
 	}
 
 	return (
-		<>
-			<div className="Index__wrapper">
-				<div className="prod-list-container">
-					<ActivityRowLayout activities={mockedActivities} />
+		<div className="Index__wrapper">
+			<div className="prod-list-container">
+				<ActivityRowLayout activities={mockedActivities} />
 
-					<ProductRowsContainer
-						productRows={productRows}
-						activityBanners={activity_banners}
-						seasonals={mockedActivities}
-						onClickProduct={handleClickProduct}
-						onClickShopNow={handleClickShopNow}
-						scrollPosition={scrollPosition}
-					/>
+				<ProductRowsContainer
+					productRows={productRows}
+					activityBanners={activity_banners}
+					seasonals={mockedActivities}
+					onClickProduct={handleClickProduct}
+					onClickShopNow={handleClickShopNow}
+					scrollPosition={scrollPosition}
+				/>
 
-					<div className="ProductList__loadmore-container" >
-						<div>
-							{
-								hasMore && transition.state === 'idle'
-									? (
-										<LoadMore
-											spinner={<CssSpinner scheme="spinner" />}
-											loading={loadmoreFetcher.state !== 'idle'}
-											callback={handleLoadMore}
-											delay={100}
-											offset={150}
-										/>
-									)
-									: (
-										<LoadMoreButton
-											loading={loadmoreFetcher.state !== 'idle'}
-											text='Load more'
-											onClick={handleLoadMore}
-										/>
-									)
-							}
-						</div>
+				<div className="ProductList__loadmore-container" >
+					<div>
+						{
+							hasMore && transition.state === 'idle'
+								? (
+									<LoadMore
+										spinner={<CssSpinner scheme="spinner" />}
+										loading={loadmoreFetcher.state !== 'idle'}
+										callback={handleLoadMore}
+										delay={100}
+										offset={150}
+									/>
+								)
+								: (
+									<LoadMoreButton
+										loading={loadmoreFetcher.state !== 'idle'}
+										text='Load more'
+										onClick={handleLoadMore}
+									/>
+								)
+						}
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
 

@@ -58,13 +58,23 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
   const [rows, setRows] = useState<Product[][]>([]);
   const transition = useTransition();
 
+  // We need to reload recommended product when user changes product. For example:
+  //
+  // `/product/LED-Light-Up-Trainers-i.7705390678254` ---> `/product/USB-Rechargeable-Menstrual-Heating-Waist-Belt-i.7773266346210`
+  //
+  // We'll determine whether user is transitioning between different product i.e. `/product/{product_name}` by checking.
+  //  1. Are we being transitioned.
+  //  2. Is the next route we are transitioning includes `/product/`
   useEffect(() => {
-    if (transition.state !== 'idle') {
+    if (
+      transition.state !== 'idle' &&
+      transition.location.pathname.includes('/product/')
+    ) {
       fetcher.submit({
         category
       }, { method: 'post', action: '/product/components/RecommendedProducts?index' });
     }
-  }, [transition.state])
+  }, [transition])
 
   useEffect(() => {
     fetcher.submit({

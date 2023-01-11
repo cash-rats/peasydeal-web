@@ -108,7 +108,6 @@ export const fetchProductsByCategoryV2 = async ({
 	if (!category) category = 1;
 
 	let endpoint = `${getPeasyDealEndpoint()}/v1/products?per_page=${perpage}&page=${page}&category=${category}&random=${random ? 'true' : 'false'}`;
-
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
 
@@ -118,6 +117,5 @@ export const fetchProductsByCategoryV2 = async ({
 		throw new Error(errResp.err_message);
 	}
 
-	const prods = transformData(respJSON.products);
-	return prods;
+	return transformData(respJSON.products);
 }

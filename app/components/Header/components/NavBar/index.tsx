@@ -3,8 +3,6 @@ import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { FiShoppingCart } from 'react-icons/fi';
 import { RiTruckLine } from 'react-icons/ri';
-// import { TbSearch } from "react-icons/tb";
-// import IconButton from '@mui/material/IconButton';
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
 
@@ -62,7 +60,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 
 					<Link aria-label='track order' className='flex space-x-2 items-center' to="/tracking">
 						<RiTruckLine color='#e6007e' fontSize={26} className='flex-1' />
-						<span className="text-sm font-bold capitalize hover:text-primary whitespace-nowrap">
+						<span className="ml-[10px] text-sm font-bold capitalize hover:text-primary whitespace-nowrap">
 							Track Order
 						</span>
 					</Link>
