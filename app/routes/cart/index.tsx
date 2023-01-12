@@ -8,6 +8,10 @@ import httpStatus from 'http-status-codes';
 
 import { commitSession } from '~/sessions/redis_session';
 import { getCart, removeItem, updateCart } from '~/sessions/shoppingcart.session';
+import {
+	resetTransactionObject,
+	setTransactionObject,
+} from '~/sessions/transaction.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
@@ -153,19 +157,37 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const cart = await getCart(request);
 
 	if (!cart || Object.keys(cart).length === 0) {
-		throw new Response('Shopping cart empty', { status: httpStatus.NOT_FOUND });
+		// Reset transaction object if we have an empty cart.
+		throw new Response(
+			'Shopping cart empty',
+			{
+				status: httpStatus.NOT_FOUND,
+				headers: {
+					'Set-Cookie': await commitSession(
+						await resetTransactionObject(request),
+					),
+				}
+			});
 	}
 
 	try {
 		const costQuery = convertShoppingCartToPriceQuery(cart);
 		const priceInfo = await fetchPriceInfo({ products: costQuery });
-
 		return json<LoaderType>({
 			cart,
 			priceInfo,
+		}, {
+			headers: {
+				'Set-Cookie': await commitSession(
+					await setTransactionObject(request, {
+						promo_code: null, // Reset promo_code everytime user refreshes.
+						price_info: priceInfo,
+					}),
+				)
+			}
 		});
 	} catch (err) {
-		console.log('err', err);
+		console.log('debug err', err);
 		return null;
 	}
 };

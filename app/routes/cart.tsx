@@ -30,6 +30,16 @@ const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
 }
 export const handle = { dynamicLinks };
 
+export const links: LinksFunction = () => {
+  return [
+    ...CategoriesNavLinks(),
+    ...HeaderLinks(),
+    ...FooterLinks(),
+    ...DropDownSearchBarLinks(),
+    { rel: 'stylesheet', href: cartStyles },
+  ];
+};
+
 type LoaderType = {
   cartItemCount: number;
   categories: Category[];
@@ -47,15 +57,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 }
 
-export const links: LinksFunction = () => {
-  return [
-    ...CategoriesNavLinks(),
-    ...HeaderLinks(),
-    ...FooterLinks(),
-    ...DropDownSearchBarLinks(),
-    { rel: 'stylesheet', href: cartStyles },
-  ];
-};
 
 function CartLayout() {
   const { cartItemCount, categories } = useLoaderData<LoaderType>();
@@ -67,7 +68,7 @@ function CartLayout() {
   }
 
   return (
-    <div className="pt-28 540:pt-36 md:pt-[12rem]">
+    <div className="pt-28 540:pt-36 md:pt-[8rem]">
       <CategoryContext.Provider value={categories}>
         <Form action='/search' >
           <Header
