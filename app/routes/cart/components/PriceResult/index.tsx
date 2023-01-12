@@ -58,7 +58,7 @@ export default function PriceResult({
           </h2>
 
           {/* promo input */}
-          <div className="flex flex-col max-w-[300px]">
+          <div className="w-full flex flex-col">
             <input
               type="text"
               className='text-left appearance-none bg-white
@@ -113,7 +113,7 @@ export default function PriceResult({
               {
                 appliedPromoCode &&
                 !priceInfo.discount_code_valid && (
-                  <p className="text-[#b21111] font- text-base">
+                  <p className="text-[#b21111] font-normal text-base">
                     Seems like promo code {appliedPromoCode} is invalid. Let's check and try again
                   </p>
                 )
