@@ -113,7 +113,7 @@ export default function PriceResult({
               {
                 appliedPromoCode &&
                 !priceInfo.discount_code_valid && (
-                  <p className="text-[#b21111] font-normal text-base">
+                  <p className="text-[#b21111] font- text-base">
                     Seems like promo code {appliedPromoCode} is invalid. Let's check and try again
                   </p>
                 )
@@ -123,7 +123,7 @@ export default function PriceResult({
                 appliedPromoCode &&
                 priceInfo.discount_code_valid && (
                   <p className="text-[#00af32] font-normal text-base">
-                    The promo code {appliedPromoCode} was successfully applied.
+                    The promo code <span className="font-semibold">{appliedPromoCode}</span> was successfully applied.
                   </p>
                 )
               }
