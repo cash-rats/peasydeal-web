@@ -32,7 +32,6 @@ export default function PriceResult({
   onChangePromoCode = () => { },
   onApplyPromoCode = () => { },
 }: PriceResultProps) {
-  console.log('debug priceInfo', priceInfo);
   const [promoCode, setPromoCode] = useState('');
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const v = evt.target.value;
@@ -109,7 +108,7 @@ export default function PriceResult({
             </div>
 
             {/* invalid promo code message */}
-            <div className="mt-[10px]">
+            <div className="mt-[10px] h-10">
               {
                 appliedPromoCode &&
                 !priceInfo.discount_code_valid && (
