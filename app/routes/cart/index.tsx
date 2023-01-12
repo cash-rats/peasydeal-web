@@ -231,7 +231,6 @@ function Cart() {
 	useEffect(() => {
 		if (applyPromoCodeFetcher.type === 'done') {
 			const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
-			console.log('debug priceinfo', data);
 			setPromoCode(data.discount_code);
 			setPriceInfo(data.price_info);
 		}
@@ -493,6 +492,7 @@ function Cart() {
 							priceInfo && (
 								<PriceResult
 									onApplyPromoCode={handleClickApplyPromoCode}
+									appliedPromoCode={promoCode}
 									priceInfo={priceInfo}
 									calculating={
 										updateItemQuantityFetcher.state !== 'idle' ||

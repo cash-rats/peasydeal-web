@@ -13,6 +13,11 @@ import type { PriceInfo } from '../../cart.server';
 type PriceResultProps = {
   priceInfo: PriceInfo;
   calculating?: boolean;
+
+  // External component tells `PriceResult` previous  applied promo code,
+  // regardless of success / failure so that component can render proper text.
+  appliedPromoCode?: string;
+
   onChangePromoCode?: (code: string) => void;
   onApplyPromoCode?: (code: string) => void;
 };
@@ -23,10 +28,11 @@ type PriceResultProps = {
 export default function PriceResult({
   priceInfo,
   calculating = false,
+  appliedPromoCode = '',
   onChangePromoCode = () => { },
   onApplyPromoCode = () => { },
 }: PriceResultProps) {
-  console.log('debug priceinfo', priceInfo);
+  console.log('debug priceInfo', priceInfo);
   const [promoCode, setPromoCode] = useState('');
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const v = evt.target.value;
@@ -100,6 +106,27 @@ export default function PriceResult({
                   }
                 </span>
               </button>
+            </div>
+
+            {/* invalid promo code message */}
+            <div className="mt-[10px]">
+              {
+                appliedPromoCode &&
+                !priceInfo.discount_code_valid && (
+                  <p className="text-[#b21111] font-normal text-base">
+                    Seems like promo code {appliedPromoCode} is invalid. Let's check and try again
+                  </p>
+                )
+              }
+
+              {
+                appliedPromoCode &&
+                priceInfo.discount_code_valid && (
+                  <p className="text-[#00af32] font-normal text-base">
+                    The promo code {appliedPromoCode} was successfully applied.
+                  </p>
+                )
+              }
             </div>
           </div>
         </div>
