@@ -117,5 +117,6 @@ export const fetchProductsByCategoryV2 = async ({
 		throw new Error(errResp.err_message);
 	}
 
-	return transformData(respJSON.products);
+	const prods = transformData(respJSON.products);
+	return prods;
 }

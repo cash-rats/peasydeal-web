@@ -9,6 +9,7 @@ export type PriceQuery = {
 };
 
 export type FetchPriceInfoParams = {
+  discount_code?: string
   products: PriceQuery[];
 }
 
@@ -18,16 +19,17 @@ export type PriceInfo = {
   shipping_fee: number;
   discount_amount: number;
   total_amount: number;
-  currency: number;
+  currency: string;
+  vat_included: boolean;
+  discount_code_valid: boolean;
+  discount_type: 'free_shipping' | 'price_off' | 'percentage_off';
 }
 export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<PriceInfo> => {
   const resp = await fetch(`${getMYFBEndpoint()}/data-server/ec/v1/accountant/order-amount`, {
     method: 'post',
-    body: new URLSearchParams({
-      body: JSON.stringify(params),
-    }),
+    body: JSON.stringify(params),
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
     },
   })
 
@@ -37,7 +39,16 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
     throw new Error(JSON.stringify(respJSON));
   }
 
-  return respJSON;
+  const trfmPriceInfo = transformToPriceInfo(respJSON)
+
+  return trfmPriceInfo;
+}
+
+const transformToPriceInfo = (json: any): PriceInfo => {
+  return {
+    ...json,
+    discount_code_valid: json.discount_Code_valid,
+  };
 }
 
 export const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {

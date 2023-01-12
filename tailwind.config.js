@@ -65,6 +65,8 @@ module.exports = {
         'dropdown': '0 0 3px 0 rgb(73 143 226 / 50%)',
         'searchbar-focus': '0 0 0 4px #cce9e4;',
         'searchbox': 'rgb(0 0 0 / 12%) 1px 2px 8px 1px;',
+        'button': '0 2px 5px 0 rgb(0 0 0 / 50%);',
+        'button-hover': '0 2px 10px 0 rgb(0 0 0 / 50%);',
       }
     },
   },

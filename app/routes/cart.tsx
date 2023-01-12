@@ -87,9 +87,11 @@ function CartLayout() {
           />
         </Form>
       </CategoryContext.Provider>
+
       <main>
         <Outlet />
       </main>
+
       <Footer />
     </div>
   );

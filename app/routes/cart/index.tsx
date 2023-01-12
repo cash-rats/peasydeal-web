@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
+import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
@@ -30,8 +31,17 @@ export const links: LinksFunction = () => {
 
 type __action_type =
 	| 'remove_cart_item'
-	| 'update_item_quantity';
+	| 'update_item_quantity'
+	| 'apply_promo_code';
 
+// Prevent `apply_promo_code` action from triggering loader.
+export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+	if (submission) {
+		return submission.formData.get('__action') !== 'apply_promo_code';
+	}
+
+	return true;
+}
 
 const __removeCartItemAction = async (variationUUID: string, request: Request) => {
 	const session = await removeItem(request, variationUUID);
@@ -62,7 +72,6 @@ const __removeCartItemAction = async (variationUUID: string, request: Request) =
 }
 
 const __updateItemQuantity = async (variationUUID: string, quantity: string, request: Request) => {
-	// Recalc price info
 	const cart = await getCart(request);
 	if (!cart || Object.keys(cart).length === 0) return null;
 	const item = cart[variationUUID]
@@ -81,13 +90,35 @@ const __updateItemQuantity = async (variationUUID: string, quantity: string, req
 	});
 }
 
+type ApplyPromoCodeActionType = {
+	discount_code: string;
+	price_info: PriceInfo;
+}
+
+const __applyPromoCode = async (request: Request, promoCode: string) => {
+	const cart = await getCart(request);
+	if (!cart || Object.keys(cart).length === 0) {
+		return new Response('not able to apply promo code with empty cart');
+	};
+
+	const priceQuery = convertShoppingCartToPriceQuery(cart);
+	const priceInfo = await fetchPriceInfo({
+		discount_code: promoCode,
+		products: priceQuery
+	});
+	return json<ApplyPromoCodeActionType>({
+		price_info: priceInfo,
+		discount_code: promoCode,
+	});
+}
+
 // TODOs:
 //   - [ ] handle prod_id is falsey value
 //   - [ ] handle session key not exists
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
 	const formEntries = Object.fromEntries(form.entries());
-	const actionType = formEntries['__action'] as __action_type || 'remove_cart_item'
+	const actionType = formEntries['__action'] as __action_type;
 
 	if (actionType === 'remove_cart_item') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
@@ -98,6 +129,11 @@ export const action: ActionFunction = async ({ request }) => {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
 		const quantity = formEntries['quantity'] as string;
 		return __updateItemQuantity(variationUUID, quantity, request);
+	}
+
+	if (actionType === 'apply_promo_code') {
+		const promoCode = formEntries['promo_code'] as string;
+		return __applyPromoCode(request, promoCode);
 	}
 
 	// Unknown action
@@ -120,13 +156,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 		throw new Response('Shopping cart empty', { status: httpStatus.NOT_FOUND });
 	}
 
-	const costQuery = convertShoppingCartToPriceQuery(cart);
-	const priceInfo = await fetchPriceInfo({ products: costQuery });
+	try {
+		const costQuery = convertShoppingCartToPriceQuery(cart);
+		const priceInfo = await fetchPriceInfo({ products: costQuery });
 
-	return json<LoaderType>({
-		cart,
-		priceInfo,
-	});
+		return json<LoaderType>({
+			cart,
+			priceInfo,
+		});
+	} catch (err) {
+		console.log('err', err);
+		return null;
+	}
 };
 
 export const CatchBoundary = () => {
@@ -144,10 +185,11 @@ type PreviousQuantity = {
  * container width: max-width: 1180px;
  *
  * - [x] show empty shopping cart when no item existed yet, empty shipping cart should be a component instead of a route.
- * - [ ] Add `~~$99.98 Now $49.99 You Saved $50` text.
+ * - [x] Add `~~$99.98 Now $49.99 You Saved $50` text.
  * - [x] When quantity is deducted to 0, popup a notification that the item is going to be removed.
  * - [x] Checkout flow.
  * - [ ] 重複點擊同個 quantity 會 重新 calculate price。
+ * - [ ] use useReducer to cleanup useState
  */
 function Cart() {
 	const preloadData = useLoaderData<LoaderType>();
@@ -155,11 +197,12 @@ function Cart() {
 	const [prevQuantity, setPrevQuantity] = useState<PreviousQuantity>({});
 	const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
 	const [syncingPrice, setSyncingPrice] = useState(false);
-
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
+	const [promoCode, setPromoCode] = useState('');
 
 	const removeItemFetcher = useFetcher();
 	const updateItemQuantityFetcher = useFetcher();
+	const applyPromoCodeFetcher = useFetcher();
 
 	const targetRemovalVariationUUID = useRef<null | string>(null);
 	const justSynced = useRef<boolean>(false);
@@ -184,6 +227,15 @@ function Cart() {
 			setSyncingPrice(false);
 		}
 	}, [updateItemQuantityFetcher]);
+
+	useEffect(() => {
+		if (applyPromoCodeFetcher.type === 'done') {
+			const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
+			console.log('debug priceinfo', data);
+			setPromoCode(data.discount_code);
+			setPriceInfo(data.price_info);
+		}
+	}, [applyPromoCodeFetcher.type]);
 
 	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, variationUUID: string, quantity: number) => {
 		if (quantity === 0) {
@@ -321,9 +373,22 @@ function Cart() {
 		));
 	}
 
-	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) => {
+	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) =>
 		removeItem(variationUUID);
-	}
+
+
+	const handleClickApplyPromoCode = (code: string) => {
+		applyPromoCodeFetcher.submit(
+			{
+				__action: 'apply_promo_code',
+				promo_code: code,
+			},
+			{
+				method: 'post',
+				action: '/cart?index',
+			},
+		);
+	};
 
 	return (
 		<>
@@ -427,10 +492,12 @@ function Cart() {
 						{
 							priceInfo && (
 								<PriceResult
+									onApplyPromoCode={handleClickApplyPromoCode}
 									priceInfo={priceInfo}
 									calculating={
 										updateItemQuantityFetcher.state !== 'idle' ||
-										removeItemFetcher.state !== 'idle'
+										removeItemFetcher.state !== 'idle' ||
+										applyPromoCodeFetcher.state !== 'idle'
 									}
 								/>
 							)

@@ -59,9 +59,9 @@ const RealRows = ({
     <>
       {
         productRows.map((row: Product[], index: number): ReactNode => {
-          // For every set of row is composed of "even row" + "1 main 2 sub". A subsequent activity banner would be rendered afterwards.
-          // There should only 4 banners to show in `activityBanners` array.
-          // thus, pop activity banner out of the array when `index` is <= 3
+          // Every set of row is composed of "even row" + "1 main 2 sub". A subsequent activity banner would be rendered afterwards.
+          // There should only be 3 banners to show in `activityBanners` array.
+          // thus, pop activity banner out of the array when `index` is <= 2
           let banner: ActivityBanner | null = null;
 
           if (index <= 2 && activityBanners[index]) {
@@ -69,19 +69,17 @@ const RealRows = ({
           }
 
           // A complete row has 9 products.
-          // A incomplete row contains less than 9 products
+          // An incomplete row contains less than 9 products
           //
           // To render `OneMainTwoSubs` layout properly, we need to have at least 3 products
           // To render `EvenRow` layout properly we need to have at least 6 products
           //
           // If a given row has less than 9 products, that means we've reached the last page.
           // Moreover, we might not have enough products to render both layouts.
-          // we'll need to decided if we have enough products to render `OneMainTwoSubs` and `EvenRow`
+          // we'll need to decided if we have enough products to render either `OneMainTwoSubs` or `EvenRow`
           const shouldReverese = index % 2 !== 0;
 
-
           // Render seasonal items on the first `ProductRowsContainer__row-wrapper`.
-
           if (row.length === 9) {
             // We can rest assure that we have enough products to render both `OneMainTwoSubs` and `EvenRow`
             const oneMainTwoSubsProdData = row.slice(0, 3)
