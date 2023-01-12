@@ -75,81 +75,6 @@
 				width: 21%;
 				text-align: right;
 			}
-
-		}
-
-		.result-row {
-			margin-top: 20px;
-			display: flex;
-
-
-			.left {
-				width: 0%;
-
-				@media (min-width: #{$screen-sm-min}) {
-					width: 60%;
-				}
-
-
-				@media (min-width: #{$screen-md-min}) {
-					width: 60%;
-				}
-			}
-
-			.right {
-				width: 100%;
-
-				@media (min-width: #{$screen-sm-min}) {
-					width: 40%;
-				}
-
-				@media (min-width: #{$screen-md-min}) {
-					width: 40%;
-				}
-
-				display: flex;
-				flex-direction: column;
-				gap: 7px;
-			}
-
-			div {
-				display: flex;
-				align-items: flex-start;
-				width: 100%;
-
-				label {
-					display: flex;
-					flex: 1;
-					justify-content: flex-start;
-					font-size: 20px;
-				}
-
-				.result-value {
-					flex: 1;
-					display: flex;
-					justify-content: flex-end;
-					font-size: 1rem;
-					font-weight: 700;
-				}
-			}
-
-			.grand-total {
-				margin-top: 0.7rem;
-
-				label {
-					font-size: 1.2rem;
-				}
-
-				.result-value {
-					font-size: 1.2rem;
-				}
-			}
-
-			.checkout-button {
-				margin-top: 30px;
-				display: flex;
-				justify-content: flex-end;
-			}
 		}
 	}
 }
@@ -202,14 +127,4 @@
 
 .Cart__title-row-subtotal {
 	width: 32%;
-}
-
-.Cart__result-row-summary {
-	font-size: 20px;
-	font-weight: 700;
-	padding: 25px 0 0;
-	width: 100%;
-	padding-bottom: 1rem;
-	margin-bottom: 1rem;
-	border-bottom: solid 1px #ccc;
 }

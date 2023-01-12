@@ -8,6 +8,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { TAX } from '~/utils/checkout_accountant';
 import RoundButton from '~/components/RoundButton';
 
+import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../cart.server';
 
 type PriceResultProps = {
@@ -42,10 +43,13 @@ export default function PriceResult({
   const handleApplyPromoCode = () => onApplyPromoCode(promoCode);
 
   return (
-    <div className="result-row">
-      <div className="left" />
+    <div className="m-5 flex">
 
-      <div className="right">
+      {/* left */}
+      <div className="w-0 576:w-[60%]" />
+
+      {/* right */}
+      <div className="w-full 576:w-[40%] flex flex-col gap-[7px]">
         <div className="flex flex-col gap-2">
           <h2>
             <span className="capitalize font-semibold">
@@ -130,120 +134,126 @@ export default function PriceResult({
           </div>
         </div>
 
-        <h2 className="Cart__result-row-summary">
+        <h2 className="
+            text-xl font-bold
+            pt-6 px-0 w-full pb-4 mb-4
+            border-b-[1px] border-b-solid border-[#ccc]
+          "
+        >
+          {/* <h2 className="Cart__result-row-summary"> */}
           Summary
         </h2>
-        <div className="subtotal">
-          <label> Items </label>
-          <div className="result-value">
-            {
-              calculating
-                ? (
-                  <Skeleton
-                    variant='text'
-                    width={40}
-                    sx={{ fontSize: '1rem' }}
-                  />
-                )
-                : `£ ${priceInfo.sub_total} `
-            }
-          </div>
+        <ResultRow
+          label="Items"
+          value={
+            calculating
+              ? (
+                <Skeleton
+                  variant='text'
+                  width={40}
+                  sx={{ fontSize: '1rem' }}
+                />
+              )
+              : `£ ${priceInfo.sub_total} `
+          }
 
-        </div>
+        />
 
-        <div className="tax">
-          <label> Tax ({TAX * 100}%) </label>
-          <div className="result-value">
-            {
-              calculating
-                ? (
-                  <Skeleton
-                    variant='text'
-                    width={40}
-                    sx={{ fontSize: '1rem' }}
-                  />
-                )
-                : `£ ${priceInfo.tax_amount}`
-            }
-          </div>
-        </div>
+        <ResultRow
+          label={`Tax (${TAX * 100}%)`}
+          value={
+            calculating
+              ? (
+                <Skeleton
+                  variant='text'
+                  width={40}
+                  sx={{ fontSize: '1rem' }}
+                />
+              )
+              : `£ ${priceInfo.tax_amount}`
+          }
+
+        />
 
         {/* Promo code deal */}
         {
           priceInfo.discount_code_valid
             ? (
-              <div>
-                <label> Promo code deal </label>
-                <div className="result-value text-primary uppercase">
-                  {
-                    priceInfo.discount_type === 'price_off' && (
-                      `extra - £ ${priceInfo.discount_amount} off!`
-                    )
-                  }
+              <ResultRow
+                label="Promo code deal"
+                value={
 
-                  {
-                    priceInfo.discount_type === 'free_shipping' && (
-                      'free shipping!'
-                    )
-                  }
+                  <div className="result-value text-primary uppercase">
+                    {
+                      priceInfo.discount_type === 'price_off' && (
+                        `extra - £ ${priceInfo.discount_amount} off!`
+                      )
+                    }
 
-                  {
-                    priceInfo.discount_type === 'percentage_off' && (
-                      `extra - £ ${priceInfo.discount_amount}`
-                    )
-                  }
-                </div>
-              </div>
+                    {
+                      priceInfo.discount_type === 'free_shipping' && (
+                        'free shipping!'
+                      )
+                    }
+
+                    {
+                      priceInfo.discount_type === 'percentage_off' && (
+                        `extra - £ ${priceInfo.discount_amount}`
+                      )
+                    }
+                  </div>
+
+                }
+              />
             )
             : null
         }
 
-        <div>
-          <label> Shipping Cost </label>
-          <div className="result-value">
-            {
-              calculating
-                ? (
-                  <Skeleton
-                    variant='text'
-                    width={40}
-                    sx={{ fontSize: '1rem' }}
-                  />
-                )
-                : (
-                  <>
-                    {
-                      priceInfo.discount_type === 'free_shipping'
-                        ? '£ 0'
-                        : `£ ${priceInfo.shipping_fee}`
-                    }
-                  </>
-                )
+        <ResultRow
+          label='Shipping Cost'
+          value={
+            calculating
+              ? (
+                <Skeleton
+                  variant='text'
+                  width={40}
+                  sx={{ fontSize: '1rem' }}
+                />
+              )
+              : (
+                <>
+                  {
+                    priceInfo.discount_type === 'free_shipping'
+                      ? '£ 0'
+                      : `£ ${priceInfo.shipping_fee}`
+                  }
+                </>
+              )
+          }
+        />
+
+        <div className="mt-[0.7rem]">
+          <ResultRow
+            label={<strong>Total</strong>}
+            value={
+              <strong>
+                {
+                  calculating
+                    ? (
+                      <Skeleton
+                        variant='text'
+                        width={100}
+                        sx={{ fontSize: '1.5rem' }}
+                      />
+                    )
+                    : `£ ${priceInfo.total_amount}`
+                }
+              </strong>
             }
-          </div>
+          />
         </div>
 
-
-        <div className="grand-total">
-          <label> <strong>Total</strong> </label>
-          <div className="result-value">
-            <strong>
-              {
-                calculating
-                  ? (
-                    <Skeleton
-                      variant='text'
-                      width={100}
-                      sx={{ fontSize: '1.5rem' }}
-                    />
-                  )
-                  : `£ ${priceInfo.total_amount}`
-              }
-            </strong>
-          </div>
-        </div>
-
-        <div className="checkout-button">
+        <div className="mt-[30px] flex justify-end">
           <Link to="/checkout" >
             <RoundButton
               size='large'

@@ -64,71 +64,6 @@
   width: 21%;
   text-align: right;
 }
-.shopping-cart-container .cart-items-container .result-row {
-  margin-top: 20px;
-  display: flex;
-}
-.shopping-cart-container .cart-items-container .result-row .left {
-  width: 0%;
-}
-@media (min-width: 576px) {
-  .shopping-cart-container .cart-items-container .result-row .left {
-    width: 60%;
-  }
-}
-@media (min-width: 768px) {
-  .shopping-cart-container .cart-items-container .result-row .left {
-    width: 60%;
-  }
-}
-.shopping-cart-container .cart-items-container .result-row .right {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
-@media (min-width: 576px) {
-  .shopping-cart-container .cart-items-container .result-row .right {
-    width: 40%;
-  }
-}
-@media (min-width: 768px) {
-  .shopping-cart-container .cart-items-container .result-row .right {
-    width: 40%;
-  }
-}
-.shopping-cart-container .cart-items-container .result-row div {
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
-}
-.shopping-cart-container .cart-items-container .result-row div label {
-  display: flex;
-  flex: 1;
-  justify-content: flex-start;
-  font-size: 20px;
-}
-.shopping-cart-container .cart-items-container .result-row div .result-value {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  font-size: 1rem;
-  font-weight: 700;
-}
-.shopping-cart-container .cart-items-container .result-row .grand-total {
-  margin-top: 0.7rem;
-}
-.shopping-cart-container .cart-items-container .result-row .grand-total label {
-  font-size: 1.2rem;
-}
-.shopping-cart-container .cart-items-container .result-row .grand-total .result-value {
-  font-size: 1.2rem;
-}
-.shopping-cart-container .cart-items-container .result-row .checkout-button {
-  margin-top: 30px;
-  display: flex;
-  justify-content: flex-end;
-}
 
 .Cart__title-row {
   width: 100%;
@@ -178,16 +113,6 @@
 
 .Cart__title-row-subtotal {
   width: 32%;
-}
-
-.Cart__result-row-summary {
-  font-size: 20px;
-  font-weight: 700;
-  padding: 25px 0 0;
-  width: 100%;
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: solid 1px #ccc;
 }
 
 /*# sourceMappingURL=cart.css.map */
