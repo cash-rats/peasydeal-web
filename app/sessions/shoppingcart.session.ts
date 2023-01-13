@@ -1,6 +1,6 @@
 import type { Session } from '@remix-run/node';
 
-import { getSession } from '~/sessions/redis_session';
+import { getCookieSession } from './session_utils';
 
 export const CartSessionKey = 'shopping_cart';
 
@@ -22,26 +22,22 @@ export type ShoppingCartItem = {
   purchaseLimit: string;
 };
 
-const getSessionCookie = async (request: Request): Promise<Session> => {
-  return await getSession(request.headers.get("Cookie"));
-}
-
 // getCart get current shopping cart data in session. return "undefined" If no key exists.
 export const getCart = async (request: Request): Promise<ShoppingCart | undefined> => {
-  const session = await getSessionCookie(request);
+  const session = await getCookieSession(request);
   if (!session.has(CartSessionKey)) return undefined;
   return session.get(CartSessionKey);
 }
 
 export const updateCart = async (request: Request, cart: ShoppingCart): Promise<Session> => {
-  const session = await getSessionCookie(request);
+  const session = await getCookieSession(request);
   session.set(CartSessionKey, cart);
   return session;
 }
 
 // - [ ] updated
 export const getItem = async (request: Request, variationUUID: string): Promise<ShoppingCartItem | undefined> => {
-  const session = await getSessionCookie(request);
+  const session = await getCookieSession(request);
   if (!session.has(CartSessionKey)) return undefined;
   const shoppingCart = session.get('shopping_cart') as ShoppingCart;
   const item = shoppingCart[variationUUID];
@@ -56,7 +52,7 @@ export const getItemCount = async (request: Request): Promise<number> => {
 
 // - [x] updated
 export const insertItem = async (request: Request, item: ShoppingCartItem): Promise<Session> => {
-  const session = await getSessionCookie(request);
+  const session = await getCookieSession(request);
   let shoppingCart: ShoppingCart = {};
   if (session.has(CartSessionKey)) {
     shoppingCart = session.get(CartSessionKey);
@@ -73,7 +69,7 @@ export const insertItem = async (request: Request, item: ShoppingCartItem): Prom
 
 //  - [x] updated
 export const removeItem = async (request: Request, variationUUID: string): Promise<Session> => {
-  const session = await getSessionCookie(request);
+  const session = await getCookieSession(request);
   const cart = await getCart(request);
   if (!cart || Object.keys(cart).length === 0) return session;
   if (cart.hasOwnProperty(variationUUID)) {
@@ -85,7 +81,7 @@ export const removeItem = async (request: Request, variationUUID: string): Promi
 }
 
 export const updateItem = async (request: Request, item: ShoppingCartItem): Promise<Session> => {
-  const session = await getSessionCookie(request);
+  const session = await getCookieSession(request);
   const itemInCart = await getItem(request, item.variationUUID);
   if (!itemInCart) {
     return insertItem(request, item);
@@ -97,7 +93,7 @@ export const updateItem = async (request: Request, item: ShoppingCartItem): Prom
 }
 
 export const clearCart = async (request: Request): Promise<Session> => {
-  const session = await getSessionCookie(request);
+  const session = await getCookieSession(request);
   session.unset(CartSessionKey);
   return session;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useReducer } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
@@ -6,16 +6,19 @@ import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
-import { commitSession } from '~/sessions/redis_session';
-import { getCart, removeItem, updateCart } from '~/sessions/shoppingcart.session';
+import { commitSession } from '~/sessions/sessions';
+import { getCart, removeItem as sessionRemoveItem, updateCart, CartSessionKey } from '~/sessions/shoppingcart.session';
 import {
-	resetTransactionObject,
 	setTransactionObject,
+	resetTransactionObject,
+	sessionResetTransactionObject
 } from '~/sessions/transaction.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 
+import cartReducer, { CartActionTypes } from './reducer';
+import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
 import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
@@ -38,41 +41,71 @@ type __action_type =
 	| 'update_item_quantity'
 	| 'apply_promo_code';
 
-// Prevent `apply_promo_code` action from triggering loader.
 export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 	if (submission) {
+		// Prevent `HorizontalProductsLayout` from triggering loader.
+		if (submission.action.includes('/components/HorizontalProductsLayout')) {
+			return false;
+		}
+
+		// Prevent `apply_promo_code` action from triggering loader.
 		return submission.formData.get('__action') !== 'apply_promo_code';
 	}
+
 
 	return true;
 }
 
+type RemoveCartItemActionDataType = {
+	cart_item_count: number,
+	price_info: PriceInfo | null,
+};
+
 const __removeCartItemAction = async (variationUUID: string, request: Request) => {
-	const session = await removeItem(request, variationUUID);
-	const cart = session.get('shopping_cart');
-
-	// Recalc price info.
-	const priceQuery = convertShoppingCartToPriceQuery(cart);
-	const priceInfo = await fetchPriceInfo({ products: priceQuery });
-
+	const session = await sessionRemoveItem(request, variationUUID);
+	const cart = session.get(CartSessionKey);
 	let itemCount = 0;
 
-	if (cart && Object.keys(cart).length > 0) {
-		itemCount = Object.keys(cart).length
+	// If we deleted the last item is the cart, we reset the price info
+	// by resetting `TransactionObject` in the session.
+	if (!cart || Object.keys(cart).length <= 0) {
+		return json<RemoveCartItemActionDataType>(
+			{
+				cart_item_count: itemCount,
+				price_info: null,
+			},
+			{
+				headers: {
+					"Set-Cookie": await commitSession(
+						await sessionResetTransactionObject(session),
+					),
+				}
+			},
+		);
 	}
 
-	// `cart_item_count` tells frontend when to perform page refresh. When `cart_item_count`
-	// equals 0, frontend will trigger load of the current route which displays empty bag page.
-	return json(
-		{
-			cart_item_count: itemCount,
-			price_info: priceInfo,
-		},
-		{
-			headers: {
-				"Set-Cookie": await commitSession(session),
-			}
-		});
+	try {
+		// Recalc price info.
+		const priceQuery = convertShoppingCartToPriceQuery(cart);
+		const priceInfo = await fetchPriceInfo({ products: priceQuery });
+		itemCount = Object.keys(cart).length
+
+		// `cart_item_count` tells frontend when to perform page refresh. When `cart_item_count`
+		// equals 0, frontend will trigger load of the current route which displays empty bag page.
+		return json(
+			{
+				cart_item_count: itemCount,
+				price_info: priceInfo,
+			},
+			{
+				headers: {
+					"Set-Cookie": await commitSession(session),
+				}
+			});
+	} catch (err) {
+		console.log('debug remove error', err);
+		return null
+	}
 }
 
 const __updateItemQuantity = async (variationUUID: string, quantity: string, request: Request) => {
@@ -110,9 +143,19 @@ const __applyPromoCode = async (request: Request, promoCode: string) => {
 		discount_code: promoCode,
 		products: priceQuery
 	});
+
 	return json<ApplyPromoCodeActionType>({
 		price_info: priceInfo,
 		discount_code: promoCode,
+	}, {
+		headers: {
+			'Set-Cookie': await commitSession(
+				await setTransactionObject(request, {
+					promo_code: promoCode,
+					price_info: priceInfo,
+				})
+			),
+		}
 	});
 }
 
@@ -126,7 +169,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 	if (actionType === 'remove_cart_item') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
-		return await __removeCartItemAction(variationUUID, request);
+		return __removeCartItemAction(variationUUID, request);
 	}
 
 	if (actionType === 'update_item_quantity') {
@@ -173,17 +216,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const costQuery = convertShoppingCartToPriceQuery(cart);
 		const priceInfo = await fetchPriceInfo({ products: costQuery });
+
+		const session = await setTransactionObject(request, {
+			promo_code: null, // Reset promo_code everytime user refreshes.
+			price_info: priceInfo,
+		})
+
 		return json<LoaderType>({
 			cart,
 			priceInfo,
 		}, {
 			headers: {
-				'Set-Cookie': await commitSession(
-					await setTransactionObject(request, {
-						promo_code: null, // Reset promo_code everytime user refreshes.
-						price_info: priceInfo,
-					}),
-				)
+				'Set-Cookie': await commitSession(session),
 			}
 		});
 	} catch (err) {
@@ -215,7 +259,11 @@ type PreviousQuantity = {
  */
 function Cart() {
 	const preloadData = useLoaderData<LoaderType>();
-	const [cartItems, setCartItems] = useState<ShoppingCart>(preloadData.cart);
+	const [state, dispatch] = useReducer(
+		cartReducer,
+		{ cartItems: preloadData.cart } as StateShape,
+	);
+
 	const [prevQuantity, setPrevQuantity] = useState<PreviousQuantity>({});
 	const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
 	const [syncingPrice, setSyncingPrice] = useState(false);
@@ -233,8 +281,10 @@ function Cart() {
 	// corresponding loader can display empty cart page to user.
 	useEffect(() => {
 		if (removeItemFetcher.type === 'done') {
-			const { price_info } = removeItemFetcher.data;
-			setPriceInfo(price_info);
+			const { price_info } = removeItemFetcher.data as RemoveCartItemActionDataType;
+			if (price_info) {
+				setPriceInfo(price_info);
+			}
 			setSyncingPrice(false);
 		}
 	}, [removeItemFetcher]);
@@ -253,6 +303,7 @@ function Cart() {
 	useEffect(() => {
 		if (applyPromoCodeFetcher.type === 'done') {
 			const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
+			console.log('price info data', data);
 			setPromoCode(data.discount_code);
 			setPriceInfo(data.price_info);
 		}
@@ -294,21 +345,28 @@ function Cart() {
 	};
 
 	const removeItem = (targetRemovalVariationUUID: string) => {
-		const updatedCartItems = Object.keys(cartItems).reduce((newCartItems: ShoppingCart, variationUUID) => {
+		const updatedCartItems = Object.keys(state.cartItems).reduce((newCartItems: ShoppingCart, variationUUID) => {
 			if (variationUUID === targetRemovalVariationUUID) return newCartItems;
-			newCartItems[variationUUID] = cartItems[variationUUID];
+			newCartItems[variationUUID] = state.cartItems[variationUUID];
 			return newCartItems
 		}, {})
 
 		// Update cart state with a version without removed item.
 		setSyncingPrice(true);
-		setCartItems(updatedCartItems);
+
+		dispatch({
+			type: CartActionTypes.set_cart_items,
+			payload: updatedCartItems,
+		});
+
+		console.log('debug promo code', promoCode);
 
 		// Remove item in session.
 		removeItemFetcher.submit(
 			{
 				__action: 'remove_cart_item',
 				variation_uuid: targetRemovalVariationUUID,
+				promo_code: promoCode,
 			},
 			{
 				method: 'post',
@@ -327,7 +385,7 @@ function Cart() {
 		setOpenRemoveItemModal(false);
 	}
 
-	if (Object.keys(cartItems).length === 0) {
+	if (Object.keys(state.cartItems).length === 0) {
 		return (
 			<EmptyShoppingCart />
 		);
@@ -337,16 +395,13 @@ function Cart() {
 		// User decide not to cancel, revert cartitem in session.
 		if (!targetRemovalVariationUUID || !targetRemovalVariationUUID.current) return;
 		const variationUUID = targetRemovalVariationUUID.current;
-
-		setCartItems((prev) => (
-			{
-				...prev,
-				[variationUUID]: {
-					...prev[variationUUID],
-					quantity: prevQuantity[variationUUID],
-				}
-			}
-		));
+		dispatch({
+			type: CartActionTypes.update_cart_item,
+			payload: {
+				variationUUID,
+				quantity: prevQuantity[variationUUID]
+			},
+		});
 
 		setOpenRemoveItemModal(false);
 	}
@@ -358,7 +413,7 @@ function Cart() {
 
 	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, variationUUID: string, number: number) => {
 		// If user hasn't changed anything. don't bother to update the quantity.
-		if (cartItems[variationUUID] && Number(cartItems[variationUUID].quantity) === number) return;
+		if (state.cartItems[variationUUID] && Number(state.cartItems[variationUUID].quantity) === number) return;
 		updateQuantity(variationUUID, number);
 
 		setSyncingPrice(true);
@@ -380,18 +435,16 @@ function Cart() {
 	const updateQuantity = (variationUUID: string, number: number) => {
 		setPrevQuantity(prev => ({
 			...prev,
-			[variationUUID]: cartItems[variationUUID].quantity,
+			[variationUUID]: state.cartItems[variationUUID].quantity,
 		}));
 
-		setCartItems((prev) => (
-			{
-				...prev,
-				[variationUUID]: {
-					...prev[variationUUID],
-					quantity: number.toString(),
-				}
-			}
-		));
+		dispatch({
+			type: CartActionTypes.update_cart_item,
+			payload: {
+				variationUUID,
+				quantity: number.toString(),
+			},
+		});
 	}
 
 	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) =>
@@ -432,11 +485,11 @@ function Cart() {
 						</h1>
 
 						{
-							Object.keys(cartItems).length > 0 && (
+							Object.keys(state.cartItems).length > 0 && (
 								<h1 className="count">
 									(
-									{Object.keys(cartItems).length} &nbsp;
-									{Object.keys(cartItems).length > 1 ? 'items' : 'item'}
+									{Object.keys(state.cartItems).length} &nbsp;
+									{Object.keys(state.cartItems).length > 1 ? 'items' : 'item'}
 									)
 								</h1>
 							)
@@ -475,13 +528,14 @@ function Cart() {
 					<div className="cart-items-container">
 						{
 							// TODO: add typescript to item.
-							Object.keys(cartItems).map((prodID) => {
-								const item = cartItems[prodID];
+							Object.keys(state.cartItems).map((prodID) => {
+								const item = state.cartItems[prodID];
 								const variationUUID = item.variationUUID;
 
 								const isCalculating = (
 									updateItemQuantityFetcher.state !== 'idle' &&
 									updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
+
 								) || (
 										removeItemFetcher.state !== 'idle' &&
 										removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID

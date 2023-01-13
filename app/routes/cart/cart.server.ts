@@ -26,6 +26,7 @@ export type PriceInfo = {
 }
 
 export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<PriceInfo> => {
+  console.log('debug 1', params);
   const resp = await fetch(`${getMYFBEndpoint()}/data-server/ec/v1/accountant/order-amount`, {
     method: 'post',
     body: JSON.stringify(params),
@@ -34,20 +35,24 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
     },
   })
 
+  console.log('debug 2', params);
+
   const respJSON = await resp.json();
+
+  console.log('debug 3', respJSON);
   if (resp.status !== httpStatus.OK) {
+    console.log('debug 4', respJSON);
     throw new Error(JSON.stringify(respJSON));
   }
 
   const trfmPriceInfo = transformToPriceInfo(respJSON)
+
+  console.log('debug 5', respJSON);
   return trfmPriceInfo;
 }
 
 const transformToPriceInfo = (json: any): PriceInfo => {
-  return {
-    ...json,
-    discount_code_valid: json.discount_Code_valid,
-  };
+  return { ...json, };
 }
 
 export const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {

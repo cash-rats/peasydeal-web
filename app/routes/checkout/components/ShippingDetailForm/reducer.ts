@@ -25,7 +25,9 @@ export enum AddressOptionsActionTypes {
 
 interface AddressOptionsAction {
   type: AddressOptionsActionTypes;
-  payload: Option[] | Option | string;
+  payload: Option[] |
+  Option |
+  string;
 }
 
 export const addressOptionsReducer = (state: StateShape, action: AddressOptionsAction): StateShape => {

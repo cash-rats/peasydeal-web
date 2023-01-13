@@ -5,7 +5,7 @@ import type { ActionFunction } from '@remix-run/node';
 import parseISO from 'date-fns/parseISO';
 
 import { clearCart } from '~/sessions/shoppingcart.session';
-import { commitSession } from '~/sessions/redis_session';
+import { commitSession } from '~/sessions/sessions';
 
 import OrderAnnotation from './components/OrderAnnotation';
 import OrderDetail from './components/OrderDetail';

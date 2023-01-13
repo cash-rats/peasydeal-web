@@ -23,7 +23,10 @@ export const TransactinoObjectSessionKey = 'transaction_object';
 
 export const resetTransactionObject = async (request: Request): Promise<Session> => {
   const session = await getCookieSession(request);
-  session.unset(TransactinoObjectSessionKey);
+  return sessionResetTransactionObject(session);
+}
+
+export const sessionResetTransactionObject = async (session: Session): Promise<Session> => {
   session.set(TransactinoObjectSessionKey, null)
   return session;
 }
