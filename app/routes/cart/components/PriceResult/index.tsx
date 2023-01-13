@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import { Link } from '@remix-run/react';
 import { BsBagCheck } from 'react-icons/bs';
@@ -24,7 +24,7 @@ type PriceResultProps = {
 };
 
 /*
-  - [ ] Apply promo code button loading state.
+  - [x] Apply promo code button loading state.
 */
 export default function PriceResult({
   priceInfo,
@@ -34,13 +34,39 @@ export default function PriceResult({
   onApplyPromoCode = () => { },
 }: PriceResultProps) {
   const [promoCode, setPromoCode] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (
+      appliedPromoCode &&
+      !priceInfo.discount_code_valid
+    ) {
+      setError(`Seems like promo code ${appliedPromoCode} is invalid. Let's check and try again`)
+      return;
+    }
+
+    setError('');
+  }, [
+    appliedPromoCode,
+    priceInfo,
+  ]);
+
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const v = evt.target.value;
     setPromoCode(v);
     onChangePromoCode(v);
   }
 
-  const handleApplyPromoCode = () => onApplyPromoCode(promoCode);
+  const handleApplyPromoCode = () => {
+    if (!promoCode) {
+      setError('You have not enter any promo code');
+
+      return;
+    }
+
+    setError('');
+    onApplyPromoCode(promoCode);
+  };
 
   return (
     <div className="m-5 flex">
@@ -113,16 +139,12 @@ export default function PriceResult({
 
             {/* invalid promo code message */}
             <div className="mt-[10px] h-10">
-              {
-                appliedPromoCode &&
-                !priceInfo.discount_code_valid && (
-                  <p className="text-[#b21111] font-normal text-base">
-                    Seems like promo code {appliedPromoCode} is invalid. Let's check and try again
-                  </p>
-                )
-              }
+              <p className="text-[#b21111] font-normal text-base">
+                {error}
+              </p>
 
               {
+                !error &&
                 appliedPromoCode &&
                 priceInfo.discount_code_valid && (
                   <p className="text-[#00af32] font-normal text-base">
@@ -140,7 +162,6 @@ export default function PriceResult({
             border-b-[1px] border-b-solid border-[#ccc]
           "
         >
-          {/* <h2 className="Cart__result-row-summary"> */}
           Summary
         </h2>
         <ResultRow

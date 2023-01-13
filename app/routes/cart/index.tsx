@@ -286,7 +286,6 @@ function Cart() {
 	);
 
 	const [prevQuantity, setPrevQuantity] = useState<PreviousQuantity>({});
-	// const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
 	const [syncingPrice, setSyncingPrice] = useState(false);
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 	const [promoCode, setPromoCode] = useState('');
