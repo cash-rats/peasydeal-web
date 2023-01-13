@@ -33,6 +33,10 @@ export const sessionResetTransactionObject = async (session: Session): Promise<S
 
 export const setTransactionObject = async (request: Request, transactionObj: TransactionObject): Promise<Session> => {
   const session = await getCookieSession(request);
+  return sessionSetTransactionObject(session, transactionObj);
+}
+
+export const sessionSetTransactionObject = async (session: Session, transactionObj: TransactionObject): Promise<Session> => {
   session.set(TransactinoObjectSessionKey, transactionObj);
-  return session;
+  return session
 }

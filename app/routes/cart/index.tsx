@@ -11,7 +11,8 @@ import { getCart, removeItem as sessionRemoveItem, updateCart, CartSessionKey } 
 import {
 	setTransactionObject,
 	resetTransactionObject,
-	sessionResetTransactionObject
+	sessionResetTransactionObject,
+	sessionSetTransactionObject,
 } from '~/sessions/transaction.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
@@ -61,17 +62,16 @@ type RemoveCartItemActionDataType = {
 	price_info: PriceInfo | null,
 };
 
-const __removeCartItemAction = async (variationUUID: string, request: Request) => {
+const __removeCartItemAction = async (variationUUID: string, promoCode: string, request: Request) => {
 	const session = await sessionRemoveItem(request, variationUUID);
 	const cart = session.get(CartSessionKey);
-	let itemCount = 0;
 
 	// If we deleted the last item is the cart, we reset the price info
 	// by resetting `TransactionObject` in the session.
 	if (!cart || Object.keys(cart).length <= 0) {
 		return json<RemoveCartItemActionDataType>(
 			{
-				cart_item_count: itemCount,
+				cart_item_count: 0,
 				price_info: null,
 			},
 			{
@@ -87,19 +87,27 @@ const __removeCartItemAction = async (variationUUID: string, request: Request) =
 	try {
 		// Recalc price info.
 		const priceQuery = convertShoppingCartToPriceQuery(cart);
-		const priceInfo = await fetchPriceInfo({ products: priceQuery });
-		itemCount = Object.keys(cart).length
+
+		console.log('debug recalc 1', priceQuery, promoCode);
+		const priceInfo = await fetchPriceInfo({ products: priceQuery, discount_code: promoCode });
+		console.log('debug recalc 2', priceInfo);
 
 		// `cart_item_count` tells frontend when to perform page refresh. When `cart_item_count`
-		// equals 0, frontend will trigger load of the current route which displays empty bag page.
+		// equals 0, frontend will trigger load of the current route which displays empty cart page.
 		return json(
 			{
-				cart_item_count: itemCount,
+				cart_item_count: Object.keys(cart).length,
 				price_info: priceInfo,
 			},
 			{
 				headers: {
-					"Set-Cookie": await commitSession(session),
+					"Set-Cookie": await commitSession(
+						// Set new `TransactionObject` to session.
+						await sessionSetTransactionObject(session, {
+							promo_code: promoCode,
+							price_info: priceInfo,
+						}),
+					),
 				}
 			});
 	} catch (err) {
@@ -169,7 +177,8 @@ export const action: ActionFunction = async ({ request }) => {
 
 	if (actionType === 'remove_cart_item') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
-		return __removeCartItemAction(variationUUID, request);
+		const promoCode = formEntries['promo_code'] as string || '';
+		return __removeCartItemAction(variationUUID, promoCode, request);
 	}
 
 	if (actionType === 'update_item_quantity') {
@@ -283,6 +292,7 @@ function Cart() {
 		if (removeItemFetcher.type === 'done') {
 			const { price_info } = removeItemFetcher.data as RemoveCartItemActionDataType;
 			if (price_info) {
+				console.log('debug about to update price info', price_info);
 				setPriceInfo(price_info);
 			}
 			setSyncingPrice(false);
