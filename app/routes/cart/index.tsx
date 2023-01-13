@@ -87,10 +87,7 @@ const __removeCartItemAction = async (variationUUID: string, promoCode: string, 
 	try {
 		// Recalc price info.
 		const priceQuery = convertShoppingCartToPriceQuery(cart);
-
-		console.log('debug recalc 1', priceQuery, promoCode);
 		const priceInfo = await fetchPriceInfo({ products: priceQuery, discount_code: promoCode });
-		console.log('debug recalc 2', priceInfo);
 
 		// `cart_item_count` tells frontend when to perform page refresh. When `cart_item_count`
 		// equals 0, frontend will trigger load of the current route which displays empty cart page.
@@ -111,12 +108,13 @@ const __removeCartItemAction = async (variationUUID: string, promoCode: string, 
 				}
 			});
 	} catch (err) {
+		// TODO throw response display 500 page.
 		console.log('debug remove error', err);
 		return null
 	}
 }
 
-const __updateItemQuantity = async (variationUUID: string, quantity: string, request: Request) => {
+const __updateItemQuantity = async (request: Request, variationUUID: string, quantity: string, promoCode: string) => {
 	const cart = await getCart(request);
 	if (!cart || Object.keys(cart).length === 0) return null;
 	const item = cart[variationUUID]
@@ -124,15 +122,25 @@ const __updateItemQuantity = async (variationUUID: string, quantity: string, req
 	item.quantity = quantity;
 
 	const priceQuery = convertShoppingCartToPriceQuery(cart);
-	const priceInfo = await fetchPriceInfo({ products: priceQuery });
+	const priceInfo = await fetchPriceInfo({
+		products: priceQuery,
+		discount_code: promoCode,
+	});
 
-	const session = await updateCart(request, cart);
+	// Update transaction object
+	const session = await sessionSetTransactionObject(
+		await updateCart(request, cart),
+		{
+			price_info: priceInfo,
+			promo_code: promoCode,
+		}
+	)
 
-	return new Response(JSON.stringify(priceInfo), {
+	return json<PriceInfo>(priceInfo, {
 		headers: {
 			"Set-Cookie": await commitSession(session),
-		}
-	});
+		},
+	})
 }
 
 type ApplyPromoCodeActionType = {
@@ -184,7 +192,8 @@ export const action: ActionFunction = async ({ request }) => {
 	if (actionType === 'update_item_quantity') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
 		const quantity = formEntries['quantity'] as string;
-		return __updateItemQuantity(variationUUID, quantity, request);
+		const promoCode = formEntries['promo_code'] as string || '';
+		return __updateItemQuantity(request, variationUUID, quantity, promoCode);
 	}
 
 	if (actionType === 'apply_promo_code') {
@@ -291,21 +300,18 @@ function Cart() {
 	useEffect(() => {
 		if (removeItemFetcher.type === 'done') {
 			const { price_info } = removeItemFetcher.data as RemoveCartItemActionDataType;
-			if (price_info) {
-				console.log('debug about to update price info', price_info);
-				setPriceInfo(price_info);
-			}
 			setSyncingPrice(false);
+			if (!price_info) return;
+			setPriceInfo(price_info);
 		}
 	}, [removeItemFetcher]);
 
 	// When user update the quantity, we need to update the cost info calced by backend as well.
 	useEffect(() => {
 		if (updateItemQuantityFetcher.type === 'done') {
-			const data = updateItemQuantityFetcher.data as string | null;
+			const data = updateItemQuantityFetcher.data as PriceInfo;
 			if (!data) return;
-			const priceInfo = JSON.parse(data);
-			setPriceInfo(priceInfo);
+			setPriceInfo(data);
 			setSyncingPrice(false);
 		}
 	}, [updateItemQuantityFetcher]);
@@ -313,7 +319,6 @@ function Cart() {
 	useEffect(() => {
 		if (applyPromoCodeFetcher.type === 'done') {
 			const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
-			console.log('price info data', data);
 			setPromoCode(data.discount_code);
 			setPriceInfo(data.price_info);
 		}
@@ -338,14 +343,14 @@ function Cart() {
 		}
 
 		updateQuantity(variationUUID, quantity);
-
 		setSyncingPrice(true);
 
 		updateItemQuantityFetcher.submit(
 			{
 				__action: 'update_item_quantity',
 				variation_uuid: variationUUID,
-				quantity: quantity.toString()
+				quantity: quantity.toString(),
+				promo_code: promoCode,
 			},
 			{
 				method: 'post',
@@ -355,11 +360,13 @@ function Cart() {
 	};
 
 	const removeItem = (targetRemovalVariationUUID: string) => {
-		const updatedCartItems = Object.keys(state.cartItems).reduce((newCartItems: ShoppingCart, variationUUID) => {
-			if (variationUUID === targetRemovalVariationUUID) return newCartItems;
-			newCartItems[variationUUID] = state.cartItems[variationUUID];
-			return newCartItems
-		}, {})
+		const updatedCartItems = Object.
+			keys(state.cartItems).
+			reduce((newCartItems: ShoppingCart, variationUUID) => {
+				if (variationUUID === targetRemovalVariationUUID) return newCartItems;
+				newCartItems[variationUUID] = state.cartItems[variationUUID];
+				return newCartItems
+			}, {})
 
 		// Update cart state with a version without removed item.
 		setSyncingPrice(true);
@@ -368,8 +375,6 @@ function Cart() {
 			type: CartActionTypes.set_cart_items,
 			payload: updatedCartItems,
 		});
-
-		console.log('debug promo code', promoCode);
 
 		// Remove item in session.
 		removeItemFetcher.submit(
@@ -423,15 +428,19 @@ function Cart() {
 
 	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, variationUUID: string, number: number) => {
 		// If user hasn't changed anything. don't bother to update the quantity.
-		if (state.cartItems[variationUUID] && Number(state.cartItems[variationUUID].quantity) === number) return;
+		if (
+			state.cartItems[variationUUID] &&
+			Number(state.cartItems[variationUUID].quantity) === number
+		) return;
 		updateQuantity(variationUUID, number);
-
 		setSyncingPrice(true);
+
 		updateItemQuantityFetcher.submit(
 			{
 				__action: 'update_item_quantity',
 				variation_uuid: variationUUID,
-				quantity: number.toString()
+				quantity: number.toString(),
+				promo_code: promoCode,
 			},
 			{
 				method: 'post',
