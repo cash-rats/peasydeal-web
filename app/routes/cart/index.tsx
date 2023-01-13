@@ -279,11 +279,14 @@ function Cart() {
 	const preloadData = useLoaderData<LoaderType>();
 	const [state, dispatch] = useReducer(
 		cartReducer,
-		{ cartItems: preloadData.cart } as StateShape,
+		{
+			cartItems: preloadData.cart,
+			priceInfo: preloadData.priceInfo,
+		} as StateShape,
 	);
 
 	const [prevQuantity, setPrevQuantity] = useState<PreviousQuantity>({});
-	const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
+	// const [priceInfo, setPriceInfo] = useState<PriceInfo | null>(preloadData.priceInfo);
 	const [syncingPrice, setSyncingPrice] = useState(false);
 	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
 	const [promoCode, setPromoCode] = useState('');
@@ -301,8 +304,11 @@ function Cart() {
 		if (removeItemFetcher.type === 'done') {
 			const { price_info } = removeItemFetcher.data as RemoveCartItemActionDataType;
 			setSyncingPrice(false);
-			if (!price_info) return;
-			setPriceInfo(price_info);
+
+			dispatch({
+				type: CartActionTypes.set_price_info,
+				payload: price_info
+			});
 		}
 	}, [removeItemFetcher]);
 
@@ -311,7 +317,10 @@ function Cart() {
 		if (updateItemQuantityFetcher.type === 'done') {
 			const data = updateItemQuantityFetcher.data as PriceInfo;
 			if (!data) return;
-			setPriceInfo(data);
+			dispatch({
+				type: CartActionTypes.set_price_info,
+				payload: data,
+			});
 			setSyncingPrice(false);
 		}
 	}, [updateItemQuantityFetcher]);
@@ -320,7 +329,10 @@ function Cart() {
 		if (applyPromoCodeFetcher.type === 'done') {
 			const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
 			setPromoCode(data.discount_code);
-			setPriceInfo(data.price_info);
+			dispatch({
+				type: CartActionTypes.set_price_info,
+				payload: data.price_info,
+			});
 		}
 	}, [applyPromoCodeFetcher.type]);
 
@@ -584,11 +596,11 @@ function Cart() {
 						}
 
 						{
-							priceInfo && (
+							state.priceInfo && (
 								<PriceResult
 									onApplyPromoCode={handleClickApplyPromoCode}
 									appliedPromoCode={promoCode}
-									priceInfo={priceInfo}
+									priceInfo={state.priceInfo}
 									calculating={
 										updateItemQuantityFetcher.state !== 'idle' ||
 										removeItemFetcher.state !== 'idle' ||

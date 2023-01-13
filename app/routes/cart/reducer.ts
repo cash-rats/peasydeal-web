@@ -1,16 +1,22 @@
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 
+import type { PriceInfo } from './cart.server';
+
 export enum CartActionTypes {
   set_cart_items = 'set_cart_items',
   update_cart_item = 'update_cart_item',
+
+  set_price_info = 'set_price_info',
 };
 
 export type StateShape = {
   cartItems: ShoppingCart;
+  priceInfo: PriceInfo | null;
 }
 
 export const initState: StateShape = {
   cartItems: {},
+  priceInfo: null,
 };
 
 interface UpdateCartItemPayload {
@@ -20,7 +26,11 @@ interface UpdateCartItemPayload {
 
 interface CartActions {
   type: CartActionTypes;
-  payload: ShoppingCart | UpdateCartItemPayload;
+  payload:
+  | ShoppingCart
+  | UpdateCartItemPayload
+  | PriceInfo
+  | null;
 }
 
 export const setCartItems = (cartItems: ShoppingCart) => {
@@ -51,6 +61,13 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
             quantity,
           }
         }
+      }
+    }
+    case CartActionTypes.set_price_info: {
+      const priceInfo = action.payload as PriceInfo;
+      return {
+        ...state,
+        priceInfo,
       }
     }
     default:
