@@ -1,22 +1,30 @@
-import type { ShoppingCart } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
+import { CartItem } from '~/shared/types';
 
 import type { PriceInfo } from './cart.server';
 
 export enum CartActionTypes {
   set_cart_items = 'set_cart_items',
   update_cart_item = 'update_cart_item',
-
+  remove_cart_item = 'remove_cart_item',
   set_price_info = 'set_price_info',
 };
+
+export type PreviousQuantity = {
+  [key: string]: string;
+}
 
 export type StateShape = {
   cartItems: ShoppingCart;
   priceInfo: PriceInfo | null;
+  previousQuantity: PreviousQuantity;
 }
+
 
 export const initState: StateShape = {
   cartItems: {},
   priceInfo: null,
+  previousQuantity: {},
 };
 
 interface UpdateCartItemPayload {
@@ -30,6 +38,7 @@ interface CartActions {
   | ShoppingCart
   | UpdateCartItemPayload
   | PriceInfo
+  | string
   | null;
 }
 
@@ -61,6 +70,25 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
             quantity,
           }
         }
+      }
+    }
+    case CartActionTypes.remove_cart_item: {
+      const targetRemovalVariationUUID = action.payload as string;
+
+      const updatedCartItems = Object.
+        keys(state.cartItems).
+        reduce((newCartItems: ShoppingCart, variationUUID) => {
+          if (variationUUID === targetRemovalVariationUUID) {
+            return newCartItems;
+          }
+
+          newCartItems[variationUUID] = state.cartItems[variationUUID];
+          return newCartItems
+        }, {})
+
+      return {
+        ...state,
+        cartItems: updatedCartItems,
       }
     }
     case CartActionTypes.set_price_info: {

@@ -371,20 +371,12 @@ function Cart() {
 	};
 
 	const removeItem = (targetRemovalVariationUUID: string) => {
-		const updatedCartItems = Object.
-			keys(state.cartItems).
-			reduce((newCartItems: ShoppingCart, variationUUID) => {
-				if (variationUUID === targetRemovalVariationUUID) return newCartItems;
-				newCartItems[variationUUID] = state.cartItems[variationUUID];
-				return newCartItems
-			}, {})
-
 		// Update cart state with a version without removed item.
 		setSyncingPrice(true);
 
 		dispatch({
-			type: CartActionTypes.set_cart_items,
-			payload: updatedCartItems,
+			type: CartActionTypes.remove_cart_item,
+			payload: targetRemovalVariationUUID,
 		});
 
 		// Remove item in session.
