@@ -4,14 +4,15 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 
 import RoundButton from '~/components/RoundButton';
-import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
-import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
-import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
-import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
+import { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
+import { links as ScratchLinks } from '~/components/Tags/Scratch';
+import { links as SunShineLinks } from '~/components/Tags/SunShine';
+import { links as PennantLeftLinks } from '~/components/Tags/Pennant';
+import SaleTags from './SaleTag';
+
 import { composeProductDetailURL } from '~/utils';
 
 import { normalizeTagsListToMap } from './utils';
-import type { RenderableTagMap } from './utils';
 import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
 import styles from "./styles/MediumGrid.css";
@@ -65,51 +66,6 @@ export default function MediumGrid({
 	);
 	const nDiscount = ~~(discount * 100);
 
-	const renderTags = (shouldRenderTags: RenderableTagMap, discount: number) => {
-		return (
-			<>
-
-				{
-					shouldRenderTags['NEW_LEFT'] && (
-						<TiltRibbon text='new' direction='left' />
-					)
-				}
-
-				{
-					shouldRenderTags['NEW_RIGHT'] && (
-						<TiltRibbon text='new' direction='right' />
-					)
-				}
-
-				{
-					shouldRenderTags['SCRATCH_RIGHT'] && (
-						<Scratch text={`${discount}% off`} direction='right' />
-					)
-				}
-
-				{
-					shouldRenderTags['SUN_LEFT'] && (
-						<SunShine text={`${discount} % off`} direction='left' />
-					)
-				}
-
-				{
-					shouldRenderTags['SUN_RIGHT'] && (
-						<SunShine text={`${discount}% off`} direction='right' />
-					)
-				}
-
-				{
-					shouldRenderTags['PENNANT_LEFT'] && (
-						<PennantLeft text1='price off' text2={`${discount}%`} />
-					)
-				}
-			</>
-
-		)
-
-	}
-
 	return (
 		<Link
 			// prefetch='intent'
@@ -122,12 +78,18 @@ export default function MediumGrid({
 
 				onClickProduct(title, productID)
 			}}
-			className="medium-grid-container"
+			className="medium-grid-container  p-2.5"
 		>
-			{renderTags(shouldRenderTags, nDiscount)}
+			<SaleTags
+				shouldRenderTags={shouldRenderTags}
+				discount={nDiscount}
+			/>
 
 			{/* images */}
-			<div className="image-container">
+			<div
+				className="image-container bg-contain bg-center bg-no-repeat"
+				style={{ backgroundImage: `url('${image}')`}}
+			>
 				<LazyLoadImage
 					placeholder={
 						<img
@@ -137,14 +99,14 @@ export default function MediumGrid({
 						/>
 					}
 					alt={title}
-					className="medium-grid-image"
+					className="medium-grid-image  opacity-0"
 					src={image}
 					scrollPosition={scrollPosition}
 				/>
 			</div>
 
 			{/* Product Description */}
-			<div className="product-desc-container">
+			<div className="product-desc-container px-2 py-6">
 				<div className="prod-info">
 					{/* topic */}
 					<div className="headline">

@@ -3,17 +3,17 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import type { ScrollPosition } from "react-lazy-load-image-component";
 
 import RoundButton from '~/components/RoundButton';
-import TiltRibbon, { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
-import Scratch, { links as ScratchLinks } from '~/components/Tags/Scratch';
-import SunShine, { links as SunShineLinks } from '~/components/Tags/SunShine';
-import PennantLeft, { links as PennantLeftLinks } from '~/components/Tags/Pennant';
+import { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
+import { links as ScratchLinks } from '~/components/Tags/Scratch';
+import { links as SunShineLinks } from '~/components/Tags/SunShine';
+import { links as PennantLeftLinks } from '~/components/Tags/Pennant';
+import SaleTags from './SaleTag';
 import { composeProductDetailURL } from '~/utils';
 
 import styles from "./styles/LargeGrid.css";
 import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
 import { normalizeTagsListToMap } from './utils';
-import type { RenderableTagMap } from './utils';
 
 export function links() {
 	return [
@@ -23,55 +23,6 @@ export function links() {
 		...PennantLeftLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
-}
-
-const renderTags = (shouldRenderTags: RenderableTagMap, discount: number) => {
-	return (
-		<>
-			{
-				shouldRenderTags['NEW_LEFT'] && (
-					<TiltRibbon text='new' direction='left' />
-				)
-			}
-
-			{
-				shouldRenderTags['NEW_RIGHT'] && (
-					<TiltRibbon text='new' direction='right' />
-				)
-			}
-
-			{
-				shouldRenderTags['SCRATCH_RIGHT'] && (
-					<Scratch text={`${discount}% off`} direction='right' />
-				)
-			}
-
-			{
-				shouldRenderTags['SUN_LEFT'] && (
-					<SunShine text={`${discount}% off`} direction='left' />
-				)
-			}
-
-			{
-				shouldRenderTags['SUN_RIGHT'] && (
-					<SunShine text={`${discount}% off`} direction='right' />
-				)
-			}
-
-			{
-				shouldRenderTags['PENNANT_LEFT'] && (
-					<PennantLeft text1='price off' text2={`${discount}%`} />
-				)
-			}
-
-			{
-				shouldRenderTags['PENNANT_RIGHT'] && (
-					<PennantLeft text1='price off' text2={`${discount} %`} direction='right' />
-				)
-			}
-		</>
-
-	)
 }
 
 interface LargeGridProps {
@@ -102,7 +53,7 @@ function LargeGrid({
 	return (
 		<Link
 			// prefetch='intent'
-			className="large-grid-container"
+			className="large-grid-container p-2.5"
 			to={composeProductDetailURL({ productName: title, variationUUID: productID })}
 			onClick={(evt) => {
 				// The following code prevents redirection triggered by view button
@@ -112,15 +63,20 @@ function LargeGrid({
 				onClickProduct(title, productID)
 			}}
 		>
-			{
-				renderTags(shouldRenderTags, nDiscount)
-			}
+			<SaleTags
+				shouldRenderTags={shouldRenderTags}
+				discount={nDiscount}
+			/>
+
 			<input type='hidden' name="product-id" value={productID} />
 			{/* image */}
-			<div className="image-container">
+			<div
+				className="image-container bg-contain bg-center bg-no-repeat"
+				style={{ backgroundImage: `url('${image}')`}}
+			>
 				<LazyLoadImage
 					src={image}
-					className='large-grid-image'
+					className='large-grid-image opacity-0'
 					alt={title}
 					scrollPosition={scrollPosition}
 					placeholder={
@@ -133,7 +89,7 @@ function LargeGrid({
 				/>
 			</div>
 
-			<div className="product-desc-container">
+			<div className="product-desc-container px-2 py-6">
 				<div className="info">
 					<div className="headline">
 						{title}

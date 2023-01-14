@@ -100,11 +100,14 @@ const ActivityBannerLayout = ({
               const nDiscount = ~~(prod.discountOff * 100);
               return (
                 <div key={idx} className="ActivityBanner__wrapper">
-                  <div className="ActivityBanner__image-container" >
+                  <div
+                    className="ActivityBanner__image-container bg-contain bg-center bg-no-repeat bg-white"
+                    style={{ backgroundImage: `url('${prod.mainPic}')`}}
+                  >
                     <SunShine text={`${nDiscount}% off`} direction='right' />
                     <LazyLoadImage
                       alt={prod.title}
-                      className="ActivityBanner__image"
+                      className="ActivityBanner__image opacity-0"
                       src={prod.mainPic}
                       placeholder={<ActivityBannerSkeleton />}
                       scrollPosition={scrollPosition}

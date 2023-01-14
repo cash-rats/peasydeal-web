@@ -30,7 +30,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
   }
 
   return (
-    <div className="categories-nav-container">
+    <div className="categories-nav-container py-1 bg-slate-50">
       <div className="CategoriesNav__scrollable-nav">
         {/* categories nav */}
         <nav className="featured-category-nav">
@@ -43,7 +43,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                   state={{ scrollToTop: true }}
                   to={`/${category.title}`}
                 >
-                  <li className="CategoriesNav__item fromLeft" >
+                  <li className="CategoriesNav__item fromLeft font-bold" >
                     {category.title}
                   </li>
                 </Link>
@@ -59,7 +59,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
         onMouseLeave={toggleOpenAllCategory}
       >
         <div className="border-left" />
-        <span className="Header__CategoriesNav__text">
+        <span className="Header__CategoriesNav__text font-bold">
           all
         </span>
 

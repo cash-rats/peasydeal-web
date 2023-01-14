@@ -48,7 +48,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 						)
 					}
 					{/* TODO this isn't the right way to have ripple effect */}
-					<Link aria-label='shopping cart' className={`flex space-x-${cartItemCount > 0 ? '4' : '2'} items-center`} to="/cart">
+					<Link aria-label='shopping cart' className={`flex space-x-4 space-x-${cartItemCount > 0 ? '4' : '2'} items-center`} to="/cart">
 						<FiShoppingCart color='#e6007e' fontSize={26} className='flex-1' />
 						<span className='text-sm font-bold capitalize hover:text-primary flex-1'>
 							Cart
@@ -58,7 +58,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 
 				<li>
 
-					<Link aria-label='track order' className='flex space-x-2 items-center' to="/tracking">
+					<Link aria-label='track order' className="flex space-x-2 items-center" to="/tracking">
 						<RiTruckLine color='#e6007e' fontSize={26} className='flex-1' />
 						<span className="ml-[10px] text-sm font-bold capitalize hover:text-primary whitespace-nowrap">
 							Track Order
