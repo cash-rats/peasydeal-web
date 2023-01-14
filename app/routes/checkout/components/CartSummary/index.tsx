@@ -107,7 +107,10 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
 
           {
             priceInfo.discount_type === 'price_off' && (
-              <div>
+              <div className="
+                capitalize font-semibold text-base flex-1
+                text-end
+              ">
                 - £${priceInfo.discount_amount}
               </div>
             )
@@ -115,7 +118,10 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
 
           {
             priceInfo.discount_type === 'percentage_off' && (
-              <div>
+              <div className="
+                capitalize font-semibold text-base flex-1
+                text-end
+              ">
                 - £${priceInfo.discount_amount}
               </div>
             )
@@ -124,8 +130,8 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
           <PriceInfoBox
             label="shipping"
             info={`£${priceInfo.discount_type === 'free_shipping'
-                ? 0
-                : priceInfo.shipping_fee
+              ? 0
+              : priceInfo.shipping_fee
               }`}
           />
 
