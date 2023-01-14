@@ -1,5 +1,4 @@
-import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
-import { CartItem } from '~/shared/types';
+import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 
 import type { PriceInfo } from './cart.server';
 

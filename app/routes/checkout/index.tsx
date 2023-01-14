@@ -13,7 +13,6 @@ import httpStatus from 'http-status-codes';
 import Alert from '@mui/material/Alert';
 
 import type { ApiErrorResponse } from '~/shared/types';
-import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
 import type { PriceInfo } from '~/shared/cart';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
@@ -40,7 +39,6 @@ export const links: LinksFunction = () => {
 
 type LoaderType = {
   cart_items: ShoppingCart;
-  price_info: PriceInfo;
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -50,12 +48,9 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw redirect("/cart");
   }
 
-  const cartParams = convertShoppingCartToPriceQuery(cart);
-  const priceInfo = await fetchPriceInfo({ products: cartParams });
-
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
   // In stripe, the base unit is 1 cent, not 1 dollar.
-  return json<LoaderType>({ cart_items: cart, price_info: priceInfo });
+  return json<LoaderType>({ cart_items: cart });
 };
 
 type ActionPayload = {
@@ -122,8 +117,9 @@ export const action: ActionFunction = async ({ request }) => {
     - [ ] add search bar header
 */
 function CheckoutPage() {
-  const { cart_items: cartItems, price_info: priceInfo } = useLoaderData<LoaderType>();
-  const { paymentIntendID, total } = useContext();
+  const { cart_items: cartItems } = useLoaderData<LoaderType>();
+  const { paymentIntendID, priceInfo } = useContext();
+
   const element = useElements();
   const stripe = useStripe();
 
@@ -260,43 +256,53 @@ function CheckoutPage() {
         <div className="left">
 
           {/* You Details  */}
-          <div className="form-container">
+          {/* form-container */}
+          <div className="mb-4 md:my-0 mx-auto">
 
-            {/* product summary TODO add edit link */}
-            <div className="pricing-panel">
-              <h1 className="form-title">
+            {/* pricing-panel */}
+            <div className="
+              mb-0 border-none shadow-price-panel
+              bg-white w-full
+            ">
+              <h1 className="font-bold text-[1.4rem] p-3">
                 <span>Cart Summary</span>
                 <Link to="/cart">
-                  <span className="Checkout__pricing-panel-edit">
+                  {/*Checkout__pricing-panel-edit*/}
+                  <span className="
+                    uppercase text-[0.8rem] ml-4
+                    font-normal
+                  ">
                     edit
                   </span>
                 </Link>
               </h1>
 
-              <div className="product-tiles">
+              <div className="py-0 px-4">
                 {
                   Object.keys(cartItems).map((prodID: string): ReactElement => {
                     const cartItem = cartItems[prodID];
                     return (
                       <Fragment key={prodID}>
-                        <div className="product-tile">
-                          <div className="Checkout__thumbnail-wrapper">
+                        <div className="py-4 px-0 flex items-center">
+                          <div className="mr-[1.2rem]">
                             <img
-                              className="Checkout__thumbnail"
+                              className="w-[85px] aspect-square"
                               src={cartItem.image}
                               alt={`#${cartItem.variationUUID}`}
                             />
                           </div>
-                          <div className="product-desc">
-                            <p>
+                          <div className="flex-1">
+                            <p className="text-base font-medium leading-6 h-full">
                               {cartItem.title}
                             </p>
                           </div>
-                          <h2 className="product-price">
+                          <h2 className="
+                            flex-1flex justify-center items-center
+                            font-semibold text-lg
+                          ">
                             {cartItem.quantity} x ${cartItem.salePrice}
                           </h2>
                         </div>
-                        <Divider />
                       </Fragment>
                     )
                   })
@@ -304,8 +310,15 @@ function CheckoutPage() {
               </div>
 
               {/* Subtotal */}
-              <div className="subtotal">
-                Total: &nbsp; <span>£{total}</span>
+              <div className="
+                p-[0.9375rem] flex justify-end items-center
+                border-t-[1px] border-t-solid border-t-[#DFDFDF]
+                text-lg
+              ">
+                Total: &nbsp;
+                <span className="font-semibold">
+                  £{priceInfo.total_amount}
+                </span>
               </div>
             </div>
           </div>

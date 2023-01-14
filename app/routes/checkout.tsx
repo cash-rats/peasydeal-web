@@ -12,11 +12,12 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import { createPaymentIntent } from '~/utils/stripe.server';
 import { getCart } from '~/sessions/shoppingcart.session';
+import { getTransactionObject } from '~/sessions/transaction.session';
 import { fetchCategories } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
-import { fetchPriceInfo, convertShoppingCartToPriceQuery } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
+import type { PriceInfo } from '~/shared/cart';
 
 import { useSearchSuggests } from './hooks/auto-complete-search';
 
@@ -33,7 +34,8 @@ type LoaderType = {
   client_secret?: string | undefined;
   payment_intend_id: string;
   categories: Category[];
-  total: number;
+  price_info: PriceInfo;
+  promo_code: string | null | undefined;
 };
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
@@ -77,20 +79,26 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
+  const transObj = await getTransactionObject(request);
   const cartItems = await getCart(request);
 
-  if (!cartItems || Object.keys(cartItems).length === 0) {
+  if (
+    !transObj ||
+    !cartItems ||
+    Object.keys(cartItems).length === 0
+  ) {
     throw redirect("/cart");
   }
 
   const categories = await fetchCategories();
 
-
   // TODO this number should be coming from BE instead.
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
   // In stripe, the base unit is 1 cent, not 1 dollar.
-  const priceQuery = convertShoppingCartToPriceQuery(cartItems);
-  const priceInfo = await fetchPriceInfo({ products: priceQuery });
+  const {
+    price_info: priceInfo,
+    promo_code,
+  } = transObj;
 
   // Construct stripe `PaymentIntend`
   const paymentIntent = await createPaymentIntent({
@@ -102,24 +110,21 @@ export const loader: LoaderFunction = async ({ request }) => {
     client_secret: paymentIntent.client_secret || undefined,
     payment_intend_id: paymentIntent.id,
     categories,
-    total: priceInfo.total_amount,
+    price_info: priceInfo,
+    promo_code: promo_code,
   });
 }
 
-type ContextType = {
-  clientSecret: string;
-  paymentIntendID: string;
-  total: number;
-};
 
 function CheckoutLayout() {
   const {
     /* Stripe payment intend client secret, every secret is different every time we refresh the page */
     client_secret: clientSecret = '',
     payment_intend_id,
-    total,
     categories,
+    price_info,
   } = useLoaderData<LoaderType>();
+
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [suggests, searchSuggests] = useSearchSuggests();
 
@@ -167,7 +172,7 @@ function CheckoutLayout() {
             >
               <Outlet context={{
                 paymentIntendID: payment_intend_id,
-                total,
+                priceInfo: price_info,
               }} />
             </Elements>
           )
@@ -177,6 +182,12 @@ function CheckoutLayout() {
       <Footer />
     </>
   );
+};
+
+type ContextType = {
+  clientSecret: string;
+  paymentIntendID: string;
+  priceInfo: PriceInfo;
 };
 
 export function useContext() {

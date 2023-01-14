@@ -21,6 +21,13 @@ export interface TransactionObject {
 
 export const TransactinoObjectSessionKey = 'transaction_object';
 
+export const getTransactionObject = async (request: Request): Promise<TransactionObject | null> => {
+  const session = await getCookieSession(request);
+  if (!session.has(TransactinoObjectSessionKey)) return null;
+  const transobj = session.get(TransactinoObjectSessionKey);
+  return transobj;
+}
+
 export const resetTransactionObject = async (request: Request): Promise<Session> => {
   const session = await getCookieSession(request);
   return sessionResetTransactionObject(session);
