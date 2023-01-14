@@ -1,5 +1,5 @@
 import { Fragment } from 'react';
-import type { ReactElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import { Link } from '@remix-run/react';
 
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
@@ -10,20 +10,48 @@ interface CartSummaryProps {
   priceInfo: PriceInfo;
 }
 
-export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
-  return (
+interface PriceInfoBoxProps {
+  label: ReactNode;
+  info: ReactNode;
+};
 
+function PriceInfoBox({ label, info }: PriceInfoBoxProps) {
+  return (
     <div className="
-              mb-0 border-none shadow-price-panel
-              bg-white w-full
-            ">
+      capitalize text-sm
+      flex w-full
+    ">
+      <label className="
+        capitalize font-semibold text-base
+        flex-1
+      ">
+        {label}: &nbsp;
+      </label>
+      <div className="
+        capitalize font-semibold text-base flex-1
+        text-end
+      ">
+        {info}
+      </div>
+    </div>
+  )
+}
+
+export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
+  console.log('debug 1', priceInfo);
+
+  return (
+    <div className="
+      mb-0 border-none shadow-price-panel
+      bg-white w-full
+    ">
       <h1 className="font-bold text-[1.4rem] p-3">
         <span>Cart Summary</span>
         <Link to="/cart">
           <span className="
-                    uppercase text-[0.8rem] ml-4
-                    font-normal
-                  ">
+            uppercase text-[0.8rem] ml-4
+            font-normal
+          ">
             edit
           </span>
         </Link>
@@ -49,9 +77,9 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
                     </p>
                   </div>
                   <h2 className="
-                            flex-1flex justify-center items-center
-                            font-semibold text-lg
-                          ">
+                    flex-1flex justify-center items-center
+                    font-semibold text-lg
+                  ">
                     {cartItem.quantity} x ${cartItem.salePrice}
                   </h2>
                 </div>
@@ -63,14 +91,62 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
 
       {/* Subtotal */}
       <div className="
-                p-[0.9375rem] flex justify-end items-center
-                border-t-[1px] border-t-solid border-t-[#DFDFDF]
-                text-lg
-              ">
-        Total: &nbsp;
-        <span className="font-semibold">
-          £{priceInfo.total_amount}
-        </span>
+        p-[0.9375rem] border-t-[1px] border-t-solid border-t-[#DFDFDF]
+        text-lg flex justify-end
+      ">
+        <div className="w-full 499:w-[55%] flex flex-col justify-center items-end gap-[5px]">
+          <PriceInfoBox
+            label="Items"
+            info={`£${priceInfo.sub_total}`}
+          />
+
+          <PriceInfoBox
+            label="Tax(20%)"
+            info={`£${priceInfo.tax_amount}`}
+          />
+
+          {
+            priceInfo.discount_type === 'price_off' && (
+              <div>
+                - £${priceInfo.discount_amount}
+              </div>
+            )
+          }
+
+          {
+            priceInfo.discount_type === 'percentage_off' && (
+              <div>
+                - £${priceInfo.discount_amount}
+              </div>
+            )
+          }
+
+          <PriceInfoBox
+            label="shipping"
+            info={`£${priceInfo.discount_type === 'free_shipping'
+                ? 0
+                : priceInfo.shipping_fee
+              }`}
+          />
+
+          <div className="
+            capitalize text-sm
+            flex w-full
+          ">
+            <label className="
+              capitalize font-semibold
+              flex-1 text-xl
+            ">
+              Total: &nbsp;
+            </label>
+            <div className="
+              capitalize font-semibold text-xl flex-1
+              text-end
+            ">
+              £{priceInfo.total_amount}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

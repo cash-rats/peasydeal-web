@@ -22,6 +22,7 @@ export type PriceInfo = {
   currency: string;
   vat_included: boolean;
   discount_code_valid: boolean;
+  percentage_off_amount: number;
   discount_type: 'free_shipping' | 'price_off' | 'percentage_off';
 }
 
@@ -39,9 +40,7 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
   if (resp.status !== httpStatus.OK) {
     throw new Error(JSON.stringify(respJSON));
   }
-
   const trfmPriceInfo = transformToPriceInfo(respJSON)
-
   return trfmPriceInfo;
 }
 

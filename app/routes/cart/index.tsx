@@ -53,7 +53,6 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 		return submission.formData.get('__action') !== 'apply_promo_code';
 	}
 
-
 	return true;
 }
 
