@@ -22,11 +22,11 @@ import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
 import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
 import type { Option } from './components/ShippingDetailForm/api.server';
+import CartSummary from './components/CartSummary';
 import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
 import type { ShippingDetailFormType, ContactInfoFormType } from './types';
 import { transformOrderDetail } from './utils';
 import { createOrder } from './api';
-import CartSummary from './components/CartSummary';
 
 export const links: LinksFunction = () => {
   return [
@@ -60,6 +60,7 @@ type ActionPayload = {
   cart_items: string,
   payment_secret: string;
   price_info: string;
+  promo_code: string
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -72,7 +73,10 @@ export const action: ActionFunction = async ({ request }) => {
     cart_items: cartItems,
     price_info: priceInfo,
     payment_secret,
+    promo_code,
   } = formObj as ActionPayload;
+
+  console.log('debug **', promo_code);
 
   const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
   const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
@@ -95,6 +99,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     products: trfItemsObj,
     price_info: priceInfoObj,
+    promo_code,
   });
 
   const respJSON = await resp.json();
@@ -118,7 +123,7 @@ export const action: ActionFunction = async ({ request }) => {
 */
 function CheckoutPage() {
   const { cart_items: cartItems } = useLoaderData<LoaderType>();
-  const { paymentIntendID, priceInfo } = useContext();
+  const { paymentIntendID, priceInfo, promoCode } = useContext();
 
   const element = useElements();
   const stripe = useStripe();
@@ -214,6 +219,7 @@ function CheckoutPage() {
     }
 
     // Submit forms to action, only create a new order if order hasn't been created yet.
+    // console.log('debug orderUUID', promoCode);
     if (!orderUUID) {
       createOrderFetcher.submit({
         shipping_form: JSON.stringify(shippingDetailFormValues),
@@ -221,6 +227,7 @@ function CheckoutPage() {
         price_info: JSON.stringify(priceInfo),
         cart_items: JSON.stringify(cartItems),
         payment_secret: paymentIntendID,
+        promo_code: promoCode,
       }, { method: 'post', action: '/checkout?index' });
       return;
     }

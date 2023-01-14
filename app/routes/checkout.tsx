@@ -123,6 +123,7 @@ function CheckoutLayout() {
     payment_intend_id,
     categories,
     price_info,
+    promo_code,
   } = useLoaderData<LoaderType>();
 
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
@@ -173,6 +174,7 @@ function CheckoutLayout() {
               <Outlet context={{
                 paymentIntendID: payment_intend_id,
                 priceInfo: price_info,
+                promoCode: promo_code,
               }} />
             </Elements>
           )
@@ -188,6 +190,7 @@ type ContextType = {
   clientSecret: string;
   paymentIntendID: string;
   priceInfo: PriceInfo;
+  promoCode: string;
 };
 
 export function useContext() {

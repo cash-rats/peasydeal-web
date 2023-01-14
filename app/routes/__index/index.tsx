@@ -93,8 +93,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 		])
 
 		if (prodInfo) {
-			console.log('debug 1');
-
 			const prods = await fetchProductsByCategoryV2({
 				perpage: prodInfo.page * PAGE_LIMIT,
 				category: 1, // 1 is the id for category 'Hot Deal'

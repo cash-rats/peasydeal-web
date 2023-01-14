@@ -1,18 +1,8 @@
 import type { Session } from '@remix-run/node';
 
-import { getCookieSession } from './session_utils';
+import type { PriceInfo } from '~/shared/cart';
 
-export type PriceInfo = {
-  sub_total: number;
-  tax_amount: number;
-  shipping_fee: number;
-  discount_amount: number;
-  total_amount: number;
-  currency: string;
-  vat_included: boolean;
-  discount_code_valid: boolean;
-  discount_type: 'free_shipping' | 'price_off' | 'percentage_off';
-}
+import { getCookieSession } from './session_utils';
 
 export interface TransactionObject {
   promo_code?: string | null;

@@ -14,6 +14,7 @@ type CreateOrderParams = {
   contact_name: string;
   phone_value: string;
   price_info: PriceInfo;
+  promo_code?: string;
 }
 
 export const createOrder = async ({
@@ -29,6 +30,7 @@ export const createOrder = async ({
   phone_value,
   products,
   price_info,
+  promo_code,
 }: CreateOrderParams): Promise<Response> => {
   return fetch(`${getPeasyDealEndpoint()}/v1/orders`, {
     method: 'POST',
@@ -47,7 +49,8 @@ export const createOrder = async ({
       contact_name,
       phone_value,
       products,
-      price_info
+      price_info,
+      promo_code,
     }),
   });
 };
