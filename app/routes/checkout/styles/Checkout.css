@@ -111,44 +111,6 @@
   }
 }
 
-.product-tiles {
-  padding: 0 15px;
-}
-.product-tiles .product-tile {
-  padding: 15px 0;
-  display: flex;
-  align-items: center;
-}
-.product-tiles .product-tile .product-desc {
-  flex: 1;
-}
-.product-tiles .product-tile .product-desc p {
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.5rem;
-  height: 100%;
-}
-.product-tiles .product-tile .product-price {
-  flex: 1;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  font-weight: 600;
-  font-size: 18px;
-}
-
-.subtotal {
-  padding: 0.9375rem;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  border-top: 1px solid #DFDFDF;
-  font-size: 18px;
-}
-.subtotal span {
-  font-weight: 600;
-}
-
 .payment-form-container {
   padding: 15px;
 }

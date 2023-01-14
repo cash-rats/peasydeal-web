@@ -1,14 +1,13 @@
-import { Fragment, useEffect, useState } from 'react';
-import type { FormEvent, ReactElement } from 'react';
+import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 import type { LoaderFunction, LinksFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher, Link } from '@remix-run/react';
+import { useLoaderData, useFetcher } from '@remix-run/react';
 import {
   useStripe,
   useElements,
 } from '@stripe/react-stripe-js';
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
-import Divider from '@mui/material/Divider';
 import httpStatus from 'http-status-codes';
 import Alert from '@mui/material/Alert';
 
@@ -27,6 +26,7 @@ import ContactInfoForm, { links as ContactInfoFormLinks } from './components/Con
 import type { ShippingDetailFormType, ContactInfoFormType } from './types';
 import { transformOrderDetail } from './utils';
 import { createOrder } from './api';
+import CartSummary from './components/CartSummary';
 
 export const links: LinksFunction = () => {
   return [
@@ -258,69 +258,10 @@ function CheckoutPage() {
           {/* You Details  */}
           {/* form-container */}
           <div className="mb-4 md:my-0 mx-auto">
-
-            {/* pricing-panel */}
-            <div className="
-              mb-0 border-none shadow-price-panel
-              bg-white w-full
-            ">
-              <h1 className="font-bold text-[1.4rem] p-3">
-                <span>Cart Summary</span>
-                <Link to="/cart">
-                  {/*Checkout__pricing-panel-edit*/}
-                  <span className="
-                    uppercase text-[0.8rem] ml-4
-                    font-normal
-                  ">
-                    edit
-                  </span>
-                </Link>
-              </h1>
-
-              <div className="py-0 px-4">
-                {
-                  Object.keys(cartItems).map((prodID: string): ReactElement => {
-                    const cartItem = cartItems[prodID];
-                    return (
-                      <Fragment key={prodID}>
-                        <div className="py-4 px-0 flex items-center">
-                          <div className="mr-[1.2rem]">
-                            <img
-                              className="w-[85px] aspect-square"
-                              src={cartItem.image}
-                              alt={`#${cartItem.variationUUID}`}
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-base font-medium leading-6 h-full">
-                              {cartItem.title}
-                            </p>
-                          </div>
-                          <h2 className="
-                            flex-1flex justify-center items-center
-                            font-semibold text-lg
-                          ">
-                            {cartItem.quantity} x ${cartItem.salePrice}
-                          </h2>
-                        </div>
-                      </Fragment>
-                    )
-                  })
-                }
-              </div>
-
-              {/* Subtotal */}
-              <div className="
-                p-[0.9375rem] flex justify-end items-center
-                border-t-[1px] border-t-solid border-t-[#DFDFDF]
-                text-lg
-              ">
-                Total: &nbsp;
-                <span className="font-semibold">
-                  £{priceInfo.total_amount}
-                </span>
-              </div>
-            </div>
+            <CartSummary
+              cart={cartItems}
+              priceInfo={priceInfo}
+            />
           </div>
         </div>
 
