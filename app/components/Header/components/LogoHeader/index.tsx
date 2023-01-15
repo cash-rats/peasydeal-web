@@ -1,5 +1,4 @@
 import type { ReactNode, CSSProperties, MouseEvent } from 'react';
-
 import LogoBar from '~/components/Header/components/LogoBar';
 import SearchBar from '~/components/SearchBar';
 
@@ -62,12 +61,16 @@ function LogoHeader({
 
       {
         categoriesBar && (
-          <div className="w-full bg-gallery">
+          <div className="
+            border-t-[1px] border-t-[rgba(0,0,0,.17)]
+            border-b-[1px] border-b-[rgba(0,0,0,.1)]
+            border-solid
+            w-full
+            bg-slate-50">
             {categoriesBar}
           </div>
         )
       }
-
     </header>
   )
 }
