@@ -72,6 +72,7 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 		)
 	}
 
+
 	return {
 		title: getProdDetailTitleText(data.product.title, data.product.uuid),
 		description,
