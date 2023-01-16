@@ -10,16 +10,6 @@ interface FBSEO {
   'og:locale': string;
 }
 
-declare global {
-  interface Window {
-    ENV: {
-      ENV: {
-        STRIPE_PUBLIC_KEY: string;
-        DOMAIN: string;
-      }
-    }
-  }
-}
 
 // ------------------ SEO ------------------
 export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https://peasydeal.com';
