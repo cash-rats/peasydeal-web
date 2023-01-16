@@ -13,10 +13,15 @@ import {
 } from "@remix-run/react";
 import { DynamicLinks } from 'remix-utils'
 
-import { getIndexTitleText, getIndexDescText } from '~/utils'
+import {
+  getIndexTitleText,
+  getIndexDescText,
+  getCanonicalDomain,
+  getLogoURL,
+} from '~/utils'
+
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
-
 import Layout, { links as LayoutLinks } from './Layout';
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
@@ -48,10 +53,18 @@ export const meta: MetaFunction = () => ({
     content: 'text/html; charset=UTF-8',
   },
 
+  // Facebook meta
+  'og:url': getCanonicalDomain(),
+  'og:type': 'website',
+  'og:title': getIndexTitleText(),
+  'og:description': getIndexDescText(),
+  'og:image': getLogoURL(),
+
   robots: 'index,follow',
   msapplicationTileColor: "da532c",
   themeColor: "#ffffff",
 });
+
 export let links: LinksFunction = () => {
   return [
     { rel: 'icon', type: 'image/x-icon', sizes: 'any', href: '/favicon.ico' },

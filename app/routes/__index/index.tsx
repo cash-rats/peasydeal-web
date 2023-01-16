@@ -47,9 +47,8 @@ export const links: LinksFunction = () => {
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
 	return [
-		{
-			rel: 'canonical', href: data.canonical_link,
-		},
+		// Google meta tags
+		{ rel: 'canonical', href: data.canonical_link },
 	];
 }
 export const handle = { dynamicLinks }

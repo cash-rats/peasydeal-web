@@ -91,24 +91,19 @@ app
 ### Category not found page
 `/some-cat`
 
-```
 app
 	|--- route
 	       |--- $collection#CatchBoundary
-
-```
 
 ### Product not found page
 
 `/product/some-product`
 
-```
 app
 	|--- route
 	       |--- __index
 				          |--- product
 									        | --- $prodid#CatchBoundary
-```
 
 ## Misc
 
