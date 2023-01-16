@@ -1,4 +1,6 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
+
+import { getPrivacyFBSEO } from '~/utils/seo';
 
 import styles from './styles/StaticPage.css';
 
@@ -6,6 +8,10 @@ export const links: LinksFunction = () => {
   return [
     { href: styles, rel: 'stylesheet' },
   ]
+}
+
+export const meta: MetaFunction = () => {
+  return { ...getPrivacyFBSEO() };
 }
 
 export default function Privacy() {

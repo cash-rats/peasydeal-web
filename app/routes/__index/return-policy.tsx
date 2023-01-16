@@ -1,6 +1,12 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
+
+import { getReturnPolicyFBSEO } from '~/utils/seo';
 
 import styles from './styles/StaticPage.css';
+
+export const meta: MetaFunction = () => {
+  return { ...getReturnPolicyFBSEO() };
+}
 
 export const links: LinksFunction = () => {
   return [

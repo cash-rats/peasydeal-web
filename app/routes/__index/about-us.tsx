@@ -1,4 +1,6 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
+
+import { getAboutUsFBSEO } from '~/utils/seo';
 
 import styles from './styles/StaticPage.css';
 
@@ -7,6 +9,10 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 };
+
+export const meta: MetaFunction = () => {
+  return { ...getAboutUsFBSEO() };
+}
 
 export default function AboutUs() {
   return (

@@ -24,7 +24,7 @@ import cartStyles from './styles/cart.css';
 export const meta: MetaFunction = () => ({
   title: getCartTitleText(),
 
-  ...getCartFBSEO(getCartTitleText()),
+  ...getCartFBSEO(),
 });
 
 const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
@@ -62,7 +62,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     canonicalLink: `${getCanonicalDomain()}/cart`
   });
 }
-
 
 function CartLayout() {
   const { cartItemCount, categories } = useLoaderData<LoaderType>();

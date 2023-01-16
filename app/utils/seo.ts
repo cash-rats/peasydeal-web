@@ -26,15 +26,15 @@ export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https:
 
 // SEO index page
 export const getIndexTitleText = () => 'peasydeal.com | premium selected car accessories, gadgets, home & gardening products, clothes and more at a great price!';
-export const getIndexDescText = () => `PeasyDeal makes your shopping experience a breeze. Premium selected solar-powered lights, gadgets, home & gardening products, apparel and more at a best price possible. Responsive customer service, fast processing and shipping time.`;
+export const getIndexDescText = () => `Shop with confidence at PeasyDeal with our premium selected solar-powered lights, gadgets, home & gardening products, apparel and more at a best price possible. Responsive customer service, fast shipping time. Get 14 days money-back guarantee on all products!`;
 
 // SEO collection page
 export const getCollectionTitleText = (category: string) => `${category} | peasydeal.com`;
-export const getCollectionDescText = (category: string) => `${category} | Hot Deals | Shop for Hot Deals and more at everyday discount price with FREE SHIPPING on all Products to celebrate PeasyDeal's Grant Opening!!`;
+export const getCollectionDescText = (category: string) => `${category} | Hot Deals | Shop for Hot Deals and more at everyday discount price`;
 
 // SEO prod page
 export const getProdDetailTitleText = (title: string, uuid: string) => `${title} - peasydeal.com - ${uuid}`;
-export const getProdDetailDescTextWithoutPrice = (title: string) => `Shop for ${title} and more at everyday discount price with FREE SHIPPING on all Products to celebrate PeasyDeal's Grant Opening!!`
+export const getProdDetailDescTextWithoutPrice = (title: string) => `Shop for ${title} and more at everyday discount price`
 export const getProdDetailDescText = (title: string, retailPrice: number, salePrice: number) => `£${salePrice} instead of £${retailPrice} for ${title} – save 36 % Shop for ${title} and more at everyday discount price with FREE SHIPPING on all Products to celebrate PeasyDeal's Grant Opening!!.`;
 
 // SEO tracking page
@@ -43,9 +43,27 @@ export const getTrackingDescText = () => 'track your order delivering status wit
 
 // SEO cart page
 export const getCartTitleText = () => 'Shopping Cart| peasydeal.com';
+
+// SEO privacy page
+export const getPrivacyTitleText = () => 'Privacy | peasydeal.com';
+
+// SEO contact us page
+export const getContactTitleText = () => 'Contact us | peasydeal.com';
+
+// SEO about us page
+export const getAboutUsTitleText = () => 'About Us | peasydeal.com';
+
+// SEO return policy page
+export const getReturnPolicyTitleText = () => 'Return Policy | peasydeal.com';
+
+// SEO shipping policy page
+export const getShippingPolicyTitleText = () => 'Shipping Policy | peasydeal.com';
+
+// SEO terms of use page
+export const getTermsOfUseTitleText = () => 'Terms of Use | peasydeal.com';
+
 // ------------------ END SEO ------------------
 
-// Root FBSEO tags
 // TODO: missing facebook fb:app_id.
 export const getRootFBSEO = (): FBSEO => ({
   'og:url': getCanonicalDomain(),
@@ -56,10 +74,10 @@ export const getRootFBSEO = (): FBSEO => ({
   'og:locale': 'en_GB',
 });
 
-export const getCategoryFBSEO = ({ title, desc }: { title: string, desc: string }): FBSEO => ({
+export const getCategoryFBSEO = (category: string): FBSEO => ({
   ...getRootFBSEO(),
-  'og:title': title,
-  'og:description': desc,
+  'og:title': getCollectionTitleText(category),
+  'og:description': category,
 })
 
 export const getProdDetailFBSEO = ({
@@ -80,12 +98,43 @@ export const getProdDetailFBSEO = ({
   'og:image': image,
 });
 
-export const getCartFBSEO = (title: string): FBSEO => ({
+export const getCartFBSEO = (): FBSEO => ({
   ...getRootFBSEO(),
-  'og:title': title,
+  'og:title': getCartTitleText(),
 });
 
 export const getTrackingFBSEO = (): FBSEO => ({
   ...getRootFBSEO(),
   'og:title': getTrackingTitleText(),
+});
+
+export const getPrivacyFBSEO = () => ({
+  ...getRootFBSEO(),
+  'og:title': getPrivacyTitleText(),
+})
+
+export const getContactUsFBSEO = () => ({
+  ...getRootFBSEO(),
+  'og:title': getContactTitleText(),
+});
+
+export const getAboutUsFBSEO = () => ({
+  ...getRootFBSEO(),
+  'og:title': getAboutUsTitleText(),
+});
+
+
+export const getReturnPolicyFBSEO = () => ({
+  ...getRootFBSEO(),
+  'og:title': getReturnPolicyTitleText(),
+});
+
+export const getShippingPolicyFBSEO = () => ({
+  ...getRootFBSEO(),
+  'og:title': getShippingPolicyTitleText(),
+});
+
+export const getTermsOfUseFBSEO = () => ({
+  ...getRootFBSEO(),
+  'og:title': getTermsOfUseTitleText(),
 });

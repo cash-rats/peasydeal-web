@@ -65,10 +65,7 @@ export const meta: MetaFunction = ({ data }: { data: LoaderDataType }) => ({
   title: getCollectionTitleText(data?.category),
   description: getCollectionDescText(data?.category),
 
-  ...getCategoryFBSEO({
-    title: getCollectionTitleText(data?.category),
-    desc: getCollectionDescText(data?.category)
-  })
+  ...getCategoryFBSEO(data?.category)
 });
 
 export const links: LinksFunction = () => {
