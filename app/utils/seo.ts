@@ -62,6 +62,9 @@ export const getShippingPolicyTitleText = () => 'Shipping Policy | peasydeal.com
 // SEO terms of use page
 export const getTermsOfUseTitleText = () => 'Terms of Use | peasydeal.com';
 
+// SEO wholesale page
+export const getWholesaleTitleText = () => 'Terms of Use | peasydeal.com';
+
 // ------------------ END SEO ------------------
 
 // TODO: missing facebook fb:app_id.
@@ -137,4 +140,9 @@ export const getShippingPolicyFBSEO = () => ({
 export const getTermsOfUseFBSEO = () => ({
   ...getRootFBSEO(),
   'og:title': getTermsOfUseTitleText(),
+});
+
+export const getWholeSaleFBSEO = () => ({
+  ...getRootFBSEO(),
+  'og:title': getWholesaleTitleText(),
 });
