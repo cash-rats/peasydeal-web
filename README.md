@@ -105,6 +105,7 @@ app
 				          |--- product
 									        | --- $prodid#CatchBoundary
 
+https://developers.google.com/search/docs/appearance/structured-data/search-gallery
 ## Misc
 
 - [Remix cosmos integration](https://dev.to/rzmz/react-cosmos-with-remix-7go)

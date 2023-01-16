@@ -11,7 +11,8 @@ import {
   Scripts,
   useLoaderData,
 } from "@remix-run/react";
-import { DynamicLinks } from 'remix-utils'
+import { DynamicLinks, StructuredData } from 'remix-utils'
+import type { WithContext, Organization } from 'schema-dts';
 
 import {
   getIndexTitleText,
@@ -27,7 +28,6 @@ import { getUser } from "./session.server";
 import { ServerStyleContext, ClientStyleContext } from "./context"
 import styles from "./styles/global.css";
 import ScrollRestoration from './ConditionalScrollRestoration';
-
 
 export const meta: MetaFunction = () => ({
   // default tags
@@ -78,6 +78,7 @@ export let links: LinksFunction = () => {
   ]
 }
 
+
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
@@ -90,6 +91,27 @@ export async function loader({ request }: LoaderArgs) {
     }
   });
 }
+
+const structuredData = () => {
+  let organizationSchema: WithContext<Organization> = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "peasydeal.com, Inc.",
+    "url": "https://www.peasydeal.com/",
+    "logo": "https://storage.googleapis.com/peasydeal/logo/peasydeal_logo.svg",
+    "address": [{
+      "@type": "PostalAddress",
+      "streetAddress": "37F lowfriar street",
+      "addressLocality": "Newcastle",
+      "postalCode": "Ne1 5ue"
+    }],
+  }
+
+  return organizationSchema;
+};
+
+export let handle = { structuredData };
+
 interface DocumentProps {
   children: React.ReactNode;
 }
@@ -120,6 +142,7 @@ const Document = withEmotionCache(
           <Meta />
           <DynamicLinks />
           <Links />
+          <StructuredData />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
           {serverStyleData?.map(({ key, ids, css }) => (
             <style

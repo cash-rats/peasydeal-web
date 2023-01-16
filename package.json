@@ -81,6 +81,7 @@
     "remix-redis-session": "github:huangc28/remix-redis-session",
     "remix-utils": "^3.4.0",
     "reselect": "^4.1.6",
+    "schema-dts": "^1.1.0",
     "slick-carousel": "^1.8.1",
     "stripe": "^10.8.0",
     "tiny-invariant": "^1.2.0",
