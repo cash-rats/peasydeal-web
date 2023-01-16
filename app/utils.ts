@@ -74,7 +74,7 @@ export function validateEmail(email: unknown): email is string {
 export const checkHasMoreRecord = (count: number, divisor: number) => count % divisor === 0;
 
 export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https://peasydeal.com';
-export const getLogoURL = () => 'https://ci4.googleusercontent.com/proxy/X2e0A6qRA-9BJU_P44mH7HP4fz6gMYjhVeLOS1tUdNGfQKbZrEws-yo8n7NLRA0JbeEaykQTSh4HIPR7gtlnxNquTBXOm21LJNgkTAP82Z4BwQrvjfmMt3xkz04y=s0-d-e1-ft#https://storage.googleapis.com/peasydeal/logo/Peasy%20Deal%20Logo-F_13.png'
+export const getLogoURL = () => `${getCanonicalDomain()}/images/peasy_deal_words.png`
 
 // composeProductDetailURL takes product name and url to compose a product detail url in following format:
 // `https://peasydeal.com/product/some-google-product-i.{VARIATION_UUID}`
