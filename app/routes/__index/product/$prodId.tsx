@@ -27,10 +27,12 @@ import {
 	getProdDetailTitleText,
 	getProdDetailDescText,
 	getProdDetailDescTextWithoutPrice,
+	getProdDetailFBSEO
+} from '~/utils/seo';
+import {
 	decomposeProductDetailURL,
 	composeProductDetailURL,
 } from '~/utils';
-import { getProdDetailFBSEO } from '~/utils/seo';
 
 import Breadcrumbs from './components/Breadcrumbs';
 import Divider from './components/DividerContent';

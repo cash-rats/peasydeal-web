@@ -22,12 +22,12 @@ import { normalizeToMap, fetchCategories } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { commitSession } from '~/sessions/sessions';
 import {
-  checkHasMoreRecord,
   getCanonicalDomain,
   getCollectionDescText,
   getCollectionTitleText,
-} from '~/utils';
-import { getCategoryFBSEO } from '~/utils/seo';
+  getCategoryFBSEO,
+} from '~/utils/seo';
+import { checkHasMoreRecord } from '~/utils';
 import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 

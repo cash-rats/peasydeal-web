@@ -16,7 +16,7 @@ import { DynamicLinks } from 'remix-utils'
 import {
   getIndexTitleText,
   getIndexDescText,
-} from '~/utils'
+} from '~/utils/seo'
 import { getRootFBSEO } from '~/utils/seo';
 
 import FiveHundredError from './components/FiveHundreError';
