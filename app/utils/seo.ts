@@ -25,7 +25,7 @@ export const getCollectionDescText = (category: string) => `${category} | Hot De
 // SEO prod page
 export const getProdDetailTitleText = (title: string, uuid: string) => `${title} - peasydeal.com - ${uuid}`;
 export const getProdDetailDescTextWithoutPrice = (title: string) => `Shop for ${title} and more at everyday discount price`
-export const getProdDetailDescText = (title: string, retailPrice: number, salePrice: number) => `£${salePrice} instead of £${retailPrice} for ${title} – save ${1 - (Number((salePrice / retailPrice).toFixed(2)) * 100)} % Shop for ${title} and more at everyday discount price. Responsive customer service, fast shipping time. Get 14 days money-back guarantee on all products!`;
+export const getProdDetailDescText = (title: string, retailPrice: number, salePrice: number) => `£${salePrice} instead of £${retailPrice} for ${title} – save ${(1 - Number((salePrice / retailPrice).toFixed(2)) * 100)} % Shop for ${title} and more at everyday discount price. Responsive customer service, fast shipping time. Get 14 days money-back guarantee on all products!`;
 
 // SEO tracking page
 export const getTrackingTitleText = () => 'Track Order | peasydeal.com';
