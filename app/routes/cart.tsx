@@ -13,12 +13,18 @@ import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { fetchCategories } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
-import { getCartTitleText, getCanonicalDomain } from '~/utils';
+import {
+  getCartTitleText,
+  getCanonicalDomain,
+  getCartFBSEO,
+} from '~/utils/seo';
 
 import cartStyles from './styles/cart.css';
 
 export const meta: MetaFunction = () => ({
   title: getCartTitleText(),
+
+  ...getCartFBSEO(getCartTitleText()),
 });
 
 const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {

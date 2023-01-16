@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
@@ -13,7 +13,7 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import { error } from '~/utils/error';
 import { getItemCount } from '~/sessions/shoppingcart.session';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
-import { getCanonicalDomain, getTrackingTitleText } from '~/utils';
+import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
 import { fetchCategories } from '~/api';
 import type { Category } from '~/shared/types';
 import CategoryContext from '~/context/categories';
@@ -41,7 +41,7 @@ type CatchBoundaryDataType = {
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
   return [
     {
-      rel: 'canonical', href: `${getCanonicalDomain()}/tracking`,
+      rel: 'canonical', href: data.canonicalLink,
     },
   ];
 }
@@ -49,6 +49,8 @@ export const handle = { dynamicLinks };
 
 export const meta: MetaFunction = () => ({
   title: getTrackingTitleText(),
+
+  ...getTrackingFBSEO(),
 })
 
 export const links: LinksFunction = () => {

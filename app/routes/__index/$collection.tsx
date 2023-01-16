@@ -21,7 +21,13 @@ import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadM
 import { normalizeToMap, fetchCategories } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { commitSession } from '~/sessions/sessions';
-import { checkHasMoreRecord, getCanonicalDomain, getCollectionDescText, getCollectionTitleText } from '~/utils';
+import {
+  checkHasMoreRecord,
+  getCanonicalDomain,
+  getCollectionDescText,
+  getCollectionTitleText,
+} from '~/utils';
+import { getCategoryFBSEO } from '~/utils/seo';
 import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
@@ -58,6 +64,11 @@ export const handle = { dynamicLinks }
 export const meta: MetaFunction = ({ data }: { data: LoaderDataType }) => ({
   title: getCollectionTitleText(data?.category),
   description: getCollectionDescText(data?.category),
+
+  ...getCategoryFBSEO({
+    title: getCollectionTitleText(data?.category),
+    desc: getCollectionDescText(data?.category)
+  })
 });
 
 export const links: LinksFunction = () => {

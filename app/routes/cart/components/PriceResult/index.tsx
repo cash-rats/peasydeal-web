@@ -4,12 +4,12 @@ import { Link } from '@remix-run/react';
 import { BsBagCheck } from 'react-icons/bs';
 import Skeleton from '@mui/material/Skeleton';
 import ClipLoader from "react-spinners/ClipLoader";
-
-import { TAX } from '~/utils/checkout_accountant';
 import RoundButton from '~/components/RoundButton';
 
 import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../cart.server';
+
+const TAX = 0.2;
 
 type PriceResultProps = {
   priceInfo: PriceInfo;

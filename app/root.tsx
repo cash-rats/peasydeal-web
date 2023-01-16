@@ -16,9 +16,8 @@ import { DynamicLinks } from 'remix-utils'
 import {
   getIndexTitleText,
   getIndexDescText,
-  getCanonicalDomain,
-  getLogoURL,
 } from '~/utils'
+import { getRootFBSEO } from '~/utils/seo';
 
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
@@ -29,15 +28,6 @@ import { ServerStyleContext, ClientStyleContext } from "./context"
 import styles from "./styles/global.css";
 import ScrollRestoration from './ConditionalScrollRestoration';
 
-declare global {
-  interface Window {
-    ENV: {
-      ENV: {
-        STRIPE_PUBLIC_KEY: string;
-      }
-    }
-  }
-}
 
 export const meta: MetaFunction = () => ({
   // default tags
@@ -54,13 +44,7 @@ export const meta: MetaFunction = () => ({
   },
 
   // Facebook meta
-  // TODO: missing facebook fb:app_id.
-  'og:url': getCanonicalDomain(),
-  'og:type': 'website',
-  'og:title': getIndexTitleText(),
-  'og:description': getIndexDescText(),
-  'og:image': getLogoURL(),
-  'og:locale': 'en_GB',
+  ...getRootFBSEO(),
 
   robots: 'index,follow',
   msapplicationTileColor: "da532c",

@@ -30,6 +30,7 @@ import {
 	decomposeProductDetailURL,
 	composeProductDetailURL,
 } from '~/utils';
+import { getProdDetailFBSEO } from '~/utils/seo';
 
 import Breadcrumbs from './components/Breadcrumbs';
 import Divider from './components/DividerContent';
@@ -47,14 +48,20 @@ import useStickyActionBar from './hooks/useStickyActionBar';
 type LoaderTypeProductDetail = {
 	product: ProductDetail;
 	canonical_url: string;
+	meta_image: string;
 };
 
 type LoaderErrorType = { error: any }
 
 export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
 	if (!data) return { title: '404' };
-	const defaultVariation: ProductVariation | undefined = data.product.variations.find(variation => variation.uuid === data.product.default_variation_uuid);
+	const defaultVariation: ProductVariation | undefined = data.
+		product.
+		variations.
+		find(variation => variation.uuid === data.product.default_variation_uuid);
+
 	let description = getProdDetailDescTextWithoutPrice(data.product.title)
+
 	if (defaultVariation) {
 		description = getProdDetailDescText(
 			data.product.title,
@@ -66,6 +73,12 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 	return {
 		title: getProdDetailTitleText(data.product.title, data.product.uuid),
 		description,
+
+		...getProdDetailFBSEO({
+			title: getProdDetailTitleText(data.product.title, data.product.uuid),
+			desc: description,
+			image: data.meta_image,
+		}),
 	}
 };
 
@@ -86,13 +99,9 @@ export const links: LinksFunction = () => {
 
 
 const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) => {
-	return data
-		? [
-			{
-				rel: 'canonical', href: data.canonical_url,
-			},
-		]
-		: [];
+	return [
+		{ rel: 'canonical', href: data.canonical_url || '' },
+	];
 }
 export const handle = { dynamicLinks };
 
@@ -112,7 +121,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 		const prodDetail = await fetchProductDetail(decompURL.variationUUID)
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
-			canonical_url: `${getCanonicalDomain()}${url.pathname}`
+			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
+			meta_image: prodDetail.images[0],
 		});
 	} catch (error: any) {
 		throw json<LoaderErrorType>(
