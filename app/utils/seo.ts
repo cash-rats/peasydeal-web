@@ -65,9 +65,16 @@ export const getCategoryFBSEO = ({ title, desc }: { title: string, desc: string 
 export const getProdDetailFBSEO = ({
   title,
   desc,
-  image
-}: { title: string, desc: string, image: string }): FBSEO => ({
+  image,
+  url,
+}: {
+  title: string,
+  desc: string,
+  image: string,
+  url: string
+}): FBSEO => ({
   ...getRootFBSEO(),
+  'og:url': url,
   'og:title': title,
   'og:description': desc,
   'og:image': image,
@@ -78,10 +85,7 @@ export const getCartFBSEO = (title: string): FBSEO => ({
   'og:title': title,
 });
 
-export const getTrackingFBSEO = (): FBSEO => {
-  console.log('debug getTrackingFBSEO', getTrackingTitleText());
-  return {
-    ...getRootFBSEO(),
-    'og:title': getTrackingTitleText(),
-  }
-};
+export const getTrackingFBSEO = (): FBSEO => ({
+  ...getRootFBSEO(),
+  'og:title': getTrackingTitleText(),
+});

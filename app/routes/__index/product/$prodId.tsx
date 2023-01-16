@@ -78,6 +78,7 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 			title: getProdDetailTitleText(data.product.title, data.product.uuid),
 			desc: description,
 			image: data.meta_image,
+			url: data.canonical_url,
 		}),
 	}
 };
