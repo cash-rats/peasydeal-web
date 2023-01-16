@@ -110,3 +110,4 @@ app
 - [Remix cosmos integration](https://dev.to/rzmz/react-cosmos-with-remix-7go)
 - [react-cosmos mock routes in Remix](https://www.vixalien.com/blog/remix-in-the-cosmos)
 - [Name color][find name of a color](https://colors.artyclick.com/color-name-finder/)
+- [web icons generator](https://realfavicongenerator.net/)
