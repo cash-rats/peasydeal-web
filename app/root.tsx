@@ -54,11 +54,13 @@ export const meta: MetaFunction = () => ({
   },
 
   // Facebook meta
+  // TODO: missing facebook fb:app_id.
   'og:url': getCanonicalDomain(),
   'og:type': 'website',
   'og:title': getIndexTitleText(),
   'og:description': getIndexDescText(),
   'og:image': getLogoURL(),
+  'og:locale': 'en_GB',
 
   robots: 'index,follow',
   msapplicationTileColor: "da532c",
