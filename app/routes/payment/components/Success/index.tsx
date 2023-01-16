@@ -6,6 +6,7 @@ import parseISO from 'date-fns/parseISO';
 
 import { clearCart } from '~/sessions/shoppingcart.session';
 import { commitSession } from '~/sessions/sessions';
+import { sessionResetTransactionObject } from '~/sessions/transaction.session';
 
 import OrderAnnotation from './components/OrderAnnotation';
 import OrderDetail from './components/OrderDetail';
@@ -33,8 +34,12 @@ export const action: ActionFunction = async ({ request }) => {
     await fetchOrder(orderUUID),
     {
       headers: {
-        // Clear shopping cart once payment success.
-        'Set-Cookie': await commitSession(await clearCart(request)),
+        // Clear TransactionObject & shopping cart once payment success.
+        'Set-Cookie': await commitSession(
+          await sessionResetTransactionObject(
+            await clearCart(request),
+          )
+        ),
       }
     }
   );
@@ -47,7 +52,6 @@ function Success({ orderId }: { orderId: string }) {
 
   useEffect(() => {
     if (!orderId) return;
-
     // Retrieve order information via loader.
     orderFetcher.submit(
       {},
@@ -56,20 +60,22 @@ function Success({ orderId }: { orderId: string }) {
         action: `/payment/components/Success?index&order_uuid=${orderId}`
       });
 
-    // Notify Header component to reload cart item count.
-    cartItemCountFetcher.submit(
-      null,
-      {
-        method: 'post',
-        action: '/components/Header?index',
-        replace: true,
-      },
-    )
   }, [orderId]);
 
   useEffect(() => {
     if (orderFetcher.type === 'done') {
       setOrderDetail(orderFetcher.data as SuccessOrderDetail);
+
+      // Once we are done fetching order info and cleared cart,
+      //  Notify Header component to reload cart item count.
+      cartItemCountFetcher.submit(
+        null,
+        {
+          method: 'post',
+          action: '/components/Header?index',
+          replace: true,
+        },
+      )
     }
   }, [orderFetcher]);
 

@@ -26,11 +26,18 @@ export const loader: LoaderFunction = async ({ request }) => {
   return json<LoaderDataType>({ numOfItemsInCart: await getItemCount(request) });
 }
 
-// When other component wants to notify Header to reload `numOfItemsInCart`, they submit a POST request to this action.
-// For example, if $prodID wants to reload item count, it would do:
-//  fetcher.submit(null, { action: '/components/Header?index' });
+// When other component wants to notify Header to reload `numOfItemsInCart`,
+// they submit a POST request to this action.
+// For example, if $prodID wants to reload item count, it would submit an action
+// like:
+//
+//    fetcher.submit(null, { action: '/components/Header?index' });
+//
+//  Header route would find the corresponding submission via `fetchers` and reload the cart item count
+//  via submitting an action to it's own route (in this case /components/Header) .
 export const action: ActionFunction = async ({ request }) => {
-  return json<ActionDataType>({ numOfItemsInCart: await getItemCount(request) });
+  const itemCount = await getItemCount(request);
+  return json<ActionDataType>({ numOfItemsInCart: itemCount });
 }
 
 type HeaderRouteProps = Omit<HeaderProps, 'numOfItemsInCart'>
@@ -40,10 +47,11 @@ function HeaderRoute(props: HeaderRouteProps) {
   const fetcher = useFetcher();
   const fetchers = useFetchers();
 
-
-  const addToCartFetcher = fetchers.find((f) => {
-    return f.submission?.action.includes('/components/Header') && f.submission.method === 'POST';
-  });
+  const reloadCartCountFetcher = fetchers.find(
+    (f) =>
+      f.submission?.action.includes('/components/Header') &&
+      f.submission.method === 'POST'
+  );
 
   useEffect(() => {
     fetcher.submit(null, { action: '/components/Header?index' });
@@ -56,10 +64,10 @@ function HeaderRoute(props: HeaderRouteProps) {
   }, [fetcher.type]);
 
   useEffect(() => {
-    if (addToCartFetcher?.type === 'actionReload') {
+    if (reloadCartCountFetcher?.type === 'actionReload') {
       fetcher.submit(null, { action: '/components/Header?index' });
     }
-  }, [addToCartFetcher?.type])
+  }, [reloadCartCountFetcher?.type])
 
   return (<Header
     form={props.form}

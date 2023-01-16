@@ -76,8 +76,6 @@ export const action: ActionFunction = async ({ request }) => {
     promo_code,
   } = formObj as ActionPayload;
 
-  console.log('debug **', promo_code);
-
   const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
   const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
   const priceInfoObj: PriceInfo = JSON.parse(priceInfo);
@@ -219,7 +217,6 @@ function CheckoutPage() {
     }
 
     // Submit forms to action, only create a new order if order hasn't been created yet.
-    // console.log('debug orderUUID', promoCode);
     if (!orderUUID) {
       createOrderFetcher.submit({
         shipping_form: JSON.stringify(shippingDetailFormValues),
