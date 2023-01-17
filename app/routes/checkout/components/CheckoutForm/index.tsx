@@ -24,7 +24,17 @@ interface StripeCheckoutFormProps {
 function StripeCheckoutForm({ loading = false }: StripeCheckoutFormProps) {
   return (
     <>
-      <PaymentElement id="payment-element" />
+      <PaymentElement
+        id="payment-element"
+        options={{
+          layout: {
+            type: 'accordion',
+            defaultCollapsed: false,
+            radios: false,
+            spacedAccordionItems: false
+          }
+        }}
+      />
 
       <div className="confirm-payment">
         <LoadingButton
