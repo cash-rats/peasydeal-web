@@ -10,5 +10,9 @@ export const createPaymentIntent = ({ amount, currency = 'usd' }: { amount: numb
     amount,
     currency,
     metadata: { integration_check: 'accept_a_payment' },
+    payment_method_types: [
+      'klarna',
+      'card',
+    ],
   });
 }
