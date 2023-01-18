@@ -106,6 +106,10 @@ app
 									        | --- $prodid#CatchBoundary
 
 https://developers.google.com/search/docs/appearance/structured-data/search-gallery
+
+### Paypal react SDK
+
+https://www.npmjs.com/package/@paypal/react-paypal-js?activeTab=readme
 ## Misc
 
 - [Remix cosmos integration](https://dev.to/rzmz/react-cosmos-with-remix-7go)

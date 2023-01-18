@@ -309,9 +309,7 @@ function CheckoutPage() {
                   />
                 </div>
               </div>
-
             </div >
-
 
             {/* Contact information */}
             <div className="form-container">
@@ -329,22 +327,13 @@ function CheckoutPage() {
               </div>
             </div>
 
-            <div className='form-container'>
-              <h3 className="title">
-                Payment Information
-              </h3>
-              {/* You Details  */}
-              <div className="pricing-panel">
-                <div className="payment-form-container">
-                  {
-                    // When create order action is triggered in `CheckoutForm`, current loader will be triggered to realod client secret causing display of the warning.
-                    // The following is a temperary solution.
-                    // @docs https://stackoverflow.com/questions/70864433/integration-of-stripe-paymentelement-warning-unsupported-prop-change-options-c
-                    <CheckoutForm loading={createOrderFetcher.state !== 'idle' || isPaying} />
-                  }
-                </div>
-              </div>
-            </div>
+
+            {
+              // When create order action is triggered in `CheckoutForm`, current loader will be triggered to realod client secret causing display of the warning.
+              // The following is a temperary solution.
+              // @docs https://stackoverflow.com/questions/70864433/integration-of-stripe-paymentelement-warning-unsupported-prop-change-options-c
+              <CheckoutForm loading={createOrderFetcher.state !== 'idle' || isPaying} />
+            }
           </createOrderFetcher.Form>
         </div>
       </div>

@@ -60,6 +60,7 @@ module.exports = {
         'price-off-red': '#e81120',
         'border-color': '#e5e5e5',
         'battleship-grey': '#828183',
+        'paymentelement-border': '#e6e6e6',
       },
       boxShadow: {
         'dropdown': '0 0 3px 0 rgb(73 143 226 / 50%)',
