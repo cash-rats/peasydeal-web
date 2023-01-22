@@ -8,7 +8,6 @@ import {
   useElements,
 } from '@stripe/react-stripe-js';
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
-import httpStatus from 'http-status-codes';
 import Alert from '@mui/material/Alert';
 import type {
   OnApproveData,
@@ -17,7 +16,6 @@ import type {
 } from "@paypal/paypal-js";
 
 import type { ApiErrorResponse } from '~/shared/types';
-import type { PriceInfo } from '~/shared/cart';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
 import { getCart } from '~/sessions/shoppingcart.session';
@@ -34,15 +32,17 @@ import type {
   ContactInfoFormType,
   PaymentMethod,
 } from './types';
-import { transformOrderDetail } from './utils';
-import {
-  createOrder,
-  paypalCreateOrder,
-  paypalCapturePayment,
-} from './api';
 import type { PaypalCreateOrderResponse } from './api';
 import useFetcherWithPromise from './hooks/useFetcherWithPromise';
-import reducer, { ActionTypes, StateShape } from './reducer';
+import reducer, { ActionTypes as ReducerActionTypes } from './reducer';
+import type { StateShape } from './reducer';
+import {
+  __paypalCreateOrder,
+  __stripeCreateOrder,
+  __paypalCapturePayment,
+  ActionType,
+} from './actions';
+import type { ActionPayload } from './actions';
 
 export const links: LinksFunction = () => {
   return [
@@ -67,129 +67,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
   // In stripe, the base unit is 1 cent, not 1 dollar.
   return json<LoaderType>({ cart_items: cart });
-};
-
-type ActionPayload = {
-  [k: string]: FormDataEntryValue;
-  shipping_form: string;
-  contact_info_form: string;
-  cart_items: string,
-  payment_secret: string;
-  price_info: string;
-  promo_code: string
-};
-
-
-enum ActionType {
-  PaypalCreateOrder = "paypal_create_order",
-  PaypalCapturePayment = "paypal_capture_payment",
-  StripeCreateOrder = "stripe_create_order"
-};
-
-
-type StripeOrderActionDataType = {
-  order_uuid: string;
-  paypal_order_id: string;
-}
-
-const __paypalCreateOrder = async (form: ActionPayload) => {
-  const {
-    shipping_form: shippingForm,
-    contact_info_form: contactInfoForm,
-    cart_items: cartItems,
-    price_info: priceInfo,
-    payment_secret,
-    promo_code,
-  } = form;
-
-  const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
-  const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
-  const priceInfoObj: PriceInfo = JSON.parse(priceInfo);
-  const cartItemsObj = JSON.parse(cartItems);
-  const trfItemsObj = transformOrderDetail(cartItemsObj);
-
-  const resp = await paypalCreateOrder({
-    firstname: shippingFormObj.firstname,
-    lastname: shippingFormObj.lastname,
-    address1: shippingFormObj.address1,
-    address2: shippingFormObj.address2,
-    city: shippingFormObj.city,
-    postal: shippingFormObj.postal,
-
-    email: contactInfoFormObj.email,
-    contact_name: contactInfoFormObj.contact_name,
-    phone_value: contactInfoFormObj.phone_value,
-    payment_secret,
-
-    products: trfItemsObj,
-    price_info: priceInfoObj,
-    promo_code,
-  });
-
-  return json<StripeOrderActionDataType>(resp, httpStatus.OK);
-}
-
-
-const __stripeCreateOrder = async (formObj: ActionPayload) => {
-  const {
-    shipping_form: shippingForm,
-    contact_info_form: contactInfoForm,
-    cart_items: cartItems,
-    price_info: priceInfo,
-    payment_secret,
-    promo_code,
-  } = formObj
-
-  const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
-  const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
-  const priceInfoObj: PriceInfo = JSON.parse(priceInfo);
-  const cartItemsObj = JSON.parse(cartItems);
-  const trfItemsObj = transformOrderDetail(cartItemsObj);
-
-  const resp = await createOrder({
-    firstname: shippingFormObj.firstname,
-    lastname: shippingFormObj.lastname,
-    address1: shippingFormObj.address1,
-    address2: shippingFormObj.address2,
-    city: shippingFormObj.city,
-    postal: shippingFormObj.postal,
-
-    email: contactInfoFormObj.email,
-    contact_name: contactInfoFormObj.contact_name,
-    phone_value: contactInfoFormObj.phone_value,
-    payment_secret,
-
-    products: trfItemsObj,
-    price_info: priceInfoObj,
-    promo_code,
-  });
-
-  const respJSON = await resp.json();
-
-  if (resp.status !== httpStatus.OK) {
-    return json(respJSON, httpStatus.OK);
-  }
-
-  return json(respJSON, httpStatus.OK);
-};
-
-const __paypalCapturePayment = async (paypalOrderID: string, peasydealOrderID: string) => {
-  const resp = await paypalCapturePayment(paypalOrderID);
-  const respJSON = JSON.parse(resp.capture_response);
-
-  console.log('debug __paypalCapturePayment', respJSON);
-
-  // TODO: redirect to paypal failed page.
-  if (!respJSON.status || respJSON.status !== 'COMPLETED') {
-    return redirect(
-      `/payment/${peasydealOrderID}/failed`
-    );
-  }
-
-  // TODO: redirect to payment success page.
-  return redirect(
-    `/payment/${peasydealOrderID}/success`,
-  )
 };
 
 export const action: ActionFunction = async ({ request }) => {
@@ -313,8 +190,8 @@ function CheckoutPage() {
 
         const { order_uuid: orderUUID } = createOrderFetcher.data;
         dispatch({
-          type: ActionTypes.set_order_uuid,
-          payload: state.order_uuid,
+          type: ReducerActionTypes.set_order_uuid,
+          payload: orderUUID,
         })
 
         stripeConfirmPayment(orderUUID, element, stripe);
@@ -420,7 +297,7 @@ function CheckoutPage() {
     console.log('debug 1', data.order_uuid);
 
     dispatch({
-      type: ActionTypes.set_both_paypal_and_peasydeal_order_id,
+      type: ReducerActionTypes.set_both_paypal_and_peasydeal_order_id,
       payload: {
         orderUUID: data.order_uuid,
         paypalOrderID: data.paypal_order_id,
