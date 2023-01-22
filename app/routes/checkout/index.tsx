@@ -42,7 +42,7 @@ import {
 } from './api';
 import type { PaypalCreateOrderResponse } from './api';
 import useFetcherWithPromise from './hooks/useFetcherWithPromise';
-import reducer, { ActionTypes } from './reducer';
+import reducer, { ActionTypes, StateShape } from './reducer';
 
 export const links: LinksFunction = () => {
   return [
@@ -177,16 +177,18 @@ const __paypalCapturePayment = async (paypalOrderID: string, peasydealOrderID: s
   const resp = await paypalCapturePayment(paypalOrderID);
   const respJSON = JSON.parse(resp.capture_response);
 
+  console.log('debug __paypalCapturePayment', respJSON);
+
   // TODO: redirect to paypal failed page.
   if (!respJSON.status || respJSON.status !== 'COMPLETED') {
     return redirect(
-      `/payment${peasydealOrderID}/failed`
+      `/payment/${peasydealOrderID}/failed`
     );
   }
 
   // TODO: redirect to payment success page.
   return redirect(
-    `/payment${peasydealOrderID}/success`,
+    `/payment/${peasydealOrderID}/success`,
   )
 };
 
@@ -267,6 +269,8 @@ function CheckoutPage() {
   cinfoRef.current = contactInfoFormValues;
   const shipInfoRef = useRef<ShippingDetailFormType>(shippingDetailFormValues)
   shipInfoRef.current = shippingDetailFormValues;
+  const reducerState = useRef<StateShape>(state);
+  reducerState.current = state;
 
   const stripeConfirmPayment = async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
     setIsPaying(true);
@@ -413,6 +417,8 @@ function CheckoutPage() {
       }
     );
 
+    console.log('debug 1', data.order_uuid);
+
     dispatch({
       type: ActionTypes.set_both_paypal_and_peasydeal_order_id,
       payload: {
@@ -428,7 +434,7 @@ function CheckoutPage() {
     await submit(
       {
         action_type: ActionType.PaypalCapturePayment,
-        order_id: state.orderID,
+        order_id: reducerState.current.orderUUID,
         paypal_order_id: data.orderID, // This is the paypal order id
       },
       {

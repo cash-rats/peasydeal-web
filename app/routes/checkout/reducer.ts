@@ -1,5 +1,3 @@
-import produce from 'immer';
-
 export type StateShape = {
   orderUUID: string;
   paypalOrderID: string;
@@ -26,22 +24,32 @@ interface CheckoutAction {
   payload: string | SetBothOrderID;
 }
 
-const checkoutReducer = produce((draft, action: CheckoutAction) => {
+const checkoutReducer = (state: StateShape, action: CheckoutAction) => {
   switch (action.type) {
     case ActionTypes.set_order_uuid: {
-      draft.orderID = action.payload;
-      break;
+      return {
+        ...state,
+        orderUUID: action.payload as string
+
+      };
     }
     case ActionTypes.set_paypal_order_id: {
-      draft.paypalOrderID = action.payload;
-      break;
+      return {
+        ...state,
+        paypalOrderID: action.payload as string
+      }
     }
     case ActionTypes.set_both_paypal_and_peasydeal_order_id: {
       const data = action.payload as SetBothOrderID;
-      draft.orderID = data.orderUUID;
-      draft.paypalOrderID = data.paypalOrderID;
-      break;
+      return {
+        ...state,
+        orderUUID: data.orderUUID,
+        paypalOrderID: data.paypalOrderID,
+      }
     }
+    default:
+      return state;
   }
-})
+}
+
 export default checkoutReducer;
