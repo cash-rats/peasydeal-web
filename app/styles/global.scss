@@ -34,3 +34,11 @@ body {
 
     background-color: $secondary !important;
 }
+
+input,
+textarea,
+button,
+select,
+a {
+    -webkit-tap-highlight-color: transparent;
+}

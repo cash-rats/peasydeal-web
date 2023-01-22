@@ -23,4 +23,12 @@ body {
   background-color: #f6f6f6 !important;
 }
 
+input,
+textarea,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
 /*# sourceMappingURL=global.css.map */

@@ -1,3 +1,6 @@
+import httpStatus from 'http-status-codes';
+
+import type { ApiErrorResponse } from '~/shared/types';
 import { getPeasyDealEndpoint } from '~/utils/endpoints';
 import type { PriceInfo } from '~/shared/cart';
 
@@ -53,4 +56,57 @@ export const createOrder = async ({
       promo_code,
     }),
   });
+};
+
+export type PaypalCreateOrderResponse = {
+  order_uuid: string;
+  paypal_order_id: string;
+};
+
+export const paypalCreateOrder = async (params: CreateOrderParams): Promise<PaypalCreateOrderResponse> => {
+  const resp = await fetch(`${getPeasyDealEndpoint()}/v1/orders/paypal-order`, {
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      ...params,
+      address: params.address1,
+    })
+  });
+
+  const respJSON = await resp.json();
+  if (resp.status !== httpStatus.OK) {
+    const errResp = respJSON as ApiErrorResponse;
+    throw new Error(errResp.err_message);
+  }
+
+  return respJSON as PaypalCreateOrderResponse;
+};
+
+interface PaypalCapturePayment {
+  capture_response: string;
+}
+
+export const paypalCapturePayment = async (paypalOrderID: string) => {
+  const resp = await fetch(
+    `${getPeasyDealEndpoint()}/v1/orders/paypal-capture-payment`,
+    {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        order_id: paypalOrderID,
+      }),
+    }
+  );
+
+  const respJSON = await resp.json();
+  if (resp.status !== httpStatus.OK) {
+    const errResp = respJSON as ApiErrorResponse;
+    throw new Error(errResp.err_message);
+  }
+
+  return respJSON as PaypalCapturePayment;
 };

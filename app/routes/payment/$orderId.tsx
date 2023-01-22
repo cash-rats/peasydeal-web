@@ -65,7 +65,10 @@ export default function PaymentResult() {
             options={options}
           >
             {
-              <PaymentResultLoader orderId={orderId} clientSecret={clientSecret} />
+              <PaymentResultLoader
+                orderId={orderId}
+                clientSecret={clientSecret}
+              />
             }
           </Elements>
         )

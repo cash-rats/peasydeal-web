@@ -38,8 +38,6 @@ function PriceInfoBox({ label, info }: PriceInfoBoxProps) {
 }
 
 export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
-  console.log('debug 1', priceInfo);
-
   return (
     <div className="
       mb-0 border-none shadow-price-panel
