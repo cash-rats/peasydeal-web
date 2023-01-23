@@ -6,7 +6,7 @@ import type { PaymentMethod } from '~/shared/types';
 import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';
 
 import StripePaymentResult from './components/StripePaymentResult';
-import Success from './components/Success';
+import PaypalPaymentResult from './components/PaypalPaymentResult';
 
 type LoaderDataType = {
   paymentMethod: PaymentMethodEnum;
@@ -93,11 +93,11 @@ export default function PaymentResult() {
     paypal
   ) {
     return (
-      <Success orderId={paypal.orderId} />
+      <PaypalPaymentResult orderID={paypal.orderId} />
     )
   }
 
   // either payment method unrecognized or corresponding data object
-  // is null.
+  // is null. We should display failed page.
   return ''
 }

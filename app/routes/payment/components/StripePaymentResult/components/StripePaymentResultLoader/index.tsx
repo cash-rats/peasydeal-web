@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useStripe } from '@stripe/react-stripe-js';
 import type { PaymentIntent } from '@stripe/stripe-js';
 
-import LoadingSkeleton from '../LoadingSkeleton';
-import Success from '../Success';
-import Failed from '../Failed';
+import LoadingSkeleton from '../../../LoadingSkeleton';
+import Success from '../../../Success';
+import Failed from '../../../Failed';
 
 /*
   TODOs
