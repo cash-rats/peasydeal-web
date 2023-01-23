@@ -122,9 +122,7 @@ export const __paypalCapturePayment = async (paypalOrderID: string, peasydealOrd
 
   // TODO: redirect to paypal failed page.
   if (!respJSON.status || respJSON.status !== 'COMPLETED') {
-    return redirect(
-      `/payment/${peasydealOrderID}/failed`
-    );
+    return json(respJSON);
   }
 
   // TODO: redirect to payment success page.

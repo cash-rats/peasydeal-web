@@ -149,6 +149,7 @@ function CheckoutPage() {
   const reducerState = useRef<StateShape>(state);
   reducerState.current = state;
 
+
   const stripeConfirmPayment = async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
     setIsPaying(true);
 
@@ -173,6 +174,14 @@ function CheckoutPage() {
       setIsPaying(false);
     }
   }
+
+  // Scroll to top if a new error message is set so user can see.
+  useEffect(() => {
+    if (errorAlert) {
+      window.scrollTo(0, 0);
+    }
+
+  }, [errorAlert]);
 
   useEffect(
     () => {
@@ -294,8 +303,6 @@ function CheckoutPage() {
       }
     );
 
-    console.log('debug 1', data.order_uuid);
-
     dispatch({
       type: ReducerActionTypes.set_both_paypal_and_peasydeal_order_id,
       payload: {
@@ -308,7 +315,7 @@ function CheckoutPage() {
   }
 
   const handlePaypalApproveOrder = async (data: OnApproveData, action: OnApproveActions) => {
-    await submit(
+    const captureErr = await submit(
       {
         action_type: ActionType.PaypalCapturePayment,
         order_id: reducerState.current.orderUUID,
@@ -319,6 +326,9 @@ function CheckoutPage() {
         action: '/checkout?index',
       },
     )
+
+    const errDetail = captureErr.details[0]
+    setErrorAlert(`${errDetail.issue}: ${errDetail.description}`);
   };
 
   const handlePaypalInputValidate = (data: Record<string, unknown>, actions: OnClickActions) => {
