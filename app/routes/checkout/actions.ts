@@ -2,6 +2,7 @@ import { json, redirect } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
 import type { PriceInfo } from '~/shared/cart';
+import { PaymentMethod } from '~/shared/enums';
 
 import { transformOrderDetail } from './utils';
 import {
@@ -115,12 +116,9 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
   return json(respJSON, httpStatus.OK);
 };
 
-
 export const __paypalCapturePayment = async (paypalOrderID: string, peasydealOrderID: string) => {
   const resp = await paypalCapturePayment(paypalOrderID);
   const respJSON = JSON.parse(resp.capture_response);
-
-  console.log('debug __paypalCapturePayment', respJSON);
 
   // TODO: redirect to paypal failed page.
   if (!respJSON.status || respJSON.status !== 'COMPLETED') {
@@ -131,6 +129,6 @@ export const __paypalCapturePayment = async (paypalOrderID: string, peasydealOrd
 
   // TODO: redirect to payment success page.
   return redirect(
-    `/payment/${peasydealOrderID}/success`,
+    `/payment/${peasydealOrderID}?payment_method=${PaymentMethod.Paypal}`,
   )
 };

@@ -1,7 +1,5 @@
 import type { CountryData } from 'react-phone-input-2'
 
-export type PaymentMethod = 'paypal' | 'stripe';
-
 export type ShippingDetailFormType = {
   lastname: string;
   firstname: string;

@@ -15,7 +15,8 @@ import type {
   OnClickActions,
 } from "@paypal/paypal-js";
 
-import type { ApiErrorResponse } from '~/shared/types';
+import type { ApiErrorResponse, PaymentMethod } from '~/shared/types';
+import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';
 import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
 import { getCart } from '~/sessions/shoppingcart.session';
@@ -30,7 +31,6 @@ import ContactInfoForm, { links as ContactInfoFormLinks } from './components/Con
 import type {
   ShippingDetailFormType,
   ContactInfoFormType,
-  PaymentMethod,
 } from './types';
 import type { PaypalCreateOrderResponse } from './api';
 import useFetcherWithPromise from './hooks/useFetcherWithPromise';
@@ -38,8 +38,8 @@ import reducer, { ActionTypes as ReducerActionTypes } from './reducer';
 import type { StateShape } from './reducer';
 import {
   __paypalCreateOrder,
-  __stripeCreateOrder,
   __paypalCapturePayment,
+  __stripeCreateOrder,
   ActionType,
 } from './actions';
 import type { ActionPayload } from './actions';
@@ -156,7 +156,7 @@ function CheckoutPage() {
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: `${getBrowserDomainUrl()}/payment/${orderUUID}`,
+          return_url: `${getBrowserDomainUrl()}/payment/${orderUUID}?payment_method=${PaymentMethodEnum.Stripe}`,
         },
       });
 
@@ -225,7 +225,7 @@ function CheckoutPage() {
     return contactName
   }
 
-  const retrieveOrderInfoForSubmission = (paymentMethod: PaymentMethod,) => {
+  const retrieveOrderInfoForSubmission = (paymentMethod: PaymentMethod) => {
     const contactName = assembleContactName()
     cinfoRef.current.contact_name = contactName
 

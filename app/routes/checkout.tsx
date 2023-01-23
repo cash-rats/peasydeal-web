@@ -115,7 +115,6 @@ export const loader: LoaderFunction = async ({ request }) => {
   });
 }
 
-
 function CheckoutLayout() {
   const {
     /* Stripe payment intend client secret, every secret is different every time we refresh the page */

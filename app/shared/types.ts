@@ -54,3 +54,5 @@ export type SuggestItem = {
   title: string;
   data: ItemData;
 };
+
+export type PaymentMethod = 'paypal' | 'stripe';
