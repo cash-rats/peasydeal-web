@@ -159,6 +159,8 @@ const __applyPromoCode = async (request: Request, promoCode: string) => {
 		products: priceQuery
 	});
 
+	console.log('debug __applyPromoCode priceInfo', priceInfo);
+
 	return json<ApplyPromoCodeActionType>({
 		price_info: priceInfo,
 		discount_code: promoCode,
@@ -233,6 +235,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const costQuery = convertShoppingCartToPriceQuery(cart);
 		const priceInfo = await fetchPriceInfo({ products: costQuery });
+
+		console.log('debug priceInfo', priceInfo);
 
 		const session = await setTransactionObject(request, {
 			promo_code: null, // Reset promo_code everytime user refreshes.

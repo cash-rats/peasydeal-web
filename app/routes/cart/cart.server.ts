@@ -40,6 +40,7 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
   if (resp.status !== httpStatus.OK) {
     throw new Error(JSON.stringify(respJSON));
   }
+
   const trfmPriceInfo = transformToPriceInfo(respJSON)
   return trfmPriceInfo;
 }

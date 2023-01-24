@@ -158,9 +158,7 @@ function StripeCheckoutForm({
                   )
                 }
               >
-                <div className="
-                  pt-1 pb-4 px-4 box-border
-                ">
+                <div className="pt-1 pb-4 px-4 box-border">
                   <PayPalScriptProvider
                     options={{
                       "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
