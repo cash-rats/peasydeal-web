@@ -11,6 +11,7 @@ import CategoryContext from '~/context/categories';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import { createPaymentIntent } from '~/utils/stripe.server';
+import { STRIPE_PUBLIC_KEY } from '~/utils/get_env_source';
 import { getCart } from '~/sessions/shoppingcart.session';
 import { getTransactionObject } from '~/sessions/transaction.session';
 import { fetchCategories } from '~/api/categories.server';
@@ -140,8 +141,8 @@ function CheckoutLayout() {
   };
 
   useEffect(() => {
-    if (window) {
-      setStripePromise(loadStripe(window.ENV.ENV.STRIPE_PUBLIC_KEY));
+    if (window && STRIPE_PUBLIC_KEY) {
+      setStripePromise(loadStripe(STRIPE_PUBLIC_KEY));
     }
   }, [payment_intend_id]);
 

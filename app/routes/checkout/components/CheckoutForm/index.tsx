@@ -8,6 +8,8 @@ import type { StripePaymentElement, StripePaymentElementChangeEvent } from '@str
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 import type { OnClickActions, OnApproveData, OnApproveActions } from "@paypal/paypal-js";
 
+import { PAYPAL_CLIENT_ID, PAYPAL_CURRENCY_CODE } from '~/utils/get_env_source';
+
 import styles from './styles/CheckoutForm.css';
 import paypalPng from './images/paypal.png';
 import selectedRadioCircleSVG from './images/selected_radio_circle.svg';
@@ -161,10 +163,10 @@ function StripeCheckoutForm({
                 <div className="pt-1 pb-4 px-4 box-border">
                   <PayPalScriptProvider
                     options={{
-                      "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
+                      "client-id": PAYPAL_CLIENT_ID,
 
                       // TODO: GBP or USD?
-                      "currency": "USD",
+                      "currency": PAYPAL_CURRENCY_CODE,
                       "intent": "capture",
                     }}
                   >

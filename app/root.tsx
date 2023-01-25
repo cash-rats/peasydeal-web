@@ -19,6 +19,7 @@ import {
   getIndexDescText,
 } from '~/utils/seo'
 import { getRootFBSEO } from '~/utils/seo';
+import * as envs from '~/utils/get_env_source';
 
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
@@ -82,13 +83,7 @@ export let links: LinksFunction = () => {
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
-    ENV: {
-      DOMAIN: process.env.DOMAIN,
-      MYFB_ENDPOINT: process.env.MYFB_ENDPOINT,
-      PEASY_DEAL_ENDPOINT: process.env.PEASY_DEAL_ENDPOINT,
-      STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
-      STRIPE_PAYMENT_RETURN_URI: process.env.STRIPE_PAYMENT_RETURN_URI,
-    }
+    ENV: { ...envs },
   });
 }
 

@@ -1,11 +1,11 @@
-import { getMYFBEndpoint } from '~/utils/endpoints';
+import { MYFB_ENDPOINT } from '~/utils/get_env_source';
 import type { Category, CategoriesMap } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';
 
 export const RedisCategoriesKey = 'categories';
 
 const fetchCategoriesFromServer = async (): Promise<Category[]> => {
-  const resp = await fetch(`${getMYFBEndpoint()}/data-server/ec/cat`);
+  const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/cat`);
   const respJSON = await resp.json();
   let categories: Category[] = []
 

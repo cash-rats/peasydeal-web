@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import type { ApiErrorResponse } from '~/shared/types';
-import { getPeasyDealEndpoint } from '~/utils/endpoints';
+import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 import type { PriceInfo } from '~/shared/cart';
 
 type CreateOrderParams = {
@@ -35,7 +35,7 @@ export const createOrder = async ({
   price_info,
   promo_code,
 }: CreateOrderParams): Promise<Response> => {
-  return fetch(`${getPeasyDealEndpoint()}/v1/orders`, {
+  return fetch(`${PEASY_DEAL_ENDPOINT}/v1/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export type PaypalCreateOrderResponse = {
 };
 
 export const paypalCreateOrder = async (params: CreateOrderParams): Promise<PaypalCreateOrderResponse> => {
-  const resp = await fetch(`${getPeasyDealEndpoint()}/v1/orders/paypal-order`, {
+  const resp = await fetch(`${PEASY_DEAL_ENDPOINT}/v1/orders/paypal-order`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ interface PaypalCapturePayment {
 
 export const paypalCapturePayment = async (paypalOrderID: string) => {
   const resp = await fetch(
-    `${getPeasyDealEndpoint()}/v1/orders/paypal-capture-payment`,
+    `${PEASY_DEAL_ENDPOINT}/v1/orders/paypal-capture-payment`,
     {
       method: 'post',
       headers: {

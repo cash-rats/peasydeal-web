@@ -1,69 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { getMYFBEndpoint } from '~/utils/endpoints';
-
-// export type Option = {
-//   label: string;
-//   value: string;
-// };
-
-// export type AddressPartialOptions = {
-//   line1s: Option[];
-//   line2s: Option[];
-//   cities: Option[];
-//   counties: Option[]
-//   countries: Option[];
-// };
-
-// type DedupObj = { [key: string]: boolean };
-// type DedupObjs = DedupObj[];
-
-// const transformDataToAddressOptions = (data: any[]): AddressPartialOptions => {
-//   const line1sDedupe: DedupObj = {};
-//   const line2sDedupe: DedupObj = {};
-//   const citiesDedupe: DedupObj = {};
-//   const countiesDedupe: DedupObj = {};
-//   const countriesDedupe: DedupObj = {};
-//   const dedupObjs: DedupObjs = [line1sDedupe, line2sDedupe, citiesDedupe, countiesDedupe, countriesDedupe];
-
-//   data.forEach((item) => {
-//     if (item.line1) {
-//       line1sDedupe[item.line1] = true;
-//     }
-
-//     if (item.line2) {
-//       line2sDedupe[item.line2] = true;
-//     }
-
-//     if (item.city) {
-//       citiesDedupe[item.city] = true;
-//     }
-
-//     if (item.county) {
-//       countiesDedupe[item.county] = true;
-//     }
-
-//     if (item.country) {
-//       countriesDedupe[item.country] = true;
-//     }
-//   });
-
-
-//   const trfmedAddrParts = dedupObjs.reduce((accu: Option[][], curr: DedupObj): Option[][] => {
-//     const currKeys = Object.keys(curr);
-//     const currOptions = currKeys.map((key) => ({ label: key, value: key }));
-//     accu.push(currOptions);
-//     return accu;
-//   }, []);
-
-//   return {
-//     line1s: trfmedAddrParts[0],
-//     line2s: trfmedAddrParts[1],
-//     cities: trfmedAddrParts[2],
-//     counties: trfmedAddrParts[3],
-//     countries: trfmedAddrParts[4],
-//   };
-// }
+import { MYFB_ENDPOINT } from '~/utils/get_env_source';
 
 export type AddressParts = 'line1' | 'line2' | 'city' | 'county' | 'country';
 
@@ -111,7 +48,7 @@ const transformDataToOption = (data: any[]): Option[] => {
 ]
 */
 export const fetchAddressOptionsByPostal = async ({ postal }: { postal: string }): Promise<Option[]> => {
-  const resp = await fetch(`${getMYFBEndpoint()}/data-server/ec/value/getaddress`, {
+  const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/value/getaddress`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

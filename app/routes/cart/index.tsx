@@ -236,8 +236,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 		const costQuery = convertShoppingCartToPriceQuery(cart);
 		const priceInfo = await fetchPriceInfo({ products: costQuery });
 
-		console.log('debug priceInfo', priceInfo);
-
 		const session = await setTransactionObject(request, {
 			promo_code: null, // Reset promo_code everytime user refreshes.
 			price_info: priceInfo,

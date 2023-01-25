@@ -2,7 +2,7 @@ import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
 import type { ActivityBanner } from '../types';
-import { getMYFBEndpoint, getPeasyDealEndpoint } from '~/utils/endpoints';
+import { MYFB_ENDPOINT, PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 export interface FetchProductsByCategoryParams {
 	category?: string | number;
 	perpage?: number;
@@ -48,7 +48,7 @@ export const fetchProductsByCategory = async ({
 	if (!page) page = 0;
 	if (!random) random = 0;
 
-	let endpoint = `${getMYFBEndpoint()}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}&random=${random}`;
+	let endpoint = `${MYFB_ENDPOINT}/data-server/ec/products?pageSize=${perpage}&pageNo=${page}&random=${random}`;
 
 	if (category) {
 		endpoint = `${endpoint}&cat=${encodeURI(category.toString())}`;
@@ -74,9 +74,8 @@ export const fetchProductsByCategory = async ({
 
 // We will interweave activity banners in between products list to make the screen
 // more contentful.
-
 export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
-	const endpoint = `${getMYFBEndpoint()}/data-server/ec/activity_banners`;
+	const endpoint = `${MYFB_ENDPOINT}/data-server/ec/activity_banners`;
 
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
@@ -107,7 +106,7 @@ export const fetchProductsByCategoryV2 = async ({
 	if (!page) page = 1;
 	if (!category) category = 1;
 
-	let endpoint = `${getPeasyDealEndpoint()}/v1/products?per_page=${perpage}&page=${page}&category=${category}&random=${random ? 'true' : 'false'}`;
+	let endpoint = `${PEASY_DEAL_ENDPOINT}/v1/products?per_page=${perpage}&page=${page}&category=${category}&random=${random ? 'true' : 'false'}`;
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
 
