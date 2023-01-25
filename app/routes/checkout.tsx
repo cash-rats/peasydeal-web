@@ -11,7 +11,7 @@ import CategoryContext from '~/context/categories';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import { createPaymentIntent } from '~/utils/stripe.server';
-import { STRIPE_PUBLIC_KEY } from '~/utils/get_env_source';
+import { STRIPE_PUBLIC_KEY, STRIPE_CURRENCY_CODE } from '~/utils/get_env_source';
 import { getCart } from '~/sessions/shoppingcart.session';
 import { getTransactionObject } from '~/sessions/transaction.session';
 import { fetchCategories } from '~/api/categories.server';
@@ -104,7 +104,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   // Construct stripe `PaymentIntend`
   const paymentIntent = await createPaymentIntent({
     amount: Math.round(priceInfo.total_amount * 100),
-    currency: 'GBP'
+    currency: STRIPE_CURRENCY_CODE,
   });
 
   return json<LoaderType>({
