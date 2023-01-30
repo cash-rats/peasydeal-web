@@ -235,9 +235,6 @@ function CheckoutPage() {
 
     if (!phoneField) return false;
 
-    console.log('debug validatePhone 1', cinfoRef.current.phone_value);
-    console.log('debug validatePhone 2', cinfoRef.current);
-
     if (
       isPhoneValueEmpty(
         cinfoRef.current.phone_value,
@@ -245,7 +242,6 @@ function CheckoutPage() {
       )
     ) {
       phoneField.setCustomValidity('Please fill out this field.');
-      // form.reportValidity();
       return false;
     }
 
@@ -292,8 +288,12 @@ function CheckoutPage() {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+
     if (!formRef.current) return;
-    if (!validatePhone(formRef.current)) return;
+    if (!validatePhone(formRef.current)) {
+      formRef.current.reportValidity();
+      return;
+    };
 
     // Submit forms to action, only create a new order if order hasn't been created yet.
     if (!state.orderUUID) {
@@ -362,12 +362,12 @@ function CheckoutPage() {
       return actions.reject();
     }
 
-    if (!formRef.current.checkValidity()) {
+    if (
+      !formRef.current.checkValidity() ||
+      !validatePhone(formRef.current)
+    ) {
       formRef.current.reportValidity()
-      return actions.reject();
-    }
 
-    if (!validatePhone(formRef.current)) {
       return actions.reject();
     }
 
