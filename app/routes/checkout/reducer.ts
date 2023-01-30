@@ -70,6 +70,8 @@ const checkoutReducer = (state: StateShape, action: CheckoutAction): StateShape 
     case ActionTypes.update_shipping_detail_form: {
       const data = action.payload as SetShippingDetailForm;
 
+      console.log('debug in reducer', data);
+
       return {
         ...state,
         shippingDetailForm: {

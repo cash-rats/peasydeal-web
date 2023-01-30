@@ -43,7 +43,6 @@ import {
   ActionType,
 } from './actions';
 import type { ActionPayload } from './actions';
-import { ActionTypes } from '@mui/base';
 
 export const links: LinksFunction = () => {
   return [
@@ -130,14 +129,6 @@ function CheckoutPage() {
   const [isPaying, setIsPaying] = useState(false);
   const [errorAlert, setErrorAlert] = useState('');
 
-  const [shippingDetailFormValues, setShippingDetailFormValues] = useState<ShippingDetailFormType>({
-    lastname: '',
-    firstname: '',
-    address1: '',
-    address2: '',
-    postal: '',
-    city: '',
-  });
 
   const [contactInfoFormValues, setContactInfoFormValues] = useState<ContactInfoFormType>({
     email: '',
@@ -154,8 +145,6 @@ function CheckoutPage() {
 
   const cinfoRef = useRef<ContactInfoFormType>(contactInfoFormValues);
   cinfoRef.current = contactInfoFormValues;
-  const shipInfoRef = useRef<ShippingDetailFormType>(state.shippingDetailForm)
-  shipInfoRef.current = shippingDetailFormValues;
   const reducerState = useRef<StateShape>(state);
   reducerState.current = state;
 
@@ -174,7 +163,7 @@ function CheckoutPage() {
       ),
     });
   }, [
-    shippingDetailFormValues,
+    state.shippingDetailForm,
     contactInfoFormValues,
   ])
 
@@ -325,12 +314,6 @@ function CheckoutPage() {
         city: option.city,
       },
     });
-    // setShippingDetailFormValues({
-    //   ...shippingDetailFormValues,
-    //   address1: option.line1,
-    //   address2: option.line2,
-    //   city: option.city,
-    // })
   }
 
   const handlePaypalCreateOrder = async (): Promise<string> => {
@@ -435,19 +418,14 @@ function CheckoutPage() {
                 fieldValue = target.checked;
               }
 
-              if (shippingDetailFormValues.hasOwnProperty(fieldName)) {
+              if (reducerState.current.shippingDetailForm.hasOwnProperty(fieldName)) {
                 dispatch({
                   type: ReducerActionTypes.update_shipping_detail_form,
                   payload: {
                     [fieldName]: fieldValue,
                   },
                 });
-                // setShippingDetailFormValues(prev => ({
-                //   ...prev,
-                //   [fieldName]: fieldValue,
-                // }));
               }
-
             }}
             onSubmit={handleSubmit}
           >
