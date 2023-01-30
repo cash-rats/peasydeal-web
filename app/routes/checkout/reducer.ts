@@ -1,20 +1,23 @@
+import ShippingDetailForm from './components/ShippingDetailForm';
+import type {
+  ShippingDetailFormType,
+  ContactInfoFormType,
+} from './types';
+
 export type StateShape = {
   orderUUID: string;
   paypalOrderID: string;
-  disablePaypalButton: boolean
+  disablePaypalButton: boolean;
+  shippingDetailForm: ShippingDetailFormType;
 }
-
-export const inistialState: StateShape = {
-  orderUUID: '',
-  paypalOrderID: '',
-  disablePaypalButton: true,
-};
 
 export enum ActionTypes {
   set_order_uuid = 'set_order_uuid',
   set_paypal_order_id = 'set_paypal_order_id',
   set_both_paypal_and_peasydeal_order_id = 'set_both_paypal_and_peasydeal_order_id',
-  set_disable_paypal_button = 'set_disable_paypal_button'
+  set_disable_paypal_button = 'set_disable_paypal_button',
+
+  update_shipping_detail_form = 'update_shipping_detail_form',
 }
 
 type SetBothOrderID = {
@@ -22,9 +25,17 @@ type SetBothOrderID = {
   paypalOrderID: string;
 }
 
+
+type SetShippingDetailForm = {
+  [key in keyof ShippingDetailFormType]?: string;
+}
 interface CheckoutAction {
   type: ActionTypes;
-  payload: string | SetBothOrderID | boolean;
+  payload:
+  | string
+  | SetBothOrderID
+  | boolean
+  | SetShippingDetailForm;
 }
 
 const checkoutReducer = (state: StateShape, action: CheckoutAction): StateShape => {
@@ -55,6 +66,17 @@ const checkoutReducer = (state: StateShape, action: CheckoutAction): StateShape 
         ...state,
         disablePaypalButton: action.payload as boolean,
       }
+    }
+    case ActionTypes.update_shipping_detail_form: {
+      const data = action.payload as SetShippingDetailForm;
+
+      return {
+        ...state,
+        shippingDetailForm: {
+          ...state.shippingDetailForm,
+          ...data,
+        },
+      };
     }
     default:
       return state;

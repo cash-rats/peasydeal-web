@@ -43,6 +43,7 @@ import {
   ActionType,
 } from './actions';
 import type { ActionPayload } from './actions';
+import { ActionTypes } from '@mui/base';
 
 export const links: LinksFunction = () => {
   return [
@@ -113,6 +114,14 @@ function CheckoutPage() {
       orderUUID: '',
       paypalOrderID: '',
       disablePaypalButton: true,
+      shippingDetailForm: {
+        lastname: '',
+        firstname: '',
+        address1: '',
+        address2: '',
+        postal: '',
+        city: '',
+      },
     },
   );
 
@@ -145,7 +154,7 @@ function CheckoutPage() {
 
   const cinfoRef = useRef<ContactInfoFormType>(contactInfoFormValues);
   cinfoRef.current = contactInfoFormValues;
-  const shipInfoRef = useRef<ShippingDetailFormType>(shippingDetailFormValues)
+  const shipInfoRef = useRef<ShippingDetailFormType>(state.shippingDetailForm)
   shipInfoRef.current = shippingDetailFormValues;
   const reducerState = useRef<StateShape>(state);
   reducerState.current = state;
@@ -251,7 +260,7 @@ function CheckoutPage() {
   const assembleContactName = (): string => {
     let contactName = cinfoRef.current.contact_name;
     if (cinfoRef.current.contact_name_same) {
-      contactName = `${shipInfoRef.current.firstname} ${shipInfoRef.current.lastname}`
+      contactName = `${reducerState.current.shippingDetailForm.firstname} ${reducerState.current.shippingDetailForm.lastname}`
     }
     return contactName
   }
@@ -261,7 +270,7 @@ function CheckoutPage() {
     cinfoRef.current.contact_name = contactName
 
     return {
-      shipping_form: JSON.stringify(shipInfoRef.current),
+      shipping_form: JSON.stringify(reducerState.current.shippingDetailForm),
       contact_info_form: JSON.stringify(cinfoRef.current),
       price_info: JSON.stringify(priceInfo),
       cart_items: JSON.stringify(cartItems),
@@ -308,12 +317,20 @@ function CheckoutPage() {
   }
 
   const handleSelectAddress = (option: Option) => {
-    setShippingDetailFormValues({
-      ...shippingDetailFormValues,
-      address1: option.line1,
-      address2: option.line2,
-      city: option.city,
-    })
+    dispatch({
+      type: ReducerActionTypes.update_shipping_detail_form,
+      payload: {
+        address1: option.line1,
+        address2: option.line2,
+        city: option.city,
+      },
+    });
+    // setShippingDetailFormValues({
+    //   ...shippingDetailFormValues,
+    //   address1: option.line1,
+    //   address2: option.line2,
+    //   city: option.city,
+    // })
   }
 
   const handlePaypalCreateOrder = async (): Promise<string> => {
@@ -419,10 +436,16 @@ function CheckoutPage() {
               }
 
               if (shippingDetailFormValues.hasOwnProperty(fieldName)) {
-                setShippingDetailFormValues(prev => ({
-                  ...prev,
-                  [fieldName]: fieldValue,
-                }));
+                dispatch({
+                  type: ReducerActionTypes.update_shipping_detail_form,
+                  payload: {
+                    [fieldName]: fieldValue,
+                  },
+                });
+                // setShippingDetailFormValues(prev => ({
+                //   ...prev,
+                //   [fieldName]: fieldValue,
+                // }));
               }
 
             }}
@@ -436,7 +459,8 @@ function CheckoutPage() {
               <div className="pricing-panel">
                 <div className="shipping-form-container">
                   <ShippingDetailForm
-                    values={shippingDetailFormValues}
+                    // values={shippingDetailFormValues}
+                    values={state.shippingDetailForm}
                     onSelectAddress={handleSelectAddress}
                   />
                 </div>
