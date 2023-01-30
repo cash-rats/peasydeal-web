@@ -6,7 +6,12 @@ import { json, redirect } from '@remix-run/node';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
+import {
+  PAYPAL_CLIENT_ID,
+  PAYPAL_CURRENCY_CODE,
+} from '~/utils/get_env_source';
 import CategoryContext from '~/context/categories';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
@@ -165,20 +170,31 @@ function CheckoutLayout() {
       </CategoryContext.Provider>
 
       <main className="pt-20 min-h-[35rem] md:pt-36 flex justify-center">
-        {
-          stripePromise && (
-            <Elements
-              stripe={stripePromise}
-              options={options}
-            >
-              <Outlet context={{
-                paymentIntendID: payment_intend_id,
-                priceInfo: price_info,
-                promoCode: promo_code,
-              }} />
-            </Elements>
-          )
-        }
+        <PayPalScriptProvider
+          options={{
+            "client-id": PAYPAL_CLIENT_ID,
+
+            // TODO: GBP or USD?
+            "currency": PAYPAL_CURRENCY_CODE,
+            "intent": "capture",
+          }}
+        >
+          {
+            stripePromise && (
+              <Elements
+                stripe={stripePromise}
+                options={options}
+              >
+                <Outlet context={{
+                  paymentIntendID: payment_intend_id,
+                  priceInfo: price_info,
+                  promoCode: promo_code,
+                }} />
+              </Elements>
+            )
+          }
+
+        </PayPalScriptProvider>
       </main>
 
       <Footer />

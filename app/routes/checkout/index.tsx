@@ -112,6 +112,7 @@ function CheckoutPage() {
     {
       orderUUID: '',
       paypalOrderID: '',
+      disablePaypalButton: true,
     },
   );
 
@@ -148,6 +149,25 @@ function CheckoutPage() {
   shipInfoRef.current = shippingDetailFormValues;
   const reducerState = useRef<StateShape>(state);
   reducerState.current = state;
+
+  useEffect(() => {
+
+    // Validate form inputs on every input changes. This part of the logic
+    // is for enabling paypal button.
+    dispatch({
+      type: ReducerActionTypes.set_disable_paypal_button,
+      payload: !(
+        !!formRef.current?.checkValidity() &&
+        !isPhoneValueEmpty(
+          contactInfoFormValues.phone_value,
+          contactInfoFormValues.country_data.countryCode,
+        )
+      ),
+    });
+  }, [
+    shippingDetailFormValues,
+    contactInfoFormValues,
+  ])
 
 
   const stripeConfirmPayment = async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
@@ -209,17 +229,23 @@ function CheckoutPage() {
     [createOrderFetcher, state.orderUUID]
   );
 
+  const isPhoneValueEmpty = (phone: string, countryCode: string) => !phone || phone === countryCode;
   const validatePhone = (form: HTMLFormElement): boolean => {
     const phoneField = form.querySelector('#phone') as HTMLInputElement;
 
     if (!phoneField) return false;
 
+    console.log('debug validatePhone 1', cinfoRef.current.phone_value);
+    console.log('debug validatePhone 2', cinfoRef.current);
+
     if (
-      !cinfoRef.current.phone_value ||
-      cinfoRef.current.phone_value === contactInfoFormValues.country_data.dialCode
+      isPhoneValueEmpty(
+        cinfoRef.current.phone_value,
+        cinfoRef.current.country_data.dialCode,
+      )
     ) {
       phoneField.setCustomValidity('Please fill out this field.');
-      form.reportValidity();
+      // form.reportValidity();
       return false;
     }
 
@@ -440,6 +466,11 @@ function CheckoutPage() {
               // @docs https://stackoverflow.com/questions/70864433/integration-of-stripe-paymentelement-warning-unsupported-prop-change-options-c
               <CheckoutForm
                 loading={createOrderFetcher.state !== 'idle' || isPaying}
+
+                // Paypal payment button enables only if all required form inputs
+                // are validated.
+                paypalDisabled={state.disablePaypalButton}
+
                 paypalCreateOrder={handlePaypalCreateOrder}
                 paypalApproveOrder={handlePaypalApproveOrder}
                 paypalInputValidate={handlePaypalInputValidate}
