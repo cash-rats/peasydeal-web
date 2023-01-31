@@ -6,7 +6,6 @@ import type {
   OnClickActions,
   OnApproveData,
   OnApproveActions,
-  OnInitActions,
 } from "@paypal/paypal-js";
 
 import {
@@ -23,7 +22,6 @@ interface PaypalCheckoutProps {
   onChoose: () => void;
 
   paypalDisabled?: boolean;
-  paypalInit?: (data: Record<string, unknown>, actions: OnInitActions) => void;
   paypalCreateOrder: () => Promise<string>
   paypalInputValidate?: (
     rec: Record<string, unknown>,
@@ -40,7 +38,6 @@ function PaypalCheckout({
   onChoose,
 
   paypalDisabled = false,
-  paypalInit,
   paypalCreateOrder,
   paypalInputValidate,
   paypalApproveOrder,
@@ -114,19 +111,18 @@ function PaypalCheckout({
               <div className="pt-1 pb-4 px-4 box-border">
                 <PayPalScriptProvider
                   options={{
-                    "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
-                    // "client-id": PAYPAL_CLIENT_ID,
-                    "currency": "USD",
-                    // "currency": PAYPAL_CURRENCY_CODE,
+                    // "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
+                    "client-id": PAYPAL_CLIENT_ID,
+                    // "currency": "USD",
+                    "currency": PAYPAL_CURRENCY_CODE,
                     "intent": "capture",
                   }}
                 >
                   <PayPalButtons
-                    // disabled={paypalDisabled}
-                    // onInit={paypalInit}
-                    // onClick={paypalInputValidate}
-                    // createOrder={paypalCreateOrder}
-                    // onApprove={paypalApproveOrder}
+                    disabled={paypalDisabled}
+                    onClick={paypalInputValidate}
+                    createOrder={paypalCreateOrder}
+                    onApprove={paypalApproveOrder}
                     // onApprove={() => { }}
                     style={{ layout: "horizontal" }}
                   />
