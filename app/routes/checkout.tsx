@@ -106,7 +106,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     promo_code,
   } = transObj;
 
-  // Construct stripe `PaymentIntend`
+  // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
+  // In stripe, the base unit is 1 cent, not 1 dollar.
   const paymentIntent = await createPaymentIntent({
     amount: Math.round(priceInfo.total_amount * 100),
     currency: STRIPE_CURRENCY_CODE,
@@ -170,33 +171,31 @@ function CheckoutLayout() {
       </CategoryContext.Provider>
 
       <main className="pt-20 min-h-[35rem] md:pt-36 flex justify-center">
-        <PayPalScriptProvider
-          options={{
-            "client-id": PAYPAL_CLIENT_ID,
+        {
+          stripePromise && (
+            <Elements
+              stripe={stripePromise}
+              options={options}
+            >
+              <PayPalScriptProvider
+                options={{
+                  "client-id": PAYPAL_CLIENT_ID,
 
-            // TODO: GBP or USD?
-            "currency": PAYPAL_CURRENCY_CODE,
-            "intent": "capture",
-          }}
-        >
-          {
-            stripePromise && (
-              <Elements
-                stripe={stripePromise}
-                options={options}
+                  // TODO: GBP or USD?
+                  "currency": PAYPAL_CURRENCY_CODE,
+                  "intent": "capture",
+                }}
               >
                 <Outlet context={{
                   paymentIntendID: payment_intend_id,
                   priceInfo: price_info,
                   promoCode: promo_code,
                 }} />
-              </Elements>
-            )
-          }
-
-        </PayPalScriptProvider>
+              </PayPalScriptProvider>
+            </Elements>
+          )
+        }
       </main>
-
       <Footer />
     </>
   );

@@ -1,4 +1,5 @@
-import ShippingDetailForm from './components/ShippingDetailForm';
+import type { CountryData } from 'react-phone-input-2'
+
 import type {
   ShippingDetailFormType,
   ContactInfoFormType,
@@ -9,6 +10,7 @@ export type StateShape = {
   paypalOrderID: string;
   disablePaypalButton: boolean;
   shippingDetailForm: ShippingDetailFormType;
+  contactInfoForm: ContactInfoFormType;
 }
 
 export enum ActionTypes {
@@ -18,6 +20,7 @@ export enum ActionTypes {
   set_disable_paypal_button = 'set_disable_paypal_button',
 
   update_shipping_detail_form = 'update_shipping_detail_form',
+  update_contact_info_form = 'update_contact_info_form',
 }
 
 type SetBothOrderID = {
@@ -25,17 +28,26 @@ type SetBothOrderID = {
   paypalOrderID: string;
 }
 
-
-type SetShippingDetailForm = {
+type UpdateShippingDetailForm = {
   [key in keyof ShippingDetailFormType]?: string;
-}
+};
+
+
+type UpdateContactInfoForm = {
+  email?: string;
+  country_data?: CountryData,
+  phone_value?: string,
+  contact_name_same?: boolean,
+  contact_name?: string,
+};
 interface CheckoutAction {
   type: ActionTypes;
   payload:
   | string
   | SetBothOrderID
   | boolean
-  | SetShippingDetailForm;
+  | UpdateShippingDetailForm
+  | UpdateContactInfoForm;
 }
 
 const checkoutReducer = (state: StateShape, action: CheckoutAction): StateShape => {
@@ -68,9 +80,7 @@ const checkoutReducer = (state: StateShape, action: CheckoutAction): StateShape 
       }
     }
     case ActionTypes.update_shipping_detail_form: {
-      const data = action.payload as SetShippingDetailForm;
-
-      console.log('debug in reducer', data);
+      const data = action.payload as UpdateShippingDetailForm;
 
       return {
         ...state,
@@ -78,6 +88,21 @@ const checkoutReducer = (state: StateShape, action: CheckoutAction): StateShape 
           ...state.shippingDetailForm,
           ...data,
         },
+      };
+    }
+    case ActionTypes.update_contact_info_form: {
+      const data = action.payload as UpdateContactInfoForm;
+
+      return {
+        ...state,
+        contactInfoForm: {
+          ...state.contactInfoForm,
+          ...data,
+          country_data: {
+            ...state.contactInfoForm.country_data,
+            ...data.country_data,
+          },
+        }
       };
     }
     default:

@@ -1,4 +1,6 @@
 import { PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+
 import clsx from 'clsx';
 import type {
   OnClickActions,
@@ -6,6 +8,11 @@ import type {
   OnApproveActions,
   OnInitActions,
 } from "@paypal/paypal-js";
+
+import {
+  PAYPAL_CLIENT_ID,
+  PAYPAL_CURRENCY_CODE,
+} from '~/utils/get_env_source';
 
 import selectedRadioCircleSVG from './images/selected_radio_circle.svg';
 import unSelectedRadioCircleSVG from './images/unselected_radio_circle.svg';
@@ -105,14 +112,25 @@ function PaypalCheckout({
               }
             >
               <div className="pt-1 pb-4 px-4 box-border">
-                <PayPalButtons
-                  disabled={paypalDisabled}
-                  onInit={paypalInit}
-                  onClick={paypalInputValidate}
-                  createOrder={paypalCreateOrder}
-                  onApprove={paypalApproveOrder}
-                  style={{ layout: "horizontal" }}
-                />
+
+                <PayPalScriptProvider
+                  options={{
+                    "client-id": PAYPAL_CLIENT_ID,
+
+                    // TODO: GBP or USD?
+                    "currency": PAYPAL_CURRENCY_CODE,
+                    "intent": "capture",
+                  }}
+                >
+                  <PayPalButtons
+                    disabled={paypalDisabled}
+                    onInit={paypalInit}
+                    onClick={paypalInputValidate}
+                    createOrder={paypalCreateOrder}
+                    onApprove={paypalApproveOrder}
+                    style={{ layout: "horizontal" }}
+                  />
+                </PayPalScriptProvider>
               </div>
             </div>
           </div>

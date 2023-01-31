@@ -28,10 +28,6 @@ import ShippingDetailForm, { links as ShippingDetailFormLinks } from './componen
 import type { Option } from './components/ShippingDetailForm/api.server';
 import CartSummary from './components/CartSummary';
 import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
-import type {
-  ShippingDetailFormType,
-  ContactInfoFormType,
-} from './types';
 import type { PaypalCreateOrderResponse } from './api';
 import useFetcherWithPromise from './hooks/useFetcherWithPromise';
 import reducer, { ActionTypes as ReducerActionTypes } from './reducer';
@@ -64,8 +60,6 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw redirect("/cart");
   }
 
-  // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
-  // In stripe, the base unit is 1 cent, not 1 dollar.
   return json<LoaderType>({ cart_items: cart });
 };
 
@@ -121,6 +115,18 @@ function CheckoutPage() {
         postal: '',
         city: '',
       },
+      contactInfoForm: {
+        email: '',
+        country_data: {
+          name: '',
+          dialCode: '',
+          countryCode: '',
+          format: '',
+        },
+        phone_value: '',
+        contact_name_same: true,
+        contact_name: '',
+      }
     },
   );
 
@@ -129,27 +135,10 @@ function CheckoutPage() {
   const [isPaying, setIsPaying] = useState(false);
   const [errorAlert, setErrorAlert] = useState('');
 
-
-  const [contactInfoFormValues, setContactInfoFormValues] = useState<ContactInfoFormType>({
-    email: '',
-    country_data: {
-      name: '',
-      dialCode: '',
-      countryCode: '',
-      format: '',
-    },
-    phone_value: '',
-    contact_name_same: true,
-    contact_name: '',
-  });
-
-  const cinfoRef = useRef<ContactInfoFormType>(contactInfoFormValues);
-  cinfoRef.current = contactInfoFormValues;
   const reducerState = useRef<StateShape>(state);
   reducerState.current = state;
 
   useEffect(() => {
-
     // Validate form inputs on every input changes. This part of the logic
     // is for enabling paypal button.
     dispatch({
@@ -157,14 +146,14 @@ function CheckoutPage() {
       payload: !(
         !!formRef.current?.checkValidity() &&
         !isPhoneValueEmpty(
-          contactInfoFormValues.phone_value,
-          contactInfoFormValues.country_data.countryCode,
+          reducerState.current.contactInfoForm.phone_value,
+          reducerState.current.contactInfoForm.country_data.countryCode,
         )
       ),
     });
   }, [
     state.shippingDetailForm,
-    contactInfoFormValues,
+    state.contactInfoForm,
   ])
 
 
@@ -235,8 +224,8 @@ function CheckoutPage() {
 
     if (
       isPhoneValueEmpty(
-        cinfoRef.current.phone_value,
-        cinfoRef.current.country_data.dialCode,
+        reducerState.current.contactInfoForm.phone_value,
+        reducerState.current.contactInfoForm.country_data.dialCode,
       )
     ) {
       phoneField.setCustomValidity('Please fill out this field.');
@@ -247,20 +236,23 @@ function CheckoutPage() {
   };
 
   const assembleContactName = (): string => {
-    let contactName = cinfoRef.current.contact_name;
-    if (cinfoRef.current.contact_name_same) {
-      contactName = `${reducerState.current.shippingDetailForm.firstname} ${reducerState.current.shippingDetailForm.lastname}`
+    const contactInfo = reducerState.current.contactInfoForm;
+    const shippingInfo = reducerState.current.shippingDetailForm;
+
+    let contactName = contactInfo.contact_name;
+    if (contactInfo.contact_name_same) {
+      contactName = `${shippingInfo.firstname} ${shippingInfo.lastname}`
     }
     return contactName
   }
 
   const retrieveOrderInfoForSubmission = (paymentMethod: PaymentMethod) => {
     const contactName = assembleContactName()
-    cinfoRef.current.contact_name = contactName
+    reducerState.current.contactInfoForm.contact_name = contactName
 
     return {
       shipping_form: JSON.stringify(reducerState.current.shippingDetailForm),
-      contact_info_form: JSON.stringify(cinfoRef.current),
+      contact_info_form: JSON.stringify(reducerState.current.contactInfoForm),
       price_info: JSON.stringify(priceInfo),
       cart_items: JSON.stringify(cartItems),
       payment_secret: paymentIntendID,
@@ -272,7 +264,10 @@ function CheckoutPage() {
   const createOrder = (paymentMethod: PaymentMethod = "stripe") => {
     const orderInfo = retrieveOrderInfoForSubmission(paymentMethod);
 
-    setContactInfoFormValues(cinfoRef.current);
+    dispatch({
+      type: ReducerActionTypes.update_contact_info_form,
+      payload: reducerState.current.contactInfoForm,
+    });
 
     createOrderFetcher.submit(
       orderInfo,
@@ -283,6 +278,28 @@ function CheckoutPage() {
     );
   };
 
+  const handleFormChange = (evt: FormEvent<HTMLFormElement>) => {
+    // Remove error alert when submitting error.
+    setErrorAlert('');
+
+    let target = evt.target as HTMLInputElement;
+
+    const fieldName = target.name;
+    let fieldValue: string | boolean = target.value;
+
+    if (target.type === 'checkbox') {
+      fieldValue = target.checked;
+    }
+
+    if (reducerState.current.shippingDetailForm.hasOwnProperty(fieldName)) {
+      dispatch({
+        type: ReducerActionTypes.update_shipping_detail_form,
+        payload: {
+          [fieldName]: fieldValue,
+        },
+      });
+    }
+  }
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -318,6 +335,7 @@ function CheckoutPage() {
 
   const handlePaypalCreateOrder = async (): Promise<string> => {
     const orderInfo = retrieveOrderInfoForSubmission('paypal');
+
     const data: PaypalCreateOrderResponse = await submit(
       {
         action_type: ActionType.PaypalCreateOrder,
@@ -405,28 +423,7 @@ function CheckoutPage() {
 
           <createOrderFetcher.Form
             ref={formRef}
-            onChange={(evt: FormEvent<HTMLFormElement>) => {
-              // Remove error alert when submitting error.
-              setErrorAlert('');
-
-              let target = evt.target as HTMLInputElement;
-
-              const fieldName = target.name;
-              let fieldValue: string | boolean = target.value;
-
-              if (target.type === 'checkbox') {
-                fieldValue = target.checked;
-              }
-
-              if (reducerState.current.shippingDetailForm.hasOwnProperty(fieldName)) {
-                dispatch({
-                  type: ReducerActionTypes.update_shipping_detail_form,
-                  payload: {
-                    [fieldName]: fieldValue,
-                  },
-                });
-              }
-            }}
+            onChange={handleFormChange}
             onSubmit={handleSubmit}
           >
             <div className="form-container">
@@ -437,7 +434,6 @@ function CheckoutPage() {
               <div className="pricing-panel">
                 <div className="shipping-form-container">
                   <ShippingDetailForm
-                    // values={shippingDetailFormValues}
                     values={state.shippingDetailForm}
                     onSelectAddress={handleSelectAddress}
                   />
@@ -454,8 +450,13 @@ function CheckoutPage() {
               <div className="pricing-panel">
                 <div className="shipping-form-container">
                   <ContactInfoForm
-                    values={contactInfoFormValues}
-                    onChange={setContactInfoFormValues}
+                    values={state.contactInfoForm}
+                    onChange={(data) => {
+                      dispatch({
+                        type: ReducerActionTypes.update_contact_info_form,
+                        payload: data
+                      })
+                    }}
                   />
                 </div>
               </div>
