@@ -126,7 +126,8 @@ function PaypalCheckout({
                     onInit={paypalInit}
                     onClick={paypalInputValidate}
                     createOrder={paypalCreateOrder}
-                    onApprove={paypalApproveOrder}
+                    // onApprove={paypalApproveOrder}
+                    onApprove={() => { }}
                     style={{ layout: "horizontal" }}
                   />
                 </PayPalScriptProvider>
