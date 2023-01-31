@@ -93,6 +93,7 @@ function CheckoutForm({
       />
 
       <StripeCheckout
+        disabled={selectedMethod !== 'stripe_methods'}
         loading={loading}
         onChange={handleStripeChangePayment}
         onReady={handlePaymentElementReady}

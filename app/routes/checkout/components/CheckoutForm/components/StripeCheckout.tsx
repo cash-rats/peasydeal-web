@@ -5,12 +5,14 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import LockIcon from '@mui/icons-material/Lock';
 
 interface StripeCheckoutProps {
+  disabled?: boolean;
   onChange: (event: StripePaymentElementChangeEvent) => any
   onReady?: (element: StripePaymentElement) => any;
   loading?: boolean;
 }
 
 function StripeCheckout({
+  disabled = false,
   onChange,
   onReady = () => { },
   loading = false,
@@ -36,6 +38,7 @@ function StripeCheckout({
 
           <div className="confirm-payment">
             <LoadingButton
+              disabled={disabled}
               loading={loading}
               variant="contained"
               type="submit"
