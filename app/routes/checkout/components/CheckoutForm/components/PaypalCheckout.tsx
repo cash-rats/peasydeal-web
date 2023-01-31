@@ -115,10 +115,9 @@ function PaypalCheckout({
 
                 <PayPalScriptProvider
                   options={{
-                    "client-id": PAYPAL_CLIENT_ID,
-
-                    // TODO: GBP or USD?
-                    "currency": PAYPAL_CURRENCY_CODE,
+                    "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
+                    "currency": "USD",
+                    // "currency": PAYPAL_CURRENCY_CODE,
                     "intent": "capture",
                   }}
                 >
