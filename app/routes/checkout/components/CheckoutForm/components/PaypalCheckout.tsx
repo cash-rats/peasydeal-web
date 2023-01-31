@@ -101,12 +101,12 @@ function PaypalCheckout({
             <div
               className={
                 clsx(`
-                      relative z-[1] h-0
+                      relative z-[1] h-[90px]
                       overflow-hidden
                       transition-[height] ease delay-300
                     `,
                   {
-                    "h-[90px]": !collapse,
+                    // "h-[90px]": !collapse,
                   }
                 )
               }
