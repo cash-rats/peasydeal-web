@@ -102,12 +102,13 @@ function PaypalCheckout({
               className={
                 clsx(`
                       relative z-[1]
-                      overflow-hidden h-0
+                      overflow-hidden
                       transition-[height] ease delay-300
+                      h-[90px]
                     `,
                   {
                     // "h-[90px]": !collapse,
-                    "h-[90px]": true,
+                    // "h-[90px]": true,
                   }
                 )
               }
@@ -124,9 +125,9 @@ function PaypalCheckout({
                   <PayPalButtons
                     // disabled={paypalDisabled}
                     // onInit={paypalInit}
-                    onClick={paypalInputValidate}
-                    createOrder={paypalCreateOrder}
-                    onApprove={paypalApproveOrder}
+                    // onClick={paypalInputValidate}
+                    // createOrder={paypalCreateOrder}
+                    // onApprove={paypalApproveOrder}
                     style={{ layout: "horizontal" }}
                   />
                 </PayPalScriptProvider>
