@@ -29,7 +29,7 @@ interface StripeCheckoutFormProps {
   paypalApproveOrder?: (
     data: OnApproveData,
     actions: OnApproveActions
-  ) => {},
+  ) => Promise<void>,
 }
 
 export type PaymentMethods = 'stripe_methods' | 'paypal';
@@ -43,7 +43,7 @@ function CheckoutForm({
   loading = false,
   paypalDisabled = true,
   paypalCreateOrder,
-  paypalApproveOrder,
+  paypalApproveOrder = async (data: OnApproveData, actions: OnApproveActions) => { },
   paypalInputValidate = () => { },
 }: StripeCheckoutFormProps) {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethods>("paypal");
@@ -78,34 +78,13 @@ function CheckoutForm({
 
   const handlePaypalCreateOrder = async (): Promise<string> => paypalCreateOrder();
 
-  const handlePaypalApproveOrder = async (data: OnApproveData, action: OnApproveActions) => {
-    if (!paypalApproveOrder) return;
-    await paypalApproveOrder(data, action);
-  }
+  const handlePaypalApproveOrder = async (data: OnApproveData, action: OnApproveActions) => paypalApproveOrder(data, action);
 
   return (
     <>
       <h3 className="title mt-4">
         Payment Methods
       </h3>
-
-      {/* <PayPalScriptProvider
-        options={{
-          "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
-          "currency": "USD",
-          // "currency": PAYPAL_CURRENCY_CODE,
-          "intent": "capture",
-        }}
-      >
-        <PayPalButtons
-          // disabled={paypalDisabled}
-          // onInit={paypalInit}
-          // onClick={paypalInputValidate}
-          // createOrder={paypalCreateOrder}
-          // onApprove={paypalApproveOrder}
-          style={{ layout: "horizontal" }}
-        />
-      </PayPalScriptProvider> */}
 
       <PaypalCheckout
         collapse={selectedMethod !== 'paypal'}

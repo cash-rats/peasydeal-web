@@ -101,14 +101,12 @@ function PaypalCheckout({
             <div
               className={
                 clsx(`
-                      relative z-[1]
+                      relative z-[1] h-0
                       overflow-hidden
                       transition-[height] ease delay-300
-                      h-[90px]
                     `,
                   {
-                    // "h-[90px]": !collapse,
-                    // "h-[90px]": true,
+                    "h-[90px]": !collapse,
                   }
                 )
               }
@@ -116,16 +114,17 @@ function PaypalCheckout({
               <div className="pt-1 pb-4 px-4 box-border">
                 <PayPalScriptProvider
                   options={{
-                    "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
-                    "currency": "USD",
-                    // "currency": PAYPAL_CURRENCY_CODE,
+                    // "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
+                    "client-id": PAYPAL_CLIENT_ID,
+                    // "currency": "USD",
+                    "currency": PAYPAL_CURRENCY_CODE,
                     "intent": "capture",
                   }}
                 >
                   <PayPalButtons
-                    // disabled={paypalDisabled}
-                    // onInit={paypalInit}
-                    // onClick={paypalInputValidate}
+                    disabled={paypalDisabled}
+                    onInit={paypalInit}
+                    onClick={paypalInputValidate}
                     createOrder={paypalCreateOrder}
                     onApprove={paypalApproveOrder}
                     style={{ layout: "horizontal" }}
