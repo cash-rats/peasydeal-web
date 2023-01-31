@@ -125,7 +125,7 @@ function PaypalCheckout({
                   <PayPalButtons
                     // disabled={paypalDisabled}
                     // onInit={paypalInit}
-                    onClick={paypalInputValidate}
+                    // onClick={paypalInputValidate}
                     createOrder={paypalCreateOrder}
                     onApprove={paypalApproveOrder}
                     style={{ layout: "horizontal" }}
