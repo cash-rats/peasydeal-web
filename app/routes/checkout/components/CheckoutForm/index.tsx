@@ -89,7 +89,7 @@ function CheckoutForm({
         Payment Methods
       </h3>
 
-      <PayPalScriptProvider
+      {/* <PayPalScriptProvider
         options={{
           "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
           "currency": "USD",
@@ -105,7 +105,7 @@ function CheckoutForm({
           // onApprove={paypalApproveOrder}
           style={{ layout: "horizontal" }}
         />
-      </PayPalScriptProvider>
+      </PayPalScriptProvider> */}
 
       <PaypalCheckout
         collapse={selectedMethod !== 'paypal'}

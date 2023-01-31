@@ -106,7 +106,8 @@ function PaypalCheckout({
                       transition-[height] ease delay-300
                     `,
                   {
-                    "h-[90px]": !collapse,
+                    // "h-[90px]": !collapse,
+                    "h-[90px]": true,
                   }
                 )
               }
