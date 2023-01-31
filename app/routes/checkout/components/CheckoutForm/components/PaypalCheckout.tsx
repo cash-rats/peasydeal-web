@@ -124,7 +124,7 @@ function PaypalCheckout({
                 >
                   <PayPalButtons
                     disabled={paypalDisabled}
-                    onInit={paypalInit}
+                    // onInit={paypalInit}
                     onClick={paypalInputValidate}
                     createOrder={paypalCreateOrder}
                     onApprove={paypalApproveOrder}
