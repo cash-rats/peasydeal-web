@@ -180,8 +180,6 @@ function CheckoutLayout() {
               <PayPalScriptProvider
                 options={{
                   "client-id": PAYPAL_CLIENT_ID,
-
-                  // TODO: GBP or USD?
                   "currency": PAYPAL_CURRENCY_CODE,
                   "intent": "capture",
                 }}

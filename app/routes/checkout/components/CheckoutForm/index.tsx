@@ -1,11 +1,7 @@
-
-import { PayPalButtons } from "@paypal/react-paypal-js";
-import { PayPalScriptProvider } from '@paypal/react-paypal-js';
-
 import { useRef, useState } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import type { StripePaymentElement, StripePaymentElementChangeEvent } from '@stripe/stripe-js';
-import type { OnClickActions, OnApproveData, OnApproveActions, OnInitActions } from "@paypal/paypal-js";
+import type { OnClickActions, OnApproveData, OnApproveActions } from "@paypal/paypal-js";
 
 import styles from './styles/CheckoutForm.css';
 import StripeCheckout from './components/StripeCheckout';
@@ -85,26 +81,6 @@ function CheckoutForm({
       <h3 className="title mt-4">
         Payment Methods
       </h3>
-
-      {/* <PayPalScriptProvider
-        options={{
-          "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
-          // "client-id": PAYPAL_CLIENT_ID,
-          "currency": "USD",
-          // "currency": PAYPAL_CURRENCY_CODE,
-          "intent": "capture",
-        }}
-      >
-        <PayPalButtons
-          // disabled={paypalDisabled}
-          // onInit={paypalInit}
-          // onClick={paypalInputValidate}
-          // createOrder={paypalCreateOrder}
-          // onApprove={paypalApproveOrder}
-          // onApprove={() => { }}
-          style={{ layout: "horizontal" }}
-        />
-      </PayPalScriptProvider> */}
 
       <PaypalCheckout
         collapse={selectedMethod !== 'paypal'}
