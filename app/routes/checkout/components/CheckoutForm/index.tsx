@@ -46,7 +46,7 @@ function CheckoutForm({
   paypalApproveOrder = async (data: OnApproveData, actions: OnApproveActions) => { },
   paypalInputValidate = () => { },
 }: StripeCheckoutFormProps) {
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethods>("paypal");
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethods>('paypal');
   const paymentElement = useRef<StripePaymentElement | null>(null);
 
   // We'll skip 2 onChange invocation on PaymentElemet before we can `setSelectMethod`.

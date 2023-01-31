@@ -34,7 +34,7 @@ interface PaypalCheckoutProps {
 }
 
 function PaypalCheckout({
-  collapse,
+  collapse = false,
   onChoose,
 
   paypalDisabled = false,
@@ -98,12 +98,12 @@ function PaypalCheckout({
             <div
               className={
                 clsx(`
-                      relative z-[1] h-[90px]
+                      relative z-[1] h-0
                       overflow-hidden
                       transition-[height] ease delay-300
                     `,
                   {
-                    // "h-[90px]": !collapse,
+                    "h-[90px]": !collapse,
                   }
                 )
               }
@@ -123,7 +123,6 @@ function PaypalCheckout({
                     onClick={paypalInputValidate}
                     createOrder={paypalCreateOrder}
                     onApprove={paypalApproveOrder}
-                    // onApprove={() => { }}
                     style={{ layout: "horizontal" }}
                   />
                 </PayPalScriptProvider>
