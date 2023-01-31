@@ -1,8 +1,7 @@
 /*
   TODOs
-    - [ ] Email validation
-    - [ ] Header
     - [ ] validation error should be displayed in tooltip.
+    - [ ] Lock lookup button
 */
 import { useEffect, useReducer } from 'react';
 import type { ChangeEvent } from 'react';
@@ -131,6 +130,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
           <div className="flex items-center m-0 py-2 text-sm font-light gap-2">
             <div className="max-w-[13.5rem] ">
               <RoundButton
+                disabled={!values.postal}
                 colorScheme='green'
                 size='small'
                 onClick={handleSearchAddress}

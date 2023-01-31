@@ -128,6 +128,7 @@ function RoundButton({
   children,
   leftIcon,
   type,
+  ...args
 }: RoundButtonProps) {
   const CustomButton = colorSchemeButton[colorScheme];
   return (
@@ -146,6 +147,7 @@ function RoundButton({
           speedMultiplier={0.6}
         />
       }
+      {...args}
     >
       <div className="flex items-center gap-[0.45rem]">
         {leftIcon && (<span>{leftIcon}</span>)}
