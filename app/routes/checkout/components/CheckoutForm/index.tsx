@@ -86,6 +86,26 @@ function CheckoutForm({
         Payment Methods
       </h3>
 
+      <PayPalScriptProvider
+        options={{
+          "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
+          // "client-id": PAYPAL_CLIENT_ID,
+          "currency": "USD",
+          // "currency": PAYPAL_CURRENCY_CODE,
+          "intent": "capture",
+        }}
+      >
+        <PayPalButtons
+          // disabled={paypalDisabled}
+          // onInit={paypalInit}
+          // onClick={paypalInputValidate}
+          // createOrder={paypalCreateOrder}
+          // onApprove={paypalApproveOrder}
+          // onApprove={() => { }}
+          style={{ layout: "horizontal" }}
+        />
+      </PayPalScriptProvider>
+
       <PaypalCheckout
         collapse={selectedMethod !== 'paypal'}
         onChoose={handleChoosePayPal}
