@@ -177,11 +177,21 @@ function CheckoutLayout() {
               stripe={stripePromise}
               options={options}
             >
-              <Outlet context={{
-                paymentIntendID: payment_intend_id,
-                priceInfo: price_info,
-                promoCode: promo_code,
-              }} />
+              <PayPalScriptProvider
+                options={{
+                  "client-id": PAYPAL_CLIENT_ID,
+
+                  // TODO: GBP or USD?
+                  "currency": PAYPAL_CURRENCY_CODE,
+                  "intent": "capture",
+                }}
+              >
+                <Outlet context={{
+                  paymentIntendID: payment_intend_id,
+                  priceInfo: price_info,
+                  promoCode: promo_code,
+                }} />
+              </PayPalScriptProvider>
             </Elements>
           )
         }

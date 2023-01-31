@@ -96,36 +96,28 @@ function PaypalCheckout({
 
             {/* content */}
             <div
-              className={
-                clsx(`
-                      relative z-[1] h-0
-                      overflow-hidden
-                      transition-[height] ease delay-300
-                    `,
-                  {
-                    "h-[90px]": !collapse,
-                  }
-                )
-              }
+              className={`
+                relative z-[1] ${collapse ? 'h-0' : 'h-[90px]'}
+                overflow-hidden
+                transition-[height] ease delay-300
+              `}
             >
               <div className="pt-1 pb-4 px-4 box-border">
-                <PayPalScriptProvider
+                {/* <PayPalScriptProvider
                   options={{
-                    // "client-id": "AdprewilBEx36JVPaJFXEvjT0W70HWqP-bgSxqV5FNNmdwK293pkp5WC4I1Y1Yq8Z1lRu37QfeusMrby",
                     "client-id": PAYPAL_CLIENT_ID,
-                    // "currency": "USD",
                     "currency": PAYPAL_CURRENCY_CODE,
                     "intent": "capture",
                   }}
-                >
-                  <PayPalButtons
-                    disabled={paypalDisabled}
-                    onClick={paypalInputValidate}
-                    createOrder={paypalCreateOrder}
-                    onApprove={paypalApproveOrder}
-                    style={{ layout: "horizontal" }}
-                  />
-                </PayPalScriptProvider>
+                > */}
+                <PayPalButtons
+                  disabled={paypalDisabled}
+                  onClick={paypalInputValidate}
+                  createOrder={paypalCreateOrder}
+                  onApprove={paypalApproveOrder}
+                  style={{ layout: "horizontal" }}
+                />
+                {/* </PayPalScriptProvider> */}
               </div>
             </div>
           </div>
