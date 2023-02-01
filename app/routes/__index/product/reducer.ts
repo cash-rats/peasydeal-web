@@ -1,7 +1,8 @@
-import type { ProductDetail } from './types';
+import type { ProductDetail, ProductVariation } from './types';
 
 type StateShape = {
   productDetail: ProductDetail;
+  variation: ProductVariation | undefined;
   images: string[];
   quantity: number;
 }
@@ -9,8 +10,8 @@ type StateShape = {
 export enum ActionTypes {
   change_product = 'change_product',
   update_product_images = 'update_product_images',
-
   update_quantity = 'update_quantity',
+  set_variation = 'set_variation',
 };
 
 type Action = {
@@ -45,6 +46,15 @@ const reducer = (state: StateShape, action: Action): StateShape => {
         quantity: action.payload as number,
       }
     }
+
+    case ActionTypes.set_variation: {
+      const { variation } = action.payload;
+      return {
+        ...state,
+        variation,
+      }
+    }
+
     default:
       return state;
   }

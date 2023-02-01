@@ -195,6 +195,9 @@ function ProductDetailPage() {
 		productDetail: data.product,
 		images: data.product.images,
 		quantity: 1,
+		variation: data.product.variations.find(
+			variation => data.product.default_variation_uuid === variation.uuid,
+		),
 	});
 
 	const [mainCategory] = state.productDetail.categories;
@@ -203,13 +206,6 @@ function ProductDetailPage() {
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
-
-	const [variation, setVariation] = useState<ProductVariation | undefined>(
-		state.productDetail.variations.find(
-			variation => state.productDetail.default_variation_uuid === variation.uuid
-		)
-	);
-
 
 	useEffect(() => {
 		// We need to have a time buffer
@@ -234,15 +230,20 @@ function ProductDetailPage() {
 			variation => state.productDetail.default_variation_uuid === variation.uuid
 		)
 
-		setVariation(currentVariation);
+		dispatch({
+			type: ActionTypes.set_variation,
+			payload: currentVariation,
+
+		})
+
 	}, [state.productDetail]);
 
 	const [variationErr, setVariationErr] = useState<string>('');
 	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
 	const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
-		if (!variation) return;
-		const { purchase_limit } = variation;
+		if (!state.variation) return;
+		const { purchase_limit } = state.variation;
 		const newQuant = Number(evt.target.value);
 		if (newQuant > purchase_limit) return;
 		dispatch({
@@ -252,8 +253,8 @@ function ProductDetailPage() {
 	};
 
 	const increaseQuantity = () => {
-		if (!variation) return;
-		const { purchase_limit } = variation;
+		if (!state.variation) return;
+		const { purchase_limit } = state.variation;
 		if (state.quantity === purchase_limit) return;
 
 		dispatch({
@@ -277,6 +278,7 @@ function ProductDetailPage() {
 	const extractProductInfo = useCallback(() => {
 		// A product doesn't have any `spec_name` if the product has 1 variation only
 		// other wise `Default Title` would appeared in `/cart`.
+		const variation = state.variation;
 		const specName = state.productDetail.variations.length === 1
 			? ''
 			: variation?.spec_name || ''
@@ -297,11 +299,11 @@ function ProductDetailPage() {
 	}, [
 		state.productDetail,
 		state.quantity,
-		variation,
+		state.variation,
 	]);
 
 	const handleAddToCart = () => {
-		if (!variation) {
+		if (!state.variation) {
 			setVariationErr('Please pick a variation');
 			return;
 		}
@@ -318,7 +320,7 @@ function ProductDetailPage() {
 	};
 
 	const handleBuyNow = () => {
-		if (!variation) {
+		if (!state.variation) {
 			setVariationErr('Please pick a variation');
 
 			return
@@ -416,11 +418,11 @@ function ProductDetailPage() {
 
 								<div className="product-tag-bar">
 									<p className="detail-amount">
-										£{variation?.sale_price}
+										£{state.variation?.sale_price}
 									</p>
 
 									<span className="actual-amount">
-										compared at £{variation?.retail_price}
+										compared at £{state.variation?.retail_price}
 									</span>
 
 								</div>
@@ -429,8 +431,8 @@ function ProductDetailPage() {
 									<p className="discount-amount">
 										YOU SAVE &nbsp;
 										{
-											variation && variation.discount && (
-												(Number(variation.discount) * 100).toFixed(0)
+											state.variation && state.variation.discount && (
+												(Number(state.variation.discount) * 100).toFixed(0)
 											)
 										}%!
 									</p>
@@ -458,14 +460,15 @@ function ProductDetailPage() {
 															instanceId='variation_id'
 															placeholder='select variation'
 															value={{
-																value: variation?.uuid,
-																label: variation?.spec_name,
+																value: state.variation?.uuid,
+																label: state.variation?.spec_name,
 															}}
 															onChange={(v) => {
 																if (!v) return;
-																setVariation(
-																	state.productDetail.variations.find(variation => variation.uuid === v.value)
-																);
+																dispatch({
+																	type: ActionTypes.set_variation,
+																	payload: state.productDetail.variations.find(variation => variation.uuid === v.value),
+																})
 															}}
 															options={
 																state.productDetail.variations.map(
@@ -493,7 +496,7 @@ function ProductDetailPage() {
 										/>
 
 										<span className="w-full mt-2 text-[#757575] font-sm">
-											Max {variation?.purchase_limit} pieces of this item on every purchase.
+											Max {state.variation?.purchase_limit} pieces of this item on every purchase.
 										</span>
 									</div>
 
@@ -520,8 +523,8 @@ function ProductDetailPage() {
 									<div className="flex px-3 justify-center items-center gap-1">
 										<strong>
 											{
-												variation
-													? `Lowest Shipping Cost At: £${variation?.shipping_fee}`
+												state.variation
+													? `Lowest Shipping Cost At: £${state.variation?.shipping_fee}`
 													: null
 											}
 										</strong>
