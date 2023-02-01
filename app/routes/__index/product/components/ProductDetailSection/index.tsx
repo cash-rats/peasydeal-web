@@ -22,11 +22,15 @@ function ProductDetailSection({
 	description = '',
 	pics = [],
 }: ProductDetailSectionProps) {
+	// console.log('debug pics', pics);
 	return (
 		<div className="product-detail">
 			{/* Image container */}
 			<div className="product-detail-img-container">
-				<PicsCarousel title={title} images={pics} />
+				<PicsCarousel
+					title={title}
+					images={pics}
+				/>
 			</div>
 
 			{/* product features. display > 768 */}

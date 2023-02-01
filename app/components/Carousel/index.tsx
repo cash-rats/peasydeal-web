@@ -77,28 +77,42 @@ function PicsCarousel({ images, title = '' }: PicsCarouselProps) {
 			{/* Mobile view slider */}
 			<div className="product-carousel-container">
 				<div className="product-carousel-image-wrapper" >
-					<Slider ref={sliderRef} {...settings}>
-						{
-							images.map((image, index) => {
-								return (
-									<div key={index}>
-										<LazyLoadImage
-											placeholder={
-												<img
-													alt={title}
-													src='/images/placeholder.svg'
-													className="w-full h-auto my-0 m-auto aspect-[1/1]"
-												/>
-											}
-											alt={title}
-											className="w-full h-auto my-0 m-auto aspect-[1/1]"
-											src={image}
-										/>
-									</div>
-								)
-							})
-						}
-					</Slider>
+					{
+						images.length === 0
+							? (
+								<img
+									alt={title}
+									src='/images/placeholder.svg'
+									className="w-full h-auto my-0 m-auto aspect-[1/1]"
+								/>
+							)
+							: (
+								<Slider ref={sliderRef} {...settings}>
+									{
+										images.map((image, index) => {
+											return (
+												<div key={index}>
+													<LazyLoadImage
+														placeholder={
+															<img
+																alt={title}
+																src='/images/placeholder.svg'
+																className="w-full h-auto my-0 m-auto aspect-[1/1]"
+															/>
+														}
+														alt={title}
+														className="w-full h-auto my-0 m-auto aspect-[1/1]"
+														src={image}
+													/>
+												</div>
+											)
+										})
+									}
+								</Slider>
+							)
+
+					}
+
 				</div>
 
 				<div className="ProductDetailSection__carousel-thumbnails">

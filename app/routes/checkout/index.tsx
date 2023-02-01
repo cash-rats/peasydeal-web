@@ -30,7 +30,7 @@ import CartSummary from './components/CartSummary';
 import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
 import type { PaypalCreateOrderResponse } from './api';
 import useFetcherWithPromise from './hooks/useFetcherWithPromise';
-import reducer, { ActionTypes as ReducerActionTypes } from './reducer';
+import reducer, { ActionTypes as ReducerActionTypes, initState } from './reducer';
 import type { StateShape } from './reducer';
 import {
   __paypalCreateOrder,
@@ -101,34 +101,7 @@ function CheckoutPage() {
 
   const createOrderFetcher = useFetcher();
   const { submit } = useFetcherWithPromise();
-  const [state, dispatch] = useReducer(
-    reducer,
-    {
-      orderUUID: '',
-      paypalOrderID: '',
-      disablePaypalButton: true,
-      shippingDetailForm: {
-        lastname: '',
-        firstname: '',
-        address1: '',
-        address2: '',
-        postal: '',
-        city: '',
-      },
-      contactInfoForm: {
-        email: '',
-        country_data: {
-          name: '',
-          dialCode: '',
-          countryCode: '',
-          format: '',
-        },
-        phone_value: '',
-        contact_name_same: true,
-        contact_name: '',
-      }
-    },
-  );
+  const [state, dispatch] = useReducer(reducer, initState);
 
   // Store orderUUID when is newly created. There might be an senario where shipping information is valid but not billing info.
   // When customer submit payment again, a new order will be created again. Thus, if orderID exists we should not create a new order again.

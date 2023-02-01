@@ -3,6 +3,7 @@ import {
 	useState,
 	useEffect,
 	useRef,
+	useReducer,
 } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction, MetaFunction, LinksFunction } from '@remix-run/node';
@@ -46,6 +47,7 @@ import RecommendedProducts, { links as RecommendedProductsLinks } from './compon
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
 import TopProductsColumn from './components/TopProductsColumn';
 import useStickyActionBar from './hooks/useStickyActionBar';
+import reducer, { ActionTypes } from './reducer';
 
 type LoaderTypeProductDetail = {
 	product: ProductDetail;
@@ -71,7 +73,6 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 			defaultVariation.sale_price,
 		)
 	}
-
 
 	return {
 		title: getProdDetailTitleText(data.product.title, data.product.uuid),
@@ -190,34 +191,51 @@ export const CatchBoundary = () => (<FourOhFour />);
  */
 function ProductDetailPage() {
 	const data = useLoaderData<LoaderTypeProductDetail>();
-	const [productDetail, setProductDetail] = useState<ProductDetail>(data.product);
-	const [mainCategory] = productDetail.categories;
+	const [state, dispatch] = useReducer(reducer, {
+		productDetail: data.product,
+		images: data.product.images,
+		quantity: 1,
+	});
+
+	const [mainCategory] = state.productDetail.categories;
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
-	const [quantity, updateQuantity] = useState<number>(1);
+
 	const [variation, setVariation] = useState<ProductVariation | undefined>(
-		productDetail.variations.find(
-			variation => productDetail.default_variation_uuid === variation.uuid
+		state.productDetail.variations.find(
+			variation => state.productDetail.default_variation_uuid === variation.uuid
 		)
 	);
 
-	// User changes the variation.
+
 	useEffect(() => {
-		setProductDetail(data.product);
+		// We need to have a time buffer
+		dispatch({
+			type: ActionTypes.change_product,
+			payload: data.product,
+		});
+
+		setTimeout(() => {
+			dispatch({
+				type: ActionTypes.update_product_images,
+				payload: data.product.images,
+			});
+		}, 300);
+
 		if (!window) return;
 		window.scrollTo(0, 0);
 	}, [data.product.uuid]);
 
 	useEffect(() => {
-		const currentVariation = productDetail.variations.find(
-			variation => productDetail.default_variation_uuid === variation.uuid
+		const currentVariation = state.productDetail.variations.find(
+			variation => state.productDetail.default_variation_uuid === variation.uuid
 		)
 
 		setVariation(currentVariation);
-	}, [productDetail]);
+	}, [state.productDetail]);
 
 	const [variationErr, setVariationErr] = useState<string>('');
 	const [openSuccessModal, setOpenSuccessModal] = useState(false);
@@ -227,19 +245,29 @@ function ProductDetailPage() {
 		const { purchase_limit } = variation;
 		const newQuant = Number(evt.target.value);
 		if (newQuant > purchase_limit) return;
-		updateQuantity(newQuant);
+		dispatch({
+			type: ActionTypes.update_quantity,
+			payload: newQuant,
+		})
 	};
 
 	const increaseQuantity = () => {
 		if (!variation) return;
 		const { purchase_limit } = variation;
-		if (quantity === purchase_limit) return;
-		updateQuantity(prev => prev + 1);
+		if (state.quantity === purchase_limit) return;
+
+		dispatch({
+			type: ActionTypes.update_quantity,
+			payload: state.quantity + 1,
+		})
 	};
 
 	const decreaseQuantity = () => {
-		if (quantity === 1) return;
-		updateQuantity(prev => prev - 1);
+		if (state.quantity === 1) return;
+		dispatch({
+			type: ActionTypes.update_quantity,
+			payload: state.quantity - 1,
+		})
 	};
 
 	const addToCart = useFetcher();
@@ -249,24 +277,28 @@ function ProductDetailPage() {
 	const extractProductInfo = useCallback(() => {
 		// A product doesn't have any `spec_name` if the product has 1 variation only
 		// other wise `Default Title` would appeared in `/cart`.
-		const specName = productDetail.variations.length === 1
+		const specName = state.productDetail.variations.length === 1
 			? ''
 			: variation?.spec_name || ''
 
 		return {
 			salePrice: variation?.sale_price.toString() || '',
 			retailPrice: variation?.retail_price.toString() || '',
-			productUUID: productDetail.uuid,
+			productUUID: state.productDetail.uuid,
 			variationUUID: variation?.uuid || '',
 
 			// product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
-			image: productDetail.images[0] || '',
-			quantity: quantity.toString(),
-			title: productDetail?.title || '',
+			image: state.productDetail.images[0] || '',
+			quantity: state.quantity.toString(),
+			title: state.productDetail?.title || '',
 			specName: specName,
 			purchaseLimit: variation?.purchase_limit.toString() || '',
 		}
-	}, [productDetail, quantity, variation]);
+	}, [
+		state.productDetail,
+		state.quantity,
+		variation,
+	]);
 
 	const handleAddToCart = () => {
 		if (!variation) {
@@ -338,17 +370,17 @@ function ProductDetailPage() {
 
 			<Breadcrumbs
 				categoryTitle={mainCategory.name}
-				productTitle={productDetail.title}
-				productUuid={productDetail.uuid}
+				productTitle={state.productDetail.title}
+				productUuid={state.productDetail.uuid}
 			/>
 
 			<div className="productdetail-container">
 				<div className="ProductDetail__main-wrapper">
 					<div className='ProductDetail__main-top'>
 						<ProductDetailSection
-							description={productDetail?.description}
-							pics={productDetail.images}
-							title={productDetail?.title}
+							description={state.productDetail?.description}
+							pics={state.images}
+							title={state.productDetail?.title}
 						/>
 
 						<div
@@ -357,23 +389,23 @@ function ProductDetailPage() {
 						>
 							<div className="product-content">
 								<h1 className="product-name">
-									{productDetail?.title}
+									{state.productDetail?.title}
 								</h1>
 
 								{
-									productDetail.num_of_raters > 0
+									state.productDetail.num_of_raters > 0
 										? (
 
 											<div className="ProductDetailPage__rating">
 												<Rating
 													name="product-rating"
-													defaultValue={productDetail.rating}
+													defaultValue={state.productDetail.rating}
 													precision={0.1}
 													readOnly
 												/>
 
 												<span className="ProductDetailPage__review-count">
-													({productDetail.num_of_raters} reviews)
+													({state.productDetail.num_of_raters} reviews)
 												</span>
 											</div>
 
@@ -404,7 +436,7 @@ function ProductDetailPage() {
 									</p>
 
 									<div className="ProductDetailPage__number-bought">
-										<RightTiltBox text={`${productDetail.order_count} bought`} />
+										<RightTiltBox text={`${state.productDetail.order_count} bought`} />
 									</div>
 								</div>
 
@@ -418,7 +450,7 @@ function ProductDetailPage() {
 								<div className="options-container">
 									<ClientOnly>
 										{
-											productDetail.variations.length > 1
+											state.productDetail.variations.length > 1
 												? (
 													<>
 														<Select
@@ -432,11 +464,11 @@ function ProductDetailPage() {
 															onChange={(v) => {
 																if (!v) return;
 																setVariation(
-																	productDetail.variations.find(variation => variation.uuid === v.value)
+																	state.productDetail.variations.find(variation => variation.uuid === v.value)
 																);
 															}}
 															options={
-																productDetail.variations.map(
+																state.productDetail.variations.map(
 																	(variation) => ({ value: variation.uuid, label: variation.spec_name })
 																)
 															}
@@ -454,7 +486,7 @@ function ProductDetailPage() {
 									{/* Quantity */}
 									<div className="flex flex-col justify-start items-center w-full mt-3">
 										<QuantityPicker
-											value={quantity}
+											value={state.quantity}
 											onChange={handleUpdateQuantity}
 											onIncrease={increaseQuantity}
 											onDecrease={decreaseQuantity}
@@ -501,7 +533,7 @@ function ProductDetailPage() {
 									<Divider text="product features" />
 
 									{/* TODO dangerous render html */}
-									<div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} className="product-features-container" />
+									<div dangerouslySetInnerHTML={{ __html: state.productDetail?.description || '' }} className="product-features-container" />
 								</div>
 
 								<div>

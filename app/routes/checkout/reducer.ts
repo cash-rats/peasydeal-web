@@ -13,6 +13,32 @@ export type StateShape = {
   contactInfoForm: ContactInfoFormType;
 }
 
+export const initState: StateShape = {
+  orderUUID: '',
+  paypalOrderID: '',
+  disablePaypalButton: true,
+  shippingDetailForm: {
+    lastname: '',
+    firstname: '',
+    address1: '',
+    address2: '',
+    postal: '',
+    city: '',
+  },
+  contactInfoForm: {
+    email: '',
+    country_data: {
+      name: '',
+      dialCode: '',
+      countryCode: '',
+      format: '',
+    },
+    phone_value: '',
+    contact_name_same: true,
+    contact_name: '',
+  }
+};
+
 export enum ActionTypes {
   set_order_uuid = 'set_order_uuid',
   set_paypal_order_id = 'set_paypal_order_id',
@@ -31,7 +57,6 @@ type SetBothOrderID = {
 type UpdateShippingDetailForm = {
   [key in keyof ShippingDetailFormType]?: string;
 };
-
 
 type UpdateContactInfoForm = {
   email?: string;
