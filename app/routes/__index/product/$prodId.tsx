@@ -206,7 +206,6 @@ function ProductDetailPage() {
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 
 	useEffect(() => {
-		// We need to have a time buffer
 		dispatch({
 			type: ActionTypes.change_product,
 			payload: data.product,
@@ -395,11 +394,10 @@ function ProductDetailPage() {
 								{
 									state.productDetail.num_of_raters > 0
 										? (
-
 											<div className="ProductDetailPage__rating">
 												<Rating
 													name="product-rating"
-													defaultValue={state.productDetail.rating}
+													value={state.productDetail?.rating || 0}
 													precision={0.1}
 													readOnly
 												/>
@@ -408,7 +406,6 @@ function ProductDetailPage() {
 													({state.productDetail.num_of_raters} reviews)
 												</span>
 											</div>
-
 										)
 										: null
 								}
