@@ -201,10 +201,8 @@ function ProductDetailPage() {
 	});
 
 	const [mainCategory] = state.productDetail.categories;
-
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
-
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 
 	useEffect(() => {

@@ -48,7 +48,7 @@ const reducer = (state: StateShape, action: Action): StateShape => {
     }
 
     case ActionTypes.set_variation: {
-      const { variation } = action.payload;
+      const variation = action.payload;
       return {
         ...state,
         variation,
