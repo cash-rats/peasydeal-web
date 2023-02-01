@@ -205,18 +205,21 @@ function ProductDetailPage() {
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 
+	// Change product.
 	useEffect(() => {
+		// This action updates detail to new product also clears images of previous product images.
 		dispatch({
 			type: ActionTypes.change_product,
 			payload: data.product,
 		});
 
+		// Update product images to new product after current event loop.
 		setTimeout(() => {
 			dispatch({
 				type: ActionTypes.update_product_images,
 				payload: data.product.images,
 			});
-		}, 300);
+		}, 0);
 
 		if (!window) return;
 		window.scrollTo(0, 0);
