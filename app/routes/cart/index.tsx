@@ -159,7 +159,10 @@ const __applyPromoCode = async (request: Request, promoCode: string) => {
 		products: priceQuery
 	});
 
-	console.log('debug __applyPromoCode priceInfo', priceInfo);
+	// If promo code type is `free_shipping`, exempts shipping fee in `transaction.session`
+	if (priceInfo.discount_type === 'free_shipping') {
+		priceInfo.shipping_fee = 0;
+	}
 
 	return json<ApplyPromoCodeActionType>({
 		price_info: priceInfo,

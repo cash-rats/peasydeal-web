@@ -7,7 +7,6 @@ import styles from './styles/CheckoutForm.css';
 import StripeCheckout from './components/StripeCheckout';
 import PaypalCheckout from './components/PaypalCheckout';
 
-
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: styles },
