@@ -76,13 +76,11 @@ export const fetchProductsByCategory = async ({
 // more contentful.
 export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 	const endpoint = `${MYFB_ENDPOINT}/data-server/ec/activity_banners`;
-
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
 
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
-
 		throw new Error(errResp.err_message);
 	}
 

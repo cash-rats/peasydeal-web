@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { json } from "@remix-run/node";
 import type { LoaderFunction, LinksFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData, useTransition } from "@remix-run/react";
+import { useFetcher, useLoaderData, useTransition, useCatch } from "@remix-run/react";
 import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from 'react-lazy-load-image-component';
 import type { LazyComponentProps } from 'react-lazy-load-image-component';
+import httpStatus from 'http-status-codes';
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
@@ -16,6 +17,7 @@ import { checkHasMoreRecord, getCanonicalDomain } from '~/utils';
 import { commitSession } from '~/sessions/sessions';
 import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
 import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/SeasonalRowLayout/SeasonalRowLayout";
+import FiveHundredError from "~/components/FiveHundreError";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchActivityBanners, fetchProductsByCategoryV2 } from "./api";
@@ -48,7 +50,7 @@ export const links: LinksFunction = () => {
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
 	return [
 		// Google meta tags
-		{ rel: 'canonical', href: data.canonical_link },
+		{ rel: 'canonical', href: data?.canonical_link },
 	];
 }
 export const handle = { dynamicLinks }
@@ -128,7 +130,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 			}
 		});
 	} catch (err) {
-		console.log('err', err);
+		throw json(err, {
+			status: httpStatus.INTERNAL_SERVER_ERROR,
+		})
 	}
 };
 
@@ -155,6 +159,17 @@ const mockedActivities: SeasonalInfo[] = [
 		title: 'Hot Deal'
 	}
 ];
+
+export const CatchBoundary = () => {
+	const caught = useCatch();
+
+	return (
+		<FiveHundredError
+			message={caught.data}
+			statusCode={caught.status}
+		/>
+	)
+}
 
 /*
  * Product list page.
