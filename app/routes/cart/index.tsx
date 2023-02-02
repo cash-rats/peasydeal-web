@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useReducer } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { json } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
@@ -17,6 +17,7 @@ import {
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
+import FiveHundredError from '~/components/FiveHundreError';
 
 import cartReducer, { CartActionTypes } from './reducer';
 import type { StateShape } from './reducer';
@@ -253,13 +254,25 @@ export const loader: LoaderFunction = async ({ request }) => {
 			}
 		});
 	} catch (err) {
-		console.log('debug err', err);
-		return null;
+		throw json(err, {
+			status: httpStatus.INTERNAL_SERVER_ERROR,
+		});
 	}
 };
 
 export const CatchBoundary = () => {
-	return (<EmptyShoppingCart />);
+	const caught = useCatch();
+
+	if (caught.status === httpStatus.NOT_FOUND) {
+		return (<EmptyShoppingCart />);
+	}
+
+	return (
+		<FiveHundredError
+			message={caught.data}
+			statusCode={caught.status}
+		/>
+	);
 }
 
 type PreviousQuantity = {

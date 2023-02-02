@@ -510,7 +510,7 @@ function ProductDetailPage() {
 									text="share"
 								/>
 
-								<SocialShare />
+								<SocialShare prodUUID={state.productDetail.uuid} />
 
 								<div>
 									<Divider
