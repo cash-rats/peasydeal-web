@@ -5,12 +5,18 @@ import { composeProductDetailURL } from '~/utils';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 
 type ProductDetailBreadcrumbsProps = {
-  categoryTitle?: ReactNode;
+  categoryLabel?: ReactNode;
+  categoryName?: ReactNode;
   productTitle?: ReactNode;
   productUuid?: string;
 }
 
-export default function ProductDetailBreadcrumbs({ categoryTitle, productTitle, productUuid }: ProductDetailBreadcrumbsProps) {
+export default function ProductDetailBreadcrumbs({
+  categoryLabel,
+  categoryName,
+  productTitle,
+  productUuid,
+}: ProductDetailBreadcrumbsProps) {
   return (
     <div className="
     px-4 mx-auto max-w-[1060px]
@@ -28,16 +34,16 @@ export default function ProductDetailBreadcrumbs({ categoryTitle, productTitle, 
             key='1'
           > Home </NavLink>,
 
-          categoryTitle && (
+          categoryLabel && (
             <NavLink
               className={({ isActive }) => (
                 isActive
                   ? "font-medium text-base cursor-pointer capitalize hover:underline"
                   : "text-sm font-bold no-underline text-raisin-black"
               )}
-              to={`/${categoryTitle}`}
+              to={`/${categoryName}`}
               key='2'
-            > {categoryTitle} </NavLink>
+            > {categoryLabel} </NavLink>
           ),
 
           productTitle && (

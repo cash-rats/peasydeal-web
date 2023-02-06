@@ -371,7 +371,8 @@ function ProductDetailPage() {
 			/>
 
 			<Breadcrumbs
-				categoryTitle={mainCategory.label}
+				categoryLabel={mainCategory.label}
+				categoryName={mainCategory.name}
 				productTitle={state.productDetail.title}
 				productUuid={state.productDetail.uuid}
 			/>
