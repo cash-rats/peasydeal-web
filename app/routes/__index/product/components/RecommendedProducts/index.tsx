@@ -36,12 +36,13 @@ export const action: ActionFunction = async ({ request }) => {
     return json<ActionDataType>({ products: [] });
   }
 
-
   const products = await fetchProductsByCategoryV2({
     category: Number(targetCat.catId),
     random: true,
     perpage: PAGE_LIMIT,
   });
+
+  console.log('debug~~**', products)
 
   return json<ActionDataType>({ products });
 }

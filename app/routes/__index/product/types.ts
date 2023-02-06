@@ -17,6 +17,7 @@ export interface ProductVariation {
 export interface Category {
   id: number;
   name: string;
+  label: string;
   is_main: boolean;
 }
 

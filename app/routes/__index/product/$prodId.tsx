@@ -105,7 +105,7 @@ export const links: LinksFunction = () => {
 
 const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) => {
 	return [
-		{ rel: 'canonical', href: data.canonical_url || '' },
+		{ rel: 'canonical', href: data?.canonical_url || '' },
 	];
 }
 export const handle = { dynamicLinks };
@@ -371,7 +371,7 @@ function ProductDetailPage() {
 			/>
 
 			<Breadcrumbs
-				categoryTitle={mainCategory.name}
+				categoryTitle={mainCategory.label}
 				productTitle={state.productDetail.title}
 				productUuid={state.productDetail.uuid}
 			/>

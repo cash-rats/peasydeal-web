@@ -14,7 +14,7 @@ import type { LazyComponentProps } from "react-lazy-load-image-component";
 
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
-import type { CategoriesMap, Product } from '~/shared/types';
+import type { CategoriesMap, Product, Category } from '~/shared/types';
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
@@ -39,7 +39,7 @@ import { organizeTo9ProdsPerRow } from "./utils";
 type LoaderDataType = {
   categories: CategoriesMap;
   products: Product[];
-  category: string;
+  category: Category;
   page: number;
   canonical_link: string;
   has_more: boolean;
@@ -47,7 +47,7 @@ type LoaderDataType = {
 
 type ActionDataType = {
   products: Product[],
-  category: string,
+  category: Category,
   page: number,
   has_more: boolean,
 };
@@ -62,10 +62,10 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
 
 export const handle = { dynamicLinks }
 export const meta: MetaFunction = ({ data }: { data: LoaderDataType }) => ({
-  title: getCollectionTitleText(data?.category),
-  description: getCollectionDescText(data?.category),
+  title: getCollectionTitleText(data?.category.title),
+  description: getCollectionDescText(data?.category.title),
 
-  ...getCategoryFBSEO(data?.category)
+  ...getCategoryFBSEO(data?.category.title)
 });
 
 export const links: LinksFunction = () => {
@@ -96,7 +96,7 @@ const _loadMoreLoader = async (request: Request, collection: string, page: numbe
 
   return json<ActionDataType>({
     products,
-    category: collection,
+    category: catMap[collection],
     page,
     has_more: checkHasMoreRecord(products.length, PAGE_LIMIT),
   }, {
@@ -134,7 +134,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
     return json<LoaderDataType>({
       categories: catMap,
-      category: collection,
+      category: catMap[collection],
       products: prods,
       page: cachedProds.page,
       canonical_link: `${getCanonicalDomain()}/${collection}`,
@@ -156,7 +156,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     categories: catMap,
     products: prods,
     page: 1,
-    category: collection,
+    category: catMap[collection],
     canonical_link: `${getCanonicalDomain()}/${collection}`,
     has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
   }, {
@@ -196,8 +196,7 @@ function Collection({ scrollPosition }: CollectionProps) {
   const loadmoreFetcher = useFetcher();
   const transition = useTransition();
 
-  // For any subsequent change of category, we will try to find category data in cache first.
-  // If it is found, we render it. If category data not found in the cache, we'll need to fetch it from server.
+  // For any subsequent change of category, we will update current product info coming from loader data.
   useEffect(() => {
     setProductRows(organizeTo9ProdsPerRow(products));
     currPage.current = page;
@@ -205,17 +204,16 @@ function Collection({ scrollPosition }: CollectionProps) {
   }, [category]);
 
 
-  // If user changes category at the moment, don't add the products to the state.
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
       const { products, has_more, page, category: dataCat } = loadmoreFetcher.data as ActionDataType;
-      // If user change category while load more is happening, the newly loaded data
+      // If user changes category while load more is happening, the newly loaded data
       // would be appended to different category. Moreover, it would cause inconsistent
       // page number. Thus, we abandon appending loaded data on to the product list
       // if category of data is different from current viewing category.
       if (
         products.length === 0 ||
-        dataCat !== category
+        dataCat.name !== category.name
       ) return;
 
       currPage.current = page;
@@ -262,15 +260,15 @@ function Collection({ scrollPosition }: CollectionProps) {
             <NavLink
               className="breadcrumbs-link-active"
               key='1'
-              to={`/${category}`}
+              to={`/${category.name}`}
             >
-              {category}
+              {category.title}
             </NavLink>,
           ]
         } />
       </div>
 
-      <PageTitle title={category} />
+      <PageTitle title={category.title} />
 
       <div className="ProductList__container">
         <ProductRowsContainer

@@ -1,26 +1,28 @@
-import { MYFB_ENDPOINT } from '~/utils/get_env_source';
+import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 import type { Category, CategoriesMap } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';
 
 export const RedisCategoriesKey = 'categories';
 
 const fetchCategoriesFromServer = async (): Promise<Category[]> => {
-  const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/cat`);
+  const resp = await fetch(`${PEASY_DEAL_ENDPOINT}/v1/categories`);
   const respJSON = await resp.json();
   let categories: Category[] = []
 
-  if (respJSON && respJSON.cats && Array.isArray(respJSON.cats)) {
-    categories = normalize(respJSON.cats);
+  if (respJSON && respJSON.categories && Array.isArray(respJSON.categories)) {
+    categories = normalize(respJSON.categories);
   }
 
   return categories;
 };
 
 const normalize = (cats: any) => {
-  return cats.map((cat: { catId: number, title: string }): Category => {
+  return cats.map((cat: { category_id: number, label: string, name: string }): Category => {
+    console.log('debug normalize', cat);
     return {
-      catId: cat.catId,
-      title: cat.title,
+      catId: cat.category_id,
+      title: cat.label,
+      name: cat.name,
       url: '',
     }
   });
@@ -29,7 +31,7 @@ const normalize = (cats: any) => {
 const normalizeToMap = (cats: Category[]): CategoriesMap => cats.reduce((prev, curr) => {
   return {
     ...prev,
-    [curr.title]: curr,
+    [curr.name]: curr,
   }
 }, {})
 
@@ -39,7 +41,7 @@ const fetchCategories = async (): Promise<Category[]> => {
 
   // If it exists, return it.
   if (catsstr) {
-    return normalize(JSON.parse(catsstr));
+    return JSON.parse(catsstr);
   }
 
   // If it doesn't exist, fetch from server and cache to redis.

@@ -21,10 +21,10 @@ export const action: ActionFunction = async ({ request }) => {
       perpage: 5,
       random: true,
     }),
-    await fetchProductsByCategory({
+    await fetchProductsByCategoryV2({
       category: 2,
       perpage: 4,
-      random: 1,
+      random: true,
     }),
   ]);
 

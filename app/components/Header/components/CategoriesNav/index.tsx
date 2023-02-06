@@ -41,7 +41,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                   replace
                   key={category.catId}
                   state={{ scrollToTop: true }}
-                  to={`/${category.title}`}
+                  to={`/${category.name}`}
                 >
                   <li className="CategoriesNav__item fromLeft font-bold" >
                     {category.title}
@@ -79,7 +79,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                       <Link
                         // prefetch='intent'
                         state={{ scrollToTop: true }}
-                        to={`/${category.title}`}
+                        to={`/${category.name}`}
                       >
                         <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
                           {category.title}
