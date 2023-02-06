@@ -14,23 +14,6 @@ const defaultReason = 'Whoops... looks like problem occurred on your payment';
 const defaultSolution = 'Don\'t worry, nothing has been charged. Try checkout again, or contact customer service.';
 
 function Failed({ reason = defaultReason, solution = defaultSolution, paymentStatus }: FailedProps) {
-  // const [redirToCartTimer, setRedirToCartTimer] = useState(7);
-  // let intervalRef = useRef(null);
-
-  // useEffect(() => {
-  //   if (paymentStatus === 'requires_payment_method') {
-  //     intervalRef.current = setInterval(() => {
-  //       if (redirToCartTimer > 0) {
-  //         console.log('hello1');
-  //         setRedirToCartTimer(prev => prev -= 1);
-  //       } else {
-  //         clearInterval(intervalRef.current);
-  //         console.log('hello2');
-  //       }
-  //     }, 1000);
-  //   }
-  // }, []);
-
   return (
     <div className="flex min-h-[35rem] bg-white-smoke pt-0 px-[10x] pb-4">
       <div className="max-w-[650px] my-0 mx-auto flex flex-col justify-center items-center">

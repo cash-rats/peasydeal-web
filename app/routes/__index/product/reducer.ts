@@ -1,10 +1,15 @@
-import type { ProductDetail, ProductVariation } from './types';
+import type {
+  ProductDetail,
+  ProductVariation,
+  Category,
+} from './types';
 
 type StateShape = {
   productDetail: ProductDetail;
   variation: ProductVariation | undefined;
   images: string[];
   quantity: number;
+  mainCategory: Category;
 }
 
 export enum ActionTypes {

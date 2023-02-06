@@ -1,3 +1,5 @@
+
+
 export interface ProductVariation {
   uuid: string;
   sku: string;
@@ -14,6 +16,7 @@ export interface ProductVariation {
   purchase_limit: number;
 };
 
+// TODO remove thie Category in favor of shared/types
 export interface Category {
   id: number;
   name: string;

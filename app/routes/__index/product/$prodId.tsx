@@ -137,7 +137,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}
 };
 
-type __action_type = 'to_product_detail' | 'add_item_to_cart' | 'buy_now';
+type ActionType = 'to_product_detail' | 'add_item_to_cart' | 'buy_now';
 
 // TODO
 //  - [x] store shopping cart items in session storage if user has not logged in yet.
@@ -145,7 +145,7 @@ type __action_type = 'to_product_detail' | 'add_item_to_cart' | 'buy_now';
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
 	const formObj = Object.fromEntries(form.entries());
-	const formAction = formObj['__action'] as __action_type;
+	const formAction = formObj['__action'] as ActionType;
 
 	if (formAction === 'to_product_detail') {
 		return redirect(composeProductDetailURL({
@@ -193,6 +193,7 @@ function ProductDetailPage() {
 	const data = useLoaderData<LoaderTypeProductDetail>();
 	const [state, dispatch] = useReducer(reducer, {
 		productDetail: data.product,
+		mainCategory: data.product.categories[0],
 		images: data.product.images,
 		quantity: 1,
 		variation: data.product.variations.find(
@@ -200,7 +201,6 @@ function ProductDetailPage() {
 		),
 	});
 
-	const [mainCategory] = state.productDetail.categories;
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
@@ -314,7 +314,7 @@ function ProductDetailPage() {
 			{
 				__action: 'add_item_to_cart',
 				...extractProductInfo(),
-			} as ShoppingCartItem & { __action: __action_type },
+			} as ShoppingCartItem & { __action: ActionType },
 			{ method: 'post', action: `/product/${orderInfo.productUUID}` },
 		);
 	};
@@ -371,8 +371,9 @@ function ProductDetailPage() {
 			/>
 
 			<Breadcrumbs
-				categoryLabel={mainCategory.label}
-				categoryName={mainCategory.name}
+				categoryLabel={state.mainCategory.label}
+				categoryName={state.mainCategory.name}
+
 				productTitle={state.productDetail.title}
 				productUuid={state.productDetail.uuid}
 			/>
@@ -570,7 +571,7 @@ function ProductDetailPage() {
 					*/}
 					<div className="flex justify-center xl:justify-start">
 						<RecommendedProducts
-							category={mainCategory.name}
+							category={state.mainCategory.name}
 							onClickProduct={handleClickProduct}
 						/>
 					</div>
