@@ -109,7 +109,6 @@ const RealRows = ({
                       onClickProduct={onClickProduct}
                       scrollPosition={scrollPosition}
                     />
-
                   </div>
 
                   <div className="productRowsContainer__product-row">

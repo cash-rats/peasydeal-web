@@ -2,7 +2,6 @@ import type { ForwardedRef, MouseEvent, ChangeEvent, FocusEvent } from 'react';
 import { useEffect, useState, forwardRef, useRef } from 'react';
 import InputBase from '@mui/material/InputBase';
 import type { InputBaseProps } from '@mui/material/InputBase';
-import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import clsx from 'clsx';
 
@@ -90,13 +89,12 @@ function SearchBar({
 
   return (
     <div className={clsx("flex flex-1", {
-      "border-solid border-[1px] border-light-green rounded-[4px] shadow-searchbar-focus": focusSearch,
+      "border-solid border-[1px] border-light-green rounded-[2px] shadow-searchbar-focus": focusSearch,
     })}>
       <div className="
-      bg-white rounded-sm border-solid border-[1px]
-      border-grey-cloud py-[0.875rem]
-      pr-[1.25rem] pl-[1rem] h-[2.625rem] w-full relative
-      flex items-center shadow-searchbox box-border"
+      bg-white rounded-sm border-solid border-[#707070] border-[1px]
+        h-10 w-full p-4 relative
+        flex items-center shadow-searchbox box-border"
       >
         <InputBase
           {...args}
@@ -138,16 +136,14 @@ function SearchBar({
             }
             onSearch(content, evt)
           }}
-          className="cursor-pointer absolute right-0 w-[3.75rem] h-full
-          flex items-center justify-center border-solid border-[1px] border-white
-          bg-white
+          className="cursor-pointer absolute right-0 h-full
+          flex items-center justify-center border-solid border-[1px] border-[#707070]
+          bg-[#707070] py-2 px-3
           "
         >
-          <SearchIcon color={
-            isStringEmpty(content)
-              ? 'disabled'
-              : 'action'
-          } />
+          <span className="capitalize text-white text-sm">
+            search
+          </span>
         </button>
       </div>
     </div>
