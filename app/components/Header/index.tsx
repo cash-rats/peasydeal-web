@@ -91,6 +91,7 @@ function Header({
         onSearch={onSearch}
       />
 
+
       <LogoHeader
         searchBar={searchBar}
         onClickMobileSearchBar={onClickMobileSearchHandler}
