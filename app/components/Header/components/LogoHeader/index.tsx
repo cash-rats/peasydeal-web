@@ -38,7 +38,7 @@ function LogoHeader({
       className={`
         ${openAnnouncement &&
           !scrolled
-          ? 'h-[159px]'
+          ? 'h-[151px] md:h-[171px]'
           : 'h-[110px]'
         } w-full
         flex flex-col

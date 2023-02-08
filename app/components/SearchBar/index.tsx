@@ -112,7 +112,7 @@ function SearchBar({
         onBlur={handleBlur}
         onChange={handleChange}
 
-        rightAddon={
+        rightaddon={
           <>
             {
               !isStringEmpty(content) && (

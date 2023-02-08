@@ -5,7 +5,7 @@ import type { InputBaseProps } from '@mui/material/InputBase';
 interface BaseInputProps extends InputBaseProps {
   height?: CSSProperties['height'];
 
-  rightAddon?: ReactNode;
+  rightaddon?: ReactNode;
 }
 
 function BaseInput(props: BaseInputProps) {
@@ -18,7 +18,7 @@ function BaseInput(props: BaseInputProps) {
     >
       <InputBase {...props} />
 
-      {props.rightAddon}
+      {props.rightaddon}
     </div>
   )
 }
