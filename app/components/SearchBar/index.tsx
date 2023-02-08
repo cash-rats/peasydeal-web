@@ -4,8 +4,9 @@ import InputBase from '@mui/material/InputBase';
 import type { InputBaseProps } from '@mui/material/InputBase';
 import ClearIcon from '@mui/icons-material/Clear';
 import clsx from 'clsx';
-
 import type { LinksFunction } from '@remix-run/node';
+
+import BaseInput from '~/components/BaseInput';
 
 import styles from './styles/SearchBar.css';
 
@@ -91,61 +92,60 @@ function SearchBar({
     <div className={clsx("flex flex-1", {
       "border-solid border-[1px] border-light-green rounded-[2px] shadow-searchbar-focus": focusSearch,
     })}>
-      <div className="
-        bg-white rounded-sm border-solid border-[#707070] border-[1px]
-        h-10 w-full p-4 relative
-        flex items-center shadow-searchbox box-border"
-      >
-        <InputBase
-          {...args}
-          autoComplete='off'
-          aria-autocomplete='none'
-          inputRef={(inputRef) => {
-            myRef.current = inputRef
-            if (!ref) return;
-            ref.current = inputRef
-          }}
-          fullWidth
-          placeholder={placeholder}
-          size='small'
-          value={content}
-          name={name}
-          onClick={onClick}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          onChange={handleChange}
-        />
 
-        {
-          !isStringEmpty(content) && (
-            <span
-              className="cursor-pointer p-[10px]"
-              onClick={handleClear}
-            >
-              <ClearIcon color='action' />
-            </span>
-          )
-        }
+      <BaseInput
+        {...args}
+        autoComplete='off'
+        aria-autocomplete='none'
+        inputRef={(inputRef) => {
+          myRef.current = inputRef
+          if (!ref) return;
+          ref.current = inputRef
+        }}
+        fullWidth
+        placeholder={placeholder}
+        size='small'
+        value={content}
+        name={name}
+        onClick={onClick}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        onChange={handleChange}
 
-        <button
-          form={form}
-          type='submit'
-          onClick={(evt: MouseEvent<HTMLButtonElement>) => {
-            if (isStringEmpty(content)) {
-              return;
+        rightAddon={
+          <>
+            {
+              !isStringEmpty(content) && (
+                <span
+                  className="cursor-pointer p-[10px]"
+                  onClick={handleClear}
+                >
+                  <ClearIcon color='action' />
+                </span>
+              )
             }
-            onSearch(content, evt)
-          }}
-          className="cursor-pointer absolute right-0 h-full
-          flex items-center justify-center border-solid border-[1px] border-[#707070]
-          bg-[#707070] py-2 px-3
-          "
-        >
-          <span className="capitalize text-white text-sm">
-            search
-          </span>
-        </button>
-      </div>
+
+            <button
+              form={form}
+              type='submit'
+              onClick={(evt: MouseEvent<HTMLButtonElement>) => {
+                if (isStringEmpty(content)) {
+                  return;
+                }
+                onSearch(content, evt)
+              }}
+              className="cursor-pointer absolute right-0 h-full
+                flex items-center justify-center border-solid border-[1px] border-[#707070]
+              bg-[#707070] py-2 px-3
+              "
+            >
+              <span className="capitalize text-white text-sm">
+                search
+              </span>
+            </button>
+          </>
+        }
+      />
     </div>
   );
 }
