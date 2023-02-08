@@ -27,14 +27,14 @@ function LogoHeader({
   return (
     <header
       style={style}
-      className="h-[120px] flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border"
+      className="h-[123px] flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border"
     >
       <div className="w-full box-border
         bg-white my-0 mx-auto
         flex flex-col justify-center items-center
         "
       >
-        <div className="w-full h-full grid grid-cols-[220px_auto] md:grid-cols-[220px_3fr_1fr]">
+        <div className="w-full h-full grid grid-cols-[220px_auto] md:grid-cols-[220px_4fr_1fr]">
           <LogoBar />
 
           {
@@ -66,7 +66,8 @@ function LogoHeader({
             border-b-[1px] border-b-[rgba(0,0,0,.1)]
             border-solid
             w-full
-            bg-slate-50">
+            bg-slate-50"
+          >
             {categoriesBar}
           </div>
         )

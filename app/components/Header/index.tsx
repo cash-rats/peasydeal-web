@@ -99,7 +99,7 @@ function Header({
 
         // right status bar, cart, search icon...etc
         navBar={
-          <div className="flex flex-1 justify-end pl-4 md:w-[15%] md:justify-start">
+          <div className="flex flex-1 justify-end px-4 md:w-[15%] md:justify-start">
             <div className="flex items-center md:w-full">
               <NavBar
                 cartItemCount={numOfItemsInCart}
