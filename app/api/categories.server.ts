@@ -18,7 +18,6 @@ const fetchCategoriesFromServer = async (): Promise<Category[]> => {
 
 const normalize = (cats: any) => {
   return cats.map((cat: { category_id: number, label: string, name: string }): Category => {
-    console.log('debug normalize', cat);
     return {
       catId: cat.category_id,
       title: cat.label,

@@ -60,11 +60,11 @@ export default function MediumGrid({
 }: MediumGridProps) {
 	// retrieve tags name in the provided combo. If given grid does not have
 	// any `tagCombo`, we initialize `tagNames` to empty array.
-	const shouldRenderTags = normalizeTagsListToMap(!tagCombo
-		? []
-		: TagComboMap[tagCombo]
-	);
-	const nDiscount = ~~(discount * 100);
+	// const shouldRenderTags = normalizeTagsListToMap(!tagCombo
+	// 	? []
+	// 	: TagComboMap[tagCombo]
+	// );
+	// const nDiscount = ~~(discount * 100);
 
 	return (
 		<Link
@@ -80,15 +80,15 @@ export default function MediumGrid({
 			}}
 			className="medium-grid-container  p-2.5"
 		>
-			<SaleTags
+			{/* <SaleTags
 				shouldRenderTags={shouldRenderTags}
 				discount={nDiscount}
-			/>
+			/> */}
 
 			{/* images */}
 			<div
 				className="image-container bg-contain bg-center bg-no-repeat"
-				style={{ backgroundImage: `url('${image}')`}}
+				style={{ backgroundImage: `url('${image}')` }}
 			>
 				<LazyLoadImage
 					placeholder={

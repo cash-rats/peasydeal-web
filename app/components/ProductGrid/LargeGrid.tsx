@@ -46,9 +46,9 @@ function LargeGrid({
 	discount = 0,
 	scrollPosition,
 }: LargeGridProps) {
-	const tagNames = TagComboMap[tagCombo];
-	const shouldRenderTags = normalizeTagsListToMap(tagNames);
-	const nDiscount = ~~(discount * 100);
+	// const tagNames = TagComboMap[tagCombo];
+	// const shouldRenderTags = normalizeTagsListToMap(tagNames);
+	// const nDiscount = ~~(discount * 100);
 
 	return (
 		<Link
@@ -63,16 +63,16 @@ function LargeGrid({
 				onClickProduct(title, productID)
 			}}
 		>
-			<SaleTags
+			{/* <SaleTags
 				shouldRenderTags={shouldRenderTags}
 				discount={nDiscount}
-			/>
+			/> */}
 
 			<input type='hidden' name="product-id" value={productID} />
 			{/* image */}
 			<div
 				className="image-container bg-contain bg-center bg-no-repeat"
-				style={{ backgroundImage: `url('${image}')`}}
+				style={{ backgroundImage: `url('${image}')` }}
 			>
 				<LazyLoadImage
 					src={image}
