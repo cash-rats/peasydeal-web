@@ -35,7 +35,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 					{
 						cartItemCount > 0 && (
 							<RedDot
-								dotStyle={{ left: '18px', top: '-1px' }}
+								dotStyle={{ left: '20px', top: '-9px' }}
 								value={cartItemCount}
 							/>
 						)
