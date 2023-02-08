@@ -230,19 +230,16 @@ function TrackingOrder() {
             headerType='order_search'
             numOfItemsInCart={numOfItemsInCart}
             mobileSearchBarPlaceholder='Search by order id...'
-            searchBar={
-              <SearchBar
-                disabled={disableDesktopSearchBar}
-                onSearch={handleOnSearch}
-                onClear={handleOnClear}
-                placeholder='Search by order id'
-              />
-            }
+            searchBar={<div />}
           />
         </Form>
       </CategoryContext.Provider>
 
       <main>
+        {/* order search form */}
+        <div>
+        </div>
+
         {
           order
             ? <TrackingOrderInfo orderInfo={order} />

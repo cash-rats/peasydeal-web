@@ -92,7 +92,7 @@ function SearchBar({
       "border-solid border-[1px] border-light-green rounded-[2px] shadow-searchbar-focus": focusSearch,
     })}>
       <div className="
-      bg-white rounded-sm border-solid border-[#707070] border-[1px]
+        bg-white rounded-sm border-solid border-[#707070] border-[1px]
         h-10 w-full p-4 relative
         flex items-center shadow-searchbox box-border"
       >
