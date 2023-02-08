@@ -1,27 +1,25 @@
-import { useState } from 'react';
-
 import IconButton from '@mui/material/IconButton';
 import { AiOutlineClose } from 'react-icons/ai';
 
+import useCheckScrolled from '~/hooks/useCheckScrolled';
+
 interface AnnouncementBannerProps {
+  open?: boolean;
   onClose?: () => void,
 }
 
-function AnnouncementBanner({ onClose = () => { } }: AnnouncementBannerProps) {
-  const [open, setOpen] = useState<boolean>(true);
-  const handleClose = () => {
-    setOpen(false);
-    onClose();
-  }
+function AnnouncementBanner({ open = true, onClose = () => { } }: AnnouncementBannerProps) {
+  const [scrolled] = useCheckScrolled()
+  const handleClose = () => onClose();
 
   return (
     open
       ? (
-        <div className="
+        <div className={`
         flex justify-center items-center
-        h-[48px] bg-[#D02E7D] z-10
-        relative
-      "
+        h-[48px] w-full bg-[#D02E7D]
+        ${scrolled ? 'fixed' : 'relative'} top-0
+      `}
         >
           <span className="text-xs 499:text-base text-white font-bold md:text-xl">
             PEASYDEAL Launch Sale: FREE Shipping on order £9.99+
