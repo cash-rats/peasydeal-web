@@ -3,10 +3,15 @@ import { useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import { AiOutlineClose } from 'react-icons/ai';
 
-function AnnouncementBanner() {
+interface AnnouncementBannerProps {
+  onClose: () => void,
+}
+
+function AnnouncementBanner({ onClose = () => { } }: AnnouncementBannerProps) {
   const [open, setOpen] = useState<boolean>(true);
   const handleClose = () => {
     setOpen(false);
+    onClose();
   }
 
   return (
