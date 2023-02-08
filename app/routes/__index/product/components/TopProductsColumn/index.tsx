@@ -3,7 +3,7 @@ import { useFetcher, useTransition } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { useEffect, useState } from 'react';
 
-import { fetchProductsByCategory, fetchProductsByCategoryV2 } from '~/api';
+import { fetchProductsByCategoryV2 } from '~/api';
 import type { Product } from '~/shared/types';
 
 import BannerProduct from './BannerProduct';
