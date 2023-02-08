@@ -7,6 +7,7 @@ const useCheckScrolled = () => {
   useEffect(() => {
     if (!window) return;
     window.addEventListener('scroll', handleScroll);
+    return () => window.addEventListener('scroll', handleScroll);
   });
 
   return [scrolled];
