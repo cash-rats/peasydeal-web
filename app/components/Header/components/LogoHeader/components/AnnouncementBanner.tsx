@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import { AiOutlineClose } from 'react-icons/ai';
 
 interface AnnouncementBannerProps {
-  onClose: () => void,
+  onClose?: () => void,
 }
 
 function AnnouncementBanner({ onClose = () => { } }: AnnouncementBannerProps) {
@@ -23,7 +23,7 @@ function AnnouncementBanner({ onClose = () => { } }: AnnouncementBannerProps) {
         relative
       "
         >
-          <span className="text-white font-bold text-xl">
+          <span className="text-xs 499:text-base text-white font-bold md:text-xl">
             PEASYDEAL Launch Sale: FREE Shipping on order £9.99+
           </span>
           <div className="absolute right-0">

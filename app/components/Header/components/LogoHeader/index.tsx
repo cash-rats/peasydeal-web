@@ -31,7 +31,7 @@ function LogoHeader({
     <>
       <header
         style={style}
-        className="flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border"
+        className="min-h-[123px] flex flex-col border-b border-header-border fixed top-0 w-full z-10 box-border"
       >
         <AnnouncementBanner />
 
