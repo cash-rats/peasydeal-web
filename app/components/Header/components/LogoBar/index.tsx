@@ -55,28 +55,25 @@ function LogoBar() {
                 </h1>
 
                 <CategoryContext.Consumer>
-                  {(categories) => {
-                    console.log('debug categories', categories)
-                    return (
-                      <ul>
-                        {
-                          categories.map((category) => {
-                            return (
-                              <Link
-                                // prefetch='intent'
-                                key={category.catId}
-                                to={`/${category.name}`}
-                              >
-                                <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
-                                  {category.title}
-                                </li>
-                              </Link>
-                            )
-                          })
-                        }
-                      </ul>
-                    )
-                  }}
+                  {(categories) => (
+                    <ul>
+                      {
+                        categories.map((category) => {
+                          return (
+                            <Link
+                              // prefetch='intent'
+                              key={category.catId}
+                              to={`/${category.name}`}
+                            >
+                              <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
+                                {category.title}
+                              </li>
+                            </Link>
+                          )
+                        })
+                      }
+                    </ul>
+                  )}
                 </CategoryContext.Consumer>
               </div>
             </div>
