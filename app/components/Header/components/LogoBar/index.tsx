@@ -30,8 +30,8 @@ function LogoBar() {
   }, [location])
 
   return (
-    <div className="flex items-center">
-      <div className="w-[42px] h-[42px]">
+    <div className="flex items-center mr-4 my-auto relative">
+      <div className="">
         <div className="block md:hidden">
           <IconButton onClick={handleOpenMenu}>
             <FiMenu fontSize={26} color='#e6007e' />

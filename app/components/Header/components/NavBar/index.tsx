@@ -29,7 +29,7 @@ interface NavBarProps {
 function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 	return (
 		<nav className="flex flex-1">
-			<ul className="list-none p-0 items-center flex justify-start gap-5">
+			<ul className="list-none p-0 items-center flex justify-center gap-5">
 				{/* shopping cart */}
 				<li className="flex items-center h-10 my-0 mx-1 relative transition-all ease-linear">
 					{
@@ -41,9 +41,9 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 						)
 					}
 					{/* TODO this isn't the right way to have ripple effect */}
-					<Link aria-label='shopping cart' className={`flex flex-col  items-center`} to="/cart">
+					<Link aria-label='shopping cart' className={`flex flex-col items-center`} to="/cart">
 						<FiShoppingCart color='#707070' fontSize={22} className='flex-1' />
-						<span className='text-center text-[10px] mt-1 font-normal capitalize flex-1'>
+						<span className='justify-self-center text-[10px] mt-1 font-normal capitalize flex-1'>
 							Cart
 						</span>
 					</Link>

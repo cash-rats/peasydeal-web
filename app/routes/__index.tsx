@@ -50,7 +50,9 @@ export default function Index() {
 		<>
 			{/* sharethis popup for news letter subscription */}
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
-			<div className="pt-32 bg-center bg-cover bg-no-repeat md:pt-40 bg-white">
+			<div className={`
+				bg-white
+			`}>
 				<CategoryContext.Provider value={categories} >
 					<Form action='/search'>
 						<Header
@@ -70,7 +72,7 @@ export default function Index() {
 							onSearch={handleSearch}
 						/>
 					</Form>
-				</CategoryContext.Provider >
+				</CategoryContext.Provider>
 
 				<main className="min-h-[35rem]">
 					<Outlet context={{ categories: categories }} />

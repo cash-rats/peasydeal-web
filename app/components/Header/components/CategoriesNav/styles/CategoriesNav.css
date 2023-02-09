@@ -89,24 +89,6 @@
 .categories-nav-container .featured-category-nav::-webkit-scrollbar {
   display: none;
 }
-.categories-nav-container .featured-category-nav ul {
-  list-style: none;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin: 0;
-  padding: 0;
-}
-.categories-nav-container .featured-category-nav ul li {
-  flex: auto;
-  cursor: pointer;
-  transition: 100ms all linear 0s;
-  color: black;
-  padding: 1rem 1rem;
-}
-.categories-nav-container .featured-category-nav ul li:hover {
-  background-color: #E4E4E4;
-}
 .categories-nav-container .featured-category-nav ul li a {
   display: flex;
   align-items: center;
@@ -136,15 +118,6 @@
   background-size: 100% 1px;
 }
 
-.Header__CategoriesNav__more {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  width: 12%;
-  padding: 1rem 0;
-  position: relative;
-}
 .Header__CategoriesNav__more .border-left {
   border-left: 2px solid #e5e5e5;
   position: absolute;
@@ -226,13 +199,6 @@
 
 .fromLeft {
   background-position: 0 calc(100% - 0px);
-}
-
-.CategoriesNav__scrollable-nav {
-  position: relative;
-  width: 88%;
-  display: flex;
-  align-items: center;
 }
 
 /*# sourceMappingURL=CategoriesNav.css.map */

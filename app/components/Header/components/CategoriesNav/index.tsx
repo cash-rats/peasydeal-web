@@ -30,11 +30,22 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
   }
 
   return (
-    <div className="categories-nav-container py-1 bg-slate-50">
-      <div className="CategoriesNav__scrollable-nav">
+    <div className={`
+      flex flex-row justify-center items-center
+      items-center max-w-screen-xl w-full mx-auto my-auto relative py-2
+      hidden
+      md:flex
+    `}>
+      <div className="w-[88%] flex relative items-center">
         {/* categories nav */}
-        <nav className="featured-category-nav">
-          <ul>
+        <nav className="overflow-x-scroll m-0 flex flex-auto">
+          <ul className={`
+            flex
+            list-none
+            space-x-4
+            align-center
+            justify-between
+            p-0 m-0`}>
             {
               categories.map((category) => (
                 <Link
@@ -43,7 +54,15 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                   state={{ scrollToTop: true }}
                   to={`/${category.name}`}
                 >
-                  <li className="CategoriesNav__item fromLeft font-bold" >
+                  <li className={`
+                    transition ease-in-out
+                    CategoriesNav__item
+                    fromLeft
+                    font-bold
+                    py-2
+                    cursor-pointer
+                    flex-auto
+                    text-base`}>
                     {category.title}
                   </li>
                 </Link>
@@ -54,7 +73,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
       </div>
 
       <div
-        className="Header__CategoriesNav__more"
+        className="Header__CategoriesNav__more flex justify-center items-center relative w-[12%] p-2"
         onMouseEnter={toggleOpenAllCategory}
         onMouseLeave={toggleOpenAllCategory}
       >

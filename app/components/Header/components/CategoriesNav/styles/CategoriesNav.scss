@@ -105,24 +105,7 @@
     }
 
     ul {
-      list-style: none;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin: 0;
-      padding: 0;
-
       li {
-        flex: auto;
-        cursor: pointer;
-        transition: 100ms all linear 0s;
-        color: black;
-        padding: 1rem 1rem;
-
-        &:hover {
-          background-color: $gray-hover-bg;
-        }
-
         a {
           display: flex;
           align-items: center;
@@ -159,14 +142,6 @@
 }
 
 .Header__CategoriesNav__more {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  width: 12%;
-  padding: 1rem 0;
-  position: relative;
-
   .border-left {
     border-left: 2px solid $border-color;
     position: absolute;
@@ -251,11 +226,4 @@
 
 .fromLeft {
   background-position: 0 calc(100% - 0px);
-}
-
-.CategoriesNav__scrollable-nav {
-  position: relative;
-  width: 88%;
-  display: flex;
-  align-items: center;
 }

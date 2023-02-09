@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import type { SuggestItem } from '~/shared/types';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import { fetchProductsByCategory } from '~/api';
+import useCheckScrolled from '~/hooks/useCheckScrolled';
 
+import AnnouncementBanner from './components/AnnouncementBanner';
 import LogoHeader from "./components/LogoHeader";
 import NavBar, { links as NavBarLinks } from './components/NavBar';
+import PropBar from './components/PropBar';
 
 export const links: LinksFunction = () => {
   return [...NavBarLinks(),];
@@ -45,7 +48,17 @@ function Header({
   mobileSearchBarPlaceholder,
   headerType = 'product_search',
 }: HeaderProps) {
+  const announcementHeight = 60;
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
+  const [openAnnouncement, setOpenAnnouncement] = useState<boolean>(true);
+  const [scrolled, offset] = useCheckScrolled(announcementHeight);
+  const [navBarHeight, setNavBarHeight] = useState(0)
+  const navBarRef = useRef<HTMLInputElement>(null);
+  const fixedTop = scrolled ? 0 : announcementHeight - offset;
+
+  useEffect(() => {
+    setNavBarHeight(navBarRef!.current!.clientHeight)
+  })
 
   const handleOnClickMobileSearch = () => {
     setOpenSearchDialog(true);
@@ -83,7 +96,7 @@ function Header({
     : handleOnClickMobileSearch;
 
   return (
-    <>
+    <div className='relative'>
       <MobileSearchDialog
         onBack={handleClose}
         open={openSearchDialog}
@@ -91,29 +104,49 @@ function Header({
         onSearch={onSearch}
       />
 
+      <div className={`fixed top-0 w-full ${!openAnnouncement ? 'hidden': 'flex'}`}>
+        <AnnouncementBanner
+          open={openAnnouncement}
+          onClose={() => setOpenAnnouncement(false)}
+        />
+      </div>
 
-      <LogoHeader
-        searchBar={searchBar}
-        onClickMobileSearchBar={onClickMobileSearchHandler}
-        mobileSearchBarPlaceHolder={mobileSearchBarPlaceholder}
-        disableMobileSearchBar={headerType === 'product_search'}
+      <div
+        ref={navBarRef}
+        className={`
+          fixed z-20
+          w-full
+          flex flex-col
+        `}
+        style={{ top: `${fixedTop}px` }}
+      >
+        <LogoHeader
+          searchBar={searchBar}
+          onClickMobileSearchBar={onClickMobileSearchHandler}
+          mobileSearchBarPlaceHolder={mobileSearchBarPlaceholder}
+          disableMobileSearchBar={headerType === 'product_search'}
 
-        // right status bar, cart, search icon...etc
-        navBar={
-          <div className="flex flex-1 justify-end px-4 md:w-[15%] md:justify-start">
-            <div className="flex items-center md:w-full">
-              <NavBar
-                cartItemCount={numOfItemsInCart}
-                onClickSearch={handleOnClickMobileSearch}
-              />
+          // right status bar, cart, search icon...etc
+          navBar={
+            <div className="flex flex-1 px-4 md:w-[15%]">
+              <div className="ml-auto">
+                <NavBar
+                  cartItemCount={numOfItemsInCart}
+                  onClickSearch={handleOnClickMobileSearch}
+                />
+              </div>
             </div>
-          </div>
-        }
+          }
 
-        // bottom category bar
-        categoriesBar={categoriesBar}
-      />
-    </>
+          // bottom category bar
+          categoriesBar={categoriesBar}
+        />
+      </div>
+
+      <div style={{ paddingTop: `${navBarHeight + fixedTop + 10}px`}}>
+        <PropBar />
+      </div>
+    </div>
   );
 };
 
