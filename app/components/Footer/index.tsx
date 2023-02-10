@@ -1,6 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 import FooterMobileAccordion, { links as FooterMobileAccordionLinks } from './components/FooterMobileAccordion';
-import FooterTabletLayout, { links as FooterTabletLayoutLinks } from './components/FooterTabletLayout';
+import FooterTabletLayout from './components/FooterTabletLayout';
 
 import Amex from './images/amex.svg';
 import ApplePay from './images/apple_pay.svg';
@@ -8,12 +8,11 @@ import Discover from './images/pi_discover.svg';
 import GooglePay from './images/google_pay.svg';
 import MasterCard from './images/pi_master.svg';
 import Visa from './images/visa.svg';
-import FB from './images/facebook.svg';
-import IG from './images/ig.svg';
+import { AiFillInstagram, AiOutlineTwitter } from 'react-icons/ai';
+import { SiFacebook } from 'react-icons/si';
 
 export const links: LinksFunction = () => {
   return [
-    ...FooterTabletLayoutLinks(),
     ...FooterMobileAccordionLinks(),
   ];
 };
@@ -47,7 +46,7 @@ const paymentMethods = [
 
 function Footer() {
   return (
-    <footer className="pb-6 bg-white-smoke w-full">
+    <footer className="pb-6 bg-dune w-full pt-10 px-12 1200:px-28">
       <div className="block md:hidden">
         <FooterMobileAccordion />
       </div>
@@ -56,9 +55,48 @@ function Footer() {
         <FooterTabletLayout />
       </div>
 
-      <div className="py-0 px-4 lg:flex lg:flex-row items-center">
+      {/* footer bottom content */}
+      <div className="
+        h-[105px] mt-10 w-full
+        flex flex-row justify-between
+      ">
+        <div className="
+          flex-1 flex flex-row items-center
+          font-normal text-sm gap-4
+        ">
+          <span className="text-white capitalize">
+            terms of service
+          </span>
+
+          <span className="text-white capitalize">
+            privacy policy
+          </span>
+
+          <span className="text-white capitalize">
+            © PeasyDeal 2022 PTE. Ltd.
+          </span>
+        </div>
+
+        <div className=" flex-1 flex flex-row items-center justify-end gap-6">
+          <span className="text-white text-base font-normal">
+            Follow us
+          </span>
+
+          <span className="mr-4">
+            <AiFillInstagram color='#fff' fontSize={22} />
+          </span>
+
+          <span className="mr-4">
+            <AiOutlineTwitter color='#fff' fontSize={22} />
+          </span>
+
+          <span className="mr-4">
+            <SiFacebook color='#fff' fontSize={22} />
+          </span>
+        </div>
+
         {/* List of payment method */}
-        <div className="w-full box-border flex justify-center md:flex-1">
+        {/* <div className="w-full box-border flex justify-center md:flex-1">
           <ul className="p-0 m-0 list-none flex flex-wrap">
             {
               paymentMethods.map((method, index) => (
@@ -68,17 +106,17 @@ function Footer() {
               ))
             }
           </ul>
-        </div>
+        </div> */}
 
         {/* Company sign */}
-        <div className="text-center w-full mt-[0.675rem] my-0 mb-6 text-[14px] md:m-0 md:flex-1">
-          <span>
+        {/* <div className="text-center w-full mt-[0.675rem] my-0 mb-6 text-[14px] md:m-0 md:flex-1">
+          <span className="text-white">
             © PeasyDeal 2022
           </span>
-        </div>
+        </div> */}
 
         {/* Social Media */}
-        <div className="flex justify-center items-center gap-4 lg:flex-1">
+        {/* <div className="flex justify-center items-center gap-4 lg:flex-1">
           <a
             rel="noreferrer"
             target="_blank"
@@ -94,7 +132,7 @@ function Footer() {
           >
             <img className="w-4 h-4" alt='instagram' src={IG} />
           </a>
-        </div>
+        </div> */}
       </div>
     </footer>
   );
