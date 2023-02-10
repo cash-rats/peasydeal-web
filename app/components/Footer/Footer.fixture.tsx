@@ -33,4 +33,10 @@ const categories: Category[] = [
     name: 'kitchen_kitchenware',
   },
 ]
-export default (<Footer categories={categories} />)
+export default (
+  <div className="h-full">
+    <div className="h-[200px]" />
+
+    <Footer categories={categories} />
+  </div>
+)

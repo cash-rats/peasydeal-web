@@ -58,6 +58,8 @@ export const fetchProductsByCategory = async ({
 		endpoint = `${endpoint}&title=${encodeURI(title)}`;
 	}
 
+	console.log('debug 1 ', endpoint);
+
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
 
