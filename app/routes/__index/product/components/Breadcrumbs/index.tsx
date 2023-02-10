@@ -57,7 +57,7 @@ export default function ProductDetailBreadcrumbs({
                 productName: productTitle as string,
                 variationUUID: productUuid as string,
               })}
-              key='2'
+              key='3'
             > {productTitle}
             </NavLink>
           )

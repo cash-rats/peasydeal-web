@@ -59,12 +59,10 @@ function Header({
   const announcementBarRef = useRef<HTMLInputElement>(null);
   const fixedTop = scrolled || !openAnnouncement ? 0 : announcementBarHeight - offset;
 
-  console.log(announcementBarHeight, navBarHeight)
-
   useEffect(() => {
     setNavBarHeight(navBarRef!.current!.clientHeight);
     setAnnouncementBarHeight(announcementBarRef!.current!.clientHeight);
-  }, []);
+  }, [categoriesBar]);
 
   const handleOnClickMobileSearch = () => {
     setOpenSearchDialog(true);

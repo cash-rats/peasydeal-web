@@ -3,7 +3,11 @@ import { VscFlame } from "react-icons/vsc";
 
 const PropBar = () => {
   return (
-    <div className="bg-white w-full border-y py-3 mb-10 text-center mx-auto">
+    <div className="
+      bg-white w-full
+      border-y-[1px] border-y-[rgba(0,0,0,.17)]
+      py-3 mb-2 md:mb-6 
+      text-center mx-auto">
       <ul className="max-w-screen-xl flex flex-row justify-center space-x-0.5 mx-auto">
         <li className="
           flex flex-col sm:flex-row flex-initial

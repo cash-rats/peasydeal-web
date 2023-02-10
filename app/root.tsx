@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { withEmotionCache } from '@emotion/react';
+import { ChakraProvider } from '@chakra-ui/react'
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
 import { json } from "@remix-run/node";
 import {
@@ -192,9 +193,11 @@ export function ErrorBoundary({ error }: { error: Error }) {
 export default function App() {
   return (
     <Document>
-      <Layout>
-        <Outlet />
-      </Layout>
+      <ChakraProvider>
+        <Layout>
+          <Outlet />
+        </Layout>
+      </ChakraProvider>
     </Document>
   );
 }

@@ -12,6 +12,11 @@ import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 
+import {
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from '@chakra-ui/react'
+
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
@@ -28,7 +33,7 @@ import {
   getCategoryFBSEO,
 } from '~/utils/seo';
 import { checkHasMoreRecord } from '~/utils';
-import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
+import PageTitle from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
 import styles from './styles/ProductList.css';
@@ -71,7 +76,6 @@ export const meta: MetaFunction = ({ data }: { data: LoaderDataType }) => ({
 export const links: LinksFunction = () => {
   return [
     ...FourOhFourLinks(),
-    ...PageTitleLinks(),
     ...CssSpinnerLinks(),
     ...ProductRowsContainerLinks(),
     ...LoadmoreLinks(),
@@ -246,29 +250,38 @@ function Collection({ scrollPosition }: CollectionProps) {
     );
 
   return (
-    <div className="prod-list-container">
-      <div className="prod-list-breadcrumbs-container">
+    <div className="
+      py-0 px-auto
+      flex flex-col
+      justify-center items-center
+      mx-2 md:mx-4
+    ">
+      <div className="w-full py-2.5 max-w-screen-xl mx-auto">
         <Breadcrumbs breadcrumbs={
           [
-            <NavLink
-              key='1'
-              className="breadcrumbs-link"
-              to='/'
-            >
-              Home
-            </NavLink>,
-            <NavLink
-              className="breadcrumbs-link-active"
-              key='1'
-              to={`/${category.name}`}
-            >
-              {category.title}
-            </NavLink>,
+            <BreadcrumbItem key="1">
+              <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>,
+            <BreadcrumbItem key="2">
+              <BreadcrumbLink
+                as={NavLink}
+                to={`/${category.name}`}
+                isCurrentPage
+                className="font-semibold !text-[#D02E7D]"
+              >
+                {category.title}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
           ]
         } />
       </div>
 
-      <PageTitle title={category.title} />
+      <PageTitle
+        title={category.title}
+        subtitle={category.description}
+      />
 
       <div className="ProductList__container">
         <ProductRowsContainer

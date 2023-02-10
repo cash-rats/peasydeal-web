@@ -39,7 +39,7 @@ const fetchCategories = async (): Promise<Category[]> => {
   // Retrieve categories from redis
   const catsstr = await redis.get(RedisCategoriesKey);
 
-  // If it exists, return it.
+  // // If it exists, return it.
   if (catsstr) {
     return JSON.parse(catsstr);
   }

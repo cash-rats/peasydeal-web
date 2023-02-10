@@ -38,7 +38,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 							className='flex-1 text-xl md:text-2xl'
 						/>
 						<span className="
-							text-[#DA3B66] text-center text-[10px]
+							text-[#DA3B66] text-center text-[10px] md:text-[14px]
 							mt-1 font-normal capitalize whitespace-nowrap font-bold"
 						>
 							Hot Deal
@@ -68,7 +68,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 							color='#707070'
 							className='flex-1 text-xl md:text-2xl'
 						/>
-						<span className='justify-self-center text-[10px] mt-1 font-normal capitalize flex-1'>
+						<span className='justify-self-center text-[10px] md:text-[14px] mt-1 font-normal capitalize flex-1'>
 							Cart
 						</span>
 					</Link>
@@ -80,7 +80,7 @@ function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
 							color='#707070'
 							className='flex-1 text-xl md:text-2xl'
 						/>
-						<span className="text-center mt-1 text-[10px] font-normal capitalize whitespace-nowrap">
+						<span className="text-center mt-1 text-[10px] md:text-[14px] font-normal capitalize whitespace-nowrap">
 							Track Order
 						</span>
 					</Link>

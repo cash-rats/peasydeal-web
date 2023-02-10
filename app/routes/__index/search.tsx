@@ -10,7 +10,7 @@ import LoadMore, { links as LoadMoreLinks } from '~/components/LoadMore';
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 
-import PageTitle, { links as PageTitleLinks } from '~/components/PageTitle';
+import PageTitle from '~/components/PageTitle';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { fetchProductsByCategory } from './api';
 import productListStyles from './styles/ProductList.css';
