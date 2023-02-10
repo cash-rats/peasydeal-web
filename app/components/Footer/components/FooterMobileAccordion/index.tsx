@@ -7,11 +7,16 @@ import type { LinksFunction } from '@remix-run/node';
 import styles from './styles/FooterMobileAccordion.css';
 import {
   SubscribeContent,
-  PolicyContent,
-  ServiceContent,
-  ContactUsContent,
+  // PolicyContent,
+  // ServiceContent,
+  // ContactUsContent,
   links as FooterContentLinks,
 } from '../FooterContent';
+
+import EmailSubscribe from '../EmailSubscribe';
+import ProductsSecions from '../ProductsSection';
+import ResourceSection from '../ResourceSection';
+import CompanySection from '../CompanySection';
 
 export const links: LinksFunction = () => {
   return [
@@ -41,16 +46,15 @@ function FooterListTitle({ onClick, isActive = false, title }: FooterListTitlePr
       className="flex justify-between items-center w-full h-10 cursor-pointer"
       onClick={onClick}
     >
-      <h3 className="m-0 font-medium text-base">
+      <h3 className="m-0 font-medium text-base text-white capitalize">
         {title}
       </h3>
       <span>
         {
           isActive
-            ? <BiChevronUp />
-            : <BiChevronDown />
+            ? <BiChevronUp color='#fff' />
+            : <BiChevronDown color='#fff' />
         }
-
       </span>
     </div>
   );
@@ -65,11 +69,6 @@ interface FooterListContentProps {
 function FooterListContent({ children, isActive }: FooterListContentProps) {
   return (
     <div
-      // className={
-      //   clsx("footer-list-content", {
-      //   "footer-item-grow": isActive,
-      // }
-
       className={
         clsx("transition-all w-full max-h-0 overflow-hidden duration-300", {
           "max-h-[300px]": isActive,
@@ -102,10 +101,10 @@ function FooterMobileAccordion() {
             });
           }}
           isActive={panelStatus.panel1}
-          title="Subscribe"
+          title="subscribe us"
         />
         <FooterListContent isActive={panelStatus['panel1']}>
-          <SubscribeContent />
+          <EmailSubscribe />
         </FooterListContent>
       </li>
 
@@ -118,11 +117,11 @@ function FooterMobileAccordion() {
             });
           }}
           isActive={panelStatus.panel2}
-          title="Policy"
+          title="products"
         />
 
         <FooterListContent isActive={panelStatus.panel2}>
-          <PolicyContent />
+          <ProductsSecions />
         </FooterListContent>
       </li>
 
@@ -135,10 +134,11 @@ function FooterMobileAccordion() {
             });
           }}
           isActive={panelStatus.panel3}
-          title="Service"
+          title="company"
         />
+
         <FooterListContent isActive={panelStatus.panel3}>
-          <ServiceContent />
+          <CompanySection />
         </FooterListContent>
       </li>
 
@@ -151,10 +151,10 @@ function FooterMobileAccordion() {
             });
           }}
           isActive={panelStatus.panel4}
-          title="Contact Us"
+          title="resources"
         />
         <FooterListContent isActive={panelStatus.panel4}>
-          <ContactUsContent />
+          <ResourceSection />
         </FooterListContent>
       </li>
     </ul>

@@ -6,6 +6,7 @@ import type { Category } from '~/shared/types';
 
 interface ProductsSectionProps {
   categories?: Category[];
+  hideTitle?: boolean;
 }
 
 function ProductsSection({ categories = [] }: ProductsSectionProps) {
