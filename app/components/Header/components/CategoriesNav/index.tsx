@@ -32,7 +32,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
   return (
     <div className={`
       flex flex-row justify-center items-center
-      items-center max-w-screen-xl w-full mx-auto my-auto relative py-2
+      max-w-screen-xl w-full mx-auto my-auto relative py-2
       hidden
       md:flex
     `}>

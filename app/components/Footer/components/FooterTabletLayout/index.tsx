@@ -1,43 +1,13 @@
 import { Link } from '@remix-run/react';
 import Button from '@mui/material/Button';
 import { HiOutlineFire } from 'react-icons/hi';
-import { TextField } from '@mui/material';
 
 import type { Category } from '~/shared/types';
 
 import LogoSection from '../LogoSection';
 import EmailSubscribe from '../EmailSubscribe';
-
-const companyDetails = [
-  {
-    label: 'about us',
-    link: '/about-us',
-  },
-  {
-    label: 'privacy policy',
-    link: '/privacy',
-  },
-  {
-    label: 'return policy',
-    link: '/return-policy',
-  },
-  {
-    label: 'shipping policy',
-    link: '/shipping-policy',
-  },
-  {
-    label: 'termins of service',
-    link: '/terms-of-use',
-  },
-  {
-    label: 'whalesale',
-    link: '/wholesale',
-  },
-  {
-    label: 'career',
-    link: '/',
-  }
-];
+import ResourceSection from '../ResourceSection';
+import CompanySection from '../CompanySection';
 
 /*
   TODOs:
@@ -91,40 +61,10 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
       </div >
 
       {/* Resources */}
-      <div className="flex flex-col">
-        <span className="text-white font-bold text-lg">
-          Resources
-        </span>
-
-        <span className="text-base text-white font-normal capitalize">
-          blog
-        </span>
-      </div>
+      <ResourceSection />
 
       {/* Company */}
-      <div className="flex flex-col">
-        <span className="text-white font-bold text-lg capitalize">
-          company
-        </span>
-
-        <div className="flex flex-col gap-[10px] mt-[10px]">
-          {
-            companyDetails.map((info, idx) => (
-              <Link
-                to={info.link}
-                key={idx}
-              >
-                <span
-                  key={idx}
-                  className="text-base text-white font-normal capitalize"
-                >
-                  {info.label}
-                </span>
-              </Link>
-            ))
-          }
-        </div>
-      </div>
+      <CompanySection />
 
       {/*Get free shipping code*/}
       <EmailSubscribe />

@@ -26,13 +26,13 @@ function Footer({ categories }: FooterProps) {
       <FooterTopInfo />
 
       <footer className="pb-6 bg-dune w-full pt-10 px-12 ">
-        <div className="block md:hidden">
+        <div className="block 600:hidden">
           <FooterMobileAccordion />
         </div>
 
         {/* width > 768px */}
-        <div className="hidden md:block 992:hidden">
-          <FooterTabletPortrait />
+        <div className="hidden 600:block 992:hidden">
+          <FooterTabletPortrait categories={categories} />
         </div>
 
         {/* width > 992px  */}

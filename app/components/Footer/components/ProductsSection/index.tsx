@@ -5,10 +5,10 @@ import { HiOutlineFire } from 'react-icons/hi';
 import type { Category } from '~/shared/types';
 
 interface ProductsSectionProps {
-  categories: Category[];
+  categories?: Category[];
 }
 
-function ProductsSection({ categories }: ProductsSectionProps) {
+function ProductsSection({ categories = [] }: ProductsSectionProps) {
   return (
     <div className="flex flex-col">
       <span className="text-white font-bold text-lg">
