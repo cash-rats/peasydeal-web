@@ -1,15 +1,11 @@
 import type { LinksFunction } from '@remix-run/node';
-import FooterMobileAccordion, { links as FooterMobileAccordionLinks } from './components/FooterMobileAccordion';
-import FooterTabletLayout from './components/FooterTabletLayout';
-
-import Amex from './images/amex.svg';
-import ApplePay from './images/apple_pay.svg';
-import Discover from './images/pi_discover.svg';
-import GooglePay from './images/google_pay.svg';
-import MasterCard from './images/pi_master.svg';
-import Visa from './images/visa.svg';
 import { AiFillInstagram, AiOutlineTwitter } from 'react-icons/ai';
 import { SiFacebook } from 'react-icons/si';
+
+import type { Category } from '~/shared/types';
+
+import FooterMobileAccordion, { links as FooterMobileAccordionLinks } from './components/FooterMobileAccordion';
+import FooterTabletLayout from './components/FooterTabletLayout';
 
 export const links: LinksFunction = () => {
   return [
@@ -17,42 +13,19 @@ export const links: LinksFunction = () => {
   ];
 };
 
-const paymentMethods = [
-  {
-    name: 'American Express',
-    src: Amex,
-  },
-  {
-    name: 'Apple Pay',
-    src: ApplePay,
-  },
-  {
-    name: 'Discover',
-    src: Discover,
-  },
-  {
-    name: 'Google Pay',
-    src: GooglePay,
-  },
-  {
-    name: 'Master Card',
-    src: MasterCard,
-  },
-  {
-    name: 'Visa',
-    src: Visa,
-  }
-];
+interface FooterProps {
+  categories?: Category[];
+}
 
-function Footer() {
+function Footer({ categories }: FooterProps) {
   return (
-    <footer className="pb-6 bg-dune w-full pt-10 px-12 1200:px-28">
+    <footer className="pb-6 bg-dune w-full pt-10 px-12">
       <div className="block md:hidden">
         <FooterMobileAccordion />
       </div>
 
       <div className="hidden md:block">
-        <FooterTabletLayout />
+        <FooterTabletLayout categories={categories} />
       </div>
 
       {/* footer bottom content */}
@@ -82,17 +55,41 @@ function Footer() {
             Follow us
           </span>
 
-          <span className="mr-4">
-            <AiFillInstagram color='#fff' fontSize={22} />
-          </span>
 
-          <span className="mr-4">
-            <AiOutlineTwitter color='#fff' fontSize={22} />
-          </span>
+          <a
+            className="mr-4"
+            rel="noreferrer"
+            target="_blank"
+            href="https://www.instagram.com/"
+          >
+            <AiFillInstagram
+              color='#fff'
+              fontSize={22}
+            />
+          </a>
 
-          <span className="mr-4">
-            <SiFacebook color='#fff' fontSize={22} />
-          </span>
+          <a
+            className="mr-4"
+            rel="noreferrer"
+            target="_blank"
+            href="https://www.twitter.com/"
+          >
+            <AiOutlineTwitter
+              color='#fff'
+              fontSize={22}
+            />
+          </a>
+
+          <a
+            rel="noreferrer"
+            target="_blank"
+            href="https://facebook.com"
+          >
+            <SiFacebook
+              color='#fff'
+              fontSize={22}
+            />
+          </a>
         </div>
 
         {/* List of payment method */}

@@ -247,7 +247,7 @@ function TrackingOrder() {
         }
       </main>
 
-      <Footer />
+      <Footer categories={categories} />
     </MqNotifier>
   );
 }

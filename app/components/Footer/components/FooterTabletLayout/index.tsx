@@ -1,50 +1,87 @@
-// import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
-// import type { ReactNode } from 'react';
 import Button from '@mui/material/Button';
 import { HiOutlineFire } from 'react-icons/hi';
 import { TextField } from '@mui/material';
 
-import PeasyDealLOGO from './images/peasydeal_logo_white.svg';
+import type { Category } from '~/shared/types';
 
-const categoryList = [
-  'Top Product',
-  'New Trend',
-  'Super Deal',
-  'Clothes Accessories',
-  'Kitchenware',
-  'Clothes & Shoes',
-  'Gardening',
-  'electronic',
-  'toy',
-  'beauty & personal care',
-  'pet',
-  'home appliance',
-  'health',
-];
+import PeasyDealLOGO from './images/peasydeal_logo_white.svg';
+import Amex from './images/american-express.svg';
+import Visa from './images/visa.svg';
+import MasterCard from './images/mastercard.svg';
+import Paypal from './images/paypal.svg';
+import Klarna from './images/klarna-1.svg';
 
 const companyDetails = [
-  'about us',
-  'careers',
-  'privacy policy',
-  'terms of service',
+  {
+    label: 'about us',
+    link: '/about-us',
+  },
+  {
+    label: 'privacy policy',
+    link: '/privacy',
+  },
+  {
+    label: 'return policy',
+    link: '/return-policy',
+  },
+  {
+    label: 'shipping policy',
+    link: '/shipping-policy',
+  },
+  {
+    label: 'termins of service',
+    link: '/terms-of-use',
+  },
+  {
+    label: 'whalesale',
+    link: '/wholesale',
+  },
+  {
+    label: 'career',
+    link: '/',
+  }
 ];
+
+const paymentMethod = [
+  {
+    src: Visa,
+    alt: 'visa'
+  },
+  {
+    src: Amex,
+    alt: 'amex'
+  },
+  {
+    src: MasterCard,
+    alt: 'master card'
+  },
+  {
+    src: Paypal,
+    alt: 'paypal'
+  },
+  {
+    src: Klarna,
+    alt: 'klarna'
+  },
+]
 
 /*
   TODOs:
     Email subscribe function
 */
-function FooterTabletLayout() {
+
+interface FooterTabletLayoutProps {
+  categories?: Category[];
+}
+
+function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
   return (
-    <div className="
-      grid grid-cols-[1fr_130px_1fr_1fr_1fr] gap-12
-    "
-    >
+    <div className="grid grid-cols-[1fr_130px_1fr_1fr_1fr] gap-12">
       {/* Logo Section */}
       <div className="flex flex-col">
         <Link to="/">
           <img
-            // className="w-full"
             width={220}
             height={85}
             alt="peasydeal"
@@ -67,28 +104,31 @@ function FooterTabletLayout() {
         </span>
 
         <div className="mt-[10px]">
-          <Button
-            style={{
-              backgroundColor: '#d85140',
-              fontSize: '1rem',
-            }}
-            size='small'
-            variant='contained'
-            startIcon={<HiOutlineFire />}
-          >
-            hot deal
-          </Button >
+          <Link to={'/hot_deal'}>
+            <Button
+              style={{
+                backgroundColor: '#d85140',
+                fontSize: '1rem',
+              }}
+              size='small'
+              variant='contained'
+              startIcon={<HiOutlineFire />}
+            >
+              hot deal
+            </Button >
+          </Link>
         </div>
 
         <div className="flex flex-col gap-[10px] mt-[10px]">
           {
-            categoryList.map((cat, idx) => (
-              <span
-                key={idx}
-                className="text-base text-white font-normal capitalize"
-              >
-                {cat}
-              </span>
+            categories.map((category, idx) => (
+              <Link key={idx} to={`/${category.name}`}>
+                <span
+                  className="text-base text-white font-normal capitalize"
+                >
+                  {category.title}
+                </span>
+              </Link>
             ))
           }
         </div>
@@ -108,19 +148,24 @@ function FooterTabletLayout() {
 
       {/* Company */}
       <div className="flex flex-col">
-        <span className="text-white font-bold text-lg">
+        <span className="text-white font-bold text-lg capitalize">
           company
         </span>
 
         <div className="flex flex-col gap-[10px] mt-[10px]">
           {
             companyDetails.map((info, idx) => (
-              <span
+              <Link
+                to={info.link}
                 key={idx}
-                className="text-base text-white font-normal capitalize"
               >
-                {info}
-              </span>
+                <span
+                  key={idx}
+                  className="text-base text-white font-normal capitalize"
+                >
+                  {info.label}
+                </span>
+              </Link>
             ))
           }
         </div>
@@ -170,8 +215,35 @@ function FooterTabletLayout() {
           * Can be use on order £20+, expires at March, 31, 2023
           Terms and Condition applied
         </p>
-      </div>
 
+        {/*
+          List of payment channels
+          - visa
+          - amex
+          - master card
+          - paypal
+          - klarna
+        */}
+        <span className="text-white font-bold text-lg mt-6 capitalize">
+          payment channels
+        </span>
+
+        <ul className="list-none flex flex-row mt-2">
+          {
+            paymentMethod.map((m, idx) => (
+              <li
+                className="w-9 h-6 m-[0.625rem]"
+                key={idx}
+              >
+                <img
+                  alt={m.alt}
+                  src={m.src}
+                />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   );
 }
