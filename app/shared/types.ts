@@ -34,6 +34,7 @@ export type ApiErrorResponse = {
 export type Category = {
   catId: string | number;
   title: string;
+  description: string;
   name: string;
   url?: string;
   show?: boolean;

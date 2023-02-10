@@ -48,17 +48,23 @@ function Header({
   mobileSearchBarPlaceholder,
   headerType = 'product_search',
 }: HeaderProps) {
-  const announcementHeight = 60;
+  const announcementHeight = 52;
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
   const [openAnnouncement, setOpenAnnouncement] = useState<boolean>(true);
-  const [scrolled, offset] = useCheckScrolled(announcementHeight);
-  const [navBarHeight, setNavBarHeight] = useState(0)
+  const [navBarHeight, setNavBarHeight] = useState(0);
+  const [announcementBarHeight, setAnnouncementBarHeight] = useState(announcementHeight);
+
+  const [scrolled, offset] = useCheckScrolled(announcementBarHeight);
   const navBarRef = useRef<HTMLInputElement>(null);
-  const fixedTop = scrolled ? 0 : announcementHeight - offset;
+  const announcementBarRef = useRef<HTMLInputElement>(null);
+  const fixedTop = scrolled || !openAnnouncement ? 0 : announcementBarHeight - offset;
+
+  console.log(announcementBarHeight, navBarHeight)
 
   useEffect(() => {
-    setNavBarHeight(navBarRef!.current!.clientHeight)
-  })
+    setNavBarHeight(navBarRef!.current!.clientHeight);
+    setAnnouncementBarHeight(announcementBarRef!.current!.clientHeight);
+  }, []);
 
   const handleOnClickMobileSearch = () => {
     setOpenSearchDialog(true);
@@ -104,7 +110,10 @@ function Header({
         onSearch={onSearch}
       />
 
-      <div className={`fixed top-0 w-full ${!openAnnouncement ? 'hidden': 'flex'}`}>
+      <div
+        ref={announcementBarRef}
+        className={`fixed top-0 w-full ${!openAnnouncement ? 'hidden': 'flex'}`}
+      >
         <AnnouncementBanner
           open={openAnnouncement}
           onClose={() => setOpenAnnouncement(false)}
@@ -143,7 +152,7 @@ function Header({
         />
       </div>
 
-      <div style={{ paddingTop: `${navBarHeight + fixedTop + 10}px`}}>
+      <div style={{ paddingTop: `${navBarHeight + fixedTop}px`}}>
         <PropBar />
       </div>
     </div>

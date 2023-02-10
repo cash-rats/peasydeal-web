@@ -73,7 +73,7 @@ function CartLayout() {
   }
 
   return (
-    <div className="pt-28 540:pt-36 md:pt-[8rem]">
+    <div>
       <CategoryContext.Provider value={categories}>
         <Form action='/search' >
           <Header

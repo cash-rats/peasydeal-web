@@ -33,13 +33,22 @@ function LogoHeader({
           box-border
           z-10
           flex flex-col justify-center items-center
-          items-center max-w-screen-xl w-full mx-8 my-auto relative
+          items-center max-w-screen-xl w-full
+          mx-1 md:mx-4
+          mb-1
+          mt-3 md:mt-1
+          relative
         `}>
           <div className="flex w-full justify-between">
             <LogoBar />
             {
               searchBar && (
-                <div className="hidden md:flex md:items-center md:py-0 md:px-1 w-full">
+                <div className="
+                  hidden md:flex
+                  md:items-center
+                  md:py-0
+                  md:px-1
+                  w-full">
                   {searchBar}
                 </div>
               )
@@ -60,16 +69,15 @@ function LogoHeader({
         </div>
       </div>
 
-
       {
         categoriesBar && (
           <div className="
             border-t-[1px] border-t-[rgba(0,0,0,.17)]
-            border-b-[1px] border-b-[rgba(0,0,0,.1)]
             border-solid
             w-full
-            bg-slate-100"
-          >
+            bg-slate-100
+            flex justify-center
+          ">
             {categoriesBar}
           </div>
         )

@@ -34,7 +34,7 @@ function LogoBar() {
       <div className="">
         <div className="block md:hidden">
           <IconButton onClick={handleOpenMenu}>
-            <FiMenu fontSize={26} color='#e6007e' />
+            <FiMenu className="text-2xl" color='#e6007e' />
           </IconButton>
 
           <Dialog
@@ -81,10 +81,14 @@ function LogoBar() {
         </div>
       </div>
 
-      <Link to='/' className="leading-[20px] w-[173px] h-[60px] left-10 top-[10px] flex items-center">
+      <Link to='/' className="
+        leading-[20px]
+        left-10 top-[10px]
+        flex items-center
+      ">
         <picture>
           <source type="image/svg+xml" srcSet={PeasyDeal} />
-          <img alt='PeasyDeal Logo' src={PeasyDeal} />
+          <img alt='PeasyDeal Logo' className='h-[42px] md:h-[60px]' src={PeasyDeal} />
         </picture>
       </Link>
     </div>

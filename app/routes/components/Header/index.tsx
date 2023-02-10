@@ -69,13 +69,14 @@ function HeaderRoute(props: HeaderRouteProps) {
     }
   }, [reloadCartCountFetcher?.type])
 
-  return (<Header
-    form={props.form}
-    categoriesBar={props.categoriesBar}
-    numOfItemsInCart={numOfItemsInCart}
-    searchBar={props.searchBar}
-    onSearch={props.onSearch}
-  />
+  return (
+    <Header
+      form={props.form}
+      categoriesBar={props.categoriesBar}
+      numOfItemsInCart={numOfItemsInCart}
+      searchBar={props.searchBar}
+      onSearch={props.onSearch}
+    />
   );
 }
 

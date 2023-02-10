@@ -14,10 +14,12 @@ function AnnouncementBanner({ open = true, onClose = () => { } }: AnnouncementBa
       ? (
         <div className={`
           flex justify-center items-center
-          py-4 w-full bg-[#D02E7D]
+          py-3 w-full bg-[#D02E7D]
         `}>
-          <span className="text-xs 499:text-base text-white font-bold md:text-xl">
-            PEASYDEAL Launch Sale: FREE Shipping on order £9.99+
+          <span className={`
+            text-xs 499:text-base text-white font-bold md:text-lg
+          `}>
+            Grand Launch Sale: FREE Shipping on order £9.99+
           </span>
           <div className="absolute right-1">
             <IconButton onClick={handleClose}>

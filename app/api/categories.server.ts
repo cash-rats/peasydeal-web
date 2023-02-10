@@ -17,10 +17,11 @@ const fetchCategoriesFromServer = async (): Promise<Category[]> => {
 };
 
 const normalize = (cats: any) => {
-  return cats.map((cat: { category_id: number, label: string, name: string }): Category => {
+  return cats.map((cat: { category_id: number, label: string, name: string, desc: string }): Category => {
     return {
       catId: cat.category_id,
       title: cat.label,
+      description: cat.desc,
       name: cat.name,
       url: '',
     }

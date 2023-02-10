@@ -142,6 +142,7 @@ export const CatchBoundary = () => {
       },
     );
   }
+
   return (
     <MqNotifier mqValidators={[
       {
@@ -187,7 +188,6 @@ function TrackingOrder() {
   const trackOrderFetcher = useFetcher();
   const [disableDesktopSearchBar, setDisableDesktopSearchBar] = useState(false);
 
-
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
 
@@ -199,6 +199,7 @@ function TrackingOrder() {
       },
     );
   }
+
   const handleOnClear = () => {
     trackOrderFetcher.submit(
       { query: '' },

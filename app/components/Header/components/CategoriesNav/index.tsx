@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
+import { VscFlame } from "react-icons/vsc";
+
 import clsx from 'clsx';
 
 import type { Category } from '~/shared/types';
@@ -17,6 +19,20 @@ interface CategoriesNavProps {
   categories?: Array<Category>,
 };
 
+const topCategories = [
+  'hot_deal',
+  'new_trend',
+  'electronic',
+  'clothes_shoes',
+  'home_appliances',
+  'kitchen_kitchenware',
+  'toy',
+  'pet',
+  'car_accessories',
+];
+
+const categoryToHoist = 'hot_deal';
+
 /*
  * - [x] Hover over all category should display all category list.
  * - [ ] If we have too many categories, we should have a scroll view.
@@ -24,93 +40,134 @@ interface CategoriesNavProps {
  */
 export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
   const [openAllCategories, setOpenAllCategories] = useState<boolean>(false);
+  const [trimmedCategories, setTrimmedCategories] = useState<Array<Category>>([{
+    name: 'loading',
+    description: '',
+    title: '',
+    catId: '',
+  }]);
+
   const toggleOpenAllCategory = (evt: MouseEvent<HTMLDivElement>) => {
     evt.stopPropagation();
     setOpenAllCategories(prev => !prev);
   }
 
+  useEffect(() => {
+    if (categories.length) {
+      const filteredCategory = categories.filter((category: Category) => {
+        return topCategories.includes(category.name);
+      });
+
+      // hoist hot_deal to the first one
+
+      let hoisted: Array<Category> = [];
+      filteredCategory.forEach((category: Category) => {
+        if (category.name === categoryToHoist) {
+          hoisted = [category, ...hoisted];
+        } else {
+          hoisted.push(category);
+        }
+      });
+
+      setTrimmedCategories(hoisted);
+    }
+  }, [categories])
+
   return (
     <div className={`
-      flex flex-row justify-center items-center
-      items-center max-w-screen-xl w-full mx-auto my-auto relative py-2
-      hidden
-      md:flex
+      hidden md:flex
+      flex-col justify-center items-center
+      items-center max-w-screen-xl w-full
+      mx-1 md:mx-4 my-auto
     `}>
-      <div className="w-[88%] flex relative items-center">
+      <div className="flex relative items-center flex-auto w-full">
         {/* categories nav */}
-        <nav className="overflow-x-scroll m-0 flex flex-auto">
+        <nav className="flex-auto">
           <ul className={`
-            flex
+            flex flex-auto
             list-none
-            space-x-4
+            space-x-1
+            md:space-x-2
+            xl:space-x-4
             align-center
             justify-between
             p-0 m-0`}>
             {
-              categories.map((category) => (
+              trimmedCategories.map((category, index) => (
                 <Link
                   replace
                   key={category.catId}
                   state={{ scrollToTop: true }}
                   to={`/${category.name}`}
+                  className="self-center"
                 >
                   <li className={`
-                    transition ease-in-out
                     CategoriesNav__item
                     fromLeft
-                    font-bold
-                    py-2
+
                     cursor-pointer
                     flex-auto
-                    text-base`}>
-                    {category.title}
+                    self-center
+                    transition
+                    text-center
+
+                    text-xs md:text-sm lg:text-base
+                    px-1 lg:px-2 xl:px-2 2xl:px-2
+                    py-2 md:py-4
+                    ${ index === 0 ? 'bg-[#EA4335] text-white items-center font-semibold flex flex-row' : '' }
+                  `}>
+                    { index === 0 ? <VscFlame className="mr-1"/> : null }
+                    <span>{category.title}</span>
                   </li>
                 </Link>
               ))
             }
+            <li
+              className="Header__CategoriesNav__more flex justify-center items-center relative cursor-pointer"
+              onClick={toggleOpenAllCategory}
+              onMouseEnter={toggleOpenAllCategory}
+              onMouseLeave={toggleOpenAllCategory}
+            >
+              <span className={`
+                text-sm lg:text-base
+                px-0 lg:px-2
+                py-2 md:py-4
+                flex flex-row
+              `}>
+                <span>ALL</span>
+                <div className="Header__CategoriesNav__arrow_wrapper">
+                  <div className={clsx("Header__CategoriesNav__arrow-up", {
+                    "Header__CategoriesNav__arrow-down": openAllCategories,
+                  })} />
+                </div>
+              </span>
+
+              {
+                openAllCategories && (
+                  <div className="Header__CategoriesNav__all-cats">
+                    {
+                      categories.map((category) => {
+                        return (
+                          <div key={category.catId} className="Header__CategoriesNav__all-cats-title">
+                            <Link
+                              // prefetch='intent'
+                              state={{ scrollToTop: true }}
+                              to={`/${category.name}`}
+                            >
+                              <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
+                                {category.title}
+                              </span>
+                            </Link>
+                          </div>
+                        );
+                      })
+                    }
+                  </div>
+                )
+              }
+            </li>
           </ul>
         </nav>
-      </div>
-
-      <div
-        className="Header__CategoriesNav__more flex justify-center items-center relative w-[12%] p-2"
-        onMouseEnter={toggleOpenAllCategory}
-        onMouseLeave={toggleOpenAllCategory}
-      >
-        <div className="border-left" />
-        <span className="Header__CategoriesNav__text font-bold">
-          all
-        </span>
-
-        <div className="Header__CategoriesNav__arrow_wrapper">
-          <div className={clsx("Header__CategoriesNav__arrow-up", {
-            "Header__CategoriesNav__arrow-down": openAllCategories,
-          })} />
-        </div>
-
-        {
-          openAllCategories && (
-            <div className="Header__CategoriesNav__all-cats">
-              {
-                categories.map((category) => {
-                  return (
-                    <div key={category.catId} className="Header__CategoriesNav__all-cats-title">
-                      <Link
-                        // prefetch='intent'
-                        state={{ scrollToTop: true }}
-                        to={`/${category.name}`}
-                      >
-                        <span className="Header__CategoriesNav__all-cats-title-text fromLeft">
-                          {category.title}
-                        </span>
-                      </Link>
-                    </div>
-                  );
-                })
-              }
-            </div>
-          )
-        }
       </div>
     </div>
   );

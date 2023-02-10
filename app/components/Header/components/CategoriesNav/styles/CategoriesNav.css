@@ -107,23 +107,13 @@
 }
 
 .CategoriesNav__item {
-  white-space: nowrap;
   background-image: linear-gradient(#e6007e, #e6007e);
   background-size: 0% 1px;
   background-repeat: no-repeat;
-  transition: background-size 1s;
-  font-size: 1.1rem;
+  transition: background-size 0.2s;
 }
 .CategoriesNav__item:hover {
-  background-size: 100% 1px;
-}
-
-.Header__CategoriesNav__more .border-left {
-  border-left: 2px solid #e5e5e5;
-  position: absolute;
-  height: 60%;
-  width: 1px;
-  left: 0;
+  background-size: 100% 2px;
 }
 
 .Header__CategoriesNav__arrow_wrapper {
