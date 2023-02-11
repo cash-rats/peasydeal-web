@@ -20,6 +20,7 @@ module.exports = {
       '540': '540px',
       '576': '576px',
       '600': '600px',
+      '622': '622px',
       '720': '720px',
       '899': '899px',
       '992': '992px',
@@ -61,6 +62,7 @@ module.exports = {
         'border-color': '#e5e5e5',
         'battleship-grey': '#828183',
         'paymentelement-border': '#e6e6e6',
+        'spring-wood': '#F7F7EE',
       },
       boxShadow: {
         'dropdown': '0 0 3px 0 rgb(73 143 226 / 50%)',

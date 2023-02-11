@@ -76,7 +76,7 @@ export default function Index() {
 					<Outlet context={{ categories: categories }} />
 				</main>
 
-				<Footer />
+				<Footer categories={categories} />
 			</div>
 		</>
 	);

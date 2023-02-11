@@ -1,102 +1,114 @@
 import type { LinksFunction } from '@remix-run/node';
-import FooterMobileAccordion, { links as FooterMobileAccordionLinks } from './components/FooterMobileAccordion';
-import FooterTabletLayout, { links as FooterTabletLayoutLinks } from './components/FooterTabletLayout';
+import { AiFillInstagram, AiOutlineTwitter } from 'react-icons/ai';
+import { SiFacebook } from 'react-icons/si';
 
-import Amex from './images/amex.svg';
-import ApplePay from './images/apple_pay.svg';
-import Discover from './images/pi_discover.svg';
-import GooglePay from './images/google_pay.svg';
-import MasterCard from './images/pi_master.svg';
-import Visa from './images/visa.svg';
-import FB from './images/facebook.svg';
-import IG from './images/ig.svg';
+import type { Category } from '~/shared/types';
+
+import FooterTopInfo from './components/FooterTopInfo';
+import FooterMobileAccordion, { links as FooterMobileAccordionLinks } from './components/FooterMobileAccordion';
+import FooterTabletPortrait from './components/FooterTabletPortrait';
+import FooterTabletLayout from './components/FooterTabletLayout';
 
 export const links: LinksFunction = () => {
   return [
-    ...FooterTabletLayoutLinks(),
     ...FooterMobileAccordionLinks(),
   ];
 };
 
-const paymentMethods = [
-  {
-    name: 'American Express',
-    src: Amex,
-  },
-  {
-    name: 'Apple Pay',
-    src: ApplePay,
-  },
-  {
-    name: 'Discover',
-    src: Discover,
-  },
-  {
-    name: 'Google Pay',
-    src: GooglePay,
-  },
-  {
-    name: 'Master Card',
-    src: MasterCard,
-  },
-  {
-    name: 'Visa',
-    src: Visa,
-  }
-];
 
-function Footer() {
+interface FooterProps {
+  categories?: Category[];
+}
+
+function Footer({ categories }: FooterProps) {
   return (
-    <footer className="pb-6 bg-white-smoke w-full">
-      <div className="block md:hidden">
-        <FooterMobileAccordion />
-      </div>
+    <>
+      <FooterTopInfo />
 
-      <div className="hidden md:block">
-        <FooterTabletLayout />
-      </div>
-
-      <div className="py-0 px-4 lg:flex lg:flex-row items-center">
-        {/* List of payment method */}
-        <div className="w-full box-border flex justify-center md:flex-1">
-          <ul className="p-0 m-0 list-none flex flex-wrap">
-            {
-              paymentMethods.map((method, index) => (
-                <li className="w-9 h-6 m-[0.625rem]" key={index}>
-                  <img alt={method.name} src={method.src} />
-                </li>
-              ))
-            }
-          </ul>
+      <footer className="pb-6 bg-dune w-full pt-10 px-12 ">
+        <div className="block 600:hidden">
+          <FooterMobileAccordion categories={categories} />
         </div>
 
-        {/* Company sign */}
-        <div className="text-center w-full mt-[0.675rem] my-0 mb-6 text-[14px] md:m-0 md:flex-1">
-          <span>
-            © PeasyDeal 2022
-          </span>
+        {/* width > 768px */}
+        <div className="hidden 600:block 992:hidden">
+          <FooterTabletPortrait categories={categories} />
         </div>
 
-        {/* Social Media */}
-        <div className="flex justify-center items-center gap-4 lg:flex-1">
-          <a
-            rel="noreferrer"
-            target="_blank"
-            href="https://facebook.com"
-          >
-            <img className="w-4 h-4" alt='facebook' src={FB} />
-          </a>
-
-          <a
-            rel="noreferrer"
-            target="_blank"
-            href="https://instagram.com"
-          >
-            <img className="w-4 h-4" alt='instagram' src={IG} />
-          </a>
+        {/* width > 992px  */}
+        <div className="hidden 992:block">
+          <FooterTabletLayout categories={categories} />
         </div>
-      </div>
-    </footer>
+
+        {/* footer bottom content */}
+        <div className="
+        h-[105px] mt-10 w-full
+        flex flex-col justify-between
+        600:flex-row 600:mt-0
+      ">
+          <div className="
+            flex-1 flex flex-row items-center
+            font-normal text-sm gap-4
+            600:justify-center
+          ">
+            <span className="text-white capitalize">
+              terms of service
+            </span>
+
+            <span className="text-white capitalize">
+              privacy policy
+            </span>
+
+            <span className="text-white capitalize">
+              © PeasyDeal 2022 PTE. Ltd.
+            </span>
+          </div>
+
+          <div className="
+            flex-1 flex flex-row items-center justify-center gap-6
+            600:justify-end
+          ">
+            <span className="text-white text-base font-normal">
+              Follow us
+            </span>
+            <a
+              className="mr-4"
+              rel="noreferrer"
+              target="_blank"
+              href="https://www.instagram.com/"
+            >
+              <AiFillInstagram
+                color='#fff'
+                fontSize={22}
+              />
+            </a>
+
+            <a
+              className="mr-4"
+              rel="noreferrer"
+              target="_blank"
+              href="https://www.twitter.com/"
+            >
+              <AiOutlineTwitter
+                color='#fff'
+                fontSize={22}
+              />
+            </a>
+
+            <a
+              rel="noreferrer"
+              target="_blank"
+              href="https://facebook.com"
+            >
+              <SiFacebook
+                color='#fff'
+                fontSize={22}
+              />
+            </a>
+          </div>
+        </div>
+      </footer>
+    </>
   );
 }
 

@@ -16,7 +16,6 @@ import { breakPoints } from '~/styles/breakpoints';
 import styles from './styles/HorizontalProductsLayout.css';
 import Grid from './HorizontalGrid';
 
-
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: styles },

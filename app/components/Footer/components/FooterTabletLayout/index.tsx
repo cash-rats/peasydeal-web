@@ -1,57 +1,76 @@
-import type { LinksFunction } from '@remix-run/node';
-import type { ReactNode } from 'react';
+import { Link } from '@remix-run/react';
+import Button from '@mui/material/Button';
+import { HiOutlineFire } from 'react-icons/hi';
 
-import {
-  PolicyContent,
-  ServiceContent,
-  ContactUsContent,
-  SubscribeContent,
-  links as FooterContentLinks,
-} from '../FooterContent';
+import type { Category } from '~/shared/types';
 
-export const links: LinksFunction = () => {
-  return [
-    ...FooterContentLinks(),
-  ];
-};
-
-function TabletFooterContent({ children }: { children: ReactNode }) {
-  return (
-    <div className="px-2 last:border-r-0">
-      {children}
-    </div>
-  )
-}
+import LogoSection from '../LogoSection';
+import EmailSubscribe from '../EmailSubscribe';
+import ResourceSection from '../ResourceSection';
+import CompanySection from '../CompanySection';
 
 /*
   TODOs:
     Email subscribe function
 */
-function FooterTabletLayout() {
+interface FooterTabletLayoutProps {
+  categories?: Category[];
+}
+
+function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
   return (
     <div className="
-      grid grid-cols-[50%_50%] pt-7 px-4
-      pb-0 bg-[#ededed] border-solid
-    border-[#e5e5e5]
-      lg:grid-cols-[25%_25%_25%_25%]
-    border-r-[#e5e5e5]
-    "
-    >
-      <TabletFooterContent>
-        <PolicyContent />
-      </TabletFooterContent>
+      grid grid-cols-[1fr_130px_1fr_1fr_1fr] gap-12
+      border-b-[1px] border-b-[#2E4E73] pb-12
+    ">
+      {/* Logo Section */}
+      <LogoSection />
 
-      <TabletFooterContent>
-        <ServiceContent />
-      </TabletFooterContent>
+      {/* Product Section */}
+      <div className="flex flex-col">
+        <span className="text-white font-bold text-lg">
+          Product
+        </span>
 
-      <TabletFooterContent>
-        <ContactUsContent />
-      </TabletFooterContent>
+        <div className="mt-[10px]">
+          <Link to={'/hot_deal'}>
+            <Button
+              style={{
+                backgroundColor: '#d85140',
+                fontSize: '1rem',
+              }}
+              size='small'
+              variant='contained'
+              startIcon={<HiOutlineFire />}
+            >
+              hot deal
+            </Button >
+          </Link>
+        </div>
 
-      <TabletFooterContent>
-        <SubscribeContent />
-      </TabletFooterContent>
+        <div className="flex flex-col gap-[10px] mt-[10px]">
+          {
+            categories.map((category, idx) => (
+              <Link key={idx} to={`/${category.name}`}>
+                <span
+                  className="text-base text-white font-normal capitalize"
+                >
+                  {category.title}
+                </span>
+              </Link>
+            ))
+          }
+        </div>
+      </div >
+
+      {/* Resources */}
+      <ResourceSection />
+
+      {/* Company */}
+      <CompanySection />
+
+      {/*Get free shipping code*/}
+      <EmailSubscribe />
     </div>
   );
 }

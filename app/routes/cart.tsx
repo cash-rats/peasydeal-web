@@ -98,7 +98,7 @@ function CartLayout() {
         <Outlet />
       </main>
 
-      <Footer />
+      <Footer categories={categories} />
     </div>
   );
 }

@@ -77,7 +77,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
     <div className={`
       hidden md:flex
       flex-col justify-center items-center
-      items-center max-w-screen-xl w-full
+      max-w-screen-xl w-full
       mx-1 md:mx-4 my-auto
     `}>
       <div className="flex relative items-center flex-auto w-full">
@@ -114,9 +114,9 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
                     text-xs md:text-sm lg:text-base
                     px-1 lg:px-2 xl:px-2 2xl:px-2
                     py-2 md:py-4
-                    ${ index === 0 ? 'bg-[#EA4335] text-white items-center font-semibold flex flex-row' : '' }
+                    ${index === 0 ? 'bg-[#EA4335] text-white items-center font-semibold flex flex-row' : ''}
                   `}>
-                    { index === 0 ? <VscFlame className="mr-1"/> : null }
+                    {index === 0 ? <VscFlame className="mr-1" /> : null}
                     <span>{category.title}</span>
                   </li>
                 </Link>
