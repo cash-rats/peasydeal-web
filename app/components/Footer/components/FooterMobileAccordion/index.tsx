@@ -31,16 +31,16 @@ function FooterMobileAccordion({ categories = [] }: FooterMobileAccordionProps) 
         <EmailSubscribe />
       </li>
 
-      <li >
-        <ProductsSecions categories={categories} />
-      </li>
-
       <li className="flex flex-row justify-between">
-        <CompanySection />
+        <ProductsSecions categories={categories} />
 
         <div className="600:hidden">
           <ResourceSection />
         </div>
+      </li>
+
+      <li >
+        <CompanySection />
       </li>
 
       <li>
