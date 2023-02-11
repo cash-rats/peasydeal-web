@@ -12,7 +12,7 @@ interface FooterTabletPortraitProps {
 
 function FooterTabletPortrait({ categories = [] }: FooterTabletPortraitProps) {
   return (
-    <div className="grid grid-rows-[274px_1fr]">
+    <div className="grid grid-rows-[300px_1fr]">
       <div className="
         grid grid-cols-2
         border-b-[1px] border-b-[#2E4E73]

@@ -4,7 +4,7 @@ import PeasyDealLOGO from './images/peasydeal_logo_white.svg';
 
 function LogoSection() {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col 600:p-4">
       <Link to="/">
         <img
           width={220}
@@ -15,9 +15,8 @@ function LogoSection() {
       </Link>
 
       <p className="
-          w-full
-        text-[#f7f7ee] text-lg capitalize mt-4
-          600:pt-4
+          w-full mt-4
+        text-[#f7f7ee] text-lg capitalize
         ">
         Shop with us for the best deals on the web - unbeatable prices and weekly updates
       </p>

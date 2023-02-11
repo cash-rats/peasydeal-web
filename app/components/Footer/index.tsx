@@ -27,7 +27,7 @@ function Footer({ categories }: FooterProps) {
 
       <footer className="pb-6 bg-dune w-full pt-10 px-12 ">
         <div className="block 600:hidden">
-          <FooterMobileAccordion />
+          <FooterMobileAccordion categories={categories} />
         </div>
 
         {/* width > 768px */}
@@ -43,8 +43,8 @@ function Footer({ categories }: FooterProps) {
         {/* footer bottom content */}
         <div className="
         h-[105px] mt-10 w-full
-        flex flex-col
-        600:flex-row justify-between
+        flex flex-col justify-between
+        600:flex-row 600:mt-0
       ">
           <div className="
             flex-1 flex flex-row items-center

@@ -1,8 +1,9 @@
 import type { LinksFunction } from '@remix-run/node';
 
+import type { Category } from '~/shared/types';
+
 import styles from './styles/FooterMobileAccordion.css';
 import { links as FooterContentLinks } from '../FooterContent';
-
 import LogoSection from '../LogoSection';
 import EmailSubscribe from '../EmailSubscribe';
 import ProductsSecions from '../ProductsSection';
@@ -16,8 +17,11 @@ export const links: LinksFunction = () => {
   ];
 };
 
+interface FooterMobileAccordionProps {
+  categories?: Category[];
+}
 
-function FooterMobileAccordion() {
+function FooterMobileAccordion({ categories = [] }: FooterMobileAccordionProps) {
   return (
     <ul className="w-full list-none py-0 px-4 flex flex-col gap-4">
       <li>
@@ -28,7 +32,7 @@ function FooterMobileAccordion() {
       </li>
 
       <li >
-        <ProductsSecions />
+        <ProductsSecions categories={categories} />
       </li>
 
       <li className="flex flex-row justify-between">

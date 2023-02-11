@@ -70,7 +70,7 @@ function FooterTopInfo() {
           Payment methods
         </h1>
 
-        <ul className="list-none flex flex-row mt-8">
+        <ul className="list-none flex flex-row mt-8 flex-wrap">
           {
             paymentMethod.map((m, idx) => (
               <li
