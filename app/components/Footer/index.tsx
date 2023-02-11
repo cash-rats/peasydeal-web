@@ -43,12 +43,14 @@ function Footer({ categories }: FooterProps) {
         {/* footer bottom content */}
         <div className="
         h-[105px] mt-10 w-full
-        flex flex-row justify-between
+        flex flex-col
+        600:flex-row justify-between
       ">
           <div className="
-          flex-1 flex flex-row items-center
-          font-normal text-sm gap-4
-        ">
+            flex-1 flex flex-row items-center
+            font-normal text-sm gap-4
+            600:justify-center
+          ">
             <span className="text-white capitalize">
               terms of service
             </span>
@@ -62,12 +64,13 @@ function Footer({ categories }: FooterProps) {
             </span>
           </div>
 
-          <div className=" flex-1 flex flex-row items-center justify-end gap-6">
+          <div className="
+            flex-1 flex flex-row items-center justify-center gap-6
+            600:justify-end
+          ">
             <span className="text-white text-base font-normal">
               Follow us
             </span>
-
-
             <a
               className="mr-4"
               rel="noreferrer"

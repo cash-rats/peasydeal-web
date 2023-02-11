@@ -17,6 +17,7 @@ function LogoSection() {
       <p className="
           w-full
         text-[#f7f7ee] text-lg capitalize mt-4
+          600:pt-4
         ">
         Shop with us for the best deals on the web - unbeatable prices and weekly updates
       </p>

@@ -31,6 +31,7 @@ const companyDetails = [
   }
 ];
 
+
 function CompanySection() {
   return (
     <div className="flex flex-col">

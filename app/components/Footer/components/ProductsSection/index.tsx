@@ -6,15 +6,21 @@ import type { Category } from '~/shared/types';
 
 interface ProductsSectionProps {
   categories?: Category[];
-  hideTitle?: boolean;
+  showTitle?: boolean;
 }
 
-function ProductsSection({ categories = [] }: ProductsSectionProps) {
+function ProductsSection({ categories = [], showTitle = true }: ProductsSectionProps) {
   return (
     <div className="flex flex-col">
-      <span className="text-white font-bold text-lg">
-        Product
-      </span>
+      {
+        showTitle
+          ? (
+            <span className="text-white font-bold text-lg">
+              Product
+            </span>
+          )
+          : null
+      }
 
       <div className="mt-[10px]">
         <Link to={'/hot_deal'}>
