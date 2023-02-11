@@ -5,7 +5,7 @@ import { SiFacebook } from 'react-icons/si';
 import type { Category } from '~/shared/types';
 
 import FooterTopInfo from './components/FooterTopInfo';
-import FooterMobileAccordion, { links as FooterMobileAccordionLinks } from './components/FooterMobileAccordion';
+import FooterMobileLayout, { links as FooterMobileAccordionLinks } from './components/FooterMobileLayout';
 import FooterTabletPortrait from './components/FooterTabletPortrait';
 import FooterTabletLayout from './components/FooterTabletLayout';
 
@@ -27,7 +27,7 @@ function Footer({ categories }: FooterProps) {
 
       <footer className="pb-6 bg-dune w-full pt-10 px-12 ">
         <div className="block 600:hidden">
-          <FooterMobileAccordion categories={categories} />
+          <FooterMobileLayout categories={categories} />
         </div>
 
         {/* width > 768px */}

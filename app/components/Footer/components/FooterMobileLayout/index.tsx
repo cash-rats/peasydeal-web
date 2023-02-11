@@ -2,7 +2,7 @@ import type { LinksFunction } from '@remix-run/node';
 
 import type { Category } from '~/shared/types';
 
-import styles from './styles/FooterMobileAccordion.css';
+import styles from './styles/FooterMobileLayout.css';
 import { links as FooterContentLinks } from '../FooterContent';
 import LogoSection from '../LogoSection';
 import EmailSubscribe from '../EmailSubscribe';
@@ -17,17 +17,17 @@ export const links: LinksFunction = () => {
   ];
 };
 
-interface FooterMobileAccordionProps {
+interface FooterMobileLayoutProps {
   categories?: Category[];
 }
 
-function FooterMobileAccordion({ categories = [] }: FooterMobileAccordionProps) {
+function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
   return (
     <ul className="w-full list-none py-0 px-4 flex flex-col gap-4">
       <li>
         <LogoSection />
       </li>
-      <li className="border-b-[1px] pb-4  border-b-[#2E4E73]">
+      <li className="border-b-[1px] pb-4 border-b-[#2E4E73]">
         <EmailSubscribe />
       </li>
 
@@ -51,4 +51,4 @@ function FooterMobileAccordion({ categories = [] }: FooterMobileAccordionProps) 
   )
 }
 
-export default FooterMobileAccordion;
+export default FooterMobileLayout;
