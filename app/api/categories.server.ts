@@ -1,6 +1,7 @@
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 import type { Category, CategoriesMap } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';
+import { CATEGORY_CACHE_TTL } from '~/utils/get_env_source';
 
 export const RedisCategoriesKey = 'categories';
 
@@ -47,6 +48,7 @@ const fetchCategories = async (): Promise<Category[]> => {
   // If it doesn't exist, fetch from server and cache to redis.
   const cats = await fetchCategoriesFromServer()
   await redis.set(RedisCategoriesKey, JSON.stringify(cats));
+  await redis.expire(RedisCategoriesKey, CATEGORY_CACHE_TTL)
 
   return cats;
 }
