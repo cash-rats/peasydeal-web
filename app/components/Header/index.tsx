@@ -103,7 +103,7 @@ function Header({
     <div className='relative'>
       <MobileSearchDialog
         onBack={handleClose}
-        open={openSearchDialog}
+        isOpen={openSearchDialog}
         onSearchRequest={handleSearchRequest}
         onSearch={onSearch}
       />

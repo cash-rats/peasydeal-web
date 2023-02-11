@@ -1,10 +1,17 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ChangeEvent, MutableRefObject } from 'react';
-import Dialog from '@mui/material/Dialog';
-import type { DialogProps } from '@mui/material/Dialog';
-import IconButton from '@mui/material/IconButton';
+import { VscArrowLeft } from "react-icons/vsc";
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalBody,
+  IconButton,
+} from '@chakra-ui/react';
+
 import { Link } from '@remix-run/react';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 import MoonLoader from 'react-spinners/MoonLoader';
 import { CgSearchFound } from 'react-icons/cg';
 
@@ -17,7 +24,7 @@ import Louple from './images/loupe.png';
 
 type SearchingState = 'empty' | 'searching' | 'done' | 'error';
 
-interface MobileSearchDialogProps extends DialogProps {
+interface MobileSearchDialogProps {
   onBack?: () => void;
 
   items?: SuggestItem[];
@@ -27,6 +34,8 @@ interface MobileSearchDialogProps extends DialogProps {
 
   // Invoke if query does not exist in trie cache.
   onSearchRequest?: (query: string) => Promise<SuggestItem[]>;
+
+  isOpen: boolean;
 }
 
 export default function MobileSearchDialog({
@@ -34,10 +43,11 @@ export default function MobileSearchDialog({
   onSearch = (query: string) => { },
   onSearchRequest = (query: string) => Promise.resolve([]),
   items = [],
-  ...args
+  isOpen
 }: MobileSearchDialogProps) {
   const [sugguests, setSuggests] = useState<SuggestItem[]>([]);
   const [showSuggests, setShowSuggests] = useState(false);
+  const btnRef = useRef(null);
   const [searchingState, setSearchingState] = useState<SearchingState>('empty');
   const [searchContent, setSearchContent] = useState('');
   let inputRef = useRef<HTMLInputElement | null>(null);
@@ -152,89 +162,100 @@ export default function MobileSearchDialog({
   }
 
   return (
-    <Dialog
-      fullScreen
-      {...args}
+    <Modal
+      finalFocusRef={btnRef}
+      scrollBehavior="inside"
+      size="full"
+      onClose={onBack}
+      isOpen={isOpen}
     >
-      <div>
-        <div className="p-2 flex justify-end">
-          <IconButton onClick={onBack} >
-            <ArrowBackIcon style={{ fontSize: '32px' }} />
-          </IconButton>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalBody>
+          <div>
+            <div className="p-2 flex justify-end">
+              <IconButton
+                aria-label='Back'
+                onClick={onBack}
+                icon={<VscArrowLeft style={{ fontSize: '32px' }} />}
+              />
 
-          <div className="w-full ml-[10px]">
-            <SearchBar
-              ref={inputRef}
-              placeholder='Search a product by name'
-              onChange={handleChange}
-              onClear={handleClear}
-              onSearch={handleSearch}
-              onMountRef={handleOnMountRef}
-            />
-          </div>
-        </div>
-
-        <div className="mt-4">
-          {
-            searchContent && (
-              <div className="grid grid-cols-2">
-                <p className="py-2 px-4 flex justify-start items-center">
-                  Searching {searchContent}
-                </p>
-                <span className="py-2 px-4 flex justify-end items-center">
-                  {
-                    searchingState === 'searching'
-                      ? <MoonLoader size={20} color="#009378" />
-                      : (
-                        searchingState === 'done' && sugguests.length === 0
-                          ? <img alt='no product found' src={Louple} width={24} height={24} />
-                          : <CgSearchFound fontSize={24} color='#009378' />
-
-                      )
-                  }
-                </span>
+              <div className="w-full ml-[10px]">
+                <SearchBar
+                  ref={inputRef}
+                  placeholder='Search a product by name'
+                  onChange={handleChange}
+                  onClear={handleClear}
+                  onSearch={handleSearch}
+                  onMountRef={handleOnMountRef}
+                />
               </div>
-            )
-          }
+            </div>
 
-          {
-            showSuggests && (
-              <ul className="list-none p-0 m-0">
-                {
-                  sugguests.length === 0 && searchingState === 'done'
-                    ? <p className="m-0 py-2 px-4 font-medium text-center capitalize">
-                      no results found
+            <div className="mt-4">
+              {
+                searchContent && (
+                  <div className="grid grid-cols-2">
+                    <p className="py-2 px-4 flex justify-start items-center">
+                      Searching {searchContent}
                     </p>
-                    : (
-                      sugguests.map((suggest) => {
-                        return (
-                          <Link
-                            key={suggest.data.productID}
-                            to={composeProductDetailURL({
-                              productName: suggest.data.title,
-                              variationUUID: suggest.data.productID,
-                            })}
-                            onClick={(evt) => { onBack(); }}
-                          >
-                            <li className="
-                                py-3 px-4 cursor-pointer
-                                leading-5 flex justify-between items-center
-                                hover:bg-gray-hover-bg
-                              "
-                            >
-                              {suggest.title}
-                            </li>
-                          </Link>
-                        )
-                      })
-                    )
-                }
-              </ul>
-            )
-          }
+                    <span className="py-2 px-4 flex justify-end items-center">
+                      {
+                        searchingState === 'searching'
+                          ? <MoonLoader size={20} color="#009378" />
+                          : (
+                            searchingState === 'done' && sugguests.length === 0
+                              ? <img alt='no product found' src={Louple} width={24} height={24} />
+                              : <CgSearchFound fontSize={24} color='#009378' />
 
-        </div>
-      </div>
-    </Dialog>
+                          )
+                      }
+                    </span>
+                  </div>
+                )
+              }
+
+              {
+                showSuggests && (
+                  <ul className="list-none p-0 m-0">
+                    {
+                      sugguests.length === 0 && searchingState === 'done'
+                        ? <p className="m-0 py-2 px-4 font-medium text-center capitalize">
+                          no results found
+                        </p>
+                        : (
+                          sugguests.map((suggest) => {
+                            return (
+                              <Link
+                                key={suggest.data.productID}
+                                to={composeProductDetailURL({
+                                  productName: suggest.data.title,
+                                  variationUUID: suggest.data.productID,
+                                })}
+                                onClick={(evt) => { onBack(); }}
+                              >
+                                <li className="
+                                    py-3 px-4 cursor-pointer
+                                    leading-5 flex justify-between items-center
+                                    hover:bg-gray-hover-bg
+                                  "
+                                >
+                                  {suggest.title}
+                                </li>
+                              </Link>
+                            )
+                          })
+                        )
+                    }
+                  </ul>
+                )
+              }
+
+            </div>
+          </div>
+
+        </ModalBody>
+      </ModalContent>
+    </Modal>
   );
 }

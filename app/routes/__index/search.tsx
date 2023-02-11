@@ -19,7 +19,6 @@ import { organizeTo9ProdsPerRow } from './utils';
 
 export const links: LinksFunction = () => {
   return [
-    ...PageTitleLinks(),
     ...LoadMoreButtonLinks(),
     ...LoadMoreLinks(),
     ...ProductRowsContainerLinks(),

@@ -1,10 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, } from '@remix-run/react';
 import { useLocation } from '@remix-run/react';
-import IconButton from '@mui/material/IconButton';
 import { FiMenu } from 'react-icons/fi';
-import Dialog from '@mui/material/Dialog';
-import CloseIcon from '@mui/icons-material/Close';
+
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  IconButton,
+} from '@chakra-ui/react';
 
 import CategoryContext from '~/context/categories';
 
@@ -12,6 +19,7 @@ import PeasyDeal from './images/peasydeal_logo.svg';
 
 function LogoBar() {
   const [openMenu, setOpenMenu] = useState(false);
+  const btnRef = useRef(null);
   const location = useLocation();
 
   const handleOpenMenu = () => {
@@ -33,51 +41,51 @@ function LogoBar() {
     <div className="flex items-center mr-4 my-auto relative">
       <div className="">
         <div className="block md:hidden">
-          <IconButton onClick={handleOpenMenu}>
-            <FiMenu className="text-2xl" color='#e6007e' />
-          </IconButton>
+          <IconButton
+            aria-label='Open Category Menu'
+            icon={<FiMenu className="text-2xl" color='#e6007e' />}
+            onClick={handleOpenMenu}
+            bg="white"
+          />
 
-          <Dialog
-            fullWidth
-            open={openMenu}
+          <Modal
             onClose={handleCloseMenu}
-            PaperProps={{ sx: { width: "86%" } }}
+            finalFocusRef={btnRef}
+            isOpen={openMenu}
+            scrollBehavior="inside"
+            size="full"
           >
-            <div>
-              <div className="p-2">
-                <IconButton onClick={handleCloseMenu}>
-                  <CloseIcon style={{ fontSize: 32 }} />
-                </IconButton>
-              </div>
-              <div>
-                <h1 className="m-0 py-2 px-4 text-lg bg-white-smoke text-dune font-bold uppercase ">
-                  Shop By Category
-                </h1>
-
-                <CategoryContext.Consumer>
-                  {(categories) => (
-                    <ul>
-                      {
-                        categories.map((category) => {
-                          return (
-                            <Link
-                              // prefetch='intent'
-                              key={category.catId}
-                              to={`/${category.name}`}
-                            >
-                              <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
-                                {category.title}
-                              </li>
-                            </Link>
-                          )
-                        })
-                      }
-                    </ul>
-                  )}
-                </CategoryContext.Consumer>
-              </div>
-            </div>
-          </Dialog>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Shop By Category</ModalHeader>
+              <ModalCloseButton />
+              <ModalBody>
+                <div>
+                  <CategoryContext.Consumer>
+                    {(categories) => (
+                      <ul>
+                        {
+                          categories.map((category) => {
+                            return (
+                              <Link
+                                // prefetch='intent'
+                                key={category.catId}
+                                to={`/${category.name}`}
+                              >
+                                <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
+                                  {category.title}
+                                </li>
+                              </Link>
+                            )
+                          })
+                        }
+                      </ul>
+                    )}
+                  </CategoryContext.Consumer>
+                </div>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
         </div>
       </div>
 
