@@ -128,7 +128,9 @@ export default function ProductCard({
             ? (
               <div className='
                 absolute bg-[#D43B33]
-                p-2 top-0 left-4 w-12
+                px-[6px] py-[4px] md:px-2 md:py-2
+                top-0
+                left-1 md:left-4
                 flex flex-col justify-center items-center
                 font-poppins
                 rounded-b-lg
@@ -155,29 +157,45 @@ export default function ProductCard({
           />}
         />
 
+
+
+        {/* TITLES */}
+        <p
+          className='
+            font-poppins font-medium
+            my-1.5 md:my-2.5
+            text-sm md:text-base
+          '
+        >
+          {title}
+        </p>
+
         {/* SELL TAGS */}
-        <div className='flex mt-3'>
+        <div className='flex mb-3'>
           {
             tags.map((tag: ITag, index: number) => {
               if (!tag) return null;
 
               return (
                 <div
-                  className='flex items-center mr-2 px-3 py-1 rounded-[4px] text-white font-bold uppercase'
+                  className='
+                    flex items-center
+                    mr-1 md:mr-2
+                    px-2 py-1 md:px-3
+                    text-[10px] md:text-[12px]
+                    rounded-[2px] md:rounded-[4px]
+                    text-white font-medium uppercase'
                   key={`${title}_${tag.name}`}
                   style={{
                     background: tag.color
                   }}
                 >
-                  <small>{tag.name}</small>
+                  <b>{tag.name}</b>
                 </div>
               );
             })
           }
         </div>
-
-        {/* TITLES */}
-        <p className='font-poppins font-medium my-2.5'>{title}</p>
 
         {/* PRICING */}
         <div className='flex space-x-2 mr-auto mt-auto items-center my-2'>
@@ -195,7 +213,10 @@ export default function ProductCard({
         {/* ACTION BUTTON */}
         <div>
           <Button
-            colorScheme='pink' variant='solid' width='100%'
+            colorScheme='pink'
+            variant='solid'
+            width='100%'
+            size="sm"
             onClick={() => onClickProduct(title, productUUID)}>
             Add to Cart
           </Button>

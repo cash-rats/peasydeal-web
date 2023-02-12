@@ -303,8 +303,7 @@ function Collection({ scrollPosition }: CollectionProps) {
                 offset={150}
               />
             )
-            :
-            <LoadMoreButton
+            : <LoadMoreButton
               loading={loadmoreFetcher.state !== 'idle'}
               onClick={handleLoadMore}
               text='Load more'
