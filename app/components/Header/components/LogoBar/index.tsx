@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, } from '@remix-run/react';
 import { useLocation } from '@remix-run/react';
 import { FiMenu } from 'react-icons/fi';
-
 import {
   Modal,
   ModalOverlay,
@@ -13,11 +12,15 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 
-import CategoryContext from '~/context/categories';
+import type { Category } from '~/shared/types';
 
 import PeasyDeal from './images/peasydeal_logo.svg';
 
-function LogoBar() {
+interface LogoBarProps {
+  categories?: Category[];
+}
+
+function LogoBar({ categories = [] }: LogoBarProps) {
   const [openMenu, setOpenMenu] = useState(false);
   const btnRef = useRef(null);
   const location = useLocation();
@@ -61,27 +64,23 @@ function LogoBar() {
               <ModalCloseButton />
               <ModalBody>
                 <div>
-                  <CategoryContext.Consumer>
-                    {(categories) => (
-                      <ul>
-                        {
-                          categories.map((category) => {
-                            return (
-                              <Link
-                                // prefetch='intent'
-                                key={category.catId}
-                                to={`/${category.name}`}
-                              >
-                                <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
-                                  {category.title}
-                                </li>
-                              </Link>
-                            )
-                          })
-                        }
-                      </ul>
-                    )}
-                  </CategoryContext.Consumer>
+                  <ul>
+                    {
+                      categories.map((category) => {
+                        return (
+                          <Link
+                            // prefetch='intent'
+                            key={category.catId}
+                            to={`/${category.name}`}
+                          >
+                            <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
+                              {category.title}
+                            </li>
+                          </Link>
+                        )
+                      })
+                    }
+                  </ul>
                 </div>
               </ModalBody>
             </ModalContent>

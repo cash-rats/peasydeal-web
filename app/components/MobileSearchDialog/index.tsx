@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ChangeEvent, MutableRefObject } from 'react';
 import { VscArrowLeft } from "react-icons/vsc";
-
 import {
   Modal,
   ModalOverlay,
@@ -9,7 +8,6 @@ import {
   ModalBody,
   IconButton,
 } from '@chakra-ui/react';
-
 import { Link } from '@remix-run/react';
 
 import MoonLoader from 'react-spinners/MoonLoader';
@@ -28,6 +26,15 @@ interface MobileSearchDialogProps {
   onBack?: () => void;
 
   items?: SuggestItem[];
+
+  // Emit search request when user done typing keyword.
+  onTypeSearch?: (query: string) => Promise<SuggestItem[]>
+
+  // Emit search request when search button is clicked in mobile layout.
+  onClickMobileSearch?: () => void;
+
+  // Emit search request when hit enter in mobile layout.
+  onEnterMobileSearch?: () => void;
 
   // Invoke when user clicks on magnifier.
   onSearch?: (query: string) => void;

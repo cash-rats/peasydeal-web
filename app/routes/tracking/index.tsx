@@ -8,15 +8,13 @@ import type { DynamicLinksFunction } from 'remix-utils';
 
 import { breakPoints } from '~/styles/breakpoints';
 import MqNotifier from '~/components/MqNotifier';
-import Header, { links as HeaderLinks } from '~/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { error } from '~/utils/error';
-import { getItemCount } from '~/sessions/shoppingcart.session';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
 import { fetchCategories } from '~/api';
 import type { Category } from '~/shared/types';
-import CategoryContext from '~/context/categories';
 
 import TrackingOrderInfo from './components/TrackingOrderInfo';
 import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
@@ -26,14 +24,12 @@ import type { TrackOrder } from './types';
 
 type LoaderDataType = {
   order: TrackOrder | null
-  numOfItemsInCart: number;
   canonicalLink: string;
   categories: Category[];
 };
 
 type CatchBoundaryDataType = {
   errMessage: string;
-  numOfItemsInCart: number;
   canonicalLink: string;
   categories: Category[];
 }
@@ -65,14 +61,12 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const categories = await fetchCategories();
-  const numOfItemsInCart = await getItemCount(request);
   const url = new URL(request.url);
 
   // Current route has just been requested. Ask user to search order by order ID.
   if (!url.searchParams.has('query')) {
     return json<LoaderDataType>({
       order: null,
-      numOfItemsInCart,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
       categories,
     });
@@ -90,14 +84,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     return json<LoaderDataType>({
       order,
-      numOfItemsInCart,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
       categories,
     });
   } catch (err) {
     throw json<CatchBoundaryDataType>({
       errMessage: `Result for order ${orderID} is not found`,
-      numOfItemsInCart,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
       categories,
     }, httpStatus.NOT_FOUND);
@@ -158,22 +150,19 @@ export const CatchBoundary = () => {
         }
       }
     ]}>
-      <CategoryContext.Provider value={caughtData.categories}>
-        <Form action='/tracking'>
-          <Header
-            headerType='order_search'
-            numOfItemsInCart={caughtData.numOfItemsInCart}
-            searchBar={
-              <SearchBar
-                disabled={disableDesktopSearchBar}
-                onSearch={handleOnSearch}
-                onClear={handleOnClear}
-                placeholder='Search by order id'
-              />
-            }
-          />
-        </Form>
-      </CategoryContext.Provider>
+      <Form action='/tracking'>
+        <Header
+          categories={caughtData.categories}
+          searchBar={
+            <SearchBar
+              disabled={disableDesktopSearchBar}
+              onSearch={handleOnSearch}
+              onClear={handleOnClear}
+              placeholder='Search by order id'
+            />
+          }
+        />
+      </Form>
 
       <TrackingOrderErrorPage message={caughtData.errMessage} />
 
@@ -184,7 +173,7 @@ export const CatchBoundary = () => {
 
 
 function TrackingOrder() {
-  const { order, numOfItemsInCart, categories } = useLoaderData<LoaderDataType>();
+  const { order, categories } = useLoaderData<LoaderDataType>();
   const trackOrderFetcher = useFetcher();
   const [disableDesktopSearchBar, setDisableDesktopSearchBar] = useState(false);
 
@@ -225,16 +214,12 @@ function TrackingOrder() {
         }
       }
     ]}>
-      <CategoryContext.Provider value={categories}>
-        <Form action='/tracking'>
-          <Header
-            headerType='order_search'
-            numOfItemsInCart={numOfItemsInCart}
-            mobileSearchBarPlaceholder='Search by order id...'
-            searchBar={<div />}
-          />
-        </Form>
-      </CategoryContext.Provider>
+      <Form action='/tracking'>
+        <Header
+          categories={categories}
+          searchBar={<div />}
+        />
+      </Form>
 
       <main>
         {/* order search form */}

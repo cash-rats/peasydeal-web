@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
+import { Form, Outlet, useLoaderData, useOutletContext, useFetcher } from "@remix-run/react";
 import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
@@ -12,18 +12,21 @@ import {
   PAYPAL_CLIENT_ID,
   PAYPAL_CURRENCY_CODE,
 } from '~/utils/get_env_source';
-import CategoryContext from '~/context/categories';
+import type { SuggestItem } from '~/shared/types';
+import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
+import MobileSearchDialog from '~/components/MobileSearchDialog'
 import { createPaymentIntent } from '~/utils/stripe.server';
 import { STRIPE_PUBLIC_KEY, STRIPE_CURRENCY_CODE } from '~/utils/get_env_source';
 import { getCart } from '~/sessions/shoppingcart.session';
 import { getTransactionObject } from '~/sessions/transaction.session';
 import { fetchCategories } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
+import type { PriceInfo } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
-import type { PriceInfo } from '~/shared/cart';
+import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 import { useSearchSuggests } from './hooks/auto-complete-search';
 
@@ -134,6 +137,46 @@ function CheckoutLayout() {
 
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [suggests, searchSuggests] = useSearchSuggests();
+  const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
+  const { submit } = useFetcherWithPromise();
+  const search = useFetcher();
+
+  const handleSearch = (query: string) => {
+    search.submit({ query }, { method: 'post', action: '/search' });
+  };
+
+  const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
+    const data = await submit(
+      { query },
+      {
+        method: 'post',
+        action: '/hooks/auto-complete-search?index'
+      }
+    );
+
+    let suggestItems: SuggestItem[] = [];
+    const products: any[] = data.results;
+
+    if (products.length > 0) {
+      suggestItems = products.map<SuggestItem>((product) => {
+        return {
+          title: product.title,
+          data: {
+            title: product.title,
+            image: product.main_pic,
+            discount: product.discount,
+            productID: product.productUUID,
+          },
+        };
+      });
+    }
+
+    return suggestItems;
+  }
+
+  const handleOpen = () => setOpenSearchDialog(true);
+
+  const handleClose = () => setOpenSearchDialog(false);
 
   const options: StripeElementsOptions = {
     // passing the client secret obtained in step 2
@@ -154,23 +197,37 @@ function CheckoutLayout() {
 
   return (
     <>
-      <CategoryContext.Provider value={categories}>
-        <Form action='/search'>
-          <Header
-            searchBar={
-              <DropDownSearchBar
-                form='index-search-product'
-                placeholder='Search products by name'
-                onDropdownSearch={searchSuggests}
-                results={suggests}
-              />
-            }
-            categoriesBar={<CategoriesNav categories={categories} />}
-          />
-        </Form>
-      </CategoryContext.Provider>
+      <Form action='/search'>
+        <MobileSearchDialog
+          onBack={handleClose}
+          isOpen={openSearchDialog}
+          onSearchRequest={handleSearchRequest}
+          onSearch={handleSearch}
+        />
+        <Header
+          categories={categories}
+          searchBar={
+            <DropDownSearchBar
+              form='index-search-product'
+              placeholder='Search products by name'
+              onDropdownSearch={searchSuggests}
+              results={suggests}
+              onSearch={handleSearch}
+            />
+          }
 
-      <main className="pt-20 min-h-[35rem] md:pt-36 flex justify-center">
+          mobileSearchBar={
+            <SearchBar
+              placeholder='Search keywords...'
+              onClick={handleOpen}
+            />
+          }
+
+          categoriesBar={<CategoriesNav categories={categories} />}
+        />
+      </Form>
+
+      <main className="min-h-[35rem] flex justify-center">
         {
           stripePromise && (
             <Elements

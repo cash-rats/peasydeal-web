@@ -1,17 +1,15 @@
-import type { ReactNode, CSSProperties, MouseEvent } from 'react';
+import type { ReactNode, CSSProperties } from 'react';
 
+import type { Category } from '~/shared/types';
 import LogoBar from '~/components/Header/components/LogoBar';
-import SearchBar from '~/components/SearchBar';
 
 interface LogoHeaderProps {
   searchBar?: ReactNode;
   navBar?: ReactNode;
   categoriesBar?: ReactNode;
+  mobileSearchBar?: ReactNode;
+  categories?: Category[];
   style?: CSSProperties | undefined;
-  disableMobileSearchBar: boolean;
-
-  mobileSearchBarPlaceHolder?: string;
-  onClickMobileSearchBar?: { (evt: MouseEvent<HTMLDivElement>): void };
 };
 
 // Wraps Logo and
@@ -19,10 +17,9 @@ function LogoHeader({
   searchBar = null,
   navBar = null,
   categoriesBar = null,
+  mobileSearchBar,
+  categories = [],
   style,
-  mobileSearchBarPlaceHolder = 'Search keywords...',
-  onClickMobileSearchBar,
-  disableMobileSearchBar,
 }: LogoHeaderProps) {
   return (
     <header
@@ -33,14 +30,15 @@ function LogoHeader({
           box-border
           z-10
           flex flex-col justify-center items-center
-          items-center max-w-screen-xl w-full
+          max-w-screen-xl w-full
           mx-1 md:mx-4
           mb-1
           mt-3 md:mt-1
           relative
         `}>
           <div className="flex w-full justify-between">
-            <LogoBar />
+            <LogoBar categories={categories} />
+
             {
               searchBar && (
                 <div className="
@@ -59,13 +57,13 @@ function LogoHeader({
             </div>
           </div>
 
-          <div className="w-full py-1 px-2 bg-white md:hidden">
-            <SearchBar
-              placeholder={mobileSearchBarPlaceHolder}
-              onClick={onClickMobileSearchBar}
-              disabled={disableMobileSearchBar}
-            />
-          </div>
+          {
+            mobileSearchBar && (
+              <div className="w-full py-1 px-2 bg-white md:hidden">
+                {mobileSearchBar}
+              </div>
+            )
+          }
         </div>
       </div>
 

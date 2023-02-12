@@ -49,7 +49,7 @@ function Footer({ categories }: FooterProps) {
           <div className="
             flex-1 flex flex-row items-center
             font-normal text-sm gap-4
-            600:justify-center
+            600:justify-start
           ">
             <span className="text-white capitalize">
               terms of service

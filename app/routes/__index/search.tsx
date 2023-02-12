@@ -12,7 +12,7 @@ import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadM
 
 import PageTitle from '~/components/PageTitle';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { fetchProductsByCategory } from './api';
+import { searchProducts } from './api';
 import productListStyles from './styles/ProductList.css';
 import searchStyles from './styles/Search.css';
 import { modToXItems } from './utils';
@@ -44,11 +44,11 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw json('no query provided', httpStatus.BAD_REQUEST);
   }
 
-  const products = await fetchProductsByCategory({
-    title: search,
+  const products = await searchProducts({
+    query: search,
     perpage: PAGE_LIMIT,
     page,
-  });
+  })
 
   if (products.length === 0) {
     throw json({ query: search }, httpStatus.NOT_FOUND);

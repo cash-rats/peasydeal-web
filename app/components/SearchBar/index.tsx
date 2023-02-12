@@ -16,7 +16,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type SearchBarProps = {
+interface SearchBarProps extends InputBaseProps {
   form?: string | undefined;
 
   name?: string;
@@ -40,7 +40,7 @@ type SearchBarProps = {
   placeholder?: string;
 
   onMountRef?: (ref: ForwardedRef<HTMLInputElement>) => void;
-} & InputBaseProps;
+};
 
 const isStringEmpty = (str: string): boolean => str.trim().length === 0;
 
@@ -150,4 +150,4 @@ function SearchBar({
   );
 }
 
-export default forwardRef<SearchBarProps, HTMLInputElement>(SearchBar);
+export default forwardRef(SearchBar);

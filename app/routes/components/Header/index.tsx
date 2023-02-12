@@ -71,11 +71,8 @@ function HeaderRoute(props: HeaderRouteProps) {
 
   return (
     <Header
-      form={props.form}
-      categoriesBar={props.categoriesBar}
+      {...props}
       numOfItemsInCart={numOfItemsInCart}
-      searchBar={props.searchBar}
-      onSearch={props.onSearch}
     />
   );
 }

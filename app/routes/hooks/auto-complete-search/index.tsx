@@ -10,7 +10,8 @@ import { json } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 
 import type { Product, SuggestItem } from '~/shared/types';
-import { fetchProductsByCategory } from '~/api';
+
+import { searchProductPreviews } from './api.server';
 
 type ActionType = {
   results: Product[];
@@ -24,9 +25,9 @@ export const action: ActionFunction = async ({ request }) => {
     return null;
   }
 
-  const results = await fetchProductsByCategory({ title: query, perpage: 6 });
-
-  return json<ActionType>({ results });
+  return json<ActionType>({
+    results: await searchProductPreviews({ query, perPage: 6 })
+  });
 };
 
 export type SearchSuggest = (query: string) => void
