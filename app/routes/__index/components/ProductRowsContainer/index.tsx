@@ -3,7 +3,7 @@ import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 import clsx from 'clsx';
 
-import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
+import { OneMainTwoSubs, EvenRow, ProductRow } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import ActivityBannerLayout, { links as ActivityBannerLayoutLinks } from '~/components/ActivityBannerLayout';
@@ -237,18 +237,33 @@ function ProductRowsContainer({
   onClickAddToCart = () => { },
 }: ProductRowsContainerProps) {
   return (
-    <div className="productRowsContainer__wrapper">
+    <div className='w-full'>
       {
         loading
           ? (<LoadingRows />)
           : (
-            <RealRows
-              scrollPosition={scrollPosition}
-              productRows={productRows}
-              activityBanners={activityBanners}
-              seasonals={seasonals}
-              onClickProduct={onClickProduct}
-            />
+            productRows.map((row: Product[], index) => {
+              return (
+                <div
+                  className='w-full max-w-screen-xl mx-auto'
+                  key={`product-row-${index}`}
+                >
+                  <ProductRow
+                    products={row}
+                    scrollPosition={scrollPosition}
+                    onClickProduct={onClickProduct}
+                  />
+                </div>
+              );
+            })
+
+            // <RealRows
+            //   scrollPosition={scrollPosition}
+            //   productRows={productRows}
+            //   activityBanners={activityBanners}
+            //   seasonals={seasonals}
+            //   onClickProduct={onClickProduct}
+            // />
           )
       }
     </div>

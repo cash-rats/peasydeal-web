@@ -39,7 +39,7 @@ import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import styles from './styles/ProductList.css';
 import { fetchProductsByCategoryV2 } from "./api";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { organizeTo9ProdsPerRow } from "./utils";
+import { modToXItems } from "./utils";
 
 type LoaderDataType = {
   categories: CategoriesMap;
@@ -192,7 +192,9 @@ function Collection({ scrollPosition }: CollectionProps) {
   const { category, products, page, has_more, categories } = useLoaderData<LoaderDataType>();
 
   // "productRows" is for displaying products on the screen.
-  const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
+  const [productRows, setProductRows] = useState<Product[][]>(
+    modToXItems(products, 8)
+  );
 
   const [hasMore, setHasMore] = useState(has_more);
   const currPage = useRef(page);
@@ -202,7 +204,7 @@ function Collection({ scrollPosition }: CollectionProps) {
 
   // For any subsequent change of category, we will update current product info coming from loader data.
   useEffect(() => {
-    setProductRows(organizeTo9ProdsPerRow(products));
+    setProductRows(modToXItems(products, 8));
     currPage.current = page;
     setHasMore(has_more);
   }, [category]);
@@ -224,7 +226,7 @@ function Collection({ scrollPosition }: CollectionProps) {
 
       setHasMore(has_more);
 
-      setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
+      setProductRows(prev => prev.concat(modToXItems(products)));
     }
   }, [loadmoreFetcher.type, category]);
 
@@ -283,13 +285,11 @@ function Collection({ scrollPosition }: CollectionProps) {
         subtitle={category.description}
       />
 
-      <div className="ProductList__container">
-        <ProductRowsContainer
-          loading={isChangingCategory}
-          productRows={productRows}
-          scrollPosition={scrollPosition}
-        />
-      </div>
+      <ProductRowsContainer
+        loading={isChangingCategory}
+        productRows={productRows}
+        scrollPosition={scrollPosition}
+      />
 
       <div className="ProductList__loadmore-container">
         {

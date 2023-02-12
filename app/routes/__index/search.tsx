@@ -15,7 +15,7 @@ import ProductRowsContainer, { links as ProductRowsContainerLinks } from './comp
 import { fetchProductsByCategory } from './api';
 import productListStyles from './styles/ProductList.css';
 import searchStyles from './styles/Search.css';
-import { organizeTo9ProdsPerRow } from './utils';
+import { modToXItems } from './utils';
 
 export const links: LinksFunction = () => {
   return [
@@ -57,7 +57,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   let prodRows: Product[][] = [];
 
   if (products.length > 0) {
-    prodRows = organizeTo9ProdsPerRow(products);
+    prodRows = modToXItems(products);
   }
 
   return json<LoaderType>({
@@ -161,7 +161,9 @@ export default function Search() {
 
   return (
     <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">
-      <PageTitle title={`Search results for "${query}"`} />
+      <PageTitle
+        title={`Search results for "${query}"`}
+      />
 
       <div className="pt-8">
         <ProductRowsContainer

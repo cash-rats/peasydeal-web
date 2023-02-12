@@ -24,7 +24,7 @@ import { fetchActivityBanners, fetchProductsByCategoryV2 } from "./api";
 import type { ActivityBanner } from "./types";
 
 import styles from "./styles/ProductList.css";
-import { organizeTo9ProdsPerRow } from './utils';
+import { modToXItems } from './utils';
 
 type LoaderType = 'loadmore';
 
@@ -190,7 +190,7 @@ function Index({ scrollPosition }: IndexProps) {
 	const { products, has_more, page, activity_banners } = useLoaderData<LoaderDataType>();
 	const currPage = useRef(page);
 	const [hasMore, setHasMore] = useState(has_more);
-	const [productRows, setProductRows] = useState<Product[][]>(organizeTo9ProdsPerRow(products));
+	const [productRows, setProductRows] = useState<Product[][]>(modToXItems(products));
 	const transition = useTransition();
 
 	// Transition to observe when preload the first page of the product list render
@@ -220,7 +220,7 @@ function Index({ scrollPosition }: IndexProps) {
 
 			// Current page fetched successfully, increase page number getting ready to fetch next page.
 			currPage.current += 1;
-			setProductRows(prev => prev.concat(organizeTo9ProdsPerRow(products)));
+			setProductRows(prev => prev.concat(modToXItems(products)));
 		}
 	}, [loadmoreFetcher.type])
 

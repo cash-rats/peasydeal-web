@@ -1,1 +1,1 @@
-export { organizeTo9ProdsPerRow } from '~/routes/__index/utils';
+export { modToXItems } from '~/routes/__index/utils';

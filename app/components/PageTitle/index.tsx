@@ -2,7 +2,7 @@ import bg from './images/category_bg.jpg';
 
 interface PageTitleProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
 }
 
 export default function PageTitle({
@@ -30,10 +30,12 @@ export default function PageTitle({
         `}>
           {title}
         </h1>
-        <h2 className={`
-          text-lg md:text-xl
-          font-bold
-        `}>{subtitle}</h2>
+        {
+          subtitle ? <h2 className={`
+            text-lg md:text-xl
+            font-bold
+          `}>{subtitle}</h2> : null
+        }
       </div>
     </div>
   )

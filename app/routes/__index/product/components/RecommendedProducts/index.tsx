@@ -9,7 +9,7 @@ import type { Product } from '~/shared/types';
 // because route `__index/index` already loaded it. If we load it
 // again react would echo a error saying duplicate css being loaded
 import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
-import { organizeTo9ProdsPerRow } from '~/utils/products';
+import { modToXItems } from '~/utils/products';
 import { fetchCategories, normalizeToMap } from '~/api/categories.server';
 import { fetchProductsByCategoryV2 } from '~/api';
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -90,7 +90,7 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
       // Transform before using it.
       if (products.length > 0) {
 
-        const rows = organizeTo9ProdsPerRow(products);
+        const rows = modToXItems(products);
         setRows(rows)
       }
     }
