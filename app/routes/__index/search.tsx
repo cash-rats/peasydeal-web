@@ -12,7 +12,7 @@ import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadM
 
 import PageTitle from '~/components/PageTitle';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { fetchProductsByCategory, searchProducts } from './api';
+import { searchProducts } from './api';
 import productListStyles from './styles/ProductList.css';
 import searchStyles from './styles/Search.css';
 import { organizeTo9ProdsPerRow } from './utils';

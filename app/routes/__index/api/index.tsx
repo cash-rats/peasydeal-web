@@ -143,9 +143,14 @@ export interface SearchProductsParams {
 	page?: number;
 };
 
-export const searchProducts = async ({ query, perpage, page }: SearchProductsParams) => {
-	let endpoint = `${PEASY_DEAL_ENDPOINT}/v1/products/search?query=${query}&per_page=${perpage}&page=${page}`;
-	const resp = await fetch(endpoint);
+export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchProductsParams) => {
+	const url = new URL(PEASY_DEAL_ENDPOINT);
+	url.pathname = '/v1/products/search';
+	url.searchParams.append('query', query);
+	url.searchParams.append('per_page', perpage.toString());
+	url.searchParams.append('page', page.toString());
+
+	const resp = await fetch(url.toString());
 	const respJSON = await resp.json();
 
 	if (resp.status !== httpStatus.OK) {
