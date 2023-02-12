@@ -25,9 +25,9 @@ export const action: ActionFunction = async ({ request }) => {
     return null;
   }
 
-  const results = await searchProductPreviews({ query, perPage: 6 });
-
-  return json<ActionType>({ results });
+  return json<ActionType>({
+    results: await searchProductPreviews({ query, perPage: 6 })
+  });
 };
 
 export type SearchSuggest = (query: string) => void

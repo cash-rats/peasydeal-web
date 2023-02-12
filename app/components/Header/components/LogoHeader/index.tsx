@@ -1,5 +1,6 @@
 import type { ReactNode, CSSProperties } from 'react';
 
+import type { Category } from '~/shared/types';
 import LogoBar from '~/components/Header/components/LogoBar';
 
 interface LogoHeaderProps {
@@ -7,6 +8,7 @@ interface LogoHeaderProps {
   navBar?: ReactNode;
   categoriesBar?: ReactNode;
   mobileSearchBar?: ReactNode;
+  categories?: Category[];
   style?: CSSProperties | undefined;
 };
 
@@ -15,10 +17,9 @@ function LogoHeader({
   searchBar = null,
   navBar = null,
   categoriesBar = null,
-  style,
-
   mobileSearchBar,
-
+  categories = [],
+  style,
 }: LogoHeaderProps) {
   return (
     <header
@@ -36,7 +37,8 @@ function LogoHeader({
           relative
         `}>
           <div className="flex w-full justify-between">
-            <LogoBar />
+            <LogoBar categories={categories} />
+
             {
               searchBar && (
                 <div className="

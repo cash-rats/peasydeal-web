@@ -1,4 +1,3 @@
-import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { FiShoppingCart } from 'react-icons/fi';
@@ -18,16 +17,10 @@ interface NavBarProps {
 	 * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
 	 */
 	cartItemCount?: number;
-
-	/*
-	 * Open full screen search bar on mobile view. (Only works on mobile view)
-	 */
-	onClickSearch?: { (evt: MouseEvent<HTMLButtonElement>): void },
-
 }
 
 // Load shopping cart items.
-function NavBar({ cartItemCount = 0, onClickSearch = () => { } }: NavBarProps) {
+function NavBar({ cartItemCount = 0 }: NavBarProps) {
 	return (
 		<nav className="flex flex-1">
 			<ul className="list-none p-0 items-center flex justify-center gap-5">
