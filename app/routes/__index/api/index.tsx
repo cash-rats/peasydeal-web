@@ -58,8 +58,6 @@ export const fetchProductsByCategory = async ({
 		endpoint = `${endpoint}&title=${encodeURI(title)}`;
 	}
 
-	console.log('debug 1 ', endpoint);
-
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
 
@@ -111,10 +109,49 @@ export const fetchProductsByCategoryV2 = async ({
 
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
-
 		throw new Error(errResp.err_message);
 	}
 
 	const prods = transformData(respJSON.products);
 	return prods;
+}
+
+const transformSearchProduct = (apiData: any[]): Product[] => {
+	const transformed: Product[] = apiData.map((data: any): Product => {
+		return {
+			currency: data.currency,
+			description: data.description || '',
+			discount: data.discount,
+			main_pic: data.images[0],
+			productUUID: data.product_uuid,
+			retailPrice: data.retail_price,
+			salePrice: data.sale_price,
+			shortDescription: data.shortDescription,
+			subtitle: data.subtitle,
+			title: data.title,
+			variationID: data.variationId || '',
+			tabComboType: data.tag_combo_type,
+		};
+	})
+
+	return transformed;
+}
+
+export interface SearchProductsParams {
+	query: string;
+	perpage?: number;
+	page?: number;
+};
+
+export const searchProducts = async ({ query, perpage, page }: SearchProductsParams) => {
+	let endpoint = `${PEASY_DEAL_ENDPOINT}/v1/products/search?query=${query}&per_page=${perpage}&page=${page}`;
+	const resp = await fetch(endpoint);
+	const respJSON = await resp.json();
+
+	if (resp.status !== httpStatus.OK) {
+		const errResp = respJSON as ApiErrorResponse;
+		throw new Error(errResp.err_message);
+	}
+
+	return transformSearchProduct(respJSON.items);
 }

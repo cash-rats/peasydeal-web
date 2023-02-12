@@ -33,7 +33,7 @@ function LogoHeader({
           box-border
           z-10
           flex flex-col justify-center items-center
-          items-center max-w-screen-xl w-full
+          max-w-screen-xl w-full
           mx-1 md:mx-4
           mb-1
           mt-3 md:mt-1
