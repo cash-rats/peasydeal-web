@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, useFetcher, Form } from '@remix-run/react';
 
-import CategoryContext from '~/context/categories';
+import SearchBar from '~/components/SearchBar';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
@@ -12,6 +13,9 @@ import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import type { Category } from '~/shared/types';
 import { fetchCategories } from '~/api/categories.server';
 import { getItemCount } from '~/sessions/shoppingcart.session';
+import MobileSearchDialog from '~/components/MobileSearchDialog'
+import type { SuggestItem } from '~/shared/types';
+import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 type LoaderDataType = {
   categories: Category[];
@@ -37,34 +41,82 @@ export const loader: LoaderFunction = async ({ request }) => {
 function GlobalSplatFourOhFour() {
   const { categories, numOfItemsInCart } = useLoaderData<LoaderDataType>();
   const [suggests, searchSuggests] = useSearchSuggests();
+  const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
   const search = useFetcher();
+  const { submit } = useFetcherWithPromise();
+
   const handleSearch = (query: string) => {
     search.submit({ query }, { method: 'post', action: '/search' });
   }
 
+  const handleOpen = () => setOpenSearchDialog(true);
+
+  const handleClose = () => setOpenSearchDialog(false);
+
+  const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
+    const data = await submit(
+      { query },
+      {
+        method: 'post',
+        action: '/hooks/auto-complete-search?index'
+      }
+    );
+
+    let suggestItems: SuggestItem[] = [];
+    const products: any[] = data.results;
+
+    if (products.length > 0) {
+      suggestItems = products.map<SuggestItem>((product) => {
+        return {
+          title: product.title,
+          data: {
+            title: product.title,
+            image: product.main_pic,
+            discount: product.discount,
+            productID: product.productUUID,
+          },
+        };
+      });
+    }
+
+    return suggestItems;
+  }
+
   return (
     <div className="pt-48 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light">
-      <CategoryContext.Provider value={categories}>
-        <Form action='/search'>
-          <Header
-            categoriesBar={
-              <CategoriesNav categories={categories} />
-            }
+      <Form action='/search'>
 
-            searchBar={
-              <DropDownSearchBar
-                placeholder='Search products by name'
-                onDropdownSearch={searchSuggests}
-                results={suggests}
-                onSearch={handleSearch}
-              />
-            }
-            numOfItemsInCart={numOfItemsInCart}
-            onSearch={handleSearch}
-          />
-        </Form>
-      </CategoryContext.Provider>
+        <MobileSearchDialog
+          onBack={handleClose}
+          isOpen={openSearchDialog}
+          onSearchRequest={handleSearchRequest}
+          onSearch={handleSearch}
+        />
+        <Header
+          categories={categories}
 
+          mobileSearchBar={
+            <SearchBar
+              placeholder='Search keywords...'
+              onClick={handleOpen}
+            />
+          }
+
+          categoriesBar={
+            <CategoriesNav categories={categories} />
+          }
+
+          searchBar={
+            <DropDownSearchBar
+              placeholder='Search products by name'
+              onDropdownSearch={searchSuggests}
+              results={suggests}
+              onSearch={handleSearch}
+            />
+          }
+          numOfItemsInCart={numOfItemsInCart}
+        />
+      </Form>
       <FourOhFour />
 
       <Footer />
