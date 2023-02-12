@@ -1,17 +1,13 @@
-import type { ReactNode, CSSProperties, MouseEvent } from 'react';
+import type { ReactNode, CSSProperties } from 'react';
 
 import LogoBar from '~/components/Header/components/LogoBar';
-import SearchBar from '~/components/SearchBar';
 
 interface LogoHeaderProps {
   searchBar?: ReactNode;
   navBar?: ReactNode;
   categoriesBar?: ReactNode;
+  mobileSearchBar?: ReactNode;
   style?: CSSProperties | undefined;
-  disableMobileSearchBar: boolean;
-
-  mobileSearchBarPlaceHolder?: string;
-  onClickMobileSearchBar?: { (evt: MouseEvent<HTMLDivElement>): void };
 };
 
 // Wraps Logo and
@@ -20,9 +16,9 @@ function LogoHeader({
   navBar = null,
   categoriesBar = null,
   style,
-  mobileSearchBarPlaceHolder = 'Search keywords...',
-  onClickMobileSearchBar,
-  disableMobileSearchBar,
+
+  mobileSearchBar,
+
 }: LogoHeaderProps) {
   return (
     <header
@@ -59,13 +55,13 @@ function LogoHeader({
             </div>
           </div>
 
-          <div className="w-full py-1 px-2 bg-white md:hidden">
-            <SearchBar
-              placeholder={mobileSearchBarPlaceHolder}
-              onClick={onClickMobileSearchBar}
-              disabled={disableMobileSearchBar}
-            />
-          </div>
+          {
+            mobileSearchBar && (
+              <div className="w-full py-1 px-2 bg-white md:hidden">
+                {mobileSearchBar}
+              </div>
+            )
+          }
         </div>
       </div>
 

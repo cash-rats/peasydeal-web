@@ -4,8 +4,9 @@ import type { LinksFunction } from '@remix-run/node';
 
 import type { SuggestItem } from '~/shared/types';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
-import { fetchProductsByCategory } from '~/api';
+import { searchProductPreviews } from '~/api';
 import useCheckScrolled from '~/hooks/useCheckScrolled';
+import SearchBar from '~/components/SearchBar';
 
 import AnnouncementBanner from './components/AnnouncementBanner';
 import LogoHeader from "./components/LogoHeader";
@@ -15,8 +16,6 @@ import PropBar from './components/PropBar';
 export const links: LinksFunction = () => {
   return [...NavBarLinks(),];
 };
-
-type HeaderType = 'product_search' | 'order_search';
 
 export interface HeaderProps {
   categoriesBar?: ReactNode;
@@ -29,15 +28,6 @@ export interface HeaderProps {
   numOfItemsInCart?: number;
 
   onSearch?: (query: string) => void;
-
-  mobileSearchBarPlaceholder?: string;
-
-  // headerType effects how `onClickMobileSearchBar` is handled.
-  // when we are at `/tracking`, we don't want to open the search dialog
-  // like other pages.
-  // When `HeaderType` is 'order_search' the search bar will be an normal input.
-  // When it's 'product_search' the search bar will open `MobileSearchDialog`.
-  headerType?: HeaderType;
 };
 
 function Header({
@@ -45,8 +35,6 @@ function Header({
   searchBar,
   numOfItemsInCart = 0,
   onSearch = () => { },
-  mobileSearchBarPlaceholder,
-  headerType = 'product_search',
 }: HeaderProps) {
   const announcementHeight = 52;
   const [openSearchDialog, setOpenSearchDialog] = useState(false);
@@ -73,7 +61,7 @@ function Header({
   }
 
   const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
-    const products = await fetchProductsByCategory({ title: query });
+    const products = await searchProductPreviews({ query, perPage: 8 });
 
     let suggestItems: SuggestItem[] = [];
 
@@ -92,12 +80,11 @@ function Header({
       });
     }
 
+
     return suggestItems;
   }
 
-  const onClickMobileSearchHandler = headerType === 'order_search'
-    ? () => { }
-    : handleOnClickMobileSearch;
+
 
   return (
     <div className='relative'>
@@ -110,7 +97,7 @@ function Header({
 
       <div
         ref={announcementBarRef}
-        className={`fixed top-0 w-full ${!openAnnouncement ? 'hidden': 'flex'}`}
+        className={`fixed top-0 w-full ${!openAnnouncement ? 'hidden' : 'flex'}`}
       >
         <AnnouncementBanner
           open={openAnnouncement}
@@ -129,9 +116,13 @@ function Header({
       >
         <LogoHeader
           searchBar={searchBar}
-          onClickMobileSearchBar={onClickMobileSearchHandler}
-          mobileSearchBarPlaceHolder={mobileSearchBarPlaceholder}
-          disableMobileSearchBar={headerType === 'product_search'}
+
+          mobileSearchBar={
+            <SearchBar
+              placeholder='Search keywords...'
+              onClick={handleOnClickMobileSearch}
+            />
+          }
 
           // right status bar, cart, search icon...etc
           navBar={
@@ -150,7 +141,7 @@ function Header({
         />
       </div>
 
-      <div style={{ paddingTop: `${navBarHeight + fixedTop}px`}}>
+      <div style={{ paddingTop: `${navBarHeight + fixedTop}px` }}>
         <PropBar />
       </div>
     </div>

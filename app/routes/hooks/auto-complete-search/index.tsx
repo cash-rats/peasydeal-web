@@ -11,7 +11,7 @@ import { useFetcher } from '@remix-run/react';
 
 import type { Product, SuggestItem } from '~/shared/types';
 
-import searchProductPreviews from './api.server';
+import { searchProductPreviews } from './api.server';
 
 type ActionType = {
   results: Product[];

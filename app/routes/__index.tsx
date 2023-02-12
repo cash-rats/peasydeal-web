@@ -55,9 +55,11 @@ export default function Index() {
 					<Form action='/search'>
 						<Header
 							form='index-search-product'
+
 							categoriesBar={
 								<CategoriesNav categories={categories} />
 							}
+
 							searchBar={
 								<DropDownSearchBar
 									form='index-search-product'
@@ -67,6 +69,7 @@ export default function Index() {
 									onSearch={handleSearch}
 								/>
 							}
+
 							onSearch={handleSearch}
 						/>
 					</Form>
