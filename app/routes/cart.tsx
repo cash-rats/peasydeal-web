@@ -1,13 +1,15 @@
+import { useState } from 'react';
 import { Outlet } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Form, useFetcher } from '@remix-run/react';
 import type { DynamicLinksFunction } from 'remix-utils';
 
-import CategoryContext from '~/context/categories';
-import { getItemCount } from '~/sessions/shoppingcart.session';
+import type { SuggestItem } from '~/shared/types';
+import MobileSearchDialog from '~/components/MobileSearchDialog'
+import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
@@ -18,6 +20,7 @@ import {
   getCanonicalDomain,
   getCartFBSEO,
 } from '~/utils/seo';
+import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 import cartStyles from './styles/cart.css';
 
@@ -47,52 +50,95 @@ export const links: LinksFunction = () => {
 };
 
 type LoaderType = {
-  cartItemCount: number;
   categories: Category[];
   canonicalLink: string;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const categories = await fetchCategories();
-  const cartItemCount = await getItemCount(request);
 
   return json<LoaderType>({
-    cartItemCount,
     categories,
     canonicalLink: `${getCanonicalDomain()}/cart`
   });
 }
 
 function CartLayout() {
-  const { cartItemCount, categories } = useLoaderData<LoaderType>();
+  const { categories } = useLoaderData<LoaderType>();
   const [suggests, searchSuggests] = useSearchSuggests();
+  const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
   const search = useFetcher();
   const handleSearch = (query: string) => {
     search.submit({ query }, { method: 'post', action: '/search' });
   }
 
+  const handleOpen = () => setOpenSearchDialog(true);
+
+  const handleClose = () => setOpenSearchDialog(false);
+  const { submit } = useFetcherWithPromise();
+
+  const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
+    const data = await submit(
+      { query },
+      {
+        method: 'post',
+        action: '/hooks/auto-complete-search?index'
+      }
+    );
+
+    let suggestItems: SuggestItem[] = [];
+    const products: any[] = data.results;
+
+    if (products.length > 0) {
+      suggestItems = products.map<SuggestItem>((product) => {
+        return {
+          title: product.title,
+          data: {
+            title: product.title,
+            image: product.main_pic,
+            discount: product.discount,
+            productID: product.productUUID,
+          },
+        };
+      });
+    }
+
+    return suggestItems;
+  }
+
   return (
     <div>
-      <CategoryContext.Provider value={categories}>
-        <Form action='/search' >
-          <Header
-            form='cart-search-products'
-            numOfItemsInCart={cartItemCount}
-            searchBar={
-              <DropDownSearchBar
-                form='cart-search-products'
-                placeholder='Search products by name'
-                onDropdownSearch={searchSuggests}
-                results={suggests}
-                onSearch={handleSearch}
-              />
-            }
-            onSearch={handleSearch}
-            categoriesBar={<CategoriesNav categories={categories} />}
-          />
-        </Form>
-      </CategoryContext.Provider>
+      <Form action='/search' >
+        <MobileSearchDialog
+          onBack={handleClose}
+          isOpen={openSearchDialog}
+          onSearchRequest={handleSearchRequest}
+          onSearch={handleSearch}
+        />
+
+        <Header
+          categories={categories}
+
+          mobileSearchBar={
+            <SearchBar
+              placeholder='Search keywords...'
+              onClick={handleOpen}
+            />
+          }
+
+          searchBar={
+            <DropDownSearchBar
+              form='cart-search-products'
+              placeholder='Search products by name'
+              onDropdownSearch={searchSuggests}
+              results={suggests}
+              onSearch={handleSearch}
+            />
+          }
+          categoriesBar={<CategoriesNav categories={categories} />}
+        />
+      </Form>
 
       <main>
         <Outlet />

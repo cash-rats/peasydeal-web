@@ -16,7 +16,6 @@ import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
 import { fetchCategories } from '~/api';
 import type { Category } from '~/shared/types';
-import CategoryContext from '~/context/categories';
 
 import TrackingOrderInfo from './components/TrackingOrderInfo';
 import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
@@ -158,22 +157,20 @@ export const CatchBoundary = () => {
         }
       }
     ]}>
-      <CategoryContext.Provider value={caughtData.categories}>
-        <Form action='/tracking'>
-          <Header
-            headerType='order_search'
-            numOfItemsInCart={caughtData.numOfItemsInCart}
-            searchBar={
-              <SearchBar
-                disabled={disableDesktopSearchBar}
-                onSearch={handleOnSearch}
-                onClear={handleOnClear}
-                placeholder='Search by order id'
-              />
-            }
-          />
-        </Form>
-      </CategoryContext.Provider>
+      <Form action='/tracking'>
+        <Header
+          categories={caughtData.categories}
+          numOfItemsInCart={caughtData.numOfItemsInCart}
+          searchBar={
+            <SearchBar
+              disabled={disableDesktopSearchBar}
+              onSearch={handleOnSearch}
+              onClear={handleOnClear}
+              placeholder='Search by order id'
+            />
+          }
+        />
+      </Form>
 
       <TrackingOrderErrorPage message={caughtData.errMessage} />
 
@@ -225,16 +222,13 @@ function TrackingOrder() {
         }
       }
     ]}>
-      <CategoryContext.Provider value={categories}>
-        <Form action='/tracking'>
-          <Header
-            headerType='order_search'
-            numOfItemsInCart={numOfItemsInCart}
-            mobileSearchBarPlaceholder='Search by order id...'
-            searchBar={<div />}
-          />
-        </Form>
-      </CategoryContext.Provider>
+      <Form action='/tracking'>
+        <Header
+          categories={categories}
+          numOfItemsInCart={numOfItemsInCart}
+          searchBar={<div />}
+        />
+      </Form>
 
       <main>
         {/* order search form */}

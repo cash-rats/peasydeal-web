@@ -8,8 +8,8 @@ import {
 	Form,
 	useFetcher,
 } from "@remix-run/react";
-import SearchBar from '~/components/SearchBar';
 
+import SearchBar from '~/components/SearchBar';
 import type { SuggestItem } from '~/shared/types';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
