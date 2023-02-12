@@ -21,6 +21,7 @@ import { getBrowserDomainUrl } from '~/utils/misc';
 import { useContext } from '~/routes/checkout';
 import { getCart } from '~/sessions/shoppingcart.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
+import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
@@ -29,7 +30,6 @@ import type { Option } from './components/ShippingDetailForm/api.server';
 import CartSummary from './components/CartSummary';
 import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
 import type { PaypalCreateOrderResponse } from './api';
-import useFetcherWithPromise from './hooks/useFetcherWithPromise';
 import reducer, { ActionTypes as ReducerActionTypes, initState } from './reducer';
 import type { StateShape } from './reducer';
 import {
