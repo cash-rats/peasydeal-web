@@ -5,21 +5,19 @@ import { useLoaderData, useFetcher, Form } from '@remix-run/react';
 
 import SearchBar from '~/components/SearchBar';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
-import Header, { links as HeaderLinks } from '~/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import type { Category } from '~/shared/types';
 import { fetchCategories } from '~/api/categories.server';
-import { getItemCount } from '~/sessions/shoppingcart.session';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import type { SuggestItem } from '~/shared/types';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 type LoaderDataType = {
   categories: Category[];
-  numOfItemsInCart: number;
 };
 
 export const links: LinksFunction = () => {
@@ -34,12 +32,11 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const cats = await fetchCategories();
-  const numOfItemsInCart = await getItemCount(request);
-  return json<LoaderDataType>({ categories: cats, numOfItemsInCart });
+  return json<LoaderDataType>({ categories: cats });
 }
 
 function GlobalSplatFourOhFour() {
-  const { categories, numOfItemsInCart } = useLoaderData<LoaderDataType>();
+  const { categories } = useLoaderData<LoaderDataType>();
   const [suggests, searchSuggests] = useSearchSuggests();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
   const search = useFetcher();
@@ -114,7 +111,6 @@ function GlobalSplatFourOhFour() {
               onSearch={handleSearch}
             />
           }
-          numOfItemsInCart={numOfItemsInCart}
         />
       </Form>
       <FourOhFour />
