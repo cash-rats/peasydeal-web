@@ -227,7 +227,7 @@ function CheckoutLayout() {
         />
       </Form>
 
-      <main className="pt-20 min-h-[35rem] md:pt-36 flex justify-center">
+      <main className="min-h-[35rem] flex justify-center">
         {
           stripePromise && (
             <Elements
