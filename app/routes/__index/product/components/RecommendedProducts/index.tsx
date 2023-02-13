@@ -42,8 +42,6 @@ export const action: ActionFunction = async ({ request }) => {
     perpage: PAGE_LIMIT,
   });
 
-  console.log('debug~~**', products)
-
   return json<ActionDataType>({ products });
 }
 

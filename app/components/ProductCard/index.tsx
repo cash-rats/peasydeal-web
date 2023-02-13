@@ -96,8 +96,6 @@ export default function ProductCard({
 
   if (!product) return null;
 
-  console.log(product, tags, priceOff);
-
   const bgImage = loaded ? { backgroundImage: `url('${mainPic}')` } : {};
 
 

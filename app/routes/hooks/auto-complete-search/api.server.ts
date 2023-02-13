@@ -11,19 +11,13 @@ export interface SearchProductPreviewsParams {
 }
 
 const searchProductPreviews = async ({ query, page = 1, perPage = 8 }: SearchProductPreviewsParams): Promise<Product[]> => {
-  console.log('debug ** 1');
-
   const url = new URL(PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/products/search-previews';
   url.searchParams.append('query', query);
   url.searchParams.append('per_page', perPage.toString());
   url.searchParams.append('page', page.toString());
 
-  console.log('debug ** 2');
   const resp = await fetch(url.toString());
-
-  console.log('debug ** 3', resp);
-
   const respJSON = await resp.json();
 
   if (resp.status !== httpStatus.OK) {

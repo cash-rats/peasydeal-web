@@ -84,6 +84,28 @@ export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 	return respJSON as ActivityBanner[];
 }
 
+
+const normalizeV2Data = (apiData: any[]): Product[] => {
+	const transformed: Product[] = apiData.map((data: any): Product => {
+		return {
+			currency: data.currency,
+			description: '',
+			discount: data.discount,
+			main_pic: data.images[0],
+			productUUID: data.product_uuid,
+			retailPrice: data.retail_price,
+			salePrice: data.sale_price,
+			shortDescription: '',
+			subtitle: '',
+			title: data.title,
+			variationID: data.variationId,
+			tabComboType: data.tag_combo_type,
+			variations: data.variations,
+		};
+	})
+
+	return transformed;
+}
 export interface FetchProductsByCategoryV2Params {
 	category?: number;
 	perpage?: number;
@@ -101,8 +123,14 @@ export const fetchProductsByCategoryV2 = async ({
 	if (!page) page = 1;
 	if (!category) category = 1;
 
-	let endpoint = `${PEASY_DEAL_ENDPOINT}/v1/products?per_page=${perpage}&page=${page}&category=${category}&random=${random ? 'true' : 'false'}`;
-	const resp = await fetch(endpoint);
+	const url = new URL(PEASY_DEAL_ENDPOINT)
+	url.pathname = '/v1/products';
+	url.searchParams.append('per_page', perpage.toString());
+	url.searchParams.append('page', page.toString());
+	url.searchParams.append('category', category.toString());
+	url.searchParams.append('random', random ? 'true' : 'false');
+
+	const resp = await fetch(url.toString());
 	const respJSON = await resp.json();
 
 	if (resp.status !== httpStatus.OK) {
@@ -110,7 +138,7 @@ export const fetchProductsByCategoryV2 = async ({
 		throw new Error(errResp.err_message);
 	}
 
-	return normalizeData(respJSON.products);
+	return normalizeV2Data(respJSON.items);
 }
 
 const transformSearchProduct = (apiData: any[]): Product[] => {

@@ -37,8 +37,9 @@ export const links: LinksFunction = () => {
 type ContextType = { categories: Category[] };
 
 export const loader: LoaderFunction = async ({ request }) => {
-	const categories = await fetchCategories();
-	return json<LoaderType>({ categories: categories });
+	return json<LoaderType>({
+		categories: await fetchCategories(),
+	});
 };
 
 export default function Index() {

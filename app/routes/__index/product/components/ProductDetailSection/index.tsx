@@ -22,7 +22,6 @@ function ProductDetailSection({
 	description = '',
 	pics = [],
 }: ProductDetailSectionProps) {
-	// console.log('debug pics', pics);
 	return (
 		<div className="product-detail">
 			{/* Image container */}
