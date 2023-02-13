@@ -8,7 +8,7 @@ import Slider from 'react-slick';
 
 import { composeProductDetailURL } from '~/utils';
 import type { Product } from '~/shared/types';
-import { fetchProductsByCategory } from '~/api';
+import { fetchProductsByCategoryV2 } from '~/api';
 import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
 import { breakPoints } from '~/styles/breakpoints';
@@ -36,13 +36,13 @@ export const action: ActionFunction = async ({ request }) => {
   const catID = formEntries['catID'] || '2';
 
   // Fetch top seller & new trend.
-  const recProds = await fetchProductsByCategory({
+  const recProds = await fetchProductsByCategoryV2({
     category: Number(catID),
     perpage: 12,
-    random: 1,
+    random: true,
   });
 
-  return json<ActionType>({ recProds });
+  return json<ActionType>({ recProds: recProds });
 }
 
 interface HorizontalProductsLayoutProps {
