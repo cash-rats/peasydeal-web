@@ -3,7 +3,7 @@ import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 import clsx from 'clsx';
 
-import { OneMainTwoSubs, EvenRow, ProductRow } from "~/components/ProductRow";
+import { OneMainTwoSubs, EvenRow, ProductRow, ProductRowLinks } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import ActivityBannerLayout, { links as ActivityBannerLayoutLinks } from '~/components/ActivityBannerLayout';
@@ -18,6 +18,7 @@ export const links: LinksFunction = () => {
   return [
     ...OneMainTwoSubsLinks(),
     ...EvenRowLinks(),
+    ...ProductRowLinks(),
     ...ActivityBannerLayoutLinks(),
     ...ActivityColumnLayoutLinks(),
     { rel: 'stylesheet', href: styles },
