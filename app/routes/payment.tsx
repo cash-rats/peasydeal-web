@@ -106,7 +106,7 @@ export default function Payment() {
         />
       </Form>
 
-      <div className="pt-[144px] min-h-[35rem] flex justify-center">
+      <div className="min-h-[35rem] flex justify-center">
         <Outlet />
       </div>
 

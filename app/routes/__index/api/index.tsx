@@ -15,7 +15,7 @@ export interface FetchProductsByCategoryResponse {
 	products: Product[];
 }
 
-const transformData = (apiData: any[]): Product[] => {
+const normalizeData = (apiData: any[]): Product[] => {
 	const transformed: Product[] = apiData.map((data: any): Product => {
 		return {
 			currency: data.currency,
@@ -67,9 +67,7 @@ export const fetchProductsByCategory = async ({
 		throw new Error(errResp.err_message);
 	}
 
-	const prods = transformData(respJSON.products);
-
-	return prods;
+	return normalizeData(respJSON.products);
 }
 
 // We will interweave activity banners in between products list to make the screen
@@ -112,8 +110,7 @@ export const fetchProductsByCategoryV2 = async ({
 		throw new Error(errResp.err_message);
 	}
 
-	const prods = transformData(respJSON.products);
-	return prods;
+	return normalizeData(respJSON.products);
 }
 
 const transformSearchProduct = (apiData: any[]): Product[] => {

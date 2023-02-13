@@ -3,7 +3,6 @@ import type { MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { VscFlame } from "react-icons/vsc";
-
 import clsx from 'clsx';
 
 import type { Category } from '~/shared/types';

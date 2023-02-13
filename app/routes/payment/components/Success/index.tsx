@@ -67,7 +67,7 @@ function Success({ orderId }: { orderId: string }) {
       setOrderDetail(orderFetcher.data as SuccessOrderDetail);
 
       // Once we are done fetching order info and cleared cart,
-      //  Notify Header component to reload cart item count.
+      // Notify Header component to reload cart item count.
       cartItemCountFetcher.submit(
         null,
         {
@@ -80,7 +80,7 @@ function Success({ orderId }: { orderId: string }) {
   }, [orderFetcher]);
 
   return (
-    <div className="w-screen bg-[#f6f6f6] pt-8 px-[10px] pb-14">
+    <div className="w-screen bg-[#f6f6f6] px-[10px] pb-14">
       <div className="max-w-[650px] my-0 mx-auto flex flex-col justify-center items-center">
         {
           orderDetail && orderFetcher.type === 'done' ? (

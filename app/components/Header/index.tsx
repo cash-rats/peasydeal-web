@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
-import { Category } from '~/shared/types';
+import type { Category } from '~/shared/types';
 import useCheckScrolled from '~/hooks/useCheckScrolled';
 
 import AnnouncementBanner from './components/AnnouncementBanner';
@@ -11,7 +11,7 @@ import NavBar, { links as NavBarLinks } from './components/NavBar';
 import PropBar from './components/PropBar';
 
 export const links: LinksFunction = () => {
-  return [...NavBarLinks(),];
+  return [...NavBarLinks()];
 };
 
 export interface HeaderProps {

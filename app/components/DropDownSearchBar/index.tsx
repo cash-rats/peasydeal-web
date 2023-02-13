@@ -189,7 +189,12 @@ function DropDownSearchBar({
 
       {
         showDropdown && (
-          <div className="py-2 px-0 mt-1 bg-[white] rounded-lg shadow-[dropdown] absolute w-full z-10 border-solid border-[1px] border-header-border">
+          <div className="
+            py-2 px-0 mt-1
+            bg-[white] rounded-lg shadow-[dropdown]
+            absolute w-full z-10
+            border-solid border-[1px] border-header-border
+          ">
             {
               searchContent && (
                 <div className="grid grid-cols-2">
@@ -221,11 +226,10 @@ function DropDownSearchBar({
                           })}
                         >
                           <li className="
-                          py-2 px-4 cursor-pointer leading-5
-                          grid grid-cols-2
+                            py-2 px-4 cursor-pointer leading-5
+                            grid grid-cols-2
                           hover:bg-gray-hover-bg
-                          "
-                          >
+                          ">
                             <div className="flex flex-row">
                               <div>
                                 <img

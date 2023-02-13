@@ -39,7 +39,7 @@ const capitalizeWords = (str: string) => {
 }
 
 const getColorByTag = (tag: string) => {
-  switch(tag) {
+  switch (tag) {
     case 'hot_deal':
       return '#D43B33';
     case 'price_off':
@@ -50,8 +50,8 @@ const getColorByTag = (tag: string) => {
 }
 
 export default function ProductCard({
-	product,
-	onClickProduct = () => {},
+  product,
+  onClickProduct = () => { },
   scrollPosition,
 }: IProductCard) {
   const {
@@ -103,8 +103,8 @@ export default function ProductCard({
 
   return (
     <Link
-			// prefetch='intent'
-			to={composeProductDetailURL({ productName: title, variationUUID: productUUID })}
+      // prefetch='intent'
+      to={composeProductDetailURL({ productName: title, variationUUID: productUUID })}
     >
       <div className='
         flex flex-col
@@ -136,7 +136,7 @@ export default function ProductCard({
                 rounded-b-lg
                 text-white
               '>
-                <small className='font-bold'>{ priceOff }%</small>
+                <small className='font-bold'>{priceOff}%</small>
                 <small className='font-medium mt-[-3px]'>OFF</small>
               </div>
             ) : null
@@ -154,10 +154,8 @@ export default function ProductCard({
           src={mainPic}
           placeholder={
             <div className='block w-full h-full bg-[#efefef] animate-pulse aspect-square'
-          />}
+            />}
         />
-
-
 
         {/* TITLES */}
         <p
@@ -201,7 +199,7 @@ export default function ProductCard({
         <div className='flex space-x-2 mr-auto mt-auto items-center my-2'>
           <div className='relative'>
             <span>{retailPrice}</span>
-            <div className='block h-[1px] w-full bg-black absolute top-[10px]'/>
+            <div className='block h-[1px] w-full bg-black absolute top-[10px]' />
           </div>
           <div className='flex font-bold text-[#D02E7D] space-x-[1px] '>
             <small className='text-lg'>£</small>
