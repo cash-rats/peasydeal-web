@@ -26,12 +26,12 @@ export const transformData = (apiData: any[]): Product[] => {
 //  we need to organize list of products in a format of 2 dimensional array:
 //
 //  [
-//		[{}, {} ..., {}] <--- 9 prods each row.
+//		[{}, {} ..., {}] <--- 8 prods each row.
 //		[{}, {} ..., {}]
 //  ]
 //
 // So that frontend only needs to consider 9 products for each iteration.
-export const modToXItems = (prods: Product[], mod: number = 9): Product[][] => {
+export const modToXItems = (prods: Product[], mod: number = 8): Product[][] => {
   const rows: Product[][] = [];
   let row = []
 

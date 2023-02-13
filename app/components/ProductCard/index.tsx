@@ -4,14 +4,19 @@
  */
 import { useState, useMemo, useCallback } from 'react';
 import { Link } from '@remix-run/react';
+import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 import { LazyLoadImage } from "react-lazy-load-image-component";
+
 import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
 
 import { Button } from '@chakra-ui/react'
-import 'react-lazy-load-image-component/src/effects/blur.css';
+import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
 
+export const links: LinksFunction = () => {
+  return [{ rel: 'stylesheet', href: llimageStyle }];
+}
 
 interface IProductCard {
   product?: Product;

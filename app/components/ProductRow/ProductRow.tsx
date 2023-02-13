@@ -13,8 +13,8 @@ interface IProductRow {
 }
 
 export default function ProductRow({
-	products = [],
-	onClickProduct = () => {},
+  products = [],
+  onClickProduct = () => { },
   scrollPosition,
 }: IProductRow) {
   return (
