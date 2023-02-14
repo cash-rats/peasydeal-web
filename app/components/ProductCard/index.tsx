@@ -60,7 +60,8 @@ export default function ProductCard({
     retailPrice,
     salePrice,
     productUUID = '',
-    tabComboType = ''
+    tabComboType = '',
+    variations,
   } = product || {};
 
   const [loaded, setLoaded] = useState<Boolean>(false);
@@ -210,11 +211,11 @@ export default function ProductCard({
         <div>
           <Button
             colorScheme='pink'
-            variant='solid'
+            variant={'solid'}
             width='100%'
             size="sm"
             onClick={() => onClickProduct(title, productUUID)}>
-            Add to Cart
+            { variations && variations.length > 1 ? 'See Options' : 'Add to Cart' }
           </Button>
         </div>
       </div>

@@ -42,7 +42,9 @@ function EmailSubscribe() {
         </Button>
       </div>
 
-      <p className="text-white mt-3 text-base font-bold">
+      <p className="
+        text-slate-50 mt-3 text-sm md:text-base
+      ">
         * Can be use on order £20+, expires at March, 31, 2023
         Terms and Condition applied
       </p>

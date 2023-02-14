@@ -25,27 +25,31 @@ function Footer({ categories }: FooterProps) {
     <>
       <FooterTopInfo />
 
-      <footer className="pb-6 bg-dune w-full pt-10 px-12 ">
-        <div className="block 600:hidden">
+      <footer className="
+        pb-6 pt-10
+        px-2 md:px-6 lg:px-14
+        bg-dune
+        w-full">
+        <div className="block 600:hidden w-full py-2.5 max-w-screen-xl mx-auto">
           <FooterMobileLayout categories={categories} />
         </div>
 
         {/* width > 768px */}
-        <div className="hidden 600:block 992:hidden">
+        <div className="hidden 600:block 992:hidden w-full py-2.5 max-w-screen-xl mx-auto">
           <FooterTabletPortrait categories={categories} />
         </div>
 
         {/* width > 992px  */}
-        <div className="hidden 992:block">
+        <div className="hidden 992:block w-full py-2.5 max-w-screen-xl mx-auto">
           <FooterTabletLayout categories={categories} />
         </div>
 
         {/* footer bottom content */}
         <div className="
-        h-[105px] mt-10 w-full
-        flex flex-col justify-between
-        600:flex-row 600:mt-0
-      ">
+          h-[105px] mt-10 w-full
+          flex flex-col justify-between
+          600:flex-row 600:mt-0
+        ">
           <div className="
             flex-1 flex flex-row items-center
             font-normal text-sm gap-4

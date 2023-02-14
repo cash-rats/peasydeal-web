@@ -23,7 +23,7 @@ interface FooterMobileLayoutProps {
 
 function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
   return (
-    <ul className="w-full list-none py-0 px-4 flex flex-col gap-4">
+    <ul className="w-full list-none py-0 px-4 flex flex-col gap-6">
       <li>
         <LogoSection />
       </li>
@@ -31,10 +31,13 @@ function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
         <EmailSubscribe />
       </li>
 
-      <li className="flex flex-row justify-between">
-        <ProductsSecions categories={categories} />
+      <li className="flex flex-row">
+        <div className='flex-auto'>
+          <ProductsSecions categories={categories} />
+        </div>
 
-        <div className="600:hidden">
+
+        <div className="600:hidden flex-auto">
           <ResourceSection />
         </div>
       </li>

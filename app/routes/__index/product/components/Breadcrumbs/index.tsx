@@ -2,6 +2,10 @@ import type { ReactNode } from 'react';
 import { NavLink } from '@remix-run/react';
 
 import { composeProductDetailURL } from '~/utils';
+import {
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from '@chakra-ui/react'
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 
 type ProductDetailBreadcrumbsProps = {
@@ -18,51 +22,43 @@ export default function ProductDetailBreadcrumbs({
   productUuid,
 }: ProductDetailBreadcrumbsProps) {
   return (
-    <div className="
-    px-4 mx-auto max-w-[1060px]
-    xl:max-w-[1416px] xl:pl-8"
+    <div className='
+      py-0 px-auto
+      flex flex-col
+      justify-center items-center
+      mx-2 md:mx-4'
     >
-      <Breadcrumbs
-        breadcrumbs={[
-          <NavLink
-            className={({ isActive }) => (
-              isActive
-                ? "font-medium text-base cursor-pointer capitalize hover:underline"
-                : "text-sm font-bold no-underline text-raisin-black"
-            )}
-            to='/'
-            key='1'
-          > Home </NavLink>,
+      <div className="w-full py-2.5 max-w-screen-xl mx-auto">
+        <Breadcrumbs
+          breadcrumbs={[
+            <BreadcrumbItem key="1">
+              <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>,
 
-          categoryLabel && (
-            <NavLink
-              className={({ isActive }) => (
-                isActive
-                  ? "font-medium text-base cursor-pointer capitalize hover:underline"
-                  : "text-sm font-bold no-underline text-raisin-black"
-              )}
-              to={`/${categoryName}`}
-              key='2'
-            > {categoryLabel} </NavLink>
-          ),
+            <BreadcrumbItem key="2">
+              <BreadcrumbLink as={NavLink} to={`/${categoryName}`} className="font-semibold">
+                {categoryLabel}
+              </BreadcrumbLink>
+            </BreadcrumbItem>,
 
-          productTitle && (
-            <NavLink
-              className={({ isActive }) => (
-                isActive
-                  ? "font-medium text-base no-underline cursor-default pointer-events-none capitalize hover:underline"
-                  : "text-sm font-bold no-underline text-raisin-black"
-              )}
-              to={composeProductDetailURL({
-                productName: productTitle as string,
-                variationUUID: productUuid as string,
-              })}
-              key='3'
-            > {productTitle}
-            </NavLink>
-          )
-        ]}
-      />
+            <BreadcrumbItem key="2">
+              <BreadcrumbLink
+                as={NavLink}
+                to={composeProductDetailURL({
+                  productName: productTitle as string,
+                  variationUUID: productUuid as string,
+                })}
+                isCurrentPage
+                className="font-semibold !text-[#D02E7D]"
+              >
+                {productTitle}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          ]}
+        />
+      </div>
     </div>
   )
 }

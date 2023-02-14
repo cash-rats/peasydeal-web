@@ -22,7 +22,7 @@ export default function BreadcrumsNav({
       <Breadcrumb
         py="1"
         className='flex flex-row'
-        separator={<FiChevronRight fontSize={24} />}
+        separator={<FiChevronRight className="text-[16px] md:text-[24px] mx-[-1px] md:mx-0" />}
       >
         {breadcrumbs}
       </Breadcrumb>

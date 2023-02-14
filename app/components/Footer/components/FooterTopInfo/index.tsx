@@ -32,60 +32,82 @@ const paymentMethod = [
 
 function FooterTopInfo() {
   return (
-    <div className="w-full grid grid-cols-2 bg-[#EEEEEE]">
-      <div className="
-          flex flex-col justify-start items-center p-14
+    <div className="w-full bg-[#EEEEEE]">
+      <div className="w-full max-w-screen-xl mx-auto grid grid-cols-2">
+        <div className="
+          flex flex-col
+          justify-start
+          items-center
+          px-2 md:px-6 lg:px-14
+          py-8 md:px-14 lg:px-20
           box-border
           border-t-[1px] border-t-[#BABABA]
           border-r-[1px] border-r-[#BABABA]
         ">
-        <h1 className="font-bold text-[24px] mb-10 capitalize">
-          Help and service
-        </h1>
+          <h3 className="
+            font-bold
+            text-xl
+            md:text-2xl
+            mb-2 md:mb-3 lg:mb-4
+            capitalize
+          ">
+            Help and service
+          </h3>
 
-        <div className="flex flex-cols gap-9">
-          <div className="flex items-center gap-2">
-            <FiMail fontSize={28} />
-            <p className="capitalize text-xl font-normal">
-              contact us
-            </p>
-          </div>
-
-          <div className="flex flex-cols">
-            <div className="flex items-center gap-2">
-              <MdOutlineLocalShipping color='black' fontSize={28} />
-              <p className="capitalize text-xl font-normal">
-                track your order
+          <div className="flex flex-col gap-2 md:gap-4 lg:gap-9 md:flex-row">
+            <div className="flex items-center gap-1 md:gap-2 cursor-pointer">
+              <FiMail className="self-center text-lg md:text-xl sm:space-x-0.5" />
+              <p className="self-center text-md md:text-base ml-1.5 capitalize">
+                contact us
               </p>
+            </div>
+
+            <div className="flex flex-cols">
+              <div className="flex items-center gap-1 md:gap-2 cursor-pointer">
+                <MdOutlineLocalShipping color='black' className="self-center text-lg md:text-xl sm:space-x-0.5" />
+                <p className="self-center text-md md:text-base ml-1.5 capitalize">
+                  track your order
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="
-          flex flex-col justify-start items-center p-14
-          border-t-[1px] border-t-[#BABABA]
+        <div className="
+            flex flex-col justify-start items-center
+            px-2 md:px-6 lg:px-14
+            py-8 md:px-14 lg:px-20
+            border-t-[1px] border-t-[#BABABA]
         ">
-        <h1 className="font-bold text-[24px] capitalize">
-          Payment methods
-        </h1>
+          <h3 className="
+            font-bold
+            text-xl
+            md:text-2xl
+            mb-2 md:mb-3 lg:mb-4
+            capitalize
+          ">
+            Payment methods
+          </h3>
 
-        <ul className="list-none flex flex-row mt-8 flex-wrap">
-          {
-            paymentMethod.map((m, idx) => (
-              <li
-                className="m-[0.625rem]"
-                key={idx}
-              >
-                <img
-                  className="w-[38px] h-[24px]"
-                  alt={m.alt}
-                  src={m.src}
-                />
-              </li>
-            ))
-          }
-        </ul>
+          <ul className="list-none flex flex-row flex-wrap justify-center">
+            {
+              paymentMethod.map((m, idx) => (
+                <li
+                  className="m-1.5"
+                  key={idx}
+                >
+                  <img
+                    className="
+                      w-[34px] md:w-[38px]
+                    "
+                    alt={m.alt}
+                    src={m.src}
+                  />
+                </li>
+              ))
+            }
+          </ul>
+        </div>
       </div>
     </div>
   );

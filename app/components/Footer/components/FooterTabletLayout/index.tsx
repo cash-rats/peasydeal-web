@@ -20,7 +20,7 @@ interface FooterTabletLayoutProps {
 function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
   return (
     <div className="
-      grid grid-cols-[1fr_130px_1fr_1fr_1fr] gap-12
+      grid grid-cols-[1fr_1fr_1fr_1fr_1fr] gap-12
       border-b-[1px] border-b-[#2E4E73] pb-12
     ">
       {/* Logo Section */}
