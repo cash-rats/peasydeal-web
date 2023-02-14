@@ -2,9 +2,16 @@
  * This component render the modulared products
  * into a product grid
  */
+import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
+
 import type { Product } from "~/shared/types";
-import ProductCard from '../ProductCard';
+
+import ProductCard, { links as ProductCartLinks } from '../ProductCard';
+
+export const links: LinksFunction = () => {
+  return [...ProductCartLinks()];
+}
 
 interface IProductRow {
   products?: Product[];
@@ -13,8 +20,8 @@ interface IProductRow {
 }
 
 export default function ProductRow({
-	products = [],
-	onClickProduct = () => {},
+  products = [],
+  onClickProduct = () => { },
   scrollPosition,
 }: IProductRow) {
   return (

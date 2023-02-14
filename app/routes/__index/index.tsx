@@ -82,7 +82,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const actionType = url.searchParams.get('action_type') as LoaderType;
 	if (actionType === 'loadmore') {
 		const page = Number(url.searchParams.get('page')) || 1;
-		const perPage = Number(url.searchParams.get('per_page')) || 9;
+		const perPage = Number(url.searchParams.get('per_page')) || 8;
 
 		return _loadmoreLoader(request, page, perPage)
 	}
@@ -183,7 +183,6 @@ export const CatchBoundary = () => {
  * - [x] When number of data fetched is less than limit(9), it reaches the end. stop triggering loadmore but displays a button
  *       letting the user triggering loadmore manually.
  */
-
 type IndexProps = {} & LazyComponentProps;
 
 function Index({ scrollPosition }: IndexProps) {

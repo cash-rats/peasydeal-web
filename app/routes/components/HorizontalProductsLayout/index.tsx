@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import type { MouseEvent } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useFetcher, Link } from '@remix-run/react';
@@ -8,16 +7,17 @@ import Slider from 'react-slick';
 
 import { composeProductDetailURL } from '~/utils';
 import type { Product } from '~/shared/types';
-import { fetchProductsByCategory } from '~/api';
+import { fetchProductsByCategoryV2 } from '~/api';
 import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
 import { breakPoints } from '~/styles/breakpoints';
+import ProductCard, { links as ProductCardLinks } from '~/components/ProductCard';
 
 import styles from './styles/HorizontalProductsLayout.css';
-import Grid from './HorizontalGrid';
 
 export const links: LinksFunction = () => {
   return [
+    ...ProductCardLinks(),
     { rel: 'stylesheet', href: styles },
     { rel: 'stylesheet', href: slickStyles },
     { rel: 'stylesheet', href: slickThemeStyles },
@@ -36,13 +36,13 @@ export const action: ActionFunction = async ({ request }) => {
   const catID = formEntries['catID'] || '2';
 
   // Fetch top seller & new trend.
-  const recProds = await fetchProductsByCategory({
+  const recProds = await fetchProductsByCategoryV2({
     category: Number(catID),
     perpage: 12,
-    random: 1,
+    random: true,
   });
 
-  return json<ActionType>({ recProds });
+  return json<ActionType>({ recProds: recProds });
 }
 
 interface HorizontalProductsLayoutProps {
@@ -105,7 +105,7 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
     ],
   }
 
-  const handleClickGrid = (evt: MouseEvent, title: string, prodUUID: string) => {
+  const handleClickGrid = (title: string, prodUUID: string) => {
     console.log('[ga] click on product', title, prodUUID);
 
     clickRecProd.submit(
@@ -142,14 +142,11 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
           {
             recProds.map((prod, index) => {
               return (
-                <Grid
-                  loading={fetcher.type !== 'done'}
-                  key={index}
-                  src={prod.main_pic}
-                  title={prod.title}
-                  price={prod.salePrice}
-                  productUUID={prod.productUUID}
-                  onClick={handleClickGrid}
+                <ProductCard
+                  key={`horzontal-prod-${index}`}
+                  product={prod}
+                  onClickProduct={handleClickGrid}
+
                 />
               )
             })

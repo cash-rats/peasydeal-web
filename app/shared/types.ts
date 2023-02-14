@@ -1,3 +1,10 @@
+export type Variation = {
+  uuid: string;
+  spec_name: string;
+  purchase_limit: number;
+  sku: string;
+}
+
 export type Product = {
   productUUID: string;
   currency: string;
@@ -10,6 +17,7 @@ export type Product = {
   sku?: string;
   title: string;
   subtitle: string;
+  variations?: Variation[];
   variationID: string;
   tabComboType: string | null;
 };

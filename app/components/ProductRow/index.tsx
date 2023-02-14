@@ -1,5 +1,5 @@
 import OneMainTwoSubs from "./OneMainTwoSubs";
 import EvenRow from "./EvenRow";
-import ProductRow from "./ProductRow";
+import ProductRow, { links as ProductRowLinks } from "./ProductRow";
 
-export { OneMainTwoSubs, EvenRow, ProductRow };
+export { OneMainTwoSubs, EvenRow, ProductRow, ProductRowLinks };
