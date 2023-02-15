@@ -6,6 +6,7 @@ import type { LinksFunction } from '@remix-run/node';
 import clsx from 'clsx';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import Skeleton from '@mui/material/Skeleton';
+import CarouselMinimal from './CarouselMinimal';
 
 import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
@@ -35,8 +36,8 @@ interface PicsCarouselProps {
  */
 function PicsCarousel({ images, title = '' }: PicsCarouselProps) {
 	const sliderRef = useRef<Slider | null>(null);
+	const thumbnailRef = useRef<Slider | null>(null);
 	const [activeSlide, setActiveSlide] = useState(0);
-
 	const handleClickNext = () => console.log('next');
 	const handleClickPrev = () => console.log('prev');
 
@@ -47,106 +48,32 @@ function PicsCarousel({ images, title = '' }: PicsCarouselProps) {
 		sliderRef.current.slickGoTo(index);
 	}
 
-	const settings: Settings = {
-		dots: false,
-		infinite: true,
-		speed: 500,
-		slidesToShow: 1,
-		slidesToScroll: 1,
-		autoplay: false,
-		dotsClass: "slick-dots slick-thumb",
-		nextArrow: (
-			<ScrollButton
-				direction='right'
-				onClick={handleClickNext}
-			/>
-		),
-		prevArrow: (
-			<ScrollButton
-				direction='left'
-				onClick={handleClickPrev}
-			/>
-		),
-		beforeChange(_, nextSlide: number) {
-			setActiveSlide(nextSlide);
-		}
-	}
-
 	return (
 		<>
 			{/* Mobile view slider */}
-			<div className="product-carousel-container">
-				<div className="product-carousel-image-wrapper" >
-					{
-						images.length === 0
-							? (
-								<img
-									alt={title}
-									src='/images/placeholder.svg'
-									className="w-full h-auto my-0 m-auto aspect-[1/1]"
-								/>
-							)
-							: (
-								<Slider ref={sliderRef} {...settings}>
-									{
-										images.map((image, index) => {
-											return (
-												<div key={index}>
-													<LazyLoadImage
-														placeholder={
-															<img
-																alt={title}
-																src='/images/placeholder.svg'
-																className="w-full h-auto my-0 m-auto aspect-[1/1]"
-															/>
-														}
-														alt={title}
-														className="w-full h-auto my-0 m-auto aspect-[1/1]"
-														src={image}
-													/>
-												</div>
-											)
-										})
-									}
-								</Slider>
-							)
-
-					}
-
-				</div>
-
-				<div className="ProductDetailSection__carousel-thumbnails">
-					{
-						images.map((image, index) => {
-							return (
-								<div
-									className={
-										clsx("ProductDetailSection__carousel-thumbnail-container", {
-											'active-thumbnail': index === activeSlide
-										})
-									}
-									key={index}
-									onClick={(evt) => {
-										evt.preventDefault();
-										handleChooseSlide(index, evt)
-									}}
-								>
-									<LazyLoadImage
-										placeholder={
-											<Skeleton
-												variant='rectangular'
-												height='100%'
-												width='100%'
-											/>
-										}
-										alt='product thumbnail'
-										className="carousel__thumbnail"
-										src={image}
-									/>
-								</div>
-							)
-						})
-					}
+			<div className="">
+				<div className="carousel-minimal" >
+					<CarouselMinimal
+						data={images.map((image: string) => ({
+							title: `${title}-${image}`,
+							image,
+						}))}
+						time={2000}
+            width="850px"
+            height="500px"
+            radius="10px"
+            automatic={false}
+            dots={true}
+            pauseIconColor="white"
+            pauseIconSize="40px"
+            slideBackgroundColor="darkgrey"
+            slideImageFit="cover"
+            thumbnails={true}
+            thumbnailWidth="100px"
+            style={{
+              textAlign: "center",
+            }}
+					/>
 				</div>
 			</div>
 		</>

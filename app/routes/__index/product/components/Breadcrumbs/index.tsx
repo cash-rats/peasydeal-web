@@ -43,7 +43,7 @@ export default function ProductDetailBreadcrumbs({
               </BreadcrumbLink>
             </BreadcrumbItem>,
 
-            <BreadcrumbItem key="2">
+            <BreadcrumbItem key="3">
               <BreadcrumbLink
                 as={NavLink}
                 to={composeProductDetailURL({

@@ -26,13 +26,13 @@
 	}
 }
 
-.product-detail-img-container {
-	img {
-		@include md {
-			max-width: 718px;
-		}
-	}
-}
+// .product-detail-img-container {
+// 	img {
+// 		@include md {
+// 			max-width: 718px;
+// 		}
+// 	}
+// }
 
 .ProductDetail__breadcrumbs {
 	padding: 0 1rem;

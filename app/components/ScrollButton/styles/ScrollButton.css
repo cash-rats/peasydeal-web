@@ -5,6 +5,9 @@
   z-index: 1;
   top: 50%;
   transform: translateY(-50%);
+  padding: 0.25rem;
+  height: 100%;
+  background-color: white;
 }
 
 .carousel__scrollButton__wrapper-right {
@@ -15,21 +18,20 @@
 
 .carousel__scrollButton__circle {
   position: relative;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 50%;
-  background-color: rgb(255, 255, 255);
-  box-shadow: rgba(0, 0, 0, 0.2) 2px 4px 3px 1px;
-  background-color: #e6007e;
+  border: 1px solid #757575;
+  background-color: white;
 }
 
 .carousel__scrollButton__left-arrow, .carousel__scrollButton__right-arrow {
   position: absolute;
   top: 30%;
-  width: 1rem;
-  height: 1rem;
+  width: 12px;
+  height: 12px;
   border-style: solid;
-  border-color: rgb(255, 255, 255);
+  border-color: #757575;
   border-image: initial;
   border-width: 0px 0.125rem 0.125rem 0px;
   border-radius: 0px 0.125rem;

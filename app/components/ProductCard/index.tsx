@@ -45,6 +45,8 @@ const capitalizeWords = (str: string) => {
 
 const getColorByTag = (tag: string) => {
   switch (tag) {
+    case 'new':
+      return '#2D91FF';
     case 'hot_deal':
       return '#D43B33';
     case 'price_off':
@@ -103,7 +105,6 @@ export default function ProductCard({
   if (!product) return null;
 
   const bgImage = loaded ? { backgroundImage: `url('${mainPic}')` } : {};
-
 
   return (
     <Link

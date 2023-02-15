@@ -20,12 +20,6 @@
   color: #666;
 }
 
-@media (min-width: 768px) {
-  .product-detail-img-container img {
-    max-width: 718px;
-  }
-}
-
 .ProductDetail__breadcrumbs {
   padding: 0 1rem;
   margin: 0 auto;
