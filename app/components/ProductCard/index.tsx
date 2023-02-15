@@ -179,9 +179,12 @@ export default function ProductCard({
         {/* </LazyLoadComponent> */}
 
         <Image
+          options={{
+            contentType: MimeType.JPEG,
+          }}
           className="aspect-square w-full h-full"
           loaderUrl='/remix-image'
-          src={'https://cdn.peasydeal.com/product-images/b8a806e604cc430f84599ccc1280ec.jpeg'}
+          src={'https://storage.googleapis.com/peasydeal/product-images/0098b5d7228147f895aae08f88daeb.jpg'}
           responsive={[
             //   {
             //     size: {

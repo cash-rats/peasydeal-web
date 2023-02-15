@@ -81,6 +81,7 @@
     "react-spinners": "^0.13.4",
     "react-sticky": "^6.0.3",
     "remix-image": "^1.4.0",
+    "remix-image-sharp": "^0.1.4",
     "remix-redis-session": "github:huangc28/remix-redis-session",
     "remix-utils": "^3.4.0",
     "reselect": "^4.1.6",

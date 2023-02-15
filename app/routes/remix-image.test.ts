@@ -3,7 +3,7 @@ import sharp from 'sharp';
 
 describe('on the fly image resize', () => {
   test.only('fetch image buffer from peasydeal cdn', async () => {
-    const imgsrc = 'https://cdn.peasydeal.com/product-images/b8a806e604cc430f84599ccc1280ec.jpg';
+    const imgsrc = 'https://storage.googleapis.com/peasydeal/product-images/d6752c690c8642208c7f32777f8217.png';
     const image = await fetch(imgsrc);
     const imageBuffer = Buffer.from(await image.arrayBuffer())
     console.log('deubg __dirname', __dirname);
