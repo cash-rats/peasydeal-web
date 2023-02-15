@@ -134,8 +134,8 @@
 }
 .carousel-minimal .carousel-image {
   vertical-align: middle;
-  width: 100%;
   height: 100%;
+  margin: 0 auto;
 }
 .carousel-minimal .carousel-container {
   position: relative;

@@ -126,6 +126,7 @@ function Carousel({
         close={() => setOpenLightBox(false)}
         slides={data.map((item: any) => ({ src: item.image }))}
         plugins={[Thumbnails]}
+        index={slide}
         controller={{
           closeOnBackdropClick: true,
           touchAction: "pan-y",
@@ -266,7 +267,7 @@ function Carousel({
                 </div>
               )}
 
-<IconButton
+              <IconButton
                 aria-label="zoom photo"
                 className="
                   absolute bottom-[10px] right-[10px]
@@ -293,7 +294,7 @@ function Carousel({
         </div>
 
         <div
-          className="thumbnails"
+          className="thumbnails flex"
           id="thumbnail-div"
           style={{ maxWidth: width }}
         >

@@ -95,11 +95,8 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
   }, [fetcher])
 
   return (
-    <div className="mt-6">
-      <h1 className="uppercase font-bold text-3xl mb-6">
-        you may also like
-      </h1>
-
+    <div className="mt-6 md:mt-10 lg:mt-16">
+      <h3 className='font-poppins font-bold text-3xl mb-4 md:mb-6'>You may also like</h3>
       {
         <ProductRowsLayout
           loading={fetcher.type !== 'done'}

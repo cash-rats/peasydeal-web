@@ -563,25 +563,27 @@ function ProductDetailPage() {
 						</div>
 					</div>
 
-					{/*
-						Recommended products:
-							- Things you might like: other products that belongs to the same category.
-						  - Hot deals
-							- New trend
-					*/}
-					<div className="flex justify-center xl:justify-start">
-						<RecommendedProducts
-							category={state.mainCategory.name}
-							onClickProduct={handleClickProduct}
-						/>
-					</div>
+
 				</div>
 
 				<div className="xl:w-[12rem] 1348:w-[15.875rem] hidden xl:block">
 					<TopProductsColumn />
 				</div>
 			</div>
-
+			{/*
+				Recommended products:
+					- Things you might like: other products that belongs to the same category.
+					- Hot deals
+					- New trend
+			*/}
+			<div className='w-full w-full p-2.5 max-w-screen-xl mx-auto'>
+				<div className="flex justify-center xl:justify-start">
+					<RecommendedProducts
+						category={state.mainCategory.name}
+						onClickProduct={handleClickProduct}
+					/>
+				</div>
+			</div>
 		</>
 	);
 };
