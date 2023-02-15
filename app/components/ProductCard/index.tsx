@@ -6,13 +6,15 @@ import { useState, useMemo, useCallback } from 'react';
 import { Link } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import { LazyLoadImage, LazyLoadComponent } from "react-lazy-load-image-component";
+import Image, { MimeType } from "remix-image"
 
 import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
 
 import { Button } from '@chakra-ui/react'
 import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
+import { maxWidth } from '@mui/system';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: llimageStyle }];
@@ -24,6 +26,14 @@ interface IProductCard {
   onClickProduct?: (title: string, productID: string) => void;
 }
 
+/*
+  Lazy load remix-image.
+  w > 1024: 274x274
+  768 < w < 1024: 302x302
+  w < 768:  310x310
+
+  Use LazyLoadComponent to lazy load remix image.
+*/
 interface ITag {
   name: string;
   color: string;
@@ -103,6 +113,7 @@ export default function ProductCard({
   if (!product) return null;
 
   const bgImage = loaded ? { backgroundImage: `url('${mainPic}')` } : {};
+  console.log('debug mainpic', mainPic)
 
 
   return (
@@ -118,14 +129,13 @@ export default function ProductCard({
         p-1 md:p-2 lg:p-4
         relative
       '>
-        <div
+        {/* <div
           className={`
             ${loaded ? 'block' : 'hidden'}
-            aspect-square
-            image-container bg-contain bg-center bg-no-repeat
+            aspect-square bg-contain bg-center bg-no-repeat
           `}
           style={bgImage}
-        />
+        /> */}
 
         {
           priceOff > showPriceOffThreshhold
@@ -146,7 +156,57 @@ export default function ProductCard({
             ) : null
         }
 
-        <LazyLoadImage
+        {/* <LazyLoadComponent scrollPosition={scrollPosition}> */}
+        {/* <Image
+          onLoadingComplete={(aa) => {
+            console.log('debug onLoadingComplete', aa);
+
+          }}
+          loaderUrl='/remix-image'
+          className="aspect-square w-full h-full"
+          src="https://i.imgur.com/5cQnAQC.png"
+          responsive={[
+            {
+              size: { width: 100, height: 100 },
+              maxWidth: 500,
+            },
+            {
+              size: { width: 274, height: 274 },
+            },
+          ]}
+          dprVariants={[1, 3]}
+        /> */}
+        {/* </LazyLoadComponent> */}
+
+        <Image
+          className="aspect-square w-full h-full"
+          loaderUrl='/remix-image'
+          src={'https://cdn.peasydeal.com/product-images/b8a806e604cc430f84599ccc1280ec.jpeg'}
+          responsive={[
+            //   {
+            //     size: {
+            //       width: 310,
+            //       height: 310,
+            //     },
+            //     maxWidth: 768,
+            //   },
+            //   {
+            //     size: {
+            //       width: 302,
+            //       height: 302,
+            //     },
+            //     maxWidth: 1024,
+            //   },
+            {
+              size: {
+                width: 274,
+                height: 274,
+              },
+            },
+          ]}
+        // dprVariants={[1, 3]}
+        />
+        {/* <LazyLoadImage
           wrapperClassName={`
             ${loaded ? '!hidden' : 'aspect-square w-full h-full'}
           `}
@@ -159,7 +219,7 @@ export default function ProductCard({
           placeholder={
             <div className='block w-full h-full bg-[#efefef] animate-pulse aspect-square'
             />}
-        />
+        /> */}
 
         {/* TITLES */}
         <p
@@ -220,7 +280,7 @@ export default function ProductCard({
             width='100%'
             size="sm"
             onClick={() => onClickProduct(title, productUUID)}>
-            { variations && variations.length > 1 ? 'See Options' : 'Add to Cart' }
+            {variations && variations.length > 1 ? 'See Options' : 'Add to Cart'}
           </Button>
         </div>
       </div>
