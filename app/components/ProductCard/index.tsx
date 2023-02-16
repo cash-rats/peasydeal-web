@@ -11,6 +11,7 @@ import Image, { MimeType } from "remix-image"
 
 import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
+import { DOMAIN } from '~/utils/get_env_source';
 
 import { Button } from '@chakra-ui/react'
 import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
@@ -138,7 +139,7 @@ export default function ProductCard({
                 font-poppins
                 rounded-b-lg
                 text-white
-                z-20
+                z-10
               '>
                 <small className='font-bold'>{priceOff}%</small>
                 <small className='font-medium mt-[-3px]'>OFF</small>
@@ -146,36 +147,41 @@ export default function ProductCard({
             ) : null
         }
 
-        <LazyLoadComponent
-          scrollPosition={scrollPosition}
-        >
-          <Image
-            placeholder={loaded ? 'empty' : 'blur'}
-            placeholderAspectRatio={1}
-            onLoadingComplete={(naturalDimensions) => {
-              setLoaded(true);
-            }}
-            options={{
-              contentType: MimeType.WEBP,
-              fit: 'contain',
-            }}
-            className="
+
+        <div className={`${loaded ? 'h-full' : 'h-[274px]'}`} >
+          <LazyLoadComponent scrollPosition={scrollPosition} >
+            <Image
+              blurDataURL={`${loaded
+                ? null
+                : `${DOMAIN}/images/placeholder.svg`
+                }`}
+              placeholder={loaded ? 'empty' : 'blur'}
+              placeholderAspectRatio={1}
+              onLoadingComplete={(naturalDimensions) => {
+                setLoaded(true);
+              }}
+              options={{
+                contentType: MimeType.WEBP,
+                fit: 'contain',
+              }}
+              className="
               aspect-square w-[274px] h-full
               min-w-0 min-h-0
             "
-            loaderUrl='/remix-image'
-            src={mainPic}
-            responsive={[
-              {
-                size: {
-                  width: 274,
-                  height: 274,
+              loaderUrl='/remix-image'
+              src={mainPic}
+              responsive={[
+                {
+                  size: {
+                    width: 274,
+                    height: 274,
+                  },
                 },
-              },
-            ]}
-          // dprVariants={[1, 3]}
-          />
-        </LazyLoadComponent>
+              ]}
+            // dprVariants={[1, 3]}
+            />
+          </LazyLoadComponent>
+        </div>
 
         {/* TITLES */}
         <p
