@@ -3,8 +3,6 @@ import type { LinksFunction } from '@remix-run/node';
 
 import { Button } from '@chakra-ui/react';
 
-import RoundButton from '~/components/RoundButton';
-
 import styles from './styles/ProductActionBar.css';
 
 export const links: LinksFunction = () => {
@@ -42,7 +40,7 @@ const ProductActionBar = forwardRef(({
         </Button>
       </div>
 
-      <div>
+      <div className='w-full'>
         <Button
           colorScheme='pink'
           variant={'solid'}
@@ -51,15 +49,6 @@ const ProductActionBar = forwardRef(({
           onClick={onClickBuyNow}>
           Buy Now
         </Button>
-        {/* <RoundButton
-          fullWidth
-          onClick={onClickBuyNow}
-          colorScheme='buynow'
-        >
-          <p style={{ width: '100%', textAlign: 'center' }}>
-            Buy Now
-          </p>
-        </RoundButton> */}
       </div>
     </div>
   );
