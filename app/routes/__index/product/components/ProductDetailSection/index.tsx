@@ -41,7 +41,7 @@ function ProductDetailSection({
 			</div>
 
 			<div className="peasydeal-v1 mt-10 mx-0 md:mx-2 flex flex-col w-full">
-				<Accordion className='flex md:hidden' allowMultiple>
+				{/* <Accordion className='flex md:hidden' allowMultiple>
 					<AccordionItem className="
 						w-full max-w-[calc(100vw-2rem)] mx-4
 						 border-[#efefef]
@@ -57,7 +57,7 @@ function ProductDetailSection({
 							</div>
 						</AccordionPanel>
 					</AccordionItem>
-				</Accordion>
+				</Accordion> */}
 
 				<div className='hidden md:flex md:flex-col mr-4'>
 					<h3 className='text-3xl mb-4 md:mb-6'>About this product</h3>

@@ -107,7 +107,7 @@
 }
 
 .CategoriesNav__item {
-  background-image: linear-gradient(#e6007e, #e6007e);
+  background-image: linear-gradient(#D02E7D, #D02E7D);
   background-size: 0% 1px;
   background-repeat: no-repeat;
   transition: background-size 0.2s;
@@ -173,7 +173,7 @@
   cursor: pointer;
   color: black;
   display: inline-block;
-  background-image: linear-gradient(#e6007e, #e6007e);
+  background-image: linear-gradient(#D02E7D, #D02E7D);
   background-size: 0% 1px;
   background-repeat: no-repeat;
   transition: background-size 0.3s;

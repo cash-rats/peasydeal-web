@@ -84,7 +84,7 @@
 
 .HorizontalGrid__pagination-bullet {
   background-color: transparent;
-  border: 2px solid #e6007e;
+  border: 2px solid #D02E7D;
   border-radius: 50%;
   display: inline-block;
   height: 10px;
@@ -93,7 +93,7 @@
 }
 .HorizontalGrid__pagination-bullet:hover {
   transition: background-color 0.25s;
-  background-color: #e6007e;
+  background-color: #D02E7D;
 }
 
 /*# sourceMappingURL=HorizontalProductsLayout.css.map */

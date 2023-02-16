@@ -35,6 +35,14 @@ import {
 	composeProductDetailURL,
 } from '~/utils';
 
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+} from '@chakra-ui/react'
+
 import Breadcrumbs from './components/Breadcrumbs';
 import Divider from './components/DividerContent';
 import type { ProductDetail, ProductVariation } from './types';
@@ -378,9 +386,10 @@ function ProductDetailPage() {
 				productUuid={state.productDetail.uuid}
 			/>
 
-			<div className="productdetail-container">
+			<div className="productdetail-container mt-2 md:mt-6">
 				<div className="ProductDetail__main-wrapper">
 					<div className='ProductDetail__main-top'>
+
 						<ProductDetailSection
 							description={state.productDetail?.description}
 							pics={state.images}
@@ -389,70 +398,91 @@ function ProductDetailPage() {
 
 						<div
 							ref={productContentWrapperRef}
-							className="product-content-wrapper"
+							className="
+								rounded-md border-x border-b border-t-8 border-[#D02E7D]
+								py-7 px-5
+								w-full md:max-w-[44%]
+								relative
+								h-fit
+							"
 						>
+							<div className="absolute top-[-1.5rem] left-[-1px]">
+									<RightTiltBox text={`${state.productDetail.order_count} bought`} />
+							</div>
+
 							<div className="product-content">
-								<h1 className="product-name">
+								<h1 className="text-xl md:text-2xl font-bold font-poppings mb-3">
 									{state.productDetail?.title}
 								</h1>
 
 								{
 									state.productDetail.num_of_raters > 0
 										? (
-											<div className="ProductDetailPage__rating">
+											<div className="flex items-center mb-3">
 												<Rating
+													className="scale-75 translate-x-[-1.125rem]"
 													name="product-rating"
 													value={state.productDetail?.rating || 0}
 													precision={0.1}
 													readOnly
 												/>
 
-												<span className="ProductDetailPage__review-count">
-													({state.productDetail.num_of_raters} reviews)
+												<span className="text-sm translate-x-[-1.125rem]">
+													{ state.productDetail?.rating } ({state.productDetail.num_of_raters})
 												</span>
 											</div>
 										)
 										: null
 								}
 
-
-								<div className="product-tag-bar">
-									<p className="detail-amount">
+								<div className="flex items-center mb-4">
+									<span className="text-4xl font-poppins font-bold text-[#D02E7D] mr-2">
 										£{state.variation?.sale_price}
-									</p>
-
-									<span className="actual-amount">
-										compared at £{state.variation?.retail_price}
 									</span>
-
+									<span className='flex relative'>
+										<span className="text-2xl">
+											£{state.variation?.retail_price}
+										</span>
+										<span className='block w-full h-[3px] absolute top-[50%] bg-black' />
+									</span>
 								</div>
 
-								<div className="ProductDetailPage__annotation">
-									<p className="discount-amount">
-										YOU SAVE &nbsp;
-										{
-											state.variation && state.variation.discount && (
-												(Number(state.variation.discount) * 100).toFixed(0)
-											)
-										}%!
+								<div className="flex justify-start items-center mb-4">
+									<p
+										className='
+											flex items-center
+											px-2 py-1 md:px-3
+											text-[10px] md:text-[12px]
+											rounded-[2px] md:rounded-[4px]
+											text-white font-medium uppercase
+											bg-[#D43B33]
+										'
+									>
+										<b>
+											{
+												state.variation?.discount && (
+													`${(Number(state.variation.discount) * 100).toFixed(0)} % off`
+												)
+											}
+										</b>
 									</p>
-
-									<div className="ProductDetailPage__number-bought">
-										<RightTiltBox text={`${state.productDetail.order_count} bought`} />
-									</div>
 								</div>
 
+								<small className="uppercase">
+									<span className=""> availability: </span>
+									<span className="text-[#D02E7D]" > in-stock </span>
+								</small>
 
-								<div className="bought">
-									<span className="availability-text"> availability: </span>
-									<span className="in-stock-text" > in-stock </span>
-								</div>
+								<hr className='my-4' />
 
-								<Divider text="options" />
-								<div className="options-container">
+								<h3 className='text-xl font-bold'>
+									Variations
+								</h3>
+
+								<div className="mt-5">
 									<ClientOnly>
 										{
-											state.productDetail.variations.length > 1
+											state.productDetail?.variations.length > 1
 												? (
 													<>
 														<Select
@@ -477,9 +507,7 @@ function ProductDetailPage() {
 															}
 														/>
 
-														<p className="error">
-															{variationErr}
-														</p>
+														{ variationErr && <p className="error">{variationErr}</p> }
 													</>
 												)
 												: null
@@ -507,51 +535,49 @@ function ProductDetailPage() {
 									/>
 								</div>
 
-								<Divider
-									icon={<TbShare fontSize={20} />}
-									text="share"
-								/>
-
-								<SocialShare prodUUID={state.productDetail.uuid} />
-
-								<div>
-									<Divider
-										icon={<TbTruckDelivery fontSize={24} />}
-										text="delivery"
-									/>
-
-									<div className="flex px-3 justify-center items-center gap-1">
-										<strong>
-											{
-												state.variation
-													? `Lowest Shipping Cost At: £${state.variation?.shipping_fee}`
-													: null
-											}
-										</strong>
-									</div>
-								</div>
-
+								<hr className='my-4' />
 
 								<div className="product-features-mobile">
-									<Divider text="product features" />
+									<Accordion className='flex md:hidden' allowMultiple>
+										<AccordionItem className="
+											w-full max-w-[calc(100vw-2rem)]
+											border-[#efefef]
+										">
+											<AccordionButton >
+												<h3 className='text-xl my-3 mr-auto'>About this product</h3>
+												<AccordionIcon />
+											</AccordionButton>
 
-									{/* TODO dangerous render html */}
-									<div dangerouslySetInnerHTML={{ __html: state.productDetail?.description || '' }} className="product-features-container" />
+											<AccordionPanel pb={4} display="flex">
+												<div className='w-full overflow-scroll'>
+													<div dangerouslySetInnerHTML={{ __html: state.productDetail?.description || '' }} />
+												</div>
+											</AccordionPanel>
+										</AccordionItem>
+									</Accordion>
 								</div>
 
-								<div>
-									<Divider
-										text="return policy"
-										icon={<TbTruckReturn fontSize={24} />}
-									/>
+								<div className='flex flex-col'>
+									<p className='flex my-2'>
+										<TbTruckDelivery fontSize={24} className="mr-2" />
+										<span className='font-poppins'>
+											{
+												state.variation
+													? <><b>£{`${state.variation?.shipping_fee}`}</b> Low Fixed Shipping Cost</>
+													: null
+											}
+										</span>
+									</p>
 
-									<p className="text-center py-0 px-[10px]">
-										14 days cancellation period applies.
+									<p className='flex my-2'>
+										<TbTruckReturn fontSize={24} className="mr-2" />
+										<span className='font-poppins'>
+											<b>100% money back</b> guarantee
+										</span>
 									</p>
 								</div>
 
 								<div className="h-[100px] md:hidden">
-									<Divider />
 									<ProductActionBar
 										ref={mobileUserActionBarRef}
 										onClickAddToCart={handleAddToCart}
@@ -559,6 +585,8 @@ function ProductDetailPage() {
 										loading={addToCart.state !== 'idle'}
 									/>
 								</div>
+
+								<SocialShare prodUUID={state.productDetail.uuid} />
 							</div>
 						</div>
 					</div>
