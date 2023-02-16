@@ -14,6 +14,7 @@ import {
 } from "@remix-run/react";
 import { DynamicLinks, StructuredData } from 'remix-utils'
 import type { WithContext, Organization } from 'schema-dts';
+import remixImageStyles from "remix-image/remix-image.css";
 
 import {
   getIndexTitleText,
@@ -76,6 +77,7 @@ export let links: LinksFunction = () => {
     },
 
     { rel: 'stylesheet', href: styles },
+    { rel: 'stylesheet', href: remixImageStyles },
     ...LayoutLinks(),
   ]
 }

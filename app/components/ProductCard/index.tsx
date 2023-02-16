@@ -6,7 +6,8 @@ import { useState, useMemo, useCallback } from 'react';
 import { Link } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
-import { LazyLoadImage } from "react-lazy-load-image-component";
+import { LazyLoadComponent } from "react-lazy-load-image-component";
+import Image, { MimeType } from "remix-image"
 
 import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
@@ -24,6 +25,14 @@ interface IProductCard {
   onClickProduct?: (title: string, productID: string) => void;
 }
 
+/*
+  Lazy load remix-image.
+  w > 1024: 274x274
+  768 < w < 1024: 302x302
+  w < 768:  310x310
+
+  Use LazyLoadComponent to lazy load remix image.
+*/
 interface ITag {
   name: string;
   color: string;
@@ -104,8 +113,6 @@ export default function ProductCard({
 
   if (!product) return null;
 
-  const bgImage = loaded ? { backgroundImage: `url('${mainPic}')` } : {};
-
   return (
     <Link
       // prefetch='intent'
@@ -119,15 +126,6 @@ export default function ProductCard({
         p-1 md:p-2 lg:p-4
         relative
       '>
-        <div
-          className={`
-            ${loaded ? 'block' : 'hidden'}
-            aspect-square
-            image-container bg-contain bg-center bg-no-repeat
-          `}
-          style={bgImage}
-        />
-
         {
           priceOff > showPriceOffThreshhold
             ? (
@@ -140,6 +138,7 @@ export default function ProductCard({
                 font-poppins
                 rounded-b-lg
                 text-white
+                z-20
               '>
                 <small className='font-bold'>{priceOff}%</small>
                 <small className='font-medium mt-[-3px]'>OFF</small>
@@ -147,20 +146,36 @@ export default function ProductCard({
             ) : null
         }
 
-        <LazyLoadImage
-          wrapperClassName={`
-            ${loaded ? '!hidden' : 'aspect-square w-full h-full'}
-          `}
-          effect="blur"
-          threshold={200}
-          afterLoad={() => { setLoaded(true); }}
-          alt={title}
+        <LazyLoadComponent
           scrollPosition={scrollPosition}
-          src={mainPic}
-          placeholder={
-            <div className='block w-full h-full bg-[#efefef] animate-pulse aspect-square'
-            />}
-        />
+        >
+          <Image
+            placeholder={loaded ? 'empty' : 'blur'}
+            placeholderAspectRatio={1}
+            onLoadingComplete={(naturalDimensions) => {
+              setLoaded(true);
+            }}
+            options={{
+              contentType: MimeType.WEBP,
+              fit: 'contain',
+            }}
+            className="
+              aspect-square w-[274px] h-full
+              min-w-0 min-h-0
+            "
+            loaderUrl='/remix-image'
+            src={mainPic}
+            responsive={[
+              {
+                size: {
+                  width: 274,
+                  height: 274,
+                },
+              },
+            ]}
+          // dprVariants={[1, 3]}
+          />
+        </LazyLoadComponent>
 
         {/* TITLES */}
         <p
@@ -221,7 +236,7 @@ export default function ProductCard({
             width='100%'
             size="sm"
             onClick={() => onClickProduct(title, productUUID)}>
-            { variations && variations.length > 1 ? 'See Options' : 'Add to Cart' }
+            {variations && variations.length > 1 ? 'See Options' : 'Add to Cart'}
           </Button>
         </div>
       </div>

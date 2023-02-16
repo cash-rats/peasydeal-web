@@ -208,6 +208,9 @@ function ProductDetailPage() {
 		),
 	});
 
+	const [variationErr, setVariationErr] = useState<string>('');
+	const [openSuccessModal, setOpenSuccessModal] = useState(false);
+
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
@@ -245,8 +248,6 @@ function ProductDetailPage() {
 
 	}, [state.productDetail]);
 
-	const [variationErr, setVariationErr] = useState<string>('');
-	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
 	const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
 		if (!state.variation) return;
