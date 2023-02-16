@@ -6,15 +6,14 @@ import { useState, useMemo, useCallback } from 'react';
 import { Link } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
-import { LazyLoadImage, LazyLoadComponent } from "react-lazy-load-image-component";
-import Image, { MimeType } from "remix-image"
+import { LazyLoadComponent } from "react-lazy-load-image-component";
+import Image, { MimeType, useResponsiveImage } from "remix-image"
 
 import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
 
 import { Button } from '@chakra-ui/react'
 import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
-import { maxWidth } from '@mui/system';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: llimageStyle }];
@@ -38,6 +37,11 @@ interface ITag {
   name: string;
   color: string;
 }
+
+interface NaturalDimensions {
+  naturalWidth: number;
+  naturalHeight: number;
+};
 
 const showPriceOffThreshhold = 30;
 const capitalizeWords = (str: string) => {
@@ -80,6 +84,12 @@ export default function ProductCard({
   } = product || {};
 
   const [loaded, setLoaded] = useState<Boolean>(false);
+  const [
+    imageDimension,
+    setImageDimension,
+  ] = useState<NaturalDimensions>({ naturalWidth: 0, naturalHeight: 0 });
+
+  // useResponsiveImage()
 
   const splitNumber = useCallback((n: number): [number, number] => {
     if (!n) return [0, 0];
@@ -112,10 +122,6 @@ export default function ProductCard({
 
   if (!product) return null;
 
-  const bgImage = loaded ? { backgroundImage: `url('${mainPic}')` } : {};
-  console.log('debug mainpic', mainPic)
-
-
   return (
     <Link
       // prefetch='intent'
@@ -129,14 +135,6 @@ export default function ProductCard({
         p-1 md:p-2 lg:p-4
         relative
       '>
-        {/* <div
-          className={`
-            ${loaded ? 'block' : 'hidden'}
-            aspect-square bg-contain bg-center bg-no-repeat
-          `}
-          style={bgImage}
-        /> */}
-
         {
           priceOff > showPriceOffThreshhold
             ? (
@@ -149,6 +147,7 @@ export default function ProductCard({
                 font-poppins
                 rounded-b-lg
                 text-white
+                z-20
               '>
                 <small className='font-bold'>{priceOff}%</small>
                 <small className='font-medium mt-[-3px]'>OFF</small>
@@ -156,73 +155,38 @@ export default function ProductCard({
             ) : null
         }
 
-        {/* <LazyLoadComponent scrollPosition={scrollPosition}> */}
-        {/* <Image
-          onLoadingComplete={(aa) => {
-            console.log('debug onLoadingComplete', aa);
-
-          }}
-          loaderUrl='/remix-image'
-          className="aspect-square w-full h-full"
-          src="https://i.imgur.com/5cQnAQC.png"
-          responsive={[
-            {
-              size: { width: 100, height: 100 },
-              maxWidth: 500,
-            },
-            {
-              size: { width: 274, height: 274 },
-            },
-          ]}
-          dprVariants={[1, 3]}
-        /> */}
-        {/* </LazyLoadComponent> */}
-
-        <Image
-          options={{
-            contentType: MimeType.JPEG,
-          }}
-          className="aspect-square w-full h-full"
-          loaderUrl='/remix-image'
-          src={'https://storage.googleapis.com/peasydeal/product-images/0098b5d7228147f895aae08f88daeb.jpg'}
-          responsive={[
-            //   {
-            //     size: {
-            //       width: 310,
-            //       height: 310,
-            //     },
-            //     maxWidth: 768,
-            //   },
-            //   {
-            //     size: {
-            //       width: 302,
-            //       height: 302,
-            //     },
-            //     maxWidth: 1024,
-            //   },
-            {
-              size: {
-                width: 274,
-                height: 274,
-              },
-            },
-          ]}
-        // dprVariants={[1, 3]}
-        />
-        {/* <LazyLoadImage
-          wrapperClassName={`
-            ${loaded ? '!hidden' : 'aspect-square w-full h-full'}
-          `}
-          effect="blur"
-          threshold={200}
-          afterLoad={() => { setLoaded(true); }}
-          alt={title}
+        <LazyLoadComponent
           scrollPosition={scrollPosition}
-          src={mainPic}
-          placeholder={
-            <div className='block w-full h-full bg-[#efefef] animate-pulse aspect-square'
-            />}
-        /> */}
+        >
+          <Image
+            placeholder={loaded ? 'empty' : 'blur'}
+            placeholderAspectRatio={1}
+            onLoadingComplete={(naturalDimensions) => {
+              console.log('naturalDimensions', naturalDimensions)
+              setLoaded(true);
+              setImageDimension(naturalDimensions);
+            }}
+            options={{
+              contentType: MimeType.WEBP,
+              fit: 'contain',
+            }}
+            className="
+              aspect-square w-[274px] h-full
+              min-w-0 min-h-0
+            "
+            loaderUrl='/remix-image'
+            src={mainPic}
+            responsive={[
+              {
+                size: {
+                  width: 274,
+                  height: 274,
+                },
+              },
+            ]}
+            dprVariants={[1, 3]}
+          />
+        </LazyLoadComponent>
 
         {/* TITLES */}
         <p
