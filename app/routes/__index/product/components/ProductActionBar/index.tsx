@@ -1,6 +1,8 @@
 import { forwardRef } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
+import { Button } from '@chakra-ui/react';
+
 import RoundButton from '~/components/RoundButton';
 
 import styles from './styles/ProductActionBar.css';
@@ -28,20 +30,28 @@ const ProductActionBar = forwardRef(({
       className="client-action-bar"
     >
       <div>
-        <RoundButton
-          onClick={onClickAddToCart}
-          fullWidth
-          loading={loading}
-          colorScheme='addtocart'
-        >
-          <p style={{ width: '100%', textAlign: 'center' }}>
-            Add To Cart
-          </p>
-        </RoundButton>
+        <Button
+          colorScheme='pink'
+          variant='outline'
+          width='100%'
+          size="lg"
+          isLoading={loading}
+          loadingText='Adding'
+          onClick={onClickAddToCart}>
+          Add To Cart
+        </Button>
       </div>
 
       <div>
-        <RoundButton
+        <Button
+          colorScheme='pink'
+          variant={'solid'}
+          width='100%'
+          size="lg"
+          onClick={onClickBuyNow}>
+          Buy Now
+        </Button>
+        {/* <RoundButton
           fullWidth
           onClick={onClickBuyNow}
           colorScheme='buynow'
@@ -49,7 +59,7 @@ const ProductActionBar = forwardRef(({
           <p style={{ width: '100%', textAlign: 'center' }}>
             Buy Now
           </p>
-        </RoundButton>
+        </RoundButton> */}
       </div>
     </div>
   );
