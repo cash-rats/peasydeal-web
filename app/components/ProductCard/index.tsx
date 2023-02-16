@@ -7,7 +7,7 @@ import { Link } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 import { LazyLoadComponent } from "react-lazy-load-image-component";
-import Image, { MimeType, useResponsiveImage } from "remix-image"
+import Image, { MimeType } from "remix-image"
 
 import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
@@ -37,11 +37,6 @@ interface ITag {
   name: string;
   color: string;
 }
-
-interface NaturalDimensions {
-  naturalWidth: number;
-  naturalHeight: number;
-};
 
 const showPriceOffThreshhold = 30;
 const capitalizeWords = (str: string) => {
@@ -84,12 +79,6 @@ export default function ProductCard({
   } = product || {};
 
   const [loaded, setLoaded] = useState<Boolean>(false);
-  const [
-    imageDimension,
-    setImageDimension,
-  ] = useState<NaturalDimensions>({ naturalWidth: 0, naturalHeight: 0 });
-
-  // useResponsiveImage()
 
   const splitNumber = useCallback((n: number): [number, number] => {
     if (!n) return [0, 0];
@@ -162,9 +151,7 @@ export default function ProductCard({
             placeholder={loaded ? 'empty' : 'blur'}
             placeholderAspectRatio={1}
             onLoadingComplete={(naturalDimensions) => {
-              console.log('naturalDimensions', naturalDimensions)
               setLoaded(true);
-              setImageDimension(naturalDimensions);
             }}
             options={{
               contentType: MimeType.WEBP,
@@ -184,7 +171,7 @@ export default function ProductCard({
                 },
               },
             ]}
-            dprVariants={[1, 3]}
+          // dprVariants={[1, 3]}
           />
         </LazyLoadComponent>
 
