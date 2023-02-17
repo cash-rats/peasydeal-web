@@ -16,11 +16,25 @@ export type Product = {
   shortDescription: string;
   sku?: string;
   title: string;
+  createdAt: string;
   subtitle: string;
   variations?: Variation[];
   variationID: string;
   tabComboType: string | null;
 };
+
+export type TCategoryPreview = {
+	name: string;
+	label: string;
+	desc: string;
+	items: Product[];
+}
+
+export type TPromotionType = {
+	name: string;
+	label: string;
+	desc: string;
+}
 
 // Shopping cart item stored in session or from API.
 export type CartItem = {

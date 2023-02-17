@@ -11,16 +11,17 @@ import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { PAGE_LIMIT } from '~/shared/constants';
-import type { Product } from "~/shared/types";
+import type { Product, TCategoryPreview, TPromotionType } from "~/shared/types";
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { checkHasMoreRecord, getCanonicalDomain } from '~/utils';
 import { commitSession } from '~/sessions/sessions';
 import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
 import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/SeasonalRowLayout/SeasonalRowLayout";
+import { CategoryPreview } from "~/components/CategoryPreview";
 import FiveHundredError from "~/components/FiveHundreError";
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { fetchActivityBanners, fetchProductsByCategoryV2 } from "./api";
+import { fetchActivityBanners, fetchProductsByCategoryV2, fetchLandingPageFeatureProducts } from "./api";
 import type { ActivityBanner } from "./types";
 
 import styles from "./styles/ProductList.css";
@@ -29,11 +30,13 @@ import { modToXItems } from './utils';
 type LoaderType = 'loadmore';
 
 type LoaderDataType = {
-	products: Product[];
-	page: number;
+	categoryPreviews: TCategoryPreview[],
+	promotions: TPromotionType[],
 	canonical_link: string;
-	has_more: boolean;
-	activity_banners: ActivityBanner[];
+	// products: Product[];
+	// page: number;
+	// has_more: boolean;
+	// activity_banners: ActivityBanner[];
 }
 
 export const links: LinksFunction = () => {
@@ -59,6 +62,7 @@ type LoaderLoadmoreDateType = {
 	products: Product[];
 	has_more: boolean;
 }
+
 const _loadmoreLoader = async (request: Request, page: number, perPage: number) => {
 	const prods = await fetchProductsByCategoryV2({
 		perpage: perPage,
@@ -78,62 +82,104 @@ const _loadmoreLoader = async (request: Request, page: number, perPage: number) 
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-	const url = new URL(request.url);
-	const actionType = url.searchParams.get('action_type') as LoaderType;
-	if (actionType === 'loadmore') {
-		const page = Number(url.searchParams.get('page')) || 1;
-		const perPage = Number(url.searchParams.get('per_page')) || 8;
+	// const url = new URL(request.url);
 
-		return _loadmoreLoader(request, page, perPage)
-	}
+	const landings = await fetchLandingPageFeatureProducts({
+		categoriesPreviewNames: [
+			'hot_deal',
+			'new_trend',
+			'electronic',
+			'clothes_shoes',
+			'home_appliances',
+			'kitchen_kitchenware',
+			'toy',
+			'pet',
+			'car_accessories'
+		]
+	});
 
-	try {
-		const [prodInfo, activityBanners = []] = await Promise.all([
-			await getCategoryProducts(request, 'Hot Deal'),
-			await fetchActivityBanners()
-		])
+	return json<LoaderDataType>({
+		...landings,
+		canonical_link: getCanonicalDomain(),
+	});
 
-		if (prodInfo) {
-			const prods = await fetchProductsByCategoryV2({
-				perpage: prodInfo.page * PAGE_LIMIT,
-				category: 1, // 1 is the id for category 'Hot Deal'
-			})
+	// const actionType = url.searchParams.get('action_type') as LoaderType;
 
-			return json<LoaderDataType>({
-				products: prods,
-				page: prodInfo.page,
-				canonical_link: getCanonicalDomain(),
-				has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
-				activity_banners: activityBanners,
-			});
-		}
+	// if (actionType === 'loadmore') {
+	// 	const page = Number(url.searchParams.get('page')) || 1;
+	// 	const perPage = Number(url.searchParams.get('per_page')) || 8;
 
-		const [prods, session] = await Promise.all([
-			await fetchProductsByCategoryV2({
-				perpage: PAGE_LIMIT,
-				page: 1,
-				category: 1, // 1 is the id for category 'Hot Deal'
-				random: false,
-			}),
-			await addCategoryProducts(request, [], 'Hot Deal', 1),
-		]);
+	// 	return _loadmoreLoader(request, page, perPage)
+	// }
 
-		return json<LoaderDataType>({
-			products: prods,
-			page: 1,
-			canonical_link: getCanonicalDomain(),
-			has_more: prods.length === PAGE_LIMIT,
-			activity_banners: activityBanners,
-		}, {
-			headers: {
-				'Set-Cookie': await commitSession(session),
-			}
-		});
-	} catch (err) {
-		throw json(err, {
-			status: httpStatus.INTERNAL_SERVER_ERROR,
-		})
-	}
+	// try {
+	// 	/**
+	// 	 * Get the products from the cache
+	// 	 * @type {Promise<unknown>}
+	// 	 */
+	// 	const [prodInfo, activityBanners = []] = await Promise.all([
+	// 		await getCategoryProducts(request, 'Hot Deal'),
+	// 		await fetchActivityBanners()
+	// 	]);
+
+	// 	/**
+	// 	 * Check if the products were found in the session
+	// 	 */
+	// 	if (prodInfo) {
+	// 		/**
+	// 		 * Fetch the products from the database
+	// 		 * @type {Promise<unknown>}
+	// 		 */
+	// 		const prods = await fetchProductsByCategoryV2({
+	// 			perpage: prodInfo.page * PAGE_LIMIT,
+	// 			category: 1, // 1 is the id for category 'Hot Deal'
+	// 		})
+
+	// 		/**
+	// 		 * Return the products
+	// 		 */
+	// 		return json<LoaderDataType>({
+	// 			products: prods,
+	// 			page: prodInfo.page,
+	// 			canonical_link: getCanonicalDomain(),
+	// 			has_more: checkHasMoreRecord(prods.length, prodInfo.page * PAGE_LIMIT),
+	// 			activity_banners: activityBanners,
+	// 		});
+	// 	}
+
+	// 	/**
+	// 	 * Initial the products from the database if not found in the session
+	// 	 * @type {Promise<unknown>}
+	// 	 */
+	// 	const [prods, session] = await Promise.all([
+	// 		await fetchProductsByCategoryV2({
+	// 			perpage: PAGE_LIMIT,
+	// 			page: 1,
+	// 			category: 1, // 1 is the id for category 'Hot Deal'
+	// 			random: false,
+	// 		}),
+	// 		await addCategoryProducts(request, [], 'Hot Deal', 1),
+	// 	]);
+
+	// 	/**
+	// 	 * Return the products
+	// 	 */
+	// 	return json<LoaderDataType>({
+	// 		products: prods,
+	// 		page: 1,
+	// 		canonical_link: getCanonicalDomain(),
+	// 		has_more: prods.length === PAGE_LIMIT,
+	// 		activity_banners: activityBanners,
+	// 	}, {
+	// 		headers: {
+	// 			'Set-Cookie': await commitSession(session),
+	// 		}
+	// 	});
+	// } catch (err) {
+	// 	throw json(err, {
+	// 		status: httpStatus.INTERNAL_SERVER_ERROR,
+	// 	})
+	// }
 };
 
 // TODO: this this should be
@@ -168,7 +214,7 @@ export const CatchBoundary = () => {
 			message={caught.data}
 			statusCode={caught.status}
 		/>
-	)
+	);
 }
 
 /*
@@ -186,42 +232,46 @@ export const CatchBoundary = () => {
 type IndexProps = {} & LazyComponentProps;
 
 function Index({ scrollPosition }: IndexProps) {
-	const { products, has_more, page, activity_banners } = useLoaderData<LoaderDataType>();
-	const currPage = useRef(page);
-	const [hasMore, setHasMore] = useState(has_more);
-	const [productRows, setProductRows] = useState<Product[][]>(modToXItems(products));
-	const transition = useTransition();
+	const {
+		categoryPreviews,
+		promotions,
+		canonical_link,
+	} = useLoaderData<LoaderDataType>();
+	// const currPage = useRef(page);
+	// const [hasMore, setHasMore] = useState(has_more);
+	// const [productRows, setProductRows] = useState<Product[][]>(modToXItems(products));
+	// const transition = useTransition();
 
 	// Transition to observe when preload the first page of the product list render
-	const loadmoreFetcher = useFetcher();
+	// const loadmoreFetcher = useFetcher();
 
-	const handleLoadMore = useCallback(
-		() => {
-			const nextPage = currPage.current + 1;
-			loadmoreFetcher.submit(
-				{
-					action_type: 'loadmore',
-					page: nextPage.toString(),
-					per_page: PAGE_LIMIT.toString(),
-				},
-				{ action: '/?index' }
-			);
-		}, []);
+	// const handleLoadMore = useCallback(
+	// 	() => {
+	// 		const nextPage = currPage.current + 1;
+	// 		loadmoreFetcher.submit(
+	// 			{
+	// 				action_type: 'loadmore',
+	// 				page: nextPage.toString(),
+	// 				per_page: PAGE_LIMIT.toString(),
+	// 			},
+	// 			{ action: '/?index' }
+	// 		);
+	// 	}, []);
 
 	// Append products to local state when fetcher type is in `done` state.
-	useEffect(() => {
-		if (loadmoreFetcher.type === 'done') {
-			const { products } = loadmoreFetcher.data as LoaderLoadmoreDateType;
+	// useEffect(() => {
+	// 	if (loadmoreFetcher.type === 'done') {
+	// 		const { products } = loadmoreFetcher.data as LoaderLoadmoreDateType;
 
-			if (products.length <= 0) {
-				setHasMore(false);
-			}
+	// 		if (products.length <= 0) {
+	// 			setHasMore(false);
+	// 		}
 
-			// Current page fetched successfully, increase page number getting ready to fetch next page.
-			currPage.current += 1;
-			setProductRows(prev => prev.concat(modToXItems(products)));
-		}
-	}, [loadmoreFetcher.type])
+	// 		// Current page fetched successfully, increase page number getting ready to fetch next page.
+	// 		currPage.current += 1;
+	// 		setProductRows(prev => prev.concat(modToXItems(products)));
+	// 	}
+	// }, [loadmoreFetcher.type])
 
 
 	// Redirect to product detail page when click on product.
@@ -233,21 +283,44 @@ function Index({ scrollPosition }: IndexProps) {
 		console.log('user clicks on:', catID, catTitle);
 	}
 
-	return (
-		<div className="Index__wrapper">
-			<div className="prod-list-container">
-				<ActivityRowLayout activities={mockedActivities} />
+	console.log(categoryPreviews);
 
-				<ProductRowsContainer
+	return (
+		<div className="">
+			<div className="
+				py-0 px-auto
+				flex flex-col
+				justify-center items-center
+				mx-2 md:mx-4
+			">
+				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
+					{
+						categoryPreviews.map((category, index) => {
+							return (
+								<CategoryPreview
+									category={category}
+									key={`${category.name}_${index}`}
+									onClickProduct={handleClickProduct}
+									scrollPosition={scrollPosition}
+								/>
+							);
+						})
+					}
+				</div>
+			</div>
+
+				{/* <ActivityRowLayout activities={mockedActivities} /> */}
+
+				{/* <ProductRowsContainer
 					productRows={productRows}
 					activityBanners={activity_banners}
 					seasonals={mockedActivities}
 					onClickProduct={handleClickProduct}
 					onClickShopNow={handleClickShopNow}
 					scrollPosition={scrollPosition}
-				/>
+				/> */}
 
-				<div className="ProductList__loadmore-container" >
+				{/* <div className="ProductList__loadmore-container" >
 					<div>
 						{
 							hasMore && transition.state === 'idle'
@@ -269,8 +342,7 @@ function Index({ scrollPosition }: IndexProps) {
 								)
 						}
 					</div>
-				</div>
-			</div>
+				</div> */}
 		</div>
 	);
 }

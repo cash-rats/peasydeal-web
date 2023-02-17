@@ -87,17 +87,19 @@ export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 
 const normalizeV2Data = (apiData: any[]): Product[] => {
 	const transformed: Product[] = apiData.map((data: any): Product => {
+		console.log('data', data);
 		return {
 			currency: data.currency,
 			description: '',
 			discount: data.discount,
-			main_pic: data.images[0],
+			main_pic: data.images && data.images.length > 0 ? data.images[0] : '',
 			productUUID: data.product_uuid,
 			retailPrice: data.retail_price,
 			salePrice: data.sale_price,
 			shortDescription: '',
 			subtitle: '',
 			title: data.title,
+			createdAt: data.created_at,
 			variationID: data.variationId,
 			tabComboType: data.tag_combo_type,
 			variations: data.variations,
@@ -111,6 +113,40 @@ export interface FetchProductsByCategoryV2Params {
 	perpage?: number;
 	page?: number;
 	random?: boolean;
+}
+
+export interface IFetchLandingPageFeatureProductsParams {
+	categoriesPreviewNames: String[];
+}
+
+export const fetchLandingPageFeatureProducts = async ({
+	categoriesPreviewNames = [],
+}: IFetchLandingPageFeatureProductsParams) => {
+	const url = new URL(PEASY_DEAL_ENDPOINT)
+
+	url.pathname = '/v1/products/landing-page';
+	url.searchParams.append('cat_preview_names', categoriesPreviewNames.join(','));
+
+	const resp = await fetch(url.toString());
+	const respJSON = await resp.json();
+
+	if (resp.status !== httpStatus.OK) {
+		const errResp = respJSON as ApiErrorResponse;
+		throw new Error(errResp.err_message);
+	}
+
+	const categoryPreviews = respJSON.category_previews
+		? respJSON.category_previews.map((categoryPreview: any) => {
+			return {
+				...categoryPreview,
+				items: normalizeV2Data(categoryPreview.items),
+			}
+		}) : [];
+
+	return {
+		categoryPreviews,
+		promotions: respJSON?.promotions || [],
+	};
 }
 
 export const fetchProductsByCategoryV2 = async ({

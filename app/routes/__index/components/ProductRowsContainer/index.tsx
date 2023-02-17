@@ -17,7 +17,6 @@ export const links: LinksFunction = () => {
   ];
 };
 
-
 const LoadingRows = () => {
   return (
     <>
