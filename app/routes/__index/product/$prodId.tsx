@@ -10,8 +10,7 @@ import type { LoaderFunction, ActionFunction, MetaFunction, LinksFunction } from
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 import Select from 'react-select';
-import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
-
+import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
 import Rating from '@mui/material/Rating';
 
 import type { DynamicLinksFunction } from 'remix-utils';
@@ -40,11 +39,11 @@ import {
 } from '~/utils';
 
 import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
+	Accordion,
+	AccordionItem,
+	AccordionButton,
+	AccordionPanel,
+	AccordionIcon,
 } from '@chakra-ui/react'
 
 import Breadcrumbs from './components/Breadcrumbs';
@@ -413,7 +412,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 							"
 						>
 							<div className="absolute top-[-1.5rem] left-[-1px]">
-									<RightTiltBox text={`${state.productDetail.order_count} bought`} />
+								<RightTiltBox text={`${state.productDetail.order_count} bought`} />
 							</div>
 
 							<div className="product-content">
@@ -434,7 +433,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 												/>
 
 												<span className="text-sm translate-x-[-1.125rem]">
-													{ state.productDetail?.rating } ({state.productDetail.num_of_raters})
+													{state.productDetail?.rating} ({state.productDetail.num_of_raters})
 												</span>
 											</div>
 										)
@@ -513,7 +512,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 															}
 														/>
 
-														{ variationErr && <p className="error">{variationErr}</p> }
+														{variationErr && <p className="error">{variationErr}</p>}
 													</>
 												)
 												: null

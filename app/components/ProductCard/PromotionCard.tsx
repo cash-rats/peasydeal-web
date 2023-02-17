@@ -4,33 +4,73 @@
  */
 import { useState, useMemo, useCallback } from 'react';
 import { Link } from '@remix-run/react';
+import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import { Button } from '@chakra-ui/react';
+import { LazyLoadComponent } from "react-lazy-load-image-component";
+import Image, { MimeType } from "remix-image"
 
 import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
+import { DOMAIN } from '~/utils/get_env_source';
 
-import { capitalizeTagWords, getColorByTag } from './utils';
+import { Button } from '@chakra-ui/react'
+import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
 
-interface IPromotionCard {
+export const links: LinksFunction = () => {
+  return [{ rel: 'stylesheet', href: llimageStyle }];
+}
+
+interface IProductCard {
   product?: Product;
   scrollPosition?: ScrollPosition;
   onClickProduct?: (title: string, productID: string) => void;
 }
 
+/*
+  Lazy load remix-image.
+  w > 1024: 274x274
+  768 < w < 1024: 302x302
+  w < 768:  310x310
+
+  Use LazyLoadComponent to lazy load remix image.
+*/
 interface ITag {
   name: string;
   color: string;
 }
 
 const showPriceOffThreshhold = 30;
+const capitalizeWords = (str: string) => {
+  if (!str) return '';
 
-export default function PromotionCard({
+  let words = str.split('_');
+  let newStr = '';
+
+  for (let word of words) {
+    newStr += word.charAt(0).toUpperCase() + word.substring(1).toLowerCase() + ' ';
+  }
+
+  return newStr.trim();
+}
+
+const getColorByTag = (tag: string) => {
+  switch (tag) {
+    case 'new':
+      return '#2D91FF';
+    case 'hot_deal':
+      return '#D43B33';
+    case 'price_off':
+      return '#5EA111';
+    default:
+      return '#2D91FF';
+  }
+}
+
+export default function ProductCard({
   product,
   onClickProduct = () => { },
   scrollPosition,
-}: IPromotionCard) {
+}: IProductCard) {
   const {
     main_pic: mainPic,
     title = '',
@@ -53,7 +93,7 @@ export default function PromotionCard({
     if (!tabComboType) return [];
 
     return tabComboType?.split(',').map((tag: string) => {
-      const name = capitalizeTagWords(tag);
+      const name = capitalizeWords(tag);
       const color = getColorByTag(tag);
 
       return { name, color };
@@ -74,8 +114,6 @@ export default function PromotionCard({
 
   if (!product) return null;
 
-  const bgImage = loaded ? { backgroundImage: `url('${mainPic}')` } : {};
-
   return (
     <Link
       // prefetch='intent'
@@ -90,15 +128,6 @@ export default function PromotionCard({
         relative
         bg-white
       '>
-        <div
-          className={`
-            ${loaded ? 'block' : 'hidden'}
-            aspect-square
-            image-container bg-contain bg-center bg-no-repeat
-          `}
-          style={bgImage}
-        />
-
         {
           priceOff > showPriceOffThreshhold
             ? (
@@ -111,6 +140,7 @@ export default function PromotionCard({
                 font-poppins
                 rounded-b-lg
                 text-white
+                z-10
               '>
                 <small className='font-bold'>{priceOff}%</small>
                 <small className='font-medium mt-[-3px]'>OFF</small>
@@ -118,20 +148,41 @@ export default function PromotionCard({
             ) : null
         }
 
-        <LazyLoadImage
-          wrapperClassName={`
-            ${loaded ? '!hidden' : 'aspect-square w-full h-full'}
-          `}
-          effect="blur"
-          threshold={200}
-          afterLoad={() => { setLoaded(true); }}
-          alt={title}
-          scrollPosition={scrollPosition}
-          src={mainPic}
-          placeholder={
-            <div className='block w-full h-full bg-[#efefef] animate-pulse aspect-square'
-          />}
-        />
+
+        <div className={`${loaded ? 'h-full' : 'h-[274px]'}`} >
+          <LazyLoadComponent scrollPosition={scrollPosition} >
+            <Image
+              blurDataURL={`${loaded
+                ? null
+                : `${DOMAIN}/images/placeholder.svg`
+                }`}
+              placeholder={loaded ? 'empty' : 'blur'}
+              placeholderAspectRatio={1}
+              onLoadingComplete={(naturalDimensions) => {
+                setLoaded(true);
+              }}
+              options={{
+                contentType: MimeType.WEBP,
+                fit: 'contain',
+              }}
+              className="
+              aspect-square w-[274px] h-full
+              min-w-0 min-h-0
+            "
+              loaderUrl='/remix-image'
+              src={mainPic}
+              responsive={[
+                {
+                  size: {
+                    width: 274,
+                    height: 274,
+                  },
+                },
+              ]}
+            // dprVariants={[1, 3]}
+            />
+          </LazyLoadComponent>
+        </div>
 
         {/* TITLES */}
         <p
@@ -183,20 +234,7 @@ export default function PromotionCard({
             <small className='text-lg'>{priceRight}</small>
           </div>
         </div>
-
-        {/* ACTION BUTTON */}
-        {/* <div>
-          <Button
-            colorScheme='pink'
-            variant={'solid'}
-            width='100%'
-            size="sm"
-            onClick={() => onClickProduct(title, productUUID)}>
-            { variations && variations.length > 1 ? 'See Options' : 'Add to Cart' }
-          </Button>
-        </div> */}
       </div>
     </Link>
   );
 };
-
