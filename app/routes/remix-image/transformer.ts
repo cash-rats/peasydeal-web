@@ -59,20 +59,21 @@ const storage = new Storage({
 
 const bucketName = 'peasydeal';
 
-const W_247_H247 = 'webp/w274_h274';
-
 const bucket = storage.bucket(bucketName);
-
 
 const getFilenameFromPath = (url: string) => {
   return url.substring(url.lastIndexOf('/') + 1, url.length);
-}
+};
+
+const composeObjectName = ({ width, height, filename }: { width: number, height: number, filename: string }) => {
+  return `webp/w${width}_h${height}/${filename}`;
+};
 
 const streamFileUpload = ({ filename, buffer }: { buffer: Buffer, filename: string }) => {
   const passthroughStream = new stream.PassThrough();
   passthroughStream.write(buffer);
   passthroughStream.end();
-  const gcsFile = bucket.file(`${W_247_H247}/${filename}`);
+  const gcsFile = bucket.file(filename);
 
   return new Promise((resolve, reject) => {
     passthroughStream
@@ -193,15 +194,22 @@ const transformer: CustomTransformer = {
       })
       .toBuffer();
 
-    const filename = getFilenameFromPath(url);
-    const filenameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+    if (width && height) {
+      const filename = getFilenameFromPath(url);
+      const filenameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+      const objectName = composeObjectName({
+        filename: `${filenameWithoutExt}.webp`,
+        width,
+        height,
+      });
 
-    // TODO: catch/throw error when streaming failed.
-    // Do not wait for file streaming to finish.
-    streamFileUpload({
-      buffer: result,
-      filename: `${filenameWithoutExt}.webp`,
-    });
+      // TODO: catch/throw error when streaming failed.
+      // Do not wait for file streaming to finish.
+      streamFileUpload({
+        buffer: result,
+        filename: objectName,
+      });
+    }
 
     return new Uint8Array(result);
   },
