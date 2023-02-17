@@ -23,7 +23,7 @@ const useStickyDivs = <T extends MutableRefObject<HTMLElement | null>>(ref: T, s
     }
 
     return () => window.removeEventListener('scroll', handleWindowScrolling);
-  }, [])
+  }, [ref, startStickyAt]);
 }
 
 export default useStickyDivs;

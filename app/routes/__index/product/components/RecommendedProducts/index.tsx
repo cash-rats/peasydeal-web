@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher, useTransition } from '@remix-run/react';
 import { json } from '@remix-run/node';
+import type { ScrollPosition } from 'react-lazy-load-image-component';
 
+import bg from './images/product-sale-section.jpeg';
 import type { Product } from '~/shared/types';
 
 // Note: we don't need to import "style links" for this component
@@ -13,6 +15,7 @@ import { modToXItems } from '~/utils/products';
 import { fetchCategories, normalizeToMap } from '~/api/categories.server';
 import { fetchProductsByCategoryV2 } from '~/api';
 import { PAGE_LIMIT } from '~/shared/constants';
+import { ProductPromotionRow } from '~/components/ProductPromotionRow';
 
 
 export const links: LinksFunction = () => {
@@ -49,21 +52,29 @@ export const action: ActionFunction = async ({ request }) => {
 interface RecommendedProductsProps {
   category: string;
   onClickProduct: (title: string, productID: string) => void;
+  scrollPosition?: ScrollPosition;
 }
 
-function RecommendedProducts({ category, onClickProduct }: RecommendedProductsProps) {
+function RecommendedProducts({
+  category,
+  onClickProduct,
+  scrollPosition,
+}: RecommendedProductsProps) {
   const fetcher = useFetcher();
 
   const [rows, setRows] = useState<Product[][]>([]);
   const transition = useTransition();
 
-  // We need to reload recommended product when user changes product. For example:
-  //
-  // `/product/LED-Light-Up-Trainers-i.7705390678254` ---> `/product/USB-Rechargeable-Menstrual-Heating-Waist-Belt-i.7773266346210`
-  //
-  // We'll determine whether user is transitioning between different product i.e. `/product/{product_name}` by checking.
-  //  1. Are we being transitioned.
-  //  2. Is the next route we are transitioning includes `/product/`
+  /**
+   * We need to reload recommended product when user changes product. For example:
+   *
+   *   `/product/LED-Light-Up-Trainers-i.7705390678254` ---> `/product/USB-Rechargeable-Menstrual-Heating-Waist-Belt-i.7773266346210`
+   *
+   * We'll determine whether user is transitioning between different product i.e. `/product/{product_name}` by checking.
+   *    1. Are we being transitioned.
+   *    2. Is the next route we are transitioning includes `/product/`
+   *
+   */
   useEffect(() => {
     if (
       transition.state !== 'idle' &&
@@ -73,13 +84,13 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
         category
       }, { method: 'post', action: '/product/components/RecommendedProducts?index' });
     }
-  }, [transition])
+  }, [transition]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetcher.submit({
       category
     }, { method: 'post', action: '/product/components/RecommendedProducts?index' });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (fetcher.type === 'done') {
@@ -87,7 +98,6 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
 
       // Transform before using it.
       if (products.length > 0) {
-
         const rows = modToXItems(products);
         setRows(rows)
       }
@@ -95,15 +105,50 @@ function RecommendedProducts({ category, onClickProduct }: RecommendedProductsPr
   }, [fetcher])
 
   return (
-    <div className="mt-6 md:mt-10 lg:mt-16">
-      <h3 className='font-poppins font-bold text-3xl mb-4 md:mb-6'>You may also like</h3>
-      {
-        <ProductRowsLayout
-          loading={fetcher.type !== 'done'}
-          onClickProduct={onClickProduct}
-          productRows={rows}
-        />
-      }
+    <div>
+      <div
+        className={`
+          flex
+          flex-col
+          w-full
+          my-6
+          py-2.5 md:py-[46px]
+          px-2.5 md:px-[26px]
+        `}
+        style={{backgroundImage: `url(${bg})`}}
+      >
+        <div className='w-full w-full max-w-screen-xl mx-auto'>
+          <div className='flex flex-col'>
+            <h3 className="font-poppins font-bold text-3xl mb-2 md:mb-3">
+              Top Selling Products
+            </h3>
+            <h4 className="font-poppins font-normal	 text-xl mb-4 md:mb-6">
+              Get The Most Popular Items Today
+            </h4>
+            <ProductPromotionRow
+              scrollPosition={scrollPosition}
+              onClickProduct={onClickProduct}
+              products={rows[0]}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className='w-full w-full p-2.5 max-w-screen-xl mx-auto'>
+				<div className="flex justify-center xl:justify-start">
+          <div className="mt-6 md:mt-10 lg:mt-16">
+            <h3 className='font-poppins font-bold text-3xl mb-4 md:mb-6'>You may also like</h3>
+            {
+              <ProductRowsLayout
+                scrollPosition={scrollPosition}
+                loading={fetcher.type !== 'done'}
+                onClickProduct={onClickProduct}
+                productRows={[rows[1]]}
+              />
+            }
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

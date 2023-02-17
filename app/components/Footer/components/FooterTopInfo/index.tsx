@@ -1,3 +1,4 @@
+import { Link } from '@remix-run/react';
 import { FiMail } from 'react-icons/fi';
 import { MdOutlineLocalShipping } from 'react-icons/md';
 
@@ -55,21 +56,22 @@ function FooterTopInfo() {
           </h3>
 
           <div className="flex flex-col gap-2 md:gap-4 lg:gap-9 md:flex-row">
-            <div className="flex items-center gap-1 md:gap-2 cursor-pointer">
+            <div className="flex font-semibold font-poppins items-center gap-1 cursor-pointer">
               <FiMail className="self-center text-lg md:text-xl sm:space-x-0.5" />
               <p className="self-center text-md md:text-base ml-1.5 capitalize">
                 contact us
               </p>
             </div>
 
-            <div className="flex flex-cols">
-              <div className="flex items-center gap-1 md:gap-2 cursor-pointer">
+
+            <Link className="flex flex-cols" aria-label='track order' to="/tracking">
+              <div className="flex font-semibold font-poppins items-center gap-1 cursor-pointer">
                 <MdOutlineLocalShipping color='black' className="self-center text-lg md:text-xl sm:space-x-0.5" />
                 <p className="self-center text-md md:text-base ml-1.5 capitalize">
                   track your order
                 </p>
               </div>
-            </div>
+            </Link>
           </div>
         </div>
 

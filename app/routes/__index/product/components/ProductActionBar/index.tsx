@@ -40,7 +40,7 @@ const ProductActionBar = forwardRef(({
         </Button>
       </div>
 
-      <div className='w-full'>
+      <div>
         <Button
           colorScheme='pink'
           variant={'solid'}

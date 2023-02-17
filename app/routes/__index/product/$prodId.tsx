@@ -11,9 +11,13 @@ import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn, TbShare } from 'react-icons/tb';
+
 import Rating from '@mui/material/Rating';
+
 import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
+import { trackWindowScroll } from "react-lazy-load-image-component";
+import type { LazyComponentProps } from "react-lazy-load-image-component";
 
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import ClientOnly from '~/components/ClientOnly';
@@ -52,8 +56,8 @@ import ProductActionBar, { links as ProductActionBarLinks } from './components/P
 import ProductActionBarLeft, { links as ProductActionBarLeftLinks } from './components/ProductActionBarLeft';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
-import TopProductsColumn from './components/TopProductsColumn';
 import useStickyActionBar from './hooks/useStickyActionBar';
+import useSticky from './hooks/useSticky';
 import reducer, { ActionTypes } from './reducer';
 
 type LoaderTypeProductDetail = {
@@ -192,11 +196,12 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const CatchBoundary = () => (<FourOhFour />);
 
+type ProductDetailProps = {} & LazyComponentProps;
 /*
  * Emulate discount expert
  * @see https://www.discountexperts.com/deal/uptfll2cfs/Breathable_Air_Cushion_Trainers___6_Colours___Sizes
  */
-function ProductDetailPage() {
+function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const data = useLoaderData<LoaderTypeProductDetail>();
 	const [state, dispatch] = useReducer(reducer, {
 		productDetail: data.product,
@@ -204,7 +209,7 @@ function ProductDetailPage() {
 		images: data.product.images,
 		quantity: 1,
 		variation: data.product.variations.find(
-			variation => data.product.default_variation_uuid === variation.uuid,
+			(variation: any) => data.product.default_variation_uuid === variation.uuid,
 		),
 	});
 
@@ -213,6 +218,8 @@ function ProductDetailPage() {
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
+	const productTopRef = useRef<HTMLDivElement>(null);
+	useSticky(productContentWrapperRef, productTopRef, 'sticky', 145);
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 
 	// Change product.
@@ -386,24 +393,23 @@ function ProductDetailPage() {
 				productUuid={state.productDetail.uuid}
 			/>
 
-			<div className="productdetail-container mt-2 md:mt-6">
+			<div className="productdetail-container max-w-screen-xl mt-2 md:mt-6">
 				<div className="ProductDetail__main-wrapper">
-					<div className='ProductDetail__main-top'>
+					<div className='ProductDetail__main-top' ref={productTopRef}>
 
 						<ProductDetailSection
 							description={state.productDetail?.description}
 							pics={state.images}
 							title={state.productDetail?.title}
 						/>
-
 						<div
 							ref={productContentWrapperRef}
 							className="
 								rounded-md border-x border-b border-t-8 border-[#D02E7D]
 								py-7 px-5
 								w-full md:max-w-[44%]
-								relative
 								h-fit
+								sticky
 							"
 						>
 							<div className="absolute top-[-1.5rem] left-[-1px]">
@@ -592,30 +598,22 @@ function ProductDetailPage() {
 							</div>
 						</div>
 					</div>
-
-
-				</div>
-
-				<div className="xl:w-[12rem] 1348:w-[15.875rem] hidden xl:block">
-					<TopProductsColumn />
 				</div>
 			</div>
+
 			{/*
 				Recommended products:
 					- Things you might like: other products that belongs to the same category.
 					- Hot deals
 					- New trend
 			*/}
-			<div className='w-full w-full p-2.5 max-w-screen-xl mx-auto'>
-				<div className="flex justify-center xl:justify-start">
-					<RecommendedProducts
-						category={state.mainCategory.name}
-						onClickProduct={handleClickProduct}
-					/>
-				</div>
-			</div>
+			<RecommendedProducts
+				category={state.mainCategory.name}
+				onClickProduct={handleClickProduct}
+				scrollPosition={scrollPosition}
+			/>
 		</>
 	);
 };
 
-export default ProductDetailPage;
+export default trackWindowScroll(ProductDetailPage);
