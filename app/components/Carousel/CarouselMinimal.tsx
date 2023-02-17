@@ -242,7 +242,10 @@ function Carousel({
                   bg-white
                   p-2 mt-[-22px]
                   transition-all duration-300 ease-in-out hover:bg-[rgba(255,255,255,0.7)]
-                  rounded-full"
+                  rounded-full
+                  border-[1px]
+                  border-slate-200
+                "
                 bg="white"
                 onClick={(e) => {
                   addSlide(1);

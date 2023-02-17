@@ -2,6 +2,9 @@ import type { ActionFunction } from '@remix-run/node';
 import { useFetcher, useTransition } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { useEffect, useState } from 'react';
+import bg from './images/product-sale-section.jpeg';
+
+import { ProductRow } from "~/components/ProductRow";
 
 import { fetchProductsByCategoryV2 } from '~/api';
 import type { Product } from '~/shared/types';
@@ -40,10 +43,12 @@ export const action: ActionFunction = async ({ request }) => {
 
 interface AdsProducts extends ActionType {
   banner_product: null | Product;
+  prods: any;
 }
 
 export default function TopProductsColumn() {
   const [adsProds, setAdsProds] = useState<AdsProducts>({
+    prods: [],
     banner_product: null,
     top_products: [],
     super_deal_products: [],
@@ -92,6 +97,7 @@ export default function TopProductsColumn() {
       const bannerProduct = prods.top_products[0];
 
       setAdsProds({
+        prods: [...prods.top_products, ...prods.super_deal_products],
         banner_product: bannerProduct,
         top_products: prods.top_products.slice(1),
         super_deal_products: prods.super_deal_products,
@@ -100,15 +106,41 @@ export default function TopProductsColumn() {
   }, [fetcher.type]);
 
   return (
-    <div className="xl:w-[12rem] 1348:w-[15.875rem] flex flex-col">
-      <BannerProduct
+    <div
+      className={`
+        flex
+        flex-col
+        w-full p-2.5
+        my-6
+        py-[30px] sm:py-[46px]
+        px-[18px] px-[26px]
+      `}
+      style={{backgroundImage: `url(${bg})`}}
+    >
+      <div className='flex flex-col'>
+        <h3 className="font-poppins font-bold text-3xl mb-2 md:mb-3">
+          Top Selling Products
+        </h3>
+        <h4 className="font-poppins font-normal	 text-xl mb-4 md:mb-6">
+          Get The Most Popular Items Today
+        </h4>
+      </div>
+
+      {
+        adsProds.prods && <ProductRow
+          products={adsProds.prods}
+        />
+      }
+
+
+      {/* <BannerProduct
         productUUID={adsProds.banner_product?.productUUID}
         loading={fetcher.type !== 'done'}
         title={adsProds.banner_product?.title}
         image={adsProds.banner_product?.main_pic}
-      />
+      /> */}
 
-      <ProductsColumn
+      {/* <ProductsColumn
         columnTitle='top products'
         loading={fetcher.type !== 'done'}
         products={adsProds.top_products}
@@ -118,7 +150,7 @@ export default function TopProductsColumn() {
         columnTitle='super deal'
         loading={fetcher.type !== 'done'}
         products={adsProds.super_deal_products}
-      />
+      /> */}
     </div>
   );
 }

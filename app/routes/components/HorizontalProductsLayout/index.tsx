@@ -11,7 +11,7 @@ import { fetchProductsByCategoryV2 } from '~/api';
 import slickStyles from "slick-carousel/slick/slick.css";
 import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
 import { breakPoints } from '~/styles/breakpoints';
-import ProductCard, { links as ProductCardLinks } from '~/components/ProductCard';
+import { RegularCardWithActionButton, links as ProductCardLinks } from '~/components/ProductCard';
 
 import styles from './styles/HorizontalProductsLayout.css';
 
@@ -142,7 +142,7 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
           {
             recProds.map((prod, index) => {
               return (
-                <ProductCard
+                <RegularCardWithActionButton
                   key={`horzontal-prod-${index}`}
                   product={prod}
                   onClickProduct={handleClickGrid}
