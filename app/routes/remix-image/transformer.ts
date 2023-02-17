@@ -1,7 +1,12 @@
+import path from 'path';
+import { Storage } from '@google-cloud/storage';
+import stream from 'stream';
 import sharp from 'sharp';
 import type { TransformOptions } from 'remix-image';
-import type { LoaderFunction } from "@remix-run/server-runtime";
-import { imageLoader, MemoryCache } from 'remix-image/server';
+
+/*
+  https://github.com/remix-run/remix/discussions/2905
+*/
 
 // Add support for image/jpg
 enum MimeType {
@@ -47,13 +52,50 @@ type CustomTransformer = {
   }, output: Required<TransformOptions>) => Promise<Uint8Array>;
 }
 
-const customTransformer: CustomTransformer = {
+const storage = new Storage({
+  keyFilename: path.resolve(__dirname, '../', 'peasydeal-master-key.json')
+});
+
+
+const bucketName = 'peasydeal';
+
+const W_247_H247 = 'webp/w274_h274';
+
+const bucket = storage.bucket(bucketName);
+
+
+const getFilenameFromPath = (url: string) => {
+  return url.substring(url.lastIndexOf('/') + 1, url.length);
+}
+
+const streamFileUpload = ({ filename, buffer }: { buffer: Buffer, filename: string }) => {
+  const passthroughStream = new stream.PassThrough();
+  passthroughStream.write(buffer);
+  passthroughStream.end();
+  const gcsFile = bucket.file(`${W_247_H247}/${filename}`);
+
+  return new Promise((resolve, reject) => {
+    passthroughStream
+      .pipe(gcsFile.createWriteStream())
+      .on('finish', () => {
+        resolve(true);
+      })
+      .on('error', (error) => {
+        reject(error);
+      });
+  });
+}
+
+const transformer: CustomTransformer = {
   name: 'customTransformer',
   supportedInputs: supportedInputs,
   supportedOutputs: supportedOutputs,
   fallbackOutput: MimeType.PNG,
   transform: async (
-    { data },
+    {
+      url,
+      data,
+    },
     {
       contentType: outputContentType,
       width,
@@ -71,6 +113,7 @@ const customTransformer: CustomTransformer = {
       crop,
     }
   ) => {
+    // image does not exists in CDN, we'll have to perform image transformation.
     const fixedBackground = {
       r: background[0],
       g: background[1],
@@ -150,16 +193,18 @@ const customTransformer: CustomTransformer = {
       })
       .toBuffer();
 
+    const filename = getFilenameFromPath(url);
+    const filenameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+
+    // TODO: catch/throw error when streaming failed.
+    // Do not wait for file streaming to finish.
+    streamFileUpload({
+      buffer: result,
+      filename: `${filenameWithoutExt}.webp`,
+    });
+
     return new Uint8Array(result);
   },
 };
 
-const config = {
-  selfUrl: "http://localhost:3000",
-  cache: new MemoryCache(),
-  transformer: customTransformer,
-};
-
-export const loader: LoaderFunction = ({ request }) => {
-  return imageLoader(config, request);
-};
+export default transformer;

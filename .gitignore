@@ -17,3 +17,6 @@ cosmos-export/
 .vscode/*
 
 cosmos.userdeps.js
+
+app/playground/*
+peasydeal-master-key.json

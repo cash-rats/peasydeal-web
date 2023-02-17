@@ -46,6 +46,7 @@
     "@emotion/react": "latest",
     "@emotion/server": "latest",
     "@emotion/styled": "latest",
+    "@google-cloud/storage": "^6.9.3",
     "@mui/icons-material": "^5.10.9",
     "@mui/joy": "^5.0.0-alpha.51",
     "@mui/lab": "^5.0.0-alpha.99",
