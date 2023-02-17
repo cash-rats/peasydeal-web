@@ -47,7 +47,6 @@ type CustomTransformer = {
   }, output: Required<TransformOptions>) => Promise<Uint8Array>;
 }
 
-
 const customTransformer: CustomTransformer = {
   name: 'customTransformer',
   supportedInputs: supportedInputs,
