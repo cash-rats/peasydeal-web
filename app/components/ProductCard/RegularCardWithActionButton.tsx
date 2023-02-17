@@ -147,7 +147,7 @@ export default function ProductCard({
             ) : null
         }
 
-        <div className={`${loaded ? 'h-full' : 'h-[274px]'}`} >
+        <div className={`${loaded ? 'h-full' : 'h-[183px] md:h-[274px]'}`} >
           <LazyLoadComponent scrollPosition={scrollPosition} >
             <Image
               blurDataURL={`${loaded
@@ -164,7 +164,7 @@ export default function ProductCard({
                 fit: 'contain',
               }}
               className="
-              aspect-square w-[274px] h-full
+              aspect-square
               min-w-0 min-h-0
             "
               loaderUrl='/remix-image'
@@ -177,7 +177,6 @@ export default function ProductCard({
                   },
                 },
               ]}
-            // dprVariants={[1, 3]}
             />
           </LazyLoadComponent>
         </div>
