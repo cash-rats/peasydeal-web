@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { MouseEvent } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
@@ -6,8 +5,6 @@ import { Form, useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 
-import { breakPoints } from '~/styles/breakpoints';
-import MqNotifier from '~/components/MqNotifier';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { error } from '~/utils/error';
@@ -113,7 +110,6 @@ export const CatchBoundary = () => {
   const caught = useCatch();
   const caughtData: CatchBoundaryDataType = caught.data;
   const trackOrderFetcher = useFetcher();
-  const [disableDesktopSearchBar, setDisableDesktopSearchBar] = useState(false);
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
@@ -137,20 +133,7 @@ export const CatchBoundary = () => {
   }
 
   return (
-    <MqNotifier mqValidators={[
-      {
-        condition: (dom) => dom.innerWidth < breakPoints.screen768min,
-        callback: (dom) => {
-          setDisableDesktopSearchBar(true)
-        }
-      },
-      {
-        condition: (dom) => dom.innerWidth >= breakPoints.screen768min,
-        callback: (dom) => {
-          setDisableDesktopSearchBar(false)
-        }
-      }
-    ]}>
+    <>
       <Form action='/tracking'>
         <Header
           categories={caughtData.categories}
@@ -165,12 +148,15 @@ export const CatchBoundary = () => {
         />
       </Form>
 
-      <TrackingSearchBar onSearch={handleOnSearch} />
+      <TrackingSearchBar
+        onSearch={handleOnSearch}
+        onClear={handleOnClear}
+      />
 
       <TrackingOrderErrorPage message={caughtData.errMessage} />
 
       <Footer />
-    </MqNotifier>
+    </>
   )
 }
 
@@ -178,7 +164,6 @@ export const CatchBoundary = () => {
 function TrackingOrder() {
   const { order, categories } = useLoaderData<LoaderDataType>();
   const trackOrderFetcher = useFetcher();
-  const [disableDesktopSearchBar, setDisableDesktopSearchBar] = useState(false);
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
@@ -203,20 +188,7 @@ function TrackingOrder() {
   }
 
   return (
-    <MqNotifier mqValidators={[
-      {
-        condition: (dom) => dom.innerWidth < breakPoints.screen768min,
-        callback: (dom) => {
-          setDisableDesktopSearchBar(true)
-        }
-      },
-      {
-        condition: (dom) => dom.innerWidth >= breakPoints.screen768min,
-        callback: (dom) => {
-          setDisableDesktopSearchBar(false)
-        }
-      }
-    ]}>
+    <>
       <Header
         categories={categories}
         searchBar={<div />}
@@ -225,7 +197,10 @@ function TrackingOrder() {
       <main>
         <Form action='/tracking'>
           {/* order search form */}
-          <TrackingSearchBar onSearch={handleOnSearch} />
+          <TrackingSearchBar
+            onSearch={handleOnSearch}
+            onClear={handleOnClear}
+          />
 
         </Form>
         {
@@ -236,7 +211,7 @@ function TrackingOrder() {
       </main>
 
       <Footer categories={categories} />
-    </MqNotifier>
+    </>
   );
 }
 
