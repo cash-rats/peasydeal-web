@@ -53,6 +53,9 @@ module.exports = {
 
         "REDIS_HOST": process.env.REDIS_HOST,
         "REDIST_PORT": process.env.REDIST_PORT,
+
+        "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
+        "POPUPSMART_ID": process.env.POPUPSMART_ID,
       },
 
       env_production: {
@@ -77,6 +80,9 @@ module.exports = {
 
         "REDIS_HOST": process.env.REDIS_HOST,
         "REDIST_PORT": process.env.REDIST_PORT,
+
+        "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
+        "POPUPSMART_ID": process.env.POPUPSMART_ID,
       },
     },
   ],
