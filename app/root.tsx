@@ -86,7 +86,7 @@ export let links: LinksFunction = () => {
 export async function loader({ request }: LoaderArgs) {
   return json({
     user: await getUser(request),
-    ENV: { ...envs },
+    ...envs,
   });
 }
 

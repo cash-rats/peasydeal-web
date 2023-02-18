@@ -48,3 +48,5 @@ start_staging:
 
 start_prod:
 	pm2 stop ecosystem.config.js --env production && pm2 start ecosystem.config.js --env production
+
+.PHONY: build
