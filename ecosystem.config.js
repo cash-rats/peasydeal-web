@@ -29,6 +29,11 @@ module.exports = {
 
         "REDIS_HOST": process.env.REDIS_HOST,
         "REDIST_PORT": process.env.REDIST_PORT,
+
+        "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
+        "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
+        "POPTIN_ID": process.env.POPTIN_ID,
+        "POPUPSMART_ID": process.env.POPUPSMART_ID,
       },
 
       env_staging: {
@@ -55,6 +60,8 @@ module.exports = {
         "REDIST_PORT": process.env.REDIST_PORT,
 
         "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
+        "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
+        "POPTIN_ID": process.env.POPTIN_ID,
         "POPUPSMART_ID": process.env.POPUPSMART_ID,
       },
 
@@ -82,6 +89,8 @@ module.exports = {
         "REDIST_PORT": process.env.REDIST_PORT,
 
         "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
+        "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
+        "POPTIN_ID": process.env.POPTIN_ID,
         "POPUPSMART_ID": process.env.POPUPSMART_ID,
       },
     },
