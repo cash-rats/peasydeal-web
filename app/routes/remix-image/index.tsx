@@ -1,12 +1,13 @@
 import type { LoaderFunction } from "@remix-run/server-runtime";
 import { imageLoader, MemoryCache } from 'remix-image/server';
 import type { LoaderConfig } from 'remix-image';
-import { MimeType } from 'remix-image';
+import httpStatus from 'http-status-codes';
 
 import { DOMAIN, CDN_URL } from '~/utils/get_env_source';
 
 import transformer from './transformer';
 import { imageResponse } from './response'
+import { fileExtensionResolver, MimeType } from './mimes';
 
 const config: LoaderConfig = {
   selfUrl: DOMAIN,
@@ -25,15 +26,17 @@ export const loader: LoaderFunction = async ({ request }) => {
   const width = url.searchParams.get('width') as string || '';
   const height = url.searchParams.get('height') as string || '';
   const src = url.searchParams.get('src') as string || '';
+  const contentType = url.searchParams.get('contentType') as MimeType || MimeType.WEBP;
+  const fileExt = fileExtensionResolver.get(contentType);
 
-  if (width && height && src) {
+  if (width && height && src && fileExt) {
     const filename = src.substring(src.lastIndexOf('/') + 1, src.length);
     const filenameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
 
     const dnsURL = composeCDNUrl({
       width: parseInt(width),
       height: parseInt(height),
-      filename: `${filenameWithoutExt}.webp`,
+      filename: `${filenameWithoutExt}${fileExt}`,
     });
 
     const imageFromCDN = await fetch(dnsURL);
@@ -42,7 +45,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     if (imageFromCDN.ok && imageFromCDN.body) {
       return imageResponse(
         new Uint8Array(await imageFromCDN.arrayBuffer()),
-        200,
+        httpStatus.OK,
         MimeType.WEBP,
         `public, max-age=${60 * 60 * 24 * 365}`
       );

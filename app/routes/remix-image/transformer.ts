@@ -4,23 +4,11 @@ import stream from 'stream';
 import sharp from 'sharp';
 import type { TransformOptions } from 'remix-image';
 
+import { MimeType, fileExtensionResolver } from './mimes';
+
 /*
   https://github.com/remix-run/remix/discussions/2905
 */
-
-// Add support for image/jpg
-enum MimeType {
-  JPG = 'image/jpg',
-  SVG = "image/svg+xml",
-  JPEG = "image/jpeg",
-  PNG = "image/png",
-  GIF = "image/gif",
-  WEBP = "image/webp",
-  BMP = "image/bmp",
-  TIFF = "image/tiff",
-  AVIF = "image/avif"
-};
-
 export const supportedInputs = new Set([
   MimeType.JPEG,
   MimeType.JPG,
@@ -29,7 +17,6 @@ export const supportedInputs = new Set([
   MimeType.WEBP,
   MimeType.TIFF,
 ]);
-
 
 export const supportedOutputs = new Set([
   MimeType.JPEG,
@@ -65,8 +52,8 @@ const getFilenameFromPath = (url: string) => {
   return url.substring(url.lastIndexOf('/') + 1, url.length);
 };
 
-const composeObjectName = ({ width, height, filename }: { width: number, height: number, filename: string }) => {
-  return `webp/w${width}_h${height}/${filename}`;
+const composeObjectName = ({ width, height, filename, extension }: { width: number, height: number, filename: string, extension: string }) => {
+  return `${extension}/w${width}_h${height}/${filename}`;
 };
 
 const streamFileUpload = ({ filename, buffer }: { buffer: Buffer, filename: string }) => {
@@ -194,16 +181,18 @@ const transformer: CustomTransformer = {
       })
       .toBuffer();
 
-    if (width && height) {
+    const outputExt = fileExtensionResolver.get(outputContentType);
+
+    if (width && height && outputExt) {
       const filename = getFilenameFromPath(url);
       const filenameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
       const objectName = composeObjectName({
-        filename: `${filenameWithoutExt}.webp`,
+        extension: outputExt,
+        filename: `${filenameWithoutExt}${outputExt}`,
         width,
         height,
       });
 
-      // TODO: catch/throw error when streaming failed.
       // Do not wait for file streaming to finish.
       streamFileUpload({
         buffer: result,
