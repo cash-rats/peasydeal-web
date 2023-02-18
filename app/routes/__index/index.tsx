@@ -89,12 +89,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 			'hot_deal',
 			'new_trend',
 			'electronic',
-			'clothes_shoes',
-			'home_appliances',
-			'kitchen_kitchenware',
-			'toy',
-			'pet',
-			'car_accessories'
+			// 'clothes_shoes',
+			// 'home_appliances',
+			// 'kitchen_kitchenware',
+			// 'toy',
+			// 'pet',
+			// 'car_accessories'
 		]
 	});
 
