@@ -4,6 +4,7 @@ import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
 import Tooltip from '@mui/material/Tooltip';
+import Image from 'remix-image';
 
 import PriceInfo from './components/PriceInfo';
 import DeliveryInfo from './components/DeliveryInfo';
@@ -34,8 +35,9 @@ interface TrackingOrderIndexProps {
 function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
   orderInfo = parseTrackOrderCreatedAt(orderInfo);
 
+
   return (
-    <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4 mt-[6.5rem]">
+    <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4">
       <h1 className="font-bold text-2xl leading-[1.875rem] mb-4">
         Order ID: {orderInfo.order_uuid}
       </h1>
@@ -70,42 +72,46 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       {/* <div className="order-products-container"> */}
       <div className="border-[1px] border-solid border-border-color py-4 px-0 flex flex-col gap-4 mb-4 bg-white">
         {
-          orderInfo.products.map((product) => (
-            <div
-              key={product.uuid}
-              className="w-full flex flex-row justify-between
+          orderInfo.products.map((product) => {
+            console.log('debug product', product.url)
+            return (
+
+              <div
+                key={product.uuid}
+                className="w-full flex flex-row justify-between
               items-center pt-0 px-4 pb-4 border-b-[1px]
               border-solid border-border-color
               last:border-b-0 last:pb-0"
 
-            >
-              <div className="w-[70%] flex flex-row justify-start items-center">
-                <div className="mr-3">
-                  <img
-                    alt={product.title}
-                    src={product.url}
-                    className="w-[75px] h-[75px]"
-                  />
+              >
+                <div className="w-[70%] flex flex-row justify-start items-center">
+                  <div className="mr-3">
+                    <img
+                      alt={product.title}
+                      src={product.url}
+                      className="w-[75px] h-[75px]"
+                    />
+                  </div>
+
+                  <div>
+                    <p className="text-base font-medium"> {product.title} </p>
+                    <p className="text-xs font-normal text-[rgb(130,129,131)]"> {product.spec_name} </p>
+                  </div>
                 </div>
 
-                <div>
-                  <p className="text-base font-medium"> {product.title} </p>
-                  <p className="text-xs font-normal text-[rgb(130,129,131)]"> {product.spec_name} </p>
+                <div className="w-[30%] flex justify-end">
+                  <div className="flex flex-col items-end">
+                    <p className="text-xl font-medium">
+                      £{product.sale_price}
+                    </p>
+                    <p className="text-base font-normala text-[rgb(130,129,131)]">
+                      Qty: {product.order_quantity}
+                    </p>
+                  </div>
                 </div>
               </div>
-
-              <div className="w-[30%] flex justify-end">
-                <div className="flex flex-col items-end">
-                  <p className="text-xl font-medium">
-                    £{product.sale_price}
-                  </p>
-                  <p className="text-base font-normala text-[rgb(130,129,131)]">
-                    Qty: {product.order_quantity}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))
+            )
+          })
         }
       </div>
 

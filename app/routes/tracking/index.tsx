@@ -17,6 +17,7 @@ import { fetchCategories } from '~/api';
 import type { Category } from '~/shared/types';
 
 import TrackingOrderInfo from './components/TrackingOrderInfo';
+import TrackingSearchBar from './components/TrackingSearchBar';
 import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
 import TrackingOrderInitPage, { links as TrackingOrderInitPageLinks } from './components/TrackingOrderInitPage';
 import { trackOrder } from './api';
@@ -37,7 +38,7 @@ type CatchBoundaryDataType = {
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
   return [
     {
-      rel: 'canonical', href: data.canonicalLink,
+      rel: 'canonical', href: `${getCanonicalDomain()}/tracking`,
     },
   ];
 }
@@ -164,6 +165,8 @@ export const CatchBoundary = () => {
         />
       </Form>
 
+      <TrackingSearchBar onSearch={handleOnSearch} />
+
       <TrackingOrderErrorPage message={caughtData.errMessage} />
 
       <Footer />
@@ -177,7 +180,7 @@ function TrackingOrder() {
   const trackOrderFetcher = useFetcher();
   const [disableDesktopSearchBar, setDisableDesktopSearchBar] = useState(false);
 
-  const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
+  const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
 
     trackOrderFetcher.submit(
@@ -214,18 +217,17 @@ function TrackingOrder() {
         }
       }
     ]}>
-      <Form action='/tracking'>
-        <Header
-          categories={categories}
-          searchBar={<div />}
-        />
-      </Form>
+      <Header
+        categories={categories}
+        searchBar={<div />}
+      />
 
       <main>
-        {/* order search form */}
-        <div>
-        </div>
+        <Form action='/tracking'>
+          {/* order search form */}
+          <TrackingSearchBar onSearch={handleOnSearch} />
 
+        </Form>
         {
           order
             ? <TrackingOrderInfo orderInfo={order} />
