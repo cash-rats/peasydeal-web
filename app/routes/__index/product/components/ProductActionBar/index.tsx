@@ -1,15 +1,5 @@
 import { forwardRef } from 'react';
-import type { LinksFunction } from '@remix-run/node';
-
 import { Button } from '@chakra-ui/react';
-
-import styles from './styles/ProductActionBar.css';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 interface ProductActionBarProps {
   onClickAddToCart: () => void;
@@ -24,8 +14,14 @@ const ProductActionBar = forwardRef(({
 }: ProductActionBarProps, ref) => {
   return (
     <div
+      className='
+        flex gap-[10px]
+        pt-4 py-2 bottom-0 left-0
+        px-2 md:px-0
+        z-10
+        w-full bg-white
+      '
       ref={ref}
-      className="client-action-bar"
     >
       <div>
         <Button
@@ -35,12 +31,14 @@ const ProductActionBar = forwardRef(({
           size="lg"
           isLoading={loading}
           loadingText='Adding'
-          onClick={onClickAddToCart}>
+          onClick={onClickAddToCart}
+          spinnerPlacement='start'
+        >
           Add To Cart
         </Button>
       </div>
 
-      <div>
+      <div className='flex-auto'>
         <Button
           colorScheme='pink'
           variant={'solid'}

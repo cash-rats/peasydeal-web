@@ -51,8 +51,7 @@ import type { ProductDetail, ProductVariation } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
 import styles from "./styles/ProdDetail.css";
-import ProductActionBar, { links as ProductActionBarLinks } from './components/ProductActionBar';
-import ProductActionBarLeft, { links as ProductActionBarLeftLinks } from './components/ProductActionBarLeft';
+import ProductActionBar from './components/ProductActionBar';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
 import useStickyActionBar from './hooks/useStickyActionBar';
@@ -103,8 +102,6 @@ export const links: LinksFunction = () => {
 		...ItemAddedModalLinks(),
 		...QuantityPickerLinks(),
 		...ProductDetailSectionLinks(),
-		...ProductActionBarLinks(),
-		...ProductActionBarLeftLinks(),
 		...RecommendedProductsLinks(),
 		...SocialShareLinks(),
 		...RightTiltBoxLinks(),
@@ -533,11 +530,14 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 										</span>
 									</div>
 
-									<ProductActionBarLeft
-										onClickAddToCart={handleAddToCart}
-										onClickBuyNow={handleBuyNow}
-										loading={addToCart.state !== 'idle'}
-									/>
+									<div className='hidden md:block'>
+										<ProductActionBar
+											onClickAddToCart={handleAddToCart}
+											onClickBuyNow={handleBuyNow}
+											loading={addToCart.state !== 'idle'}
+										/>
+									</div>
+
 								</div>
 
 								<hr className='my-4' />
