@@ -98,6 +98,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 		]
 	});
 
+	// console.log('debug landings', landings);
+
 	return json<LoaderDataType>({
 		...landings,
 		canonical_link: getCanonicalDomain(),
@@ -183,28 +185,28 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 // TODO: this this should be
-const mockedActivities: SeasonalInfo[] = [
-	{
-		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/2023trend.jpg',
-		catId: 2,
-		title: 'New Trend'
-	},
-	{
-		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/boxingday.jpg',
-		catId: 24,
-		title: 'Activity-Boxing Day'
-	},
-	{
-		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/christmas.jpg',
-		catId: 23,
-		title: 'Activity-Christmas'
-	},
-	{
-		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/clearance.jpg',
-		catId: 3,
-		title: 'Hot Deal'
-	}
-];
+// const mockedActivities: SeasonalInfo[] = [
+// 	{
+// 		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/2023trend.jpg',
+// 		catId: 2,
+// 		title: 'New Trend'
+// 	},
+// 	{
+// 		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/boxingday.jpg',
+// 		catId: 24,
+// 		title: 'Activity-Boxing Day'
+// 	},
+// 	{
+// 		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/christmas.jpg',
+// 		catId: 23,
+// 		title: 'Activity-Christmas'
+// 	},
+// 	{
+// 		src: 'https://storage.googleapis.com/peasydeal/email%2Bcampaign/seasonals/clearance.jpg',
+// 		catId: 3,
+// 		title: 'Hot Deal'
+// 	}
+// ];
 
 export const CatchBoundary = () => {
 	const caught = useCatch();
@@ -283,8 +285,6 @@ function Index({ scrollPosition }: IndexProps) {
 		console.log('user clicks on:', catID, catTitle);
 	}
 
-	console.log(categoryPreviews);
-
 	return (
 		<div className="">
 			<div className="
@@ -309,9 +309,9 @@ function Index({ scrollPosition }: IndexProps) {
 				</div>
 			</div>
 
-				{/* <ActivityRowLayout activities={mockedActivities} /> */}
+			{/* <ActivityRowLayout activities={mockedActivities} /> */}
 
-				{/* <ProductRowsContainer
+			{/* <ProductRowsContainer
 					productRows={productRows}
 					activityBanners={activity_banners}
 					seasonals={mockedActivities}
@@ -320,7 +320,7 @@ function Index({ scrollPosition }: IndexProps) {
 					scrollPosition={scrollPosition}
 				/> */}
 
-				{/* <div className="ProductList__loadmore-container" >
+			{/* <div className="ProductList__loadmore-container" >
 					<div>
 						{
 							hasMore && transition.state === 'idle'

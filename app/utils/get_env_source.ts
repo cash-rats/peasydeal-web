@@ -11,7 +11,9 @@ declare global {
 }
 
 const getEnvSource = () => {
-  if (typeof window !== 'undefined') return window.ENV.ENV;
+  if (typeof window !== 'undefined') {
+    return window.ENV;
+  }
   return process.env
 }
 

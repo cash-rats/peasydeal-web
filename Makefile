@@ -15,9 +15,7 @@ REMOTE_APP_PATH=/home/flybuddy/peasydeal_web
 STAGING_SERVER                  = staging_peasydeal_gcp
 PROD_SERVER                     = prod_peasydeal_gcp
 
-deploy_staging: build upload_staging
-
-upload_staging:
+deploy_staging:
 	ssh -p $(REMOTE_PORT) -t $(SERVER_USER)@$(STAGING_SERVER) 'source ~/.nvm/nvm.sh && \
 	cd $(REMOTE_APP_PATH) && \
 	git reset --hard HEAD && \
@@ -26,9 +24,7 @@ upload_staging:
 	npm run build:patched && \
 	make start_staging'
 
-deploy_prod: build upload_prod
-
-upload_prod:
+deploy_prod:
 	ssh -p $(REMOTE_PORT) -t $(SERVER_USER)@$(PROD_SERVER) 'source ~/.nvm/nvm.sh && \
 	cd $(REMOTE_APP_PATH) && \
 	git reset --hard HEAD && \
