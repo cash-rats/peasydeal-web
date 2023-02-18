@@ -119,10 +119,19 @@ function RecommendedProducts({
       >
         <div className='w-full w-full max-w-screen-xl mx-auto'>
           <div className='flex flex-col'>
-            <h3 className="font-poppins font-bold text-3xl mb-2 md:mb-3">
+            <h3 className="
+              font-poppins font-bold
+              text-2xl md:text-3xl
+              mt-6 md:mt-8
+              mb-2 md:mb-3
+            ">
               Top Selling Products
             </h3>
-            <h4 className="font-poppins font-normal	 text-xl mb-4 md:mb-6">
+            <h4 className="
+              font-poppins font-normal
+              text-lg md:text-xl
+              mb-4 md:mb-6
+            ">
               Get The Most Popular Items Today
             </h4>
             <ProductPromotionRow
@@ -136,8 +145,15 @@ function RecommendedProducts({
 
       <div className='w-full w-full p-2.5 max-w-screen-xl mx-auto'>
 				<div className="flex justify-center xl:justify-start">
-          <div className="mt-6 md:mt-10 lg:mt-16">
-            <h3 className='font-poppins font-bold text-3xl mb-4 md:mb-6'>You may also like</h3>
+          <div className="mt-6 md:mt-8 lg:mt-16">
+
+            <h3 className='
+              font-poppins font-bold
+              text-2xl md:text-3xl
+              mb-4 md:mb-6
+            '>
+              You may also like
+            </h3>
             {
               <ProductRowsLayout
                 scrollPosition={scrollPosition}

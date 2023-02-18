@@ -118,7 +118,11 @@ export default function TopProductsColumn() {
       style={{backgroundImage: `url(${bg})`}}
     >
       <div className='flex flex-col'>
-        <h3 className="font-poppins font-bold text-3xl mb-2 md:mb-3">
+        <h3 className="
+          font-poppins font-bold
+          text-xl md:text-3xl
+          mt-2 md:mt-6
+          mb-2 md:mb-3">
           Top Selling Products
         </h3>
         <h4 className="font-poppins font-normal	 text-xl mb-4 md:mb-6">
