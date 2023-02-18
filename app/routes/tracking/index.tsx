@@ -160,7 +160,6 @@ export const CatchBoundary = () => {
   )
 }
 
-
 function TrackingOrder() {
   const { order, categories } = useLoaderData<LoaderDataType>();
   const trackOrderFetcher = useFetcher();
