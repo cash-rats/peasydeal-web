@@ -14,7 +14,8 @@ const getEnvSource = () => {
   if (typeof window !== 'undefined') {
     return window.ENV;
   }
-  return process.env
+
+  return process.env;
 }
 
 const DOMAIN = getEnvSource().DOMAIN || 'https://staging.peasydeal.com';
@@ -30,6 +31,9 @@ const STRIPE_PUBLIC_KEY = getEnvSource().STRIPE_PUBLIC_KEY;
 const STRIPE_PAYMENT_RETURN_URI = getEnvSource().STRIPE_PAYMENT_RETURN_URI;
 const STRIPE_CURRENCY_CODE = getEnvSource().STRIPE_CURRENCY_CODE;
 
+const GOOGLE_ANALYTICS_ID = getEnvSource().GOOGLE_ANALYTICS_ID;
+const POPUPSMART_ID = getEnvSource().POPUPSMART_ID;
+
 export {
   DOMAIN,
   MYFB_ENDPOINT,
@@ -43,6 +47,9 @@ export {
   STRIPE_PUBLIC_KEY,
   STRIPE_PAYMENT_RETURN_URI,
   STRIPE_CURRENCY_CODE,
+
+  GOOGLE_ANALYTICS_ID,
+  POPUPSMART_ID,
 };
 
 export default getEnvSource

@@ -149,6 +149,18 @@ const Document = withEmotionCache(
               dangerouslySetInnerHTML={{ __html: css }}
             />
           ))}
+          {/* <!-- Google tag (gtag.js) --> */}
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${envData.GOOGLE_ANALYTICS_ID}`}></script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){ dataLayer.push(arguments); }
+                gtag('js', new Date());
+                gtag('config', '${envData.GOOGLE_ANALYTICS_ID}');
+              `
+            }}
+          />
         </head>
         <body>
           {children}
@@ -165,6 +177,12 @@ const Document = withEmotionCache(
           <Scripts />
 
           {process.env.NODE_ENV === "development" && <LiveReload />}
+
+          <script
+            type="text/javascript"
+            src={`https://apiv2.popupsmart.com/api/Bundle/${envData.POPUPSMART_ID}`}
+            async
+          />
         </body>
       </html>
     );

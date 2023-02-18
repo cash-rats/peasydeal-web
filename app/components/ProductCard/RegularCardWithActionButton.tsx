@@ -81,8 +81,6 @@ export default function ProductCard({
     variations,
   } = product || {};
 
-  console.log(product);
-
   const [loaded, setLoaded] = useState<Boolean>(false);
 
   const splitNumber = useCallback((n: number): [number, number] => {
