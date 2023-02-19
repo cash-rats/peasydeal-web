@@ -11,12 +11,12 @@ import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
 import { PAGE_LIMIT } from '~/shared/constants';
-import type { Product, TCategoryPreview, TPromotionType } from "~/shared/types";
+import type { Category, Product, TCategoryPreview, TPromotionType } from "~/shared/types";
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { checkHasMoreRecord, getCanonicalDomain } from '~/utils';
 import { commitSession } from '~/sessions/sessions';
 import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
-import ActivityRowLayout, { links as ActivityRowLayoutLinks } from "~/components/SeasonalRowLayout/SeasonalRowLayout";
+import PromoActivities from "~/components/PromoActivities/PromoActivities";
 import { CategoryPreview } from "~/components/CategoryPreview";
 import FiveHundredError from "~/components/FiveHundreError";
 
@@ -26,6 +26,7 @@ import type { ActivityBanner } from "./types";
 
 import styles from "./styles/ProductList.css";
 import { modToXItems } from './utils';
+import CategoriesRow, { links as CategoriesRowLinks } from "~/components/CategoriesRow";
 
 type LoaderType = 'loadmore';
 
@@ -45,7 +46,7 @@ export const links: LinksFunction = () => {
 		...CssSpinnerLinks(),
 		...ProductRowsContainerLinks(),
 		...LoadMoreButtonLinks(),
-		...ActivityRowLayoutLinks(),
+		...CategoriesRowLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
 }
@@ -84,26 +85,33 @@ const _loadmoreLoader = async (request: Request, page: number, perPage: number) 
 export const loader: LoaderFunction = async ({ request }) => {
 	// const url = new URL(request.url);
 
-	const landings = await fetchLandingPageFeatureProducts({
-		categoriesPreviewNames: [
-			'hot_deal',
-			'new_trend',
-			'electronic',
-			// 'clothes_shoes',
-			// 'home_appliances',
-			// 'kitchen_kitchenware',
-			// 'toy',
-			// 'pet',
-			// 'car_accessories'
-		]
-	});
+	try {
+		const landings = await fetchLandingPageFeatureProducts({
+			categoriesPreviewNames: [
+				'hot_deal',
+				'new_trend',
+				'electronic',
+				'clothes_shoes',
+				'kitchen_kitchenware',
+				'home_appliances',
+				'toy',
+				'pet',
+				'car_accessories'
+			]
+		});
 
-	// console.log('debug landings', landings);
+		// console.log('debug landings', landings);
 
-	return json<LoaderDataType>({
-		...landings,
-		canonical_link: getCanonicalDomain(),
-	});
+		return json<LoaderDataType>({
+			...landings,
+			canonical_link: getCanonicalDomain(),
+		});
+	} catch(e) {
+		throw json(e, {
+			status: httpStatus.INTERNAL_SERVER_ERROR,
+		});
+	}
+
 
 	// const actionType = url.searchParams.get('action_type') as LoaderType;
 
@@ -231,9 +239,11 @@ export const CatchBoundary = () => {
  * - [x] When number of data fetched is less than limit(9), it reaches the end. stop triggering loadmore but displays a button
  *       letting the user triggering loadmore manually.
  */
-type IndexProps = {} & LazyComponentProps;
+type IndexProps = {
+	categories: Category[];
+} & LazyComponentProps;
 
-function Index({ scrollPosition }: IndexProps) {
+function Index({ scrollPosition, categories }: IndexProps) {
 	const {
 		categoryPreviews,
 		promotions,
@@ -266,7 +276,7 @@ function Index({ scrollPosition }: IndexProps) {
 	// 		const { products } = loadmoreFetcher.data as LoaderLoadmoreDateType;
 
 	// 		if (products.length <= 0) {
-	// 			setHasMore(false);
+	// 			setHasMore(false);c
 	// 		}
 
 	// 		// Current page fetched successfully, increase page number getting ready to fetch next page.
@@ -294,15 +304,25 @@ function Index({ scrollPosition }: IndexProps) {
 				mx-2 md:mx-4
 			">
 				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
+					<PromoActivities promotions={promotions} />
+				</div>
+				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
 					{
 						categoryPreviews.map((category, index) => {
 							return (
-								<CategoryPreview
-									category={category}
-									key={`${category.name}_${index}`}
-									onClickProduct={handleClickProduct}
-									scrollPosition={scrollPosition}
-								/>
+								<div key={`${category.name}_${index}`}>
+									<CategoryPreview
+										category={category}
+										key={`${category.name}_${index}`}
+										onClickProduct={handleClickProduct}
+										scrollPosition={scrollPosition}
+									/>
+									{
+										index === 0
+											? <CategoriesRow categories={categories} />
+											: null
+									}
+								</div>
 							);
 						})
 					}

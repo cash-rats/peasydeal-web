@@ -150,30 +150,42 @@ const Document = withEmotionCache(
             />
           ))}
           {/* <!-- Google tag (gtag.js) --> */}
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${envData?.GOOGLE_ANALYTICS_ID}`}></script>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){ dataLayer.push(arguments); }
-                gtag('js', new Date());
-                gtag('config', '${envData?.GOOGLE_ANALYTICS_ID}');
-              `
-            }}
-          />
+          {
+            typeof document !== "undefined" && (
+              <script async src={`https://www.googletagmanager.com/gtag/js?id=${envData?.GOOGLE_ANALYTICS_ID}`}></script>
+            )
+          }
+          {
+            typeof document !== "undefined" && (
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){ dataLayer.push(arguments); }
+                    gtag('js', new Date());
+                    gtag('config', '${envData?.GOOGLE_ANALYTICS_ID}');
+                  `
+                }}
+              />
+            )
+          }
 
           { /* <!-- Google Tag Manager --> */ }
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','${envData?.GOOGLE_TAG_ID}');
-              `
-            }}
-          />
+          {
+            typeof document !== "undefined" && (
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+                    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+                    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+                    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+                    })(window,document,'script','dataLayer','${envData?.GOOGLE_TAG_ID}');
+                  `
+                }}
+              />
+            )
+          }
         </head>
         <body>
           {/* <!-- Google Tag Manager (noscript) --> */}
@@ -202,17 +214,25 @@ const Document = withEmotionCache(
 
           {process.env.NODE_ENV === "development" && <LiveReload />}
 
-          <script
-            type="text/javascript"
-            src={`https://apiv2.popupsmart.com/api/Bundle/${envData?.POPUPSMART_ID}`}
-            async
-          />
+          {
+            typeof document !== "undefined" && (
+              <script
+                type="text/javascript"
+                src={`https://apiv2.popupsmart.com/api/Bundle/${envData?.POPUPSMART_ID}`}
+                async
+              />
+            )
+          }
 
-          <script
-            id='pixel-script-poptin'
-            src={`https://cdn.popt.in/pixel.js?id=${envData?.POPTIN_ID}`}
-            async
-          />
+          {
+            typeof document !== "undefined" && (
+              <script
+                id='pixel-script-poptin'
+                src={`https://cdn.popt.in/pixel.js?id=${envData?.POPTIN_ID}`}
+                async
+              />
+            )
+          }
         </body>
       </html>
     );
@@ -231,8 +251,6 @@ export function CatchBoundary() {
 };
 
 export function ErrorBoundary({ error }: { error: Error }) {
-
-  console.log(error);
   return (
     <Document>
       <Layout>
