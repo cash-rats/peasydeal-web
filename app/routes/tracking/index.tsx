@@ -134,23 +134,23 @@ export const CatchBoundary = () => {
 
   return (
     <>
+      <Header
+        categories={caughtData.categories}
+        searchBar={
+          <SearchBar
+            onSearch={handleOnSearch}
+            onClear={handleOnClear}
+            placeholder='Search by order id'
+          />
+        }
+      />
+
       <Form action='/tracking'>
-        <Header
-          categories={caughtData.categories}
-          searchBar={
-            <SearchBar
-              onSearch={handleOnSearch}
-              onClear={handleOnClear}
-              placeholder='Search by order id'
-            />
-          }
+        <TrackingSearchBar
+          onSearch={handleOnSearch}
+          onClear={handleOnClear}
         />
       </Form>
-
-      <TrackingSearchBar
-        onSearch={handleOnSearch}
-        onClear={handleOnClear}
-      />
 
       <TrackingOrderErrorPage message={caughtData.errMessage} />
 
