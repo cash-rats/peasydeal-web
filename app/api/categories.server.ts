@@ -72,7 +72,10 @@ const fetchCategories = async (): Promise<[Category[], Category[]]> => {
 
   // If it exists, return it.
   if (catsstr) {
-    return JSON.parse(catsstr);
+    const cats = JSON.parse(catsstr);
+    const navBarCategories = hoistCategories(cats);
+
+    return [cats, navBarCategories];
   }
 
   // If it doesn't exist, fetch from server and cache to redis.
