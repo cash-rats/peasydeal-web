@@ -1,0 +1,16 @@
+.hide-scroll-bar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scroll-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.caterogy-card-box:hover {
+  transform: scale3d(1.01,1.01,1.01);
+}
+
+.smooth-scrolling {
+  scroll-behavior: smooth;
+}

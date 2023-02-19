@@ -87,7 +87,6 @@ export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 
 const normalizeV2Data = (apiData: any[]): Product[] => {
 	const transformed: Product[] = apiData.map((data: any): Product => {
-		console.log('data', data);
 		return {
 			currency: data.currency,
 			description: '',
@@ -189,6 +188,7 @@ const transformSearchProduct = (apiData: any[]): Product[] => {
 			salePrice: data.sale_price,
 			shortDescription: data.shortDescription,
 			subtitle: data.subtitle,
+			createdAt: data.created_at,
 			title: data.title,
 			variationID: data.variationId || '',
 			tabComboType: data.tag_combo_type,
