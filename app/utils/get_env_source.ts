@@ -2,10 +2,8 @@
 declare global {
   interface Window {
     ENV: {
-      ENV: {
-        STRIPE_PUBLIC_KEY: string;
-        DOMAIN: string;
-      }
+      STRIPE_PUBLIC_KEY: string;
+      DOMAIN: string;
     }
   }
 }

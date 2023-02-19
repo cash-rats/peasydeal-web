@@ -220,6 +220,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 	// Change product.
 	useEffect(() => {
+		console.log('debug ** ~~ 1')
+
 		// This action updates detail to new product also clears images of previous product images.
 		dispatch({
 			type: ActionTypes.change_product,
@@ -228,6 +230,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 		// Update product images to new product after current event loop.
 		setTimeout(() => {
+			console.log('debug ** ~~ 2')
 			dispatch({
 				type: ActionTypes.update_product_images,
 				payload: data.product.images,
@@ -246,7 +249,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		dispatch({
 			type: ActionTypes.set_variation,
 			payload: currentVariation,
-
 		})
 
 	}, [state.productDetail]);
