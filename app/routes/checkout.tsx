@@ -43,6 +43,7 @@ type LoaderType = {
   client_secret?: string | undefined;
   payment_intend_id: string;
   categories: Category[];
+  navBarCategories: Category[];
   price_info: PriceInfo;
   promo_code: string | null | undefined;
 };
@@ -99,7 +100,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw redirect("/cart");
   }
 
-  const categories = await fetchCategories();
+  const [categories, navBarCategories] = await fetchCategories();
 
   // TODO this number should be coming from BE instead.
   // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
@@ -120,6 +121,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     client_secret: paymentIntent.client_secret || undefined,
     payment_intend_id: paymentIntent.id,
     categories,
+    navBarCategories,
     price_info: priceInfo,
     promo_code: promo_code,
   });
@@ -133,6 +135,7 @@ function CheckoutLayout() {
     categories,
     price_info,
     promo_code,
+    navBarCategories,
   } = useLoaderData<LoaderType>();
 
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
@@ -223,7 +226,12 @@ function CheckoutLayout() {
             />
           }
 
-          categoriesBar={<CategoriesNav categories={categories} />}
+          categoriesBar={
+            <CategoriesNav
+              categories={categories}
+              topCategories={navBarCategories}
+            />
+          }
         />
       </Form>
 

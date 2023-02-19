@@ -16,8 +16,9 @@ import MobileSearchDialog from '~/components/MobileSearchDialog'
 import type { SuggestItem } from '~/shared/types';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
-type LoaderDataType = {
-  categories: Category[];
+type LoaderType = {
+	categories: Category[];
+	navBarCategories: Category[]
 };
 
 export const links: LinksFunction = () => {
@@ -31,12 +32,16 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const cats = await fetchCategories();
-  return json<LoaderDataType>({ categories: cats });
+  const [categories, navBarCategories] = await fetchCategories();
+
+  return json<LoaderType>({
+		categories,
+		navBarCategories,
+	});
 }
 
 function GlobalSplatFourOhFour() {
-  const { categories } = useLoaderData<LoaderDataType>();
+  const { categories, navBarCategories } = useLoaderData<LoaderType>();
   const [suggests, searchSuggests] = useSearchSuggests();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
   const search = useFetcher();
@@ -100,7 +105,10 @@ function GlobalSplatFourOhFour() {
           }
 
           categoriesBar={
-            <CategoriesNav categories={categories} />
+            <CategoriesNav
+              categories={categories}
+              topCategories={navBarCategories}
+            />
           }
 
           searchBar={

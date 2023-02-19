@@ -23,6 +23,7 @@ import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 type LoaderType = {
 	categories: Category[];
+	navBarCategories: Category[]
 };
 
 export const links: LinksFunction = () => {
@@ -34,16 +35,22 @@ export const links: LinksFunction = () => {
 	];
 };
 
-type ContextType = { categories: Category[] };
+type ContextType = {
+	categories: Category[],
+	navBarCategories: Category[]
+};
 
 export const loader: LoaderFunction = async ({ request }) => {
+	const [categories, navBarCategories] = await fetchCategories();
+
 	return json<LoaderType>({
-		categories: await fetchCategories(),
+		categories,
+		navBarCategories,
 	});
 };
 
 export default function Index() {
-	const { categories } = useLoaderData<LoaderType>();
+	const { categories, navBarCategories } = useLoaderData<LoaderType>();
 	const search = useFetcher();
 	const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 	const [suggests, searchSuggests] = useSearchSuggests();
@@ -101,11 +108,12 @@ export default function Index() {
 
 					<Header
 						categories={categories}
-
 						categoriesBar={
-							<CategoriesNav categories={categories} />
+							<CategoriesNav
+								categories={categories}
+								topCategories={navBarCategories}
+							/>
 						}
-
 						mobileSearchBar={
 							<SearchBar
 								placeholder='Search keywords...'

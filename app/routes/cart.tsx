@@ -51,20 +51,22 @@ export const links: LinksFunction = () => {
 
 type LoaderType = {
   categories: Category[];
+  navBarCategories: Category[];
   canonicalLink: string;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const categories = await fetchCategories();
+  const [categories, navBarCategories] = await fetchCategories();
 
   return json<LoaderType>({
     categories,
+    navBarCategories,
     canonicalLink: `${getCanonicalDomain()}/cart`
   });
 }
 
 function CartLayout() {
-  const { categories } = useLoaderData<LoaderType>();
+  const { categories, navBarCategories } = useLoaderData<LoaderType>();
   const [suggests, searchSuggests] = useSearchSuggests();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
@@ -136,7 +138,12 @@ function CartLayout() {
               onSearch={handleSearch}
             />
           }
-          categoriesBar={<CategoriesNav categories={categories} />}
+          categoriesBar={
+            <CategoriesNav
+              categories={categories}
+              topCategories={navBarCategories}
+            />
+          }
         />
       </Form>
 
