@@ -13,7 +13,6 @@ import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
 import { DOMAIN } from '~/utils/get_env_source';
 
-import { Button } from '@chakra-ui/react'
 import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
 
 export const links: LinksFunction = () => {

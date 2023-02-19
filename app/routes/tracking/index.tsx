@@ -139,7 +139,6 @@ export const CatchBoundary = () => {
           categories={caughtData.categories}
           searchBar={
             <SearchBar
-              disabled={disableDesktopSearchBar}
               onSearch={handleOnSearch}
               onClear={handleOnClear}
               placeholder='Search by order id'
