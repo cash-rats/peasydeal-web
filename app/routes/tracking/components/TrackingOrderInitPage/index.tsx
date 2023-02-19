@@ -12,7 +12,7 @@ export const links: LinksFunction = () => {
 export default function InitialPage() {
   return (
     <div className="initial-page">
-      <p className='error-text'> Search your order with order id. </p>
+      <p className='error-text font-poppins'> Search your order with order id. </p>
     </div>
   );
 }
