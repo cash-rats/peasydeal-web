@@ -22,8 +22,12 @@ function TrackingSearchBar({
   const [orderID, setOrderID] = useState('');
 
   return (
-
-    <Stack p={5} direction='row'>
+    <Stack
+      p={5}
+      maxW={768}
+      direction='row'
+      mx='auto'
+    >
       <InputGroup>
         <Input
           bgColor='white'

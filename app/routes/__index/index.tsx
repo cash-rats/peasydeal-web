@@ -319,7 +319,7 @@ function Index({ scrollPosition, categories }: IndexProps) {
 									/>
 									{
 										index === 0
-											? <CategoriesRow categories={categories} />
+											? <CategoriesRow />
 											: null
 									}
 								</div>
