@@ -235,7 +235,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				type: ActionTypes.update_product_images,
 				payload: data.product.images,
 			});
-		}, 0);
+		}, 200);
 
 		if (!window) return;
 		window.scrollTo(0, 0);
