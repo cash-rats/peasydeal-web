@@ -73,7 +73,6 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       <div className="border-[1px] border-solid border-border-color py-4 px-0 flex flex-col gap-4 mb-4 bg-white">
         {
           orderInfo.products.map((product) => {
-            console.log('debug product', product.url)
             return (
 
               <div
