@@ -85,6 +85,7 @@ interface IFetchProductsByCategoryV2Response {
 	items: Product[];
 	total: number;
 	current: number;
+	hasMore: boolean;
 }
 
 export const fetchProductsByCategoryV2 = async ({
@@ -112,12 +113,11 @@ export const fetchProductsByCategoryV2 = async ({
 		throw new Error(errResp.err_message);
 	}
 
-	console.log('data ~', respJSON);
-
 	return {
 		items: normalizeV2Data(respJSON.items),
 		total: respJSON.total,
 		current: respJSON.current,
+		hasMore: respJSON.has_more,
 	}
 }
 

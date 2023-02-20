@@ -31,7 +31,6 @@ import {
   getCollectionTitleText,
   getCategoryFBSEO,
 } from '~/utils/seo';
-import { checkHasMoreRecord } from '~/utils';
 import PageTitle from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
@@ -50,12 +49,14 @@ type LoaderDataType = {
   navBarCategories: Category[];
   total: number;
   current: number;
+  hasMore: boolean;
 };
 
 type LoadMoreDataType = {
   products: Product[],
   total: number;
   current: number;
+  hasMore: boolean;
   category: Category,
   page: number,
   navBarCategories: Category[];
@@ -99,6 +100,7 @@ const _loadMoreLoader = async (request: Request, collection: string, page: numbe
     items: products,
     current,
     total,
+    hasMore,
   } = await fetchProductsByCategoryV2({
     perpage,
     page,
@@ -109,6 +111,7 @@ const _loadMoreLoader = async (request: Request, collection: string, page: numbe
     products,
     total,
     current,
+    hasMore,
     category: catMap[collection],
     page,
     navBarCategories,
@@ -147,6 +150,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       items: prods,
       total,
       current,
+      hasMore,
     } = await fetchProductsByCategoryV2({
       perpage: PAGE_LIMIT * cachedProds.page,
       category: Number(catMap[collection].catId),
@@ -161,6 +165,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       page: cachedProds.page,
       total,
       current,
+      hasMore,
 
       navBarCategories,
       canonical_link: `${getCanonicalDomain()}/${collection}`,
@@ -172,6 +177,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     items: prods,
     total,
     current,
+    hasMore,
   } = await fetchProductsByCategoryV2({
     perpage: PAGE_LIMIT,
     page: 1,
@@ -187,6 +193,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     page: 1,
     total,
     current,
+    hasMore,
     category: catMap[collection],
     navBarCategories,
     canonical_link: `${getCanonicalDomain()}/${collection}`,
@@ -223,6 +230,7 @@ function Collection({ scrollPosition }: CollectionProps) {
     categories,
     total,
     current,
+    hasMore,
   } = useLoaderData<LoaderDataType>();
 
   const [state, dispatch] = useReducer(reducer, {
@@ -230,6 +238,7 @@ function Collection({ scrollPosition }: CollectionProps) {
     products,
     current,
     total,
+    hasMore
   });
 
   const currPage = useRef(state.current);
@@ -356,15 +365,21 @@ function Collection({ scrollPosition }: CollectionProps) {
         <Progress
           className="w-full"
           size='sm'
-          value={Math.floor((current / total) * 100)}
+          value={Math.floor((state.current / state.total) * 100)}
           colorScheme='teal'
         />
 
-        <LoadMoreButton
-          loading={loadmoreFetcher.state !== 'idle'}
-          onClick={handleLoadMore}
-          text='Show More'
-        />
+        {
+          state.hasMore
+            ? (
+              <LoadMoreButton
+                loading={loadmoreFetcher.state !== 'idle'}
+                onClick={handleLoadMore}
+                text='Show More'
+              />
+            )
+            : ('reaching the end')
+        }
       </div>
     </div>
   );

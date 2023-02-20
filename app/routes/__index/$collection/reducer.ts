@@ -7,6 +7,7 @@ export type StateShape = {
   products: Product[];
   total: number;
   current: number;
+  hasMore: boolean,
 };
 
 export enum CollectionActionType {
@@ -19,6 +20,7 @@ export const initState: StateShape = {
   products: [],
   total: 0,
   current: 0,
+  hasMore: false,
 };
 
 interface ProductsPayload {
@@ -42,10 +44,12 @@ export default function collectionReducer(state: StateShape, action: CollectionA
       } = action.payload as ProductsPayload;
 
       return {
+        ...state,
         productRows: modToXItems(products, 8),
         products,
         total,
         current,
+        hasMore: current < total,
       }
     }
     case CollectionActionType.append_products: {
@@ -58,10 +62,12 @@ export default function collectionReducer(state: StateShape, action: CollectionA
       const extProds = state.products.concat(products);
 
       return {
+        ...state,
         productRows: modToXItems(extProds, 8),
         products: extProds,
         total,
         current,
+        hasMore: current < total,
       };
     }
     default:
