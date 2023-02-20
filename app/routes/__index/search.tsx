@@ -8,7 +8,7 @@ import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from '~/shared/types';
 import LoadMore, { links as LoadMoreLinks } from '~/components/LoadMore';
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
-import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
+import LoadMoreButton from '~/components/LoadMoreButton';
 
 import PageTitle from '~/components/PageTitle';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
@@ -19,7 +19,6 @@ import { modToXItems } from './utils';
 
 export const links: LinksFunction = () => {
   return [
-    ...LoadMoreButtonLinks(),
     ...LoadMoreLinks(),
     ...ProductRowsContainerLinks(),
     ...CssSpinnerLinks(),

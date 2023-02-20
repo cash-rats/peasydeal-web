@@ -40,7 +40,7 @@ export const action: ActionFunction = async ({ request }) => {
     return json<ActionDataType>({ products: [] });
   }
 
-  const products = await fetchProductsByCategoryV2({
+  const { items: products } = await fetchProductsByCategoryV2({
     category: Number(targetCat.catId),
     random: true,
     perpage: PAGE_LIMIT,
@@ -116,7 +116,7 @@ function RecommendedProducts({
           py-2.5 md:py-[46px]
           px-2.5 md:px-[26px]
         `}
-        style={{backgroundImage: `url(${bg})`}}
+        style={{ backgroundImage: `url(${bg})` }}
       >
         <div className='w-full w-full max-w-screen-xl mx-auto'>
           <div className='flex flex-col'>
@@ -145,7 +145,7 @@ function RecommendedProducts({
       </div>
 
       <div className='w-full w-full p-2.5 max-w-screen-xl mx-auto'>
-				<div className="flex justify-center xl:justify-start">
+        <div className="flex justify-center xl:justify-start">
           <div className="mt-6 md:mt-8 lg:mt-16">
 
             <h3 className='

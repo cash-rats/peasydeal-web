@@ -1,17 +1,13 @@
 import { useEffect, useRef } from 'react';
-import  FocusLock from "react-focus-lock";
+import FocusLock from "react-focus-lock";
 import type { LinksFunction } from '@remix-run/node';
 import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
   PopoverArrow,
   PopoverCloseButton,
   Button,
-  PopoverAnchor,
   useDisclosure,
 } from '@chakra-ui/react'
 import { MdOutlineIosShare } from 'react-icons/md';
@@ -41,7 +37,6 @@ export default function SocialShare({ prodUUID }: SocialShareProps) {
   const firstFieldRef = useRef(null)
 
   useEffect(() => {
-    // console.log('debug share this', prodUUID);
     const st = window.__sharethis__;
     if (!st) {
       loadShareThisScript();
@@ -78,7 +73,6 @@ export default function SocialShare({ prodUUID }: SocialShareProps) {
           <FocusLock returnFocus persistentFocus={false}>
             <PopoverArrow />
             <PopoverCloseButton />
-            {/* <Form firstFieldRef={firstFieldRef} onCancel={onClose} /> */}
             <div
               dangerouslySetInnerHTML={{
                 __html: `

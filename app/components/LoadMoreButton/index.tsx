@@ -1,13 +1,5 @@
 import type { ReactNode, MouseEvent } from 'react';
-import type { LinksFunction } from '@remix-run/node';
-
-import styles from './styles/LoadMoreButton.css';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
+import { Button } from '@chakra-ui/react';
 
 interface LoadMoreButtonProps {
   disabled?: boolean;
@@ -23,12 +15,12 @@ export default function LoadMoreButton({
   onClick = () => { },
 }: LoadMoreButtonProps) {
   return (
-    <button
+    <Button
       disabled={disabled || loading}
-      className="LoadMoreButton"
+      isLoading={loading}
       onClick={onClick}
     >
       {text}
-    </button>
+    </Button>
   );
 };

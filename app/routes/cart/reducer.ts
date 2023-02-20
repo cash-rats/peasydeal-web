@@ -11,14 +11,13 @@ export enum CartActionTypes {
 
 export type PreviousQuantity = {
   [key: string]: string;
-}
+};
 
 export type StateShape = {
   cartItems: ShoppingCart;
   priceInfo: PriceInfo | null;
   previousQuantity: PreviousQuantity;
-}
-
+};
 
 export const initState: StateShape = {
   cartItems: {},

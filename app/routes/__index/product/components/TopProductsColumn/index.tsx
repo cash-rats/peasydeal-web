@@ -18,7 +18,7 @@ type ActionType = {
 };
 
 export const action: ActionFunction = async ({ request }) => {
-  const [topProds, superDealProds] = await Promise.all([
+  const [{ items: topProds }, { items: superDealProds }] = await Promise.all([
     await fetchProductsByCategoryV2({
       category: 22,
       perpage: 5,
@@ -115,7 +115,7 @@ export default function TopProductsColumn() {
         py-[30px] sm:py-[46px]
         px-[18px] px-[26px]
       `}
-      style={{backgroundImage: `url(${bg})`}}
+      style={{ backgroundImage: `url(${bg})` }}
     >
       <div className='flex flex-col'>
         <h3 className="

@@ -9,7 +9,7 @@ import httpStatus from 'http-status-codes';
 
 import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
-import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
+import LoadMoreButton from '~/components/LoadMoreButton';
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { Category, Product, TCategoryPreview, TPromotionType } from "~/shared/types";
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
@@ -45,7 +45,6 @@ export const links: LinksFunction = () => {
 		...LoadmoreLinks(),
 		...CssSpinnerLinks(),
 		...ProductRowsContainerLinks(),
-		...LoadMoreButtonLinks(),
 		...CategoriesRowLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
@@ -65,7 +64,7 @@ type LoaderLoadmoreDateType = {
 }
 
 const _loadmoreLoader = async (request: Request, page: number, perPage: number) => {
-	const prods = await fetchProductsByCategoryV2({
+	const { items: prods } = await fetchProductsByCategoryV2({
 		perpage: perPage,
 		page,
 		category: 1, // 1 is the id for category 'Hot Deal'
@@ -106,7 +105,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			...landings,
 			canonical_link: getCanonicalDomain(),
 		});
-	} catch(e) {
+	} catch (e) {
 		throw json(e, {
 			status: httpStatus.INTERNAL_SERVER_ERROR,
 		});

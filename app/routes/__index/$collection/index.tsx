@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useReducer } from "react";
 import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
@@ -11,18 +11,17 @@ import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
+import { Progress } from '@chakra-ui/react';
 
 import {
   BreadcrumbItem,
   BreadcrumbLink,
 } from '@chakra-ui/react'
 
-import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
-import LoadMore, { links as LoadmoreLinks } from "~/components/LoadMore";
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
-import LoadMoreButton, { links as LoadMoreButtonLinks } from '~/components/LoadMoreButton';
+import LoadMoreButton from '~/components/LoadMoreButton';
 import { normalizeToMap, fetchCategories } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { commitSession } from '~/sessions/sessions';
@@ -36,10 +35,11 @@ import { checkHasMoreRecord } from '~/utils';
 import PageTitle from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
-import styles from './styles/ProductList.css';
-import { fetchProductsByCategoryV2 } from "./api";
-import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { modToXItems } from "./utils";
+import reducer, { CollectionActionType } from './reducer';
+import styles from '../styles/ProductList.css';
+import { fetchProductsByCategoryV2 } from "../api";
+import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
+import { modToXItems } from "../utils";
 
 type LoaderDataType = {
   categories: CategoriesMap;
@@ -47,15 +47,17 @@ type LoaderDataType = {
   category: Category;
   page: number;
   canonical_link: string;
-  has_more: boolean;
   navBarCategories: Category[];
+  total: number;
+  current: number;
 };
 
-type ActionDataType = {
+type LoadMoreDataType = {
   products: Product[],
+  total: number;
+  current: number;
   category: Category,
   page: number,
-  has_more: boolean,
   navBarCategories: Category[];
 };
 
@@ -78,10 +80,7 @@ export const meta: MetaFunction = ({ data }: { data: LoaderDataType }) => ({
 export const links: LinksFunction = () => {
   return [
     ...FourOhFourLinks(),
-    ...CssSpinnerLinks(),
     ...ProductRowsContainerLinks(),
-    ...LoadmoreLinks(),
-    ...LoadMoreButtonLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -96,17 +95,22 @@ const _loadMoreLoader = async (request: Request, collection: string, page: numbe
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
   }
 
-  const products = await fetchProductsByCategoryV2({
+  const {
+    items: products,
+    current,
+    total,
+  } = await fetchProductsByCategoryV2({
     perpage,
     page,
     category: Number(catMap[collection].catId),
   })
 
-  return json<ActionDataType>({
+  return json<LoadMoreDataType>({
     products,
+    total,
+    current,
     category: catMap[collection],
     page,
-    has_more: checkHasMoreRecord(products.length, PAGE_LIMIT),
     navBarCategories,
   }, {
     headers: {
@@ -137,8 +141,13 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   }
 
   const cachedProds = await getCategoryProducts(request, collection);
+
   if (cachedProds) {
-    const prods = await fetchProductsByCategoryV2({
+    const {
+      items: prods,
+      total,
+      current,
+    } = await fetchProductsByCategoryV2({
       perpage: PAGE_LIMIT * cachedProds.page,
       category: Number(catMap[collection].catId),
       random: false,
@@ -148,15 +157,22 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       categories: catMap,
       category: catMap[collection],
       products: prods,
+
       page: cachedProds.page,
+      total,
+      current,
+
       navBarCategories,
       canonical_link: `${getCanonicalDomain()}/${collection}`,
-      has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
     });
   }
 
   // First time loaded so it must be first page.
-  const prods = await fetchProductsByCategoryV2({
+  const {
+    items: prods,
+    total,
+    current,
+  } = await fetchProductsByCategoryV2({
     perpage: PAGE_LIMIT,
     page: 1,
     category: Number(catMap[collection].catId),
@@ -169,10 +185,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     categories: catMap,
     products: prods,
     page: 1,
+    total,
+    current,
     category: catMap[collection],
     navBarCategories,
     canonical_link: `${getCanonicalDomain()}/${collection}`,
-    has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
   }, {
     headers: {
       'Set-Cookie': await commitSession(session),
@@ -203,32 +220,47 @@ function Collection({ scrollPosition }: CollectionProps) {
     category,
     products,
     page,
-    has_more,
-    categories
+    categories,
+    total,
+    current,
   } = useLoaderData<LoaderDataType>();
 
-  // "productRows" is for displaying products on the screen.
-  const [productRows, setProductRows] = useState<Product[][]>(
-    modToXItems(products, 8)
-  );
+  const [state, dispatch] = useReducer(reducer, {
+    productRows: modToXItems(products, 8),
+    products,
+    current,
+    total,
+  });
 
-  const [hasMore, setHasMore] = useState(has_more);
-  const currPage = useRef(page);
+  const currPage = useRef(state.current);
 
   const loadmoreFetcher = useFetcher();
   const transition = useTransition();
 
   // For any subsequent change of category, we will update current product info coming from loader data.
   useEffect(() => {
-    setProductRows(modToXItems(products, 8));
+    dispatch({
+      type: CollectionActionType.set_products,
+      payload: {
+        products,
+        total,
+        current,
+      },
+    });
     currPage.current = page;
-    setHasMore(has_more);
   }, [category]);
 
 
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
-      const { products, has_more, page, category: dataCat } = loadmoreFetcher.data as ActionDataType;
+      const {
+        products,
+        total,
+        current,
+        page,
+        category:
+        dataCat,
+      } = loadmoreFetcher.data as LoadMoreDataType;
       // If user changes category while load more is happening, the newly loaded data
       // would be appended to different category. Moreover, it would cause inconsistent
       // page number. Thus, we abandon appending loaded data on to the product list
@@ -240,9 +272,14 @@ function Collection({ scrollPosition }: CollectionProps) {
 
       currPage.current = page;
 
-      setHasMore(has_more);
-
-      setProductRows(prev => prev.concat(modToXItems(products)));
+      dispatch({
+        type: CollectionActionType.append_products,
+        payload: {
+          products,
+          total,
+          current,
+        },
+      });
     }
   }, [loadmoreFetcher.type, category]);
 
@@ -257,7 +294,7 @@ function Collection({ scrollPosition }: CollectionProps) {
         page: nextPage.toString(),
         per_page: PAGE_LIMIT.toString(),
       },
-      { action: `/${decodeURI(category)}` },
+      { action: `/${decodeURI(category)}?index` },
     );
   };
 
@@ -303,32 +340,34 @@ function Collection({ scrollPosition }: CollectionProps) {
 
       <ProductRowsContainer
         loading={isChangingCategory}
-        productRows={productRows}
+        productRows={state.productRows}
         scrollPosition={scrollPosition}
       />
 
-      <div className="ProductList__loadmore-container">
-        {
-          hasMore
-            ? (
-              <LoadMore
-                spinner={<CssSpinner scheme='spinner' />}
-                loading={loadmoreFetcher.state !== 'idle'}
-                callback={handleLoadMore}
-                delay={100}
-                offset={150}
-              />
-            )
-            : <LoadMoreButton
-              loading={loadmoreFetcher.state !== 'idle'}
-              onClick={handleLoadMore}
-              text='Load more'
-            />
-        }
+      <div className="
+        p-4 w-[300px]
+        flex justify-center items-center
+        flex-col gap-6
+      ">
+        <p className="font-poppins">
+          Showing {state.current} of {state.total}
+        </p>
+
+        <Progress
+          className="w-full"
+          size='sm'
+          value={Math.floor((current / total) * 100)}
+          colorScheme='teal'
+        />
+
+        <LoadMoreButton
+          loading={loadmoreFetcher.state !== 'idle'}
+          onClick={handleLoadMore}
+          text='Show More'
+        />
       </div>
     </div>
   );
-
 }
 
 export default trackWindowScroll(Collection);

@@ -36,7 +36,7 @@ export const action: ActionFunction = async ({ request }) => {
   const catID = formEntries['catID'] || '2';
 
   // Fetch top seller & new trend.
-  const recProds = await fetchProductsByCategoryV2({
+  const { items: recProds } = await fetchProductsByCategoryV2({
     category: Number(catID),
     perpage: 12,
     random: true,
