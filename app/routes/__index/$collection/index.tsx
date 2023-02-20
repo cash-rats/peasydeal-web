@@ -378,7 +378,11 @@ function Collection({ scrollPosition }: CollectionProps) {
                 text='Show More'
               />
             )
-            : ('reaching the end')
+            : (
+              <p className="font-poppins capitalize font-medium">
+                Reaches end of list.
+              </p>
+            )
         }
       </div>
     </div>
