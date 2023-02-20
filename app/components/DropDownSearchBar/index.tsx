@@ -228,7 +228,7 @@ function DropDownSearchBar({
                           <li className="
                             py-2 px-4 cursor-pointer leading-5
                             grid grid-cols-2
-                          hover:bg-gray-hover-bg
+                            hover:bg-gray-hover-bg
                           ">
                             <div className="flex flex-row">
                               <div>

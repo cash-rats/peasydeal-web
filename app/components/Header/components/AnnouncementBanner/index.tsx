@@ -3,10 +3,11 @@ import { AiOutlineClose } from 'react-icons/ai';
 
 interface AnnouncementBannerProps {
   open?: boolean;
-  onClose?: () => void,
+  onClose?: () => void;
+  hideCloseButton?: boolean;
 }
 
-function AnnouncementBanner({ open = true, onClose = () => { } }: AnnouncementBannerProps) {
+function AnnouncementBanner({ open = true, onClose = () => {}, hideCloseButton = false }: AnnouncementBannerProps) {
   const handleClose = () => onClose();
 
   return (
@@ -21,11 +22,15 @@ function AnnouncementBanner({ open = true, onClose = () => { } }: AnnouncementBa
           `}>
             Grand Launch Sale: FREE Shipping on order £9.99+
           </span>
-          <div className="absolute right-1">
-            <IconButton onClick={handleClose}>
-              <AiOutlineClose fontSize={20} color='#fff' />
-            </IconButton>
-          </div>
+          {
+            hideCloseButton ? null : (
+              <div className="absolute right-1">
+                <IconButton onClick={handleClose}>
+                  <AiOutlineClose fontSize={20} color='#fff' />
+                </IconButton>
+              </div>
+            )
+          }
         </div>
       )
       : null
