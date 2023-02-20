@@ -33,7 +33,7 @@ const PropBar = () => {
           justify-center
         ">
           <TbTruckDelivery className="self-center text-lg md:text-xl sm:space-x-0.5" />
-          <span className="self-center text-sm sm:text-sm md:text-base ml-1.5">Low Shipping Cost at <b>£2.99</b></span>
+          <span className="self-center text-sm sm:text-sm md:text-base ml-1.5">Lowest Shipping Starting at <b>£2.99</b></span>
         </li>
       </ul>
     </div>
