@@ -32,8 +32,9 @@ export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const category = body.get('category') as string || '';
 
-  const categories = normalizeToMap(await fetchCategories());
-  const targetCat = categories[category];
+  const [categories] = await fetchCategories();
+  const _categories = normalizeToMap(categories);
+  const targetCat = _categories[category];
 
   if (!targetCat) {
     return json<ActionDataType>({ products: [] });

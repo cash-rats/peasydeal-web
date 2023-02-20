@@ -48,6 +48,7 @@ type LoaderDataType = {
   page: number;
   canonical_link: string;
   has_more: boolean;
+  navBarCategories: Category[];
 };
 
 type ActionDataType = {
@@ -55,6 +56,7 @@ type ActionDataType = {
   category: Category,
   page: number,
   has_more: boolean,
+  navBarCategories: Category[];
 };
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
@@ -86,14 +88,16 @@ export const links: LinksFunction = () => {
 
 type LoaderType = 'load_category_products';
 
-const _loadMoreLoader = async (request: Request, collection: string, page: number, perPage: number) => {
-  const catMap = await normalizeToMap(await fetchCategories());
+const _loadMoreLoader = async (request: Request, collection: string, page: number, perpage: number) => {
+  const [categories, navBarCategories] = await fetchCategories();
+  const catMap = await normalizeToMap(categories);
+
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
   }
 
   const products = await fetchProductsByCategoryV2({
-    perpage: perPage,
+    perpage,
     page,
     category: Number(catMap[collection].catId),
   })
@@ -103,6 +107,7 @@ const _loadMoreLoader = async (request: Request, collection: string, page: numbe
     category: catMap[collection],
     page,
     has_more: checkHasMoreRecord(products.length, PAGE_LIMIT),
+    navBarCategories,
   }, {
     headers: {
       'Set-Cookie': await commitSession(
@@ -123,7 +128,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     return _loadMoreLoader(request, collection, page, perpage);
   }
 
-  const catMap = normalizeToMap(await fetchCategories());
+  const [categories, navBarCategories] = await fetchCategories();
+
+  const catMap = await normalizeToMap(categories);
 
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
@@ -142,6 +149,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       category: catMap[collection],
       products: prods,
       page: cachedProds.page,
+      navBarCategories,
       canonical_link: `${getCanonicalDomain()}/${collection}`,
       has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
     });
@@ -162,6 +170,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     products: prods,
     page: 1,
     category: catMap[collection],
+    navBarCategories,
     canonical_link: `${getCanonicalDomain()}/${collection}`,
     has_more: checkHasMoreRecord(prods.length, PAGE_LIMIT),
   }, {
@@ -190,7 +199,13 @@ const getCategoryFromWindowPath = (window: Window): string => {
 type CollectionProps = {} & LazyComponentProps;
 
 function Collection({ scrollPosition }: CollectionProps) {
-  const { category, products, page, has_more, categories } = useLoaderData<LoaderDataType>();
+  const {
+    category,
+    products,
+    page,
+    has_more,
+    categories
+  } = useLoaderData<LoaderDataType>();
 
   // "productRows" is for displaying products on the screen.
   const [productRows, setProductRows] = useState<Product[][]>(

@@ -16,6 +16,7 @@ export const links: LinksFunction = () => {
 }
 interface CategoriesNavProps {
   categories?: Array<Category>,
+  topCategories?: Array<Category>,
 };
 
 const topCategories = [
@@ -30,47 +31,18 @@ const topCategories = [
   'car_accessories',
 ];
 
-const categoryToHoist = 'hot_deal';
-
 /*
  * - [x] Hover over all category should display all category list.
  * - [ ] If we have too many categories, we should have a scroll view.
  * - [ ]
  */
-export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
+export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
   const [openAllCategories, setOpenAllCategories] = useState<boolean>(false);
-  const [trimmedCategories, setTrimmedCategories] = useState<Array<Category>>([{
-    name: 'loading',
-    description: '',
-    title: '',
-    catId: '',
-  }]);
 
   const toggleOpenAllCategory = (evt: MouseEvent<HTMLDivElement>) => {
     evt.stopPropagation();
     setOpenAllCategories(prev => !prev);
   }
-
-  useEffect(() => {
-    if (categories.length) {
-      const filteredCategory = categories.filter((category: Category) => {
-        return topCategories.includes(category.name);
-      });
-
-      // hoist hot_deal to the first one
-
-      let hoisted: Array<Category> = [];
-      filteredCategory.forEach((category: Category) => {
-        if (category.name === categoryToHoist) {
-          hoisted = [category, ...hoisted];
-        } else {
-          hoisted.push(category);
-        }
-      });
-
-      setTrimmedCategories(hoisted);
-    }
-  }, [categories])
 
   return (
     <div className={`
@@ -92,7 +64,7 @@ export default function CategoriesNav({ categories = [] }: CategoriesNavProps) {
             justify-between
             p-0 m-0`}>
             {
-              trimmedCategories.map((category, index) => (
+              topCategories.map((category, index) => (
                 <Link
                   replace
                   key={category.catId}

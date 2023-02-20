@@ -24,6 +24,7 @@ type LoaderDataType = {
   order: TrackOrder | null
   canonicalLink: string;
   categories: Category[];
+  navBarCategories: Category[];
 };
 
 type CatchBoundaryDataType = {
@@ -58,7 +59,7 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const categories = await fetchCategories();
+  const [categories, navBarCategories] = await fetchCategories();
   const url = new URL(request.url);
 
   // Current route has just been requested. Ask user to search order by order ID.
@@ -67,6 +68,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       order: null,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
       categories,
+      navBarCategories,
     });
   }
 
@@ -83,6 +85,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     return json<LoaderDataType>({
       order,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
+      navBarCategories,
       categories,
     });
   } catch (err) {

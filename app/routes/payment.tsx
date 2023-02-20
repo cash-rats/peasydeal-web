@@ -12,6 +12,7 @@ import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import type { SuggestItem } from '~/shared/types';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
+import type { Category } from '~/shared/types';
 
 import { useSearchSuggests } from './hooks/auto-complete-search';
 
@@ -23,13 +24,22 @@ export const links: LinksFunction = () => {
   ];
 }
 
+type LoaderType = {
+	categories: Category[];
+	navBarCategories: Category[]
+};
+
 export const loader: LoaderFunction = async () => {
-  const categories = await fetchCategories();
-  return json({ categories })
+  const [categories, navBarCategories] = await fetchCategories();
+
+  return json<LoaderType>({
+    categories,
+    navBarCategories,
+  })
 }
 
 export default function Payment() {
-  const { categories } = useLoaderData();
+  const { categories, navBarCategories } = useLoaderData();
   const [suggests, searchSuggests] = useSearchSuggests();
   const search = useFetcher();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
@@ -92,7 +102,12 @@ export default function Payment() {
             />
           }
 
-          categoriesBar={<CategoriesNav categories={categories} />}
+          categoriesBar={
+            <CategoriesNav
+              categories={categories}
+              topCategories={navBarCategories}
+            />
+          }
 
           searchBar={
             <DropDownSearchBar
