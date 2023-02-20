@@ -176,13 +176,13 @@ export const fetchProductsByCategoryV2 = async ({
 	return normalizeV2Data(respJSON.items);
 }
 
-const transformSearchProduct = (apiData: any[]): Product[] => {
+const normalizeSearchProduct = (apiData: any[]): Product[] => {
 	const transformed: Product[] = apiData.map((data: any): Product => {
 		return {
 			currency: data.currency,
 			description: data.description || '',
 			discount: data.discount,
-			main_pic: data.images[0],
+			main_pic: data.images && data.images.length > 0 ? data.images[0] : '',
 			productUUID: data.product_uuid,
 			retailPrice: data.retail_price,
 			salePrice: data.sale_price,
@@ -219,5 +219,5 @@ export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchPro
 		throw new Error(errResp.err_message);
 	}
 
-	return transformSearchProduct(respJSON.items);
+	return normalizeSearchProduct(respJSON.items);
 }

@@ -123,7 +123,8 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     return _loadMoreLoader(request, collection, page, perpage);
   }
 
-  const catMap = await normalizeToMap(await fetchCategories());
+  const catMap = normalizeToMap(await fetchCategories());
+
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
   }
