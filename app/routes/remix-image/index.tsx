@@ -10,7 +10,7 @@ import { imageResponse } from './response'
 import { fileExtensionResolver, MimeType } from './mimes';
 
 const config: LoaderConfig = {
-  selfUrl: DOMAIN,
+  selfUrl: 'http://localhost:3000',
   cache: new MemoryCache(),
   transformer,
 };
