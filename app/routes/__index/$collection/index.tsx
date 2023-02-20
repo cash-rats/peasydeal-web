@@ -356,7 +356,7 @@ function Collection({ scrollPosition }: CollectionProps) {
       <div className="
         p-4 w-[300px]
         flex justify-center items-center
-        flex-col gap-6
+        flex-col gap-4
       ">
         <p className="font-poppins">
           Showing {state.current} of {state.total}
