@@ -212,15 +212,16 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                         grid-cols-3
                       ">
                         <div>
-                          <Link to={`/`}>
+                          <Link to={`/super_deal`}>
                             <Button
                               rightIcon={<VscArrowRight />}
                               colorScheme='pink'
                               variant='outline'
                               size='lg'
                               width='100%'
+                              onClick={onClose}
                             >
-                              View Deal under <span className="ml-1 text-[#fc1d7a]">£10</span>
+                              SUPER DEAL <span className="ml-1 text-[#fc1d7a]">EXTRA 10% OFF</span>
                             </Button>
                           </Link>
                         </div>

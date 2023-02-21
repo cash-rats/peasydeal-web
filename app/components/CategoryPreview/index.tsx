@@ -1,7 +1,7 @@
 // create a react component called CategoryPreview
 
 import type { TCategoryPreview } from "~/shared/types";
-import { Button } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 import { Link } from '@remix-run/react';
 import { VscArrowRight } from "react-icons/vsc";

@@ -16,6 +16,7 @@ function AnnouncementBanner({ open = true, onClose = () => {}, hideCloseButton =
         <div className={`
           flex justify-center items-center
           py-3 w-full bg-[#D02E7D]
+          z-20
         `}>
           <span className={`
             text-xs 499:text-base text-white font-bold md:text-lg

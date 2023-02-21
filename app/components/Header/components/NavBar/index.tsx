@@ -3,6 +3,7 @@ import { Link } from '@remix-run/react';
 import { FiShoppingCart } from 'react-icons/fi';
 import { RiTruckLine } from 'react-icons/ri';
 import { VscFlame } from "react-icons/vsc";
+import { IoPricetagsOutline } from "react-icons/io5"
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
 
@@ -25,8 +26,8 @@ function NavBar({ cartItemCount = 0 }: NavBarProps) {
 		<nav className="flex flex-1">
 			<ul className="list-none p-0 items-center flex justify-center gap-5">
 				<li>
-					<Link aria-label='track order' className="flex flex-col items-center" to="/hot_deal">
-						<VscFlame
+					<Link aria-label='super deal with extra 10% off' className="flex flex-col items-center" to="/super_deal">
+						<IoPricetagsOutline
 							color='#DA3B66'
 							className='flex-1 text-xl md:text-2xl'
 						/>
@@ -34,7 +35,7 @@ function NavBar({ cartItemCount = 0 }: NavBarProps) {
 							text-[#DA3B66] text-center text-[10px] md:text-[14px]
 							mt-1 font-normal capitalize whitespace-nowrap font-bold"
 						>
-							Hot Deal
+							Super Deal
 						</span>
 					</Link>
 				</li>

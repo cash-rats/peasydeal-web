@@ -39,7 +39,7 @@ function Header({
 
   const announcementHeight = 52;
   const [openAnnouncement, setOpenAnnouncement] = useState<boolean>(true);
-  const [navBarHeight, setNavBarHeight] = useState(0);
+  const [navBarHeight, setNavBarHeight] = useState(125);
   const [announcementBarHeight, setAnnouncementBarHeight] = useState(announcementHeight);
 
   const [scrolled, offset] = useCheckScrolled(announcementBarHeight);
@@ -56,7 +56,7 @@ function Header({
     <div className='relative'>
       <div
         ref={announcementBarRef}
-        className={`fixed top-0 w-full ${!openAnnouncement ? 'hidden' : 'flex'}`}
+        className={`fixed z-19 top-0 w-full ${!openAnnouncement ? 'hidden' : 'flex'}`}
       >
         <AnnouncementBanner
           open={openAnnouncement}

@@ -81,72 +81,74 @@ const CategoriesRow = () => {
   // const scrollOffset = 160;
 
   return (
-    <div className='relative'>
-      <h3 className="
-        font-poppins font-semibold
-        text-2xl md:text-3xl
-        mt-6 md:mt-8
-        mb-2 md:mb-3
-        flex
-        items-center
-      ">
-        Shop by category
-      </h3>
+    <div className='relative w-full bg-slate-50'>
+      <div className="w-full p-2.5 max-w-screen-xl mx-auto relative">
+        <h3 className="
+          font-poppins font-semibold
+          text-2xl md:text-3xl
+          mt-6 md:mt-8
+          mb-2 md:mb-3
+          flex
+          items-center
+        ">
+          Shop by category
+        </h3>
 
-      <div className='absolute top-0 right-0'>
-        <IconButton
-          aria-label='Page Left'
-          icon={<VscArrowLeft />}
-          onClick={() => scroll(false)}
-          className='mr-2 bg-white'
-        />
-        <IconButton
-          aria-label='Page Right'
-          icon={<VscArrowRight />}
-          onClick={() => scroll(true)}
-          className='bg-white'
-        />
-      </div>
+        <div className='absolute top-8 md:top-11 right-2'>
+          <IconButton
+            aria-label='Page Left'
+            icon={<VscArrowLeft />}
+            onClick={() => scroll(false)}
+            className='mr-2 bg-white'
+          />
+          <IconButton
+            aria-label='Page Right'
+            icon={<VscArrowRight />}
+            onClick={() => scroll(true)}
+            className='bg-white'
+          />
+        </div>
 
-      <div
-        ref={containerRef}
-        className="flex overflow-x-scroll pt-5 pb-10 hide-scroll-bar smooth-scrolling"
-      >
-        <div className="flex flex-nowrap">
-          {
-            categories?.map((category: Category) => {
-              return (
-                <div className="inline-block px-3" key={category.name}>
-                  <Link to={`/${category.name}`}>
-                    <div
-                      className="
-                        cursor-pointer
-                        flex flex-col items-start
-                        px-4 pt-4
-                        font-poppins font-medium
-                        text-lg md:text-xl
-                        leading-5
-                        w-[137px] h-[137px]
-                        md:w-[160px] md:h-[160px]
-                        max-w-xs
-                        overflow-hidden
-                        border boder-[#efefef]
-                        hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
-                        rounded-lg bg-white
-                        transition-shadow duration-300 ease-in-out
-                        caterogy-card-box
-                      "
-                    >
-                      <span>{ iconMapper(category.name) }</span>
-                      <span>
-                        { category.title }
-                      </span>
-                    </div>
-                  </Link>
-                </div>
-              )
-            })
-          }
+        <div
+          ref={containerRef}
+          className="flex overflow-x-scroll pt-5 pb-10 hide-scroll-bar smooth-scrolling"
+        >
+          <div className="flex flex-nowrap">
+            {
+              categories?.map((category: Category) => {
+                return (
+                  <div className="inline-block px-3" key={category.name}>
+                    <Link to={`/${category.name}`}>
+                      <div
+                        className="
+                          cursor-pointer
+                          flex flex-col items-start
+                          px-4 pt-4
+                          font-poppins font-medium
+                          text-lg md:text-xl
+                          leading-5
+                          w-[137px] h-[137px]
+                          md:w-[160px] md:h-[160px]
+                          max-w-xs
+                          overflow-hidden
+                          border boder-[#efefef]
+                          hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
+                          rounded-lg bg-white
+                          transition-shadow duration-300 ease-in-out
+                          caterogy-card-box
+                        "
+                      >
+                        <span>{ iconMapper(category.name) }</span>
+                        <span>
+                          { category.title }
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
+                )
+              })
+            }
+          </div>
         </div>
       </div>
     </div>
