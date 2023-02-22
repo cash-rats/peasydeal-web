@@ -45,8 +45,8 @@ export const loadProducts = async ({ request, page, perpage, promoName }: ILoadP
   if (cachedInfo) {
     const { items, total, current, hasMore } = await fetchPromotionProducts({
       promoName,
-      perpage: perpage,
-      page: cachedInfo.page,
+      perpage: perpage * cachedInfo.page,
+      page: 1,
     });
 
     response.products = items;
