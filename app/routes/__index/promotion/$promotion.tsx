@@ -205,8 +205,8 @@ function Promotion({ scrollPosition }: TPromotion) {
 
       <LoadMoreButtonProgressBar
         loading={loadMoreFetcher.state !== 'idle'}
-        current={current}
-        total={total}
+        current={state.current}
+        total={state.total}
         onClickLoadMore={handleLoadMore}
       />
     </div>
