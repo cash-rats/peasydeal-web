@@ -64,7 +64,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     }
 
     if (loaderType === 'load_more_products') {
-      console.log('debug ** 2');
       const page = Number(url.searchParams.get('page'));
       const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
 
@@ -122,6 +121,7 @@ function Promotion({ scrollPosition }: TPromotion) {
       justify-center items-center
       mx-2 md:mx-4
     ">
+
       <ProductRowsContainer
         // loading={false}
         productRows={state.productRows}

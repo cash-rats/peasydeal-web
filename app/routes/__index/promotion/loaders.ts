@@ -42,8 +42,6 @@ export const loadProducts = async ({ request, page, perpage, promoName }: ILoadP
 
   const cachedInfo = await getCategoryProducts(request, promoName);
   if (cachedInfo) {
-    console.log('debug 1', promoName);
-
     const { items, total, current, hasMore } = await fetchPromotionProducts({
       promoName,
       perpage: perpage * cachedInfo.page,
