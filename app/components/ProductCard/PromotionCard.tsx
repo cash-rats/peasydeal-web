@@ -152,7 +152,7 @@ export default function ProductCard({
           <LazyLoadComponent scrollPosition={scrollPosition} >
             <Image
               blurDataURL={`${loaded
-                ? null
+                ? `${DOMAIN}/images/placeholder_transparent.png`
                 : `${DOMAIN}/images/placeholder.svg`
                 }`}
               placeholder={loaded ? 'empty' : 'blur'}

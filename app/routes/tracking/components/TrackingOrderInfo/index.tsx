@@ -4,7 +4,6 @@ import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
 import Tooltip from '@mui/material/Tooltip';
-import Image from 'remix-image';
 
 import PriceInfo from './components/PriceInfo';
 import DeliveryInfo from './components/DeliveryInfo';
