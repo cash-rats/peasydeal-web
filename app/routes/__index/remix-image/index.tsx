@@ -3,14 +3,14 @@ import { imageLoader, MemoryCache } from 'remix-image/server';
 import type { LoaderConfig } from 'remix-image';
 import httpStatus from 'http-status-codes';
 
-import { DOMAIN, CDN_URL } from '~/utils/get_env_source';
+import { CDN_URL } from '~/utils/get_env_source';
 
 import transformer from './transformer';
 import { imageResponse } from './response'
 import { fileExtensionResolver, MimeType } from './mimes';
 
 const config: LoaderConfig = {
-  selfUrl: DOMAIN,
+  selfUrl: `${CDN_URL}/product-images`,
   cache: new MemoryCache(),
   transformer,
 };

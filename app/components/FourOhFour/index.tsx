@@ -24,19 +24,24 @@ export default function NotFound() {
 
         {/* indication */}
         <div className="text-sm text-[#343434] font-[500] leading-normal text-center z-100 ">
+
           {/* power line */}
-          <div className="text-xl mt-3 mb-2 text-[#343434] leading-2">
+          <div className="
+            font-poppins text-xl text-[#343434]
+            mt-3 mb-2 leading-2
+          ">
             Sorry, the page you're looking for cannot be accessed
           </div>
 
-          <div className="mt-2 text-[#343434]">
+          <div className="font-poppins mt-2 text-[#343434]">
             Either check the URL or go to
-            <span className="text-xl text-[#f0b021]">
+            <span className="font-poppins text-xl text-[#f0b021]">
               <Link to='/'> Home Page </Link>
             </span>
           </div>
         </div>
       </div>
+
 
       <div className="PageNotFound__mountain" style={{ backgroundImage: `url(${MountainSprite})` }} />
 

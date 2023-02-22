@@ -4,6 +4,7 @@ declare global {
     ENV: {
       STRIPE_PUBLIC_KEY: string;
       DOMAIN: string;
+      MYFB_ENDPOINT: string;
     }
   }
 }

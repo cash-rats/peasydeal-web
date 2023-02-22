@@ -94,7 +94,7 @@ export const fetchProductsByCategoryV2 = async ({
 	page,
 	random,
 }: FetchProductsByCategoryV2Params): Promise<IFetchProductsByCategoryV2Response> => {
-	if (!perpage) perpage = 9;
+	if (!perpage) perpage = 8;
 	if (!page) page = 1;
 	if (!category) category = 1;
 

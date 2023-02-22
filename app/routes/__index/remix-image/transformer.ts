@@ -43,7 +43,6 @@ const storage = new Storage({
   keyFilename: path.resolve(__dirname, '../', 'peasydeal-master-key.json')
 });
 
-
 const bucketName = 'peasydeal';
 
 const bucket = storage.bucket(bucketName);

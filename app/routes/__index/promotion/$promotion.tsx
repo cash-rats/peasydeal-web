@@ -1,0 +1,216 @@
+import { useReducer, useRef, useEffect } from 'react';
+import type { LoaderFunction, LinksFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import { useLoaderData, useFetcher, useParams, NavLink, useTransition } from '@remix-run/react';
+import httpStatus from 'http-status-codes';
+import { trackWindowScroll } from "react-lazy-load-image-component";
+import type { LazyComponentProps } from "react-lazy-load-image-component";
+import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
+
+import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
+import FourOhFour from '~/components/FourOhFour';
+import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
+import { PAGE_LIMIT } from '~/shared/constants';
+import PageTitle from '~/components/PageTitle';
+
+import { loadProducts, loadMoreProducts } from './loaders';
+import type { LoadProductsDataType, LoadMoreDataType } from './loaders';
+import reducer, { PromotionActionType } from './reducer';
+import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
+import { modToXItems } from "../utils";
+
+export const links: LinksFunction = () => {
+  return [
+    ...ProductRowsContainerLinks(),
+  ];
+};
+
+type LoaderType = 'load_products' | 'load_more_products'
+
+export const loader: LoaderFunction = async ({ params, request }) => {
+  const url = new URL(request.url);
+  const loaderType = url.searchParams.get('action_type') || 'load_products' as LoaderType;
+
+  // if promotion not provided.
+  if (!params.promotion) {
+    throw json('promotion not found', {
+      status: httpStatus.BAD_REQUEST,
+    })
+  }
+
+  try {
+    if (loaderType === 'load_products') {
+      const page = Number(url.searchParams.get('page'));
+      const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
+
+      return loadProducts({
+        request,
+        page,
+        perpage,
+        promoName: params.promotion,
+      });
+    }
+
+    if (loaderType === 'load_more_products') {
+      const page = Number(url.searchParams.get('page'));
+      const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
+
+      return loadMoreProducts({
+        request,
+        page,
+        perpage,
+        promoName: params.promotion,
+      });
+    }
+
+    throw json('unrecognized action');
+  } catch (error) {
+    throw new Response('error when loading products');
+  }
+}
+
+export const CatchBoundary = () => (<FourOhFour />);
+
+type TPromotion = {} & LazyComponentProps;
+
+function Promotion({ scrollPosition }: TPromotion) {
+  const {
+    products,
+    total,
+    current,
+    hasMore,
+    page,
+    category,
+    categories,
+  } = useLoaderData<LoadProductsDataType>();
+
+  const [state, dispatch] = useReducer(reducer, {
+    productRows: modToXItems(products),
+    products,
+    total,
+    current,
+    hasMore,
+    page,
+    category,
+  });
+  const currPage = useRef<number>(state.page);
+
+  const { promotion } = useParams();
+  const loadMoreFetcher = useFetcher();
+  const transition = useTransition();
+
+  // If user changes promotion, we'll update the current category in reducer.
+  useEffect(() => {
+    if (state.category.name === category.name) return;
+
+    dispatch({
+      type: PromotionActionType.update_category,
+      payload: { category },
+    });
+  }, [category]);
+
+  useEffect(() => {
+    if (loadMoreFetcher.type === 'done') {
+      const {
+        products,
+        total,
+        current,
+        category: dataCat,
+        page,
+      } = loadMoreFetcher.data as LoadMoreDataType;
+
+      // If user changes category while load more is happening, the newly loaded data
+      // would be appended to different category. Moreover, it would cause inconsistent
+      // page number. Thus, we abandon appending loaded data on to the product list
+      // if category of data is different from current viewing category.
+      if (
+        products.length === 0 ||
+        dataCat.name !== category.name
+      ) return;
+
+      currPage.current = page;
+
+      dispatch({
+        type: PromotionActionType.append_products,
+        payload: {
+          products,
+          total,
+          current,
+          page,
+        },
+      })
+    }
+  }, [loadMoreFetcher.type, category]);
+
+  const handleLoadMore = () => {
+    const nextPage = currPage.current + 1;
+
+    loadMoreFetcher.submit(
+      {
+        action_type: 'load_more_products',
+        promotion: promotion || '' as string,
+        page: nextPage.toString(),
+        per_page: PAGE_LIMIT.toString(),
+      },
+      { action: `/promotion/${promotion}?index` },
+    );
+  };
+
+  const isChangingPromotion = transition.state !== 'idle' &&
+    transition.location &&
+    categories.hasOwnProperty(
+      decodeURI(transition.location.pathname.substring(1))
+    );
+
+  return (
+    <div className="
+      py-0 px-auto
+      flex flex-col
+      justify-center items-center
+      mx-2 md:mx-4
+    ">
+
+      <div className="w-full py-2.5 max-w-screen-xl mx-auto">
+        <Breadcrumbs breadcrumbs={
+          [
+            <BreadcrumbItem key="1">
+              <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>,
+            <BreadcrumbItem key="2">
+              <BreadcrumbLink
+                as={NavLink}
+                to={`/${state.category.name}`}
+                isCurrentPage
+                className="font-semibold !text-[#D02E7D]"
+              >
+                {state.category.title}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          ]
+        } />
+      </div>
+
+      <PageTitle
+        title={state.category.title}
+        subtitle={state.category.description}
+      />
+
+      <ProductRowsContainer
+        loading={isChangingPromotion}
+        productRows={state.productRows}
+        scrollPosition={scrollPosition}
+      />
+
+      <LoadMoreButtonProgressBar
+        loading={loadMoreFetcher.state !== 'idle'}
+        current={current}
+        total={total}
+        onClickLoadMore={handleLoadMore}
+      />
+    </div>
+  )
+}
+
+export default trackWindowScroll(Promotion);
