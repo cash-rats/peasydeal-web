@@ -136,8 +136,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   }
 
   const [categories, navBarCategories] = await fetchCategories();
-
-  const catMap = await normalizeToMap(categories);
+  const catMap = normalizeToMap(categories);
 
   if (!catMap[collection]) {
     throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
@@ -185,7 +184,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   })
 
   const session = await addCategoryProducts(request, [], collection, 1);
-  // const cookieSession = await setCategories(request, catMap);
 
   return json<LoaderDataType>({
     categories: catMap,

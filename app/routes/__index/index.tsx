@@ -81,6 +81,17 @@ const _loadmoreLoader = async (request: Request, page: number, perPage: number) 
 	});
 }
 
+export const unstable_shouldReload = ({ submission }) => {
+	console.log('debug unstable_shouldReload');
+
+	if (submission) {
+
+		console.log('submission action', submission.action)
+	}
+
+	return true;
+};
+
 export const loader: LoaderFunction = async ({ request }) => {
 	// const url = new URL(request.url);
 

@@ -4,9 +4,15 @@ import { ioredis as redis } from '~/redis.server';
 import { CATEGORY_CACHE_TTL } from '~/utils/get_env_source';
 
 export const RedisCategoriesKey = 'categories';
+export const RedisPromotionsKey = 'promotions';
 
-const fetchCategoriesFromServer = async (): Promise<Category[]> => {
-  const resp = await fetch(`${PEASY_DEAL_ENDPOINT}/v1/categories`);
+const fetchCategoriesFromServer = async (type?: string): Promise<Category[]> => {
+  const url = new URL(PEASY_DEAL_ENDPOINT);
+  url.pathname = '/v1/categories';
+  if (type) {
+    url.searchParams.append('type', type);
+  }
+  const resp = await fetch(url.toString());
   const respJSON = await resp.json();
   let categories: Category[] = []
 
@@ -89,4 +95,10 @@ const fetchCategories = async (): Promise<[Category[], Category[]]> => {
   return [cats, navBarCategories];
 }
 
-export { fetchCategories, normalizeToMap };
+const fetchPromotions = async (): Promise<Category[]> => {
+  const promos = await fetchCategoriesFromServer('promotion');
+
+  return promos;
+};
+
+export { fetchCategories, fetchPromotions, normalizeToMap };

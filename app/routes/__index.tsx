@@ -40,6 +40,7 @@ type ContextType = {
 	navBarCategories: Category[]
 };
 
+
 export const loader: LoaderFunction = async ({ request }) => {
 	const [categories, navBarCategories] = await fetchCategories();
 

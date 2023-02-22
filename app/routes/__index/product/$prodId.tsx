@@ -112,7 +112,10 @@ export const links: LinksFunction = () => {
 
 const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) => {
 	return [
-		{ rel: 'canonical', href: data?.canonical_url || '' },
+		{
+			rel: 'canonical',
+			href: data?.canonical_url || getCanonicalDomain(),
+		},
 	];
 }
 export const handle = { dynamicLinks };

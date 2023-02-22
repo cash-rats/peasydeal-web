@@ -149,12 +149,12 @@ export default function ProductCard({
 
 
         <div className={`${loaded ? 'h-full' : 'h-[183px] md:h-[274px]'}`} >
-          <LazyLoadComponent scrollPosition={scrollPosition} >
-            <Image
-              blurDataURL={`${loaded
-                ? null
-                : `${DOMAIN}/images/placeholder.svg`
-                }`}
+          {/* <LazyLoadComponent scrollPosition={scrollPosition} > */}
+          {/* <Image
+              // blurDataURL={`${loaded
+              //   ? null
+              //   : `${DOMAIN}/images/placeholder.svg`
+              //   }`}
               placeholder={loaded ? 'empty' : 'blur'}
               placeholderAspectRatio={1}
               onLoadingComplete={(naturalDimensions) => {
@@ -179,8 +179,8 @@ export default function ProductCard({
                 },
               ]}
             // dprVariants={[1, 3]}
-            />
-          </LazyLoadComponent>
+            /> */}
+          {/* </LazyLoadComponent> */}
         </div>
 
         {/* TITLES */}
