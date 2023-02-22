@@ -41,18 +41,19 @@ export const loadProducts = async ({ request, page, perpage, promoName }: ILoadP
   };
 
   const cachedInfo = await getCategoryProducts(request, promoName);
+
   if (cachedInfo) {
     const { items, total, current, hasMore } = await fetchPromotionProducts({
       promoName,
       perpage: perpage * cachedInfo.page,
-      page,
+      page: cachedInfo.page,
     });
 
     response.products = items;
     response.total = total;
     response.current = current;
-    response.hasMore = hasMore
-
+    response.hasMore = hasMore;
+    response.page = cachedInfo.page;
 
     return json<LoadProductsDataType>(response);
   }
@@ -89,7 +90,7 @@ interface ILoadMoreProducts {
   perpage: number,
 }
 
-interface LoadMoreDataType {
+export interface LoadMoreDataType {
   products: Product[],
   total: number;
   current: number;

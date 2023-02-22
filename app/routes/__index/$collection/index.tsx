@@ -12,11 +12,7 @@ import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { Progress } from '@chakra-ui/react';
-
-import {
-  BreadcrumbItem,
-  BreadcrumbLink,
-} from '@chakra-ui/react'
+import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
@@ -64,9 +60,8 @@ type LoadMoreDataType = {
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
   {
-    rel: 'canonical', href: data
-      ? data.canonical_link
-      : getCanonicalDomain(),
+    rel: 'canonical',
+    href: data?.canonical_link || getCanonicalDomain(),
   },
 ])
 
@@ -265,8 +260,7 @@ function Collection({ scrollPosition }: CollectionProps) {
         total,
         current,
         page,
-        category:
-        dataCat,
+        category: dataCat,
       } = loadmoreFetcher.data as LoadMoreDataType;
       // If user changes category while load more is happening, the newly loaded data
       // would be appended to different category. Moreover, it would cause inconsistent

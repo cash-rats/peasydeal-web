@@ -46,8 +46,8 @@ export default function PromoActivities({ promotions = [] }: IPromoActivities) {
               '
               key={`${index}_promotion_activities`}
             >
-              <Link to={`/${name}`}>
-                { getImageBanner(name) }
+              <Link to={`/promotion/${name}`}>
+                {getImageBanner(name)}
               </Link>
             </div>
           )

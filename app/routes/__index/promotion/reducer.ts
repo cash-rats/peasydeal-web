@@ -1,46 +1,47 @@
-import type { Product } from '~/shared/types';
+import type { Product, Category } from '~/shared/types';
 
 import { modToXItems } from '../utils';
 
 export type StateShape = {
   productRows: Product[][];
   products: Product[];
+  category: Category;
   total: number;
   current: number;
-  hasMore: boolean,
+  hasMore: boolean;
+  page: number;
 };
 
-export enum CollectionActionType {
+export enum PromotionActionType {
   set_products = 'set_products',
   append_products = 'append_products',
-};
-
-export const initState: StateShape = {
-  productRows: [],
-  products: [],
-  total: 0,
-  current: 0,
-  hasMore: false,
+  update_category = 'update_category',
 };
 
 interface ProductsPayload {
   products: Product[];
   total: number;
   current: number;
+  page: number;
 }
 
-interface CollectionActions {
-  type: CollectionActionType;
-  payload: ProductsPayload
+interface UpdateCategoryPayload {
+  category: Category;
+};
+
+interface PromotionActions {
+  type: PromotionActionType;
+  payload: ProductsPayload | UpdateCategoryPayload;
 }
 
-export default function collectionReducer(state: StateShape, action: CollectionActions): StateShape {
+export default function collectionReducer(state: StateShape, action: PromotionActions): StateShape {
   switch (action.type) {
-    case CollectionActionType.set_products: {
+    case PromotionActionType.set_products: {
       const {
         products,
         total,
         current,
+        page,
       } = action.payload as ProductsPayload;
 
       return {
@@ -50,13 +51,15 @@ export default function collectionReducer(state: StateShape, action: CollectionA
         total,
         current,
         hasMore: current < total,
+        page,
       }
     }
-    case CollectionActionType.append_products: {
+    case PromotionActionType.append_products: {
       const {
         products,
         total,
         current,
+        page,
       } = action.payload as ProductsPayload;
 
       const extProds = state.products.concat(products);
@@ -68,6 +71,7 @@ export default function collectionReducer(state: StateShape, action: CollectionA
         total,
         current,
         hasMore: current < total,
+        page,
       };
     }
     default:
