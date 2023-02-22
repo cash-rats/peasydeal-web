@@ -16,7 +16,7 @@ const getImageBanner = (name: string) => {
       return <ImageBannerTopSales name={name} />;
     case 'deal_under_15':
       return <ImageBannerDealUnder15 name={name} />;
-    case 'latest_new_deal':
+    case 'new_arrival':
       return <ImageBannerLatestNewDeal name={name} />;
     case 'launch_sales':
       return <ImageBannerLaunchSales name={name} />;
