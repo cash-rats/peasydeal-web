@@ -1,16 +1,31 @@
 import { Link } from "@remix-run/react";
 import { VscArrowRight } from "react-icons/vsc";
-import { IoPricetagsOutline } from 'react-icons/io5';
 
-interface IPromoActivitiesVariantProps {
-}
+// interface IPromoActivitiesVariantProps {
+// }
 
 /**
  * a react-remix functional component that renders a flex box div
  */
-const PromoActivitiesVariant = ({
+const PromoActivitiesVariant = () => {
 
-}: IPromoActivitiesVariantProps) => {
+  const promotions = [{
+    to: '/super_deal',
+    title1: 'Enjoy extra',
+    title2: '10% OFF',
+    label: 'Super Deal'
+  }, {
+    to: '/promotion/new_arrival',
+    title1: 'Up to',
+    title2: '60%+ OFF',
+    label: 'New Arrival'
+  }, {
+    to: '/promotion/deal_under_15',
+    title1: 'Shop smart',
+    title2: '£0.99 - £15',
+    label: 'Hottest Deal'
+  }];
+
   return (
     <div className="
       flex
@@ -40,73 +55,33 @@ const PromoActivitiesVariant = ({
           </div>
         </div>
 
-        <Link to={`/super_deal`}>
-          <div className="
-            flex justify-between p-4 bg-[#D43B33]
-            shadow-[2px_4px_16px_rgb(0,0,0,8%)]
-            hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
-            transition-shadow transition-transform duration-300 ease-in-out
-            caterogy-card-box
-            cursor-pointer
-            rounded-lg
-          ">
-            <div className="flex flex-col self-center">
-              <p className="flex text-white font-poppins font-bold text-2xl mb-2 items-center">
-                <IoPricetagsOutline className='text-2xl mr-3 text-white' />
-                <span>Super Deal</span>
-              </p>
-              <p className="text-white text-lg md:text-xl">
-                All items here got extra <span className="text-xl font-poppins font-bold md:text-3xl">10%</span> OFF
-              </p>
-            </div>
-            <div className="self-center">
-              <VscArrowRight className="m-2 text-2xl text-white" />
-            </div>
-          </div>
-        </Link>
-
-
-        <Link to={'promotion/new_arrival'}>
-          <div className="
-          flex justify-between p-4 bg-[#D43B33] h-full
-          shadow-[2px_4px_16px_rgb(0,0,0,8%)]
-          hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
-          transition-shadow transition-transform duration-300 ease-in-out
-          caterogy-card-box
-          cursor-pointer
-          rounded-lg
-        ">
-            <div className="flex flex-col self-center">
-              <p className="text-white font-poppins font-bold text-2xl mb-2">
-                New Arrival
-              </p>
-            </div>
-            <div className="self-center">
-              <VscArrowRight className="m-2 text-2xl text-white" />
-            </div>
-          </div>
-        </Link>
-
-        <Link to={'promotion/deal_under_15'}>
-          <div className="
-          flex justify-between p-4 bg-[#D43B33] h-full
-          shadow-[2px_4px_16px_rgb(0,0,0,8%)]
-          hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
-          transition-shadow transition-transform duration-300 ease-in-out
-          caterogy-card-box
-          cursor-pointer
-          rounded-lg
-        ">
-            <div className="flex flex-col self-center">
-              <p className="text-white font-poppins font-bold text-2xl mb-2">
-                Deal Under £15
-              </p>
-            </div>
-            <div className="self-center">
-              <VscArrowRight className="m-2 text-2xl text-white" />
-            </div>
-          </div>
-        </Link>
+        {
+          promotions.map((promotion: any) => (
+            <Link to={promotion.to} key={`promotion_variant_${promotion.to}`}>
+              <div className="
+                flex justify-between p-4 bg-[#D43B33]
+                shadow-[2px_4px_16px_rgb(0,0,0,8%)]
+                hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
+                transition-shadow transition-transform duration-300 ease-in-out
+                caterogy-card-box
+                cursor-pointer
+                rounded-lg
+                h-full
+              ">
+                <div className="flex flex-col self-center">
+                  <p className="flex flex-col text-white">
+                    <span>{promotion.title1}</span>
+                    <span className="font-poppins text-2xl font-black my-2">{promotion.title2}</span>
+                    <span className="border-[#fff089] font-poppins font-bold text-2xl border-b-4">{promotion.label}</span>
+                  </p>
+                </div>
+                <div className="self-center">
+                  <VscArrowRight className="m-2 text-2xl text-white" />
+                </div>
+              </div>
+            </Link>
+          ))
+        }
       </div>
     </div>
   )
