@@ -255,6 +255,7 @@ function Collection({ scrollPosition }: CollectionProps) {
 
       <ProductRowsContainer
         loading={isChangingCategory}
+        products={state.products}
         productRows={state.productRows}
         scrollPosition={scrollPosition}
       />

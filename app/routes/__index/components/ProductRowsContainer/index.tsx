@@ -1,10 +1,12 @@
 import type { LinksFunction } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 
-import { OneMainTwoSubs, EvenRow, ProductRow, ProductRowLinks } from "~/components/ProductRow";
+import { OneMainTwoSubs, EvenRow } from "~/components/ProductRow";
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import type { Product } from '~/shared/types';
+
+import { RegularCardWithActionButton, links as ProductCartLinks } from '~/components/ProductCard';
 
 import styles from './styles/ProductRowsContainer.css';
 
@@ -12,7 +14,7 @@ export const links: LinksFunction = () => {
   return [
     ...OneMainTwoSubsLinks(),
     ...EvenRowLinks(),
-    ...ProductRowLinks(),
+    ...ProductCartLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
@@ -34,8 +36,9 @@ const LoadingRows = () => {
 interface ProductRowsContainerProps {
   onClickProduct?: (title: string, prodID: string) => void;
   productRows?: Product[][];
-  // activityBanners?: ActivityBanner[];
-  // seasonals?: SeasonalInfo[];
+
+  products?: Product[];
+
   loading?: boolean;
 
   // Used to improve performance for react-lazy-load-image-component
@@ -50,31 +53,41 @@ interface ProductRowsContainerProps {
 function ProductRowsContainer({
   onClickProduct = () => { },
   productRows = [],
+  products = [],
   loading = false,
   scrollPosition,
 
   onClickAddToCart = () => { },
 }: ProductRowsContainerProps) {
+
   return (
     <div className='w-full'>
       {
         loading
           ? (<LoadingRows />)
           : (
-            productRows.map((row: Product[], index) => {
-              return (
-                <div
-                  className='w-full max-w-screen-xl mx-auto'
-                  key={`product-row-${index}`}
-                >
-                  <ProductRow
-                    products={row}
-                    scrollPosition={scrollPosition}
-                    onClickProduct={onClickProduct}
-                  />
-                </div>
-              );
-            })
+
+            <div className='w-full max-w-screen-xl mx-auto'>
+              <div className="
+                    grid
+                    gap-2 md:gap-3 lg:gap-4
+                    grid-cols-2 md:grid-cols-3 lg:grid-cols-4
+                    mb-2 md:mb-3 lg:mb-4
+                  ">
+                {
+                  products.map((product: Product, index) => {
+                    return (
+                      <RegularCardWithActionButton
+                        key={`product-item-${index}-${product.productUUID}`}
+                        product={product}
+                        scrollPosition={scrollPosition}
+                        onClickProduct={onClickProduct}
+                      />
+                    )
+                  })
+                }
+              </div>
+            </div>
           )
       }
     </div>
