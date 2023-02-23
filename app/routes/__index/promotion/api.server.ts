@@ -50,8 +50,6 @@ export const fetchPromotionProducts = async (params: FetchPromotionProductsParam
   url.searchParams.append('page', params.page.toString());
   url.searchParams.append('per_page', params.perpage.toString());
 
-  console.log('debug 3', url.toString());
-
   const resp = await fetch(url.toString());
   const respJSON = await resp.json();
 
