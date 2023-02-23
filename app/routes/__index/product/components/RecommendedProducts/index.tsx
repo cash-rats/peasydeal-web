@@ -144,7 +144,7 @@ function RecommendedProducts({
         </div>
       </div>
 
-      <div className='w-full w-full p-2.5 max-w-screen-xl mx-auto'>
+      <div className='w-full p-2.5 max-w-screen-xl mx-auto'>
         <div className="flex justify-center xl:justify-start">
           <div className="mt-6 md:mt-8 lg:mt-16">
 

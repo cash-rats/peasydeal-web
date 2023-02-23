@@ -7,10 +7,7 @@ import type { LazyComponentProps } from 'react-lazy-load-image-component';
 import httpStatus from 'http-status-codes';
 
 import type { Category, TCategoryPreview, TPromotionType } from "~/shared/types";
-// import { addCategoryProducts } from '~/sessions/productlist.session';
 import { getCanonicalDomain } from '~/utils';
-// import { commitSession } from '~/sessions/sessions';
-// import type { SeasonalInfo } from "~/components/SeasonalColumnLayout/SeasonalColumnLayout";
 import PromoActivities from "~/components/PromoActivities/PromoActivities";
 import { CategoryPreview } from "~/components/CategoryPreview";
 import FiveHundredError from "~/components/FiveHundreError";
@@ -155,23 +152,23 @@ function Index({ scrollPosition, categories }: IndexProps) {
 
 							{
 								index === 1
-								? (
-									<div className="
+									? (
+										<div className="
 										py-0 px-auto
 										flex flex-col
 										justify-center items-center
 										bg-slate-50
 									">
-										<div className="w-full
+											<div className="w-full
 											py-6 md:py-2.5
 											md:px-2.5 lg:px-2.5 xl:px-0
 											max-w-screen-xl mx-auto
 										">
-											<PromoActivitiesVariant />
+												<PromoActivitiesVariant />
+											</div>
 										</div>
-									</div>
-								)
-								: null
+									)
+									: null
 							}
 						</div>
 					);
