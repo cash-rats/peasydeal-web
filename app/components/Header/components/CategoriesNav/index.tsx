@@ -38,7 +38,7 @@ interface CategoriesNavProps {
 };
 
 const iconMapper = (name: string) => {
-  switch(name) {
+  switch (name) {
     case 'hot_deal':
       return <VscFlame className='text-[20px] text-[#e90064] relative' />;
     case 'new_trend':
@@ -80,15 +80,7 @@ const iconMapper = (name: string) => {
  * - [ ]
  */
 export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
-  const [openAllCategories, setOpenAllCategories] = useState<boolean>(false);
-
   const { isOpen, onOpen, onClose } = useDisclosure()
-
-
-  const toggleOpenAllCategory = (evt: MouseEvent<HTMLDivElement>) => {
-    evt.stopPropagation();
-    setOpenAllCategories(prev => !prev);
-  }
 
   return (
     <div className={`
@@ -211,46 +203,47 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                         gap-1 md:gap-2 lg:gap-2
                         grid-cols-3
                       ">
-                        <div>
-                          <Link to={`/super_deal`}>
-                            <Button
-                              rightIcon={<VscArrowRight />}
-                              colorScheme='pink'
-                              variant='outline'
-                              size='lg'
-                              width='100%'
-                              onClick={onClose}
-                            >
-                              SUPER DEAL <span className="ml-1 text-[#fc1d7a]">EXTRA 10% OFF</span>
-                            </Button>
-                          </Link>
-                        </div>
-                        <div>
-                          <Link to={`/`}>
-                            <Button
-                              rightIcon={<VscArrowRight />}
-                              colorScheme='pink'
-                              variant='outline'
-                              size='lg'
-                              width='100%'
-                            >
-                              View Deal under <span className="ml-1 text-[#fc1d7a]">£15</span>
-                            </Button>
-                          </Link>
-                        </div>
-                        <div>
-                          <Link to={`/`}>
-                            <Button
-                              rightIcon={<VscArrowRight />}
-                              colorScheme='pink'
-                              variant='outline'
-                              size='lg'
-                              width='100%'
-                            >
-                              View Deal under <span className="ml-1 text-[#fc1d7a]">£20</span>
-                            </Button>
-                          </Link>
-                        </div>
+                      <div>
+                        <Link to={`/super_deal`}>
+                          <Button
+                            rightIcon={<VscArrowRight />}
+                            colorScheme='pink'
+                            variant='outline'
+                            size='lg'
+                            width='100%'
+                            onClick={onClose}
+                          >
+                            SUPER DEAL <span className="ml-1 text-[#fc1d7a]">EXTRA 10% OFF</span>
+                          </Button>
+                        </Link>
+                      </div>
+                      <div>
+                        <Link to={`promotion/deal_under_15`}>
+                          <Button
+                            rightIcon={<VscArrowRight />}
+                            colorScheme='pink'
+                            variant='outline'
+                            size='lg'
+                            width='100%'
+                          >
+                            View Deal under <span className="ml-1 text-[#fc1d7a]">£15</span>
+                          </Button>
+                        </Link>
+                      </div>
+                      <div>
+                        <Link to={`promotion/weekly_deals`}>
+                          <Button
+                            className="capitalize"
+                            rightIcon={<VscArrowRight />}
+                            colorScheme='pink'
+                            variant='outline'
+                            size='lg'
+                            width='100%'
+                          >
+                            weekly deals
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
 
                     <div className="p-3">
