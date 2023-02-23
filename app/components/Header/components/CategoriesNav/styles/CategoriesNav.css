@@ -4,7 +4,6 @@
   background-repeat: no-repeat;
   transition: background-size 0.2s;
 }
-
 .CategoriesNav__item:hover {
   background-size: 100% 2px;
 }

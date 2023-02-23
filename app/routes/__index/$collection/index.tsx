@@ -30,7 +30,6 @@ import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
 import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
-import styles from '../styles/ProductList.css';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
 
 type LoaderDataType = {
@@ -74,7 +73,6 @@ export const links: LinksFunction = () => {
   return [
     ...FourOhFourLinks(),
     ...ProductRowsContainerLinks(),
-    { rel: 'stylesheet', href: styles },
   ];
 };
 

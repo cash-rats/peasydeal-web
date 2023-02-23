@@ -30,6 +30,7 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 }
+
 interface CategoriesNavProps {
   categories?: Array<Category>,
   topCategories?: Array<Category>,
