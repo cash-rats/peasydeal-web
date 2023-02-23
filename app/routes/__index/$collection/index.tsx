@@ -141,7 +141,6 @@ function Collection({ scrollPosition }: CollectionProps) {
   } = useLoaderData<LoaderDataType>();
 
   const [state, dispatch] = useReducer(reducer, {
-    productRows: modToXItems(products, 8),
     products,
     current,
     total,
@@ -256,7 +255,6 @@ function Collection({ scrollPosition }: CollectionProps) {
       <ProductRowsContainer
         loading={isChangingCategory}
         products={state.products}
-        productRows={state.productRows}
         scrollPosition={scrollPosition}
       />
 

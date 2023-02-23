@@ -35,7 +35,6 @@ const LoadingRows = () => {
 
 interface ProductRowsContainerProps {
   onClickProduct?: (title: string, prodID: string) => void;
-  productRows?: Product[][];
 
   products?: Product[];
 
@@ -52,7 +51,6 @@ interface ProductRowsContainerProps {
 
 function ProductRowsContainer({
   onClickProduct = () => { },
-  productRows = [],
   products = [],
   loading = false,
   scrollPosition,
@@ -66,7 +64,6 @@ function ProductRowsContainer({
         loading
           ? (<LoadingRows />)
           : (
-
             <div className='w-full max-w-screen-xl mx-auto'>
               <div className="
                     grid

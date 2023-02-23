@@ -1,9 +1,6 @@
 import type { Product, Category } from '~/shared/types';
 
-import { modToXItems } from '../utils';
-
 export type StateShape = {
-  productRows: Product[][];
   products: Product[];
   category: Category;
   total: number;
@@ -50,7 +47,6 @@ export default function collectionReducer(state: StateShape, action: PromotionAc
 
       return {
         ...state,
-        productRows: modToXItems(products, 8),
         products,
         total,
         current,
@@ -70,7 +66,6 @@ export default function collectionReducer(state: StateShape, action: PromotionAc
 
       return {
         ...state,
-        productRows: modToXItems(extProds, 8),
         products: extProds,
         total,
         current,
@@ -89,7 +84,6 @@ export default function collectionReducer(state: StateShape, action: PromotionAc
       return {
         ...state,
         category,
-        productRows: modToXItems(products, 8),
         products,
         page,
         current,
