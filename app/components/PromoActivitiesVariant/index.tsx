@@ -19,16 +19,6 @@ const PromoActivitiesVariant = ({
       py-2.5 md:py-[46px]
       px-2 md:px-0
     ">
-      {/* <h3 className="
-        font-poppins font-semibold
-        text-2xl md:text-3xl
-        mt-6 md:mt-8
-        mb-2 md:mb-3
-        flex
-        items-center
-      ">
-        Deal of The Day
-      </h3> */}
       <div className='
         grid
         gap-2 md:gap-3 lg:gap-4
@@ -75,27 +65,10 @@ const PromoActivitiesVariant = ({
           </div>
         </Link>
 
-        <div className="
-          flex justify-between p-4 bg-[#D43B33]
-          shadow-[2px_4px_16px_rgb(0,0,0,8%)]
-          hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
-          transition-shadow transition-transform duration-300 ease-in-out
-          caterogy-card-box
-          cursor-pointer
-          rounded-lg
-        ">
-          <div className="flex flex-col self-center">
-            <p className="text-white font-poppins font-bold text-2xl mb-2">
-              New Arrival
-            </p>
-          </div>
-          <div className="self-center">
-            <VscArrowRight className="m-2 text-2xl text-white" />
-          </div>
-        </div>
 
-        <div className="
-          flex justify-between p-4 bg-[#D43B33]
+        <Link to={'promotion/new_arrival'}>
+          <div className="
+          flex justify-between p-4 bg-[#D43B33] h-full
           shadow-[2px_4px_16px_rgb(0,0,0,8%)]
           hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
           transition-shadow transition-transform duration-300 ease-in-out
@@ -103,15 +76,37 @@ const PromoActivitiesVariant = ({
           cursor-pointer
           rounded-lg
         ">
-          <div className="flex flex-col self-center">
-            <p className="text-white font-poppins font-bold text-2xl mb-2">
-              Deal Under £15
-            </p>
+            <div className="flex flex-col self-center">
+              <p className="text-white font-poppins font-bold text-2xl mb-2">
+                New Arrival
+              </p>
+            </div>
+            <div className="self-center">
+              <VscArrowRight className="m-2 text-2xl text-white" />
+            </div>
           </div>
-          <div className="self-center">
-            <VscArrowRight className="m-2 text-2xl text-white" />
+        </Link>
+
+        <Link to={'promotion/deal_under_15'}>
+          <div className="
+          flex justify-between p-4 bg-[#D43B33] h-full
+          shadow-[2px_4px_16px_rgb(0,0,0,8%)]
+          hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
+          transition-shadow transition-transform duration-300 ease-in-out
+          caterogy-card-box
+          cursor-pointer
+          rounded-lg
+        ">
+            <div className="flex flex-col self-center">
+              <p className="text-white font-poppins font-bold text-2xl mb-2">
+                Deal Under £15
+              </p>
+            </div>
+            <div className="self-center">
+              <VscArrowRight className="m-2 text-2xl text-white" />
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   )
