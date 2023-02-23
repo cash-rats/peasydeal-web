@@ -20,6 +20,7 @@ import { fetchLandingPageFeatureProducts } from "./api";
 import styles from "./styles/ProductList.css";
 import CategoriesRow, { links as CategoriesRowLinks } from "~/components/CategoriesRow";
 import PromoActivitiesVariant from "~/components/PromoActivitiesVariant";
+import AllTimeCoupon, { links as AllTimeCouponLinks } from "~/components/AllTimeCoupon";
 
 type LoaderDataType = {
 	categoryPreviews: TCategoryPreview[],
@@ -30,6 +31,7 @@ type LoaderDataType = {
 export const links: LinksFunction = () => {
 	return [
 		...CategoriesRowLinks(),
+		...AllTimeCouponLinks(),
 		{ rel: 'stylesheet', href: styles },
 	]
 }
@@ -111,6 +113,17 @@ function Index({ scrollPosition, categories }: IndexProps) {
 			">
 				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
 					<PromoActivities promotions={promotions} />
+				</div>
+			</div>
+
+			<div className="
+				py-0 px-auto
+				flex flex-col
+				justify-center items-center
+				mx-2 md:mx-4
+			">
+				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
+					<AllTimeCoupon />
 				</div>
 			</div>
 
