@@ -160,7 +160,7 @@ function RecommendedProducts({
                 scrollPosition={scrollPosition}
                 loading={fetcher.type !== 'done'}
                 onClickProduct={onClickProduct}
-                productRows={[rows[1]]}
+                products={rows[1]}
               />
             }
           </div>
