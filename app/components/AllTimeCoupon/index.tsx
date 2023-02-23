@@ -1,20 +1,11 @@
-import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import ImageSuperDealDiscount from './ImageSuperDealDiscount';
 import ImageGrandOpeningDiscount from './ImageGrandOpeningDiscount';
 import ImageCategoryExtraDiscount from './ImageCategoryExtraDiscount';
 
-import styles from './styles/AllTimeCoupon.css';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
-
 const AllTimeCoupon = () => {
   return (
-    <div className="flex py-4 bg-slate-50 justify-around w-full">
+    <div className="flex py-4 py bg-slate-50 justify-around w-full">
       <div className="hidden md:flex flex-1 justify-center items-center gap-1 md:gap-8">
         <Link to="/super_deal">
           <div className="

@@ -1,7 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { Link } from '@remix-run/react';
 import type { Category } from '~/shared/types';
-import type { LinksFunction } from '@remix-run/node';
 
 import { IconButton } from '@chakra-ui/react';
 
@@ -13,14 +12,6 @@ import { TbToolsKitchen2 } from 'react-icons/tb';
 import { RiShirtFill } from 'react-icons/ri';
 import { GiPearlNecklace, GiFlowerPot, GiLipstick } from 'react-icons/gi';
 import { FcRating, FcSmartphoneTablet, FcHome, FcAutomotive } from 'react-icons/fc';
-
-import styles from './styles/CategoriesRow.css';
-
-export const links: LinksFunction = () => {
-	return [
-		{ rel: 'stylesheet', href: styles },
-	];
-}
 
 type ContextType = {
   categories: Category[];
@@ -73,7 +64,6 @@ const CategoriesRow = () => {
   const scroll = useCallback((toRight: boolean) => {
     if (!window || !containerRef.current || !containerRef.current) return;
     const offset = containerRef.current.clientWidth - 100;
-
 
     containerRef!.current.scrollLeft += (toRight ? offset : -offset);
   }, [containerRef]);
