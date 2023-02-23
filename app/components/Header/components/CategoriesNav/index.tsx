@@ -218,7 +218,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                         </Link>
                       </div>
                       <div>
-                        <Link to={`promotion/deal_under_15`}>
+                        <Link to={'promotion/deal_under_15'}>
                           <Button
                             rightIcon={<VscArrowRight />}
                             colorScheme='pink'
@@ -231,7 +231,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                         </Link>
                       </div>
                       <div>
-                        <Link to={`promotion/weekly_deals`}>
+                        <Link to={'promotion/weekly_deals'}>
                           <Button
                             className="capitalize"
                             rightIcon={<VscArrowRight />}

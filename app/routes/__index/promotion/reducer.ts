@@ -15,7 +15,7 @@ export type StateShape = {
 export enum PromotionActionType {
   set_products = 'set_products',
   append_products = 'append_products',
-  update_category = 'update_category',
+  change_category = 'change_category',
 };
 
 interface ProductsPayload {
@@ -25,13 +25,17 @@ interface ProductsPayload {
   page: number;
 }
 
-interface UpdateCategoryPayload {
+interface ChangeCategoryPayload {
   category: Category;
+  products: Product[];
+  page: number;
+  current: number;
+  total: number;
 };
 
 interface PromotionActions {
   type: PromotionActionType;
-  payload: ProductsPayload | UpdateCategoryPayload;
+  payload: ProductsPayload | ChangeCategoryPayload;
 }
 
 export default function collectionReducer(state: StateShape, action: PromotionActions): StateShape {
@@ -72,6 +76,24 @@ export default function collectionReducer(state: StateShape, action: PromotionAc
         current,
         hasMore: current < total,
         page,
+      };
+    }
+    case PromotionActionType.change_category: {
+      const {
+        category,
+        products,
+        page,
+        current,
+        total,
+      } = action.payload as ChangeCategoryPayload;
+      return {
+        ...state,
+        category,
+        productRows: modToXItems(products, 8),
+        products,
+        page,
+        current,
+        total,
       };
     }
     default:

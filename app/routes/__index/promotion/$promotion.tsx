@@ -104,8 +104,14 @@ function Promotion({ scrollPosition }: TPromotion) {
     if (state.category.name === category.name) return;
 
     dispatch({
-      type: PromotionActionType.update_category,
-      payload: { category },
+      type: PromotionActionType.change_category,
+      payload: {
+        category,
+        products,
+        page,
+        current,
+        total,
+      },
     });
   }, [category]);
 

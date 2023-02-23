@@ -163,7 +163,7 @@ const Document = withEmotionCache(
             }}
           />
 
-          { /* <!-- Google Tag Manager --> */ }
+          { /* <!-- Google Tag Manager --> */}
           <script
             dangerouslySetInnerHTML={{
               __html: `
@@ -184,7 +184,7 @@ const Document = withEmotionCache(
               src={`https://www.googletagmanager.com/ns.html?id=${envData?.GOOGLE_TAG_ID}`}
               height="0"
               width="0"
-              style={{display:'none',visibility:'hidden'}}
+              style={{ display: 'none', visibility: 'hidden' }}
             />
           </noscript>
 
@@ -226,7 +226,6 @@ const Document = withEmotionCache(
 );
 
 export function CatchBoundary() {
-
   return (
     <Document>
       <Layout>
