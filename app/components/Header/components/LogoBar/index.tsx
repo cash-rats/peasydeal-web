@@ -1,21 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef, memo } from 'react';
 import { Link, } from '@remix-run/react';
-import { useLocation } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 import { FiMenu } from 'react-icons/fi';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
   IconButton,
-
   Drawer,
   DrawerBody,
-  DrawerFooter,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
@@ -26,6 +16,7 @@ import {
 import type { Category } from '~/shared/types';
 
 import PeasyDeal from './images/peasydeal_logo.svg';
+import type { IMegaMenuContent} from '../MegaMenuContent';
 import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
 
 interface LogoBarProps {
@@ -38,9 +29,27 @@ export const links: LinksFunction = () => {
   ];
 }
 
+const MegaMemo = memo(({
+  categories,
+  onClose,
+  ItemNode,
+}: IMegaMenuContent) => {
+  return (
+    <MegaMenuContent
+      categories={categories}
+      onClose={onClose}
+      ItemNode={ItemNode}
+    />
+  );
+});
+
+MegaMemo.displayName = 'MegaMenuContent';
+
 function LogoBar({ categories = [] }: LogoBarProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef(null);
+
+
 
   return (
     <div className="flex items-center mr-4 my-auto relative">
@@ -63,7 +72,7 @@ function LogoBar({ categories = [] }: LogoBarProps) {
             <DrawerContent>
               <DrawerCloseButton />
               <DrawerBody className='py-6 px-0'>
-                <MegaMenuContent
+                <MegaMemo
                   categories={categories}
                   onClose={onClose}
                   ItemNode={Box}
@@ -71,41 +80,6 @@ function LogoBar({ categories = [] }: LogoBarProps) {
               </DrawerBody>
             </DrawerContent>
           </Drawer>
-
-          {/* <Modal
-            onClose={handleCloseMenu}
-            finalFocusRef={btnRef}
-            isOpen={openMenu}
-            scrollBehavior="inside"
-            size="full"
-          >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Shop By Category</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <div>
-                  <ul>
-                    {
-                      categories.map((category) => {
-                        return (
-                          <Link
-                            // prefetch='intent'
-                            key={category.catId}
-                            to={`/${category.name}`}
-                          >
-                            <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
-                              {category.title}
-                            </li>
-                          </Link>
-                        )
-                      })
-                    }
-                  </ul>
-                </div>
-              </ModalBody>
-            </ModalContent>
-          </Modal> */}
         </div>
       </div>
 

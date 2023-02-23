@@ -63,7 +63,7 @@ const iconMapper = (name: string) => {
   }
 }
 
-interface IMegaMenuContent {
+export interface IMegaMenuContent {
   categories: Category[];
   onClose: () => void;
   ItemNode: any;
