@@ -18,9 +18,6 @@ import { PAGE_LIMIT } from '~/shared/constants';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
-import { normalizeToMap, fetchCategories } from '~/api/categories.server';
-import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
-import { commitSession } from '~/sessions/sessions';
 import {
   getCanonicalDomain,
   getCollectionDescText,
@@ -30,9 +27,9 @@ import {
 import PageTitle from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
+import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
 import styles from '../styles/ProductList.css';
-import { fetchProductsByCategoryV2 } from "../api";
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
 import { modToXItems } from "../utils";
 
@@ -81,119 +78,36 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type LoaderType = 'load_category_products';
-
-const _loadMoreLoader = async (request: Request, collection: string, page: number, perpage: number) => {
-  const [categories, navBarCategories] = await fetchCategories();
-  const catMap = await normalizeToMap(categories);
-
-  if (!catMap[collection]) {
-    throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
-  }
-
-  const {
-    items: products,
-    current,
-    total,
-    hasMore,
-  } = await fetchProductsByCategoryV2({
-    perpage,
-    page,
-    category: Number(catMap[collection].catId),
-  })
-
-  return json<LoadMoreDataType>({
-    products,
-    total,
-    current,
-    hasMore,
-    category: catMap[collection],
-    page,
-    navBarCategories,
-  }, {
-    headers: {
-      'Set-Cookie': await commitSession(
-        await addCategoryProducts(request, [], collection, page)
-      ),
-    },
-  });
-};
+type LoaderType = 'load_products' | 'load_category_products';
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const url = new URL(request.url);
-  const actinType = url.searchParams.get('action_type') as LoaderType;
+  const actionType = url.searchParams.get('action_type') || 'load_products' as LoaderType;
   const { collection = '' } = params;
 
-  if (actinType === 'load_category_products') {
+  if (actionType === 'load_category_products') {
     const page = Number(url.searchParams.get('page'));
     const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
-    return _loadMoreLoader(request, collection, page, perpage);
-  }
-
-  const [categories, navBarCategories] = await fetchCategories();
-  const catMap = normalizeToMap(categories);
-
-  if (!catMap[collection]) {
-    throw json(`target category ${collection} not found`, httpStatus.NOT_FOUND);
-  }
-
-  const cachedProds = await getCategoryProducts(request, collection);
-
-  if (cachedProds) {
-    const {
-      items: prods,
-      total,
-      current,
-      hasMore,
-    } = await fetchProductsByCategoryV2({
-      perpage: PAGE_LIMIT * cachedProds.page,
-      category: Number(catMap[collection].catId),
-      random: false,
-    });
-
-    return json<LoaderDataType>({
-      categories: catMap,
-      category: catMap[collection],
-      products: prods,
-
-      page: cachedProds.page,
-      total,
-      current,
-      hasMore,
-
-      navBarCategories,
-      canonical_link: `${getCanonicalDomain()}/${collection}`,
+    return loadmoreProductsLoader({
+      request,
+      category: collection,
+      page,
+      perpage,
     });
   }
 
-  // First time loaded so it must be first page.
-  const {
-    items: prods,
-    total,
-    current,
-    hasMore,
-  } = await fetchProductsByCategoryV2({
-    perpage: PAGE_LIMIT,
-    page: 1,
-    category: Number(catMap[collection].catId),
-  })
+  if (actionType === 'load_products') {
+    const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
 
-  const session = await addCategoryProducts(request, [], collection, 1);
+    return productsLoader({
+      request,
+      category: collection,
+      perpage,
+    });
+  }
 
-  return json<LoaderDataType>({
-    categories: catMap,
-    products: prods,
-    page: 1,
-    total,
-    current,
-    hasMore,
-    category: catMap[collection],
-    navBarCategories,
-    canonical_link: `${getCanonicalDomain()}/${collection}`,
-  }, {
-    headers: {
-      'Set-Cookie': await commitSession(session),
-    },
+  throw json(`unrecognize loader action ${actionType}`, {
+    status: httpStatus.INTERNAL_SERVER_ERROR,
   });
 }
 
