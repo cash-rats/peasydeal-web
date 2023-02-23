@@ -32,7 +32,6 @@ import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
 import styles from '../styles/ProductList.css';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
-import { modToXItems } from "../utils";
 
 type LoaderDataType = {
   categories: CategoriesMap;
@@ -112,7 +111,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   });
 }
 
-// TODO: extract action type logic to independent function.
 export const action: ActionFunction = async ({ request, params }) => {
   const body = await request.formData();
   const productID = body.get("product_id");
@@ -142,7 +140,6 @@ function Collection({ scrollPosition }: CollectionProps) {
   } = useLoaderData<LoaderDataType>();
 
   const [state, dispatch] = useReducer(reducer, {
-    productRows: modToXItems(products, 8),
     products,
     current,
     total,
@@ -260,7 +257,7 @@ function Collection({ scrollPosition }: CollectionProps) {
 
       <ProductRowsContainer
         loading={isChangingCategory}
-        productRows={state.productRows}
+        products={state.products}
         scrollPosition={scrollPosition}
       />
 

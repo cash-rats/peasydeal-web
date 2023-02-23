@@ -7,7 +7,7 @@ module.exports = {
       script: "npm",
       watch: true,
       args: "start",
-      env: {
+      env_local: {
         "PORT": process.env.PORT,
         "DOMAIN": process.env.DOMAIN,
         "NODE_ENV": "development",

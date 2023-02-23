@@ -39,6 +39,9 @@ deploy_all: build upload_staging upload_prod
 build:
 	npm run build:patched
 
+start_local:
+	pm2 stop ecosystem.config.js --env local && pm2 start ecosystem.config.js --env local
+
 start_staging:
 	pm2 stop ecosystem.config.js --env staging && pm2 start ecosystem.config.js --env staging
 

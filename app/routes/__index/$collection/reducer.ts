@@ -1,9 +1,7 @@
 import type { Product } from '~/shared/types';
 
-import { modToXItems } from '../utils';
 
 export type StateShape = {
-  productRows: Product[][];
   products: Product[];
   total: number;
   current: number;
@@ -16,7 +14,6 @@ export enum CollectionActionType {
 };
 
 export const initState: StateShape = {
-  productRows: [],
   products: [],
   total: 0,
   current: 0,
@@ -45,7 +42,6 @@ export default function collectionReducer(state: StateShape, action: CollectionA
 
       return {
         ...state,
-        productRows: modToXItems(products, 8),
         products,
         total,
         current,
@@ -63,7 +59,6 @@ export default function collectionReducer(state: StateShape, action: CollectionA
 
       return {
         ...state,
-        productRows: modToXItems(extProds, 8),
         products: extProds,
         total,
         current,

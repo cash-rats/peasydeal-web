@@ -17,7 +17,6 @@ import { loadProducts, loadMoreProducts } from './loaders';
 import type { LoadProductsDataType, LoadMoreDataType } from './loaders';
 import reducer, { PromotionActionType } from './reducer';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
-import { modToXItems } from "../utils";
 
 export const links: LinksFunction = () => {
   return [
@@ -85,7 +84,6 @@ function Promotion({ scrollPosition }: TPromotion) {
   } = useLoaderData<LoadProductsDataType>();
 
   const [state, dispatch] = useReducer(reducer, {
-    productRows: modToXItems(products),
     products,
     total,
     current,
@@ -209,7 +207,7 @@ function Promotion({ scrollPosition }: TPromotion) {
 
       <ProductRowsContainer
         loading={isChangingPromotion}
-        productRows={state.productRows}
+        products={state.products}
         scrollPosition={scrollPosition}
       />
 

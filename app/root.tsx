@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { withEmotionCache } from '@emotion/react';
 import { ChakraProvider } from '@chakra-ui/react'
@@ -134,6 +134,35 @@ const Document = withEmotionCache(
       clientStyleData?.reset();
     }, []);
 
+    // <!-- Google Tag Manager. Load on client side only  -->
+    useEffect(() => {
+      // if (envData.GOOGLE_TAG_ID) {
+      //   const gtmScript = document.createElement('script')
+
+      //   gtmScript.innerHTML = `
+      //   (function(w, d, s, l, i) {
+      //     w[l] = w[l] || [];
+      //     w[l].push({
+      //         'gtm.start': new Date().getTime(),
+      //         event: 'gtm.js'
+      //     });
+      //     var f = d.getElementsByTagName(s)[0],
+      //         j = d.createElement(s),
+      //         dl = l != 'dataLayer' ? '&l=' + l : '';
+      //     j.async = true;
+      //     j.src =
+      //         'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+      //     f.parentNode.insertBefore(j, f);
+      //   })(window, document, 'script', 'dataLayer', '${envData.GOOGLE_TAG_ID}');`
+
+      //   document.head.appendChild(gtmScript)
+
+      //   return () => {
+      //     document.head.removeChild(gtmScript)
+      //   }
+      // }
+    }, [envData.GOOGLE_TAG_ID]);
+
     return (
       <html lang="en">
         <head>
@@ -149,32 +178,35 @@ const Document = withEmotionCache(
               dangerouslySetInnerHTML={{ __html: css }}
             />
           ))}
+
           {/* <!-- Google tag (gtag.js) --> */}
-          <script async src={`https://www.googletagmanager.com/gtag/js?id=${envData?.GOOGLE_ANALYTICS_ID}`}></script>
+          {
+            // process.env.NODE_ENV === "development" || !envData.GOOGLE_ANALYTICS_ID
+            //   ? null
+            //   : (
+            //     <>
+            //       <script
+            //         async
+            //         src={`https://www.googletagmanager.com/gtag/js?id=${envData.GOOGLE_ANALYTICS_ID}`}
+            //       />
 
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){ dataLayer.push(arguments); }
-                gtag('js', new Date());
-                gtag('config', '${envData?.GOOGLE_ANALYTICS_ID}');
-              `
-            }}
-          />
-
-          { /* <!-- Google Tag Manager --> */}
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-                (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-                new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-                'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','${envData?.GOOGLE_TAG_ID}');
-              `
-            }}
-          />
+            //       <script
+            //         async
+            //         id="gtag-init"
+            //         dangerouslySetInnerHTML={{
+            //           __html: `
+            //             window.dataLayer = window.dataLayer || [];
+            //             function gtag(){dataLayer.push(arguments);}
+            //             gtag('js', new Date());
+            //             gtag('config', '${envData.GOOGLE_ANALYTICS_ID}', {
+            //               page_path: window.location.pathname,
+            //             });
+            //           `,
+            //         }}
+            //       />
+            //     </>
+            //   )
+          }
         </head>
         <body>
           {/* <!-- Google Tag Manager (noscript) --> */}
