@@ -27,7 +27,7 @@
   border-left: 10px solid white;
 }
 .promo-ribbon-flag:before {
-  left: 18px;
+  left: -18px;
 }
 .promo-ribbon-flag:after {
   right: -18px;

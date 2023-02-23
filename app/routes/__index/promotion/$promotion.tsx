@@ -6,7 +6,7 @@ import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
-
+import AllTimeCoupon from '~/components/AllTimeCoupon';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import FourOhFour from '~/components/FourOhFour';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
@@ -202,6 +202,10 @@ function Promotion({ scrollPosition }: TPromotion) {
         title={state.category.title}
         subtitle={state.category.description}
       />
+
+      <div className="w-full pt-2.5 pb-8 max-w-screen-xl mx-auto">
+        <AllTimeCoupon />
+      </div>
 
       <ProductRowsContainer
         loading={isChangingPromotion}

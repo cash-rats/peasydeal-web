@@ -112,10 +112,10 @@ function Index({ scrollPosition, categories }: IndexProps) {
 				mx-2 md:mx-4
 			">
 				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-					<PromoActivities promotions={promotions} />
+					<AllTimeCoupon />
 				</div>
 			</div>
-
+			
 			<div className="
 				py-0 px-auto
 				flex flex-col
@@ -123,7 +123,7 @@ function Index({ scrollPosition, categories }: IndexProps) {
 				mx-2 md:mx-4
 			">
 				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-					<AllTimeCoupon />
+					<PromoActivities promotions={promotions} />
 				</div>
 			</div>
 

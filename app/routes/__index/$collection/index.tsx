@@ -18,6 +18,7 @@ import { PAGE_LIMIT } from '~/shared/constants';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
+import AllTimeCoupon from '~/components/AllTimeCoupon';
 import {
   getCanonicalDomain,
   getCollectionDescText,
@@ -252,6 +253,10 @@ function Collection({ scrollPosition }: CollectionProps) {
         title={category.title}
         subtitle={category.description}
       />
+
+      <div className="w-full pt-2.5 pb-8 max-w-screen-xl mx-auto">
+        <AllTimeCoupon />
+      </div>
 
       <ProductRowsContainer
         loading={isChangingCategory}

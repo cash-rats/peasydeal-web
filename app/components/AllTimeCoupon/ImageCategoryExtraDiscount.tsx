@@ -1,7 +1,7 @@
-import ImageHalf from './images/top_sales@half.png';
-import Image1x from './images/top_sales.png';
-import Image2x from './images/top_sales@2x.png';
-import Image3x from './images/top_sales@3x.png';
+import ImageHalf from './images/category_extra_discount@half.png';
+import Image1x from './images/category_extra_discount.png';
+import Image2x from './images/category_extra_discount@2x.png';
+import Image3x from './images/category_extra_discount@3x.png';
 
 interface IImageBanner {
   name: string;
