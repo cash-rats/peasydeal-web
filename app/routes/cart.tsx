@@ -72,7 +72,7 @@ function CartLayout() {
 
   const search = useFetcher();
   const handleSearch = (query: string) => {
-    search.submit({ query }, { method: 'post', action: '/search' });
+    search.submit({ query }, { method: 'post', action: '/search?index' });
   }
 
   const handleOpen = () => setOpenSearchDialog(true);
@@ -111,7 +111,7 @@ function CartLayout() {
 
   return (
     <div>
-      <Form action='/search' >
+      <Form action='/search?index' method='post' >
         <MobileSearchDialog
           onBack={handleClose}
           isOpen={openSearchDialog}
@@ -131,7 +131,6 @@ function CartLayout() {
 
           searchBar={
             <DropDownSearchBar
-              form='cart-search-products'
               placeholder='Search products by name'
               onDropdownSearch={searchSuggests}
               results={suggests}

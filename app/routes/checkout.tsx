@@ -145,7 +145,7 @@ function CheckoutLayout() {
   const search = useFetcher();
 
   const handleSearch = (query: string) => {
-    search.submit({ query }, { method: 'post', action: '/search' });
+    search.submit({ query }, { method: 'post', action: '/search?index' });
   };
 
   const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
@@ -200,7 +200,7 @@ function CheckoutLayout() {
 
   return (
     <>
-      <Form action='/search'>
+      <Form action='/search?index' method='post'>
         <MobileSearchDialog
           onBack={handleClose}
           isOpen={openSearchDialog}
