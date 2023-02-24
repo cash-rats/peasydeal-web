@@ -9,13 +9,12 @@ import type { Product } from '~/shared/types';
 import LoadMore, { links as LoadMoreLinks } from '~/components/LoadMore';
 import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
 import LoadMoreButton from '~/components/LoadMoreButton';
-
 import PageTitle from '~/components/PageTitle';
+
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { searchProducts } from './api';
 import productListStyles from './styles/ProductList.css';
 import searchStyles from './styles/Search.css';
-import { modToXItems } from './utils';
 
 export const links: LinksFunction = () => {
   return [
@@ -28,7 +27,7 @@ export const links: LinksFunction = () => {
 };
 
 type LoaderType = {
-  product_rows: Product[][];
+  products: Product[];
   query: string;
   page: number;
   has_more: boolean;
@@ -53,14 +52,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw json({ query: search }, httpStatus.NOT_FOUND);
   }
 
-  let prodRows: Product[][] = [];
-
-  if (products.length > 0) {
-    prodRows = modToXItems(products);
-  }
-
   return json<LoaderType>({
-    product_rows: prodRows,
+    products,
     query: search,
     page,
     has_more: products.length === PAGE_LIMIT,
@@ -104,37 +97,32 @@ export const CatchBoundary = () => {
 //   - Need to add breadcrumbs navigation bar.
 //   - No result page.
 export default function Search() {
-  const {
-    product_rows,
-    query,
-    has_more,
-    page,
-  } = useLoaderData<LoaderType>();
+  const loaderData = useLoaderData<LoaderType>();
 
-  const currPageRef = useRef(page);
+  const currPageRef = useRef(loaderData.page);
   const loadMoreFetcher = useFetcher();
-  const [productRows, setProductRows] = useState<Product[][]>(product_rows);
-  const [hasMore, setHasMore] = useState(has_more);
+  const [products, setProducts] = useState<Product[]>(loaderData.products);
+  const [hasMore, setHasMore] = useState(loaderData.has_more);
 
 
   // Update product rows when user searches different item. When user stays on `/search` page and searches again,
   // the component does not get rerendered (since we stay on the same page). Thus, we need to update product_rows
   // state when we get new search results from loader.
   useEffect(() => {
-    setProductRows(product_rows);
-  }, [product_rows]);
+    setProducts(products)
+  }, [products]);
 
   useEffect(() => {
     if (loadMoreFetcher.type === 'done') {
-      const { product_rows, has_more } = loadMoreFetcher.data as LoaderType;
+      const { products, has_more } = loadMoreFetcher.data as LoaderType;
 
-      if (productRows.length > 0) {
+      if (products.length > 0) {
         currPageRef.current += 1;
       }
 
       setHasMore(has_more);
 
-      setProductRows(prev => prev.concat(product_rows));
+      setProducts(prev => prev.concat(products));
     }
   }, [loadMoreFetcher]);
 
@@ -147,7 +135,7 @@ export default function Search() {
 
     loadMoreFetcher.submit(
       {
-        query,
+        query: loaderData.query,
         page: nextPage.toString()
       },
       { action: '/search' }
@@ -161,12 +149,12 @@ export default function Search() {
   return (
     <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">
       <PageTitle
-        title={`Search results for "${query}"`}
+        title={`Search results for "${loaderData.query}"`}
       />
 
       <div className="pt-8">
         <ProductRowsContainer
-          productRows={productRows}
+          products={products}
           onClickProduct={handleClickProduct}
         />
       </div>
