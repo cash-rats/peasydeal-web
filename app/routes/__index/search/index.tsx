@@ -64,7 +64,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
-  return redirect(`/search?query=${formObj['query']}&page=${formObj['page']}`);
+  return redirect(`/search?query=${formObj['query']}&page=${formObj['page'] || 1}`);
 }
 
 // TODO: more design
@@ -87,7 +87,7 @@ export const CatchBoundary = () => {
   }
 
   return (
-    <div></div>
+    <div />
   )
 }
 
@@ -165,7 +165,7 @@ function Search({ scrollPosition }: TSearch) {
   return (
     <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">
       <PageTitle
-        title={`Search results for "${loaderData.query}"`}
+        title={`Search results for "${loaderData.query}" (${state.total})`}
       />
 
       <div className="pt-8">

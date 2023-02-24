@@ -1,6 +1,5 @@
 import type { ForwardedRef, MouseEvent, ChangeEvent, FocusEvent } from 'react';
 import { useEffect, useState, forwardRef, useRef } from 'react';
-import InputBase from '@mui/material/InputBase';
 import type { InputBaseProps } from '@mui/material/InputBase';
 import ClearIcon from '@mui/icons-material/Clear';
 import clsx from 'clsx';
