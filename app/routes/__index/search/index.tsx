@@ -64,7 +64,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
-  return redirect(`/search?query=${formObj['query']}&page=${formObj['page'] || 1}`);
+  return redirect(`/search?query=${formObj['query']}`);
 }
 
 // TODO: more design
