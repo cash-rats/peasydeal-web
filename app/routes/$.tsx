@@ -17,8 +17,8 @@ import type { SuggestItem } from '~/shared/types';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 type LoaderType = {
-	categories: Category[];
-	navBarCategories: Category[]
+  categories: Category[];
+  navBarCategories: Category[]
 };
 
 export const links: LinksFunction = () => {
@@ -35,9 +35,9 @@ export const loader: LoaderFunction = async ({ request }) => {
   const [categories, navBarCategories] = await fetchCategories();
 
   return json<LoaderType>({
-		categories,
-		navBarCategories,
-	});
+    categories,
+    navBarCategories,
+  });
 }
 
 function GlobalSplatFourOhFour() {
@@ -48,7 +48,7 @@ function GlobalSplatFourOhFour() {
   const { submit } = useFetcherWithPromise();
 
   const handleSearch = (query: string) => {
-    search.submit({ query }, { method: 'post', action: '/search' });
+    search.submit({ query }, { method: 'post', action: '/search?index' });
   }
 
   const handleOpen = () => setOpenSearchDialog(true);
@@ -86,7 +86,7 @@ function GlobalSplatFourOhFour() {
 
   return (
     <div className="pt-48 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light">
-      <Form action='/search'>
+      <Form action='/search?index'>
 
         <MobileSearchDialog
           onBack={handleClose}

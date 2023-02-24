@@ -25,8 +25,8 @@ export const links: LinksFunction = () => {
 }
 
 type LoaderType = {
-	categories: Category[];
-	navBarCategories: Category[]
+  categories: Category[];
+  navBarCategories: Category[]
 };
 
 export const loader: LoaderFunction = async () => {
@@ -46,7 +46,7 @@ export default function Payment() {
   const { submit } = useFetcherWithPromise();
 
   const handleSearch = (query: string) => {
-    search.submit({ query }, { method: 'post', action: '/search' });
+    search.submit({ query }, { method: 'post', action: '/search?index' });
   }
 
   const handleOpen = () => setOpenSearchDialog(true);
@@ -85,7 +85,7 @@ export default function Payment() {
 
   return (
     <>
-      <Form action='/search'>
+      <Form action='/search?index' method='post'>
         <MobileSearchDialog
           onBack={handleClose}
           isOpen={openSearchDialog}

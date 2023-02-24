@@ -58,7 +58,7 @@ export default function Index() {
 	const { submit } = useFetcherWithPromise();
 
 	const handleSearch = (query: string) => {
-		search.submit({ query }, { method: 'post', action: '/search' });
+		search.submit({ query }, { method: 'post', action: '/search?index' });
 	};
 
 	const handleOpen = () => setOpenSearchDialog(true);
@@ -99,7 +99,7 @@ export default function Index() {
 			{/* sharethis popup for news letter subscription */}
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
 			<div className="bg-white">
-				<Form action='/search'>
+				<Form action='/search?index' method='post'>
 					<MobileSearchDialog
 						onBack={handleClose}
 						isOpen={openSearchDialog}

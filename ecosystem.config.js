@@ -39,7 +39,7 @@ module.exports = {
       env_staging: {
         "PORT": process.env.PORT,
         "DOMAIN": process.env.DOMAIN,
-        "NODE_ENV": "development",
+        "NODE_ENV": "staging",
         "CATEGORY_CACHE_TTL": process.env.CATEGORY_CACHE_TTL,
         "CDN_URL": process.env.CDN_URL,
 
@@ -68,7 +68,7 @@ module.exports = {
       env_production: {
         "PORT": process.env.PORT,
         "DOMAIN": process.env.DOMAIN,
-        "NODE_ENV": "development",
+        "NODE_ENV": "production",
         "CATEGORY_CACHE_TTL": process.env.CATEGORY_CACHE_TTL,
         "CDN_URL": process.env.CDN_URL,
 
