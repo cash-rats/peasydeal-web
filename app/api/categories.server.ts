@@ -45,13 +45,14 @@ const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFrom
 };
 
 const normalize = (cats: any) => {
-  return cats.map((cat: { category_id: number, label: string, name: string, desc: string }): Category => {
+  return cats.map((cat: { category_id: number, label: string, name: string, desc: string, type: string }): Category => {
     return {
       catId: cat.category_id,
       title: cat.label,
       description: cat.desc,
       name: cat.name,
       url: '',
+      type: cat.type,
     }
   });
 }

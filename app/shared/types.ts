@@ -24,16 +24,16 @@ export type Product = {
 };
 
 export type TCategoryPreview = {
-	name: string;
-	label: string;
-	desc: string;
-	items: Product[];
+  name: string;
+  label: string;
+  desc: string;
+  items: Product[];
 }
 
 export type TPromotionType = {
-	name: string;
-	label: string;
-	desc: string;
+  name: string;
+  label: string;
+  desc: string;
 }
 
 // Shopping cart item stored in session or from API.
@@ -60,6 +60,7 @@ export type Category = {
   name: string;
   url?: string;
   show?: boolean;
+  type: string;
 };
 
 export type CategoriesMap = {

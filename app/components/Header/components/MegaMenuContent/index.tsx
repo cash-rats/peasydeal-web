@@ -1,9 +1,6 @@
 
 import { Button } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-import {
-  MenuItem,
-} from "@chakra-ui/react";
 
 import { IoBody, IoSparklesOutline, IoPricetagsOutline } from 'react-icons/io5';
 import { MdOutlinePets, MdOutlineSmartToy } from 'react-icons/md';
