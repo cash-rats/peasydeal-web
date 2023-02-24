@@ -36,6 +36,25 @@ interface CartItemProps {
 	onClickRemove?: (evt: MouseEvent<HTMLButtonElement>, prodID: string) => void;
 }
 
+interface ISubTotalPriceTagProps  { quantity: number, salePrice: number, calculating: boolean };
+
+const SubTotalPriceTag = ({ quantity, salePrice, calculating }: ISubTotalPriceTagProps) => {
+	return (
+		<span className='font-poppins font-bold'>
+			{
+				calculating
+					? (
+						<div className='flex items-center'>
+							<span className='ml-auto'>£ </span>
+							<Skeleton width={40} height={35} />
+						</div>
+					)
+					: `£${(quantity * salePrice).toFixed(2)}`
+			}
+		</span>
+	);
+}
+
 function CartItem({
 	calculating = false,
 	item = {
@@ -73,56 +92,75 @@ function CartItem({
 		onBlurQuantity(evt, quantity);
 	};
 
+	console.log(item)
+
 	return (
-		<div className="cart-item">
+		<div className="
+			p-4 md:p-4
+			mt-4
+			mb-12 md:mb-0
+			bg-white
+			md:grid grid-cols-12 gap-4
+			relative
+		">
 			{/* Item image */}
-			<div className="top">
-				<div className="product-image">
-					<img alt={item.title} src={item.image} />
+			<div className="flex items-center col-span-6">
+				<div className="flex aspect-square max-w-[120px] mr-4">
+					<img
+						className='my-auto slef-center'
+						alt={item.title} src={item.image}
+					/>
 				</div>
 
-				<div className="product-description">
-					<div className="product-title">
+				<div className="">
+					<p className="text-lg font-medium mb-2">
 						{item.title}
-					</div>
-
-					<p className="product-description-text">
-						{item.description}
 					</p>
 
-					<div className="product-price-mobile">
-						<span className="CartItem__sale-price">£{item.salePrice}</span> &nbsp;
-						<span className="CartItem__retail-price">£{item.retailPrice}</span>
+					<p className="text-sm">
+						Variation: {item.description}
+					</p>
+
+					<div className="items-center flex flex-row md:hidden my-4">
+						<span className='text-lg font-poppins font-bold mr-2'>£{item.salePrice} </span>
+						<div className="relative w-fit">
+							<span className='flex flex-col w-fit'>
+								<span>£{item.retailPrice}</span>
+								<div className="block h-[1px] w-full bg-black absolute top-[10px]"></div>
+							</span>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<div className="bottom">
-
-				<div className="product-price">
-					£{item.salePrice}
+			<div className="col-span-2 text-right self-center hidden md:flex flex-row md:flex-col">
+				<div className="relative w-fit ml-auto">
+					<span className='flex flex-col w-fit'>
+						<span>£{item.retailPrice}</span>
+						<div className="block h-[1px] w-full bg-black absolute top-[10px]"></div>
+					</span>
 				</div>
+				<span className='text-lg font-poppins font-medium text-[#D02E7D]'>£{item.salePrice}</span>
+			</div>
 
-				<div className="relative max-w-[170px] flex flex-col items-center md:w-[40%]">
-					<div className="flex flex-row items-center" >
-						<span className="CartItem__quantity-text"> QTY </span>
-						<div className="flex flex-col">
-							<QuantityDropDown
-								value={item.quantity}
-								onClickNumber={onClickQuantity}
-								onChange={handleChangeQuantity}
-								onBlur={handleBlurQuantity}
-								disabled={calculating}
-							/>
-						</div>
-
-						<div className="CartItem__remove-btn">
-							<IconButton onClick={(evt) => onClickRemove(evt, item.variationUUID)}>
-								<BsTrash />
-							</IconButton>
-						</div>
-					</div>
-
+			<div className="
+				col-span-2 text-right self-center
+				flex flex-row md:flex-col
+				gap-4 md:gap-0
+				pt-4 mt-2 md:pt-0 md:mt-0
+				border-t-[#efefef] md:border-0
+				border-t
+			">
+				<div className="flex flex-col flex-auto">
+					<span className="flex md:hidden font-medium mb-2">Quantity</span>
+					<QuantityDropDown
+						value={item.quantity}
+						onClickNumber={onClickQuantity}
+						onChange={handleChangeQuantity}
+						onBlur={handleBlurQuantity}
+						disabled={calculating}
+						purchaseLimit={item.purchaseLimit}
+					/>
 					{
 						exceedMaxMsg && (
 							<p className="mt-0 w-full mt text-[#757575] font-sm md:absolute top-[-25px]">
@@ -131,20 +169,25 @@ function CartItem({
 						)
 					}
 				</div>
-
-
-				<div className="product-total">
-					{
-						calculating
-							? (
-								<>
-									£ &nbsp; <Skeleton width={40} height={35} />
-								</>
-							)
-							: `£${(item.quantity * item.salePrice).toFixed(2)}`
-					}
-
+				<div className="flex md:hidden flex-col  ml-auto">
+					<span className="flex font-medium mb-2">Subtotal</span>
+					<div className='center md:hidden self-center text-[#D02E7D] text-2xl'>
+						<SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+					</div>
 				</div>
+			</div>
+
+			<div className="hidden md:block col-span-2 text-right self-center text-lg">
+				<SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+			</div>
+			<div className="
+				absolute
+				bottom-[-38px] right-1 md:bottom-2 md:right-2
+			">
+				<IconButton className="flex items-center"onClick={(evt) => onClickRemove(evt, item.variationUUID)}>
+					<BsTrash fontSize={18} />
+					<span className='ml-2 text-sm'>Delete</span>
+				</IconButton>
 			</div>
 		</div>
 	);
