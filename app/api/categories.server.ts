@@ -6,7 +6,12 @@ import { CATEGORY_CACHE_TTL } from '~/utils/get_env_source';
 export const RedisCategoriesKey = 'categories';
 export const RedisPromotionsKey = 'promotions';
 
-const fetchCategoriesFromServer = async (type?: string): Promise<Category[]> => {
+interface ICategoriesFromServerResponse {
+  categories: Category[];
+  promotions: Category[];
+};
+
+const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFromServerResponse> => {
   const url = new URL(PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/categories';
   if (type) {
@@ -14,13 +19,29 @@ const fetchCategoriesFromServer = async (type?: string): Promise<Category[]> => 
   }
   const resp = await fetch(url.toString());
   const respJSON = await resp.json();
-  let categories: Category[] = []
+  let categories: Category[] = [];
+  let promotions: Category[] = [];
 
-  if (respJSON && respJSON.categories && Array.isArray(respJSON.categories)) {
+  if (
+    respJSON &&
+    respJSON.categories &&
+    Array.isArray(respJSON.categories)
+  ) {
     categories = normalize(respJSON.categories);
   }
 
-  return categories;
+  if (
+    respJSON &&
+    respJSON.promotions &&
+    Array.isArray(respJSON.promotions)
+  ) {
+    promotions = normalize(respJSON.promotions);
+  }
+
+  return {
+    categories,
+    promotions,
+  };
 };
 
 const normalize = (cats: any) => {
@@ -78,27 +99,37 @@ const fetchCategories = async (): Promise<[Category[], Category[]]> => {
 
   // If it exists, return it.
   if (catsstr) {
-    const cats = JSON.parse(catsstr);
-    const navBarCategories = hoistCategories(cats);
+    const cachesCats = JSON.parse(catsstr);
+    const navBarCategories = hoistCategories(cachesCats);
 
-    return [cats, navBarCategories];
+    return [cachesCats, navBarCategories];
   }
 
   // If it doesn't exist, fetch from server and cache to redis.
-  const cats = await fetchCategoriesFromServer();
+  const { categories } = await fetchCategoriesFromServer('category');
 
-  await redis.set(RedisCategoriesKey, JSON.stringify(cats));
+  await redis.set(RedisCategoriesKey, JSON.stringify(categories));
   await redis.expire(RedisCategoriesKey, CATEGORY_CACHE_TTL);
 
-  const navBarCategories = hoistCategories(cats);
+  const navBarCategories = hoistCategories(categories);
 
-  return [cats, navBarCategories];
+  return [categories, navBarCategories];
 }
 
+// TODO: cache promotions to redis.
 const fetchPromotions = async (): Promise<Category[]> => {
-  const promos = await fetchCategoriesFromServer('promotion');
-
-  return promos;
+  const { promotions } = await fetchCategoriesFromServer('promotion');
+  return promotions;
 };
 
-export { fetchCategories, fetchPromotions, normalizeToMap };
+// TODO: cache to redis.
+const fetchCategoriesRegardlessType = (): Promise<ICategoriesFromServerResponse> => {
+  return fetchCategoriesFromServer();
+}
+
+export {
+  fetchCategories,
+  fetchPromotions,
+  fetchCategoriesRegardlessType,
+  normalizeToMap,
+};

@@ -73,7 +73,7 @@ const MegaMenuContent = ({
   categories,
   onClose,
   ItemNode,
-}: IMegaMenuContent ) => {
+}: IMegaMenuContent) => {
   return (
     <div className="flex flex-col p-3 w-full">
       <div className="
@@ -120,48 +120,48 @@ const MegaMenuContent = ({
           gap-2 md:gap-2 lg:gap-2
           grid-cols-1 md:grid-cols-3
         ">
-          <div>
-            <Link to={`/super_deal`}>
-              <Button
-                rightIcon={<VscArrowRight />}
-                colorScheme='pink'
-                variant='outline'
-                size='lg'
-                width='100%'
-                onClick={onClose}
-              >
-                SUPER DEAL <span className="ml-1 text-[#fc1d7a]">EXTRA 10% OFF</span>
-              </Button>
-            </Link>
-          </div>
-          <div>
-            <Link to={`/promotion/deal_under_15`}>
-              <Button
-                rightIcon={<VscArrowRight />}
-                colorScheme='pink'
-                variant='outline'
-                size='lg'
-                width='100%'
-                onClick={onClose}
-              >
-                Deal from <span className="ml-1 text-[#fc1d7a]">£0.99 - £15</span>
-              </Button>
-            </Link>
-          </div>
-          <div>
-            <Link to={`/promotion/weekly_deals`}>
-              <Button
-                rightIcon={<VscArrowRight />}
-                colorScheme='pink'
-                variant='outline'
-                size='lg'
-                width='100%'
-                onClick={onClose}
-              >
-                Weekly <span className="ml-1 text-[#fc1d7a]">Best Seller</span>
-              </Button>
-            </Link>
-          </div>
+        <div>
+          <Link to={`/promotion/super_deal`}>
+            <Button
+              rightIcon={<VscArrowRight />}
+              colorScheme='pink'
+              variant='outline'
+              size='lg'
+              width='100%'
+              onClick={onClose}
+            >
+              SUPER DEAL <span className="ml-1 text-[#fc1d7a]">EXTRA 10% OFF</span>
+            </Button>
+          </Link>
+        </div>
+        <div>
+          <Link to={`/promotion/deal_under_15`}>
+            <Button
+              rightIcon={<VscArrowRight />}
+              colorScheme='pink'
+              variant='outline'
+              size='lg'
+              width='100%'
+              onClick={onClose}
+            >
+              Deal from <span className="ml-1 text-[#fc1d7a]">£0.99 - £15</span>
+            </Button>
+          </Link>
+        </div>
+        <div>
+          <Link to={`/promotion/weekly_deals`}>
+            <Button
+              rightIcon={<VscArrowRight />}
+              colorScheme='pink'
+              variant='outline'
+              size='lg'
+              width='100%'
+              onClick={onClose}
+            >
+              Weekly <span className="ml-1 text-[#fc1d7a]">Best Seller</span>
+            </Button>
+          </Link>
+        </div>
       </div>
 
       <div className="p-3 hidden md:flex">

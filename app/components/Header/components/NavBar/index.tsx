@@ -25,14 +25,18 @@ function NavBar({ cartItemCount = 0 }: NavBarProps) {
 		<nav className="flex flex-1">
 			<ul className="list-none p-0 items-center flex justify-center gap-5">
 				<li>
-					<Link aria-label='super deal with extra 10% off' className="flex flex-col items-center" to="/super_deal">
+					<Link
+						aria-label='super deal with extra 10% off'
+						className="flex flex-col items-center"
+						to="/promotion/super_deal"
+					>
 						<IoPricetagsOutline
 							color='#DA3B66'
 							className='flex-1 text-xl md:text-2xl'
 						/>
 						<span className="
 							text-[#DA3B66] text-center text-[10px] md:text-[14px]
-							mt-1 font-normal capitalize whitespace-nowrap font-bold"
+							mt-1 capitalize whitespace-nowrap font-bold"
 						>
 							Super Deal
 						</span>
