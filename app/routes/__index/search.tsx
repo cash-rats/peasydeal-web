@@ -13,7 +13,6 @@ import PageTitle from '~/components/PageTitle';
 
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
 import { searchProducts } from './api';
-import productListStyles from './styles/ProductList.css';
 import searchStyles from './styles/Search.css';
 
 export const links: LinksFunction = () => {
@@ -21,7 +20,6 @@ export const links: LinksFunction = () => {
     ...LoadMoreLinks(),
     ...ProductRowsContainerLinks(),
     ...CssSpinnerLinks(),
-    { rel: 'stylesheet', href: productListStyles },
     { rel: 'stylesheet', href: searchStyles },
   ];
 };

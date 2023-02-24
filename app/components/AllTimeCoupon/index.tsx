@@ -1,62 +1,47 @@
-import type { LinksFunction } from '@remix-run/node';
-
-import styles from './styles/AllTimeCoupon.css';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
+import { Link } from '@remix-run/react';
+import ImageSuperDealDiscount from './ImageSuperDealDiscount';
+import ImageGrandOpeningDiscount from './ImageGrandOpeningDiscount';
+import ImageCategoryExtraDiscount from './ImageCategoryExtraDiscount';
 
 const AllTimeCoupon = () => {
   return (
-    <div className="flex py-4">
-      <div className="flex flex-1 justify-center items-center gap-8">
-        <div className="flex flex-col min-w-[150px]">
-          <span className="flex w-fit self-center justify-center px-3 py-1 items-center rounded-2xl font-medium bg-[#EA4335] text-white">Extra</span>
-          <div className="relative flex justify-center">
-            <span className="text-[48px] font-poppins font-black">10%</span>
-            <span className="absolute right-[0%] top-[33%] font-black rotate-[-90deg]">OFF</span>
+    <div className="flex py-4 py bg-slate-50 justify-around w-full">
+      <div className="hidden md:flex flex-1 justify-center items-center gap-1 md:gap-8">
+        <Link to="/super_deal">
+          <div className="
+            flex flex-col
+            hover:scale-x-95
+            transition-transform duration-300 ease-in-out
+            cursor-pointer
+          ">
+            <ImageSuperDealDiscount name={'Super Deal Discount'} />
           </div>
-          <div className="flex flex-col text-center w-full self-center bg-[#D02E7D] font-black text-2xl p-3 rounded text-white">
-            <h3>Super Deal</h3>
-          </div>
-        </div>
+        </Link>
 
-        <div className="flex flex-col min-w-[150px]">
-          <span className="flex w-fit self-center justify-center px-3 py-1 items-center rounded-2xl font-medium bg-[#EA4335] text-white">Up to</span>
-          <div className="relative flex justify-center">
-            <span className="text-[48px] font-poppins font-black">65%</span>
-            <span className="absolute right-[-4%] top-[33%] font-black rotate-[-90deg]">OFF</span>
-          </div>
-          <div className="flex flex-col text-center w-full self-center bg-[#D02E7D] font-black text-2xl p-3 rounded text-white">
-            <h3>ALL SITE</h3>
-          </div>
+        <div className="flex flex-col">
+          <ImageGrandOpeningDiscount name={'Grand Opening Discount'} />
         </div>
       </div>
 
-      <div className="flex flex-1 justify-center items-center gap-8">
-        <div className="flex flex-col min-w-[150px]">
-          <span className="flex w-fit self-center justify-center px-3 py-1 items-center rounded-2xl font-medium bg-[#EA4335] text-white">Extra</span>
-          <div className="relative flex justify-center">
-            <span className="text-[48px] font-poppins font-black">10%</span>
-            <span className="absolute right-[0%] top-[33%] font-black rotate-[-90deg]">OFF</span>
-          </div>
-          <div className="flex flex-col text-center w-full self-center bg-[#D02E7D] font-black text-2xl p-3 rounded text-white">
-            <h3>Super Deal</h3>
-          </div>
+      <div className="hidden md:flex flex-1 justify-center items-center">
+        <div className="flex flex-col">
+          <ImageCategoryExtraDiscount name={'Category Extra Discount'} />
         </div>
+      </div>
 
-        <div className="flex flex-col min-w-[150px]">
-          <span className="flex w-fit self-center justify-center px-3 py-1 items-center rounded-2xl font-medium bg-[#EA4335] text-white">Up to</span>
-          <div className="relative flex justify-center">
-            <span className="text-[48px] font-poppins font-black">65%</span>
-            <span className="absolute right-[-4%] top-[33%] font-black rotate-[-90deg]">OFF</span>
-          </div>
-          <div className="flex flex-col text-center w-full self-center bg-[#D02E7D] font-black text-2xl p-3 rounded text-white">
-            <h3>ALL SITE</h3>
-          </div>
-        </div>
+      <div className='md:hidden grid grid-cols-2 gap-1 mt-[2px]'>
+        <Link
+          to="/super_deal"
+          className='hover:scale-x-95
+            transition-transform duration-300 ease-in-out
+            cursor-pointer
+          '>
+          <ImageSuperDealDiscount name={'Super Deal Discount'} />
+        </Link>
+        <ImageGrandOpeningDiscount name={'Grand Opening Discount'} />
+      </div>
+      <div className='md:hidden flex justify-center ml-1'>
+        <ImageCategoryExtraDiscount name={'Category Extra Discount'} />
       </div>
     </div>
   );

@@ -1,44 +1,55 @@
-import { useState, useEffect, useRef } from 'react';
+import { useRef, memo } from 'react';
 import { Link, } from '@remix-run/react';
-import { useLocation } from '@remix-run/react';
+import type { LinksFunction } from '@remix-run/node';
 import { FiMenu } from 'react-icons/fi';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
   IconButton,
+  Drawer,
+  DrawerBody,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  useDisclosure,
+  Box,
 } from '@chakra-ui/react';
 
 import type { Category } from '~/shared/types';
 
 import PeasyDeal from './images/peasydeal_logo.svg';
+import type { IMegaMenuContent} from '../MegaMenuContent';
+import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
 
 interface LogoBarProps {
   categories?: Category[];
 }
 
+export const links: LinksFunction = () => {
+  return [
+    ...MegaMenuContentLink(),
+  ];
+}
+
+const MegaMemo = memo(({
+  categories,
+  onClose,
+  ItemNode,
+}: IMegaMenuContent) => {
+  return (
+    <MegaMenuContent
+      categories={categories}
+      onClose={onClose}
+      ItemNode={ItemNode}
+    />
+  );
+});
+
+MegaMemo.displayName = 'MegaMenuContent';
+
 function LogoBar({ categories = [] }: LogoBarProps) {
-  const [openMenu, setOpenMenu] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef(null);
-  const location = useLocation();
 
-  const handleOpenMenu = () => {
-    setOpenMenu(true);
-  }
-  const handleCloseMenu = () => {
-    setOpenMenu(false);
-  }
 
-  useEffect(() => {
-    return () => setOpenMenu(false)
-  }, [])
-
-  useEffect(() => {
-    setOpenMenu(false);
-  }, [location])
 
   return (
     <div className="flex items-center mr-4 my-auto relative">
@@ -46,45 +57,29 @@ function LogoBar({ categories = [] }: LogoBarProps) {
         <div className="block md:hidden">
           <IconButton
             aria-label='Open Category Menu'
-            icon={<FiMenu className="text-2xl" color='#e6007e' />}
-            onClick={handleOpenMenu}
+            icon={<FiMenu className="text-[34px] pr-1 md:p-[inherit] md:text-2xl" color='#e6007e' />}
+            onClick={onOpen}
             bg="white"
           />
 
-          <Modal
-            onClose={handleCloseMenu}
+          <Drawer
+            isOpen={isOpen}
+            onClose={onClose}
             finalFocusRef={btnRef}
-            isOpen={openMenu}
-            scrollBehavior="inside"
-            size="full"
+            placement="left"
           >
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Shop By Category</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody>
-                <div>
-                  <ul>
-                    {
-                      categories.map((category) => {
-                        return (
-                          <Link
-                            // prefetch='intent'
-                            key={category.catId}
-                            to={`/${category.name}`}
-                          >
-                            <li className="py-3 px-4 cursor-pointer hover:bg-gray-hover-bg">
-                              {category.title}
-                            </li>
-                          </Link>
-                        )
-                      })
-                    }
-                  </ul>
-                </div>
-              </ModalBody>
-            </ModalContent>
-          </Modal>
+            <DrawerOverlay />
+            <DrawerContent>
+              <DrawerCloseButton />
+              <DrawerBody className='py-6 px-0'>
+                <MegaMemo
+                  categories={categories}
+                  onClose={onClose}
+                  ItemNode={Box}
+                />
+              </DrawerBody>
+            </DrawerContent>
+          </Drawer>
         </div>
       </div>
 
@@ -92,6 +87,8 @@ function LogoBar({ categories = [] }: LogoBarProps) {
         leading-[20px]
         left-10 top-[10px]
         flex items-center
+        scale-110 md:scale-1
+        ml-[4px] md:ml-0
       ">
         <picture>
           <source type="image/svg+xml" srcSet={PeasyDeal} />

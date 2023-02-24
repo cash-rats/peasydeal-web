@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import type { LoaderFunction, LinksFunction } from "@remix-run/node";
+import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useCatch } from "@remix-run/react";
 import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from 'react-lazy-load-image-component';
@@ -14,23 +14,14 @@ import FiveHundredError from "~/components/FiveHundreError";
 
 import { fetchLandingPageFeatureProducts } from "./api";
 
-import styles from "./styles/ProductList.css";
-import CategoriesRow, { links as CategoriesRowLinks } from "~/components/CategoriesRow";
+import CategoriesRow from "~/components/CategoriesRow";
 import PromoActivitiesVariant from "~/components/PromoActivitiesVariant";
-import AllTimeCoupon, { links as AllTimeCouponLinks } from "~/components/AllTimeCoupon";
+import AllTimeCoupon from "~/components/AllTimeCoupon";
 
 type LoaderDataType = {
 	categoryPreviews: TCategoryPreview[],
 	promotions: TPromotionType[],
 	canonical_link: string;
-}
-
-export const links: LinksFunction = () => {
-	return [
-		...CategoriesRowLinks(),
-		...AllTimeCouponLinks(),
-		{ rel: 'stylesheet', href: styles },
-	]
 }
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
@@ -108,11 +99,11 @@ function Index({ scrollPosition, categories }: IndexProps) {
 				justify-center items-center
 				mx-2 md:mx-4
 			">
-				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-					<PromoActivities promotions={promotions} />
+				<div className="w-full py-0 md:py-2.5 max-w-screen-xl mx-auto">
+					<AllTimeCoupon />
 				</div>
 			</div>
-
+			
 			<div className="
 				py-0 px-auto
 				flex flex-col
@@ -120,7 +111,7 @@ function Index({ scrollPosition, categories }: IndexProps) {
 				mx-2 md:mx-4
 			">
 				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-					<AllTimeCoupon />
+					<PromoActivities promotions={promotions} />
 				</div>
 			</div>
 

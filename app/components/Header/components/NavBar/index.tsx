@@ -2,7 +2,6 @@ import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { FiShoppingCart } from 'react-icons/fi';
 import { RiTruckLine } from 'react-icons/ri';
-import { VscFlame } from "react-icons/vsc";
 import { IoPricetagsOutline } from "react-icons/io5"
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
@@ -53,7 +52,6 @@ function NavBar({ cartItemCount = 0 }: NavBarProps) {
 									value={cartItemCount}
 								/>
 							</div>
-
 						)
 					}
 					{/* TODO this isn't the right way to have ripple effect */}

@@ -1,0 +1,15 @@
+.CategoriesNav__item {
+  background-image: linear-gradient(#D02E7D, #D02E7D);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  transition: background-size 0.2s;
+}
+.CategoriesNav__item:hover {
+  background-size: 100% 2px;
+}
+
+.fromLeft {
+  background-position: 0 calc(100% - 0px);
+}
+
+/*# sourceMappingURL=MegaMenuContent.css.map */

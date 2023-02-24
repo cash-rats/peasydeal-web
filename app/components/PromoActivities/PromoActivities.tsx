@@ -1,7 +1,7 @@
 import { Link } from '@remix-run/react';
 import type { TPromotionType } from '~/shared/types';
 
-import ImageBannerTopSales from './ImageBannerTopSales';
+import ImageBannerSuperDeal from './ImageBannerSuperDeal';
 import ImageBannerDealUnder15 from './ImageBannerDealUnder15';
 import ImageBannerLatestNewDeal from './ImageBannerLatestNewDeal';
 import ImageBannerLaunchSales from './ImageBannerLaunchSales';
@@ -13,7 +13,7 @@ interface IPromoActivities {
 const getImageBanner = (name: string) => {
   switch (name) {
     case 'top_sales':
-      return <ImageBannerTopSales name={name} />;
+      return <ImageBannerSuperDeal name={name} />;
     case 'deal_under_15':
       return <ImageBannerDealUnder15 name={name} />;
     case 'new_arrival':
