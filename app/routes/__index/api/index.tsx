@@ -143,13 +143,21 @@ const normalizeSearchProduct = (apiData: any[]): Product[] => {
 	return transformed;
 }
 
+// -------------- Search Products --------------
+export interface SearchProductResponse {
+	products: Product[];
+	total: number;
+	current: number;
+	has_more: boolean;
+};
+
 export interface SearchProductsParams {
 	query: string;
 	perpage?: number;
 	page?: number;
 };
 
-export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchProductsParams) => {
+export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchProductsParams): Promise<SearchProductResponse> => {
 	const url = new URL(PEASY_DEAL_ENDPOINT);
 	url.pathname = '/v1/products/search';
 	url.searchParams.append('query', query);
@@ -164,5 +172,10 @@ export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchPro
 		throw new Error(errResp.err_message);
 	}
 
-	return normalizeSearchProduct(respJSON.items);
+	return {
+		products: normalizeSearchProduct(respJSON.items),
+		total: respJSON.total,
+		current: respJSON.current,
+		has_more: respJSON.has_more,
+	}
 }

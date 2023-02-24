@@ -1,25 +1,24 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useReducer } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
+import { trackWindowScroll } from "react-lazy-load-image-component";
+import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { useCatch, useLoaderData, useFetcher } from '@remix-run/react';
 
 import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from '~/shared/types';
-import LoadMore, { links as LoadMoreLinks } from '~/components/LoadMore';
-import CssSpinner, { links as CssSpinnerLinks } from '~/components/CssSpinner';
-import LoadMoreButton from '~/components/LoadMoreButton';
+import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import PageTitle from '~/components/PageTitle';
 
-import ProductRowsContainer, { links as ProductRowsContainerLinks } from './components/ProductRowsContainer';
-import { searchProducts } from './api';
-import searchStyles from './styles/Search.css';
+import reducer, { SearchActionType } from './reducer';
+import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
+import { searchProducts } from '../api';
+import searchStyles from '../styles/Search.css';
 
 export const links: LinksFunction = () => {
   return [
-    ...LoadMoreLinks(),
     ...ProductRowsContainerLinks(),
-    ...CssSpinnerLinks(),
     { rel: 'stylesheet', href: searchStyles },
   ];
 };
@@ -28,6 +27,8 @@ type LoaderType = {
   products: Product[];
   query: string;
   page: number;
+  total: number;
+  current: number;
   has_more: boolean;
 };
 
@@ -40,7 +41,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw json('no query provided', httpStatus.BAD_REQUEST);
   }
 
-  const products = await searchProducts({
+  const { products, total, current, has_more } = await searchProducts({
     query: search,
     perpage: PAGE_LIMIT,
     page,
@@ -54,15 +55,16 @@ export const loader: LoaderFunction = async ({ request }) => {
     products,
     query: search,
     page,
-    has_more: products.length === PAGE_LIMIT,
+    total,
+    current,
+    has_more,
   });
 }
-
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
-  return redirect(`/search?query=${formObj['query']}`);
+  return redirect(`/search?query=${formObj['query']}&page=${formObj['page']}`);
 }
 
 // TODO: more design
@@ -85,42 +87,62 @@ export const CatchBoundary = () => {
   }
 
   return (
-    <div>
-      some error
-    </div>
+    <div></div>
   )
 }
+
+type TSearch = {} & LazyComponentProps;
 
 // TODOs:
 //   - Need to add breadcrumbs navigation bar.
 //   - No result page.
-export default function Search() {
+function Search({ scrollPosition }: TSearch) {
   const loaderData = useLoaderData<LoaderType>();
+  const [state, dispatch] = useReducer(reducer, {
+    products: loaderData.products,
+    query: loaderData.query,
+    page: 1,
+    total: loaderData.total,
+    current: loaderData.current,
+  });
 
-  const currPageRef = useRef(loaderData.page);
+  const currPageRef = useRef(state.page);
   const loadMoreFetcher = useFetcher();
-  const [products, setProducts] = useState<Product[]>(loaderData.products);
-  const [hasMore, setHasMore] = useState(loaderData.has_more);
-
 
   // Update product rows when user searches different item. When user stays on `/search` page and searches again,
   // the component does not get rerendered (since we stay on the same page). Thus, we need to update product_rows
   // state when we get new search results from loader.
   useEffect(() => {
-    setProducts(products)
-  }, [products]);
+    dispatch({
+      type: SearchActionType.set_products,
+      payload: {
+        products: loaderData.products,
+        query: loaderData.query,
+        page: 1,
+        total: loaderData.total,
+        current: loaderData.current,
+      },
+    });
+  }, [loaderData.query]);
 
   useEffect(() => {
     if (loadMoreFetcher.type === 'done') {
-      const { products, has_more } = loadMoreFetcher.data as LoaderType;
+      const { products, current } = loadMoreFetcher.data as LoaderType;
 
-      if (products.length > 0) {
-        currPageRef.current += 1;
-      }
+      if (products.length === 0) return;
 
-      setHasMore(has_more);
+      const newPage = currPageRef.current + 1;
 
-      setProducts(prev => prev.concat(products));
+      dispatch({
+        type: SearchActionType.append_products,
+        payload: {
+          products,
+          page: newPage,
+          current,
+        },
+      })
+
+      currPageRef.current = newPage;
     }
   }, [loadMoreFetcher]);
 
@@ -136,13 +158,9 @@ export default function Search() {
         query: loaderData.query,
         page: nextPage.toString()
       },
-      { action: '/search' }
+      { action: '/search?index' },
     );
   };
-
-  const handleManualLoad = () => {
-    loadMoreFetcher.load(`/?index&page=${currPageRef.current}&per_page=${PAGE_LIMIT}`);
-  }
 
   return (
     <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">
@@ -152,32 +170,19 @@ export default function Search() {
 
       <div className="pt-8">
         <ProductRowsContainer
-          products={products}
+          products={state.products}
           onClickProduct={handleClickProduct}
+          scrollPosition={scrollPosition}
         />
       </div>
 
-      <loadMoreFetcher.Form>
-        <div className="ProductList__loadmore-container">
-          {
-            hasMore
-              ? (
-                <LoadMore
-                  spinner={<CssSpinner scheme='spinner' />}
-                  loading={loadMoreFetcher.state !== 'idle'}
-                  callback={handleLoadMore}
-                  delay={100}
-                  offset={150}
-                />
-              )
-              : <LoadMoreButton
-                loading={loadMoreFetcher.state !== 'idle'}
-                onClick={handleManualLoad}
-                text='Load more'
-              />
-          }
-        </div>
-      </loadMoreFetcher.Form>
+      <LoadMoreButtonProgressBar
+        loading={loadMoreFetcher.state !== 'idle'}
+        current={state.current}
+        total={state.total}
+        onClickLoadMore={handleLoadMore}
+      />
     </div>
   )
 }
+export default trackWindowScroll(Search);

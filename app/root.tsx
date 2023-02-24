@@ -161,7 +161,7 @@ const Document = withEmotionCache(
       //     document.head.removeChild(gtmScript)
       //   }
       // }
-    }, [envData.GOOGLE_TAG_ID]);
+    }, [envData?.GOOGLE_TAG_ID]);
 
     return (
       <html lang="en">
