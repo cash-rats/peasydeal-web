@@ -103,7 +103,7 @@ function Index({ scrollPosition, categories }: IndexProps) {
 					<AllTimeCoupon />
 				</div>
 			</div>
-			
+
 			<div className="
 				py-0 px-auto
 				flex flex-col

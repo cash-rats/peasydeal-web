@@ -5,7 +5,7 @@ import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
-
+import { FcHighPriority } from 'react-icons/fc';
 import { commitSession } from '~/sessions/sessions';
 import { getCart, removeItem as sessionRemoveItem, updateCart, CartSessionKey } from '~/sessions/shoppingcart.session';
 import {
@@ -28,6 +28,8 @@ import PriceResult from './components/PriceResult';
 import { fetchPriceInfo, convertShoppingCartToPriceQuery } from './cart.server';
 import type { PriceInfo } from './cart.server';
 import styles from './styles/cart.css';
+import sslCheckout from './images/SSL-Secure-Connection.png';
+import PaymentMethods from '~/components/PaymentMethods';
 
 export const links: LinksFunction = () => {
 	return [
@@ -37,6 +39,8 @@ export const links: LinksFunction = () => {
 		{ rel: 'stylesheet', href: styles },
 	];
 };
+
+const FREE_SHIPPING = 19.99;
 
 type __action_type =
 	| 'remove_cart_item'
@@ -514,127 +518,189 @@ function Cart() {
 				onResult={handleRemoveItemResult}
 			/>
 
-			<section className="shopping-cart-section">
-				{/* <input type='hidden' name="recoverable-product-id" value= /> */}
-				<div className="shopping-cart-container">
-					{/* top bar, display back button and title */}
-					<div className="shopping-cart_topbar">
-						<h1 className="title">
-							Shopping Cart
+			<section className="
+				py-0 px-auto
+				flex flex-col
+				justify-center items-center
+				mx-2 md:mx-4
+				mb-8
+				bg-[#F7F8FA]
+			">
+				{
+					state.priceInfo && state.priceInfo?.sub_total <= FREE_SHIPPING
+						? (
+							<div className="
+								w-full py-2.5 max-w-screen-xl mx-auto
+								capitalized
+								text-lg font-poppins nowrap
+								flex
+								items-center
+								bg-white
+								p-4
+								rounded-lg border-[2px] border-[#fc1d7a]
+							">
+								<FcHighPriority fontSize={24} className='w-[36px] mr-4' />
+								<span>
+									<b className='text-[#fc1d7a] font-poppins font-bold'>Wait!</b>
+									{` Spend £${Number(FREE_SHIPPING - state.priceInfo?.sub_total).toFixed(2)} more to get free shipping`}
+								</span>
+							</div>
+						) : null
+				}
+				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
+					<div className="flex flex-col">
+						<h1 className="
+							font-poppins font-semibold
+							text-xl md:text-3xl
+							mt-6 md:mt-8
+							mb-2 md:mb-3
+							flex
+							items-center
+							relative
+						">
+							<span>Shopping Cart</span>
+							<div className="block w-[1px] h-[25px] bg-[#757575] mx-2 md:mx-4" />
+							<span className="
+								items-center
+								font-poppins font-normal
+								text-xl md:text-2xl
+							">
+								{
+									Object.keys(state.cartItems).length > 0 && (
+										<>
+											{Object.keys(state.cartItems).length} {Object.keys(state.cartItems).length > 1 ? 'items' : 'item'}
+										</>
+									)
+								}
+							</span>
+							<img
+								src={sslCheckout}
+								alt="secure checkout with SSL protection"
+								className='h-[42px] md:h-[48px] ml-auto right-0 absolute'
+							/>
 						</h1>
 
-						{
-							Object.keys(state.cartItems).length > 0 && (
-								<h1 className="count">
-									(
-									{Object.keys(state.cartItems).length} &nbsp;
-									{Object.keys(state.cartItems).length > 1 ? 'items' : 'item'}
+						{/* title row */}
+						<div className='flex flex-col md:grid grid-cols-3 gap-4 mt-2 md:mt-6'>
+							<div className='col-span-2'>
+								<div className="
+									w-full h-height
+									capitalized
+									text-lg font-poppins nowrap
+									ml-auto items-center
+									bg-white
+									p-4
+									hidden md:grid grid-cols-12 gap-4
+								">
+									<span className="col-span-6 font-medium">
+										Item
+									</span>
+
+									<span className="col-span-2 text-right font-medium">
+										Price
+									</span>
+
+									<span className="col-span-2 text-right font-medium">
+										Quantity
+									</span>
+
+									<span className="col-span-2 text-right font-medium">
+										Total
+									</span>
+
+								</div>
+								{
+									// TODO: add typescript to item.
+									Object.keys(state.cartItems).map((prodID) => {
+										const item = state.cartItems[prodID];
+										const variationUUID = item.variationUUID;
+
+										const isCalculating = (
+											updateItemQuantityFetcher.state !== 'idle' &&
+											updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
+
+										) || (
+												removeItemFetcher.state !== 'idle' &&
+												removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
+											)
+
+										return (
+											<CartItem
+												item={{
+													variationUUID,
+													image: item.image,
+													title: item.title,
+													description: item.specName,
+													salePrice: Number(item.salePrice),
+													retailPrice: Number(item.retailPrice),
+													quantity: Number(item.quantity),
+													purchaseLimit: Number(item.purchaseLimit),
+												}}
+												calculating={isCalculating}
+												key={variationUUID}
+												onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
+												onChangeQuantity={(evt, number) => handleOnChangeQuantity(evt, variationUUID, number)}
+												onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}
+												onClickRemove={handleRemove}
+											/>
+										)
+									})
+								}
+							</div>
+
+							<div className='flex flex-col'>
+								{
+									state.priceInfo && (
+										<PriceResult
+											onApplyPromoCode={handleClickApplyPromoCode}
+											appliedPromoCode={promoCode}
+											priceInfo={state.priceInfo}
+											calculating={
+												updateItemQuantityFetcher.state !== 'idle' ||
+												removeItemFetcher.state !== 'idle' ||
+												applyPromoCodeFetcher.state !== 'idle'
+											}
+										/>
 									)
-								</h1>
-							)
-						}
-
-					</div>
-
-					{/* title row */}
-					<div className="Cart__title-row">
-
-						<div className="Cart__title-row-top" >
-							<div className="Cart__title-row-stuff" />
-
-							<h2 className="Cart__title-row-prodname">
-								Product Name
-							</h2>
-
+								}
+								<div className='bg-white p-4 mt-4 gap-4'>
+									<h3 className='text-center font-bold'>100% Secure Payment with</h3>
+									<PaymentMethods />
+								</div>
+							</div>
 						</div>
 
-						<div className="Cart__title-row-bottom">
-							<h2 className="Cart__title-row-unitprice">
-								Unit Price
-							</h2>
-
-							<h2 className="Cart__title-row-quantity">
-								Quantity
-							</h2>
-
-							<h2 className="Cart__title-row-subtotal">
-								Subtotal
-							</h2>
-						</div>
-
-					</div>
-
-					<div className="cart-items-container">
-						{
-							// TODO: add typescript to item.
-							Object.keys(state.cartItems).map((prodID) => {
-								const item = state.cartItems[prodID];
-								const variationUUID = item.variationUUID;
-
-								const isCalculating = (
-									updateItemQuantityFetcher.state !== 'idle' &&
-									updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
-
-								) || (
-										removeItemFetcher.state !== 'idle' &&
-										removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
-									)
-
-								return (
-									<CartItem
-										item={{
-											variationUUID,
-											image: item.image,
-											title: item.title,
-											description: item.specName,
-											salePrice: Number(item.salePrice),
-											retailPrice: Number(item.retailPrice),
-											quantity: Number(item.quantity),
-											purchaseLimit: Number(item.purchaseLimit),
-										}}
-										calculating={isCalculating}
-										key={variationUUID}
-										onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
-										onChangeQuantity={(evt, number) => handleOnChangeQuantity(evt, variationUUID, number)}
-										onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}
-										onClickRemove={handleRemove}
-									/>
-								)
-							})
-						}
-
-						{
-							state.priceInfo && (
-								<PriceResult
-									onApplyPromoCode={handleClickApplyPromoCode}
-									appliedPromoCode={promoCode}
-									priceInfo={state.priceInfo}
-									calculating={
-										updateItemQuantityFetcher.state !== 'idle' ||
-										removeItemFetcher.state !== 'idle' ||
-										applyPromoCodeFetcher.state !== 'idle'
-									}
-								/>
-							)
-						}
 					</div>
 				</div>
+			</section>
 
-				{/* Recommended products - top items */}
-				{/* @TODO catID should not be hardcoded here */}
-				<HorizontalProductsLayout
-					catID={1}
-					title='top items'
-					seeAllLinkTo='/Hot Deal'
-				/>
+			<section className="
+				py-0 px-auto
+				flex flex-col
+				justify-center items-center
+				px-2 md:px-4
+				bg-white
+			">
+				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
+					{/* <input type='hidden' name="recoverable-product-id" value= /> */}
 
-				{/* Recommended products - new trend */}
-				{/* @TODO catID should not be hardcoded here */}
-				<HorizontalProductsLayout
-					catID={2}
-					title='new trend'
-					seeAllLinkTo='/New Trend'
-				/>
+
+					{/* Recommended products - top items */}
+					{/* @TODO catID should not be hardcoded here */}
+					<HorizontalProductsLayout
+						catID={1}
+						title='top items'
+						seeAllLinkTo='/Hot Deal'
+					/>
+
+					{/* Recommended products - new trend */}
+					{/* @TODO catID should not be hardcoded here */}
+					<HorizontalProductsLayout
+						catID={2}
+						title='new trend'
+						seeAllLinkTo='/New Trend'
+					/>
+				</div>
 			</section>
 		</>
 	);

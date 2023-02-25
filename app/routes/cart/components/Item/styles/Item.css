@@ -2,8 +2,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 15px;
-  padding: 1.875rem;
   background-color: white;
 }
 @media (min-width: 768px) {

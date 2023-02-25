@@ -3,8 +3,7 @@ import type { ChangeEvent } from 'react';
 import { Link } from '@remix-run/react';
 import { BsBagCheck } from 'react-icons/bs';
 import Skeleton from '@mui/material/Skeleton';
-import ClipLoader from "react-spinners/ClipLoader";
-import RoundButton from '~/components/RoundButton';
+import { Input, Button } from '@chakra-ui/react'
 
 import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../cart.server';
@@ -22,6 +21,81 @@ type PriceResultProps = {
   onChangePromoCode?: (code: string) => void;
   onApplyPromoCode?: (code: string) => void;
 };
+
+interface IPromoCodeBox {
+  promoCode: string;
+  handleChange: (evt: ChangeEvent<HTMLInputElement>) => void;
+  handleApplyPromoCode: () => void;
+  calculating: boolean;
+  error: string;
+  appliedPromoCode: string;
+  discountCodeValid: boolean;
+}
+const PromoCodeBox = ({
+  promoCode,
+  handleChange,
+  handleApplyPromoCode,
+  calculating,
+  error,
+  appliedPromoCode,
+  discountCodeValid,
+}: IPromoCodeBox) => {
+  return (
+    <>
+      <h2 className='text-lg font-medium mb-2'>
+        <span className="capitalize font-semibold">
+          promo code
+        </span> &nbsp;
+        <span className="font-semibold">
+          (optional)
+        </span>
+      </h2>
+
+      {/* promo input */}
+      <div className="w-full flex flex-col">
+        <Input
+          placeholder='Promo code'
+          size='lg'
+          value={promoCode}
+          onChange={handleChange}
+        />
+
+        <div className="mt-4 ml-auto">
+          <Button
+            colorScheme='twitter'
+            variant='outline'
+            onClick={handleApplyPromoCode}
+            isLoading={calculating}
+            loadingText='Checking...'
+          >
+            Apply promo code
+          </Button>
+        </div>
+
+        {/* invalid promo code message */}
+        {
+          error && (
+            <div className="mt-[10px] h-10">
+              <p className="text-[#b21111] font-normal text-base">
+                {error}
+              </p>
+            </div>
+          )
+        }
+
+        {
+          discountCodeValid && (
+            <div className="mt-[10px] h-10">
+              <p className="text-[#00af32] font-normal text-base">
+                The promo code <span className="font-semibold">{appliedPromoCode}</span> was successfully applied.
+              </p>
+            </div>
+          )
+        }
+      </div>
+    </>
+  );
+}
 
 /*
   - [x] Apply promo code button loading state.
@@ -69,101 +143,32 @@ export default function PriceResult({
   };
 
   return (
-    <div className="m-5 flex">
-
-      {/* left */}
-      <div className="w-0 576:w-[60%]" />
-
+    <div className="p-4 md:p-6 bg-white">
       {/* right */}
-      <div className="w-full 576:w-[40%] flex flex-col gap-[7px]">
-        <div className="flex flex-col gap-2">
-          <h2>
-            <span className="capitalize font-semibold">
-              promo code
-            </span> &nbsp;
-            <span className="font-semibold">
-              (optional)
-            </span>
-          </h2>
-
-          {/* promo input */}
-          <div className="w-full flex flex-col">
-            <input
-              type="text"
-              className='text-left appearance-none bg-white
-              border-t-0 border-b-0 border-l-[1px] border-r-[1px]
-              border-solid border-[#d9d9d9] rounded-[3px]
-              box-border text-base h-8 m-0 py-2 px-4 align-middle
-              w-full focus:bg-[rgba(0, 102, 255, .5)] shadow-dropdown
-              flex-1
-            '
-              placeholder='Promo code'
-              name='promote_code'
-              value={promoCode}
-              onChange={handleChange}
-            />
-
-            <div className="mt-4">
-              <button
-                className='flex-1 mt-[10x] mx-0 mb-0
-                bg-[#6750b7] shadow-button
-                text-base h-[50px] w-full text-white
-                inline-flex items-center justify-center
-                border-none py-2 px-[35px]
-                relative whitespace-nowrap box-border
-                cursor-pointer rounded-[4px]
-                transition-all duration-200
-                hover:shadow-button-hover
-              '
-                onClick={handleApplyPromoCode}
-                disabled={calculating}
-              >
-                <span className="
-                  flex justify-center items-center
-                  relative w-full
-                "
-                >
-                  <span className="capitalize font-medium">
-                    apply promo code
-                  </span>
-                  {
-                    calculating && (
-                      <span className="absolute right-0 top-0">
-                        <ClipLoader size={24} color="#fff" />
-                      </span>
-                    )
-                  }
-                </span>
-              </button>
-            </div>
-
-            {/* invalid promo code message */}
-            <div className="mt-[10px] h-10">
-              <p className="text-[#b21111] font-normal text-base">
-                {error}
-              </p>
-
-              {
-                !error &&
-                appliedPromoCode &&
-                priceInfo.discount_code_valid && (
-                  <p className="text-[#00af32] font-normal text-base">
-                    The promo code <span className="font-semibold">{appliedPromoCode}</span> was successfully applied.
-                  </p>
-                )
-              }
-            </div>
-          </div>
-        </div>
+      <div className="w-full">
+        <PromoCodeBox
+          promoCode={promoCode}
+          handleChange={handleChange}
+          handleApplyPromoCode={handleApplyPromoCode}
+          calculating={calculating}
+          error={error}
+          appliedPromoCode={appliedPromoCode}
+          discountCodeValid={!!(
+            !error && appliedPromoCode && priceInfo.discount_code_valid
+          )}
+        />
 
         <h2 className="
             text-xl font-bold
-            pt-6 px-0 w-full pb-4 mb-4
-            border-b-[1px] border-b-solid border-[#ccc]
+            pt-6 px-0 w-full mb-4
           "
         >
           Summary
         </h2>
+
+        <div className="py-3">
+          <hr className="my-1 h-[1px] w-full bg-slate-50" />
+        </div>
         <ResultRow
           label="Items"
           value={
@@ -253,9 +258,13 @@ export default function PriceResult({
           }
         />
 
+        <div className="py-3">
+          <hr className="my-1 h-[1px] w-full bg-slate-50" />
+        </div>
+
         <div className="mt-[0.7rem]">
           <ResultRow
-            label={<strong>Total</strong>}
+            label={<strong>Total to pay</strong>}
             value={
               <strong>
                 {
@@ -274,15 +283,26 @@ export default function PriceResult({
           />
         </div>
 
-        <div className="mt-[30px] flex justify-end">
+        <div className="mt-[30px] flex flex-col justify-center">
           <Link to="/checkout" >
-            <RoundButton
-              size='large'
-              colorScheme='checkout'
+            <Button
+              size='md'
+              height='48px'
+              width='100%'
+              border='2px'
+              colorScheme='yellow'
+              borderColor='yellow.500'
               leftIcon={<BsBagCheck fontSize={22} />}
+              className="font-bold font-poppins mb-2"
             >
-              <b>Proceed Checkout</b>
-            </RoundButton>
+              Continue to checkout
+            </Button>
+          </Link>
+
+          <Link to="/">
+            <Button colorScheme='teal' variant='ghost' className='w-full'>
+              Continue shopping
+            </Button>
           </Link>
         </div>
       </div>

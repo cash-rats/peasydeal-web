@@ -1,7 +1,14 @@
 import { useRef, useState } from 'react';
 import type { ChangeEvent, MouseEvent, FocusEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
-
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button,
+} from '@chakra-ui/react'
+import { VscChevronDown } from "react-icons/vsc";
 import useBodyClick from '~/hooks/useBodyClick';
 
 import styles from './styles/QuantityDropDown.css';
@@ -17,6 +24,7 @@ interface QuantityDropDownProps {
   onBlur?: (evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>, number: number) => void;
   onClickNumber?: (evt: MouseEvent<HTMLLIElement>, number: number) => void;
   disabled?: boolean;
+  purchaseLimit: number;
 }
 
 export default function QuantityDropDown({
@@ -26,10 +34,12 @@ export default function QuantityDropDown({
   onBlur = () => { },
   onClickNumber = () => { },
   disabled = false,
+  purchaseLimit = 10,
 }: QuantityDropDownProps) {
   const dropDownListRef = useRef<HTMLInputElement | null>(null);
   const [open, setOpen] = useState(false);
   const numArr = new Array(maxNum).fill(0).map((_, i) => i + 1);
+
   useBodyClick((evt: MouseEvent<HTMLBodyElement>) => {
     if (!dropDownListRef || !dropDownListRef.current) return;
 
@@ -38,34 +48,72 @@ export default function QuantityDropDown({
     }
   });
 
-  const handleFocus = () => {
-    setOpen(true);
-  }
+  // const handleFocus = () => {
+  //   setOpen(true);
+  // }
 
-  const handleOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    const quantity = Number(evt.target.value);
+  // const handleOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
+  //   const quantity = Number(evt.target.value);
+  //   if (isNaN(quantity)) return;
+  //   if (quantity === value) return;
+  //   onChange(evt, quantity);
+  // }
+
+  const handleSelection = (evt: ChangeEvent<HTMLSelectElement>, quantity: number) => {
     if (isNaN(quantity)) return;
-    onChange(evt, quantity);
+    if (quantity === value) return;
+    onClickNumber(evt, quantity);
   }
 
-  const handleOnBlur = (evt: FocusEvent<HTMLInputElement>) => {
-    const number = Number(evt.target.value);
-    if (isNaN(number)) return;
-    onBlur(evt, number);
-  }
+  // const handleOnBlur = (evt: FocusEvent<HTMLInputElement>) => {
+  //   const quantity = Number(evt.target.value);
+  //   if (isNaN(quantity)) return;
+  //   if (quantity === value) return;
+  //   onBlur(evt, quantity);
+  // }
 
-  const handleClickNumber = (evt: MouseEvent<HTMLLIElement>, number: number) => {
-    setOpen(false);
-    onClickNumber(evt, number);
+  // const handleClickNumber = (evt: MouseEvent<HTMLLIElement>, number: number) => {
+  //   setOpen(false);
+  //   onClickNumber(evt, number);
 
-    if (dropDownListRef && dropDownListRef.current) {
-      dropDownListRef.current.blur();
-    }
-  }
+  //   if (dropDownListRef && dropDownListRef.current) {
+  //     dropDownListRef.current.blur();
+  //   }
+  // }
 
   return (
-    <div ref={dropDownListRef} className="QuantityDropDown__wrapper">
-      <input
+    <div ref={dropDownListRef} className="">
+      <Menu
+        isLazy
+      >
+        <MenuButton
+          className="w-full bg-white"
+          as={Button} rightIcon={<VscChevronDown />}
+          transition='all 0.2s'
+          borderRadius='md'
+          borderWidth='1px'
+          _focus={{ boxShadow: 'outline' }}
+        >
+          { value }
+        </MenuButton>
+        <MenuList>
+          {
+            numArr.map((_, i) => (
+              <MenuItem
+                key={i + 1}
+                onClick={(evt) => {
+                  evt.stopPropagation();
+                  handleSelection(evt, i + 1);
+                }}
+              >
+                {i + 1}
+              </MenuItem>
+            ))
+          }
+        </MenuList>
+      </Menu>
+
+      {/* <input
         type="text"
         className="QuantityDropDown__text"
         maxLength={3}
@@ -98,7 +146,7 @@ export default function QuantityDropDown({
             }
           </ul>
         )
-      }
+      } */}
     </div>
   );
 }
