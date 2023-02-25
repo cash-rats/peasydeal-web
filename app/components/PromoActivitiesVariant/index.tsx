@@ -10,7 +10,7 @@ import { VscArrowRight } from "react-icons/vsc";
 const PromoActivitiesVariant = () => {
 
   const promotions = [{
-    to: '/super_deal',
+    to: '/promotion/super_deal',
     title1: 'Enjoy extra',
     title2: '10% OFF',
     label: 'Super Deal'
