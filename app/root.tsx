@@ -158,7 +158,7 @@ const Document = withEmotionCache(
         document.head.appendChild(gtmScript)
 
         return () => {
-          document.head.removeChild(gtmScript)
+          // document.head.removeChild(gtmScript)
         }
       }
     }, [envData?.GOOGLE_TAG_ID]);
