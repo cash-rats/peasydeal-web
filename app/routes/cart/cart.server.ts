@@ -11,7 +11,17 @@ export type PriceQuery = {
 export type FetchPriceInfoParams = {
   discount_code?: string
   products: PriceQuery[];
-}
+};
+
+export type PurchasedProduct = {
+  quantity: number,
+  variation_uuid: string,
+  origin_unit_price: number,
+  discounted_price: number,
+  discount_reason: string,
+  total_origin_price: number,
+  total_discounted_price: number,
+};
 
 export type PriceInfo = {
   sub_total: number;
@@ -22,9 +32,15 @@ export type PriceInfo = {
   currency: string;
   vat_included: boolean;
   discount_code_valid: boolean;
+  products: PurchasedProduct[];
   percentage_off_amount: number;
+
+  // Exract discount type to enums.
   discount_type: 'free_shipping' | 'price_off' | 'percentage_off';
-}
+
+  // Extract `applied_events` to enums.
+  applied_events: string[];
+};
 
 export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<PriceInfo> => {
   const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`, {
@@ -41,13 +57,26 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
     throw new Error(JSON.stringify(respJSON));
   }
 
-  const trfmPriceInfo = transformToPriceInfo(respJSON)
-  return trfmPriceInfo;
+  console.log('debug fetchPrice~~~', respJSON);
+
+  return respJSON as PriceInfo
 }
 
-const transformToPriceInfo = (json: any): PriceInfo => {
-  return { ...json, };
-}
+export interface CookieStorablePriceInfo extends Omit<PriceInfo, 'products'> { };
+
+export const extractPriceInfoToStoreInSession = (priceInfo: PriceInfo): CookieStorablePriceInfo => ({
+  sub_total: priceInfo.sub_total,
+  tax_amount: priceInfo.tax_amount,
+  shipping_fee: priceInfo.shipping_fee,
+  discount_amount: priceInfo.discount_amount,
+  total_amount: priceInfo.total_amount,
+  currency: priceInfo.currency,
+  vat_included: priceInfo.vat_included,
+  discount_code_valid: priceInfo.discount_code_valid,
+  discount_type: priceInfo.discount_type,
+  percentage_off_amount: priceInfo.percentage_off_amount,
+  applied_events: priceInfo.applied_events,
+});
 
 export const convertShoppingCartToPriceQuery = (cart: ShoppingCart): PriceQuery[] => {
   return Object.keys(cart).reduce((queries, variationUUID) => {

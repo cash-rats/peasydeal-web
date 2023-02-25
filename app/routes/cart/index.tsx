@@ -7,17 +7,16 @@ import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/n
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
 import { commitSession } from '~/sessions/sessions';
-import { getCart, removeItem as sessionRemoveItem, updateCart, CartSessionKey } from '~/sessions/shoppingcart.session';
+import { getCart } from '~/sessions/shoppingcart.session';
 import {
 	setTransactionObject,
 	resetTransactionObject,
-	sessionResetTransactionObject,
-	sessionSetTransactionObject,
 } from '~/sessions/transaction.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 import FiveHundredError from '~/components/FiveHundreError';
+import PaymentMethods from '~/components/PaymentMethods';
 
 import cartReducer, { CartActionTypes } from './reducer';
 import type { StateShape } from './reducer';
@@ -25,11 +24,20 @@ import CartItem, { links as ItemLinks } from './components/Item';
 import RemoveItemModal from './components/RemoveItemModal';
 import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
 import PriceResult from './components/PriceResult';
-import { fetchPriceInfo, convertShoppingCartToPriceQuery } from './cart.server';
+import {
+	fetchPriceInfo,
+	convertShoppingCartToPriceQuery,
+	extractPriceInfoToStoreInSession,
+} from './cart.server';
 import type { PriceInfo } from './cart.server';
 import styles from './styles/cart.css';
 import sslCheckout from './images/SSL-Secure-Connection.png';
-import PaymentMethods from '~/components/PaymentMethods';
+import {
+	applyPromoCode,
+	removeCartItemAction,
+	updateItemQuantity,
+} from './actions';
+import type { RemoveCartItemActionDataType, ApplyPromoCodeActionType } from './actions';
 
 export const links: LinksFunction = () => {
 	return [
@@ -54,134 +62,11 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 			return false;
 		}
 
-		// Prevent `apply_promo_code` action from triggering loader.
+		// Only allow `apply_promo_code` loader action to trigger loader.
 		return submission.formData.get('__action') !== 'apply_promo_code';
 	}
 
 	return true;
-}
-
-type RemoveCartItemActionDataType = {
-	cart_item_count: number,
-	price_info: PriceInfo | null,
-};
-
-const __removeCartItemAction = async (variationUUID: string, promoCode: string, request: Request) => {
-	const session = await sessionRemoveItem(request, variationUUID);
-	const cart = session.get(CartSessionKey);
-
-	// If we deleted the last item is the cart, we reset the price info
-	// by resetting `TransactionObject` in the session.
-	if (!cart || Object.keys(cart).length <= 0) {
-		return json<RemoveCartItemActionDataType>(
-			{
-				cart_item_count: 0,
-				price_info: null,
-			},
-			{
-				headers: {
-					"Set-Cookie": await commitSession(
-						await sessionResetTransactionObject(session),
-					),
-				}
-			},
-		);
-	}
-
-	try {
-		// Recalc price info.
-		const priceQuery = convertShoppingCartToPriceQuery(cart);
-		const priceInfo = await fetchPriceInfo({ products: priceQuery, discount_code: promoCode });
-
-		// `cart_item_count` tells frontend when to perform page refresh. When `cart_item_count`
-		// equals 0, frontend will trigger load of the current route which displays empty cart page.
-		return json(
-			{
-				cart_item_count: Object.keys(cart).length,
-				price_info: priceInfo,
-			},
-			{
-				headers: {
-					"Set-Cookie": await commitSession(
-						// Set new `TransactionObject` to session.
-						await sessionSetTransactionObject(session, {
-							promo_code: promoCode,
-							price_info: priceInfo,
-						}),
-					),
-				}
-			});
-	} catch (err) {
-		// TODO throw response display 500 page.
-		console.log('debug remove error', err);
-		return null
-	}
-}
-
-const __updateItemQuantity = async (request: Request, variationUUID: string, quantity: string, promoCode: string) => {
-	const cart = await getCart(request);
-	if (!cart || Object.keys(cart).length === 0) return null;
-	const item = cart[variationUUID]
-	if (!item) return null;
-	item.quantity = quantity;
-
-	const priceQuery = convertShoppingCartToPriceQuery(cart);
-	const priceInfo = await fetchPriceInfo({
-		products: priceQuery,
-		discount_code: promoCode,
-	});
-
-	// Update transaction object
-	const session = await sessionSetTransactionObject(
-		await updateCart(request, cart),
-		{
-			price_info: priceInfo,
-			promo_code: promoCode,
-		}
-	)
-
-	return json<PriceInfo>(priceInfo, {
-		headers: {
-			"Set-Cookie": await commitSession(session),
-		},
-	})
-}
-
-type ApplyPromoCodeActionType = {
-	discount_code: string;
-	price_info: PriceInfo;
-}
-
-const __applyPromoCode = async (request: Request, promoCode: string) => {
-	const cart = await getCart(request);
-	if (!cart || Object.keys(cart).length === 0) {
-		return new Response('not able to apply promo code with empty cart');
-	};
-
-	const priceQuery = convertShoppingCartToPriceQuery(cart);
-	const priceInfo = await fetchPriceInfo({
-		discount_code: promoCode,
-		products: priceQuery
-	});
-
-	// If promo code type is `free_shipping`, exempts shipping fee in `transaction.session`
-	if (priceInfo.discount_type === 'free_shipping') {
-		priceInfo.shipping_fee = 0;
-	}
-
-	return json<ApplyPromoCodeActionType>({
-		price_info: priceInfo,
-		discount_code: promoCode,
-	}, {
-		headers: {
-			'Set-Cookie': await commitSession(
-				await setTransactionObject(request, {
-					promo_code: promoCode,
-					price_info: priceInfo,
-				})
-			),
-		}
-	});
 }
 
 // TODOs:
@@ -195,19 +80,19 @@ export const action: ActionFunction = async ({ request }) => {
 	if (actionType === 'remove_cart_item') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
 		const promoCode = formEntries['promo_code'] as string || '';
-		return __removeCartItemAction(variationUUID, promoCode, request);
+		return removeCartItemAction(variationUUID, promoCode, request);
 	}
 
 	if (actionType === 'update_item_quantity') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
 		const quantity = formEntries['quantity'] as string;
 		const promoCode = formEntries['promo_code'] as string || '';
-		return __updateItemQuantity(request, variationUUID, quantity, promoCode);
+		return updateItemQuantity(request, variationUUID, quantity, promoCode);
 	}
 
 	if (actionType === 'apply_promo_code') {
 		const promoCode = formEntries['promo_code'] as string;
-		return __applyPromoCode(request, promoCode);
+		return applyPromoCode(request, promoCode);
 	}
 
 	// Unknown action
@@ -243,10 +128,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const costQuery = convertShoppingCartToPriceQuery(cart);
 		const priceInfo = await fetchPriceInfo({ products: costQuery });
+		const sessionStorablePriceInfo = extractPriceInfoToStoreInSession(priceInfo);
 
 		const session = await setTransactionObject(request, {
 			promo_code: null, // Reset promo_code everytime user refreshes.
-			price_info: priceInfo,
+			price_info: sessionStorablePriceInfo,
 		})
 
 		return json<LoaderType>({
@@ -298,6 +184,7 @@ type PreviousQuantity = {
  */
 function Cart() {
 	const preloadData = useLoaderData<LoaderType>();
+	console.log('preload data', preloadData);
 	const [state, dispatch] = useReducer(
 		cartReducer,
 		{
@@ -330,7 +217,7 @@ function Cart() {
 				payload: price_info
 			});
 		}
-	}, [removeItemFetcher]);
+	}, [removeItemFetcher.type]);
 
 	// When user update the quantity, we need to update the cost info calced by backend as well.
 	useEffect(() => {
@@ -343,8 +230,9 @@ function Cart() {
 			});
 			setSyncingPrice(false);
 		}
-	}, [updateItemQuantityFetcher]);
+	}, [updateItemQuantityFetcher.type]);
 
+	// Update the resulting price info to display when user applied promo code.
 	useEffect(() => {
 		if (applyPromoCodeFetcher.type === 'done') {
 			const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
@@ -682,24 +570,22 @@ function Cart() {
 				bg-white
 			">
 				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-					{/* <input type='hidden' name="recoverable-product-id" value= /> */}
-
 
 					{/* Recommended products - top items */}
 					{/* @TODO catID should not be hardcoded here */}
-					<HorizontalProductsLayout
+					{/* <HorizontalProductsLayout
 						catID={1}
 						title='top items'
 						seeAllLinkTo='/Hot Deal'
-					/>
+					/> */}
 
 					{/* Recommended products - new trend */}
 					{/* @TODO catID should not be hardcoded here */}
-					<HorizontalProductsLayout
+					{/* <HorizontalProductsLayout
 						catID={2}
 						title='new trend'
 						seeAllLinkTo='/New Trend'
-					/>
+					/> */}
 				</div>
 			</section>
 		</>

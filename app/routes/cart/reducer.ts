@@ -1,4 +1,4 @@
-import type { ShoppingCart } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart as SessionShoppingCart } from '~/sessions/shoppingcart.session';
 
 import type { PriceInfo } from './cart.server';
 
@@ -13,16 +13,15 @@ export type PreviousQuantity = {
   [key: string]: string;
 };
 
+
+// export type ShoppingCart & SessionShoppingCart = {
+
+// }
+
 export type StateShape = {
-  cartItems: ShoppingCart;
+  cartItems: SessionShoppingCart;
   priceInfo: PriceInfo | null;
   previousQuantity: PreviousQuantity;
-};
-
-export const initState: StateShape = {
-  cartItems: {},
-  priceInfo: null,
-  previousQuantity: {},
 };
 
 interface UpdateCartItemPayload {
@@ -91,9 +90,33 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
     }
     case CartActionTypes.set_price_info: {
       const priceInfo = action.payload as PriceInfo;
+
+      console.log('debug 1', state.cartItems);
+
+      // Update existing cartItem
+      let updatedCartItems = new Map();
+
+      for (const prod of priceInfo.products) {
+        if (
+          prod?.variation_uuid &&
+          state.cartItems[prod.variation_uuid]
+        ) {
+          updatedCartItems.set(
+            prod.variation_uuid,
+            {
+              ...state.cartItems[prod.variation_uuid],
+              retailPrice: prod.origin_unit_price,
+              salePrice: prod.discounted_price,
+              quantity: String(prod.quantity),
+            },
+          );
+        }
+      }
+
       return {
         ...state,
         priceInfo,
+        cartItems: Object.fromEntries(updatedCartItems),
       }
     }
     default:

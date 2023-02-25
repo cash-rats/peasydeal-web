@@ -36,7 +36,7 @@ interface CartItemProps {
 	onClickRemove?: (evt: MouseEvent<HTMLButtonElement>, prodID: string) => void;
 }
 
-interface ISubTotalPriceTagProps  { quantity: number, salePrice: number, calculating: boolean };
+interface ISubTotalPriceTagProps { quantity: number, salePrice: number, calculating: boolean };
 
 const SubTotalPriceTag = ({ quantity, salePrice, calculating }: ISubTotalPriceTagProps) => {
 	return (
@@ -91,8 +91,6 @@ function CartItem({
 		};
 		onBlurQuantity(evt, quantity);
 	};
-
-	console.log(item)
 
 	return (
 		<div className="
@@ -184,7 +182,7 @@ function CartItem({
 				absolute
 				bottom-[-38px] right-1 md:bottom-2 md:right-2
 			">
-				<IconButton className="flex items-center"onClick={(evt) => onClickRemove(evt, item.variationUUID)}>
+				<IconButton className="flex items-center" onClick={(evt) => onClickRemove(evt, item.variationUUID)}>
 					<BsTrash fontSize={18} />
 					<span className='ml-2 text-sm'>Delete</span>
 				</IconButton>
