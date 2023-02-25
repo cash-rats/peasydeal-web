@@ -308,9 +308,8 @@ function Carousel({
                   style={{
                     border: slide === index ? '3px solid #D02E7D' : '0px',
                   }}
-                  className="mx-2 rounded-lg bg-slate-100 p-[2px]"
+                  className="mx-2 rounded-lg bg-slate-100 p-[2px] min-w-[100px] w-auto h-[100px] aspect-sqare"
                   width={"100px"}
-                  height={"100px"}
                   alt={item.title}
                   src={item.image}
                   id={`thumbnail-${index}`}

@@ -63,11 +63,12 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     flex-auto
                     self-center
                     transition
-                    text-center
+                    text-center lg:text-left xl:text-center
 
-                    text-xs md:text-sm lg:text-base
-                    px-1 lg:px-2 xl:px-2 2xl:px-2
-                    py-2 md:py-4
+                    text-xs md:text-sm xl:text-base
+                    nowrap
+                    px-1 lg:px-2 xl:px-2
+                    py-2 md:py-2 lg:py-4
                     ${index === 0 ? 'bg-[#EA4335] text-white items-center font-semibold flex flex-row' : ''}
                   `}>
                     {index === 0 ? <VscFlame className="mr-1" /> : null}
@@ -76,7 +77,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                 </Link>
               ))
             }
-            <li>
+            <li className="self-center">
               <Menu isOpen={isOpen} gutter={0}>
                 <MenuButton
                   variant="ghost"
@@ -85,7 +86,10 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   fontWeight="normal"
                   onMouseEnter={onOpen}
                   onMouseLeave={onClose}
-                  onClick={e => { e.preventDefault(); }}
+                  onClick={e => {
+                    e.preventDefault();
+                    isOpen ? onClose() : onOpen();
+                  }}
                   className="
                     text-sm lg:text-base
                     px-0 lg:px-2

@@ -71,6 +71,7 @@ function LogoHeader({
         categoriesBar && (
           <div className="
             border-t-[1px] border-t-[rgba(0,0,0,.17)]
+            border-b-[1px] border-b-[rgba(0,0,0,.17)]
             border-solid
             w-full
             bg-slate-100

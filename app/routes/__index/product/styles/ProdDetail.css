@@ -169,23 +169,6 @@
   flex-direction: column;
   gap: 0.5rem;
 }
-@media (min-width: 768px) {
-  .ProductDetail__main-top {
-    flex-direction: row;
-  }
-}
-@media (min-width: 768px) and (max-width: 1280px) {
-  .ProductDetail__main-top {
-    max-width: 1082px;
-    margin: 0 auto;
-    gap: 1rem;
-  }
-}
-@media (min-width: 1280px) {
-  .ProductDetail__main-top {
-    max-width: 1360px;
-  }
-}
 
 .ProductDetail__main-bottom {
   display: flex;

@@ -4,7 +4,12 @@ import { Link } from '@remix-run/react';
 import { BsBagCheck } from 'react-icons/bs';
 import Skeleton from '@mui/material/Skeleton';
 import { Input, Button } from '@chakra-ui/react'
-
+import {
+  TagLeftIcon,
+  TagLabel,
+  Tag,
+} from '@chakra-ui/react';
+import { ImPriceTags } from 'react-icons/im';
 import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../cart.server';
 
@@ -58,7 +63,23 @@ const PromoCodeBox = ({
           size='lg'
           value={promoCode}
           onChange={handleChange}
+          onKeyDown={(evt) => {
+            if (evt.key === 'Enter' && promoCode.length > 2) {
+              handleApplyPromoCode();
+            }
+          }}
         />
+
+        {/* invalid promo code message */}
+        {
+          error && (
+            <div className="mt-[10px] h-10">
+              <p className="text-[#b21111] font-normal text-base">
+                {error}
+              </p>
+            </div>
+          )
+        }
 
         <div className="mt-4 ml-auto">
           <Button
@@ -71,17 +92,6 @@ const PromoCodeBox = ({
             Apply promo code
           </Button>
         </div>
-
-        {/* invalid promo code message */}
-        {
-          error && (
-            <div className="mt-[10px] h-10">
-              <p className="text-[#b21111] font-normal text-base">
-                {error}
-              </p>
-            </div>
-          )
-        }
 
         {
           discountCodeValid && (
@@ -155,7 +165,7 @@ export default function PriceResult({
   } = priceInfo || {};
 
   return (
-    <div className="p-4 md:p-6 bg-white">
+    <div className="p-4 bg-white">
       {/* right */}
       <div className="w-full">
         <PromoCodeBox
@@ -274,36 +284,43 @@ export default function PriceResult({
           <hr className="my-1 h-[1px] w-full bg-slate-50" />
         </div>
 
-        <div className="mt-[0.7rem]">
-
-          {/* Promotion Applied  */}
-          <div className="flex flex-col mb-4">
-            <h2 className="
-            text-xl font-bold
+        {/* Promotion Applied  */}
+        <div className="flex flex-col mb-4">
+          <h4 className="
+            text-base font-bold
             px-0 mb-2 w-full capitalize
           "
-            >
-              discount applied!
-            </h2>
-
+          >
+            discount applied!
+          </h4>
+          <div className='flex gap-2'>
             {
               applied_events.length === 0
                 ? null
                 : (
                   applied_events.map((event, idx) => (
-                    <span
+                    <Tag
                       key={`promotion-${idx}`}
-                      className="
-                        font-poppins mb-2
-                      text-[#00af32] font-semibold
-                        text-base
-                    ">
-                      {event}
-                    </span>
+                      variant='outline'
+                      colorScheme='blue'
+                      className='w-fit mb-2'
+                      size="md">
+                      <ImPriceTags className='mr-1' />
+                      <TagLabel>{ event }</TagLabel>
+                    </Tag>
                   ))
                 )
             }
           </div>
+        </div>
+
+        <div className="py-3">
+          <hr className="my-1 h-[1px] w-full bg-slate-50" />
+        </div>
+
+        <div className="mt-[0.7rem]">
+
+
 
           <ResultRow
             label={<strong>Total to pay</strong>}
