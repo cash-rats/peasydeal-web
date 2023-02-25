@@ -34,26 +34,26 @@ type LoaderType = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
-  const search = url.searchParams.get("query");
+  const query = url.searchParams.get("query");
   const page = Number(url.searchParams.get('page')) || 1;
 
-  if (!search) {
-    throw json('no query provided', httpStatus.BAD_REQUEST);
+  if (!query) {
+    return redirect('/');
   }
 
   const { products, total, current, has_more } = await searchProducts({
-    query: search,
+    query,
     perpage: PAGE_LIMIT,
     page,
   })
 
   if (products.length === 0) {
-    throw json({ query: search }, httpStatus.NOT_FOUND);
+    throw json({ query }, httpStatus.NOT_FOUND);
   }
 
   return json<LoaderType>({
     products,
-    query: search,
+    query,
     page,
     total,
     current,
@@ -64,7 +64,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
-  return redirect(`/search?query=${formObj['query']}`);
+  return redirect(
+    !formObj['query']
+      ? '/'
+      : `/search?query=${formObj['query']}`
+  );
 }
 
 // TODO: more design
