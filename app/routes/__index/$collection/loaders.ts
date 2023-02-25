@@ -5,7 +5,7 @@ import { normalizeToMap, fetchCategories } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
 import { getCanonicalDomain } from '~/utils/seo';
-import { commitSession } from '~/sessions/sessions';
+import { commitSession } from '~/sessions/redis_session';
 
 import { fetchProductsByCategoryV2 } from "../api";
 

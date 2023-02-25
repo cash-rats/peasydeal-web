@@ -7,7 +7,7 @@ import {
   CartSessionKey,
   updateCart,
 } from '~/sessions/shoppingcart.session';
-import { commitSession } from '~/sessions/sessions';
+import { commitSession } from '~/sessions/redis_session';
 import {
   setTransactionObject,
   sessionResetTransactionObject,

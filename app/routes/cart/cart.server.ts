@@ -57,8 +57,6 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
     throw new Error(JSON.stringify(respJSON));
   }
 
-  console.log('debug fetchPrice~~~', respJSON);
-
   return respJSON as PriceInfo
 }
 

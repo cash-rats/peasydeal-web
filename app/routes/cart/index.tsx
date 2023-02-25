@@ -6,7 +6,7 @@ import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
-import { commitSession } from '~/sessions/sessions';
+import { commitSession } from '~/sessions/redis_session';
 import { getCart } from '~/sessions/shoppingcart.session';
 import {
 	setTransactionObject,

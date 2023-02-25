@@ -1,7 +1,7 @@
 import { json } from '@remix-run/node';
 
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
-import { commitSession } from '~/sessions/sessions';
+import { commitSession } from '~/sessions/redis_session';
 import { normalizeToMap, fetchPromotions } from '~/api/categories.server';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
 import { getCanonicalDomain } from '~/utils/seo';

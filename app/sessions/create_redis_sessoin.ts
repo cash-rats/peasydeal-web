@@ -26,6 +26,7 @@ export function createRedisSessionStorage({ cookie }: RedisSessionArguments): Se
     cookie,
     async createData(data, expires) {
       const id = genRandomID();
+      console.log('debug createData 1', id);
       if (expires) {
         await redis.set(
           id,
@@ -46,6 +47,7 @@ export function createRedisSessionStorage({ cookie }: RedisSessionArguments): Se
       return null;
     },
     async updateData(id, data, expires) {
+      console.log('debug 3', id);
       if (expires) {
         await redis.set(
           id,

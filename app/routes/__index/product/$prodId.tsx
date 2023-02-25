@@ -21,7 +21,7 @@ import type { LazyComponentProps } from "react-lazy-load-image-component";
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
-import { commitSession } from '~/sessions/sessions';
+import { commitSession } from '~/sessions/redis_session';
 import { insertItem } from '~/sessions/shoppingcart.session';
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
