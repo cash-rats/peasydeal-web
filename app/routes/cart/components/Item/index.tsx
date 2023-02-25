@@ -24,6 +24,7 @@ type ItemProps = {
 	retailPrice: number;
 	quantity: number;
 	purchaseLimit: number;
+	discountReason?: string;
 }
 interface CartItemProps {
 	item: ItemProps;

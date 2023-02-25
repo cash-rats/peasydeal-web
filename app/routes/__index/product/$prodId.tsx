@@ -12,7 +12,6 @@ import { useLoaderData, useFetcher } from '@remix-run/react';
 import Select from 'react-select';
 import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
 import Rating from '@mui/material/Rating';
-
 import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
@@ -37,6 +36,7 @@ import {
 	decomposeProductDetailURL,
 	composeProductDetailURL,
 } from '~/utils';
+import type { Category } from '~/shared/types';
 
 import {
 	Accordion,
@@ -205,14 +205,21 @@ type ProductDetailProps = {} & LazyComponentProps;
  * @see https://www.discountexperts.com/deal/uptfll2cfs/Breathable_Air_Cushion_Trainers___6_Colours___Sizes
  */
 function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
-	const data = useLoaderData<LoaderTypeProductDetail>();
+	const loaderData = useLoaderData<LoaderTypeProductDetail>();
+	const mainCategory = (
+		loaderData.product.categories &&
+		loaderData.product.categories.length > 0
+	)
+		? loaderData.product.categories[0]
+		: null;
+
 	const [state, dispatch] = useReducer(reducer, {
-		productDetail: data.product,
-		mainCategory: data.product.categories[0],
-		images: data.product.images,
+		productDetail: loaderData.product,
+		mainCategory,
+		images: loaderData.product.images,
 		quantity: 1,
-		variation: data.product.variations.find(
-			(variation: any) => data.product.default_variation_uuid === variation.uuid,
+		variation: loaderData.product.variations.find(
+			(variation: any) => loaderData.product.default_variation_uuid === variation.uuid,
 		),
 	});
 
@@ -230,20 +237,20 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		// This action updates detail to new product also clears images of previous product images.
 		dispatch({
 			type: ActionTypes.change_product,
-			payload: data.product,
+			payload: loaderData.product,
 		});
 
 		// Update product images to new product after current event loop.
 		setTimeout(() => {
 			dispatch({
 				type: ActionTypes.update_product_images,
-				payload: data.product.images,
+				payload: loaderData.product.images,
 			});
 		}, 100);
 
 		if (!window) return;
 		window.scrollTo(0, 0);
-	}, [data.product.uuid]);
+	}, [loaderData.product.uuid]);
 
 	useEffect(() => {
 		const currentVariation = state.productDetail.variations.find(
@@ -300,6 +307,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 			? ''
 			: variation?.spec_name || ''
 
+		console.log('debug **~~', variation?.purchase_limit);
+
 		return {
 			salePrice: variation?.sale_price.toString() || '',
 			retailPrice: variation?.retail_price.toString() || '',
@@ -311,7 +320,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 			quantity: state.quantity.toString(),
 			title: state.productDetail?.title || '',
 			specName: specName,
-			purchaseLimit: variation?.purchase_limit.toString() || '',
+			purchaseLimit: variation?.purchase_limit?.toString() || '',
 		}
 	}, [
 		state.productDetail,
@@ -324,6 +333,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 			setVariationErr('Please pick a variation');
 			return;
 		}
+
 		setVariationErr('');
 
 		const orderInfo = { ...extractProductInfo() };
@@ -388,8 +398,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 			/>
 
 			<Breadcrumbs
-				categoryLabel={state.mainCategory.label}
-				categoryName={state.mainCategory.name}
+				categoryLabel={state.mainCategory?.label || ''}
+				categoryName={state.mainCategory?.name || ''}
 
 				productTitle={state.productDetail.title}
 				productUuid={state.productDetail.uuid}
@@ -614,11 +624,18 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					- Hot deals
 					- New trend
 			*/}
-			<RecommendedProducts
-				category={state.mainCategory.name}
-				onClickProduct={handleClickProduct}
-				scrollPosition={scrollPosition}
-			/>
+			{
+				state.mainCategory
+					? (
+						<RecommendedProducts
+							category={state.mainCategory.name}
+							onClickProduct={handleClickProduct}
+							scrollPosition={scrollPosition}
+						/>
+
+					)
+					: null
+			}
 		</>
 	);
 };

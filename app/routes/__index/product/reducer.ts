@@ -9,7 +9,7 @@ type StateShape = {
   variation: ProductVariation | undefined;
   images: string[];
   quantity: number;
-  mainCategory: Category;
+  mainCategory: Category | null;
 }
 
 export enum ActionTypes {
