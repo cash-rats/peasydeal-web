@@ -275,7 +275,7 @@ export default function PriceResult({
             </h2>
 
             {
-              priceInfo.applied_events.length === 0
+              priceInfo?.applied_events?.length === 0
                 ? null
                 : (
                   priceInfo.applied_events.map((event, idx) => (

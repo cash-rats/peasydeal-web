@@ -37,11 +37,20 @@ export default function ProductDetailBreadcrumbs({
               </BreadcrumbLink>
             </BreadcrumbItem>,
 
-            <BreadcrumbItem key="2">
-              <BreadcrumbLink as={NavLink} to={`/${categoryName}`} className="font-semibold">
-                {categoryLabel}
-              </BreadcrumbLink>
-            </BreadcrumbItem>,
+            <>
+              {
+                categoryName
+                  ? (
+
+                    <BreadcrumbItem key="2">
+                      <BreadcrumbLink as={NavLink} to={`/${categoryName}`} className="font-semibold">
+                        {categoryLabel}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                  )
+                  : null
+              }
+            </>,
 
             <BreadcrumbItem key="3">
               <BreadcrumbLink

@@ -184,7 +184,6 @@ type PreviousQuantity = {
  */
 function Cart() {
 	const preloadData = useLoaderData<LoaderType>();
-	console.log('preload data', preloadData);
 	const [state, dispatch] = useReducer(
 		cartReducer,
 		{
@@ -523,6 +522,7 @@ function Cart() {
 													retailPrice: Number(item.retailPrice),
 													quantity: Number(item.quantity),
 													purchaseLimit: Number(item.purchaseLimit),
+													discountReason: item.discountReason,
 												}}
 												calculating={isCalculating}
 												key={variationUUID}
@@ -573,19 +573,19 @@ function Cart() {
 
 					{/* Recommended products - top items */}
 					{/* @TODO catID should not be hardcoded here */}
-					{/* <HorizontalProductsLayout
+					<HorizontalProductsLayout
 						catID={1}
 						title='top items'
 						seeAllLinkTo='/Hot Deal'
-					/> */}
+					/>
 
 					{/* Recommended products - new trend */}
 					{/* @TODO catID should not be hardcoded here */}
-					{/* <HorizontalProductsLayout
+					<HorizontalProductsLayout
 						catID={2}
 						title='new trend'
 						seeAllLinkTo='/New Trend'
-					/> */}
+					/>
 				</div>
 			</section>
 		</>

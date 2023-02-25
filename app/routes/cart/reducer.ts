@@ -1,4 +1,4 @@
-import type { ShoppingCart as SessionShoppingCart } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart as SessionShoppingCart, ShoppingCartItem as SessionShoppingCartItem } from '~/sessions/shoppingcart.session';
 
 import type { PriceInfo } from './cart.server';
 
@@ -14,12 +14,16 @@ export type PreviousQuantity = {
 };
 
 
-// export type ShoppingCart & SessionShoppingCart = {
+export type ShoppingCartItem = SessionShoppingCartItem & {
+  discount_reason: string;
+};
 
-// }
+export type ShoppingCart = SessionShoppingCart & {
+  [variationUUID: string]: ShoppingCartItem;
+}
 
 export type StateShape = {
-  cartItems: SessionShoppingCart;
+  cartItems: ShoppingCart;
   priceInfo: PriceInfo | null;
   previousQuantity: PreviousQuantity;
 };
