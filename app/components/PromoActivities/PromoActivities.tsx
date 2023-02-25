@@ -12,7 +12,7 @@ interface IPromoActivities {
 
 const getImageBanner = (name: string) => {
   switch (name) {
-    case 'top_sales':
+    case 'super_deal':
       return <ImageBannerSuperDeal name={name} />;
     case 'deal_under_15':
       return <ImageBannerDealUnder15 name={name} />;
