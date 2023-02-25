@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
 import { withEmotionCache } from '@emotion/react';
 import { ChakraProvider } from '@chakra-ui/react'
@@ -271,7 +271,7 @@ export function ErrorBoundary({ error }: { error: Error }) {
   return (
     <Document>
       <Layout>
-        <FiveHundredError message={error.message} />
+        <FiveHundredError error={error} />
       </Layout>
     </Document>
   );
