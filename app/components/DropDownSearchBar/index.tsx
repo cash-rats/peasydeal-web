@@ -198,7 +198,11 @@ function DropDownSearchBar({
             {
               searchContent && (
                 <div className="grid grid-cols-2">
-                  <p className="py-2 px-4 flex flex-start items-center">
+                  <p className="
+                    py-2 px-4
+                    flex flex-start items-center
+                    font-poppins
+                  ">
                     Searching {searchContent}
                   </p>
                   <span className="py-2 px-4 flex justify-end items-center"> {
@@ -213,7 +217,12 @@ function DropDownSearchBar({
             <ul className="list-none p-0 m-0">
               {
                 suggests.length === 0 && searchingState === 'done'
-                  ? <p className="m-0 py-2 px-4 font-medium text-center capitalize">no result found</p>
+                  ? <p className="
+                      m-0 py-2 px-4
+                      font-medium text-center capitalize font-poppins
+                    ">
+                    no result found
+                  </p>
                   : (
                     suggests.map((suggest, index) => {
                       return (
@@ -239,16 +248,16 @@ function DropDownSearchBar({
                                 />
                               </div>
                               <div className="flex flex-col justify-center items-start ml-2 gap-2">
-                                <span className="text-[1.1rem] font-medium">
+                                <span className="font-poppins text-[1.1rem] font-medium">
                                   {suggest.data.title}
                                 </span>
-                                <span className="text-[1rem]">
+                                {/* <span className="text-[1rem]">
                                   rating
-                                </span>
+                                </span> */}
                               </div>
                             </div>
                             <div className="flex justify-end items-end">
-                              <span className="font-semibold leading-6 text-price-off-red">
+                              <span className="font-semibold font-poppins leading-6 text-price-off-red">
                                 SAVE &nbsp;
                                 {
                                   (Number(suggest.data.discount) * 100).toFixed(0)
@@ -266,7 +275,11 @@ function DropDownSearchBar({
             {
               suggests.length > 0 && searchingState === 'done' && (
                 <div
-                  className="py-1 hover:bg-gray-hover-bg flex justify-center items-center text-xl font-medium uppercase cursor-pointer"
+                  className="
+                    py-1 hover:bg-gray-hover-bg
+                    flex justify-center items-center
+                    text-md font-medium uppercase font-poppins
+                    cursor-pointer"
                   onClick={handleViewAllResults}
                 >
                   view all results
