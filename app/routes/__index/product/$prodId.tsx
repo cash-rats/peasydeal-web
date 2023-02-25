@@ -329,7 +329,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	]);
 
 	const handleAddToCart = () => {
-		console.log('debug handleAddToCart');
 		if (!state.variation) {
 			setVariationErr('Please pick a variation');
 			return;
