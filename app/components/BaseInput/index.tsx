@@ -12,7 +12,9 @@ function BaseInput(props: BaseInputProps) {
   return (
     <div className="
       bg-white rounded-sm border-solid border-[#707070] border-[1px]
-      h-10 w-full p-4 relative
+      h-10 w-full
+      p-4 mx-0 md:mx-2
+      relative
       flex items-center shadow-searchbox box-border"
       style={{ height: props.height }}
     >

@@ -113,7 +113,7 @@ export default function PriceResult({
   useEffect(() => {
     if (
       appliedPromoCode &&
-      !priceInfo.discount_code_valid
+      !discount_code_valid
     ) {
       setError(`Seems like promo code ${appliedPromoCode} is invalid. Let's check and try again`)
       return;
@@ -142,6 +142,18 @@ export default function PriceResult({
     onApplyPromoCode(promoCode);
   };
 
+  // destructuring priceInfo
+  const {
+    sub_total = 0,
+    tax_amount = 0,
+    shipping_fee = 0,
+    total_amount = 0,
+    discount_amount = 0,
+    discount_type = '',
+    discount_code_valid = false,
+    applied_events = [],
+  } = priceInfo || {};
+
   return (
     <div className="p-4 md:p-6 bg-white">
       {/* right */}
@@ -154,7 +166,7 @@ export default function PriceResult({
           error={error}
           appliedPromoCode={appliedPromoCode}
           discountCodeValid={!!(
-            !error && appliedPromoCode && priceInfo.discount_code_valid
+            !error && appliedPromoCode && discount_code_valid
           )}
         />
 
@@ -180,7 +192,7 @@ export default function PriceResult({
                   sx={{ fontSize: '1rem' }}
                 />
               )
-              : `£ ${priceInfo.sub_total} `
+              : `£ ${sub_total} `
           }
 
         />
@@ -196,14 +208,14 @@ export default function PriceResult({
                   sx={{ fontSize: '1rem' }}
                 />
               )
-              : `£ ${priceInfo.tax_amount}`
+              : `£ ${tax_amount}`
           }
 
         />
 
         {/* Promo code deal */}
         {
-          priceInfo.discount_code_valid
+          discount_code_valid
             ? (
               <ResultRow
                 label="Promo code deal"
@@ -211,20 +223,20 @@ export default function PriceResult({
 
                   <div className="result-value text-primary uppercase">
                     {
-                      priceInfo.discount_type === 'price_off' && (
-                        `extra - £ ${priceInfo.discount_amount} off!`
+                      discount_type === 'price_off' && (
+                        `extra - £ ${discount_amount} off!`
                       )
                     }
 
                     {
-                      priceInfo.discount_type === 'free_shipping' && (
+                      discount_type === 'free_shipping' && (
                         'free shipping!'
                       )
                     }
 
                     {
-                      priceInfo.discount_type === 'percentage_off' && (
-                        `extra - £ ${priceInfo.discount_amount}`
+                      discount_type === 'percentage_off' && (
+                        `extra - £ ${discount_amount}`
                       )
                     }
                   </div>
@@ -249,9 +261,9 @@ export default function PriceResult({
               : (
                 <>
                   {
-                    priceInfo.discount_type === 'free_shipping'
+                    discount_type === 'free_shipping'
                       ? '£ 0'
-                      : `£ ${priceInfo.shipping_fee}`
+                      : `£ ${shipping_fee}`
                   }
                 </>
               )
@@ -275,10 +287,10 @@ export default function PriceResult({
             </h2>
 
             {
-              priceInfo?.applied_events?.length === 0
+              applied_events.length === 0
                 ? null
                 : (
-                  priceInfo.applied_events.map((event, idx) => (
+                  applied_events.map((event, idx) => (
                     <span
                       key={`promotion-${idx}`}
                       className="
@@ -306,7 +318,7 @@ export default function PriceResult({
                         sx={{ fontSize: '1.5rem' }}
                       />
                     )
-                    : `£ ${priceInfo.total_amount}`
+                    : `£ ${total_amount}`
                 }
               </strong>
             }

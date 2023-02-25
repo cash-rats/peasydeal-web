@@ -80,8 +80,8 @@ function Header({
 
           // right status bar, cart, search icon...etc
           navBar={
-            <div className="flex flex-1 px-4 md:w-[15%]">
-              <div className="ml-auto">
+            <div className="flex flex-1 px-2 md:pl-4 md:w-[15%]">
+              <div className="">
                 <NavBar
                   cartItemCount={numOfItemsInCart}
                 />
