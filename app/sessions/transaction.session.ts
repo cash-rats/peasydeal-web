@@ -1,12 +1,12 @@
 import type { Session } from '@remix-run/node';
 
-import type { PriceInfo } from '~/shared/cart';
+import type { CookieStorablePriceInfo } from '~/shared/cart';
 
 import { getCookieSession } from './session_utils';
 
 export interface TransactionObject {
   promo_code?: string | null;
-  price_info: PriceInfo;
+  price_info: CookieStorablePriceInfo;
 }
 
 export const TransactinoObjectSessionKey = 'transaction_object';

@@ -20,6 +20,7 @@ export type ShoppingCartItem = {
   title: string;
   specName: string
   purchaseLimit: string;
+  discountReason: string;
 };
 
 // getCart get current shopping cart data in session. return "undefined" If no key exists.

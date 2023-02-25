@@ -263,6 +263,36 @@ export default function PriceResult({
         </div>
 
         <div className="mt-[0.7rem]">
+
+          {/* Promotion Applied  */}
+          <div className="flex flex-col mb-4">
+            <h2 className="
+            text-xl font-bold
+            px-0 mb-2 w-full capitalize
+          "
+            >
+              discount applied!
+            </h2>
+
+            {
+              priceInfo.applied_events.length === 0
+                ? null
+                : (
+                  priceInfo.applied_events.map((event, idx) => (
+                    <span
+                      key={`promotion-${idx}`}
+                      className="
+                        font-poppins mb-2
+                      text-[#00af32] font-semibold
+                        text-base
+                    ">
+                      {event}
+                    </span>
+                  ))
+                )
+            }
+          </div>
+
           <ResultRow
             label={<strong>Total to pay</strong>}
             value={
