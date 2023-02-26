@@ -21,13 +21,15 @@ import AllTimeCoupon from "~/components/AllTimeCoupon";
 type LoaderDataType = {
 	categoryPreviews: TCategoryPreview[],
 	promotions: TPromotionType[],
-	canonical_link: string;
 }
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
 	return [
 		// Google meta tags
-		{ rel: 'canonical', href: data?.canonical_link },
+		{
+			rel: 'canonical',
+			href: getCanonicalDomain(),
+		},
 	];
 }
 export const handle = { dynamicLinks }
@@ -48,10 +50,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			]
 		});
 
-		return json<LoaderDataType>({
-			...landings,
-			canonical_link: getCanonicalDomain(),
-		});
+		return json<LoaderDataType>({ ...landings });
 	} catch (e) {
 		throw json(e, {
 			status: httpStatus.INTERNAL_SERVER_ERROR,
@@ -79,7 +78,6 @@ function Index({ scrollPosition, categories }: IndexProps) {
 	const {
 		categoryPreviews,
 		promotions,
-		canonical_link,
 	} = useLoaderData<LoaderDataType>();
 
 	// Redirect to product detail page when click on product.

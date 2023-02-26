@@ -6,7 +6,7 @@ import httpStatus from 'http-status-codes';
 import { CDN_URL } from '~/utils/get_env_source';
 
 import transformer from './transformer';
-import { imageResponse } from './response'
+import { imageResponse, badImageResponse } from './response'
 import { fileExtensionResolver, MimeType } from './mimes';
 
 const config: LoaderConfig = {
@@ -31,12 +31,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   const contentType = url.searchParams.get('contentType') as MimeType || MimeType.WEBP;
   const fileExt = fileExtensionResolver.get(contentType);
 
-  if (src === '') return imageResponse(
-    new Uint8Array(),
-    httpStatus.BAD_REQUEST,
-    MimeType.WEBP,
-    `public, max-age=${maxAge}`
-  )
+  if (src === '') return badImageResponse();
 
   if (width && height && src && fileExt) {
     const filename = src.substring(src.lastIndexOf('/') + 1, src.length);

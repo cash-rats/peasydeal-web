@@ -1,4 +1,5 @@
 import { Link } from '@remix-run/react';
+
 import ImageSuperDealDiscount from './ImageSuperDealDiscount';
 import ImageGrandOpeningDiscount from './ImageGrandOpeningDiscount';
 import ImageCategoryExtraDiscount from './ImageCategoryExtraDiscount';
@@ -7,7 +8,7 @@ const AllTimeCoupon = () => {
   return (
     <div className="flex py-4 py bg-slate-50 justify-around w-full">
       <div className="hidden md:flex flex-1 justify-center items-center gap-1 md:gap-8">
-        <Link to="/super_deal">
+        <Link to="/promotion/super_deal">
           <div className="
             flex flex-col
             hover:scale-x-95
@@ -31,7 +32,7 @@ const AllTimeCoupon = () => {
 
       <div className='md:hidden grid grid-cols-2 gap-1 mt-[2px]'>
         <Link
-          to="/super_deal"
+          to="/promotion/super_deal"
           className='hover:scale-x-95
             transition-transform duration-300 ease-in-out
             cursor-pointer
