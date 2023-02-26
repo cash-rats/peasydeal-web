@@ -31,7 +31,7 @@ function ProductDetailSection({
 	pics = [],
 }: ProductDetailSectionProps) {
 	return (
-		<div className="product-detail">
+		<div className="product-detail mb-4">
 			{/* Image container */}
 			<div className="product-detail-img-container">
 				<PicsCarousel

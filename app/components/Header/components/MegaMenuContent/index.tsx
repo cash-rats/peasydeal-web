@@ -77,7 +77,7 @@ const MegaMenuContent = ({
         grid
         w-full
         gap-1 md:gap-2 lg:gap-2
-        grid-cols-1 md:grid-cols-3 lg:grid-cols-4
+        grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4
       ">
         {
           categories.map((category) => {
@@ -93,7 +93,7 @@ const MegaMenuContent = ({
                   // prefetch='intent'
                   state={{ scrollToTop: true }}
                   to={`/${category.name}`}
-                  className="w-full"
+                  className="w-full self-center"
                   onClick={onClose}
                 >
                   <ItemNode className="flex items-center">
@@ -120,12 +120,13 @@ const MegaMenuContent = ({
         <div>
           <Link to={`/promotion/super_deal`}>
             <Button
-              rightIcon={<VscArrowRight />}
+              rightIcon={<VscArrowRight className='flex md:hidden xl:flex' />}
               colorScheme='pink'
               variant='outline'
               size='lg'
               width='100%'
               onClick={onClose}
+              className="text-base md:text-md xl:text-lg"
             >
               SUPER DEAL <span className="ml-1 text-[#fc1d7a]">EXTRA 10% OFF</span>
             </Button>
@@ -134,12 +135,13 @@ const MegaMenuContent = ({
         <div>
           <Link to={`/promotion/deal_under_15`}>
             <Button
-              rightIcon={<VscArrowRight />}
+              rightIcon={<VscArrowRight className='flex md:hidden xl:flex' />}
               colorScheme='pink'
               variant='outline'
               size='lg'
               width='100%'
               onClick={onClose}
+              className="text-base md:text-md xl:text-lg"
             >
               Deal from <span className="ml-1 text-[#fc1d7a]">£0.99 - £15</span>
             </Button>
@@ -148,12 +150,13 @@ const MegaMenuContent = ({
         <div>
           <Link to={`/promotion/weekly_deals`}>
             <Button
-              rightIcon={<VscArrowRight />}
+              rightIcon={<VscArrowRight className='flex md:hidden xl:flex' />}
               colorScheme='pink'
               variant='outline'
               size='lg'
               width='100%'
               onClick={onClose}
+              className="text-base md:text-md xl:text-lg"
             >
               Weekly <span className="ml-1 text-[#fc1d7a]">Best Seller</span>
             </Button>

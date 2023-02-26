@@ -5,10 +5,6 @@
 .product-detail {
 	width: 100%;
 
-	@media(min-width: $screen-md-min) and (max-width: $screen-1280-min) {
-		width: 53%;
-	}
-
 	.product-detail-title {
 		padding-left: 0;
 

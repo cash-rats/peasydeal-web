@@ -406,22 +406,24 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 			/>
 
 			<div className="productdetail-container max-w-screen-xl mt-2 md:mt-6">
-				<div className="ProductDetail__main-wrapper">
-					<div className='ProductDetail__main-top' ref={productTopRef}>
-
-						<ProductDetailSection
-							description={state.productDetail?.description}
-							pics={state.images}
-							title={state.productDetail?.title}
-						/>
+				<div className="">
+					<div className='ProductDetail__main-top flex lg:grid grid-cols-10' ref={productTopRef}>
+						<div className='col-span-5 xl:col-span-6'>
+							<ProductDetailSection
+								description={state.productDetail?.description}
+								pics={state.images}
+								title={state.productDetail?.title}
+							/>
+						</div>
 						<div
 							ref={productContentWrapperRef}
 							className="
 								rounded-md border-x border-b border-t-8 border-[#D02E7D]
 								py-7 px-5
-								w-full md:max-w-[44%]
+								w-full
 								h-fit
 								sticky
+								col-span-5 xl:col-span-4
 							"
 						>
 							<div className="absolute top-[-1.5rem] left-[-1px]">
