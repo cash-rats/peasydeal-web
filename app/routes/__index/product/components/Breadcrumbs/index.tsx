@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Fragment } from 'react';
 import { NavLink } from '@remix-run/react';
 
 import { composeProductDetailURL } from '~/utils';
@@ -30,42 +31,39 @@ export default function ProductDetailBreadcrumbs({
     >
       <div className="w-full py-2.5 max-w-screen-xl mx-auto">
         <Breadcrumbs
-          breadcrumbs={[
-            <BreadcrumbItem key="1">
-              <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>,
+          breadcrumbs={
+            [
+              <BreadcrumbItem key="1">
+                <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>,
 
-            <>
-              {
-                categoryName
-                  ? (
+              categoryName
+                ? (
+                  <BreadcrumbItem key="2">
+                    <BreadcrumbLink as={NavLink} to={`/${categoryName}`} className="font-semibold">
+                      {categoryLabel}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                )
+                : null,
 
-                    <BreadcrumbItem key="2">
-                      <BreadcrumbLink as={NavLink} to={`/${categoryName}`} className="font-semibold">
-                        {categoryLabel}
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                  )
-                  : null
-              }
-            </>,
-
-            <BreadcrumbItem key="3">
-              <BreadcrumbLink
-                as={NavLink}
-                to={composeProductDetailURL({
-                  productName: productTitle as string,
-                  variationUUID: productUuid as string,
-                })}
-                isCurrentPage
-                className="font-semibold !text-[#D02E7D]"
-              >
-                {productTitle}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          ]}
+              <BreadcrumbItem key="3">
+                <BreadcrumbLink
+                  as={NavLink}
+                  to={composeProductDetailURL({
+                    productName: productTitle as string,
+                    variationUUID: productUuid as string,
+                  })}
+                  isCurrentPage
+                  className="font-semibold !text-[#D02E7D]"
+                >
+                  {productTitle}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            ].filter(i => i !== null)
+          }
         />
       </div>
     </div>
