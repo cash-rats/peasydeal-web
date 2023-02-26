@@ -9,14 +9,16 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 import theme from './theme';
 import { ClientStyleContext } from './context'
-import createEmotionCache from './createEmotionCache'
+// import createEmotionCache from './createEmotionCache'
+import createEmotionCache, { defaultCache } from './createEmotionCache'
+
 
 interface ClientCacheProviderProps {
 	children: React.ReactNode;
 }
 
 function ClientCacheProvider({ children }: ClientCacheProviderProps) {
-	const [cache, setCache] = React.useState(createEmotionCache())
+	const [cache, setCache] = React.useState(defaultCache)
 
 	function reset() {
 		setCache(createEmotionCache())

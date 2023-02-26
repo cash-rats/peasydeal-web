@@ -21,6 +21,8 @@ const composeCDNUrl = (params: { width: number, height: number, filename: string
   return url.toString();
 };
 
+const maxAge = 60 * 60 * 24 * 365;
+
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
   const width = url.searchParams.get('width') as string || '';
@@ -28,6 +30,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const src = url.searchParams.get('src') as string || '';
   const contentType = url.searchParams.get('contentType') as MimeType || MimeType.WEBP;
   const fileExt = fileExtensionResolver.get(contentType);
+
+  if (src === '') return imageResponse(
+    new Uint8Array(),
+    httpStatus.BAD_REQUEST,
+    MimeType.WEBP,
+    `public, max-age=${maxAge}`
+  )
 
   if (width && height && src && fileExt) {
     const filename = src.substring(src.lastIndexOf('/') + 1, src.length);
@@ -47,7 +56,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         new Uint8Array(await imageFromCDN.arrayBuffer()),
         httpStatus.OK,
         MimeType.WEBP,
-        `public, max-age=${60 * 60 * 24 * 365}`
+        `public, max-age=${maxAge}`
       );
     }
   }

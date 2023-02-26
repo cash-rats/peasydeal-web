@@ -8,6 +8,7 @@ import type { EntryContext, Headers } from "@remix-run/node";
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 
+import { ServerStyleContext } from './context';
 import createEmotionCache from "./createEmotionCache";
 import theme from './theme';
 
@@ -21,31 +22,34 @@ export default function handleRequest(
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
   const html = renderToString(
-    <CacheProvider value={cache}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RemixServer
-          context={remixContext}
-          url={request.url}
-        />
-      </ThemeProvider>
-    </CacheProvider>,
+    <ServerStyleContext.Provider value={null}>
+      <CacheProvider value={cache}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RemixServer
+            context={remixContext}
+            url={request.url}
+          />
+        </ThemeProvider>
+      </CacheProvider>
+    </ServerStyleContext.Provider>,
   )
 
   // Grab the CSS from emotion
   const { styles } = extractCriticalToChunks(html);
 
-
   let markup = renderToString(
-    <CacheProvider value={cache}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <RemixServer
-          context={remixContext}
-          url={request.url}
-        />
-      </ThemeProvider>
-    </CacheProvider>
+    <ServerStyleContext.Provider value={styles}>
+      <CacheProvider value={cache}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <RemixServer
+            context={remixContext}
+            url={request.url}
+          />
+        </ThemeProvider>
+      </CacheProvider>
+    </ServerStyleContext.Provider>,
   )
 
   let stylesHTML = '';

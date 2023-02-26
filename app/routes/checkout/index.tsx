@@ -54,13 +54,17 @@ type LoaderType = {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const cart = await getCart(request);
+  try {
+    const cart = await getCart(request);
 
-  if (!cart || Object.keys(cart).length === 0) {
-    throw redirect("/cart");
+    if (!cart || Object.keys(cart).length === 0) {
+      throw redirect("/cart");
+    }
+
+    return json<LoaderType>({ cart_items: cart });
+  } catch (error) {
+    return json<LoaderType>({ cart_items: {} });
   }
-
-  return json<LoaderType>({ cart_items: cart });
 };
 
 export const action: ActionFunction = async ({ request }) => {

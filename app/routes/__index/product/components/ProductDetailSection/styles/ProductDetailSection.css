@@ -1,19 +1,6 @@
 .product-detail {
   width: 100%;
 }
-.product-detail .product-detail-title {
-  padding-left: 0;
-}
-.product-detail .product-detail-title h1 {
-  font-size: 25px;
-  color: #000;
-}
-.product-detail .product-detail-title h2 {
-  font-size: 20px;
-  line-height: 18px;
-  margin: 10px 0 20px 0;
-  color: #666;
-}
 .product-detail .peasydeal-v1 table, .product-detail .bolt-habitat table {
   font-size: 1rem;
   line-height: 1.5rem;

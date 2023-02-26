@@ -7,6 +7,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
+import httpStatus from 'http-status-codes';
 
 import {
   PAYPAL_CLIENT_ID,
@@ -89,42 +90,49 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 }
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const transObj = await getTransactionObject(request);
-  const cartItems = await getCart(request);
-
-  if (
-    !transObj ||
-    !cartItems ||
-    Object.keys(cartItems).length === 0
-  ) {
-    throw redirect("/cart");
+  try {
+    const transObj = await getTransactionObject(request);
+    const cartItems = await getCart(request);
+  
+    if (
+      !transObj ||
+      !cartItems ||
+      Object.keys(cartItems).length === 0
+    ) {
+      throw redirect("/cart");
+    }
+  
+    const [categories, navBarCategories] = await fetchCategories();
+  
+    // TODO this number should be coming from BE instead.
+    // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
+    // In stripe, the base unit is 1 cent, not 1 dollar.
+    const {
+      price_info: priceInfo,
+      promo_code,
+    } = transObj;
+  
+    // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
+    // In stripe, the base unit is 1 cent, not 1 dollar.
+    const paymentIntent = await createPaymentIntent({
+      amount: Math.round(priceInfo.total_amount * 100),
+      currency: STRIPE_CURRENCY_CODE,
+    });
+  
+    return json<LoaderType>({
+      client_secret: paymentIntent.client_secret || undefined,
+      payment_intend_id: paymentIntent.id,
+      categories,
+      navBarCategories,
+      price_info: priceInfo,
+      promo_code: promo_code,
+    });
+  } catch (e) {
+    console.error(e);
+    throw json(e, {
+			status: httpStatus.INTERNAL_SERVER_ERROR,
+		});
   }
-
-  const [categories, navBarCategories] = await fetchCategories();
-
-  // TODO this number should be coming from BE instead.
-  // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
-  // In stripe, the base unit is 1 cent, not 1 dollar.
-  const {
-    price_info: priceInfo,
-    promo_code,
-  } = transObj;
-
-  // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
-  // In stripe, the base unit is 1 cent, not 1 dollar.
-  const paymentIntent = await createPaymentIntent({
-    amount: Math.round(priceInfo.total_amount * 100),
-    currency: STRIPE_CURRENCY_CODE,
-  });
-
-  return json<LoaderType>({
-    client_secret: paymentIntent.client_secret || undefined,
-    payment_intend_id: paymentIntent.id,
-    categories,
-    navBarCategories,
-    price_info: priceInfo,
-    promo_code: promo_code,
-  });
 }
 
 function CheckoutLayout() {

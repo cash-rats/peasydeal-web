@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Form, Outlet, useLoaderData, useFetcher } from '@remix-run/react';
 import { json } from '@remix-run/node'
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
+import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
 import { fetchCategories } from '~/api/categories.server';
@@ -30,12 +31,20 @@ type LoaderType = {
 };
 
 export const loader: LoaderFunction = async () => {
-  const [categories, navBarCategories] = await fetchCategories();
+  try {
+    const [categories, navBarCategories] = await fetchCategories();
 
-  return json<LoaderType>({
-    categories,
-    navBarCategories,
-  })
+    return json<LoaderType>({
+      categories,
+      navBarCategories,
+    })
+  } catch(e) {
+    console.error(e);
+
+    throw json(e, {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    });
+  }
 }
 
 export default function Payment() {

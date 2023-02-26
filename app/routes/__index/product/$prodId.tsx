@@ -36,7 +36,7 @@ import {
 	decomposeProductDetailURL,
 	composeProductDetailURL,
 } from '~/utils';
-import type { Category } from '~/shared/types';
+// import type { Category } from '~/shared/types';
 
 import {
 	Accordion,

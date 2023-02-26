@@ -3,6 +3,7 @@ import { Outlet } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, Form, useFetcher } from '@remix-run/react';
+import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 
 import type { SuggestItem } from '~/shared/types';
@@ -56,13 +57,21 @@ type LoaderType = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const [categories, navBarCategories] = await fetchCategories();
+  try {
+    const [categories, navBarCategories] = await fetchCategories();
 
-  return json<LoaderType>({
-    categories,
-    navBarCategories,
-    canonicalLink: `${getCanonicalDomain()}/cart`
-  });
+    return json<LoaderType>({
+      categories,
+      navBarCategories,
+      canonicalLink: `${getCanonicalDomain()}/cart`
+    });
+  } catch(e) {
+    console.error(e);
+
+    throw json(e, {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    });
+  }
 }
 
 function CartLayout() {
