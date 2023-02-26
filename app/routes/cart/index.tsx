@@ -311,11 +311,6 @@ function Cart() {
 		setOpenRemoveItemModal(false);
 	}
 
-	if (Object.keys(state.cartItems).length === 0) {
-		return (
-			<EmptyShoppingCart />
-		);
-	}
 
 	const handleCancelRemoval = () => {
 		// User decide not to cancel, revert cartitem in session.
@@ -393,6 +388,15 @@ function Cart() {
 			},
 		);
 	};
+
+	if (
+		Object.keys(state.cartItems).length === 0 ||
+		state.priceInfo === null
+	) {
+		return (
+			<EmptyShoppingCart />
+		);
+	}
 
 	return (
 		<>

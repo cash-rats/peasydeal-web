@@ -93,11 +93,16 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
       }
     }
     case CartActionTypes.set_price_info: {
-      const priceInfo = action.payload as PriceInfo;
-
-      console.log('debug 1', state.cartItems);
+      const priceInfo = action.payload as PriceInfo | null;
 
       // Update existing cartItem
+      if (priceInfo === null) {
+        return {
+          ...state,
+          priceInfo,
+        }
+      }
+
       let updatedCartItems = new Map();
 
       for (const prod of priceInfo.products) {

@@ -307,8 +307,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 			? ''
 			: variation?.spec_name || ''
 
-		console.log('debug **~~', variation?.purchase_limit);
-
 		return {
 			salePrice: variation?.sale_price.toString() || '',
 			retailPrice: variation?.retail_price.toString() || '',
