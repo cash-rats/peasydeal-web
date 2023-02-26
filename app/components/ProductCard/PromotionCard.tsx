@@ -147,7 +147,6 @@ export default function ProductCard({
             ) : null
         }
 
-
         <div className={`${loaded ? 'h-full' : 'h-[183px] md:h-[274px]'}`} >
           <LazyLoadComponent scrollPosition={scrollPosition} >
             <Image
