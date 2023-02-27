@@ -1,15 +1,19 @@
 // Get endpoints according to different environment.
+
+
+type AppConfig = {
+  STRIPE_PUBLIC_KEY: string;
+  DOMAIN: string;
+  MYFB_ENDPOINT: string;
+};
+
 declare global {
   interface Window {
-    ENV: {
-      STRIPE_PUBLIC_KEY: string;
-      DOMAIN: string;
-      MYFB_ENDPOINT: string;
-    }
+    ENV: AppConfig;
   }
 }
 
-const getEnvSource = () => {
+const getEnvSource = (): AppConfig => {
   if (typeof window !== 'undefined') {
     return window.ENV;
   }

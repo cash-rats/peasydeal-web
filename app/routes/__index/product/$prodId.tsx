@@ -36,7 +36,6 @@ import {
 	decomposeProductDetailURL,
 	composeProductDetailURL,
 } from '~/utils';
-// import type { Category } from '~/shared/types';
 
 import {
 	Accordion,
@@ -47,7 +46,7 @@ import {
 } from '@chakra-ui/react'
 
 import Breadcrumbs from './components/Breadcrumbs';
-import type { ProductDetail, ProductVariation } from './types';
+import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api';
 import styles from "./styles/ProdDetail.css";
@@ -57,12 +56,7 @@ import SocialShare, { links as SocialShareLinks } from './components/SocialShare
 import useStickyActionBar from './hooks/useStickyActionBar';
 import useSticky from './hooks/useSticky';
 import reducer, { ActionTypes } from './reducer';
-
-type LoaderTypeProductDetail = {
-	product: ProductDetail;
-	canonical_url: string;
-	meta_image: string;
-};
+import { structuredData } from './seo';
 
 type LoaderErrorType = { error: any }
 
@@ -118,7 +112,11 @@ const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) =
 		},
 	];
 }
-export const handle = { dynamicLinks };
+
+export const handle = {
+	dynamicLinks,
+	structuredData,
+};
 
 // Fetch product detail data.
 export const loader: LoaderFunction = async ({ request }) => {

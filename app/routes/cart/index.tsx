@@ -38,6 +38,7 @@ import {
 	updateItemQuantity,
 } from './actions';
 import type { RemoveCartItemActionDataType, ApplyPromoCodeActionType } from './actions';
+import { syncShoppingCartWithNewProductsInfo } from './utils';
 
 export const links: LinksFunction = () => {
 	return [
@@ -113,7 +114,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	if (!cart || Object.keys(cart).length === 0) {
 		// Reset transaction object if we have an empty cart.
-		throw new Response(
+		throw json(
 			'Shopping cart empty',
 			{
 				status: httpStatus.NOT_FOUND,
@@ -131,14 +132,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 		});
 
 		const sessionStorablePriceInfo = extractPriceInfoToStoreInSession(priceInfo);
-
 		const session = await setTransactionObject(request, {
 			promo_code: null, // Reset promo_code everytime user refreshes.
 			price_info: sessionStorablePriceInfo,
 		})
 
 		return json<LoaderType>({
-			cart,
+			cart: syncShoppingCartWithNewProductsInfo(cart, priceInfo.products),
 			priceInfo,
 		}, {
 			headers: {

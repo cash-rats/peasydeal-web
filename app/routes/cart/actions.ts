@@ -35,6 +35,7 @@ export const applyPromoCode = async (request: Request, promoCode: string) => {
     };
 
     const priceQuery = convertShoppingCartToPriceQuery(cart);
+
     const priceInfo = await fetchPriceInfo({
       discount_code: promoCode,
       products: priceQuery

@@ -91,7 +91,7 @@ export async function loader({ request }: LoaderArgs) {
 }
 
 const structuredData = () => {
-  let organizationSchema: WithContext<Organization> = {
+  const organizationSchema: WithContext<Organization> = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "peasydeal.com, Inc.",
