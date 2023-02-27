@@ -1,5 +1,4 @@
 
-
 export interface ProductVariation {
   uuid: string;
   sku: string;
@@ -36,4 +35,10 @@ export interface ProductDetail {
   order_count: number;
   rating: number;
   num_of_raters: number;
+};
+
+export type LoaderTypeProductDetail = {
+  product: ProductDetail;
+  canonical_url: string;
+  meta_image: string;
 };

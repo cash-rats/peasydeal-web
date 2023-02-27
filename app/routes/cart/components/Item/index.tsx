@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
+import { Link } from '@remix-run/react';
 import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
 import { BsTrash } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
@@ -10,6 +11,8 @@ import {
 	TagLabel,
 	Tag,
 } from '@chakra-ui/react';
+
+import { composeProductDetailURL } from '~/utils';
 
 import styles from './styles/Item.css';
 
@@ -21,6 +24,7 @@ export const links: LinksFunction = () => {
 };
 
 type ItemProps = {
+	productUUID: string;
 	variationUUID: string;
 	image: string;
 	title: string;
@@ -64,6 +68,7 @@ const SubTotalPriceTag = ({ quantity, salePrice, calculating }: ISubTotalPriceTa
 function CartItem({
 	calculating = false,
 	item = {
+		productUUID: '',
 		variationUUID: '',
 		image: '',
 		title: '',
@@ -114,10 +119,12 @@ function CartItem({
 				<div className="grid grid-cols-12">
 					<div className="col-span-12 flex flex-row items-center justify-start">
 						<div className="flex aspect-square max-w-[120px] mr-4 ">
-							<img
-								className='my-auto slef-center'
-								alt={item.title} src={item.image}
-							/>
+							<Link to={composeProductDetailURL({ productName: item.title, variationUUID: item.productUUID })}>
+								<img
+									className='my-auto slef-center'
+									alt={item.title} src={item.image}
+								/>
+							</Link>
 						</div>
 
 						<div className="flex flex-col">

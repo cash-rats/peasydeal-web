@@ -1,6 +1,7 @@
-import type { ShoppingCart as SessionShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 
 import type { PriceInfo } from './cart.server';
+import { syncShoppingCartWithNewProductsInfo } from './utils';
 
 export enum CartActionTypes {
   set_cart_items = 'set_cart_items',
@@ -12,10 +13,6 @@ export enum CartActionTypes {
 export type PreviousQuantity = {
   [key: string]: string;
 };
-
-export type ShoppingCart = SessionShoppingCart & {
-  [variationUUID: string]: ShoppingCartItem;
-}
 
 export type StateShape = {
   cartItems: ShoppingCart;
@@ -90,7 +87,6 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
     case CartActionTypes.set_price_info: {
       const priceInfo = action.payload as PriceInfo | null;
 
-      // Update existing cartItem
       if (priceInfo === null) {
         return {
           ...state,
@@ -98,30 +94,12 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
         }
       }
 
-      let updatedCartItems = new Map<string, ShoppingCartItem>();
-
-      for (const prod of priceInfo.products) {
-        if (
-          prod?.variation_uuid &&
-          state.cartItems[prod.variation_uuid]
-        ) {
-          updatedCartItems.set(
-            prod.variation_uuid,
-            {
-              ...state.cartItems[prod.variation_uuid],
-              discountReason: prod.discount_reason,
-              retailPrice: prod.origin_unit_price.toString(),
-              salePrice: prod.discounted_price.toString(),
-              quantity: String(prod.quantity),
-            },
-          );
-        }
-      }
+      const updatedCartItems = syncShoppingCartWithNewProductsInfo(state.cartItems, priceInfo.products);
 
       return {
         ...state,
         priceInfo,
-        cartItems: Object.fromEntries(updatedCartItems),
+        cartItems: updatedCartItems,
       }
     }
     default:

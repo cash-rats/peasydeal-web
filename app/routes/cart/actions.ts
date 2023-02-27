@@ -17,8 +17,8 @@ import {
 import {
   fetchPriceInfo,
   convertShoppingCartToPriceQuery,
-  extractPriceInfoToStoreInSession,
 } from './cart.server';
+import { extractPriceInfoToStoreInSession } from './utils';
 
 import type { PriceInfo } from './cart.server';
 
@@ -35,6 +35,7 @@ export const applyPromoCode = async (request: Request, promoCode: string) => {
     };
 
     const priceQuery = convertShoppingCartToPriceQuery(cart);
+
     const priceInfo = await fetchPriceInfo({
       discount_code: promoCode,
       products: priceQuery
