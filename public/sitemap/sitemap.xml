@@ -4,12 +4,15 @@
     <loc>https://www.peasydeal.com/sitemap/static_pages.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://www.peasydeal.com/sitemap/base_functions.xml</loc>
-  </sitemap>
-  <sitemap>
     <loc>https://www.peasydeal.com/sitemap/categories.xml</loc>
   </sitemap>
   <sitemap>
     <loc>https://www.peasydeal.com/sitemap/products.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.peasydeal.com/sitemap/base_functions.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.peasydeal.com/sitemap/promotions.xml</loc>
   </sitemap>
 </sitemapindex>

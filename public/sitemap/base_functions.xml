@@ -2,19 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
   <loc>https://www.peasydeal.com/</loc>
-  <lastmod>2022-12-26T04:31:27.819822Z</lastmod>
+  <lastmod>2023-02-27T07:07:56.483599Z</lastmod>
   <changefreq>always</changefreq>
   <priority>1</priority>
 </url>
 <url>
-  <loc>https://www.peasydeal.com/cart</loc>
-  <lastmod>2022-12-26T04:31:27.819822Z</lastmod>
-  <changefreq>always</changefreq>
-  <priority>0.8</priority>
-</url>
-<url>
   <loc>https://www.peasydeal.com/tracking</loc>
-  <lastmod>2022-12-26T04:31:27.819822Z</lastmod>
+  <lastmod>2023-02-27T07:07:56.483599Z</lastmod>
   <changefreq>always</changefreq>
   <priority>0.7</priority>
 </url>
