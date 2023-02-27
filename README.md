@@ -116,3 +116,4 @@ https://www.npmjs.com/package/@paypal/react-paypal-js?activeTab=readme
 - [react-cosmos mock routes in Remix](https://www.vixalien.com/blog/remix-in-the-cosmos)
 - [Name color][find name of a color](https://colors.artyclick.com/color-name-finder/)
 - [web icons generator](https://realfavicongenerator.net/)
+- [Remix error catching](https://codegino.com/blog/remix-error-handling)

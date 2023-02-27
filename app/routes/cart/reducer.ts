@@ -1,4 +1,4 @@
-import type { ShoppingCart as SessionShoppingCart, ShoppingCartItem as SessionShoppingCartItem } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart as SessionShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
 import type { PriceInfo } from './cart.server';
 
@@ -11,11 +11,6 @@ export enum CartActionTypes {
 
 export type PreviousQuantity = {
   [key: string]: string;
-};
-
-
-export type ShoppingCartItem = SessionShoppingCartItem & {
-  discount_reason: string;
 };
 
 export type ShoppingCart = SessionShoppingCart & {
@@ -103,7 +98,7 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
         }
       }
 
-      let updatedCartItems = new Map();
+      let updatedCartItems = new Map<string, ShoppingCartItem>();
 
       for (const prod of priceInfo.products) {
         if (
@@ -114,8 +109,9 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
             prod.variation_uuid,
             {
               ...state.cartItems[prod.variation_uuid],
-              retailPrice: prod.origin_unit_price,
-              salePrice: prod.discounted_price,
+              discountReason: prod.discount_reason,
+              retailPrice: prod.origin_unit_price.toString(),
+              salePrice: prod.discounted_price.toString(),
               quantity: String(prod.quantity),
             },
           );

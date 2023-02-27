@@ -28,6 +28,7 @@ export type PriceInfo = {
   tax_amount: number;
   shipping_fee: number;
   discount_amount: number;
+  discount_reason: string;
   total_amount: number;
   currency: string;
   vat_included: boolean;
@@ -67,6 +68,7 @@ export const extractPriceInfoToStoreInSession = (priceInfo: PriceInfo): CookieSt
   tax_amount: priceInfo.tax_amount,
   shipping_fee: priceInfo.shipping_fee,
   discount_amount: priceInfo.discount_amount,
+  discount_reason: priceInfo.discount_reason,
   total_amount: priceInfo.total_amount,
   currency: priceInfo.currency,
   vat_included: priceInfo.vat_included,

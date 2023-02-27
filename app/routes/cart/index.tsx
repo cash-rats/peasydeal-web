@@ -96,7 +96,7 @@ export const action: ActionFunction = async ({ request }) => {
 	}
 
 	// Unknown action
-	return null;
+	throw new Error(`unrecognized cart action type: ${actionType}`);
 }
 
 type LoaderType = {
@@ -126,8 +126,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}
 
 	try {
-		const costQuery = convertShoppingCartToPriceQuery(cart);
-		const priceInfo = await fetchPriceInfo({ products: costQuery });
+		const priceInfo = await fetchPriceInfo({
+			products: convertShoppingCartToPriceQuery(cart),
+		});
+
 		const sessionStorablePriceInfo = extractPriceInfoToStoreInSession(priceInfo);
 
 		const session = await setTransactionObject(request, {
@@ -502,41 +504,43 @@ function Cart() {
 								</div>
 								{
 									// TODO: add typescript to item.
-									Object.keys(state.cartItems).map((prodID) => {
-										const item = state.cartItems[prodID];
-										const variationUUID = item.variationUUID;
+									Object.
+										keys(state.cartItems).
+										map((prodID) => {
+											const item = state.cartItems[prodID];
+											const variationUUID = item.variationUUID;
 
-										const isCalculating = (
-											updateItemQuantityFetcher.state !== 'idle' &&
-											updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
+											const isCalculating = (
+												updateItemQuantityFetcher.state !== 'idle' &&
+												updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
 
-										) || (
-												removeItemFetcher.state !== 'idle' &&
-												removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
+											) || (
+													removeItemFetcher.state !== 'idle' &&
+													removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
+												)
+
+											return (
+												<CartItem
+													key={variationUUID}
+													item={{
+														variationUUID,
+														image: item.image,
+														title: item.title,
+														description: item.specName,
+														salePrice: Number(item.salePrice),
+														retailPrice: Number(item.retailPrice),
+														quantity: Number(item.quantity),
+														purchaseLimit: Number(item.purchaseLimit),
+														discountReason: item.discountReason,
+													}}
+													calculating={isCalculating}
+													onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
+													onChangeQuantity={(evt, number) => handleOnChangeQuantity(evt, variationUUID, number)}
+													onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}
+													onClickRemove={handleRemove}
+												/>
 											)
-
-										return (
-											<CartItem
-												item={{
-													variationUUID,
-													image: item.image,
-													title: item.title,
-													description: item.specName,
-													salePrice: Number(item.salePrice),
-													retailPrice: Number(item.retailPrice),
-													quantity: Number(item.quantity),
-													purchaseLimit: Number(item.purchaseLimit),
-													discountReason: item.discountReason,
-												}}
-												calculating={isCalculating}
-												key={variationUUID}
-												onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
-												onChangeQuantity={(evt, number) => handleOnChangeQuantity(evt, variationUUID, number)}
-												onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}
-												onClickRemove={handleRemove}
-											/>
-										)
-									})
+										})
 								}
 							</div>
 

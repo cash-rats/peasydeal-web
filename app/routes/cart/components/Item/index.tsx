@@ -3,8 +3,13 @@ import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
 import { BsTrash } from 'react-icons/bs';
+import { ImPriceTags } from 'react-icons/im';
 import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
+import {
+	TagLabel,
+	Tag,
+} from '@chakra-ui/react';
 
 import styles from './styles/Item.css';
 
@@ -67,6 +72,7 @@ function CartItem({
 		retailPrice: 0,
 		quantity: 1,
 		purchaseLimit: 10,
+		discountReason: '',
 	},
 	onChangeQuantity = () => { },
 	onClickQuantity = () => { },
@@ -102,35 +108,61 @@ function CartItem({
 			md:grid grid-cols-12 gap-4
 			relative
 		">
+
 			{/* Item image */}
 			<div className="flex items-center col-span-6">
-				<div className="flex aspect-square max-w-[120px] mr-4">
-					<img
-						className='my-auto slef-center'
-						alt={item.title} src={item.image}
-					/>
-				</div>
+				<div className="grid grid-cols-12">
+					<div className="col-span-12 flex flex-row items-center justify-start">
+						<div className="flex aspect-square max-w-[120px] mr-4 ">
+							<img
+								className='my-auto slef-center'
+								alt={item.title} src={item.image}
+							/>
+						</div>
 
-				<div className="">
-					<p className="text-lg font-medium mb-2">
-						{item.title}
-					</p>
+						<div className="flex flex-col">
+							<p className="text-lg font-medium mb-2">
+								{item.title}
+							</p>
 
-					<p className="text-sm">
-						Variation: {item.description}
-					</p>
+							<p className="text-sm">
+								Variation: {item.description}
+							</p>
 
-					<div className="items-center flex flex-row md:hidden my-4">
-						<span className='text-lg font-poppins font-bold mr-2'>£{item.salePrice} </span>
-						<div className="relative w-fit">
-							<span className='flex flex-col w-fit'>
-								<span>£{item.retailPrice}</span>
-								<div className="block h-[1px] w-full bg-black absolute top-[10px]"></div>
-							</span>
+							{
+								item.discountReason
+									? (
+										<div className="mt-2 hidden md:flex">
+											<Tag
+												variant='outline'
+												colorScheme='blue'
+												className='flex items-center w-fit mb-2'
+												size="md"
+											>
+												<ImPriceTags className='mr-1' />
+												<TagLabel>{item.discountReason}</TagLabel>
+											</Tag>
+										</div>
+									)
+									: null
+							}
+
+
+							<div className="items-center flex flex-row md:hidden my-4">
+								<span className='text-lg font-poppins font-bold mr-2'>£{item.salePrice} </span>
+								<div className="relative w-fit">
+									<span className='flex flex-col w-fit'>
+										<span>£{item.retailPrice}</span>
+										<div className="block h-[1px] w-full bg-black absolute top-[10px]"></div>
+									</span>
+								</div>
+							</div>
 						</div>
 					</div>
+
 				</div>
 			</div>
+
 
 			<div className="col-span-2 text-right self-center hidden md:flex flex-row md:flex-col">
 				<div className="relative w-fit ml-auto">
@@ -141,6 +173,24 @@ function CartItem({
 				</div>
 				<span className='text-lg font-poppins font-medium text-[#D02E7D]'>£{item.salePrice}</span>
 			</div>
+
+			{
+				item.discountReason
+					? (
+						<div className="border-t-[#efefef] border-t md:hidden mt-4 pt-4 pb-1">
+							<Tag
+								variant='outline'
+								colorScheme='blue'
+								className='flex items-center w-fit mb-2'
+								size="md"
+							>
+								<ImPriceTags className='mr-1' />
+								<TagLabel>{item.discountReason}</TagLabel>
+							</Tag>
+						</div>
+					)
+					: null
+			}
 
 			<div className="
 				col-span-2 text-right self-center

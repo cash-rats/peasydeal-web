@@ -5,7 +5,6 @@ import { BsBagCheck } from 'react-icons/bs';
 import Skeleton from '@mui/material/Skeleton';
 import { Input, Button } from '@chakra-ui/react'
 import {
-  TagLeftIcon,
   TagLabel,
   Tag,
 } from '@chakra-ui/react';
@@ -306,7 +305,7 @@ export default function PriceResult({
                       className='w-fit mb-2'
                       size="md">
                       <ImPriceTags className='mr-1' />
-                      <TagLabel>{ event }</TagLabel>
+                      <TagLabel>{event}</TagLabel>
                     </Tag>
                   ))
                 )
@@ -319,8 +318,6 @@ export default function PriceResult({
         </div>
 
         <div className="mt-[0.7rem]">
-
-
 
           <ResultRow
             label={<strong>Total to pay</strong>}
