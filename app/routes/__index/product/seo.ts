@@ -1,6 +1,6 @@
 import type { LoaderTypeProductDetail } from './types';
 import type { WithContext, Product } from 'schema-dts';
-import { productsLoader } from '../$collection/loaders';
+
 
 // @TODOs
 //  - use product sku instead of uuid.

@@ -17,8 +17,8 @@ import {
 import {
   fetchPriceInfo,
   convertShoppingCartToPriceQuery,
-  extractPriceInfoToStoreInSession,
 } from './cart.server';
+import { extractPriceInfoToStoreInSession } from './utils';
 
 import type { PriceInfo } from './cart.server';
 

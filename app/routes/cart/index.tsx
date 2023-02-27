@@ -27,7 +27,6 @@ import PriceResult from './components/PriceResult';
 import {
 	fetchPriceInfo,
 	convertShoppingCartToPriceQuery,
-	extractPriceInfoToStoreInSession,
 } from './cart.server';
 import type { PriceInfo } from './cart.server';
 import styles from './styles/cart.css';
@@ -38,7 +37,7 @@ import {
 	updateItemQuantity,
 } from './actions';
 import type { RemoveCartItemActionDataType, ApplyPromoCodeActionType } from './actions';
-import { syncShoppingCartWithNewProductsInfo } from './utils';
+import { syncShoppingCartWithNewProductsInfo, extractPriceInfoToStoreInSession } from './utils';
 
 export const links: LinksFunction = () => {
 	return [
@@ -313,7 +312,6 @@ function Cart() {
 		setOpenRemoveItemModal(false);
 	}
 
-
 	const handleCancelRemoval = () => {
 		// User decide not to cancel, revert cartitem in session.
 		if (!targetRemovalVariationUUID || !targetRemovalVariationUUID.current) return;
@@ -523,6 +521,7 @@ function Cart() {
 												<CartItem
 													key={variationUUID}
 													item={{
+														productUUID: item.productUUID,
 														variationUUID,
 														image: item.image,
 														title: item.title,
@@ -539,6 +538,7 @@ function Cart() {
 													onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}
 													onClickRemove={handleRemove}
 												/>
+
 											)
 										})
 								}

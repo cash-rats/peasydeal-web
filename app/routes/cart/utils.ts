@@ -1,5 +1,5 @@
 import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
-import type { PurchasedProduct } from './cart.server';
+import type { PurchasedProduct, PriceInfo } from './cart.server';
 
 
 export const syncShoppingCartWithNewProductsInfo = (
@@ -28,3 +28,20 @@ export const syncShoppingCartWithNewProductsInfo = (
 
   return Object.fromEntries(updatedCartItems);
 }
+
+export interface CookieStorablePriceInfo extends Omit<PriceInfo, 'products'> { };
+
+export const extractPriceInfoToStoreInSession = (priceInfo: PriceInfo): CookieStorablePriceInfo => ({
+  sub_total: priceInfo.sub_total,
+  tax_amount: priceInfo.tax_amount,
+  shipping_fee: priceInfo.shipping_fee,
+  discount_amount: priceInfo.discount_amount,
+  discount_reason: priceInfo.discount_reason,
+  total_amount: priceInfo.total_amount,
+  currency: priceInfo.currency,
+  vat_included: priceInfo.vat_included,
+  discount_code_valid: priceInfo.discount_code_valid,
+  discount_type: priceInfo.discount_type,
+  percentage_off_amount: priceInfo.percentage_off_amount,
+  applied_events: priceInfo.applied_events,
+});
