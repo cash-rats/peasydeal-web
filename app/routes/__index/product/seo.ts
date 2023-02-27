@@ -25,11 +25,11 @@ const structuredData = (data: LoaderTypeProductDetail) => {
       "datePublished": "2022-01-01",
       "reviewBody": "Product review text"
     },
-    // "aggregateRating": {
-    //   "@type": "AggregateRating",
-    //   "ratingValue": "4.4",
-    //   "reviewCount": "89"
-    // },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": product.rating.toString(),
+      "reviewCount": product.num_of_raters,
+    },
     "offers": {
       "@type": "Offer",
       "price": product.variations.length > 0
