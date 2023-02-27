@@ -25,15 +25,17 @@ const structuredData = (data: LoaderTypeProductDetail) => {
       "datePublished": "2022-01-01",
       "reviewBody": "Product review text"
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.4",
-      "reviewCount": "89"
-    },
+    // "aggregateRating": {
+    //   "@type": "AggregateRating",
+    //   "ratingValue": "4.4",
+    //   "reviewCount": "89"
+    // },
     "offers": {
       "@type": "Offer",
-      "price": "19.99",
-      "priceCurrency": "USD",
+      "price": product.variations.length > 0
+        ? product.variations[0].sale_price.toString()
+        : '0',
+      "priceCurrency": "GBP",
       "availability": "https://schema.org/InStock",
       "url": "http://example.com/product"
     }
