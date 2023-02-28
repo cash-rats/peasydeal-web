@@ -184,7 +184,7 @@ const Document = withEmotionCache(
           ))}
 
           {/* <!-- Google tag (gtag.js) --> */}
-          {/* {
+          {
             process.env.NODE_ENV === "development" || !envData.GOOGLE_ANALYTICS_ID
               ? null
               : (
@@ -210,11 +210,11 @@ const Document = withEmotionCache(
                   />
                 </>
               )
-          } */}
+          }
         </head>
         <body>
           {/* <!-- Google Tag Manager (noscript) --> */}
-          {/* <noscript>
+          <noscript>
             {
               envData && envData.GOOGLE_TAG_ID
                 ? (
@@ -228,7 +228,7 @@ const Document = withEmotionCache(
                 )
                 : null
             }
-          </noscript> */}
+          </noscript>
 
           {children}
 
