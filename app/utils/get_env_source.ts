@@ -39,6 +39,9 @@ const GOOGLE_TAG_ID = getEnvSource().GOOGLE_TAG_ID;
 const POPTIN_ID = getEnvSource().POPTIN_ID;
 const POPUPSMART_ID = getEnvSource().POPUPSMART_ID;
 
+const CONTENTFUL_SPACE_ID = getEnvSource().CONTENTFUL_SPACE_ID;
+const CONTENTFUL_ACCESS_TOKEN = getEnvSource().CONTENTFUL_ACCESS_TOKEN;
+
 export {
   DOMAIN,
   MYFB_ENDPOINT,
@@ -57,6 +60,9 @@ export {
   GOOGLE_TAG_ID,
   POPTIN_ID,
   POPUPSMART_ID,
+
+  CONTENTFUL_SPACE_ID,
+  CONTENTFUL_ACCESS_TOKEN,
 };
 
 export default getEnvSource

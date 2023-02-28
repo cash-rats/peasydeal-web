@@ -18,7 +18,7 @@ const companyDetails = [
     link: '/shipping-policy',
   },
   {
-    label: 'termins of service',
+    label: 'terms of service',
     link: '/terms-of-use',
   },
   {

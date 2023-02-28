@@ -63,6 +63,7 @@
     "@stripe/stripe-js": "^1.46.0",
     "bcryptjs": "^2.4.3",
     "clsx": "^1.2.1",
+    "contentful": "^9.3.3",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.2",
     "framer-motion": "^7.2.0",

@@ -1,3 +1,5 @@
+import type * as Contentful from 'contentful';
+
 export type Variation = {
   uuid: string;
   spec_name: string;
@@ -81,3 +83,27 @@ export type SuggestItem = {
 };
 
 export type PaymentMethod = 'paypal' | 'stripe';
+
+export type TSeoReference = {
+  fields: {
+    SEOdescription: string;
+    SEOtitle: string;
+    canonicalUrl: string;
+    ogImage: Contentful.Asset;
+    ogType: string;
+    seoFollow: boolean;
+    seoIndex: boolean;
+  }
+}
+
+export type TContentfulPost = {
+  body: Contentful.EntryFields.RichText;
+  featuredImage: Contentful.Asset;
+  introText: Contentful.EntryFields.RichText;
+  metatdata: Array<string>;
+  postName: string;
+  publishedDate: string;
+  seoReference: TSeoReference,
+  seoTitle: string;
+  slug: string;
+}

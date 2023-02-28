@@ -1,8 +1,20 @@
 import httpStatus from 'http-status-codes';
 
-import type { Product, ApiErrorResponse } from '~/shared/types';
+import type { Product, ApiErrorResponse, TContentfulPost } from '~/shared/types';
 import type { ActivityBanner } from '../types';
-import { MYFB_ENDPOINT, PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
+import {
+	MYFB_ENDPOINT,
+	PEASY_DEAL_ENDPOINT,
+	CONTENTFUL_SPACE_ID,
+	CONTENTFUL_ACCESS_TOKEN
+} from '~/utils/get_env_source';
+
+import * as contentful from 'contentful';
+
+const contenfulClient = contentful.createClient({
+  space: CONTENTFUL_SPACE_ID,
+  accessToken: CONTENTFUL_ACCESS_TOKEN,
+})
 
 // We will interweave activity banners in between products list to make the screen
 // more contentful.
@@ -87,6 +99,24 @@ interface IFetchProductsByCategoryV2Response {
 	current: number;
 	hasMore: boolean;
 }
+
+interface IContentfulRes {
+	fields?: TContentfulPost,
+}
+// Fetch from Contentful with GraphQL
+export const fetchContentfulPostWithId = async ({
+	entryId,
+}: { entryId: string }): Promise<any> => {
+	try {
+		const resp = await contenfulClient.getEntry<IContentfulRes>(entryId);
+		return resp?.fields;
+	} catch (error: any) {
+		console.error(error);
+
+		throw new Error(error?.message);
+	}
+}
+
 
 export const fetchProductsByCategoryV2 = async ({
 	category,
