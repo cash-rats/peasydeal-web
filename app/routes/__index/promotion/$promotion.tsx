@@ -185,7 +185,7 @@ function Promotion({ scrollPosition }: TPromotion) {
             <BreadcrumbItem key="2">
               <BreadcrumbLink
                 as={NavLink}
-                to={`/${state.category.name}`}
+                to={`/promotion/${state.category.name}`}
                 isCurrentPage
                 className="font-semibold !text-[#D02E7D]"
               >
