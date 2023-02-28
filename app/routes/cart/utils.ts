@@ -9,16 +9,20 @@ export const syncShoppingCartWithNewProductsInfo = (
   let updatedCartItems = new Map<string, ShoppingCartItem>();
 
   for (const prod of purchasedProds) {
+    const itemInCart = cart[prod.variation_uuid];
+
     if (
       prod?.variation_uuid &&
-      cart[prod.variation_uuid]
+      itemInCart
     ) {
       updatedCartItems.set(
         prod.variation_uuid,
         {
           ...cart[prod.variation_uuid],
           discountReason: prod.discount_reason,
-          retailPrice: prod.origin_unit_price.toString(),
+          retailPrice: prod.origin_unit_price.toString() === prod.discounted_price.toString()
+            ? itemInCart.retailPrice.toString()
+            : prod.origin_unit_price.toString(),
           salePrice: prod.discounted_price.toString(),
           quantity: String(prod.quantity),
         },
