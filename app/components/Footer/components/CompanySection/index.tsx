@@ -22,8 +22,8 @@ const companyDetails = [
     link: '/terms-of-use',
   },
   {
-    label: 'whalesale',
-    link: '/wholesale',
+    label: 'sell on peasydeal',
+    link: '/sell-on-peasydeal',
   },
   {
     label: 'career',

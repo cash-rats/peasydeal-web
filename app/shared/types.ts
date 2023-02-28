@@ -106,4 +106,5 @@ export type TContentfulPost = {
   seoReference: TSeoReference,
   seoTitle: string;
   slug: string;
+  attributes: any;
 }

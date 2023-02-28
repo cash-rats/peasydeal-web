@@ -67,8 +67,8 @@ const services = [
     title: 'About Us',
   },
   {
-    to: '/wholesale',
-    title: 'Wholesale',
+    to: '/sell-on-peasydeal',
+    title: 'Sell on Peasydeal',
   },
 ];
 

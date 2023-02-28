@@ -52,7 +52,7 @@ export const getShippingPolicyTitleText = () => 'Shipping Policy | peasydeal.com
 // SEO terms of use page
 export const getTermsOfUseTitleText = () => 'Terms of Use | peasydeal.com';
 
-// SEO wholesale page
+// SEO sell with Us page
 export const getWholesaleTitleText = () => 'Terms of Use | peasydeal.com';
 
 // ------------------ END SEO ------------------
