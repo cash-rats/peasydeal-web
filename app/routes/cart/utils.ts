@@ -27,6 +27,7 @@ export const syncShoppingCartWithNewProductsInfo = (
           retailPrice: prod.origin_unit_price.toString() === prod.discounted_price.toString()
             ? itemInCart.retailPrice.toString()
             : prod.origin_unit_price.toString(),
+
           salePrice: prod.discounted_price.toString(),
           quantity: String(prod.quantity),
         },
