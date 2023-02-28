@@ -30,7 +30,6 @@ module.exports = {
         "REDIS_HOST": process.env.REDIS_HOST,
         "REDIST_PORT": process.env.REDIST_PORT,
 
-        "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
         "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
 
         "CONTENTFUL_SPACE_ID": process.env.CONTENTFUL_SPACE_ID,
@@ -60,7 +59,6 @@ module.exports = {
         "REDIS_HOST": process.env.REDIS_HOST,
         "REDIST_PORT": process.env.REDIST_PORT,
 
-        "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
         "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
 
         "CONTENTFUL_SPACE_ID": process.env.CONTENTFUL_SPACE_ID,
@@ -90,7 +88,6 @@ module.exports = {
         "REDIS_HOST": process.env.REDIS_HOST,
         "REDIST_PORT": process.env.REDIST_PORT,
 
-        "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
         "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
 
         "CONTENTFUL_SPACE_ID": process.env.CONTENTFUL_SPACE_ID,
