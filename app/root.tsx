@@ -215,13 +215,19 @@ const Document = withEmotionCache(
         <body>
           {/* <!-- Google Tag Manager (noscript) --> */}
           <noscript>
-            <iframe
-              title='Google Tag Manager'
-              src={`https://www.googletagmanager.com/ns.html?id=${envData?.GOOGLE_TAG_ID}`}
-              height="0"
-              width="0"
-              style={{ display: 'none', visibility: 'hidden' }}
-            />
+            {
+              envData && envData.GOOGLE_TAG_ID
+                ? (
+                  <iframe
+                    title='Google Tag Manager'
+                    src={`https://www.googletagmanager.com/ns.html?id=${envData?.GOOGLE_TAG_ID}`}
+                    height="0"
+                    width="0"
+                    style={{ display: 'none', visibility: 'hidden' }}
+                  />
+                )
+                : null
+            }
           </noscript>
 
           {children}
