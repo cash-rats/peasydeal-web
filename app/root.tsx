@@ -182,36 +182,8 @@ const Document = withEmotionCache(
               dangerouslySetInnerHTML={{ __html: css }}
             />
           ))}
-
-          {/* <!-- Google tag (gtag.js) --> */}
-          {
-            process.env.NODE_ENV === "development" || !envData.GOOGLE_ANALYTICS_ID
-              ? null
-              : (
-                <>
-                  <script
-                    async
-                    src={`https://www.googletagmanager.com/gtag/js?id=${envData.GOOGLE_ANALYTICS_ID}`}
-                  />
-
-                  <script
-                    async
-                    id="gtag-init"
-                    dangerouslySetInnerHTML={{
-                      __html: `
-                        window.dataLayer = window.dataLayer || [];
-                        function gtag(){dataLayer.push(arguments);}
-                        gtag('js', new Date());
-                        gtag('config', '${envData.GOOGLE_ANALYTICS_ID}', {
-                          page_path: window.location.pathname,
-                        });
-                      `,
-                    }}
-                  />
-                </>
-              )
-          }
         </head>
+
         <body>
           {/* <!-- Google Tag Manager (noscript) --> */}
           <noscript>
