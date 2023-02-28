@@ -32,8 +32,6 @@ module.exports = {
 
         "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
         "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
-        "POPTIN_ID": process.env.POPTIN_ID,
-        "POPUPSMART_ID": process.env.POPUPSMART_ID,
 
         "CONTENTFUL_SPACE_ID": process.env.CONTENTFUL_SPACE_ID,
         "CONTENTFUL_ACCESS_TOKEN": process.env.CONTENTFUL_ACCESS_TOKEN,
@@ -64,8 +62,6 @@ module.exports = {
 
         "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
         "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
-        "POPTIN_ID": process.env.POPTIN_ID,
-        "POPUPSMART_ID": process.env.POPUPSMART_ID,
 
         "CONTENTFUL_SPACE_ID": process.env.CONTENTFUL_SPACE_ID,
         "CONTENTFUL_ACCESS_TOKEN": process.env.CONTENTFUL_ACCESS_TOKEN,
@@ -96,9 +92,7 @@ module.exports = {
 
         "GOOGLE_ANALYTICS_ID": process.env.GOOGLE_ANALYTICS_ID,
         "GOOGLE_TAG_ID": process.env.GOOGLE_TAG_ID,
-        "POPTIN_ID": process.env.POPTIN_ID,
-        "POPUPSMART_ID": process.env.POPUPSMART_ID,
-        
+
         "CONTENTFUL_SPACE_ID": process.env.CONTENTFUL_SPACE_ID,
         "CONTENTFUL_ACCESS_TOKEN": process.env.CONTENTFUL_ACCESS_TOKEN,
       },

@@ -239,22 +239,6 @@ const Document = withEmotionCache(
 
           {process.env.NODE_ENV === "development" && <LiveReload />}
 
-          {
-            envData?.POPUPSMART_ID && (<script
-              type="text/javascript"
-              src={`https://apiv2.popupsmart.com/api/Bundle/${envData?.POPUPSMART_ID}`}
-              async
-            />)
-          }
-
-          {
-            envData?.POPTIN_ID && (<script
-              id='pixel-script-poptin'
-              src={`https://cdn.popt.in/pixel.js?id=${envData?.POPTIN_ID}`}
-              async
-            />)
-          }
-
         </body>
       </html>
     );
