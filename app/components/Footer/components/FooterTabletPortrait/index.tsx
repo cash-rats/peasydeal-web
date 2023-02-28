@@ -24,7 +24,7 @@ function FooterTabletPortrait({ categories = [] }: FooterTabletPortraitProps) {
       <div className="grid grid-cols-2 pt-10">
         <ProductSection categories={categories} />
         <div className="flex flex-col">
-          <ResourceSection />
+          {/* <ResourceSection /> */}
           <div className="mt-10">
             <CompanySection />
           </div>

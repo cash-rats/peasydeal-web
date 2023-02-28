@@ -68,7 +68,7 @@ const services = [
   },
   {
     to: '/sell-on-peasydeal',
-    title: 'Sell on Peasydeal',
+    title: 'Sell on PeasyDeal',
   },
 ];
 

@@ -22,7 +22,7 @@ const companyDetails = [
     link: '/terms-of-use',
   },
   {
-    label: 'sell on peasydeal',
+    label: 'sell on peasyDeal',
     link: '/sell-on-peasydeal',
   },
   {

@@ -37,9 +37,9 @@ function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
         </div>
 
 
-        <div className="600:hidden flex-auto">
+        {/* <div className="600:hidden flex-auto">
           <ResourceSection />
-        </div>
+        </div> */}
       </li>
 
       <li >

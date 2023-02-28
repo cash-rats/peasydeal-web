@@ -20,8 +20,8 @@ interface FooterTabletLayoutProps {
 function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
   return (
     <div className="
-      grid grid-cols-[1fr_1fr_1fr_1fr_1fr] gap-12
-      border-b-[1px] border-b-[#2E4E73] pb-12
+      grid grid-cols-4 gap-12
+      border-b-[1px] border-b-[#2E4E73] pb-4
     ">
       {/* Logo Section */}
       <LogoSection />
@@ -64,7 +64,7 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
       </div >
 
       {/* Resources */}
-      <ResourceSection />
+      {/* <ResourceSection /> */}
 
       {/* Company */}
       <CompanySection />
