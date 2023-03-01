@@ -18,14 +18,19 @@ interface ClientCacheProviderProps {
 }
 
 function ClientCacheProvider({ children }: ClientCacheProviderProps) {
-	const [cache, setCache] = React.useState(defaultCache)
+	const [cache, setCache] = React.useState(createEmotionCache())
 
-	function reset() {
-		setCache(createEmotionCache())
-	}
+	const clientStyleContextValue = React.useMemo(
+		() => ({
+			reset() {
+				setCache(createEmotionCache());
+			},
+		}),
+		[],
+	);
 
 	return (
-		<ClientStyleContext.Provider value={{ reset }}>
+		<ClientStyleContext.Provider value={clientStyleContextValue}>
 			<CacheProvider value={cache}>{children}</CacheProvider>
 		</ClientStyleContext.Provider>
 	)
