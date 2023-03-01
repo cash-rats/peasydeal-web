@@ -28,7 +28,7 @@ import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
 import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
-import { ServerStyleContext, ClientStyleContext } from "./context"
+import { ClientStyleContext, ServerStyleContext } from "./context"
 import styles from "./styles/global.css";
 import ScrollRestoration from './ConditionalScrollRestoration';
 
@@ -116,7 +116,7 @@ interface DocumentProps {
 
 const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
-    // const serverStyleData = useContext(ServerStyleContext);
+    const serverStyleData = useContext(ServerStyleContext)
     const clientStyleData = useContext(ClientStyleContext);
     const envData = useLoaderData();
 
@@ -175,6 +175,13 @@ const Document = withEmotionCache(
           <Links />
           <StructuredData />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
+          {serverStyleData?.map(({ key, ids, css }) => (
+            <style
+              key={key}
+              data-emotion={`${key} ${ids.join(' ')}`}
+              dangerouslySetInnerHTML={{ __html: css }}
+            />
+          ))}
         </head>
 
         <body>
@@ -185,7 +192,7 @@ const Document = withEmotionCache(
                 ? (
                   <iframe
                     title='Google Tag Manager'
-                    src={`https://www.googletagmanager.com/ns.html?id=${envData?.GOOGLE_TAG_ID}`}
+                    src={`https://www.googletagmanager.com/ns.html?id=${envData.GOOGLE_TAG_ID}`}
                     height="0"
                     width="0"
                     style={{ display: 'none', visibility: 'hidden' }}
@@ -203,17 +210,13 @@ const Document = withEmotionCache(
               `
             }}
           />
-
           <ChakraProvider>
             {children}
           </ChakraProvider>
-
-
           <ScrollRestoration />
           <Scripts data-cfasync='false' />
 
           {process.env.NODE_ENV === "development" && <LiveReload />}
-
         </body>
       </html>
     );

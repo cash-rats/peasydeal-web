@@ -22,7 +22,7 @@ export function useContext() {
 }
 
 const iconMapper = (name: string) => {
-  switch(name) {
+  switch (name) {
     case 'hot_deal':
       return <VscFlame className='text-[42px] pb-2 text-[#e90064] relative left-[-6px]' />;
     case 'new_trend':
@@ -105,9 +105,9 @@ const CategoriesRow = () => {
         >
           <div className="flex flex-nowrap">
             {
-              categories?.map((category: Category) => {
+              categories?.map((category: Category, index: number) => {
                 return (
-                  <div className="inline-block px-3" key={category.name}>
+                  <div className="inline-block px-3" key={`${category.name}_${index}`}>
                     <Link to={`/${category.name}`}>
                       <div
                         className="
@@ -128,9 +128,9 @@ const CategoriesRow = () => {
                           caterogy-card-box
                         "
                       >
-                        <span>{ iconMapper(category.name) }</span>
+                        <span>{iconMapper(category.name)}</span>
                         <span>
-                          { category.title }
+                          {category.title}
                         </span>
                       </div>
                     </Link>

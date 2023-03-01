@@ -109,7 +109,7 @@ function Index({ scrollPosition, categories }: IndexProps) {
 				mx-2 md:mx-4
 			">
 				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-					<PromoActivities promotions={promotions} />
+					{/* <PromoActivities promotions={promotions} /> */}
 				</div>
 			</div>
 
@@ -125,8 +125,8 @@ function Index({ scrollPosition, categories }: IndexProps) {
 							">
 								<div className="w-full py-2.5 max-w-screen-xl mx-auto">
 									<CategoryPreview
-										category={category}
 										key={`${category.name}_${index}`}
+										category={category}
 										onClickProduct={handleClickProduct}
 										scrollPosition={scrollPosition}
 									/>

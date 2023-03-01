@@ -209,16 +209,14 @@ export default function ProductCard({
               if (!tag) return null;
 
               return (
-                <>
-                  <Tag
-                    colorScheme={tag.color}
-                    variant='solid'
-                    className="nowrap"
-                    key={`tag_${tag.name}_${tag.color}`}
-                  >
-                    {tag.name}
-                  </Tag>
-                </>
+                <Tag
+                  colorScheme={tag.color}
+                  variant='solid'
+                  className="nowrap"
+                  key={`tag_${tag.name}_${tag.color}`}
+                >
+                  {tag.name}
+                </Tag>
               );
             })
           }

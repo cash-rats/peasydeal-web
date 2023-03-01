@@ -50,7 +50,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			categories,
 			navBarCategories,
 		});
-	} catch(e) {
+	} catch (e) {
 		console.error(e);
 
 		throw json(e, {

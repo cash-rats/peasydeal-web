@@ -32,7 +32,7 @@ export default function ProductRow({
       mb-2 md:mb-3 lg:mb-4
     '>
       {
-        products.map((product: Product, index) => (
+        products.map((product: Product, index: number) => (
           <RegularCardWithActionButton
             key={`product-item-${index}-${product.productUUID}`}
             product={product}
