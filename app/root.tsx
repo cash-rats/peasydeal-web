@@ -121,18 +121,18 @@ const Document = withEmotionCache(
     const envData = useLoaderData();
 
     // Only executed on client
-    useEnhancedEffect(() => {
-      // re-link sheet container
-      emotionCache.sheet.container = document.head;
-      // re-inject tags
-      const tags = emotionCache.sheet.tags;
-      emotionCache.sheet.flush();
-      tags.forEach((tag) => {
-        (emotionCache.sheet as any)._insertTag(tag);
-      });
-      // reset cache to reapply global styles
-      clientStyleData?.reset();
-    }, []);
+    // useEnhancedEffect(() => {
+    //   // re-link sheet container
+    //   emotionCache.sheet.container = document.head;
+    //   // re-inject tags
+    //   const tags = emotionCache.sheet.tags;
+    //   emotionCache.sheet.flush();
+    //   tags.forEach((tag) => {
+    //     (emotionCache.sheet as any)._insertTag(tag);
+    //   });
+    //   // reset cache to reapply global styles
+    //   clientStyleData?.reset();
+    // }, []);
 
     // <!-- Google Tag Manager. Load on client side only  -->
     useEffect(() => {
