@@ -30,17 +30,16 @@ function Footer({ categories }: FooterProps) {
         px-2 md:px-6 lg:px-14
         bg-dune
         w-full">
-        <div className="block 600:hidden w-full py-2.5 max-w-screen-xl mx-auto">
+        <div className="block lg:hidden w-full p-2.5 max-w-screen-xl mx-auto">
           <FooterMobileLayout categories={categories} />
         </div>
 
         {/* width > 768px */}
-        <div className="hidden 600:block 992:hidden w-full py-2.5 max-w-screen-xl mx-auto">
+        {/* <div className="sm:hidden md:flex 1024:hidden w-full py-2.5 max-w-screen-xl mx-auto">
           <FooterTabletPortrait categories={categories} />
-        </div>
+        </div> */}
 
-        {/* width > 992px  */}
-        <div className="hidden 992:block w-full py-2.5 max-w-screen-xl mx-auto">
+        <div className="hidden lg:block w-full py-2.5">
           <FooterTabletLayout categories={categories} />
         </div>
 
@@ -64,7 +63,7 @@ function Footer({ categories }: FooterProps) {
             </span>
 
             <span className="text-white capitalize">
-              © PeasyDeal 2022 PTE. Ltd.
+              © PeasyDeal 2023 PTE. Ltd.
             </span>
           </div>
 

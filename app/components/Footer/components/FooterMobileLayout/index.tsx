@@ -45,10 +45,6 @@ function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
       <li >
         <CompanySection />
       </li>
-
-      <li>
-        <ResourceSection />
-      </li>
     </ul>
 
   )
