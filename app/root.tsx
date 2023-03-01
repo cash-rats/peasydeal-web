@@ -116,7 +116,7 @@ interface DocumentProps {
 
 const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
-    const serverStyleData = useContext(ServerStyleContext);
+    // const serverStyleData = useContext(ServerStyleContext);
     const clientStyleData = useContext(ClientStyleContext);
     const envData = useLoaderData();
 
@@ -175,13 +175,6 @@ const Document = withEmotionCache(
           <Links />
           <StructuredData />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
-          {serverStyleData?.map(({ key, ids, css }) => (
-            <style
-              key={key}
-              data-emotion={`${key} ${ids.join(' ')}`}
-              dangerouslySetInnerHTML={{ __html: css }}
-            />
-          ))}
         </head>
 
         <body>

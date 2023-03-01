@@ -21,8 +21,8 @@ export default function handleRequest(
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
-  const html = renderToString(
-    <ServerStyleContext.Provider value={null}>
+  function MuiRemixServer() {
+    return (
       <CacheProvider value={cache}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
@@ -32,25 +32,26 @@ export default function handleRequest(
           />
         </ThemeProvider>
       </CacheProvider>
-    </ServerStyleContext.Provider>,
-  )
+
+    )
+  }
+
+  // const html = renderToString(
+  //     <CacheProvider value={cache}>
+  //       <ThemeProvider theme={theme}>
+  //         <CssBaseline />
+  //         <RemixServer
+  //           context={remixContext}
+  //           url={request.url}
+  //         />
+  //       </ThemeProvider>
+  //     </CacheProvider>
+  // )
+
+  const html = renderToString(<MuiRemixServer />);
 
   // Grab the CSS from emotion
   const { styles } = extractCriticalToChunks(html);
-
-  let markup = renderToString(
-    <ServerStyleContext.Provider value={styles}>
-      <CacheProvider value={cache}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <RemixServer
-            context={remixContext}
-            url={request.url}
-          />
-        </ThemeProvider>
-      </CacheProvider>
-    </ServerStyleContext.Provider>,
-  )
 
   let stylesHTML = '';
 
@@ -60,7 +61,28 @@ export default function handleRequest(
     stylesHTML = `${stylesHTML}${newStyleTag}`;
   });
 
-  markup = markup.replace(
+
+  // let markup = renderToString(
+  //     <CacheProvider value={cache}>
+  //       <ThemeProvider theme={theme}>
+  //         <CssBaseline />
+  //         <RemixServer
+  //           context={remixContext}
+  //           url={request.url}
+  //         />
+  //       </ThemeProvider>
+  //     </CacheProvider>
+  // )
+
+  // let stylesHTML = '';
+
+  // styles.forEach(({ key, ids, css }) => {
+  //   const emotionKey = `${key} ${ids.join(' ')}`;
+  //   const newStyleTag = `<style data-emotion="${emotionKey}">${css}</style>`;
+  //   stylesHTML = `${stylesHTML}${newStyleTag}`;
+  // });
+
+  const markup = html.replace(
     /<meta(\s)*name="emotion-insertion-point"(\s)*content="emotion-insertion-point"(\s)*\/>/,
     `<meta name="emotion-insertion-point" content="emotion-insertion-point"/>${stylesHTML}`,
   )
