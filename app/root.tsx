@@ -116,23 +116,23 @@ interface DocumentProps {
 
 const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
-    const serverStyleData = useContext(ServerStyleContext);
+    // const serverStyleData = useContext(ServerStyleContext);
     const clientStyleData = useContext(ClientStyleContext);
     const envData = useLoaderData();
 
     // Only executed on client
-    useEnhancedEffect(() => {
-      // re-link sheet container
-      emotionCache.sheet.container = document.head;
-      // re-inject tags
-      const tags = emotionCache.sheet.tags;
-      emotionCache.sheet.flush();
-      tags.forEach((tag) => {
-        (emotionCache.sheet as any)._insertTag(tag);
-      });
-      // reset cache to reapply global styles
-      clientStyleData?.reset();
-    }, []);
+    // useEnhancedEffect(() => {
+    //   // re-link sheet container
+    //   emotionCache.sheet.container = document.head;
+    //   // re-inject tags
+    //   const tags = emotionCache.sheet.tags;
+    //   emotionCache.sheet.flush();
+    //   tags.forEach((tag) => {
+    //     (emotionCache.sheet as any)._insertTag(tag);
+    //   });
+    //   // reset cache to reapply global styles
+    //   clientStyleData?.reset();
+    // }, []);
 
     // <!-- Google Tag Manager. Load on client side only  -->
     useEffect(() => {
@@ -175,13 +175,6 @@ const Document = withEmotionCache(
           <Links />
           <StructuredData />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
-          {serverStyleData?.map(({ key, ids, css }) => (
-            <style
-              key={key}
-              data-emotion={`${key} ${ids.join(' ')}`}
-              dangerouslySetInnerHTML={{ __html: css }}
-            />
-          ))}
         </head>
 
         <body>

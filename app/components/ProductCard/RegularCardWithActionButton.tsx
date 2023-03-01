@@ -9,6 +9,14 @@ import type { ScrollPosition } from 'react-lazy-load-image-component';
 import { LazyLoadComponent } from "react-lazy-load-image-component";
 import Image, { MimeType } from "remix-image"
 
+import {
+  Tag,
+  TagLabel,
+  TagLeftIcon,
+  TagRightIcon,
+  TagCloseButton,
+} from '@chakra-ui/react'
+
 import type { Product } from "~/shared/types";
 import { composeProductDetailURL } from '~/utils';
 import { DOMAIN } from '~/utils/get_env_source';
@@ -56,11 +64,13 @@ const capitalizeWords = (str: string) => {
 const getColorByTag = (tag: string) => {
   switch (tag) {
     case 'new':
-      return '#2D91FF';
+      return 'linkedin';
     case 'hot_deal':
-      return '#D43B33';
+      return 'pink';
+    case 'super_deal':
+      return 'cyan';
     case 'price_off':
-      return '#5EA111';
+      return 'red';
     default:
       return '#2D91FF';
   }
@@ -193,27 +203,22 @@ export default function ProductCard({
         </p>
 
         {/* SELL TAGS */}
-        <div className='flex mb-3'>
+        <div className='flex mb-3 flex-wrap gap-1 md:gap-2'>
           {
             tags.map((tag: ITag, index: number) => {
               if (!tag) return null;
 
               return (
-                <div
-                  className='
-                    flex items-center
-                    mr-1 md:mr-2
-                    px-2 py-1 md:px-3
-                    text-[10px] md:text-[12px]
-                    rounded-[2px] md:rounded-[4px]
-                    text-white font-medium uppercase'
-                  key={`${title}_${tag.name}`}
-                  style={{
-                    background: tag.color
-                  }}
-                >
-                  <b>{tag.name}</b>
-                </div>
+                <>
+                  <Tag
+                    colorScheme={tag.color}
+                    variant='solid'
+                    className="nowrap"
+                    key={`tag_${tag.name}_${tag.color}`}
+                  >
+                    {tag.name}
+                  </Tag>
+                </>
               );
             })
           }
