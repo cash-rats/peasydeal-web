@@ -9,14 +9,14 @@ import { VscArrowRight } from "react-icons/vsc";
 import { ProductRow } from "~/components/ProductRow";
 
 type ICategoryPreview = {
-	category: TCategoryPreview;
+  category: TCategoryPreview;
   onClickProduct?: (title: string, prodID: string) => void;
   scrollPosition?: ScrollPosition;
 }
 
 export const CategoryPreview = ({
   category,
-  onClickProduct = () => {},
+  onClickProduct = () => { },
   scrollPosition,
 }: ICategoryPreview) => {
   const {
@@ -38,7 +38,7 @@ export const CategoryPreview = ({
           items-center
         ">
           <span>{label}</span>
-          <div className="block w-[1px] h-[25px] bg-[#757575] mr-1 ml-6"/>
+          <div className="block w-[1px] h-[25px] bg-[#757575] mr-1 ml-6" />
           <Link to={`/${name}`}>
             <Button
               rightIcon={<VscArrowRight />}
