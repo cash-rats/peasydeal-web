@@ -202,7 +202,9 @@ const Document = withEmotionCache(
             }
           </noscript>
 
-          {children}
+          <ChakraProvider>
+            {children}
+          </ChakraProvider>
 
           <script
             dangerouslySetInnerHTML={{
@@ -213,7 +215,7 @@ const Document = withEmotionCache(
           />
 
           <ScrollRestoration />
-          <Scripts />
+          <Scripts data-cfasync='false' />
 
           {process.env.NODE_ENV === "development" && <LiveReload />}
 
@@ -246,11 +248,9 @@ export function ErrorBoundary({ error }: { error: Error }) {
 export default function App() {
   return (
     <Document>
-      <ChakraProvider>
-        <Layout>
-          <Outlet />
-        </Layout>
-      </ChakraProvider>
+      <Layout>
+        <Outlet />
+      </Layout>
     </Document>
   );
 }
