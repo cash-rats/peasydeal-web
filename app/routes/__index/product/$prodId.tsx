@@ -30,7 +30,7 @@ import {
 	getProdDetailTitleText,
 	getProdDetailDescText,
 	getProdDetailDescTextWithoutPrice,
-	getProdDetailFBSEO
+	getProdDetailOgSEO
 } from '~/utils/seo';
 import {
 	decomposeProductDetailURL,
@@ -81,7 +81,7 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 		title: getProdDetailTitleText(data.product.title, data.product.uuid),
 		description,
 
-		...getProdDetailFBSEO({
+		...getProdDetailOgSEO({
 			title: getProdDetailTitleText(data.product.title, data.product.uuid),
 			desc: description,
 			image: data.meta_image,

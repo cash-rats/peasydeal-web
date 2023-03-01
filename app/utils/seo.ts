@@ -73,7 +73,7 @@ export const getCategoryFBSEO = (category: string): FBSEO => ({
   'og:description': category,
 })
 
-export const getProdDetailFBSEO = ({
+export const getProdDetailOgSEO = ({
   title,
   desc,
   image,
