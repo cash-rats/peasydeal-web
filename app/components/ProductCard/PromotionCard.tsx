@@ -24,7 +24,7 @@ import type {
 import { DOMAIN } from '~/utils/get_env_source';
 
 import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
-import extra10 from './images/extra10.png';
+import extra10 from '~/images/extra10.png';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: llimageStyle }];
