@@ -203,7 +203,6 @@ const Document = withEmotionCache(
           </noscript>
 
           <script
-            data-cfasync='false'
             dangerouslySetInnerHTML={{
               __html: `
                 window.ENV=${JSON.stringify(envData)}
@@ -214,7 +213,7 @@ const Document = withEmotionCache(
             {children}
           </ChakraProvider>
           <ScrollRestoration />
-          <Scripts data-cfasync='false' />
+          <Scripts />
 
           {process.env.NODE_ENV === "development" && <LiveReload />}
         </body>
