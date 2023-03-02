@@ -71,11 +71,23 @@ const composeProductList = (prods: Product[]): WithContext<ProductSchema>[] => {
   return prodsSchemas;
 }
 
+interface IStructuredData {
+  data: LoaderDataType;
+  params: {
+    collection: string;
+  };
+  location: {
+    pathname: string;
+  };
+}
+
 const structuredData: StructuredDataFunction = ({
   data,
-  params,
+  params = {
+    collection: '',
+  },
   location,
-}) => {
+}: IStructuredData) => {
   const loaderData: LoaderDataType = data;
 
   const { collection } = params;
