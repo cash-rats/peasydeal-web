@@ -176,11 +176,11 @@ export default function ProductCard({
         {/* SELL TAGS */}
         <div className='flex mb-3 flex-wrap gap-1 md:gap-2'>
           {
-            tags.map((tag: ITag, index: number) => {
-              if (!tag) return null;
+            tags
+              .map((tag: ITag, index: number) => {
+                if (!tag) return null;
 
-              return (
-                <>
+                return (
                   <Tag
                     colorScheme={tag.color}
                     variant='solid'
@@ -190,9 +190,9 @@ export default function ProductCard({
                     <TagLeftIcon boxSize='12px' as={tag.icon} />
                     <span>{tag.name}</span>
                   </Tag>
-                </>
-              );
-            })
+                );
+              })
+              .filter(c => c !== null)
           }
         </div>
 

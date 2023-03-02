@@ -33,13 +33,14 @@ import {
 	getProdDetailTitleText,
 	getProdDetailDescText,
 	getProdDetailDescTextWithoutPrice,
-	getProdDetailOgSEO
+	getProdDetailOgSEO,
+	getFourOhFourTitleText,
+	getFourOhFourDescText,
 } from '~/utils/seo';
 import {
 	decomposeProductDetailURL,
 	composeProductDetailURL,
 } from '~/utils';
-
 import {
 	Accordion,
 	AccordionItem,
@@ -49,8 +50,8 @@ import {
 	Tag,
 	TagLeftIcon
 } from '@chakra-ui/react'
-
 import extra10 from '~/images/extra10.png';
+
 import Breadcrumbs from './components/Breadcrumbs';
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -67,7 +68,13 @@ import { structuredData } from './seo';
 type LoaderErrorType = { error: any }
 
 export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
-	if (!data) return { title: '404' };
+	if (!data || !data.product) {
+		return {
+			title: getFourOhFourTitleText('product'),
+			description: getFourOhFourDescText('product'),
+		};
+	}
+
 	const defaultVariation: ProductVariation | undefined = data.
 		product.
 		variations.
@@ -384,7 +391,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		}
 	}, [addToCart.type]);
 
-	const hasSuperDeal = useMemo(function() {
+	const hasSuperDeal = useMemo(function () {
 		const { categories } = state.productDetail || {}
 		let _hasSuperDeal = false;
 
