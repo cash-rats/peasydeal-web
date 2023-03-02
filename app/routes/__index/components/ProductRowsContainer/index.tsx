@@ -43,8 +43,6 @@ interface ProductRowsContainerProps {
   // Used to improve performance for react-lazy-load-image-component
   scrollPosition?: ScrollPosition;
 
-  onClickAddToCart?: (prodID: string) => void;
-
   // Reacts shopnow button in activity banner.
   onClickShopNow?: (catID: number, catTitle: string) => void;
 }
@@ -54,8 +52,6 @@ function ProductRowsContainer({
   products = [],
   loading = false,
   scrollPosition,
-
-  onClickAddToCart = () => { },
 }: ProductRowsContainerProps) {
 
   return (
