@@ -1,33 +1,65 @@
-import type { WithContext, BreadcrumbList, ListItem } from 'schema-dts';
+import type {
+  WithContext,
+  BreadcrumbList,
+  ListItem,
+} from 'schema-dts';
+import type { StructuredDataFunction } from 'remix-utils';
+
+import { getCanonicalDomain } from '~/utils/seo';
 
 import type { LoaderDataType } from './types';
 
-// {
-//   "@context": "https://schema.org",
-//   "@type": "BreadcrumbList",
-//   "itemListElement": [{
-//     "@type": "ListItem",
-//     "position": 1,
-//     "name": "Home",
-//     "item": "https://www.example.com"
-//   },{
-//     "@type": "ListItem",
-//     "position": 2,
-//     "name": "Category",
-//     "item": "https://www.example.com/category"
-//   }]
-// },
-const structuredData = ({ data }) => {
-  console.log('debug data', data);
+const composeBreadcrumbList = (baseURL: string, pathname: string): ListItem[] => {
+  let pathsegments = baseURL;
+  let position = 1;
+
+  const baseItem: ListItem = {
+    "@type": "ListItem",
+    "position": position,
+    "name": "Home",
+    "item": pathsegments,
+  };
+
+  const listItems: ListItem[] = [baseItem];
+  const pathparts = pathname.split('/');
+
+  for (const pathpart of pathparts) {
+    pathsegments = `${pathsegments}/${pathpart}`;
+    position += 1;
+
+    listItems.push({
+      "@type": "ListItem",
+      "position": position,
+      "name": pathpart,
+      "item": pathsegments,
+    });
+  }
+
+  return listItems;
+};
+
+const structuredData: StructuredDataFunction = ({
+  data,
+  params,
+  location,
+}) => {
+  const loaderData: LoaderDataType = data;
+  const { collection } = params;
+
+  if (
+    !collection ||
+    !loaderData.categories[collection]) {
+    return [];
+  }
 
   const breadcrumbList: WithContext<BreadcrumbList> = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    "itemListElement": [],
+    "itemListElement": composeBreadcrumbList(
+      getCanonicalDomain(),
+      location.pathname,
+    ),
   }
-
-  //   "@context": "https://schema.org",
-  //   "@type": "BreadcrumbList",
 
   return [breadcrumbList];
 };
