@@ -243,9 +243,10 @@ export default function ProductCard({
           }
         </div>
 
+
         {/* PRICING */}
-        <div className='flex space-x-2 mr-auto mt-auto items-center my-2'>
-          { PriceRowMemo }
+        <div className='flex items-center space-x-2 my-2 mr-auto mt-auto'>
+          {PriceRowMemo}
         </div>
 
         {/* ACTION BUTTON */}
