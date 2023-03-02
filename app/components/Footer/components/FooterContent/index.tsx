@@ -18,6 +18,10 @@ const policies = [
     title: 'Privacy Policy',
   },
   {
+    to: '/cookie-policy',
+    title: 'Cookie Policy',
+  },
+  {
     to: '/return-policy',
     title: 'Return Policy',
   },
