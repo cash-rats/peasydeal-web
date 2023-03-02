@@ -21,7 +21,9 @@ const composeBreadcrumbList = (baseURL: string, pathname: string): ListItem[] =>
   };
 
   const listItems: ListItem[] = [baseItem];
-  const pathparts = pathname.split('/');
+  const pathparts = pathname
+    .split('/')
+    .filter(p => !!p);
 
   for (const pathpart of pathparts) {
     pathsegments = `${pathsegments}/${pathpart}`;
@@ -47,8 +49,10 @@ const structuredData: StructuredDataFunction = ({
   const { collection } = params;
 
   if (
+    !loaderData ||
     !collection ||
-    !loaderData.categories[collection]) {
+    !loaderData.categories[collection]
+  ) {
     return [];
   }
 
