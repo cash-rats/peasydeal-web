@@ -140,7 +140,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const url = new URL(request.url);
 	const decompURL = decomposeProductDetailURL(url);
 
-	if (!decompURL.variationUUID) {
+	if (!decompURL.productUUID) {
 		throw json<LoaderErrorType>(
 			{ error: 'variationUUID is not found.' },
 			{ status: httpStatus.NOT_FOUND },
@@ -148,7 +148,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}
 
 	try {
-		const prodDetail = await fetchProductDetail(decompURL.variationUUID)
+		const prodDetail = await fetchProductDetail(decompURL.productUUID)
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
@@ -175,7 +175,7 @@ export const action: ActionFunction = async ({ request }) => {
 	if (formAction === 'to_product_detail') {
 		return redirect(composeProductDetailURL({
 			productName: formObj['productName'] as string,
-			variationUUID: formObj['variationUUID'] as string,
+			productUUID: formObj['productUUID'] as string,
 		}));
 	}
 

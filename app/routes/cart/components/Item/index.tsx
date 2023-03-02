@@ -119,7 +119,7 @@ function CartItem({
 				<div className="grid grid-cols-12">
 					<div className="col-span-12 flex flex-row items-center justify-start">
 						<div className="flex aspect-square max-w-[120px] mr-4 ">
-							<Link to={composeProductDetailURL({ productName: item.title, variationUUID: item.productUUID })}>
+							<Link to={composeProductDetailURL({ productName: item.title, productUUID: item.productUUID })}>
 								<img
 									className='my-auto slef-center'
 									alt={item.title} src={item.image}

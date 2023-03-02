@@ -54,7 +54,7 @@ export default function ProductDetailBreadcrumbs({
                   as={NavLink}
                   to={composeProductDetailURL({
                     productName: productTitle as string,
-                    variationUUID: productUuid as string,
+                    productUUID: productUuid as string,
                   })}
                   isCurrentPage
                   className="font-semibold !text-[#D02E7D]"

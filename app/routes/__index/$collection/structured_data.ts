@@ -62,7 +62,7 @@ const composeProductList = (prods: Product[]): WithContext<ProductSchema>[] => {
         "availability": "https://schema.org/InStock",
         "url": composeProductDetailURL({
           productName: prod.title,
-          variationUUID: prod.productUUID,
+          productUUID: prod.productUUID,
         })
       }
     });

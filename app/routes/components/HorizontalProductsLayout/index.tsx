@@ -112,9 +112,9 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
       {
         __action: 'to_product_detail',
         productName: title,
-        variationUUID: prodUUID,
+        productUUID: prodUUID,
       },
-      { method: 'post', action: composeProductDetailURL({ productName: title, variationUUID: prodUUID }) },
+      { method: 'post', action: composeProductDetailURL({ productName: title, productUUID: prodUUID }) },
     );
   }
 

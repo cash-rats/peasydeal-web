@@ -102,7 +102,7 @@ const ActivityBannerLayout = ({
                 <div key={idx} className="ActivityBanner__wrapper">
                   <div
                     className="ActivityBanner__image-container bg-contain bg-center bg-no-repeat bg-white"
-                    style={{ backgroundImage: `url('${prod.mainPic}')`}}
+                    style={{ backgroundImage: `url('${prod.mainPic}')` }}
                   >
                     <SunShine text={`${nDiscount}% off`} direction='right' />
                     <LazyLoadImage
@@ -121,7 +121,7 @@ const ActivityBannerLayout = ({
                     <div className="ActivityBannerLayout__btn">
                       <Link to={composeProductDetailURL({
                         productName: prod.title,
-                        variationUUID: prod.productUuid,
+                        productUUID: prod.productUuid,
                       })}>
                         <RoundButton
                           colorScheme='cerise'

@@ -230,7 +230,7 @@ function DropDownSearchBar({
                           onClick={(evt) => { setShowDropdown(false); }}
                           key={index}
                           to={composeProductDetailURL({
-                            variationUUID: suggest.data.productID,
+                            productUUID: suggest.data.productID,
                             productName: suggest.data.title,
                           })}
                         >

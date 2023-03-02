@@ -237,7 +237,7 @@ export default function MobileSearchDialog({
                                 key={suggest.data.productID}
                                 to={composeProductDetailURL({
                                   productName: suggest.data.title,
-                                  variationUUID: suggest.data.productID,
+                                  productUUID: suggest.data.productID,
                                 })}
                                 onClick={(evt) => { onBack(); }}
                               >
