@@ -1,6 +1,6 @@
-import type { LoaderTypeProductDetail } from './types';
 import type { WithContext, Product } from 'schema-dts';
 
+import type { LoaderTypeProductDetail } from './types';
 
 // @TODOs
 //  - use product sku instead of uuid.
@@ -17,8 +17,7 @@ const structuredData = (data: LoaderTypeProductDetail) => {
   const { product } = data;
   const [firstVariation] = product.variations;
 
-  const psd: WithContext<Product> =
-  {
+  const psd: WithContext<Product> = {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": product.title,
@@ -50,7 +49,7 @@ const structuredData = (data: LoaderTypeProductDetail) => {
     }
   };
 
-  return psd;
+  return [psd];
 };
 
 export { structuredData }
