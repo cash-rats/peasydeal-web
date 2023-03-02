@@ -5,6 +5,8 @@ import type { WithContext, Product } from 'schema-dts';
 // @TODOs
 //  - use product sku instead of uuid.
 const structuredData = (data: LoaderTypeProductDetail) => {
+  if (!data || !data.product) return {};
+
   const { product } = data;
 
   const psd: WithContext<Product> =

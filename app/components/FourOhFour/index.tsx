@@ -1,17 +1,10 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 
 import BGBottom from './images/BG_bottom.png';
 import BGTop from './images/BG_top.png';
 import MountainSprite from "./images/mountain_sprite.png";
 import styles from './FourOhFour.css';
-
-export const meta: MetaFunction = ({ data }) => {
-  return {
-    title: '404 Error - Page Not Found',
-    description: 'Oops! We couldn\'t find the page you were looking for. Please check the URL or navigate to our homepage.',
-  }
-};
 
 export const links: LinksFunction = () => {
   return [

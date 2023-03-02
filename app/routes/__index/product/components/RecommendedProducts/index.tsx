@@ -118,7 +118,7 @@ function RecommendedProducts({
         `}
         style={{ backgroundImage: `url(${bg})` }}
       >
-        <div className='w-full w-full max-w-screen-xl mx-auto'>
+        <div className='w-full max-w-screen-xl mx-auto'>
           <div className='flex flex-col'>
             <h3 className="
               font-poppins font-bold

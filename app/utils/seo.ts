@@ -14,6 +14,15 @@ interface FBSEO {
 // ------------------ SEO ------------------
 export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https://peasydeal.com';
 
+// 404 page
+// Object indicates the "thing" that is not found.
+export const getFourOhFourTitleText = (object?: string) => {
+  return `404 Error - ${object || 'Page'} Not Found`
+};
+export const getFourOhFourDescText = (object?: string) => {
+  return `Oops! We couldn't find the ${object || 'page'} you were looking for. Please check the URL or navigate to our homepage.`;
+}
+
 // SEO index page
 export const getIndexTitleText = () => 'peasydeal.com | premium selected car accessories, gadgets, home & gardening products, clothes and more at a great price!';
 export const getIndexDescText = () => `Shop with confidence at PeasyDeal with our premium selected solar-powered lights, gadgets, home & gardening products, apparel and more at a best price possible. Responsive customer service, fast shipping time. Get 14 days money-back guarantee on all products!`;
@@ -57,6 +66,8 @@ export const getWholesaleTitleText = () => 'Terms of Use | peasydeal.com';
 
 // ------------------ END SEO ------------------
 
+
+// ------------------ OG tags ------------------
 // TODO: missing facebook fb:app_id.
 export const getRootFBSEO = (): FBSEO => ({
   'og:url': getCanonicalDomain(),

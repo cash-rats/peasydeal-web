@@ -1,17 +1,19 @@
 import { useReducer, useRef, useEffect } from 'react';
-import type { LoaderFunction, LinksFunction } from '@remix-run/node';
+import type { LoaderFunction, LinksFunction, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, useFetcher, useParams, NavLink, useTransition } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
+
 import AllTimeCoupon from '~/components/AllTimeCoupon';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import FourOhFour from '~/components/FourOhFour';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import { PAGE_LIMIT } from '~/shared/constants';
 import PageTitle from '~/components/PageTitle';
+import { getFourOhFourTitleText, getFourOhFourDescText } from '~/utils/seo';
 
 import { loadProducts, loadMoreProducts } from './loaders';
 import type { LoadProductsDataType, LoadMoreDataType } from './loaders';
@@ -22,6 +24,13 @@ export const links: LinksFunction = () => {
   return [
     ...ProductRowsContainerLinks(),
   ];
+};
+
+export const meta: MetaFunction = ({ data, params }) => {
+  return {
+    title: getFourOhFourTitleText('Promotion'),
+    description: getFourOhFourDescText('Promotion'),
+  };
 };
 
 type LoaderType = 'load_products' | 'load_more_products'
@@ -37,35 +46,31 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     })
   }
 
-  try {
-    if (loaderType === 'load_products') {
-      const page = Number(url.searchParams.get('page'));
-      const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
+  if (loaderType === 'load_products') {
+    const page = Number(url.searchParams.get('page'));
+    const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
 
-      return loadProducts({
-        request,
-        page,
-        perpage,
-        promoName: params.promotion,
-      });
-    }
-
-    if (loaderType === 'load_more_products') {
-      const page = Number(url.searchParams.get('page'));
-      const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
-
-      return loadMoreProducts({
-        request,
-        page,
-        perpage,
-        promoName: params.promotion,
-      });
-    }
-
-    throw json('unrecognized action');
-  } catch (error) {
-    throw new Response('error when loading products');
+    return loadProducts({
+      request,
+      page,
+      perpage,
+      promoName: params.promotion,
+    });
   }
+
+  if (loaderType === 'load_more_products') {
+    const page = Number(url.searchParams.get('page'));
+    const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
+
+    return loadMoreProducts({
+      request,
+      page,
+      perpage,
+      promoName: params.promotion,
+    });
+  }
+
+  throw json('unrecognized action');
 }
 
 export const CatchBoundary = () => (<FourOhFour />);
