@@ -245,20 +245,8 @@ export default function ProductCard({
 
 
         {/* PRICING */}
-        <div className='my-2  mr-auto mt-auto'>
-          {
-            product.variations && product.variations.length > 1
-              ? (
-                <small className="font-poppins capitalize text-xs">
-                  starting from
-                </small>
-              )
-              : null
-          }
-
-          <div className="flex items-center space-x-2">
-            {PriceRowMemo}
-          </div>
+        <div className='flex items-center space-x-2 my-2 mr-auto mt-auto'>
+          {PriceRowMemo}
         </div>
 
         {/* ACTION BUTTON */}
