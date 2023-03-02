@@ -14,6 +14,10 @@ const companyDetails = [
     link: '/return-policy',
   },
   {
+    label: 'cookie policy',
+    link: '/cookie-policy',
+  },
+  {
     label: 'shipping policy',
     link: '/shipping-policy',
   },
