@@ -62,12 +62,25 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
 ])
 
 export const handle = { dynamicLinks }
-export const meta: MetaFunction = ({ data }: { data: LoaderDataType }) => ({
-  title: getCollectionTitleText(data?.category.title),
-  description: getCollectionDescText(data?.category.title),
+export const meta: MetaFunction = ({ data, params }) => {
+  if (
+    !data ||
+    !params.collection ||
+    !data.categories[params.collection]
+  ) {
+    return {
+      title: '404 Error - Page Not Found',
+      description: 'Oops! We couldn\'t find the page you were looking for. Please check the URL or navigate to our homepage.',
+    }
+  }
 
-  ...getCategoryFBSEO(data?.category.title)
-});
+  return {
+    title: getCollectionTitleText(data?.category.title),
+    description: getCollectionDescText(data?.category.title),
+
+    ...getCategoryFBSEO(data?.category.title),
+  }
+};
 
 export const links: LinksFunction = () => {
   return [
@@ -82,6 +95,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const url = new URL(request.url);
   const actionType = url.searchParams.get('action_type') || 'load_products' as LoaderType;
   const { collection = '' } = params;
+
   try {
     if (actionType === 'load_category_products') {
       const page = Number(url.searchParams.get('page'));
@@ -104,7 +118,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
       });
     }
   } catch (error) {
-    console.error(error);
     throw json(`unrecognize loader action ${actionType}`, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
