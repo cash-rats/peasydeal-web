@@ -16,7 +16,7 @@ function AnnouncementBanner({ open = true, onClose = () => {}, hideCloseButton =
         <div className={`
           flex justify-center items-center
           py-3 w-full
-          z-20
+          z-40
         `}
           style={{
             background: 'linear-gradient(90deg, rgba(35,0,40,1) 0%, rgba(161,25,152,1) 35%, rgba(21,145,171,1) 100%)',

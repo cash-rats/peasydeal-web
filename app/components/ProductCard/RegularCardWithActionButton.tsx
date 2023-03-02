@@ -175,7 +175,10 @@ export default function ProductCard({
         }
 
         <div className={`${loaded ? 'h-full' : 'h-[183px] md:h-[274px]'}`} >
-          <LazyLoadComponent scrollPosition={scrollPosition} >
+          <LazyLoadComponent
+            threshold={250}
+            scrollPosition={scrollPosition}
+          >
             <Image
               blurDataURL={`${loaded
                 ? `${DOMAIN}/images/placeholder_transparent.png`

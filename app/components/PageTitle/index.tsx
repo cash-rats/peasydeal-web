@@ -27,6 +27,7 @@ export default function PageTitle({
           text-2xl md:text-3xl
           font-black
           font-poppins
+          uppercase
         `}>
           {title}
         </h1>

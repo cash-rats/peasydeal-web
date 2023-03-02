@@ -13,6 +13,7 @@ import FourOhFour from '~/components/FourOhFour';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import { PAGE_LIMIT } from '~/shared/constants';
 import PageTitle from '~/components/PageTitle';
+import PromotionBannerWithTitle, { links as PageTitleLinks } from '~/components/PageTitle/PromotionBannerWithTitle';
 import { getFourOhFourTitleText, getFourOhFourDescText } from '~/utils/seo';
 
 import { loadProducts, loadMoreProducts } from './loaders';
@@ -23,6 +24,7 @@ import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../com
 export const links: LinksFunction = () => {
   return [
     ...ProductRowsContainerLinks(),
+    ...PageTitleLinks(),
   ];
 };
 
@@ -171,6 +173,8 @@ function Promotion({ scrollPosition }: TPromotion) {
       decodeURI(transition.location.pathname.substring(1))
     );
 
+    console.log(state.category);
+
   return (
     <div className="
       py-0 px-auto
@@ -201,9 +205,10 @@ function Promotion({ scrollPosition }: TPromotion) {
         } />
       </div>
 
-      <PageTitle
+      <PromotionBannerWithTitle
         title={state.category.title}
         subtitle={state.category.description}
+        superSale={state.category.name === 'super_deal'}
       />
 
       <div className="w-full pt-2.5 pb-8 max-w-screen-xl mx-auto">
