@@ -138,7 +138,7 @@ export default function ProductCard({
   return (
     <Link
       // prefetch='intent'
-      to={composeProductDetailURL({ productName: title, variationUUID: productUUID })}
+      to={composeProductDetailURL({ productName: title, productUUID })}
     >
       <div className='
         flex flex-col

@@ -25,7 +25,7 @@ export default function TopProductsColumnGrid({ productUUID = '', title = '', im
               <>
                 <Link to={composeProductDetailURL({
                   productName: title as string,
-                  variationUUID: productUUID
+                  productUUID,
                 })}>
                   <LazyLoadImage
                     src={image}

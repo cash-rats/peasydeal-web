@@ -54,7 +54,7 @@ function LargeGrid({
 		<Link
 			// prefetch='intent'
 			className="large-grid-container p-2.5"
-			to={composeProductDetailURL({ productName: title, variationUUID: productID })}
+			to={composeProductDetailURL({ productName: title, productUUID: productID })}
 			onClick={(evt) => {
 				// The following code prevents redirection triggered by view button
 				// evt.preventDefault();
@@ -101,7 +101,7 @@ function LargeGrid({
 
 				<div className="btn-container">
 					<Form
-						action={composeProductDetailURL({ productName: title, variationUUID: productID })}
+						action={composeProductDetailURL({ productName: title, productUUID: productID })}
 						method='get'
 					>
 						<RoundButton

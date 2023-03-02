@@ -30,31 +30,11 @@ import {
 import PageTitle from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 
+import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
 import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
-import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
-
-type LoaderDataType = {
-  categories: CategoriesMap;
-  products: Product[];
-  category: Category;
-  page: number;
-  canonical_link: string;
-  navBarCategories: Category[];
-  total: number;
-  current: number;
-  hasMore: boolean;
-};
-
-type LoadMoreDataType = {
-  products: Product[],
-  total: number;
-  current: number;
-  hasMore: boolean;
-  category: Category,
-  page: number,
-  navBarCategories: Category[];
-};
+import type { LoaderDataType, LoadMoreDataType } from './types';
+import structuredData from './structured_data';
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
   {
@@ -63,7 +43,8 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
   },
 ])
 
-export const handle = { dynamicLinks }
+export const handle = { dynamicLinks, structuredData };
+
 export const meta: MetaFunction = ({ data, params }) => {
   if (
     !data ||

@@ -65,7 +65,7 @@ import SocialShare, { links as SocialShareLinks } from './components/SocialShare
 import useStickyActionBar from './hooks/useStickyActionBar';
 import useSticky from './hooks/useSticky';
 import reducer, { ActionTypes } from './reducer';
-import { structuredData } from './seo';
+import { structuredData } from './structured_data';
 
 type LoaderErrorType = { error: any }
 
@@ -140,7 +140,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	const url = new URL(request.url);
 	const decompURL = decomposeProductDetailURL(url);
 
-	if (!decompURL.variationUUID) {
+	if (!decompURL.productUUID) {
 		throw json<LoaderErrorType>(
 			{ error: 'variationUUID is not found.' },
 			{ status: httpStatus.NOT_FOUND },
@@ -148,7 +148,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}
 
 	try {
-		const prodDetail = await fetchProductDetail(decompURL.variationUUID)
+		const prodDetail = await fetchProductDetail(decompURL.productUUID)
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
@@ -175,7 +175,7 @@ export const action: ActionFunction = async ({ request }) => {
 	if (formAction === 'to_product_detail') {
 		return redirect(composeProductDetailURL({
 			productName: formObj['productName'] as string,
-			variationUUID: formObj['variationUUID'] as string,
+			productUUID: formObj['productUUID'] as string,
 		}));
 	}
 
@@ -215,13 +215,13 @@ export const action: ActionFunction = async ({ request }) => {
 export const CatchBoundary = () => (<FourOhFour />);
 
 const getPriceRow = (salePrice: number, previousRetailPrice: Array<number>) => {
-  return (
-    <>
+	return (
+		<>
 			<span className="text-4xl font-poppins font-bold text-[#D02E7D] mr-2">
 				£{salePrice}
 			</span>
-      {
-        previousRetailPrice.length > 0 && previousRetailPrice.map((retailPrice, index) => (
+			{
+				previousRetailPrice.length > 0 && previousRetailPrice.map((retailPrice, index) => (
 					<span
 						className='flex relative mr-2'
 						key={`previous_retail_price${index}`}
@@ -232,10 +232,10 @@ const getPriceRow = (salePrice: number, previousRetailPrice: Array<number>) => {
 						</span>
 						<span className='block w-full h-[3px] absolute top-[50%] bg-black' />
 					</span>
-        ))
-      }
-    </>
-  )
+				))
+			}
+		</>
+	)
 }
 
 type ProductDetailProps = {} & LazyComponentProps;
@@ -433,16 +433,16 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	}, [state.productDetail]);
 
 	const PriceRowMemo = useMemo(() => {
-    if (!state.variation?.sale_price) return null;
-    if (!state.variation?.retail_price) return getPriceRow(state.variation?.sale_price, []);
+		if (!state.variation?.sale_price) return null;
+		if (!state.variation?.retail_price) return getPriceRow(state.variation?.sale_price, []);
 
 		const salePrice = state.variation?.sale_price;
 		const retailPrice = state.variation?.retail_price;
 
-    return hasSuperDeal
-      ? getPriceRow(round10(salePrice * SUPER_DEAL_OFF, -2), [salePrice, retailPrice])
-      : getPriceRow(salePrice, [retailPrice])
-  }, [state.variation, hasSuperDeal]);
+		return hasSuperDeal
+			? getPriceRow(round10(salePrice * SUPER_DEAL_OFF, -2), [salePrice, retailPrice])
+			: getPriceRow(salePrice, [retailPrice])
+	}, [state.variation, hasSuperDeal]);
 
 	const handleClickProduct = (title: string, productUUID: string) => {
 		console.log('ga[recommended_product]', title, productUUID);
@@ -546,7 +546,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 								}
 
 								<div className="flex items-center mb-4">
-									{ PriceRowMemo }
+									{PriceRowMemo}
 								</div>
 
 								<div className="flex justify-start items-center mb-4">

@@ -69,7 +69,7 @@ export default function MediumGrid({
 	return (
 		<Link
 			// prefetch='intent'
-			to={composeProductDetailURL({ productName: title, variationUUID: productID })}
+			to={composeProductDetailURL({ productName: title, productUUID: productID })}
 			onClick={(evt) => {
 				// if (!isClickableGrid()) {
 				// 	evt.preventDefault();
@@ -121,7 +121,7 @@ export default function MediumGrid({
 				<div className="view-btn-container">
 					<Form
 						method='get'
-						action={composeProductDetailURL({ productName: title, variationUUID: productID })}
+						action={composeProductDetailURL({ productName: title, productUUID: productID })}
 					>
 						<RoundButton
 							type='submit'

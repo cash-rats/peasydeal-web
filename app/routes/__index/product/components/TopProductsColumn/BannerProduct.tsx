@@ -40,7 +40,10 @@ export default function BannerProduct({
                 {title}
               </p>
 
-              <Link to={composeProductDetailURL({ productName: title, variationUUID: productUUID })}>
+              <Link to={composeProductDetailURL({
+                productName: title,
+                productUUID,
+              })}>
                 <RoundButton
                   style={{
                     width: '140px'

@@ -77,16 +77,16 @@ export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https:
 export const getLogoURL = () => `${getCanonicalDomain()}/images/peasy_deal_words.png`
 
 // composeProductDetailURL takes product name and url to compose a product detail url in following format:
-// `https://peasydeal.com/product/some-google-product-i.{VARIATION_UUID}`
-export const composeProductDetailURL = ({ productName, variationUUID }: { productName: string, variationUUID: string }) => {
+// `https://peasydeal.com/product/some-google-product-i.{PRODUCT_UUID}`
+export const composeProductDetailURL = ({ productName, productUUID }: { productName: string, productUUID: string }) => {
   // replace empty space with '-'
   let prodName = productName.replace(/\s+/g, '-')
   prodName = prodName.replace(/\//g, '%2F')
-  const url = `/product/${prodName}-i.${variationUUID}`;
+  const url = `/product/${prodName}-i.${productUUID}`;
   return url;
 }
 
 export const decomposeProductDetailURL = (url: URL) => {
-  const [productName, variationUUID = ''] = url.pathname.split('-i.');
-  return { productName, variationUUID };
+  const [productName, productUUID = ''] = url.pathname.split('-i.');
+  return { productName, productUUID };
 }
