@@ -10,6 +10,7 @@ export interface IProductCard {
   product?: Product;
   scrollPosition?: ScrollPosition;
   onClickProduct?: (title: string, productID: string) => void;
+  displayActionButton?: boolean;
 }
 
 /*

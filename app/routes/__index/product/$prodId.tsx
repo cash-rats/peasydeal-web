@@ -39,6 +39,7 @@ import {
 	decomposeProductDetailURL,
 	composeProductDetailURL,
 } from '~/utils';
+import { round10 } from '~/utils/preciseRound';
 
 import {
 	Accordion,
@@ -65,6 +66,8 @@ import reducer, { ActionTypes } from './reducer';
 import { structuredData } from './seo';
 
 type LoaderErrorType = { error: any }
+
+const SUPER_DEAL_OFF = 0.9;
 
 export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
 	if (!data) return { title: '404' };
@@ -202,6 +205,30 @@ export const action: ActionFunction = async ({ request }) => {
 }
 
 export const CatchBoundary = () => (<FourOhFour />);
+
+const getPriceRow = (salePrice: number, previousRetailPrice: Array<number>) => {
+  return (
+    <>
+			<span className="text-4xl font-poppins font-bold text-[#D02E7D] mr-2">
+				£{salePrice}
+			</span>
+      {
+        previousRetailPrice.length > 0 && previousRetailPrice.map((retailPrice, index) => (
+					<span
+						className='flex relative mr-2'
+						key={`previous_retail_price${index}`}
+						style={{ fontWeight: index === 0 && previousRetailPrice.length !== 1 ? '500' : '300' }}
+					>
+						<span className="text-2xl">
+							£{retailPrice}
+						</span>
+						<span className='block w-full h-[3px] absolute top-[50%] bg-black' />
+					</span>
+        ))
+      }
+    </>
+  )
+}
 
 type ProductDetailProps = {} & LazyComponentProps;
 /*
@@ -394,10 +421,20 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 			}
 		});
 
-		console.log(categories, _hasSuperDeal);
 		return _hasSuperDeal;
 	}, [state.productDetail]);
 
+	const PriceRowMemo = useMemo(() => {
+    if (!state.variation?.sale_price) return null;
+    if (!state.variation?.retail_price) return getPriceRow(state.variation?.sale_price, []);
+
+		const salePrice = state.variation?.sale_price;
+		const retailPrice = state.variation?.retail_price;
+
+    return hasSuperDeal
+      ? getPriceRow(round10(salePrice * SUPER_DEAL_OFF, -2), [salePrice, retailPrice])
+      : getPriceRow(salePrice, [retailPrice])
+  }, [state.variation, hasSuperDeal]);
 
 	const handleClickProduct = (title: string, productUUID: string) => {
 		console.log('ga[recommended_product]', title, productUUID);
@@ -501,15 +538,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 								}
 
 								<div className="flex items-center mb-4">
-									<span className="text-4xl font-poppins font-bold text-[#D02E7D] mr-2">
-										£{state.variation?.sale_price}
-									</span>
-									<span className='flex relative'>
-										<span className="text-2xl">
-											£{state.variation?.retail_price}
-										</span>
-										<span className='block w-full h-[3px] absolute top-[50%] bg-black' />
-									</span>
+									{ PriceRowMemo }
 								</div>
 
 								<div className="flex justify-start items-center mb-4">
@@ -611,7 +640,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 										<span className='font-poppins'>
 											{
 												state.variation
-													? <><b>£{`${state.variation?.shipping_fee}`}</b> Low Fixed Shipping Cost</>
+													? <>Shipping starting from <b>£{`${state.variation?.shipping_fee}`}</b></>
 													: null
 											}
 										</span>

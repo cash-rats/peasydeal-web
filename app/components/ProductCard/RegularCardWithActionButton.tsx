@@ -9,6 +9,7 @@ import { LazyLoadComponent } from "react-lazy-load-image-component";
 import Image, { MimeType } from "remix-image"
 import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { composeProductDetailURL } from '~/utils';
+import { round10 } from '~/utils/preciseRound';
 import {
   capitalizeWords,
   getColorByTag,
@@ -31,10 +32,45 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: llimageStyle }];
 }
 
+const SUPER_DEAL_OFF = 0.9;
+
+const splitNumber = (n: number): [number, number] => {
+  if (!n) return [0, 0];
+
+  return [Math.floor(n), Math.round((n % 1) * 100)];
+}
+
+const getPriceRow = (salePrice: number, previousRetailPrice: Array<number>) => {
+  const [priceLeft, priceRight] = splitNumber(salePrice);
+
+  return (
+    <>
+      <div className='flex font-bold text-[#D02E7D] space-x-[1px] '>
+        <small className='text-lg'>£</small>
+        <span className='font-poppins text-2xl'>{priceLeft}</span>
+        <small className='text-lg'>{priceRight}</small>
+      </div>
+      {
+        previousRetailPrice.length > 0 && previousRetailPrice.map((retailPrice, index) => (
+          <div
+            className='relative'
+            key={`previous_retail_price${index}`}
+            style={{ fontWeight: index === 0 && previousRetailPrice.length !== 1 ? 'bold' : 'medium' }}
+          >
+            <span>{retailPrice}</span>
+            <div className='block h-[1px] w-full bg-black absolute top-[10px]' />
+          </div>
+        ))
+      }
+    </>
+  )
+}
+
 export default function ProductCard({
   product,
   onClickProduct = () => { },
   scrollPosition,
+  displayActionButton = true,
 }: IProductCard) {
   const {
     main_pic: mainPic,
@@ -88,6 +124,15 @@ export default function ProductCard({
     return Math.ceil((1 - salePrice / retailPrice) * 100);
   }, [salePrice, retailPrice]);
 
+  const PriceRowMemo = useMemo(() => {
+    if (!salePrice) return null;
+    if (!retailPrice) return getPriceRow(salePrice, []);
+
+    return hasSuperDeal
+      ? getPriceRow(round10(salePrice * SUPER_DEAL_OFF, -2), [salePrice, retailPrice])
+      : getPriceRow(salePrice, [retailPrice])
+  }, [salePrice, retailPrice, hasSuperDeal]);
+
   if (!product) return null;
 
   return (
@@ -101,6 +146,7 @@ export default function ProductCard({
         w-full h-full
         border border-gray-200 rounded-lg
         p-1 md:p-2 lg:p-4
+        bg-white
         relative
       '>
         {
@@ -186,6 +232,7 @@ export default function ProductCard({
                     variant='solid'
                     className="nowrap"
                     key={`tag_${tag.name}_${tag.color}`}
+                    variant='subtle'
                   >
                     <TagLeftIcon boxSize='12px' as={tag.icon} />
                     <span>{tag.name}</span>
@@ -198,28 +245,24 @@ export default function ProductCard({
 
         {/* PRICING */}
         <div className='flex space-x-2 mr-auto mt-auto items-center my-2'>
-          <div className='relative'>
-            <span>{retailPrice}</span>
-            <div className='block h-[1px] w-full bg-black absolute top-[10px]' />
-          </div>
-          <div className='flex font-bold text-[#D02E7D] space-x-[1px] '>
-            <small className='text-lg'>£</small>
-            <span className='font-poppins text-2xl'>{priceLeft}</span>
-            <small className='text-lg'>{priceRight}</small>
-          </div>
+          { PriceRowMemo }
         </div>
 
         {/* ACTION BUTTON */}
-        <div>
-          <Button
-            colorScheme='pink'
-            variant={'solid'}
-            width='100%'
-            size="sm"
-            onClick={() => onClickProduct(title, productUUID)}>
-            {variations && variations.length > 1 ? 'See Options' : 'Add to Cart'}
-          </Button>
-        </div>
+        {
+          displayActionButton && (
+            <div className='hidden md:flex'>
+              <Button
+                colorScheme='pink'
+                variant={'solid'}
+                width='100%'
+                size="sm"
+                onClick={() => onClickProduct(title, productUUID)}>
+                {variations && variations.length > 1 ? 'See Options' : 'Add to Cart'}
+              </Button>
+            </div>
+          )
+        }
 
         {
           hasSuperDeal && (

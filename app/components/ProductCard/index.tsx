@@ -1,4 +1,3 @@
-import PromotionCard from "./PromotionCard";
 import RegularCardWithActionButton from "./RegularCardWithActionButton";
 
 import type { LinksFunction } from '@remix-run/node';
@@ -8,5 +7,5 @@ export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: llimageStyle }];
 }
 
-export { PromotionCard, RegularCardWithActionButton };
+export { RegularCardWithActionButton };
 

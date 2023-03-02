@@ -6,7 +6,7 @@ import type { ScrollPosition } from 'react-lazy-load-image-component';
 
 import type { Product } from "~/shared/types";
 
-import { PromotionCard } from '../ProductCard';
+import { RegularCardWithActionButton } from '../ProductCard';
 
 interface IProductPromotionRow {
   products?: Product[];
@@ -28,11 +28,12 @@ export default function ProductPromotionRow({
     '>
       {
         products.map((product: Product, index) => (
-          <PromotionCard
+          <RegularCardWithActionButton
             key={`product-item-${index}-${product.productUUID}`}
             product={product}
             scrollPosition={scrollPosition}
             onClickProduct={onClickProduct}
+            displayActionButton={false}
           />
         ))
       }
