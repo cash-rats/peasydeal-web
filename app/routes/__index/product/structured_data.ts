@@ -5,9 +5,17 @@ import type { WithContext, Product } from 'schema-dts';
 // @TODOs
 //  - use product sku instead of uuid.
 const structuredData = (data: LoaderTypeProductDetail) => {
-  if (!data || !data.product) return {};
+  if (
+    !data ||
+    !data.product ||
+    !data.product.variations ||
+    data.product.variations.length < 1
+  ) {
+    return {};
+  };
 
   const { product } = data;
+  const [firstVariation] = product.variations;
 
   const psd: WithContext<Product> =
   {
@@ -16,17 +24,18 @@ const structuredData = (data: LoaderTypeProductDetail) => {
     "name": product.title,
     "image": product.images,
     "description": product.description,
-    "sku": product.uuid,
-    "review": {
-      "@type": "Review",
-      "reviewRating": {
-        "@type": "Rating",
-        "ratingValue": product.rating.toString(),
-        "bestRating": "5"
-      },
-      "datePublished": "2022-01-01",
-      "reviewBody": "Product review text"
-    },
+    "sku": firstVariation.sku,
+    // TODO: We do not have product reivew feature yet. We'll enable "reiview" when the feature is implemented.
+    // "review": {
+    //   "@type": "Review",
+    //   "reviewRating": {
+    //     "@type": "Rating",
+    //     "ratingValue": product.rating.toString(),
+    //     "bestRating": "5"
+    //   },
+    //   "datePublished": "2022-01-01",
+    //   "reviewBody": "Product review text"
+    // },
     "aggregateRating": {
       "@type": "AggregateRating",
       "ratingValue": product.rating.toString(),
@@ -34,10 +43,8 @@ const structuredData = (data: LoaderTypeProductDetail) => {
     },
     "offers": {
       "@type": "Offer",
-      "price": product.variations.length > 0
-        ? product.variations[0].sale_price.toString()
-        : '0',
-      "priceCurrency": "GBP",
+      "price": firstVariation?.sale_price.toString() || '0',
+      "priceCurrency": firstVariation.currency,
       "availability": "https://schema.org/InStock",
       "url": "http://example.com/product"
     }
