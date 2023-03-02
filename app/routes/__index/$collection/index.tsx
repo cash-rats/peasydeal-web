@@ -15,7 +15,6 @@ import { Progress } from '@chakra-ui/react';
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
 import { PAGE_LIMIT } from '~/shared/constants';
-import type { CategoriesMap, Product, Category } from '~/shared/types';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
 import AllTimeCoupon from '~/components/AllTimeCoupon';
@@ -58,10 +57,16 @@ export const meta: MetaFunction = ({ data, params }) => {
   }
 
   return {
-    title: getCollectionTitleText(data?.category.title),
-    description: getCollectionDescText(data?.category.title),
+    title: getCollectionTitleText(data.category.title),
+    description: getCollectionDescText(
+      data.category.title,
+      data.category.description,
+    ),
 
-    ...getCategoryFBSEO(data?.category.title),
+    ...getCategoryFBSEO(
+      data.category.title,
+      data.category.description,
+    ),
   }
 };
 

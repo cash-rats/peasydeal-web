@@ -100,7 +100,6 @@ const transformer: CustomTransformer = {
       crop,
     }
   ) => {
-    // image does not exists in CDN, we'll have to perform image transformation.
     const fixedBackground = {
       r: background[0],
       g: background[1],

@@ -12,9 +12,14 @@ import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import FourOhFour from '~/components/FourOhFour';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import { PAGE_LIMIT } from '~/shared/constants';
-import PageTitle from '~/components/PageTitle';
 import PromotionBannerWithTitle, { links as PageTitleLinks } from '~/components/PageTitle/PromotionBannerWithTitle';
-import { getFourOhFourTitleText, getFourOhFourDescText } from '~/utils/seo';
+import {
+  getFourOhFourTitleText,
+  getFourOhFourDescText,
+  getCollectionTitleText,
+  getCollectionDescText,
+  getCategoryFBSEO,
+} from '~/utils/seo';
 
 import { loadProducts, loadMoreProducts } from './loaders';
 import type { LoadProductsDataType, LoadMoreDataType } from './loaders';
@@ -29,9 +34,30 @@ export const links: LinksFunction = () => {
 };
 
 export const meta: MetaFunction = ({ data, params }) => {
+  const { promotion = '' } = params;
+
+  if (
+    !data ||
+    !promotion ||
+    !data.categories[promotion]
+  ) {
+    return {
+      title: getFourOhFourTitleText('Promotion'),
+      description: getFourOhFourDescText('Promotion'),
+    }
+  }
+
   return {
-    title: getFourOhFourTitleText('Promotion'),
-    description: getFourOhFourDescText('Promotion'),
+    title: getCollectionTitleText(data.category.title),
+    description: getCollectionDescText(
+      data.category.title,
+      data.category.description,
+    ),
+
+    ...getCategoryFBSEO(
+      data.category.title,
+      data.category.description,
+    ),
   };
 };
 
@@ -172,8 +198,6 @@ function Promotion({ scrollPosition }: TPromotion) {
     categories.hasOwnProperty(
       decodeURI(transition.location.pathname.substring(1))
     );
-
-    console.log(state.category);
 
   return (
     <div className="

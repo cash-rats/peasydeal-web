@@ -8,7 +8,6 @@ import type { StructuredDataFunction } from 'remix-utils';
 
 import { getCanonicalDomain } from '~/utils/seo';
 import { composeProductDetailURL } from '~/utils';
-
 import type { Product } from '~/shared/types';
 
 import type { LoaderDataType } from './types';
