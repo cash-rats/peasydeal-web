@@ -67,7 +67,7 @@ function Header({
       <div
         ref={navBarRef}
         className={`
-          fixed z-20
+          fixed z-30
           w-full
           flex flex-col
         `}

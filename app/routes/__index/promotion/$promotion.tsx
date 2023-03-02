@@ -173,8 +173,6 @@ function Promotion({ scrollPosition }: TPromotion) {
       decodeURI(transition.location.pathname.substring(1))
     );
 
-    console.log(state.category);
-
   return (
     <div className="
       py-0 px-auto
