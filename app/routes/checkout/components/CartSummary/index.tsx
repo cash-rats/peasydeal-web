@@ -4,6 +4,7 @@ import { Link } from '@remix-run/react';
 
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import type { PriceInfo } from '~/shared/cart';
+import { round10 } from '~/utils/preciseRound';
 
 interface CartSummaryProps {
   cart: ShoppingCart;
@@ -94,14 +95,14 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
       ">
         <div className="w-full 499:w-[55%] flex flex-col justify-center items-end gap-[5px]">
           <PriceInfoBox
-            label="Items"
-            info={`£${priceInfo.sub_total}`}
+            label="Items (VAT Incl.)"
+            info={`£${round10(priceInfo.sub_total + priceInfo.tax_amount, -2)}`}
           />
 
-          <PriceInfoBox
+          {/* <PriceInfoBox
             label="Tax(20%)"
             info={`£${priceInfo.tax_amount}`}
-          />
+          /> */}
 
           {
             priceInfo.discount_type === 'price_off' && (

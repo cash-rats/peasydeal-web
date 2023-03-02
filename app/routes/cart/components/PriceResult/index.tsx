@@ -11,6 +11,7 @@ import {
 import { ImPriceTags } from 'react-icons/im';
 import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../cart.server';
+import { round10 } from '~/utils/preciseRound';
 
 const TAX = 0.2;
 
@@ -163,6 +164,8 @@ export default function PriceResult({
     applied_events = [],
   } = priceInfo || {};
 
+  const taxIncl = round10(sub_total + tax_amount, -2);
+
   return (
     <div className="p-4 bg-white">
       {/* right */}
@@ -191,7 +194,7 @@ export default function PriceResult({
           <hr className="my-1 h-[1px] w-full bg-slate-50" />
         </div>
         <ResultRow
-          label="Items"
+          label="Items (VAT Incl.)"
           value={
             calculating
               ? (
@@ -201,12 +204,12 @@ export default function PriceResult({
                   sx={{ fontSize: '1rem' }}
                 />
               )
-              : `£ ${sub_total} `
+              : `£ ${taxIncl}`
           }
 
         />
 
-        <ResultRow
+        {/* <ResultRow
           label={`Tax (${TAX * 100}%)`}
           value={
             calculating
@@ -219,8 +222,7 @@ export default function PriceResult({
               )
               : `£ ${tax_amount}`
           }
-
-        />
+        /> */}
 
         {/* Promo code deal */}
         {

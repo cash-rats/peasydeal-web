@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import Divider from '@mui/material/Divider';
 import format from 'date-fns/format';
+import { round10 } from '~/utils/preciseRound';
 
 interface AmountRowProps {
   title: ReactNode;
@@ -80,8 +81,8 @@ function OrderDetail({
           <div className="w-[45%] 499:w-[60%]" />
           <div className="flex flex-col w-1/2 gap-1 499:w-[40%]" >
             <AmountRow
-              title='subtotal'
-              num={subtotal}
+              title='Subtotal (Tax Incl.)'
+              num={round10(subtotal + taxAmount, -2)}
             />
 
             <AmountRow
