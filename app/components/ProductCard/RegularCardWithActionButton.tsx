@@ -5,75 +5,30 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Link } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
-import type { ScrollPosition } from 'react-lazy-load-image-component';
 import { LazyLoadComponent } from "react-lazy-load-image-component";
 import Image, { MimeType } from "remix-image"
-
-import {
-  Tag,
-  TagLabel,
-  TagLeftIcon,
-  TagRightIcon,
-  TagCloseButton,
-} from '@chakra-ui/react'
-
-import type { Product } from "~/shared/types";
+import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { composeProductDetailURL } from '~/utils';
+import {
+  capitalizeWords,
+  getColorByTag,
+  getLeftIconByTag,
+  showPriceOffThreshhold,
+} from './utils';
+
+import type {
+  IProductCard,
+  ITag,
+} from './utils';
+
 import { DOMAIN } from '~/utils/get_env_source';
 
 import { Button } from '@chakra-ui/react'
 import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
+import extra10 from '~/images/extra10.png';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: llimageStyle }];
-}
-
-interface IProductCard {
-  product?: Product;
-  scrollPosition?: ScrollPosition;
-  onClickProduct?: (title: string, productID: string) => void;
-}
-
-/*
-  Lazy load remix-image.
-  w > 1024: 274x274
-  768 < w < 1024: 302x302
-  w < 768:  310x310
-
-  Use LazyLoadComponent to lazy load remix image.
-*/
-interface ITag {
-  name: string;
-  color: string;
-}
-
-const showPriceOffThreshhold = 30;
-const capitalizeWords = (str: string) => {
-  if (!str) return '';
-
-  let words = str.split('_');
-  let newStr = '';
-
-  for (let word of words) {
-    newStr += word.charAt(0).toUpperCase() + word.substring(1).toLowerCase() + ' ';
-  }
-
-  return newStr.trim();
-}
-
-const getColorByTag = (tag: string) => {
-  switch (tag) {
-    case 'new':
-      return 'linkedin';
-    case 'hot_deal':
-      return 'pink';
-    case 'super_deal':
-      return 'cyan';
-    case 'price_off':
-      return 'red';
-    default:
-      return '#2D91FF';
-  }
 }
 
 export default function ProductCard({
@@ -92,6 +47,7 @@ export default function ProductCard({
   } = product || {};
 
   const [loaded, setLoaded] = useState<Boolean>(false);
+  const [hasSuperDeal, setHasSuperDeal] = useState<Boolean>(false);
 
   const splitNumber = useCallback((n: number): [number, number] => {
     if (!n) return [0, 0];
@@ -102,12 +58,22 @@ export default function ProductCard({
   const tags: Array<ITag> = useMemo(() => {
     if (!tabComboType) return [];
 
-    return tabComboType?.split(',').map((tag: string) => {
+    let _hasSuperDeal = false;
+
+    const tags = tabComboType?.split(',').map((tag: string) => {
+      if (tag === 'super_deal') {
+        _hasSuperDeal = true;
+      }
       const name = capitalizeWords(tag);
       const color = getColorByTag(tag);
+      const icon = getLeftIconByTag(tag);
 
-      return { name, color };
+      return { name, color, icon };
     });
+
+    setHasSuperDeal(_hasSuperDeal);
+
+    return tags;
   }, [tabComboType]);
 
   const [priceLeft, priceRight] = useMemo(() => {
@@ -140,17 +106,22 @@ export default function ProductCard({
         {
           priceOff > showPriceOffThreshhold
             ? (
-              <div className='
-                absolute bg-[#D43B33]
-                px-[6px] py-[4px] md:px-2 md:py-2
-                top-0
-                left-1 md:left-4
-                flex flex-col justify-center items-center
-                font-poppins
-                rounded-b-lg
-                text-white
-                z-10
-              '>
+              <div
+                className='
+                  absolute
+                  px-[6px] py-[4px] md:px-2 md:py-2
+                  top-0
+                  left-1 md:left-4
+                  flex flex-col justify-center items-center
+                  font-poppins
+                  rounded-b-lg
+                  text-white
+                  z-10
+                '
+                style={{
+                  backgroundColor: hasSuperDeal ? '#00B5D8' : '#D43B33',
+                }}
+              >
                 <small className='font-bold'>{priceOff}%</small>
                 <small className='font-medium mt-[-3px]'>OFF</small>
               </div>
@@ -209,14 +180,17 @@ export default function ProductCard({
               if (!tag) return null;
 
               return (
-                <Tag
-                  colorScheme={tag.color}
-                  variant='solid'
-                  className="nowrap"
-                  key={`tag_${tag.name}_${tag.color}`}
-                >
-                  {tag.name}
-                </Tag>
+                <>
+                  <Tag
+                    colorScheme={tag.color}
+                    variant='solid'
+                    className="nowrap"
+                    key={`tag_${tag.name}_${tag.color}`}
+                  >
+                    <TagLeftIcon boxSize='12px' as={tag.icon} />
+                    <span>{tag.name}</span>
+                  </Tag>
+                </>
               );
             })
           }
@@ -246,6 +220,21 @@ export default function ProductCard({
             {variations && variations.length > 1 ? 'See Options' : 'Add to Cart'}
           </Button>
         </div>
+
+        {
+          hasSuperDeal && (
+            <img
+              alt='extra 10% off - super deal'
+              className='
+                absolute
+                right-[-32px] md:right-[-28px]
+                top-[-32px] md:top-[-28px]
+                scale-[0.65] md:scale-[0.85]
+              '
+              src={extra10}
+            />
+          )
+        }
       </div>
     </Link>
   );

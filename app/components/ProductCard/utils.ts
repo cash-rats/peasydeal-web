@@ -1,4 +1,34 @@
-export const capitalizeTagWords = (str: string) => {
+import { BsLightningCharge } from 'react-icons/bs';
+import { HiFire } from 'react-icons/hi';
+import { BiTrendingDown } from 'react-icons/bi';
+import { GiEmptyChessboard } from 'react-icons/gi';
+import { MdFiberNew } from 'react-icons/md';
+
+import type { Product } from "~/shared/types";
+import type { ScrollPosition } from 'react-lazy-load-image-component';
+export interface IProductCard {
+  product?: Product;
+  scrollPosition?: ScrollPosition;
+  onClickProduct?: (title: string, productID: string) => void;
+}
+
+/*
+  Lazy load remix-image.
+  w > 1024: 274x274
+  768 < w < 1024: 302x302
+  w < 768:  310x310
+
+  Use LazyLoadComponent to lazy load remix image.
+*/
+export interface ITag {
+  name: string;
+  color: string;
+  icon: any;
+}
+
+export const showPriceOffThreshhold = 30;
+
+export const capitalizeWords = (str: string) => {
   if (!str) return '';
 
   let words = str.split('_');
@@ -14,12 +44,29 @@ export const capitalizeTagWords = (str: string) => {
 export const getColorByTag = (tag: string) => {
   switch (tag) {
     case 'new':
-      return '#2D91FF';
+      return 'linkedin';
     case 'hot_deal':
-      return '#D43B33';
+      return 'pink';
+    case 'super_deal':
+      return 'cyan';
     case 'price_off':
-      return '#5EA111';
+      return 'red';
     default:
       return '#2D91FF';
+  }
+}
+
+export const getLeftIconByTag = (tag: string) => {
+  switch (tag) {
+    case 'new':
+      return MdFiberNew;
+    case 'hot_deal':
+      return HiFire;
+    case 'super_deal':
+      return BsLightningCharge;
+    case 'price_off':
+      return BiTrendingDown;
+    default:
+      return GiEmptyChessboard;
   }
 }

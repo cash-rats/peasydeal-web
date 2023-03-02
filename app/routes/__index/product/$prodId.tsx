@@ -4,6 +4,7 @@ import {
 	useEffect,
 	useRef,
 	useReducer,
+	useMemo,
 } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction, MetaFunction, LinksFunction } from '@remix-run/node';
@@ -16,6 +17,8 @@ import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
+
+import { BsLightningCharge } from 'react-icons/bs';
 
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import ClientOnly from '~/components/ClientOnly';
@@ -43,8 +46,11 @@ import {
 	AccordionButton,
 	AccordionPanel,
 	AccordionIcon,
+	Tag,
+	TagLeftIcon
 } from '@chakra-ui/react'
 
+import extra10 from '~/images/extra10.png';
 import Breadcrumbs from './components/Breadcrumbs';
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -227,6 +233,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 	const productTopRef = useRef<HTMLDivElement>(null);
+
 	useSticky(productContentWrapperRef, productTopRef, 'sticky', 145);
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 
@@ -375,7 +382,21 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					replace: true,
 				})
 		}
-	}, [addToCart.type])
+	}, [addToCart.type]);
+
+	const hasSuperDeal = useMemo(function() {
+		const { categories } = state.productDetail || {}
+		let _hasSuperDeal = false;
+
+		categories.forEach(({ name }) => {
+			if (name === 'super_deal') {
+				_hasSuperDeal = true;
+			}
+		});
+
+		console.log(categories, _hasSuperDeal);
+		return _hasSuperDeal;
+	}, [state.productDetail]);
 
 
 	const handleClickProduct = (title: string, productUUID: string) => {
@@ -422,11 +443,39 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 								col-span-5 xl:col-span-4
 							"
 						>
+							{
+								hasSuperDeal && (
+									<img
+										alt='extra 10% off - super deal'
+										className='
+											absolute
+											right-[-20px] md:right-[-36px]
+											top-[-45px] md:top-[-43px]
+											scale-[0.85]
+										'
+										src={extra10}
+									/>
+								)
+							}
 							<div className="absolute top-[-1.5rem] left-[-1px]">
 								<RightTiltBox text={`${state.productDetail.order_count} bought`} />
 							</div>
 
 							<div className="product-content">
+								{
+									hasSuperDeal && (
+										<Tag
+											colorScheme="cyan"
+											variant='solid'
+											className="nowrap mb-2"
+											size='md'
+										>
+											<TagLeftIcon boxSize='16px' as={BsLightningCharge} />
+											<span>SUPER DEAL</span>
+										</Tag>
+									)
+								}
+
 								<h1 className="text-xl md:text-2xl font-bold font-poppings mb-3">
 									{state.productDetail?.title}
 								</h1>
