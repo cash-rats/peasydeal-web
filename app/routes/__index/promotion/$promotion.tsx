@@ -22,9 +22,12 @@ import {
 } from '~/utils/seo';
 
 import { loadProducts, loadMoreProducts } from './loaders';
-import type { LoadProductsDataType, LoadMoreDataType } from './loaders';
+import type { LoadProductsDataType, LoadMoreDataType } from './types';
 import reducer, { PromotionActionType } from './reducer';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
+import structuredData from './structured_data';
+
+export const handle = { structuredData };
 
 export const links: LinksFunction = () => {
   return [

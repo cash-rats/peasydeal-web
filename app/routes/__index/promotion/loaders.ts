@@ -4,10 +4,11 @@ import httpStatus from 'http-status-codes';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { commitSession } from '~/sessions/redis_session';
 import { normalizeToMap, fetchPromotions } from '~/api/categories.server';
-import type { CategoriesMap, Product, Category } from '~/shared/types';
+import type { Product, Category } from '~/shared/types';
 import { getCanonicalDomain } from '~/utils/seo';
 
 import { fetchPromotionProducts } from './api.server';
+import type { LoadProductsDataType, LoadMoreDataType } from './types';
 
 interface ILoadProducts {
   request: Request;
@@ -16,18 +17,7 @@ interface ILoadProducts {
   promoName: string;
 };
 
-export type LoadProductsDataType = {
-  categories: CategoriesMap;
-  products: Product[];
-  category: Category;
-  page: number;
-  canonical_link: string;
-  total: number;
-  current: number;
-  hasMore: boolean;
-};
-
-export const loadProducts = async ({ request, page, perpage, promoName }: ILoadProducts) => {
+export const loadProducts = async ({ request, perpage, promoName }: ILoadProducts) => {
   try {
 
     const promotions = await fetchPromotions();
@@ -102,15 +92,6 @@ interface ILoadMoreProducts {
   promoName: string,
   page: number,
   perpage: number,
-}
-
-export interface LoadMoreDataType {
-  products: Product[],
-  total: number;
-  current: number;
-  hasMore: boolean;
-  category: Category,
-  page: number,
 }
 
 export const loadMoreProducts = async ({ request, promoName, page, perpage }: ILoadMoreProducts) => {
