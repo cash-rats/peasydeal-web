@@ -13,7 +13,6 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { DynamicLinks, StructuredData } from 'remix-utils'
-import type { WithContext, Organization } from 'schema-dts';
 import remixImageStyles from "remix-image/remix-image.css";
 
 import {
@@ -31,6 +30,7 @@ import { getUser } from "./session.server";
 import { ClientStyleContext, ServerStyleContext } from "./context"
 import styles from "./styles/global.css";
 import ScrollRestoration from './ConditionalScrollRestoration';
+import structuredData from './structured_data';
 
 export const meta: MetaFunction = () => ({
   // default tags
@@ -89,24 +89,6 @@ export async function loader({ request }: LoaderArgs) {
     ...envs,
   });
 }
-
-const structuredData = () => {
-  const organizationSchema: WithContext<Organization> = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "peasydeal.com, Inc.",
-    "url": "https://www.peasydeal.com/",
-    "logo": "https://storage.googleapis.com/peasydeal/logo/peasydeal_logo.svg",
-    "address": [{
-      "@type": "PostalAddress",
-      "streetAddress": "37F lowfriar street",
-      "addressLocality": "Newcastle",
-      "postalCode": "Ne1 5ue"
-    }],
-  }
-
-  return organizationSchema;
-};
 
 export let handle = { structuredData };
 
