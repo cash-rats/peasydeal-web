@@ -201,6 +201,7 @@ function Cart() {
 	const removeItemFetcher = useFetcher();
 	const updateItemQuantityFetcher = useFetcher();
 	const applyPromoCodeFetcher = useFetcher();
+	const cartItemCountFetcher = useFetcher();
 
 	const targetRemovalVariationUUID = useRef<null | string>(null);
 	const justSynced = useRef<boolean>(false);
@@ -216,6 +217,15 @@ function Cart() {
 				type: CartActionTypes.set_price_info,
 				payload: price_info
 			});
+
+			cartItemCountFetcher.submit(
+				null,
+				{
+					method: 'post',
+					action: '/components/Header?index',
+					replace: true,
+				},
+			)
 		}
 	}, [removeItemFetcher.type]);
 
