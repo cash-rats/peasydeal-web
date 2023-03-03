@@ -38,6 +38,7 @@ import {
 } from './actions';
 import type { RemoveCartItemActionDataType, ApplyPromoCodeActionType } from './actions';
 import { syncShoppingCartWithNewProductsInfo, extractPriceInfoToStoreInSession } from './utils';
+import { round10 } from '~/utils/preciseRound';
 
 export const links: LinksFunction = () => {
 	return [
@@ -408,6 +409,8 @@ function Cart() {
 		);
 	}
 
+	console.log(state.priceInfo);
+
 	return (
 		<>
 			<LoadingBackdrop open={syncingPrice} />
@@ -428,7 +431,7 @@ function Cart() {
 				bg-[#F7F8FA]
 			">
 				{
-					state.priceInfo && state.priceInfo?.sub_total <= FREE_SHIPPING
+					state.priceInfo && state.priceInfo?.total_amount < FREE_SHIPPING
 						? (
 							<div className="
 								w-full py-2.5 max-w-screen-xl mx-auto
@@ -443,7 +446,7 @@ function Cart() {
 								<FcHighPriority fontSize={24} className='w-[36px] mr-4' />
 								<span>
 									<b className='text-[#fc1d7a] font-poppins font-bold'>Wait!</b>
-									{` Spend £${Number(FREE_SHIPPING - state.priceInfo?.sub_total).toFixed(2)} more to get free shipping`}
+									{` Spend £${round10(FREE_SHIPPING - state.priceInfo?.total_amount, -2)} more to get free shipping`}
 								</span>
 							</div>
 						) : null
