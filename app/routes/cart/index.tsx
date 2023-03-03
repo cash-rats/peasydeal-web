@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useReducer } from 'react';
+import { useEffect, useState, useRef, useReducer, useMemo } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import { json } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
@@ -400,6 +400,17 @@ function Cart() {
 		);
 	};
 
+
+	const freeshippingRequiredPrice = useMemo(() => {
+		if (!state.priceInfo) return 0;
+
+		const _vatPrice = state.priceInfo?.sub_total + state.priceInfo?.tax_amount;
+		const _freeshippingRequiredPrice = FREE_SHIPPING - _vatPrice;
+
+		return _freeshippingRequiredPrice;
+	}, [state.priceInfo]);
+
+
 	if (
 		Object.keys(state.cartItems).length === 0 ||
 		state.priceInfo === null
@@ -431,7 +442,7 @@ function Cart() {
 				bg-[#F7F8FA]
 			">
 				{
-					state.priceInfo && state.priceInfo?.total_amount < FREE_SHIPPING
+					freeshippingRequiredPrice > 0
 						? (
 							<div className="
 								w-full py-2.5 max-w-screen-xl mx-auto
@@ -446,7 +457,7 @@ function Cart() {
 								<FcHighPriority fontSize={24} className='w-[36px] mr-4' />
 								<span>
 									<b className='text-[#fc1d7a] font-poppins font-bold'>Wait!</b>
-									{` Spend £${round10(FREE_SHIPPING - state.priceInfo?.total_amount, -2)} more to get free shipping`}
+									{` Spend £${round10(freeshippingRequiredPrice, -2)} more to get free shipping`}
 								</span>
 							</div>
 						) : null
