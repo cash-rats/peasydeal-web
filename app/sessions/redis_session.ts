@@ -1,5 +1,7 @@
-import { createRedisSessionStorage } from './create_redis_sessoin';
 import invariant from 'tiny-invariant';
+import { add } from 'date-fns';
+
+import { createRedisSessionStorage } from './create_redis_sessoin';
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 
@@ -11,6 +13,11 @@ const { getSession, commitSession, destroySession } = createRedisSessionStorage(
     secrets: [process.env.SESSION_SECRET],
     path: "/",
     httpOnly: true,
+
+    // Invalidates product list pagination cache and shopping cart every 3 days.
+    expires: add(new Date(), {
+      days: 3,
+    }),
   },
 
 });

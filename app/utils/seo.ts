@@ -29,7 +29,9 @@ export const getIndexDescText = () => `Shop with confidence at PeasyDeal with ou
 
 // SEO collection page
 export const getCollectionTitleText = (category: string) => `${category} | peasydeal.com`;
-export const getCollectionDescText = (category: string) => `${category} | Hot Deals | Shop for Hot Deals and more at everyday discount price`;
+export const getCollectionDescText = (category: string, desc?: string) => {
+  return `${category} | ${desc || `Shop for ${category} and more at everyday discount price`}`;
+}
 
 // SEO prod page
 export const getProdDetailTitleText = (title: string, uuid: string) => `${title} - PeasyDeal - ${uuid}`;
@@ -78,10 +80,10 @@ export const getRootFBSEO = (): FBSEO => ({
   'og:locale': 'en_GB',
 });
 
-export const getCategoryFBSEO = (category: string): FBSEO => ({
+export const getCategoryFBSEO = (category: string, desc?: string): FBSEO => ({
   ...getRootFBSEO(),
   'og:title': getCollectionTitleText(category),
-  'og:description': category,
+  'og:description': getCollectionDescText(category, desc),
 })
 
 export const getProdDetailOgSEO = ({

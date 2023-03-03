@@ -115,7 +115,6 @@ export interface LoadMoreDataType {
 
 export const loadMoreProducts = async ({ request, promoName, page, perpage }: ILoadMoreProducts) => {
   try {
-
     const {
       items: products,
       total,
