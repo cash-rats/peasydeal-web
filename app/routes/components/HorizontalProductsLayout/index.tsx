@@ -103,7 +103,7 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
           flex
           items-center
         ">
-          <span>{title} </span>
+          <span className='capitalize'>{title}</span>
           <div className="
             block w-[1px] h-[25px] bg-[#757575]
             ml-2 md:ml-5
@@ -138,7 +138,10 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
 
         <div
           ref={containerRef}
-          className="flex overflow-x-scroll pt-5 pb-10 hide-scroll-bar smooth-scrolling"
+          className="flex overflow-x-scroll pt-5 pb-10 hide-scroll-bar"
+          style={{
+            scrollBehavior: 'smooth',
+          }}
         >
           <div className="flex flex-nowrap">
             {
