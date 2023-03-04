@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useReducer } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
-import { json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
@@ -36,6 +36,7 @@ import {
 	removeCartItemAction,
 	updateItemQuantity,
 } from './actions';
+import type { ActionType } from './actions';
 import type { RemoveCartItemActionDataType, ApplyPromoCodeActionType } from './actions';
 import { syncShoppingCartWithNewProductsInfo, extractPriceInfoToStoreInSession } from './utils';
 
@@ -49,11 +50,6 @@ export const links: LinksFunction = () => {
 };
 
 const FREE_SHIPPING = 19.99;
-
-type __action_type =
-	| 'remove_cart_item'
-	| 'update_item_quantity'
-	| 'apply_promo_code';
 
 export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 	if (submission) {
@@ -75,7 +71,9 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
 	const formEntries = Object.fromEntries(form.entries());
-	const actionType = formEntries['__action'] as __action_type;
+	const actionType = formEntries['__action'] as ActionType;
+
+	console.log('debug 1', actionType);
 
 	if (actionType === 'remove_cart_item') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
@@ -93,6 +91,11 @@ export const action: ActionFunction = async ({ request }) => {
 	if (actionType === 'apply_promo_code') {
 		const promoCode = formEntries['promo_code'] as string;
 		return applyPromoCode(request, promoCode);
+	}
+
+	if (actionType === 'buy_now') {
+		console.log('debug 2 buy_now');
+		return redirect('/cart');
 	}
 
 	// Unknown action

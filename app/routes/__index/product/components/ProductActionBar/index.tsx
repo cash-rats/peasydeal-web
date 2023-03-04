@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import { Form } from '@remix-run/react';
 import { Button } from '@chakra-ui/react';
 
 interface ProductActionBarProps {
@@ -39,14 +40,26 @@ const ProductActionBar = forwardRef(({
       </div>
 
       <div className='flex-auto'>
-        <Button
-          colorScheme='pink'
-          variant={'solid'}
-          width='100%'
-          size="lg"
-          onClick={onClickBuyNow}>
-          Buy Now
-        </Button>
+        <Form
+          method='post'
+          action='/cart?index'
+        >
+          <input
+            type='hidden'
+            name="__action"
+            value='buy_now'
+          />
+
+          <Button
+            colorScheme='pink'
+            variant={'solid'}
+            width='100%'
+            size="lg"
+            type='submit'
+          >
+            Buy Now
+          </Button>
+        </Form>
       </div>
     </div>
   );

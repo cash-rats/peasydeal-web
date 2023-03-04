@@ -66,6 +66,7 @@ import useStickyActionBar from './hooks/useStickyActionBar';
 import useSticky from './hooks/useSticky';
 import reducer, { ActionTypes } from './reducer';
 import { structuredData } from './structured_data';
+import { normalizeToSessionStorableCartItem } from './utils';
 
 type LoaderErrorType = { error: any }
 
@@ -162,7 +163,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}
 };
 
-type ActionType = 'to_product_detail' | 'add_item_to_cart' | 'buy_now';
+type ActionType =
+	| 'to_product_detail'
+	| 'add_item_to_cart'
+	| 'buy_now';
 
 // TODO
 //  - [x] store shopping cart items in session storage if user has not logged in yet.
@@ -339,32 +343,20 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const buyNow = useFetcher();
 	const reloadCartItemCount = useFetcher();
 
-	const extractProductInfo = useCallback(() => {
-		// A product doesn't have any `spec_name` if the product has 1 variation only
-		// other wise `Default Title` would appeared in `/cart`.
-		const variation = state.variation;
-		const specName = state.productDetail.variations.length === 1
-			? ''
-			: variation?.spec_name || ''
-
-		return {
-			salePrice: variation?.sale_price.toString() || '',
-			retailPrice: variation?.retail_price.toString() || '',
-			productUUID: state.productDetail.uuid,
-			variationUUID: variation?.uuid || '',
-
-			// product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
-			image: state.productDetail.images[0] || '',
-			quantity: state.quantity.toString(),
-			title: state.productDetail?.title || '',
-			specName: specName,
-			purchaseLimit: variation?.purchase_limit?.toString() || '',
-		}
-	}, [
-		state.productDetail,
-		state.quantity,
-		state.variation,
-	]);
+	const normalizeProdInfo = useCallback(
+		() => {
+			return normalizeToSessionStorableCartItem({
+				productDetail: state.productDetail,
+				productVariation: state.variation,
+				quantity: state.quantity,
+			});
+		},
+		[
+			state.productDetail,
+			state.quantity,
+			state.variation,
+		],
+	);
 
 	const handleAddToCart = () => {
 		if (!state.variation) {
@@ -374,13 +366,16 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 		setVariationErr('');
 
-		const orderInfo = { ...extractProductInfo() };
+		const payload = {
+			__action: 'add_item_to_cart',
+			...normalizeProdInfo()
+		} as ShoppingCartItem & { __action: ActionType };
 		addToCart.submit(
+			payload,
 			{
-				__action: 'add_item_to_cart',
-				...extractProductInfo(),
-			} as ShoppingCartItem & { __action: ActionType },
-			{ method: 'post', action: `/product/${orderInfo.productUUID}` },
+				method: 'post',
+				action: `/product/${payload.productUUID}`,
+			},
 		);
 	};
 
@@ -392,13 +387,26 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		}
 		setVariationErr('');
 
+		console.log('debug handleBuyNow');
+
 		// Add this item to shopping cart (session).
 		// Redirect to checkout page after it's added to cart.
-		buyNow.submit({
-			__action: 'buy_now',
-			...extractProductInfo(),
-
-		}, { method: 'post', action: '/product/$prodId' });
+		// buyNow.submit({
+		// 	__action: 'buy_now',
+		// 	...extractProductInfo(),
+		// }, {
+		// 	method: 'post',
+		// 	action: '/product/$prodId',
+		// });
+		// buyNow.submit(
+		// 	{
+		// 		__action: 'buy_now',
+		// 	},
+		// 	{
+		// 		method: 'post',
+		// 		action: '/cart',
+		// 	},
+		// )
 	}
 
 	useEffect(() => {
@@ -637,7 +645,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 											loading={addToCart.state !== 'idle'}
 										/>
 									</div>
-
 								</div>
 
 								<hr className='my-4' />
