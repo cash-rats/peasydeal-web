@@ -420,7 +420,7 @@ function Cart() {
 		);
 	}
 
-	console.log(state.priceInfo);
+	console.log(state);
 
 	return (
 		<>
