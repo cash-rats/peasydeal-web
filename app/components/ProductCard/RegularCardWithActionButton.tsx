@@ -85,12 +85,6 @@ export default function ProductCard({
   const [loaded, setLoaded] = useState<Boolean>(false);
   const [hasSuperDeal, setHasSuperDeal] = useState<Boolean>(false);
 
-  const splitNumber = useCallback((n: number): [number, number] => {
-    if (!n) return [0, 0];
-
-    return [Math.floor(n), Math.round((n % 1) * 100)]
-  }, []);
-
   const tags: Array<ITag> = useMemo(() => {
     if (!tabComboType) return [];
 

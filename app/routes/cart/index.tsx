@@ -420,8 +420,6 @@ function Cart() {
 		);
 	}
 
-	console.log(state);
-
 	return (
 		<>
 			<LoadingBackdrop open={syncingPrice} />

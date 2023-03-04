@@ -45,8 +45,6 @@ export const loader: LoaderFunction = async () => {
 export default function SellOnPeasyDeal() {
   const post = useLoaderData() as TContentfulPost;
 
-  console.log(post.attributes)
-
   // @ts-ignore
   const nodes = documentToReactComponents(post.body) || [];
   // @ts-ignore
