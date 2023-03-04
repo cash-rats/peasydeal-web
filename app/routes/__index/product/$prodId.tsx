@@ -66,7 +66,7 @@ import useStickyActionBar from './hooks/useStickyActionBar';
 import useSticky from './hooks/useSticky';
 import reducer, { ActionTypes } from './reducer';
 import { structuredData } from './structured_data';
-import { normalizeToSessionStorableCartItem } from './utils';
+import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
 
 type LoaderErrorType = { error: any }
 
@@ -196,14 +196,6 @@ export const action: ActionFunction = async ({ request }) => {
 
 	const session = await insertItem(request, cartObj);
 
-	if (formAction == 'buy_now') {
-		return redirect('/cart', {
-			headers: {
-				"Set-Cookie": await commitSession(session),
-			},
-		});
-	}
-
 	if (formAction === 'add_item_to_cart') {
 		return json('', {
 			headers: {
@@ -256,13 +248,20 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		? loaderData.product.categories[0]
 		: null;
 
+	const defaultVariation = findDefaultVariation(loaderData.product);
+
 	const [state, dispatch] = useReducer(reducer, {
 		productDetail: loaderData.product,
 		mainCategory,
 		images: loaderData.product.images,
 		quantity: 1,
-		variation: loaderData.product.variations.find(
-			(variation: any) => loaderData.product.default_variation_uuid === variation.uuid,
+		variation: defaultVariation,
+		sessionStorableCartItem: normalizeToSessionStorableCartItem(
+			{
+				productDetail: loaderData.product,
+				productVariation: defaultVariation,
+				quantity: 1,
+			},
 		),
 	});
 
@@ -340,74 +339,32 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	};
 
 	const addToCart = useFetcher();
-	const buyNow = useFetcher();
 	const reloadCartItemCount = useFetcher();
 
-	const normalizeProdInfo = useCallback(
+	const handleAddToCart = useCallback(
 		() => {
-			return normalizeToSessionStorableCartItem({
-				productDetail: state.productDetail,
-				productVariation: state.variation,
-				quantity: state.quantity,
-			});
+			if (!state.variation) {
+				setVariationErr('Please pick a variation');
+				return;
+			}
+
+			setVariationErr('');
+
+			const payload = {
+				__action: 'add_item_to_cart',
+				...state.sessionStorableCartItem
+			} as ShoppingCartItem & { __action: ActionType };
+
+			addToCart.submit(
+				payload,
+				{
+					method: 'post',
+					action: `/product/${payload.productUUID}`,
+				},
+			);
 		},
-		[
-			state.productDetail,
-			state.quantity,
-			state.variation,
-		],
+		[state.sessionStorableCartItem],
 	);
-
-	const handleAddToCart = () => {
-		if (!state.variation) {
-			setVariationErr('Please pick a variation');
-			return;
-		}
-
-		setVariationErr('');
-
-		const payload = {
-			__action: 'add_item_to_cart',
-			...normalizeProdInfo()
-		} as ShoppingCartItem & { __action: ActionType };
-		addToCart.submit(
-			payload,
-			{
-				method: 'post',
-				action: `/product/${payload.productUUID}`,
-			},
-		);
-	};
-
-	const handleBuyNow = () => {
-		if (!state.variation) {
-			setVariationErr('Please pick a variation');
-
-			return
-		}
-		setVariationErr('');
-
-		console.log('debug handleBuyNow');
-
-		// Add this item to shopping cart (session).
-		// Redirect to checkout page after it's added to cart.
-		// buyNow.submit({
-		// 	__action: 'buy_now',
-		// 	...extractProductInfo(),
-		// }, {
-		// 	method: 'post',
-		// 	action: '/product/$prodId',
-		// });
-		// buyNow.submit(
-		// 	{
-		// 		__action: 'buy_now',
-		// 	},
-		// 	{
-		// 		method: 'post',
-		// 		action: '/cart',
-		// 	},
-		// )
-	}
 
 	useEffect(() => {
 		if (addToCart.type === 'done') {
@@ -641,7 +598,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 									<div className='hidden md:block'>
 										<ProductActionBar
 											onClickAddToCart={handleAddToCart}
-											onClickBuyNow={handleBuyNow}
+											sessionStorableCartItem={state.sessionStorableCartItem}
 											loading={addToCart.state !== 'idle'}
 										/>
 									</div>
@@ -695,7 +652,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 									<ProductActionBar
 										ref={mobileUserActionBarRef}
 										onClickAddToCart={handleAddToCart}
-										onClickBuyNow={handleBuyNow}
+										sessionStorableCartItem={state.sessionStorableCartItem}
 										loading={addToCart.state !== 'idle'}
 									/>
 								</div>

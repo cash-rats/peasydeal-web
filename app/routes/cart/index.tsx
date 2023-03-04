@@ -12,6 +12,7 @@ import {
 	setTransactionObject,
 	resetTransactionObject,
 } from '~/sessions/transaction.session';
+import { insertItem } from '~/sessions/shoppingcart.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
@@ -73,8 +74,6 @@ export const action: ActionFunction = async ({ request }) => {
 	const formEntries = Object.fromEntries(form.entries());
 	const actionType = formEntries['__action'] as ActionType;
 
-	console.log('debug 1', actionType);
-
 	if (actionType === 'remove_cart_item') {
 		const variationUUID = formEntries['variation_uuid'] as string || '';
 		const promoCode = formEntries['promo_code'] as string || '';
@@ -94,8 +93,19 @@ export const action: ActionFunction = async ({ request }) => {
 	}
 
 	if (actionType === 'buy_now') {
-		console.log('debug 2 buy_now');
-		return redirect('/cart');
+		const serializedCartItem = formEntries['cart_item'] as string;
+		const cartItem = JSON.parse(serializedCartItem);
+
+		return redirect(
+			'/cart',
+			{
+				headers: {
+					"Set-Cookie": await commitSession(
+						await insertItem(request, cartItem)
+					),
+				},
+			},
+		);
 	}
 
 	// Unknown action

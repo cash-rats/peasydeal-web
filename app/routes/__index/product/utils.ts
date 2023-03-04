@@ -34,4 +34,10 @@ const normalizeToSessionStorableCartItem = ({
   }
 }
 
-export { normalizeToSessionStorableCartItem };
+const findDefaultVariation = (pd: ProductDetail) => (
+  pd.variations.find(
+    (variation: any) => pd.default_variation_uuid === variation.uuid,
+  )
+);
+
+export { normalizeToSessionStorableCartItem, findDefaultVariation };

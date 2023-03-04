@@ -2,17 +2,20 @@ import { forwardRef } from 'react';
 import { Form } from '@remix-run/react';
 import { Button } from '@chakra-ui/react';
 
+import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
+
 interface ProductActionBarProps {
   onClickAddToCart: () => void;
-  onClickBuyNow: () => void;
+  sessionStorableCartItem: ShoppingCartItem;
   loading?: boolean;
 };
 
 const ProductActionBar = forwardRef(({
   onClickAddToCart,
-  onClickBuyNow,
+  sessionStorableCartItem,
   loading = false,
 }: ProductActionBarProps, ref) => {
+
   return (
     <div
       className='
@@ -44,10 +47,20 @@ const ProductActionBar = forwardRef(({
           method='post'
           action='/cart?index'
         >
+          {/*
+            'buy_now' is an action type that '/cart' can handle.
+            Refer to: '__/index/cart/actions.ts'
+          */}
           <input
             type='hidden'
             name="__action"
             value='buy_now'
+          />
+
+          <input
+            type='hidden'
+            name="cart_item"
+            value={JSON.stringify(sessionStorableCartItem)}
           />
 
           <Button
