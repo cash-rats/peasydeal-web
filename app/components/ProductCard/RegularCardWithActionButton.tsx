@@ -85,12 +85,6 @@ export default function ProductCard({
   const [loaded, setLoaded] = useState<Boolean>(false);
   const [hasSuperDeal, setHasSuperDeal] = useState<Boolean>(false);
 
-  const splitNumber = useCallback((n: number): [number, number] => {
-    if (!n) return [0, 0];
-
-    return [Math.floor(n), Math.round((n % 1) * 100)]
-  }, []);
-
   const tags: Array<ITag> = useMemo(() => {
     if (!tabComboType) return [];
 
@@ -111,12 +105,6 @@ export default function ProductCard({
 
     return tags;
   }, [tabComboType]);
-
-  const [priceLeft, priceRight] = useMemo(() => {
-    if (!salePrice) return [0, 0];
-
-    return splitNumber(salePrice);
-  }, [salePrice, splitNumber])
 
   const priceOff: number = useMemo(() => {
     if (!salePrice || !retailPrice) return 0;
@@ -174,9 +162,9 @@ export default function ProductCard({
             ) : null
         }
 
-        <div className={`${loaded ? 'h-full' : 'h-[183px] md:h-[274px]'}`} >
+        <div className={`${loaded ? 'h-full' : 'h-[183px] md:h-[253px]'}`} >
           <LazyLoadComponent
-            threshold={250}
+            threshold={500}
             scrollPosition={scrollPosition}
           >
             <Image
