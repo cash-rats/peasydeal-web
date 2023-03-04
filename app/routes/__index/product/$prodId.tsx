@@ -189,7 +189,7 @@ export const action: ActionFunction = async ({ request }) => {
 	if (
 		!cartObj ||
 		!cartObj.variationUUID ||
-		cartObj.variationUUID === 'undefined'
+		typeof cartObj.variationUUID === 'undefined'
 	) {
 		return json('');
 	}
@@ -296,9 +296,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	}, [loaderData.product.uuid]);
 
 	useEffect(() => {
-		const currentVariation = state.productDetail.variations.find(
-			variation => state.productDetail.default_variation_uuid === variation.uuid
-		)
+		const currentVariation = findDefaultVariation(state.productDetail);
 
 		dispatch({
 			type: ActionTypes.set_variation,
