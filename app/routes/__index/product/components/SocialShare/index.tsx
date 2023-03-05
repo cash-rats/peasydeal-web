@@ -26,6 +26,7 @@ interface SocialShareProps {
 
 const loadShareThisScript = () => {
   const script = document.createElement('script')
+  script.async = true
   script.id = 'sharethis'
   script.src = 'https://platform-api.sharethis.com/js/sharethis.js#property=635bb7bc9c9fa7001910fbe2&product=sop'
   script.type = 'text/javascript';

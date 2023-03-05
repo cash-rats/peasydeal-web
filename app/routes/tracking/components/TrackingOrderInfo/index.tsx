@@ -3,10 +3,11 @@ import { BsFillInfoCircleFill } from 'react-icons/bs';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
-import Tooltip from '@mui/material/Tooltip';
+import { Tooltip } from '@chakra-ui/react'
 
 import PriceInfo from './components/PriceInfo';
 import DeliveryInfo from './components/DeliveryInfo';
+import CancelOrderActionBar from './components/CancelOrderActionBar';
 import type { TrackOrder } from '../../types';
 
 
@@ -162,6 +163,8 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
           <p className="flex justify-end font-medium text-base font-poppins"> £{orderInfo.total_amount} </p>
         </div>
       </div>
+
+      <CancelOrderActionBar />
     </div >
   );
 }
