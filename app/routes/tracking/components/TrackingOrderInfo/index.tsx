@@ -13,7 +13,6 @@ import CancelOrderActionBar from './components/CancelOrderActionBar';
 import type { CancelReason } from './components/CancelOrderActionBar';
 import type { TrackOrder } from '../../types';
 
-
 const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => {
   order.parsed_created_at = parseISO(order.created_at);
   return order;
@@ -172,7 +171,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
                 <span className="font-poppins mr-1">
                   Tax
                 </span>
-                <Tooltip title="20% VAT" arrow>
+                <Tooltip title="20% VAT" hasArrow>
                   <span>
                     <BsFillInfoCircleFill />
                   </span>

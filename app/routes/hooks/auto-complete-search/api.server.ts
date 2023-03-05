@@ -1,7 +1,6 @@
 import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
-
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 
 export interface SearchProductPreviewsParams {
