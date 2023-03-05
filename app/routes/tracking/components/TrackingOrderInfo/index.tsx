@@ -4,10 +4,13 @@ import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
 import { Tooltip } from '@chakra-ui/react'
+import type { ActionFunction } from '@remix-run/node';
+import { useFetcher } from '@remix-run/react';
 
 import PriceInfo from './components/PriceInfo';
 import DeliveryInfo from './components/DeliveryInfo';
 import CancelOrderActionBar from './components/CancelOrderActionBar';
+import type { CancelReason } from './components/CancelOrderActionBar';
 import type { TrackOrder } from '../../types';
 
 
@@ -28,13 +31,35 @@ const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => {
     - [ ] Hide.
 */
 
+export const action: ActionFunction = async ({ request }) => {
+  const form = await request.formData();
+  const formEntries = Object.fromEntries(form.entries());
+
+  console.log('debug **##', formEntries);
+
+  return null;
+};
+
 interface TrackingOrderIndexProps {
   orderInfo: TrackOrder;
 }
 
 function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
   orderInfo = parseTrackOrderCreatedAt(orderInfo);
+  const fetcher = useFetcher();
 
+  const handleCancel = (reason: CancelReason | null) => {
+    fetcher.submit(
+      {
+        order_uuid: orderInfo.order_uuid,
+        cancel_reason: reason?.reason || '',
+      },
+      {
+        method: 'post',
+        action: '/tracking/components/TrackingOrderInfo?index',
+      },
+    );
+  };
 
   return (
     <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4">
@@ -164,7 +189,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
         </div>
       </div>
 
-      <CancelOrderActionBar />
+      <CancelOrderActionBar onCancel={handleCancel} />
     </div >
   );
 }

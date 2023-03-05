@@ -10,13 +10,12 @@ import {
   ListItem,
   ListIcon,
   Textarea,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import clsx from 'clsx';
-import { useFetcher } from '@remix-run/react';
 
-interface CancelReason {
+export interface CancelReason {
+  id?: number;
   reason: string;
 };
 
@@ -28,22 +27,37 @@ const cancelReasons: CancelReason[] = [
     reason: 'I bought the wrong items',
   },
   {
-    reason: 'Found cheaper price somewhere else',
+    reason: 'Found cheaper price elsewhere',
   },
   {
     reason: 'Other reasons',
   },
-];
+].map((cr, idx) => ({
+  ...cr,
+  id: idx,
+}));
 
-export default function CancelOrderActionBar() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selected, setSelected] = useState<string | null>(null);
+interface ICancelOrderActionBar {
+  onCancel?: (reason: CancelReason | null) => void;
+};
+
+export default function CancelOrderActionBar({
+  onCancel = () => { },
+}: ICancelOrderActionBar) {
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<CancelReason | null>(null);
+
+  const handleClose = () => setOpen(false);
+  const handleOpen = () => setOpen(true);
+  const handleConfirm = () => {
+    onCancel(selected);
+  };
 
   return (
     <div className="mt-4">
       <Modal
-        onClose={onClose}
-        isOpen={true}
+        onClose={handleClose}
+        isOpen={open}
         size='xl'
         isCentered
       >
@@ -51,16 +65,16 @@ export default function CancelOrderActionBar() {
         <ModalContent className="py-2">
           <ModalBody className="pb-4">
             <h2 className="font-poppins font-bold text-lg">
-              Please tell us reason for canceling? (Optional)
+              Please tell us the reason for canceling? (Optional)
             </h2>
 
             <List className="mt-4" spacing={1.5}>
               {
-                cancelReasons.map((reason, index) => {
+                cancelReasons.map((reason) => {
                   return (
                     <ListItem
-                      key={`cancel_reason_${index}`}
-                      onClick={() => setSelected(`cancel_reason_${index}`)}
+                      key={`cancel_reason_${reason.id}`}
+                      onClick={() => setSelected(reason)}
                       className={clsx(
                         `
                           w-full min-h-[32px]
@@ -71,7 +85,7 @@ export default function CancelOrderActionBar() {
                           hover:py-[2px] hover:px-[5px] hover:rounded-md
                         `,
                         {
-                          "bg-gray-100 border-[#39CCCC] border py-[2px] px-[5px] rounded-md": selected === `cancel_reason_${index}`,
+                          "bg-gray-100 border-[#39CCCC] border py-[2px] px-[5px] rounded-md": selected?.id === reason.id,
                         }
                       )}>
                       <ListIcon as={AiOutlineExclamationCircle} color="green.500" />
@@ -83,7 +97,7 @@ export default function CancelOrderActionBar() {
             </List>
 
             {
-              selected === `cancel_reason_3` && (
+              selected?.id === cancelReasons.length - 1 && (
                 <div className="mt-4">
                   <Textarea
                     placeholder='Please tell us the reason for canceling'
@@ -106,7 +120,10 @@ export default function CancelOrderActionBar() {
               alignItems='center'
               justifyContent='end'
             >
-              <Button colorScheme='gray'>
+              <Button
+                colorScheme='gray'
+                onClick={handleConfirm}
+              >
                 Confirm
               </Button>
             </Stack>
@@ -122,7 +139,7 @@ export default function CancelOrderActionBar() {
         <Button
           colorScheme='orange'
           size='md'
-          onClick={onOpen}
+          onClick={handleOpen}
         >
           Cancel Order
         </Button>
