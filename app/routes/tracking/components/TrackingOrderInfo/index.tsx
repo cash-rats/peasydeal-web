@@ -37,22 +37,25 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
 
   return (
     <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4">
-      <h1 className="font-bold text-2xl leading-[1.875rem] mb-4">
+      <h1 className="font-poppins font-bold text-2xl leading-[1.875rem] mb-4">
         Order ID: {orderInfo.order_uuid}
       </h1>
 
       <div className="flex mb-4">
-        <span className="flex text-sm text-battleship-grey
+        <span className="
+          flex font-poppins text-sm text-battleship-grey
           first:pr-4 last:pl-4 text-[rbg(0,179,59)]
-          border-r-"
+          border-r-[2px] capitalize"
         >
           Order date: &nbsp; <b>{format(orderInfo.parsed_created_at, 'MMM, d, yyyy')}</b>
         </span>
 
-        <span className="flex text-sm text-battleship-grey
-        first:pr-4 first:border-solid first:border-[1px] first:border-border-color
-        last:pl-4 text-[rbg(0,179,59)]
-      ">
+        <span className="
+          flex text-sm text-battleship-grey
+          first:pr-4 first:border-solid first:border-[1px] first:border-border-color
+          last:pl-4 text-[rbg(0,179,59)]
+          font-poppins capitalize
+        ">
           {/* Estimated delivery would be 10 days after order is made */}
           <FaShippingFast fontSize={20} color='#00b33b' /> &nbsp;
           Estimated delivery: &nbsp;
@@ -68,20 +71,19 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       </div>
 
       {/* Products */}
-      {/* <div className="order-products-container"> */}
       <div className="border-[1px] border-solid border-border-color py-4 px-0 flex flex-col gap-4 mb-4 bg-white">
         {
           orderInfo.products.map((product) => {
             return (
-
               <div
-                key={product.uuid}
-                className="w-full flex flex-row justify-between
-              items-center pt-0 px-4 pb-4 border-b-[1px]
-              border-solid border-border-color
-              last:border-b-0 last:pb-0"
-
-              >
+                key={`tracking_item_${product.uuid}`}
+                className="
+                w-full flex flex-row justify-between
+                items-center pt-0 px-4 pb-4 border-b-[1px]
+                border-solid border-border-color
+                last:border-b-0 last:pb-0
+                font-poppins
+              ">
                 <div className="w-[70%] flex flex-row justify-start items-center">
                   <div className="mr-3">
                     <img
@@ -117,23 +119,18 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       <DeliveryInfo orderInfo={orderInfo} />
 
       {/* Order Summary  */}
-      <div className="p-4 border-[1px] border-b-0 bg-white">
-        <h1 className="text-[1.2rem] font-normal mb-[0.7rem]"> Order Summary </h1>
+      <div className="p-4 border-[1px] bg-white">
+        <h1 className="font-poppins text-[1.2rem] font-normal mb-[0.7rem]"> Order Summary </h1>
         <PriceInfo
           title={(
-            <span className="text-base text-black capitalize">
+            <span className="font-poppins text-base text-black capitalize">
               subtotal &nbsp;
             </span>
           )}
           priceInfo={(
-            <p className="mt-2">
-              <span className="text-base font-normal text-black">
-                £{orderInfo.subtotal} &nbsp;
-              </span>
-              <span className="uppercase  text-[rgb(0,179,59)] text-base font-medium ">
-                Saved ${orderInfo.discount_amount} !
-              </span>
-            </p>
+            <span className="font-poppins text-base font-normal text-black text-right">
+              £{orderInfo.subtotal}
+            </span>
           )}
         />
 
@@ -146,7 +143,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
           <PriceInfo
             title={(
               <span className="flex flex-row items-center">
-                <span className="mr-1">
+                <span className="font-poppins mr-1">
                   Tax
                 </span>
                 <Tooltip title="20% VAT" arrow>
@@ -161,8 +158,8 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
         </div>
 
         <div className="flex mt-2">
-          <p className="flex-1"> Total </p>
-          <p className="flex justify-end font-medium text-base"> £{orderInfo.total_amount} </p>
+          <p className="flex-1 font-poppins"> Total </p>
+          <p className="flex justify-end font-medium text-base font-poppins"> £{orderInfo.total_amount} </p>
         </div>
       </div>
     </div >

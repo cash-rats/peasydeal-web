@@ -9,9 +9,9 @@ function PriceInfo({ title, priceInfo }: PriceInfoProps) {
   return (
     <span className="flex text-sm font-normal text-[rgb(130,129,131)]">
       <span className="flex items-center gap-1">
-        <p className="m-0 flex-1"> {title} </p>
+        <div className="font-poppins m-0 flex-1"> {title} </div>
       </span>
-      <p className="flex justify-end flex-1 m-0 font-normal text-sm"> {priceInfo}  </p>
+      <div className="flex justify-end flex-1 m-0 font-poppins font-normal text-sm"> {priceInfo}  </div>
     </span>
   );
 }

@@ -10,6 +10,7 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import { error } from '~/utils/error';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
+import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import { fetchCategories } from '~/api';
 import type { Category } from '~/shared/types';
 
@@ -31,6 +32,7 @@ type CatchBoundaryDataType = {
   errMessage: string;
   canonicalLink: string;
   categories: Category[];
+  navBarCategories: Category[];
 }
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
@@ -55,6 +57,7 @@ export const links: LinksFunction = () => {
     ...TrackingOrderErrorPageLinks(),
     ...TrackingOrderInitPageLinks(),
     ...SearchBarLinks(),
+    ...CategoriesNavLinks(),
   ];
 };
 
@@ -92,6 +95,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw json<CatchBoundaryDataType>({
       errMessage: `Result for order ${orderID} is not found`,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
+      navBarCategories,
       categories,
     }, httpStatus.NOT_FOUND);
   }
@@ -139,6 +143,12 @@ export const CatchBoundary = () => {
     <>
       <Header
         categories={caughtData.categories}
+        categoriesBar={
+          <CategoriesNav
+            categories={caughtData.categories}
+            topCategories={caughtData.navBarCategories}
+          />
+        }
         searchBar={
           <SearchBar
             onSearch={handleOnSearch}
@@ -163,7 +173,7 @@ export const CatchBoundary = () => {
 }
 
 function TrackingOrder() {
-  const { order, categories } = useLoaderData<LoaderDataType>();
+  const { order, categories, navBarCategories } = useLoaderData<LoaderDataType>();
   const trackOrderFetcher = useFetcher();
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLButtonElement>) => {
@@ -193,6 +203,12 @@ function TrackingOrder() {
       <Header
         categories={categories}
         searchBar={<div />}
+        categoriesBar={
+          <CategoriesNav
+            categories={categories}
+            topCategories={navBarCategories}
+          />
+        }
       />
 
       <main>

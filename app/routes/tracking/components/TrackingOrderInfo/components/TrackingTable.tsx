@@ -18,7 +18,7 @@ type TrackingTableProps = {
 
 function TrackingTable({ trackings }: TrackingTableProps) {
   return (
-    <div className="w-full">
+    <div className="font-poppins w-full">
       <h1 className="font-medium mb-2">
         Shipment trackings:
       </h1>

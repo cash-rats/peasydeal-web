@@ -11,9 +11,9 @@ type DeliveryInfoProps = {
 function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
   return (
     <div className="p-4 border-[1px] border-border-color border-b-0 bg-white">
-      <h1 className="text-xl font-normal mb-[0.7rem]">
+      <h2 className="font-poppins text-xl font-normal mb-[0.7rem]">
         Delivery Information
-      </h1>
+      </h2>
 
       <InfoPiece
         title='Contact Name'
@@ -23,7 +23,7 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
       <InfoPiece
         title='Address'
         info={(
-          <p>
+          <p className="font-poppins">
             {orderInfo.address} &nbsp;
             {orderInfo.address2} <br />
             {orderInfo.city} <br />
