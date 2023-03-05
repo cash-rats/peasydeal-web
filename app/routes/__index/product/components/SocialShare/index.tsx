@@ -33,18 +33,37 @@ const loadShareThisScript = () => {
   document.body.appendChild(script)
 }
 
+const removeShareThisScript = () => {
+  const st = document.getElementById('sharethis');
+  if (
+    st &&
+    document &&
+    document.body &&
+    document.body.contains(st)
+  ) {
+    document.body.removeChild(st);
+  }
+}
+
 export default function SocialShare({ prodUUID }: SocialShareProps) {
   const { onOpen, onClose, isOpen } = useDisclosure()
   const firstFieldRef = useRef(null)
 
   useEffect(() => {
+    if (!window) return;
+
     const st = window.__sharethis__;
     if (!st) {
       loadShareThisScript();
     } else if (typeof st.initialize === 'function') {
+      removeShareThisScript();
       loadShareThisScript();
       st.href = window.location.href
       st.initialize()
+    }
+
+    return () => {
+      removeShareThisScript()
     }
   }, [prodUUID])
 
