@@ -9,12 +9,6 @@ type DeliveryInfoProps = {
   orderInfo: TrackOrder;
 };
 
-const paymentStatusWording = {
-  [PaymentStatus.Paid]: 'Paid.',
-  [PaymentStatus.Unpaid]: 'Unpaid.',
-  [PaymentStatus.ReviewRefund]: "We are processing refund on cancelled order.",
-}
-
 // - [x] No need to display shipping status when payment status is `unpaid`
 // - [x] Only display shipping status table when shipping status is `shipping`
 function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
@@ -23,6 +17,7 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
       [PaymentStatus.Paid]: 'Paid.',
       [PaymentStatus.Unpaid]: 'Unpaid.',
       [PaymentStatus.ReviewRefund]: "We are processing refund on cancelled order.",
+      [PaymentStatus.Refunded]: 'Refunded',
     }
   }, []);
 

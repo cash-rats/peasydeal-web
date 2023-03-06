@@ -1,6 +1,7 @@
 import type { ImmerReducer } from 'use-immer';
 
 import type { TrackOrder, OrderStatus } from '../../types';
+import { PaymentStatus } from '../../types';
 
 interface StateShape {
   orderInfo: TrackOrder;
@@ -33,6 +34,7 @@ const reducer: ImmerReducer<StateShape, TrackingActions> = (draft, action) => {
     case TrackingActionTypes.update_order_status: {
       const orderStatus = action.payload as OrderStatus;
       draft.orderInfo.order_status = orderStatus;
+      draft.orderInfo.payment_status = PaymentStatus.ReviewRefund;
       break;
     }
     case TrackingActionTypes.set_error: {

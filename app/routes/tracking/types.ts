@@ -10,6 +10,7 @@ export enum PaymentStatus {
   Unpaid = 'unpaid',
   Paid = 'paid',
   ReviewRefund = 'review_refund',
+  Refunded = 'refunded',
 }
 
 export type TrackOrderProduct = {
