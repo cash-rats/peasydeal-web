@@ -61,7 +61,6 @@ interface TrackingOrderIndexProps {
 function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
   const [state, dispatch] = useImmerReducer(reducer, {
     orderInfo: parseTrackOrderCreatedAt(orderInfo),
-    orderCancelledText: '',
   });
 
   const fetcher = useFetcher();

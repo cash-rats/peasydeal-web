@@ -4,15 +4,11 @@ import type { TrackOrder, OrderStatus } from '../../types';
 
 interface StateShape {
   orderInfo: TrackOrder;
-  orderCancelledText: string;
 }
 
 export enum TrackingActionTypes {
   update_order_status = 'update_order_status',
-  cancel_order = 'cancel_order',
 };
-
-interface CancelOrderAction { };
 
 interface TrackingActions {
   type: TrackingActionTypes,

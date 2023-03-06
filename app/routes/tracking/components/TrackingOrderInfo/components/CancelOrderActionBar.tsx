@@ -92,7 +92,10 @@ export default function CancelOrderActionBar({
                           "bg-gray-100 border-[#39CCCC] border py-[2px] px-[5px] rounded-md": selected?.id === reason.id,
                         }
                       )}>
-                      <ListIcon as={AiOutlineExclamationCircle} color="green.500" />
+                      <ListIcon
+                        className='text-[#4980c8]'
+                        as={AiOutlineExclamationCircle}
+                      />
                       {reason.reason}
                     </ListItem>
                   )
@@ -142,7 +145,7 @@ export default function CancelOrderActionBar({
         justify='right'
       >
         <Button
-          colorScheme='orange'
+          colorScheme='blue'
           size='md'
           onClick={onOpen}
         >
