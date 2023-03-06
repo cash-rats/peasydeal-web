@@ -9,7 +9,7 @@ import {
   createOrder,
   paypalCreateOrder,
   paypalCapturePayment,
-} from './api';
+} from './api.server';
 import type {
   ShippingDetailFormType,
   ContactInfoFormType,

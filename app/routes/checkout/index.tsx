@@ -29,7 +29,7 @@ import ShippingDetailForm, { links as ShippingDetailFormLinks } from './componen
 import type { Option } from './components/ShippingDetailForm/api.server';
 import CartSummary from './components/CartSummary';
 import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
-import type { PaypalCreateOrderResponse } from './api';
+import type { PaypalCreateOrderResponse } from './api.server';
 import reducer, { ActionTypes as ReducerActionTypes, initState } from './reducer';
 import type { StateShape } from './reducer';
 import {

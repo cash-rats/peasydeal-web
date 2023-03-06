@@ -38,26 +38,30 @@ const cancelReasons: CancelReason[] = [
 }));
 
 interface ICancelOrderActionBar {
-  onCancel?: (reason: CancelReason | null) => void;
+  onConfirm?: (reason: CancelReason | null) => void;
+
+  openCancelModal?: boolean;
+
+  onOpen?: () => void;
+  onClose?: () => void;
+  isLoading?: boolean;
 };
 
 export default function CancelOrderActionBar({
-  onCancel = () => { },
+  onConfirm = () => { },
+  openCancelModal = false,
+  onOpen = () => { },
+  onClose = () => { },
+  isLoading = false,
 }: ICancelOrderActionBar) {
-  const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<CancelReason | null>(null);
-
-  const handleClose = () => setOpen(false);
-  const handleOpen = () => setOpen(true);
-  const handleConfirm = () => {
-    onCancel(selected);
-  };
+  const handleConfirm = () => onConfirm(selected);
 
   return (
     <div className="mt-4">
       <Modal
-        onClose={handleClose}
-        isOpen={open}
+        onClose={onClose}
+        isOpen={openCancelModal}
         size='xl'
         isCentered
       >
@@ -123,6 +127,7 @@ export default function CancelOrderActionBar({
               <Button
                 colorScheme='gray'
                 onClick={handleConfirm}
+                isLoading={isLoading}
               >
                 Confirm
               </Button>
@@ -139,7 +144,7 @@ export default function CancelOrderActionBar({
         <Button
           colorScheme='orange'
           size='md'
-          onClick={handleOpen}
+          onClick={onOpen}
         >
           Cancel Order
         </Button>

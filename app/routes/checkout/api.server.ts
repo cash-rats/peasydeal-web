@@ -89,8 +89,11 @@ interface PaypalCapturePayment {
 }
 
 export const paypalCapturePayment = async (paypalOrderID: string) => {
+  const url = new URL(PEASY_DEAL_ENDPOINT);
+  url.pathname = '/v1/orders/paypal-capture-payment';
+
   const resp = await fetch(
-    `${PEASY_DEAL_ENDPOINT}/v1/orders/paypal-capture-payment`,
+    url.toString(),
     {
       method: 'post',
       headers: {
@@ -104,9 +107,9 @@ export const paypalCapturePayment = async (paypalOrderID: string) => {
 
   const respJSON = await resp.json();
   if (resp.status !== httpStatus.OK) {
-    const errResp = respJSON as ApiErrorResponse;
-    throw new Error(errResp.err_message);
-  }
+    throw new Error(
+      (respJSON as ApiErrorResponse).err_message)
+  };
 
   return respJSON as PaypalCapturePayment;
 };

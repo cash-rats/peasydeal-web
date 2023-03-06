@@ -18,7 +18,7 @@ import TrackingOrderInfo from './components/TrackingOrderInfo';
 import TrackingSearchBar from './components/TrackingSearchBar';
 import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
 import TrackingOrderInitPage, { links as TrackingOrderInitPageLinks } from './components/TrackingOrderInitPage';
-import { trackOrder } from './api';
+import { trackOrder } from './api.server';
 import type { TrackOrder } from './types';
 
 type LoaderDataType = {

@@ -1,3 +1,11 @@
+export enum OrderStatus {
+  OrderReceived = 'order_received',
+  Processing = 'processing',
+  Hold = 'hold',
+  Complete = 'complete',
+  Cancelled = 'cancelled',
+};
+
 export type TrackOrderProduct = {
   order_quantity: number;
   title: string;
@@ -29,4 +37,5 @@ export type TrackOrder = {
   tracking_link: string;
   payment_status: 'paid' | 'unpaid';
   products: TrackOrderProduct[];
+  order_status: OrderStatus;
 }

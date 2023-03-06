@@ -77,8 +77,7 @@ function FooterTopInfo() {
 
         <div className="
             flex flex-col justify-start items-center
-            px-2 md:px-6 lg:px-14
-            py-8 md:px-14 lg:px-20
+            px-2 py-8 md:px-14 lg:px-20
             border-t-[1px] border-t-[#BABABA]
         ">
           <h3 className="
