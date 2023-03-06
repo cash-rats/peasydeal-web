@@ -12,8 +12,6 @@ import { useImmerReducer } from 'use-immer';
 import { FcInfo } from 'react-icons/fc';
 import { BiErrorCircle } from 'react-icons/bi';
 
-import type { ApiErrorResponse } from '~/shared/types';
-
 import PriceInfo from './components/PriceInfo';
 import DeliveryInfo from './components/DeliveryInfo';
 import CancelOrderActionBar from './components/CancelOrderActionBar';
@@ -23,10 +21,10 @@ import reducer, { TrackingActionTypes } from './reducer';
 import type { TrackOrder } from '../../types';
 import { OrderStatus } from '../../types';
 
-const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => {
-  order.parsed_created_at = parseISO(order.created_at);
-  return order;
-};
+const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => ({
+  ...order,
+  parsed_created_at: parseISO(order.created_at)
+});
 
 /*
   Design Reference:
@@ -121,6 +119,16 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       }
     }
   }, [fetcher.type]);
+
+  useEffect(
+    () => {
+      dispatch({
+        type: TrackingActionTypes.init_order_info,
+        payload: parseTrackOrderCreatedAt(orderInfo),
+      });
+    },
+    [orderInfo.order_uuid],
+  );
 
   return (
     <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4">
