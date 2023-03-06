@@ -6,6 +6,12 @@ export enum OrderStatus {
   Cancelled = 'cancelled',
 };
 
+export enum PaymentStatus {
+  Unpaid = 'unpaid',
+  Paid = 'paid',
+  ReviewRefund = 'review_refund',
+}
+
 export type TrackOrderProduct = {
   order_quantity: number;
   title: string;
@@ -35,7 +41,7 @@ export type TrackOrder = {
   carrier: string;
   tracking_number: string;
   tracking_link: string;
-  payment_status: 'paid' | 'unpaid';
+  payment_status: PaymentStatus;
   products: TrackOrderProduct[];
   order_status: OrderStatus;
 }

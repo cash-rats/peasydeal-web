@@ -1,14 +1,31 @@
+import { useMemo } from 'react';
+
 import InfoPiece from './InfoPiece';
 import TrackingTable from './TrackingTable';
 import type { TrackOrder } from '../../../types';
+import { PaymentStatus } from '../../../types';
 
 type DeliveryInfoProps = {
   orderInfo: TrackOrder;
 };
 
+const paymentStatusWording = {
+  [PaymentStatus.Paid]: 'Paid.',
+  [PaymentStatus.Unpaid]: 'Unpaid.',
+  [PaymentStatus.ReviewRefund]: "We are processing refund on cancelled order.",
+}
+
 // - [x] No need to display shipping status when payment status is `unpaid`
 // - [x] Only display shipping status table when shipping status is `shipping`
 function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
+  const paymentStatusWording = useMemo(() => {
+    return {
+      [PaymentStatus.Paid]: 'Paid.',
+      [PaymentStatus.Unpaid]: 'Unpaid.',
+      [PaymentStatus.ReviewRefund]: "We are processing refund on cancelled order.",
+    }
+  }, []);
+
   return (
     <div className="p-4 border-[1px] border-border-color border-b-0 bg-white">
       <h2 className="font-poppins text-xl font-normal mb-[0.7rem]">
@@ -35,7 +52,7 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
 
       <InfoPiece
         title='Payment Status'
-        info={orderInfo.payment_status}
+        info={paymentStatusWording[orderInfo.payment_status]}
       />
 
       {orderInfo.payment_status === 'paid' && (
