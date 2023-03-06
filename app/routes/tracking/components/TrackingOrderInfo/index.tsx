@@ -10,6 +10,9 @@ import { json } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import { useImmerReducer } from 'use-immer';
 import { FcInfo } from 'react-icons/fc';
+import { BiErrorCircle } from 'react-icons/bi';
+
+import type { ApiErrorResponse } from '~/shared/types';
 
 import PriceInfo from './components/PriceInfo';
 import DeliveryInfo from './components/DeliveryInfo';
@@ -50,7 +53,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     return null
   } catch (err) {
-    throw json(err);
+    return json(err);
   }
 };
 
@@ -61,6 +64,7 @@ interface TrackingOrderIndexProps {
 function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
   const [state, dispatch] = useImmerReducer(reducer, {
     orderInfo: parseTrackOrderCreatedAt(orderInfo),
+    error: null,
   });
 
   const fetcher = useFetcher();
@@ -68,6 +72,11 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
 
   const handleConfirm = useCallback(
     (reason: CancelReason | null) => {
+      dispatch({
+        type: TrackingActionTypes.set_error,
+        payload: null,
+      });
+
       fetcher.submit(
         {
           order_uuid: state.orderInfo.order_uuid,
@@ -84,6 +93,17 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
 
   useEffect(() => {
     if (fetcher.type === 'done') {
+      const errMsg = fetcher.data
+
+      if (errMsg !== null) {
+        dispatch({
+          type: TrackingActionTypes.set_error,
+          payload: errMsg,
+        });
+
+        return;
+      }
+
       // Close modal
       setOpenCancelModal(false);
 
@@ -138,11 +158,47 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       </div>
 
       {/* Cancelled Order warning */}
+      {
+        state.error
+          ? (
+            <div className="
+								w-full py-2.5 max-w-screen-xl mx-auto
+								capitalized
+								text-lg font-poppins nowrap
+								flex
+								items-center
+								bg-white
+								p-4
+								rounded-lg border-[2px] border-[#d34c46]
+							">
+              <BiErrorCircle
+                fontSize={24}
+                className='w-[36px] mr-4'
+                color='#d34c46'
+              />
+              <span>
+                <b className='text-[#d34c46] font-poppins font-bold'>
+                  There was an error when cancelling order.
+                </b>
+                <p className="font-poppins text-sm">
+                  {state.error}
+                  For further support, please let us know via email: &nbsp;
+                  <span className="text-[#D02E7D]">
+                    <a href={`mailto:contact@peasydeal.com?subject=Cancelled Order - ${state.orderInfo.order_uuid}`}>
+                      contact@peasydeal.com
+                    </a>
+                  </span>.
+                </p>
+              </span>
+            </div>
+
+          )
+          : null
+      }
 
       {
         state.orderInfo.order_status === OrderStatus.Cancelled
           ? (
-
             <div className="
 								w-full py-2.5 max-w-screen-xl mx-auto
 								capitalized
