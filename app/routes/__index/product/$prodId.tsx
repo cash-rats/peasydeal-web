@@ -85,13 +85,15 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 		variations.
 		find(variation => variation.uuid === data.product.default_variation_uuid);
 
-	let description = getProdDetailDescTextWithoutPrice(data.product.title)
+	const category = data.product?.categories.length > 0 ? data.product.categories[0].label : '';
+	let description = getProdDetailDescTextWithoutPrice(data.product.title, category);
 
 	if (defaultVariation) {
 		description = getProdDetailDescText(
 			data.product.title,
 			defaultVariation.retail_price,
 			defaultVariation.sale_price,
+			category,
 		)
 	}
 

@@ -17,54 +17,62 @@ export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https:
 // 404 page
 // Object indicates the "thing" that is not found.
 export const getFourOhFourTitleText = (object?: string) => {
-  return `404 Error - ${object || 'Page'} Not Found`
+  return `404 Error - ${object || 'Page'} Not Found | PeasyDeal Up to 65% Off on Electronic, Home Supplies, and More! Shop Now and Save Big!`
 };
 export const getFourOhFourDescText = (object?: string) => {
   return `Oops! We couldn't find the ${object || 'page'} you were looking for. Please check the URL or navigate to our homepage.`;
 }
 
 // SEO index page
-export const getIndexTitleText = () => 'peasydeal.com | premium selected car accessories, gadgets, home & gardening products, clothes and more at a great price!';
-export const getIndexDescText = () => `Shop with confidence at PeasyDeal with our premium selected solar-powered lights, gadgets, home & gardening products, apparel and more at a best price possible. Responsive customer service, fast shipping time. Get 14 days money-back guarantee on all products!`;
+export const getIndexTitleText = () =>
+  'PeasyDeal | Up to 65% Off on Electronic, Home Supplies, and More!"';
+export const getIndexDescText = () =>
+  `Hurry up, limited time free shipping! Discover weekly updated deals on the latest gadgets, home decor, apparel, and more at PeasyDeal.` +
+  `Shop now for fast shipping, easy returns, and 14-day money-back guarantee.`;
 
 // SEO collection page
-export const getCollectionTitleText = (category: string) => `${category} | peasydeal.com`;
+export const getCollectionTitleText = (category: string) =>
+  `Up to 65% Off on ${category} | PeasyDeal`;
 export const getCollectionDescText = (category: string, desc?: string) => {
-  return `${category} | ${desc || `Shop for ${category} and more at everyday discount price`}`;
+  return `${category} | ${(desc || '') + `Find the Latest ${category} deals at PeasyDeal. Shop Now and Save Big! Hurry up, limited time free shipping!`}`;
 }
 
 // SEO prod page
-export const getProdDetailTitleText = (title: string, uuid: string) => `${title} - PeasyDeal - ${uuid}`;
-export const getProdDetailDescTextWithoutPrice = (title: string) => `Shop for ${title} and more at everyday discount price`
-export const getProdDetailDescText = (title: string, retailPrice: number, salePrice: number) => `£${salePrice} instead of £${retailPrice} for ${title} – save ${(1 - Number((salePrice / retailPrice).toFixed(2))) * 100} % Shop for ${title} and more at everyday discount price. Responsive customer service, fast shipping time. Get 14 days money-back guarantee on all products!`;
+export const getProdDetailTitleText = (title: string, uuid: string) =>
+  `Shop ${title} | Save Up to 65% with PeasyDeal!`;
+export const getProdDetailDescTextWithoutPrice = (title: string, category: string) =>
+  `Save Up to 65% with PeasyDeal! Upgrade Your ${category} Game with PeasyDeal. 14 days money-back guarantee`
+export const getProdDetailDescText = (title: string, retailPrice: number, salePrice: number, category: string) =>
+  `Buy for Only £${salePrice} at PeasyDeal! Save up to ${(1 - Number((salePrice / retailPrice).toFixed(2))) * 100}%, plus limited free shipping!` +
+  `Upgrade Your ${category} Game with PeasyDeal. 14 days money-back guarantee`;
 
 // SEO tracking page
-export const getTrackingTitleText = () => 'Track Order | peasydeal.com';
+export const getTrackingTitleText = () => 'Track Order | PeasyDeal';
 export const getTrackingDescText = () => 'track your order delivering status with the order id. Order id was sent to your email address by contact@peasydeal.com after you\'ve made the payment.';
 
 // SEO cart page
-export const getCartTitleText = () => 'Shopping Cart| peasydeal.com';
+export const getCartTitleText = () => 'Shopping Cart| PeasyDeal';
 
 // SEO privacy page
-export const getPrivacyTitleText = () => 'Privacy | peasydeal.com';
+export const getPrivacyTitleText = () => 'Privacy | PeasyDeal';
 
 // SEO contact us page
-export const getContactTitleText = () => 'Contact us | peasydeal.com';
+export const getContactTitleText = () => 'Contact us | PeasyDeal';
 
 // SEO about us page
-export const getAboutUsTitleText = () => 'About Us | peasydeal.com';
+export const getAboutUsTitleText = () => 'About Us | PeasyDeal';
 
 // SEO return policy page
-export const getReturnPolicyTitleText = () => 'Return Policy | peasydeal.com';
+export const getReturnPolicyTitleText = () => 'Return Policy | PeasyDeal';
 
 // SEO shipping policy page
-export const getShippingPolicyTitleText = () => 'Shipping Policy | peasydeal.com';
+export const getShippingPolicyTitleText = () => 'Shipping Policy | PeasyDeal';
 
 // SEO terms of use page
-export const getTermsOfUseTitleText = () => 'Terms of Use | peasydeal.com';
+export const getTermsOfUseTitleText = () => 'Terms of Use | PeasyDeal';
 
 // SEO sell with Us page
-export const getWholesaleTitleText = () => 'Terms of Use | peasydeal.com';
+export const getWholesaleTitleText = () => 'Terms of Use | PeasyDeal';
 
 // ------------------ END SEO ------------------
 
