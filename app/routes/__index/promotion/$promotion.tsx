@@ -7,7 +7,7 @@ import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
-import AllTimeCoupon from '~/components/AllTimeCoupon';
+import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import FourOhFour from '~/components/FourOhFour';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
@@ -31,6 +31,7 @@ export const handle = { structuredData };
 
 export const links: LinksFunction = () => {
   return [
+    ...AllTimeCouponLink(),
     ...ProductRowsContainerLinks(),
     ...PageTitleLinks(),
   ];

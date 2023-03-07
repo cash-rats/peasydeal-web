@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import type { LoaderFunction } from "@remix-run/node";
+import type { LoaderFunction, LinksFunction } from "@remix-run/node";
 import { useLoaderData, useCatch } from "@remix-run/react";
 import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from 'react-lazy-load-image-component';
@@ -18,10 +18,18 @@ import CategoriesRow from "~/components/CategoriesRow";
 import PromoActivitiesVariant from "~/components/PromoActivitiesVariant";
 import AllTimeCoupon from "~/components/AllTimeCoupon";
 
+import { links as AllTimeCouponLink } from "~/components/AllTimeCoupon";
+
 type LoaderDataType = {
 	categoryPreviews: TCategoryPreview[],
 	promotions: TPromotionType[],
 }
+
+export const links: LinksFunction = () => {
+  return [
+    ...AllTimeCouponLink(),
+  ];
+};
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
 	return [
