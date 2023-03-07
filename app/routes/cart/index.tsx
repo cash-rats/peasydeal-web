@@ -619,7 +619,7 @@ function Cart() {
 					<HorizontalProductsLayout
 						catID={1}
 						title='top items'
-						seeAllLinkTo='/Hot Deal'
+						seeAllLinkTo='/hot_deal'
 					/>
 
 					{/* Recommended products - new trend */}
@@ -627,7 +627,7 @@ function Cart() {
 					<HorizontalProductsLayout
 						catID={2}
 						title='new trend'
-						seeAllLinkTo='/New Trend'
+						seeAllLinkTo='/new_trend'
 					/>
 				</div>
 			</section>
