@@ -124,12 +124,10 @@ export default function Index() {
 						/>
 					}
 					mobileSearchBar={
-						<Form action='/search?index' method='post'>
-							<SearchBar
-								placeholder='Search keywords...'
-								onClick={handleOpen}
-							/>
-						</Form>
+						<SearchBar
+							placeholder='Search keywords...'
+							onClick={handleOpen}
+						/>
 					}
 
 					searchBar={

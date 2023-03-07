@@ -39,23 +39,23 @@ function LogoHeader({
         `}>
           <div className="flex w-full justify-between">
             <LogoBar categories={categories} />
-
             {
               searchBar && (
-                <Form
-                  className="w-full flex items-center"
-                  action='/search?index'
-                  method='post'
-                >
-                  <div className="
+                <div className="
                   hidden md:flex
                   md:items-center
                   md:py-0
                   md:px-1
                   w-full">
+
+                  <Form
+                    className="w-full flex items-center"
+                    action='/search?index'
+                    method='post'
+                  >
                     {searchBar}
-                  </div>
-                </Form>
+                  </Form>
+                </div>
               )
             }
 
@@ -66,15 +66,15 @@ function LogoHeader({
 
           {
             mobileSearchBar && (
-              <Form
-                className="w-full flex items-center"
-                action='/search?index'
-                method='post'
-              >
-                <div className="w-full py-1 px-2 bg-white md:hidden">
+              <div className="w-full py-1 px-2 bg-white md:hidden">
+                <Form
+                  className="w-full flex items-center"
+                  action='/search?index'
+                  method='post'
+                >
                   {mobileSearchBar}
-                </div>
-              </Form>
+                </Form>
+              </div>
             )
           }
         </div>
@@ -94,7 +94,7 @@ function LogoHeader({
           </div>
         )
       }
-    </header>
+    </header >
   )
 }
 
