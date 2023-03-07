@@ -17,7 +17,7 @@ import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 import { PAGE_LIMIT } from '~/shared/constants';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
-import AllTimeCoupon from '~/components/AllTimeCoupon';
+import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
 import {
   getCanonicalDomain,
   getCollectionDescText,
@@ -72,6 +72,7 @@ export const meta: MetaFunction = ({ data, params }) => {
 
 export const links: LinksFunction = () => {
   return [
+    ...AllTimeCouponLink(),
     ...FourOhFourLinks(),
     ...ProductRowsContainerLinks(),
   ];
