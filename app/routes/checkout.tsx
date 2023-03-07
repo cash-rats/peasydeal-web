@@ -93,7 +93,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   try {
     const transObj = await getTransactionObject(request);
     const cartItems = await getCart(request);
-  
+
     if (
       !transObj ||
       !cartItems ||
@@ -101,9 +101,9 @@ export const loader: LoaderFunction = async ({ request }) => {
     ) {
       throw redirect("/cart");
     }
-  
+
     const [categories, navBarCategories] = await fetchCategories();
-  
+
     // TODO this number should be coming from BE instead.
     // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
     // In stripe, the base unit is 1 cent, not 1 dollar.
@@ -111,14 +111,14 @@ export const loader: LoaderFunction = async ({ request }) => {
       price_info: priceInfo,
       promo_code,
     } = transObj;
-  
+
     // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
     // In stripe, the base unit is 1 cent, not 1 dollar.
     const paymentIntent = await createPaymentIntent({
       amount: Math.round(priceInfo.total_amount * 100),
       currency: STRIPE_CURRENCY_CODE,
     });
-  
+
     return json<LoaderType>({
       client_secret: paymentIntent.client_secret || undefined,
       payment_intend_id: paymentIntent.id,
@@ -130,8 +130,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   } catch (e) {
     console.error(e);
     throw json(e, {
-			status: httpStatus.INTERNAL_SERVER_ERROR,
-		});
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    });
   }
 }
 
@@ -208,40 +208,38 @@ function CheckoutLayout() {
 
   return (
     <>
-      <Form action='/search?index' method='post'>
-        <MobileSearchDialog
-          onBack={handleClose}
-          isOpen={openSearchDialog}
-          onSearchRequest={handleSearchRequest}
-          onSearch={handleSearch}
-        />
-        <Header
-          categories={categories}
-          searchBar={
-            <DropDownSearchBar
-              form='index-search-product'
-              placeholder='Search products by name'
-              onDropdownSearch={searchSuggests}
-              results={suggests}
-              onSearch={handleSearch}
-            />
-          }
+      <MobileSearchDialog
+        onBack={handleClose}
+        isOpen={openSearchDialog}
+        onSearchRequest={handleSearchRequest}
+        onSearch={handleSearch}
+      />
+      <Header
+        categories={categories}
+        searchBar={
+          <DropDownSearchBar
+            form='index-search-product'
+            placeholder='Search products by name'
+            onDropdownSearch={searchSuggests}
+            results={suggests}
+            onSearch={handleSearch}
+          />
+        }
 
-          mobileSearchBar={
-            <SearchBar
-              placeholder='Search keywords...'
-              onClick={handleOpen}
-            />
-          }
+        mobileSearchBar={
+          <SearchBar
+            placeholder='Search keywords...'
+            onClick={handleOpen}
+          />
+        }
 
-          categoriesBar={
-            <CategoriesNav
-              categories={categories}
-              topCategories={navBarCategories}
-            />
-          }
-        />
-      </Form>
+        categoriesBar={
+          <CategoriesNav
+            categories={categories}
+            topCategories={navBarCategories}
+          />
+        }
+      />
 
       <main className="min-h-[35rem] flex justify-center">
         {

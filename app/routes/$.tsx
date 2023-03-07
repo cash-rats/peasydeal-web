@@ -40,7 +40,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       categories,
       navBarCategories,
     });
-  } catch(e) {
+  } catch (e) {
     console.error(e);
 
     throw json(e, {
@@ -95,41 +95,38 @@ function GlobalSplatFourOhFour() {
 
   return (
     <div className="pt-48 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light">
-      <Form action='/search?index'>
+      <MobileSearchDialog
+        onBack={handleClose}
+        isOpen={openSearchDialog}
+        onSearchRequest={handleSearchRequest}
+        onSearch={handleSearch}
+      />
+      <Header
+        categories={categories}
 
-        <MobileSearchDialog
-          onBack={handleClose}
-          isOpen={openSearchDialog}
-          onSearchRequest={handleSearchRequest}
-          onSearch={handleSearch}
-        />
-        <Header
-          categories={categories}
+        mobileSearchBar={
+          <SearchBar
+            placeholder='Search keywords...'
+            onClick={handleOpen}
+          />
+        }
 
-          mobileSearchBar={
-            <SearchBar
-              placeholder='Search keywords...'
-              onClick={handleOpen}
-            />
-          }
+        categoriesBar={
+          <CategoriesNav
+            categories={categories}
+            topCategories={navBarCategories}
+          />
+        }
 
-          categoriesBar={
-            <CategoriesNav
-              categories={categories}
-              topCategories={navBarCategories}
-            />
-          }
-
-          searchBar={
-            <DropDownSearchBar
-              placeholder='Search products by name'
-              onDropdownSearch={searchSuggests}
-              results={suggests}
-              onSearch={handleSearch}
-            />
-          }
-        />
-      </Form>
+        searchBar={
+          <DropDownSearchBar
+            placeholder='Search products by name'
+            onDropdownSearch={searchSuggests}
+            results={suggests}
+            onSearch={handleSearch}
+          />
+        }
+      />
       <FourOhFour />
 
       <Footer />

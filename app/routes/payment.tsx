@@ -38,7 +38,7 @@ export const loader: LoaderFunction = async () => {
       categories,
       navBarCategories,
     })
-  } catch(e) {
+  } catch (e) {
     console.error(e);
 
     throw json(e, {
@@ -94,41 +94,39 @@ export default function Payment() {
 
   return (
     <>
-      <Form action='/search?index' method='post'>
-        <MobileSearchDialog
-          onBack={handleClose}
-          isOpen={openSearchDialog}
-          onSearchRequest={handleSearchRequest}
-          onSearch={handleSearch}
-        />
-        <Header
-          categories={categories}
+      <MobileSearchDialog
+        onBack={handleClose}
+        isOpen={openSearchDialog}
+        onSearchRequest={handleSearchRequest}
+        onSearch={handleSearch}
+      />
+      <Header
+        categories={categories}
 
-          mobileSearchBar={
-            <SearchBar
-              placeholder='Search keywords...'
-              onClick={handleOpen}
-            />
-          }
+        mobileSearchBar={
+          <SearchBar
+            placeholder='Search keywords...'
+            onClick={handleOpen}
+          />
+        }
 
-          categoriesBar={
-            <CategoriesNav
-              categories={categories}
-              topCategories={navBarCategories}
-            />
-          }
+        categoriesBar={
+          <CategoriesNav
+            categories={categories}
+            topCategories={navBarCategories}
+          />
+        }
 
-          searchBar={
-            <DropDownSearchBar
-              form='index-search-product'
-              placeholder='Search products by name'
-              onDropdownSearch={searchSuggests}
-              results={suggests}
-              onSearch={handleSearch}
-            />
-          }
-        />
-      </Form>
+        searchBar={
+          <DropDownSearchBar
+            form='index-search-product'
+            placeholder='Search products by name'
+            onDropdownSearch={searchSuggests}
+            results={suggests}
+            onSearch={handleSearch}
+          />
+        }
+      />
 
       <div className="min-h-[35rem] flex justify-center">
         <Outlet />

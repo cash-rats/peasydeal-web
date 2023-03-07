@@ -1,4 +1,5 @@
 import type { ReactNode, CSSProperties } from 'react';
+import { Form } from '@remix-run/react';
 
 import type { Category } from '~/shared/types';
 import LogoBar from '~/components/Header/components/LogoBar';
@@ -41,14 +42,20 @@ function LogoHeader({
 
             {
               searchBar && (
-                <div className="
+                <Form
+                  className="w-full flex items-center"
+                  action='/search?index'
+                  method='post'
+                >
+                  <div className="
                   hidden md:flex
                   md:items-center
                   md:py-0
                   md:px-1
                   w-full">
-                  {searchBar}
-                </div>
+                    {searchBar}
+                  </div>
+                </Form>
               )
             }
 
@@ -59,9 +66,15 @@ function LogoHeader({
 
           {
             mobileSearchBar && (
-              <div className="w-full py-1 px-2 bg-white md:hidden">
-                {mobileSearchBar}
-              </div>
+              <Form
+                className="w-full flex items-center"
+                action='/search?index'
+                method='post'
+              >
+                <div className="w-full py-1 px-2 bg-white md:hidden">
+                  {mobileSearchBar}
+                </div>
+              </Form>
             )
           }
         </div>

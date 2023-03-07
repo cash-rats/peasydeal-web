@@ -108,39 +108,39 @@ export default function Index() {
 			{/* sharethis popup for news letter subscription */}
 			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
 			<div className="bg-white">
-				<Form action='/search?index' method='post'>
-					<MobileSearchDialog
-						onBack={handleClose}
-						isOpen={openSearchDialog}
-						onSearchRequest={handleSearchRequest}
-						onSearch={handleSearch}
-					/>
+				<MobileSearchDialog
+					onBack={handleClose}
+					isOpen={openSearchDialog}
+					onSearchRequest={handleSearchRequest}
+					onSearch={handleSearch}
+				/>
 
-					<Header
-						categories={categories}
-						categoriesBar={
-							<CategoriesNav
-								categories={categories}
-								topCategories={navBarCategories}
-							/>
-						}
-						mobileSearchBar={
+				<Header
+					categories={categories}
+					categoriesBar={
+						<CategoriesNav
+							categories={categories}
+							topCategories={navBarCategories}
+						/>
+					}
+					mobileSearchBar={
+						<Form action='/search?index' method='post'>
 							<SearchBar
 								placeholder='Search keywords...'
 								onClick={handleOpen}
 							/>
-						}
+						</Form>
+					}
 
-						searchBar={
-							<DropDownSearchBar
-								placeholder='Search products by name'
-								onDropdownSearch={searchSuggests}
-								results={suggests}
-								onSearch={handleSearch}
-							/>
-						}
-					/>
-				</Form>
+					searchBar={
+						<DropDownSearchBar
+							placeholder='Search products by name'
+							onDropdownSearch={searchSuggests}
+							results={suggests}
+							onSearch={handleSearch}
+						/>
+					}
+				/>
 
 				<main className="min-h-[35rem]">
 					<Outlet context={{ categories: categories }} />

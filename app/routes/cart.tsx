@@ -65,7 +65,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       navBarCategories,
       canonicalLink: `${getCanonicalDomain()}/cart`
     });
-  } catch(e) {
+  } catch (e) {
     console.error(e);
 
     throw json(e, {
@@ -120,40 +120,38 @@ function CartLayout() {
 
   return (
     <div>
-      <Form action='/search?index' method='post' >
-        <MobileSearchDialog
-          onBack={handleClose}
-          isOpen={openSearchDialog}
-          onSearchRequest={handleSearchRequest}
-          onSearch={handleSearch}
-        />
+      <MobileSearchDialog
+        onBack={handleClose}
+        isOpen={openSearchDialog}
+        onSearchRequest={handleSearchRequest}
+        onSearch={handleSearch}
+      />
 
-        <Header
-          categories={categories}
+      <Header
+        categories={categories}
 
-          mobileSearchBar={
-            <SearchBar
-              placeholder='Search keywords...'
-              onClick={handleOpen}
-            />
-          }
+        mobileSearchBar={
+          <SearchBar
+            placeholder='Search keywords...'
+            onClick={handleOpen}
+          />
+        }
 
-          searchBar={
-            <DropDownSearchBar
-              placeholder='Search products by name'
-              onDropdownSearch={searchSuggests}
-              results={suggests}
-              onSearch={handleSearch}
-            />
-          }
-          categoriesBar={
-            <CategoriesNav
-              categories={categories}
-              topCategories={navBarCategories}
-            />
-          }
-        />
-      </Form>
+        searchBar={
+          <DropDownSearchBar
+            placeholder='Search products by name'
+            onDropdownSearch={searchSuggests}
+            results={suggests}
+            onSearch={handleSearch}
+          />
+        }
+        categoriesBar={
+          <CategoriesNav
+            categories={categories}
+            topCategories={navBarCategories}
+          />
+        }
+      />
 
       <main>
         <Outlet />
