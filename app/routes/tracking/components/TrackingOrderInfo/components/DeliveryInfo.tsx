@@ -29,18 +29,14 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
 
       <InfoPiece
         title='Contact Name'
-        info={orderInfo.contact_name}
+        info={orderInfo.display_name}
       />
 
       <InfoPiece
         title='Address'
         info={(
           <p className="font-poppins">
-            {orderInfo.address} &nbsp;
-            {orderInfo.address2} <br />
-            {orderInfo.city} <br />
-            {orderInfo.postalcode}<br />
-            {orderInfo.country}
+            {orderInfo.display_address} &nbsp;
           </p>
         )}
       />

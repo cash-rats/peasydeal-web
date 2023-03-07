@@ -26,11 +26,13 @@ export type TrackOrderProduct = {
 export type TrackOrder = {
   order_uuid: string;
   contact_name: string;
+  display_name?: string;
   address: string;
   address2: string;
   city: string;
   country: string;
   postalcode: string;
+  display_address?: string;
   shipping_status: string;
   subtotal: number;
   total_amount: number;
