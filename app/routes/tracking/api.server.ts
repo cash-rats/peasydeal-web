@@ -6,7 +6,11 @@ import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 import type { TrackOrder } from './types';
 
 export const trackOrder = async (orderUUID: string): Promise<TrackOrder> => {
-  const resp = await fetch(`${PEASY_DEAL_ENDPOINT}/v1/tracking?order_uuid=${orderUUID}`, {
+  const url = new URL(PEASY_DEAL_ENDPOINT);
+  url.pathname = '/v1/tracking';
+  url.searchParams.append('order_uuid', orderUUID);
+
+  const resp = await fetch(url.toString(), {
     method: 'GET',
   });
 

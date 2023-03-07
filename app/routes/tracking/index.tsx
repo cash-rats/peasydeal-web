@@ -19,6 +19,7 @@ import TrackingSearchBar from './components/TrackingSearchBar';
 import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
 import TrackingOrderInitPage, { links as TrackingOrderInitPageLinks } from './components/TrackingOrderInitPage';
 import { trackOrder } from './api.server';
+import { normalizeTrackingOrder } from './utils';
 import type { TrackOrder } from './types';
 
 type LoaderDataType = {
@@ -83,7 +84,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 
   try {
-    const order = await trackOrder(orderID)
+    const order = normalizeTrackingOrder(await trackOrder(orderID));
 
     return json<LoaderDataType>({
       order,
