@@ -1,4 +1,4 @@
-import { TrackOrder } from './types';
+import type { TrackOrder } from './types';
 
 /*
 Name masking:
