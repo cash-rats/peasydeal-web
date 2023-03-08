@@ -43,7 +43,8 @@ const maskAddress = (address: string) => {
       .slice(
         0,
         lastSeg.length - 3,
-      ).replace(/./g, '*');
+      )
+      .replace(/./g, '*');
 
     // abcdef --> len = 6
     const origSeg = lastSeg.slice(lastSeg.length - 3);

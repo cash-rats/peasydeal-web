@@ -1,8 +1,6 @@
 import type {
   WithContext,
   BreadcrumbList,
-  ListItem,
-  Product as ProductSchema,
 } from 'schema-dts';
 import type { StructuredDataFunction } from 'remix-utils';
 

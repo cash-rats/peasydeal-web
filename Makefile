@@ -11,7 +11,8 @@ NPM_PATH := $(shell which npm)
 REMOTE_PORT=22
 REMOTE_APP_PATH=/home/flybuddy/peasydeal_web
 
-# List of servers to deploy.
+# List of servers to deploy. Notice that these are the
+# host names on the ssh config.
 STAGING_SERVER                  = staging_peasydeal_gcp
 PROD_SERVER                     = prod_peasydeal_gcp
 

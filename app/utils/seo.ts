@@ -1,5 +1,6 @@
 import getEnvSource from '~/utils/get_env_source';
 import { getLogoURL } from '~/utils';
+import { round10 } from '~/utils/preciseRound';
 
 interface FBSEO {
   'og:url': string;
@@ -43,7 +44,8 @@ export const getProdDetailTitleText = (title: string, uuid: string) =>
 export const getProdDetailDescTextWithoutPrice = (title: string, category: string) =>
   `Save Up to 65% with PeasyDeal! Upgrade Your ${category} Game with PeasyDeal. 14 days money-back guarantee`
 export const getProdDetailDescText = (title: string, retailPrice: number, salePrice: number, category: string) =>
-  `Buy for Only £${salePrice} at PeasyDeal! Save up to ${(1 - Number((salePrice / retailPrice).toFixed(2))) * 100}%, plus limited free shipping!` +
+  `Buy for Only £${salePrice} at PeasyDeal! Save up to ${round10((1 - Number((salePrice / retailPrice).toFixed(2))) * 100, -2)
+  }%, plus limited free shipping!` +
   `Upgrade Your ${category} Game with PeasyDeal. 14 days money-back guarantee`;
 
 // SEO tracking page

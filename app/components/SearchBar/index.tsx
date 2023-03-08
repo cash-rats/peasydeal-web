@@ -89,7 +89,7 @@ function SearchBar({
 
   return (
     <div className={clsx("flex flex-1", {
-      "border-solid border-[1px] border-light-green rounded-[2px] shadow-searchbar-focus": focusSearch,
+      "border-solid border-[1px] border-light-green rounded-[2px]": focusSearch,
     })}>
 
       <BaseInput
