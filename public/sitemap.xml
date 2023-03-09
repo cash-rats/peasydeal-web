@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://www.peasydeal.com/static_pages.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.peasydeal.com/categories.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.peasydeal.com/products.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.peasydeal.com/base_functions.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.peasydeal.com/promotions.xml</loc>
+  </sitemap>
+</sitemapindex>
