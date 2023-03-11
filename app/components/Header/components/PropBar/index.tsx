@@ -22,7 +22,7 @@ const PropBar = () => {
         justify-center lg:space-x-0.5
         lg:mx-auto
         pt-[6px] lg:pt-0
-        bg-[#c4f1f9] lg:bg-transparent
+        bg-[#f7fbff] lg:bg-transparent
         m-0
       ">
         <li className="
