@@ -30,6 +30,12 @@ module.exports = {
     },
     extend: {
       keyframes: {
+        slider: {
+          '0%, 30%': { marginLeft: '0' },
+          '32%, 62%': { marginLeft: '-100%' },
+          '64%, 94%': { marginLeft: '-200%' },
+          '96%, 100%': { marginLeft: '0' },
+        },
         mountainsmoke: {
           '100%': {
             'background-position': '-51.75rem',
