@@ -29,7 +29,8 @@ function Footer({ categories }: FooterProps) {
         pb-6 pt-10
         px-2 md:px-6 lg:px-14
         bg-dune
-        w-full">
+        w-full
+      ">
         <div className="block lg:hidden w-full p-2.5 max-w-screen-xl mx-auto">
           <FooterMobileLayout categories={categories} />
         </div>
@@ -39,7 +40,7 @@ function Footer({ categories }: FooterProps) {
           <FooterTabletPortrait categories={categories} />
         </div> */}
 
-        <div className="hidden lg:block w-full py-2.5">
+        <div className="hidden lg:block w-full py-2.5 max-w-screen-xl mx-auto">
           <FooterTabletLayout categories={categories} />
         </div>
 

@@ -1,6 +1,7 @@
 import { Link } from '@remix-run/react';
 import { FiMail } from 'react-icons/fi';
 import { MdOutlineLocalShipping } from 'react-icons/md';
+import { Button } from '@chakra-ui/react'
 
 import Amex from './images/american-express.svg';
 import Visa from './images/visa.svg';
@@ -56,20 +57,35 @@ function FooterTopInfo() {
           </h3>
 
           <div className="flex flex-col gap-2 md:gap-4 lg:gap-9 md:flex-row">
-            <div className="flex font-semibold font-poppins items-center gap-1 cursor-pointer">
-              <FiMail className="self-center text-lg md:text-xl sm:space-x-0.5" />
-              <p className="self-center text-md md:text-base ml-1.5 capitalize">
-                contact us
-              </p>
-            </div>
-
+            <a
+              className="flex flex-cols"
+              aria-label='track order'
+              href="mailto:contact@peasydeal.com"
+            >
+              <div className="flex font-semibold font-poppins items-center gap-1 cursor-pointer">
+                <Button
+                    leftIcon={<FiMail className="self-center text-lg md:text-xl" />}
+                    colorScheme='teal'
+                    size="sm"
+                    variant='ghost'
+                    className='capitalize text-md md:text-base ml-1.5'
+                  >
+                    Contac Us
+                  </Button>
+              </div>
+            </a>
 
             <Link className="flex flex-cols" aria-label='track order' to="/tracking">
               <div className="flex font-semibold font-poppins items-center gap-1 cursor-pointer">
-                <MdOutlineLocalShipping color='black' className="self-center text-lg md:text-xl sm:space-x-0.5" />
-                <p className="self-center text-md md:text-base ml-1.5 capitalize">
+                <Button
+                  leftIcon={<MdOutlineLocalShipping className="self-center text-lg md:text-xl" />}
+                  colorScheme='teal'
+                  size="sm"
+                  variant='ghost'
+                  className='capitalize text-md md:text-base ml-1.5'
+                >
                   track your order
-                </p>
+                </Button>
               </div>
             </Link>
           </div>

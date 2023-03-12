@@ -1,7 +1,7 @@
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { FiShoppingCart } from 'react-icons/fi';
-import { RiTruckLine } from 'react-icons/ri';
+import { RiTruckLine, RiSearchLine } from 'react-icons/ri';
 import { IoPricetagsOutline } from "react-icons/io5"
 
 import RedDot, { links as RedDotLinks } from '~/components/RedDot';
@@ -17,10 +17,11 @@ interface NavBarProps {
 	 * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
 	 */
 	cartItemCount?: number;
+	toggleOpenMobileSearchBar?: () => void;
 }
 
 // Load shopping cart items.
-function NavBar({ cartItemCount = 0 }: NavBarProps) {
+function NavBar({ cartItemCount = 0, toggleOpenMobileSearchBar = () => {} }: NavBarProps) {
 	return (
 		<nav className="flex flex-1">
 			<ul className="
@@ -76,7 +77,22 @@ function NavBar({ cartItemCount = 0 }: NavBarProps) {
 					</li>
 				</Link>
 
-				<Link aria-label='track order' className="min-w-[53px] md:min-w-[73x] basis-1/3" to="/tracking">
+
+				<li className='flex flex-col items-center md:hidden basis-1/3' onClick={() => toggleOpenMobileSearchBar() }>
+					<RiSearchLine
+						color='#707070'
+						className='flex-1 text-xl md:text-2xl'
+					/>
+					<span className="text-center mt-1 text-[10px] md:text-[14px] font-normal capitalize whitespace-nowrap">
+						Search
+					</span>
+				</li>
+
+				<Link
+					aria-label='track order'
+					className="min-w-[53px] md:min-w-[73x] basis-1/3 hidden md:flex"
+					to="/tracking"
+				>
 					<li className='flex flex-col items-center '>
 						<RiTruckLine
 							color='#707070'

@@ -41,6 +41,7 @@ function Header({
   const [openAnnouncement, setOpenAnnouncement] = useState<boolean>(true);
   const [navBarHeight, setNavBarHeight] = useState(125);
   const [announcementBarHeight, setAnnouncementBarHeight] = useState(announcementHeight);
+  const [openMobileSearchBar, setOpenMobileSearchBar] = useState<boolean>(false);
 
   const [scrolled, offset] = useCheckScrolled(announcementBarHeight);
   const navBarRef = useRef<HTMLInputElement>(null);
@@ -77,6 +78,7 @@ function Header({
           categories={categories}
           searchBar={searchBar}
           mobileSearchBar={mobileSearchBar}
+          openMobileSearchBar={openMobileSearchBar}
 
           // right status bar, cart, search icon...etc
           navBar={
@@ -84,6 +86,7 @@ function Header({
               <div className="">
                 <NavBar
                   cartItemCount={numOfItemsInCart}
+                  toggleOpenMobileSearchBar={() => setOpenMobileSearchBar(!openMobileSearchBar)}
                 />
               </div>
             </div>

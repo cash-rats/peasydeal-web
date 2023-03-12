@@ -11,6 +11,7 @@ interface LogoHeaderProps {
   mobileSearchBar?: ReactNode;
   categories?: Category[];
   style?: CSSProperties | undefined;
+  openMobileSearchBar: boolean;
 };
 
 // Wraps Logo and
@@ -19,6 +20,7 @@ function LogoHeader({
   navBar = null,
   categoriesBar = null,
   mobileSearchBar,
+  openMobileSearchBar = false,
   categories = [],
   style,
 }: LogoHeaderProps) {
@@ -65,7 +67,7 @@ function LogoHeader({
           </div>
 
           {
-            mobileSearchBar && (
+            mobileSearchBar && openMobileSearchBar && (
               <div className="w-full py-1 px-2 bg-white md:hidden">
                 <Form
                   className="w-full flex items-center"
