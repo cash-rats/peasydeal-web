@@ -99,6 +99,7 @@ function Index({ scrollPosition, categories }: IndexProps) {
 
 	return (
 		<div className="">
+			<h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
 			<div className="
 				py-0 px-auto
 				flex flex-col
