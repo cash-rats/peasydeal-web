@@ -13,7 +13,6 @@ import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../cart.server';
 import { round10 } from '~/utils/preciseRound';
 
-const TAX = 0.2;
 
 type PriceResultProps = {
   priceInfo: PriceInfo;
@@ -136,9 +135,10 @@ export default function PriceResult({
   ]);
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
-    const v = evt.target.value;
-    setPromoCode(v);
-    onChangePromoCode(v);
+    const value = evt.target.value || '';
+    const code = value.toUpperCase() || '';
+    setPromoCode(code);
+    onChangePromoCode(code);
   }
 
   const handleApplyPromoCode = () => {
@@ -154,17 +154,17 @@ export default function PriceResult({
 
   // destructuring priceInfo
   const {
-    sub_total = 0,
-    tax_amount = 0,
     shipping_fee = 0,
     total_amount = 0,
     discount_amount = 0,
     discount_type = '',
     discount_code_valid = false,
     applied_events = [],
+    origin_shipping_fee = 0,
+    promo_code_discount = 0,
   } = priceInfo || {};
 
-  const taxIncl = round10(sub_total + tax_amount, -2);
+  const taxIncl = round10(total_amount + promo_code_discount, -2);
 
   return (
     <div className="p-4 bg-white">
@@ -209,21 +209,6 @@ export default function PriceResult({
 
         />
 
-        {/* <ResultRow
-          label={`Tax (${TAX * 100}%)`}
-          value={
-            calculating
-              ? (
-                <Skeleton
-                  variant='text'
-                  width={40}
-                  sx={{ fontSize: '1rem' }}
-                />
-              )
-              : `£ ${tax_amount}`
-          }
-        /> */}
-
         {/* Promo code deal */}
         {
           discount_code_valid
@@ -231,27 +216,36 @@ export default function PriceResult({
               <ResultRow
                 label="Promo code deal"
                 value={
+                  calculating
+                    ? (
+                      <Skeleton
+                        variant='text'
+                        width={40}
+                        sx={{ fontSize: '1rem' }}
+                      />
+                    ) : (
+                      <div className="result-value text-primary uppercase">
+                        <>
+                          {
+                            discount_type === 'price_off' && (
+                              `extra - £ ${discount_amount} off!`
+                            )
+                          }
 
-                  <div className="result-value text-primary uppercase">
-                    {
-                      discount_type === 'price_off' && (
-                        `extra - £ ${discount_amount} off!`
-                      )
-                    }
+                          {
+                            discount_type === 'free_shipping' && (
+                              'free shipping!'
+                            )
+                          }
 
-                    {
-                      discount_type === 'free_shipping' && (
-                        'free shipping!'
-                      )
-                    }
-
-                    {
-                      discount_type === 'percentage_off' && (
-                        `extra - £ ${discount_amount}`
-                      )
-                    }
-                  </div>
-
+                          {
+                            discount_type === 'percentage_off' && (
+                              `- £ ${promo_code_discount}`
+                            )
+                          }
+                        </>
+                      </div>
+                    )
                 }
               />
             )
@@ -271,15 +265,36 @@ export default function PriceResult({
               )
               : (
                 <>
-                  {
-                    discount_type === 'free_shipping'
-                      ? '£ 0'
-                      : `£ ${shipping_fee}`
-                  }
+                  <span className=''>£ {origin_shipping_fee}</span>
                 </>
               )
           }
         />
+
+        {
+          shipping_fee === 0
+            ? (
+              <ResultRow
+                label='Shipping Discount'
+                value={
+                  calculating
+                    ? (
+                      <Skeleton
+                        variant='text'
+                        width={40}
+                        sx={{ fontSize: '1rem' }}
+                      />
+                    )
+                    : (
+                      <>
+                        <span className='text-[#D02E7D]'>- £ {origin_shipping_fee}</span>
+                      </>
+                    )
+                }
+              />
+            )
+            : null
+        }
 
         <div className="py-3">
           <hr className="my-1 h-[1px] w-full bg-slate-50" />

@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import { Link } from '@remix-run/react';
+import { Button } from '@chakra-ui/react'
 
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import type { PriceInfo } from '~/shared/cart';
@@ -42,17 +43,19 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
   return (
     <div className="
       mb-0 border-none shadow-price-panel
+      border-lg
       bg-white w-full
     ">
-      <h1 className="font-bold text-[1.4rem] p-3">
+      <h1 className="font-bold text-[1.4rem] p-3 flex item-center justify-between">
         <span>Cart Summary</span>
         <Link to="/cart">
-          <span className="
-            uppercase text-[0.8rem] ml-4
-            font-normal
-          ">
-            edit
-          </span>
+          <Button
+            colorScheme='green'
+            variant="outline"
+            size="sm"
+          >
+            EDIT
+          </Button>
         </Link>
       </h1>
 
@@ -91,48 +94,40 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
       {/* Subtotal */}
       <div className="
         p-[0.9375rem] border-t-[1px] border-t-solid border-t-[#DFDFDF]
-        text-lg flex justify-end
+        text-lg flex
       ">
-        <div className="w-full 499:w-[55%] flex flex-col justify-center items-end gap-[5px]">
+        <div className="w-full flex flex-col justify-center items-end gap-[5px]">
           <PriceInfoBox
             label="Items (VAT Incl.)"
-            info={`£${round10(priceInfo.sub_total + priceInfo.tax_amount, -2)}`}
+            info={`£${round10(priceInfo.promo_code_discount + priceInfo.total_amount, -2)}`}
           />
 
-          {/* <PriceInfoBox
-            label="Tax(20%)"
-            info={`£${priceInfo.tax_amount}`}
-          /> */}
-
           {
-            priceInfo.discount_type === 'price_off' && (
-              <div className="
-                capitalize font-semibold text-base flex-1
-                text-end
-              ">
-                - £${priceInfo.discount_amount}
-              </div>
-            )
-          }
-
-          {
-            priceInfo.discount_type === 'percentage_off' && (
-              <div className="
-                capitalize font-semibold text-base flex-1
-                text-end
-              ">
-                - £${priceInfo.discount_amount}
-              </div>
-            )
+            priceInfo.promo_code_discount
+              ? (<PriceInfoBox
+                label="Promo Code Discount"
+                info={
+                  <span className='text-[#D02E7D]'>- £{priceInfo.promo_code_discount}</span>
+                }
+              />)
+              : null
           }
 
           <PriceInfoBox
-            label="shipping"
-            info={`£${priceInfo.discount_type === 'free_shipping'
-              ? 0
-              : priceInfo.shipping_fee
-              }`}
+            label="Shipping Cost"
+            info={`£${priceInfo.shipping_fee_discount}`}
           />
+
+          {
+            priceInfo.shipping_fee === 0
+              ? (<PriceInfoBox
+                label="Shipping Discount"
+                info={
+                  <span className='text-[#D02E7D]'>- £{priceInfo.shipping_fee_discount}</span>
+                }
+              />)
+              : null
+          }
 
           <div className="
             capitalize text-sm

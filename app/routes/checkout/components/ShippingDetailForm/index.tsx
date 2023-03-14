@@ -9,6 +9,7 @@ import { json } from '@remix-run/node';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import { TextField } from '@mui/material';
+import { Button } from '@chakra-ui/react'
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Tooltip from '@mui/material/Tooltip';
 import MoonLoader from 'react-spinners/MoonLoader';
@@ -129,17 +130,15 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
 
           <div className="flex items-center m-0 py-2 text-sm font-light gap-2">
             <div className="max-w-[13.5rem] ">
-              <RoundButton
+              <Button
+                colorScheme='twitter'
                 disabled={!values.postal}
-                colorScheme='green'
-                size='small'
                 onClick={handleSearchAddress}
-                loading={loadAddrFetcher.state !== 'idle'}
+                isLoading={loadAddrFetcher.state !== 'idle'}
+                loadingText='Checking...'
               >
-                <span className="capitalize">
-                  lookup address
-                </span>
-              </RoundButton >
+                Address lookup
+              </Button>
             </div>
             {
               loadAddrFetcher.type === 'done' && state.options.length === 0 && (

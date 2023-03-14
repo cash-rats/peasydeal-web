@@ -5,7 +5,10 @@ type ResultRowProps = {
   value: ReactNode;
 }
 
-export default function ResultRow({ label, value }: ResultRowProps) {
+export default function ResultRow({
+  label,
+  value
+}: ResultRowProps) {
   return (
     <div className="flex items-center w-full mb-2">
       <label className="flex flex-1 justify-start text-lg xl:text-xl font-poppins font-medium">

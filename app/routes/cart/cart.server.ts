@@ -27,7 +27,10 @@ export type PriceInfo = {
   sub_total: number;
   tax_amount: number;
   shipping_fee: number;
+  origin_shipping_fee: number;
   discount_amount: number;
+  shipping_fee_discount: number;
+  promo_code_discount: number;
   discount_reason: string;
   total_amount: number;
   currency: string;

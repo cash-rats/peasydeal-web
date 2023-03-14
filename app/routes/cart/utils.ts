@@ -21,14 +21,9 @@ export const syncShoppingCartWithNewProductsInfo = (
           ...cart[prod.variation_uuid],
           discountReason: prod.discount_reason,
 
-          // If `origin_unit_price` and `discounted_price` we got from '/data-server/ec/v1/accountant/order-amount'.
-          // are equal, we don't update the `retailPrice` but use `retailPrice` value from shopping cart.
-          // or else, we update the retailPrice coming from newly purchased products.
-          retailPrice: prod.origin_unit_price.toString() === prod.discounted_price.toString()
-            ? itemInCart.retailPrice.toString()
-            : prod.origin_unit_price.toString(),
+          retailPrice: itemInCart.retailPrice.toString(),
 
-          salePrice: prod.discounted_price.toString(),
+          salePrice: prod.origin_unit_price.toString(),
           quantity: String(prod.quantity),
         },
       );
@@ -45,6 +40,9 @@ export const extractPriceInfoToStoreInSession = (priceInfo: PriceInfo): CookieSt
   tax_amount: priceInfo.tax_amount,
   shipping_fee: priceInfo.shipping_fee,
   discount_amount: priceInfo.discount_amount,
+  origin_shipping_fee: priceInfo.origin_shipping_fee,
+  shipping_fee_discount: priceInfo.shipping_fee_discount,
+  promo_code_discount: priceInfo.promo_code_discount,
   discount_reason: priceInfo.discount_reason,
   total_amount: priceInfo.total_amount,
   currency: priceInfo.currency,

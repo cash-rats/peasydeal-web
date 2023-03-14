@@ -548,9 +548,9 @@ function Cart() {
 												updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
 
 											) || (
-													removeItemFetcher.state !== 'idle' &&
-													removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
-												)
+												removeItemFetcher.state !== 'idle' &&
+												removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
+											);
 
 											return (
 												<CartItem
