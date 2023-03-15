@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, Form, useFetcher } from '@remix-run/react';
+import { useLoaderData, useFetcher } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 
@@ -14,7 +14,7 @@ import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
-import { fetchCategories } from '~/api/categories.server';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import {
   getCartTitleText,
@@ -58,7 +58,7 @@ type LoaderType = {
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
-    const [categories, navBarCategories] = await fetchCategories();
+    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
     return json<LoaderType>({
       categories,
