@@ -33,7 +33,7 @@ export const productsLoader = async ({
   category,
   perpage,
 }: IProductsLoader) => {
-  const [categories, navBarCategories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
+  const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
   const catMap = normalizeToMap([...categories, ...navBarCategories]);
 
   if (!catMap[category]) {
@@ -131,7 +131,7 @@ export const loadmoreProductsLoader = async ({
   page,
   perpage,
 }: LoaderMoreLoader) => {
-  const [categories, navBarCategories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
+  const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
   const catMap = normalizeToMap([...categories, ...navBarCategories]);
 
   if (!catMap[category]) {

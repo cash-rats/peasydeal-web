@@ -22,7 +22,7 @@ import { createPaymentIntent } from '~/utils/stripe.server';
 import { STRIPE_PUBLIC_KEY, STRIPE_CURRENCY_CODE } from '~/utils/get_env_source';
 import { getCart } from '~/sessions/shoppingcart.session';
 import { getTransactionObject } from '~/sessions/transaction.session';
-import { fetchCategories } from '~/api/categories.server';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import type { PriceInfo } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
@@ -102,7 +102,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       throw redirect("/cart");
     }
 
-    const [categories, navBarCategories] = await fetchCategories();
+    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
     // TODO this number should be coming from BE instead.
     // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error

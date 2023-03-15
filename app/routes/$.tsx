@@ -12,7 +12,7 @@ import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import type { Category } from '~/shared/types';
-import { fetchCategories } from '~/api/categories.server';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import type { SuggestItem } from '~/shared/types';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
@@ -34,7 +34,7 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
-    const [categories, navBarCategories] = await fetchCategories();
+    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
     return json<LoaderType>({
       categories,

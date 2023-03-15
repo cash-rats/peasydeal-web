@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Form, Outlet, useLoaderData, useFetcher } from '@remix-run/react';
+import { Outlet, useLoaderData, useFetcher } from '@remix-run/react';
 import { json } from '@remix-run/node'
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
-import { fetchCategories } from '~/api/categories.server';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import Footer from '~/components/Footer';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
@@ -32,7 +32,7 @@ type LoaderType = {
 
 export const loader: LoaderFunction = async () => {
   try {
-    const [categories, navBarCategories] = await fetchCategories();
+    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
     return json<LoaderType>({
       categories,
