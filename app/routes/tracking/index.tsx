@@ -11,7 +11,7 @@ import { error } from '~/utils/error';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import { fetchCategories } from '~/api';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 
 import TrackingOrderInfo from './components/TrackingOrderInfo';
@@ -63,7 +63,7 @@ export const links: LinksFunction = () => {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  const [categories, navBarCategories] = await fetchCategories();
+  const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
   const url = new URL(request.url);
 
   // Current route has just been requested. Ask user to search order by order ID.
