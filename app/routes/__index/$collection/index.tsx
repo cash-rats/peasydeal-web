@@ -42,8 +42,7 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
   },
 ])
 
-// export const handle = { dynamicLinks, structuredData };
-export const handle = { dynamicLinks };
+export const handle = { dynamicLinks, structuredData };
 
 export const meta: MetaFunction = ({ data, params }) => {
   if (
