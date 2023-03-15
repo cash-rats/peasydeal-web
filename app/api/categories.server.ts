@@ -11,6 +11,13 @@ export const RedisPromotionsKey = 'promotions';
 interface ICategoriesFromServerResponse {
   categories: Category[];
   promotions: Category[];
+  taxonomyCategories: Category[];
+};
+
+enum CategoryType {
+  promotion = "promotion_type",
+  category = "category",
+  taxonomy_category = "taxonomy_category",
 };
 
 const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFromServerResponse> => {
@@ -29,6 +36,7 @@ const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFrom
 
   let categories: Category[] = [];
   let promotions: Category[] = [];
+  let taxonomyCategories: Category[] = [];
 
   if (
     respJSON &&
@@ -46,9 +54,18 @@ const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFrom
     promotions = normalize(respJSON.promotions);
   }
 
+  if (
+    respJSON &&
+    respJSON.taxonomy_categories &&
+    Array.isArray(respJSON.taxonomy_categories)
+  ) {
+    taxonomyCategories = normalize(respJSON.taxonomy_categories);
+  }
+
   return {
     categories,
     promotions,
+    taxonomyCategories,
   };
 };
 
@@ -115,7 +132,7 @@ const fetchCategories = async (): Promise<[Category[], Category[]]> => {
   }
 
   // If it doesn't exist, fetch from server and cache to redis.
-  const { categories } = await fetchCategoriesFromServer('category');
+  const { categories } = await fetchCategoriesFromServer(CategoryType.category);
 
   await redis.set(RedisCategoriesKey, JSON.stringify(categories));
   await redis.expire(RedisCategoriesKey, CATEGORY_CACHE_TTL);
@@ -127,18 +144,47 @@ const fetchCategories = async (): Promise<[Category[], Category[]]> => {
 
 // TODO: cache promotions to redis.
 const fetchPromotions = async (): Promise<Category[]> => {
-  const { promotions } = await fetchCategoriesFromServer('promotion');
+  const { promotions } = await fetchCategoriesFromServer(CategoryType.promotion);
   return promotions;
 };
 
 // TODO: cache to redis.
-const fetchCategoriesRegardlessType = (): Promise<ICategoriesFromServerResponse> => {
-  return fetchCategoriesFromServer();
+const fetchTaxonomyCategories = async (): Promise<Category[]> => {
+  const { taxonomyCategories } = await fetchCategoriesFromServer(CategoryType.taxonomy_category);
+  return taxonomyCategories;
+};
+
+
+const fetchCategoryByName = async (name: string): Promise<Category> => {
+  const url = new URL(PEASY_DEAL_ENDPOINT);
+  url.pathname = `/v1/categories/${name}`
+  const resp = await fetch(url.toString());
+  const respJSON = await resp.json();
+
+  if (resp.status !== httpStatus.OK) {
+    throw new Error(JSON.stringify(respJSON));
+  }
+
+  return {
+    catId: respJSON.category_id,
+    title: respJSON.label,
+    description: respJSON.desc,
+    name: respJSON.name,
+    url: '',
+    type: respJSON.type,
+  }
 }
+
+// TODO: cache to redis.
+const fetchCategoriesRegardlessType = (): Promise<ICategoriesFromServerResponse> => fetchCategoriesFromServer();
+
+
 
 export {
   fetchCategories,
   fetchPromotions,
+  fetchTaxonomyCategories,
   fetchCategoriesRegardlessType,
+  fetchCategoryByName,
   normalizeToMap,
 };

@@ -5,7 +5,6 @@ import {
 	Outlet,
 	useLoaderData,
 	useOutletContext,
-	Form,
 	useFetcher,
 } from "@remix-run/react";
 import httpStatus from 'http-status-codes';
@@ -19,12 +18,14 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
-import { fetchCategories } from '~/api/categories.server';
+import { fetchTaxonomyCategories, fetchCategoryByName } from '~/api/categories.server';
+import { splitNavBarCatsWithCatsInMore } from '~/api/categories.utils';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 type LoaderType = {
 	categories: Category[];
-	navBarCategories: Category[]
+	taxonomyCategories: Category[];
+	navBarCategories: Category[];
 };
 
 export const links: LinksFunction = () => {
@@ -44,10 +45,17 @@ type ContextType = {
 
 export const loader: LoaderFunction = async ({ request }) => {
 	try {
-		const [categories, navBarCategories] = await fetchCategories();
+		const [hotDeal, tcats] = await Promise.all([
+			await fetchCategoryByName('hot_deal'),
+			await fetchTaxonomyCategories(),
+		]);
+
+		const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(tcats);
+		navBarCategories.unshift(hotDeal);
 
 		return json<LoaderType>({
 			categories,
+			taxonomyCategories: [],
 			navBarCategories,
 		});
 	} catch (e) {
@@ -65,6 +73,8 @@ export default function Index() {
 	const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 	const [suggests, searchSuggests] = useSearchSuggests();
 	const { submit } = useFetcherWithPromise();
+
+	console.log('debug taxonomyCategories', categories, navBarCategories);
 
 	const handleSearch = (query: string) => {
 		search.submit({ query }, { method: 'post', action: '/search?index' });

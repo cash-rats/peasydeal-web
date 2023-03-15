@@ -152,6 +152,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	try {
 		const prodDetail = await fetchProductDetail(decompURL.productUUID)
+		console.log('debug prodDetail', prodDetail.categories);
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
@@ -254,6 +255,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 	const [state, dispatch] = useReducer(reducer, {
 		productDetail: loaderData.product,
+		categories: loaderData.product.categories,
 		mainCategory,
 		images: loaderData.product.images,
 		quantity: 1,
@@ -425,8 +427,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 			/>
 
 			<Breadcrumbs
-				categoryLabel={state.mainCategory?.label || ''}
-				categoryName={state.mainCategory?.name || ''}
+				categories={state.categories}
 
 				productTitle={state.productDetail.title}
 				productUuid={state.productDetail.uuid}

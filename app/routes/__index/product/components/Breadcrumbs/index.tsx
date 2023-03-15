@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { Fragment } from 'react';
 import { NavLink } from '@remix-run/react';
 
 import { composeProductDetailURL } from '~/utils';
@@ -9,19 +8,24 @@ import {
 } from '@chakra-ui/react'
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 
+import type { Category } from '../../types';
+
 type ProductDetailBreadcrumbsProps = {
-  categoryLabel?: ReactNode;
-  categoryName?: ReactNode;
+  // categoryLabel?: ReactNode;
+  // categoryName?: ReactNode;
+  categories: Category[];
+
   productTitle?: ReactNode;
   productUuid?: string;
 }
 
 export default function ProductDetailBreadcrumbs({
-  categoryLabel,
-  categoryName,
+  categories,
   productTitle,
   productUuid,
 }: ProductDetailBreadcrumbsProps) {
+
+
   return (
     <div className='
       py-0 px-auto
@@ -33,23 +37,23 @@ export default function ProductDetailBreadcrumbs({
         <Breadcrumbs
           breadcrumbs={
             [
-              <BreadcrumbItem key="1">
+              <BreadcrumbItem key="breadcrumb_home">
                 <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
                   Home
                 </BreadcrumbLink>
               </BreadcrumbItem>,
 
-              categoryName
-                ? (
-                  <BreadcrumbItem key="2">
-                    <BreadcrumbLink as={NavLink} to={`/${categoryName}`} className="font-semibold">
-                      {categoryLabel}
+              ...categories.map((category, idx) => (
+                (
+                  <BreadcrumbItem key={`breadcrumb_body_${idx}`}>
+                    <BreadcrumbLink as={NavLink} to={`/${category.name}`} className="font-semibold">
+                      {category.label}
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                 )
-                : null,
+              )),
 
-              <BreadcrumbItem key="3">
+              <BreadcrumbItem key="breadcrumb_prod">
                 <BreadcrumbLink
                   as={NavLink}
                   to={composeProductDetailURL({
@@ -62,7 +66,7 @@ export default function ProductDetailBreadcrumbs({
                   {productTitle}
                 </BreadcrumbLink>
               </BreadcrumbItem>
-            ].filter(i => i !== null)
+            ]
           }
         />
       </div>

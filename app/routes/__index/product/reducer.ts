@@ -13,6 +13,7 @@ type StateShape = {
   variation: ProductVariation | undefined;
   images: string[];
   quantity: number;
+  categories: Category[];
   mainCategory: Category | null;
   sessionStorableCartItem: ShoppingCartItem;
 }
