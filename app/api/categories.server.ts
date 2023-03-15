@@ -5,6 +5,8 @@ import type { Category, CategoriesMap } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';
 import { CATEGORY_CACHE_TTL } from '~/utils/get_env_source';
 
+import { splitNavBarCatsWithCatsInMore } from './categories.utils';
+
 export const RedisCategoriesKey = 'categories';
 export const RedisPromotionsKey = 'promotions';
 
@@ -154,6 +156,21 @@ const fetchTaxonomyCategories = async (): Promise<Category[]> => {
   return taxonomyCategories;
 };
 
+/*
+  navCategory: [hotdeal, ...]
+  categories: [...]
+*/
+const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[], Category[]]> => {
+  const [hotDeal, tcats] = await Promise.all([
+    await fetchCategoryByName('hot_deal'),
+    await fetchTaxonomyCategories(),
+  ]);
+
+  const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(tcats);
+  navBarCategories.unshift(hotDeal);
+
+  return [navBarCategories, categories];
+}
 
 const fetchCategoryByName = async (name: string): Promise<Category> => {
   const url = new URL(PEASY_DEAL_ENDPOINT);
@@ -178,13 +195,12 @@ const fetchCategoryByName = async (name: string): Promise<Category> => {
 // TODO: cache to redis.
 const fetchCategoriesRegardlessType = (): Promise<ICategoriesFromServerResponse> => fetchCategoriesFromServer();
 
-
-
 export {
   fetchCategories,
   fetchPromotions,
   fetchTaxonomyCategories,
   fetchCategoriesRegardlessType,
   fetchCategoryByName,
+  fetchCategoriesWithSplitAndHotDealInPlaced,
   normalizeToMap,
 };

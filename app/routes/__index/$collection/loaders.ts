@@ -1,7 +1,8 @@
 import { json } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
-import { normalizeToMap, fetchCategories } from '~/api/categories.server';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
+import { normalizeToMap } from '~/api/categories.utils';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
 import { getCanonicalDomain } from '~/utils/seo';
@@ -32,8 +33,8 @@ export const productsLoader = async ({
   category,
   perpage,
 }: IProductsLoader) => {
-  const [categories, navBarCategories] = await fetchCategories();
-  const catMap = normalizeToMap(categories);
+  const [categories, navBarCategories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
+  const catMap = normalizeToMap([...categories, ...navBarCategories]);
 
   if (!catMap[category]) {
     throw json(`target category ${category} not found`, {
@@ -130,8 +131,8 @@ export const loadmoreProductsLoader = async ({
   page,
   perpage,
 }: LoaderMoreLoader) => {
-  const [categories, navBarCategories] = await fetchCategories();
-  const catMap = await normalizeToMap(categories);
+  const [categories, navBarCategories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
+  const catMap = normalizeToMap([...categories, ...navBarCategories]);
 
   if (!catMap[category]) {
     throw json(`target category ${category} not found`, httpStatus.NOT_FOUND);

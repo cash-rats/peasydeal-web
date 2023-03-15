@@ -12,7 +12,8 @@ import type { Product } from '~/shared/types';
 // again react would echo a error saying duplicate css being loaded
 import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
 import { modToXItems } from '~/utils/products';
-import { fetchCategories, normalizeToMap } from '~/api/categories.server';
+import { fetchCategories } from '~/api/categories.server';
+import { normalizeToMap } from '~/api/categories.utils';
 import { fetchProductsByCategoryV2 } from '~/api';
 import { PAGE_LIMIT } from '~/shared/constants';
 import { ProductPromotionRow } from '~/components/ProductPromotionRow';

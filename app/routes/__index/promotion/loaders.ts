@@ -3,8 +3,8 @@ import httpStatus from 'http-status-codes';
 
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { commitSession } from '~/sessions/redis_session';
-import { normalizeToMap, fetchPromotions } from '~/api/categories.server';
-import type { Product, Category } from '~/shared/types';
+import { fetchPromotions } from '~/api/categories.server';
+import { normalizeToMap } from '~/api/categories.utils';
 import { getCanonicalDomain } from '~/utils/seo';
 
 import { fetchPromotionProducts } from './api.server';

@@ -3,7 +3,7 @@
 // we'll pick top 9 taxonomy categories to diplay in category bar and put the rest
 // to More.
 
-import type { Category } from '~/shared/types';
+import type { Category, CategoriesMap } from '~/shared/types';
 
 const splitNavBarCatsWithCatsInMore = (cats: Category[]): [Category[], Category[]] => {
   if (cats.length <= 9) return [cats, []];
@@ -14,4 +14,11 @@ const splitNavBarCatsWithCatsInMore = (cats: Category[]): [Category[], Category[
   return [catbarlist, catsinmore];
 };
 
-export { splitNavBarCatsWithCatsInMore };
+const normalizeToMap = (cats: Category[]): CategoriesMap => cats.reduce((prev, curr) => {
+  return {
+    ...prev,
+    [curr.name]: curr,
+  }
+}, {})
+
+export { splitNavBarCatsWithCatsInMore, normalizeToMap };

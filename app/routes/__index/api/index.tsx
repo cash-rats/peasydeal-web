@@ -12,8 +12,8 @@ import {
 import * as contentful from 'contentful';
 
 const contenfulClient = contentful.createClient({
-  space: CONTENTFUL_SPACE_ID,
-  accessToken: CONTENTFUL_ACCESS_TOKEN,
+	space: CONTENTFUL_SPACE_ID,
+	accessToken: CONTENTFUL_ACCESS_TOKEN,
 })
 
 // We will interweave activity banners in between products list to make the screen

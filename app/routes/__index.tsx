@@ -18,8 +18,7 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
-import { fetchTaxonomyCategories, fetchCategoryByName } from '~/api/categories.server';
-import { splitNavBarCatsWithCatsInMore } from '~/api/categories.utils';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 type LoaderType = {
@@ -45,13 +44,7 @@ type ContextType = {
 
 export const loader: LoaderFunction = async ({ request }) => {
 	try {
-		const [hotDeal, tcats] = await Promise.all([
-			await fetchCategoryByName('hot_deal'),
-			await fetchTaxonomyCategories(),
-		]);
-
-		const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(tcats);
-		navBarCategories.unshift(hotDeal);
+		const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
 		return json<LoaderType>({
 			categories,
