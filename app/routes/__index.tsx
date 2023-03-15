@@ -74,8 +74,6 @@ export default function Index() {
 	const [suggests, searchSuggests] = useSearchSuggests();
 	const { submit } = useFetcherWithPromise();
 
-	console.log('debug taxonomyCategories', categories, navBarCategories);
-
 	const handleSearch = (query: string) => {
 		search.submit({ query }, { method: 'post', action: '/search?index' });
 	};

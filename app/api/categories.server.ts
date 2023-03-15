@@ -15,7 +15,7 @@ interface ICategoriesFromServerResponse {
 };
 
 enum CategoryType {
-  promotion = "promotion_type",
+  promotion = "promotion",
   category = "category",
   taxonomy_category = "taxonomy_category",
 };
