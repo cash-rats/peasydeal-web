@@ -64,7 +64,7 @@ function Footer({ categories }: FooterProps) {
             </span>
 
             <span className="text-white capitalize">
-              © PeasyDeal 2023 PTE. Ltd.
+              © PeasyDeal Limited. 2023
             </span>
           </div>
 

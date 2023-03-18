@@ -26,27 +26,30 @@ export const getFourOhFourDescText = (object?: string) => {
 
 // SEO index page
 export const getIndexTitleText = () =>
-  'PeasyDeal | Up to 65% Off on Electronic, Home Supplies, and More!"';
+'PeasyDeal | Save Up to 65% on Electronics, Home Supplies & More';
+
 export const getIndexDescText = () =>
-  `Hurry up, limited time free shipping! Discover weekly updated deals on the latest gadgets, home decor, apparel, and more at PeasyDeal.` +
-  `Shop now for fast shipping, easy returns, and 14-day money-back guarantee.`;
+'Shop limited-time deals on gadgets, home decor, apparel, and more at PeasyDeal. Fast shipping, easy returns, and 14-day money-back guarantee.';
 
 // SEO collection page
 export const getCollectionTitleText = (category: string) =>
-  `Up to 65% Off on ${category} | PeasyDeal`;
+`Save Up to 65% on ${category} | PeasyDeal`;
+
 export const getCollectionDescText = (category: string, desc?: string) => {
-  return `${category} | ${(desc || '') + `Find the Latest ${category} deals at PeasyDeal. Shop Now and Save Big! Hurry up, limited time free shipping!`}`;
+return `${category} | Find the latest deals at PeasyDeal. Shop now and save big! Limited-time free shipping.`;
 }
 
 // SEO prod page
 export const getProdDetailTitleText = (title: string, uuid: string) =>
-  `Shop ${title} | Save Up to 65% with PeasyDeal!`;
+`Shop ${title} | Save Up to 65% | PeasyDeal`;
+
 export const getProdDetailDescTextWithoutPrice = (title: string, category: string) =>
-  `Save Up to 65% with PeasyDeal! Upgrade Your ${category} Game with PeasyDeal. 14 days money-back guarantee`
+`Upgrade your ${category} with PeasyDeal. Save up to 65% and enjoy our 14-day money-back guarantee.`;
+
 export const getProdDetailDescText = (title: string, retailPrice: number, salePrice: number, category: string) =>
-  `Buy for Only £${salePrice} at PeasyDeal! Save up to ${round10((1 - Number((salePrice / retailPrice).toFixed(2))) * 100, -2)
-  }%, plus limited free shipping!` +
-  `Upgrade Your ${category} Game with PeasyDeal. 14 days money-back guarantee`;
+`Only £${salePrice} at PeasyDeal! Save up to ${round10((1 - Number((salePrice / retailPrice).toFixed(2))) * 100, -2)
+}% with limited free shipping. Upgrade your ${category} and enjoy our 14-day money-back guarantee.`;
+
 
 // SEO tracking page
 export const getTrackingTitleText = () => 'Track Order | PeasyDeal';
