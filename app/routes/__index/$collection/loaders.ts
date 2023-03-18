@@ -46,6 +46,8 @@ export const productsLoader = async ({
     await getCategoryProducts(request, category),
   ]);
 
+  console.log('debug taxCat', taxCat);
+
   if (cachedProds) {
     const {
       items: products,

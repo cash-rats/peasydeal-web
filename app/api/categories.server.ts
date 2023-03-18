@@ -10,6 +10,19 @@ import { splitNavBarCatsWithCatsInMore } from './categories.utils';
 export const RedisCategoriesKey = 'categories';
 export const RedisPromotionsKey = 'promotions';
 
+const normalize = (cat: { category_id: number, label: string, name: string, desc: string, type: string }): Category => {
+  return {
+    catId: cat.category_id,
+    title: cat.label,
+    description: cat.desc,
+    name: cat.name,
+    url: '',
+    type: cat.type,
+  }
+}
+
+const normalizeAll = (cats: any) => cats.map(normalize);
+
 interface ICategoriesFromServerResponse {
   categories: Category[];
   promotions: Category[];
@@ -45,7 +58,7 @@ const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFrom
     respJSON.categories &&
     Array.isArray(respJSON.categories)
   ) {
-    categories = normalize(respJSON.categories);
+    categories = normalizeAll(respJSON.categories);
   }
 
   if (
@@ -53,7 +66,7 @@ const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFrom
     respJSON.promotions &&
     Array.isArray(respJSON.promotions)
   ) {
-    promotions = normalize(respJSON.promotions);
+    promotions = normalizeAll(respJSON.promotions);
   }
 
   if (
@@ -61,7 +74,7 @@ const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFrom
     respJSON.taxonomy_categories &&
     Array.isArray(respJSON.taxonomy_categories)
   ) {
-    taxonomyCategories = normalize(respJSON.taxonomy_categories);
+    taxonomyCategories = normalizeAll(respJSON.taxonomy_categories);
   }
 
   return {
@@ -71,18 +84,6 @@ const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFrom
   };
 };
 
-const normalize = (cats: any) => {
-  return cats.map((cat: { category_id: number, label: string, name: string, desc: string, type: string }): Category => {
-    return {
-      catId: cat.category_id,
-      title: cat.label,
-      description: cat.desc,
-      name: cat.name,
-      url: '',
-      type: cat.type,
-    }
-  });
-}
 
 const hoistCategories = (categories: Category[]) => {
   const categoryToHoist = 'hot_deal';
@@ -200,7 +201,12 @@ const fetchTaxonomyCategoryByName = async (name: string): Promise<TaxonomyCatego
   if (resp.status !== httpStatus.OK) {
     throw new Error(JSON.stringify(respJSON));
   }
-  return respJSON as TaxonomyCategory;
+
+  return {
+    ...normalize(respJSON),
+    parents: normalizeAll(respJSON.parents),
+    children: normalizeAll(respJSON.children),
+  }
 };
 
 /*
@@ -214,7 +220,7 @@ const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[]
   ]);
 
   const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(
-    normalize(tcats.t1)
+    normalizeAll(tcats.t1)
   );
   navBarCategories.unshift(hotDeal);
 

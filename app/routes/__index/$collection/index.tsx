@@ -140,6 +140,8 @@ function Collection({ scrollPosition }: CollectionProps) {
     hasMore,
   } = useLoaderData<LoaderDataType>();
 
+  console.log('debug category', category);
+
   const [state, dispatch] = useReducer(reducer, {
     products,
     current,
@@ -213,9 +215,6 @@ function Collection({ scrollPosition }: CollectionProps) {
     );
   };
 
-  const isChangingCategory = transition.state !== 'idle' &&
-    transition.location;
-
   return (
     <div className="
       py-0 px-auto
@@ -231,7 +230,21 @@ function Collection({ scrollPosition }: CollectionProps) {
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>,
-            <BreadcrumbItem key="2">
+
+            ...category.parents.map(p => (
+              <BreadcrumbItem key={p.catId}>
+                <BreadcrumbLink
+                  as={NavLink}
+                  to={`/${p.name}`}
+                  isCurrentPage
+                  className="font-semibold !text-[#D02E7D]"
+                >
+                  {p.title}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            )),
+
+            <BreadcrumbItem key={category.catId}>
               <BreadcrumbLink
                 as={NavLink}
                 to={`/${category.name}`}
@@ -240,7 +253,7 @@ function Collection({ scrollPosition }: CollectionProps) {
               >
                 {category.title}
               </BreadcrumbLink>
-            </BreadcrumbItem>
+            </BreadcrumbItem>,
           ]
         } />
       </div>
@@ -255,7 +268,7 @@ function Collection({ scrollPosition }: CollectionProps) {
       </div>
 
       <ProductRowsContainer
-        loading={isChangingCategory}
+        loading={transition.state !== 'idle'}
         products={state.products}
         scrollPosition={scrollPosition}
       />

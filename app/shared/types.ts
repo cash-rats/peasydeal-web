@@ -66,6 +66,7 @@ export type Category = {
 };
 
 export type TaxonomyCategory = Category & {
+  parents: Category[];
   children: Category[];
 }
 
