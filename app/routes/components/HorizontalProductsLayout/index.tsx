@@ -33,11 +33,11 @@ const loadingGrids = new Array(12).fill({});
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formEntries = Object.fromEntries(form.entries());
-  const catID = formEntries['catID'] || '2';
+  const catName = formEntries['cat_name'] as string || 'hot_deal';
 
   // Fetch top seller & new trend.
   const { items: recProds } = await fetchProductsByCategoryV2({
-    category: Number(catID),
+    category: catName,
     perpage: 12,
     random: true,
   });
@@ -46,12 +46,12 @@ export const action: ActionFunction = async ({ request }) => {
 }
 
 interface HorizontalProductsLayoutProps {
-  catID?: number;
+  catName?: string;
   title?: string;
   seeAllLinkTo: string;
 }
 
-export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkTo }: HorizontalProductsLayoutProps) {
+export default function HorizontalProductsLayout({ catName = 'new_trend', title, seeAllLinkTo }: HorizontalProductsLayoutProps) {
   const fetcher = useFetcher();
   const clickRecProd = useFetcher();
   const [recProds, setRecProds] = useState<Product[]>(loadingGrids);
@@ -66,7 +66,7 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
 
   useEffect(() => {
     fetcher.submit(
-      { catID: catID.toString() },
+      { cat_name: catName },
       { method: 'post', action: '/components/HorizontalProductsLayout?index' }
     );
   }, []);
@@ -145,18 +145,18 @@ export default function HorizontalProductsLayout({ catID = 2, title, seeAllLinkT
         >
           <div className="flex flex-nowrap">
             {
-                recProds?.map((prod: Product, index: number) => {
-                  return (
-                    <div className="inline-block px-3 min-w-[250px]" key={`${prod.productUUID}_${index}`}>
-                      <RegularCardWithActionButton
-                        key={`horzontal-prod-${index}`}
-                        product={prod}
-                        onClickProduct={handleClickGrid}
-                      />
-                    </div>
-                  )
-                })
-              }
+              recProds?.map((prod: Product, index: number) => {
+                return (
+                  <div className="inline-block px-3 min-w-[250px]" key={`${prod.productUUID}_${index}`}>
+                    <RegularCardWithActionButton
+                      key={`horzontal-prod-${index}`}
+                      product={prod}
+                      onClickProduct={handleClickGrid}
+                    />
+                  </div>
+                )
+              })
+            }
           </div>
         </div>
       </div>

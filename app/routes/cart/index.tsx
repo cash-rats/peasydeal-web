@@ -548,9 +548,9 @@ function Cart() {
 												updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
 
 											) || (
-												removeItemFetcher.state !== 'idle' &&
-												removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
-											);
+													removeItemFetcher.state !== 'idle' &&
+													removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
+												);
 
 											return (
 												<CartItem
@@ -617,7 +617,7 @@ function Cart() {
 					{/* Recommended products - top items */}
 					{/* @TODO catID should not be hardcoded here */}
 					<HorizontalProductsLayout
-						catID={1}
+						catName='hot_deal'
 						title='top items'
 						seeAllLinkTo='/hot_deal'
 					/>
@@ -625,7 +625,7 @@ function Cart() {
 					{/* Recommended products - new trend */}
 					{/* @TODO catID should not be hardcoded here */}
 					<HorizontalProductsLayout
-						catID={2}
+						catName='new_trend'
 						title='new trend'
 						seeAllLinkTo='/new_trend'
 					/>

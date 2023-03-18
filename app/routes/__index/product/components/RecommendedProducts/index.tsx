@@ -12,8 +12,6 @@ import type { Product } from '~/shared/types';
 // again react would echo a error saying duplicate css being loaded
 import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
 import { modToXItems } from '~/utils/products';
-import { fetchCategories } from '~/api/categories.server';
-import { normalizeToMap } from '~/api/categories.utils';
 import { fetchProductsByCategoryV2 } from '~/api';
 import { PAGE_LIMIT } from '~/shared/constants';
 import { ProductPromotionRow } from '~/components/ProductPromotionRow';
@@ -33,16 +31,8 @@ export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const category = body.get('category') as string || '';
 
-  const [categories] = await fetchCategories();
-  const _categories = normalizeToMap(categories);
-  const targetCat = _categories[category];
-
-  if (!targetCat) {
-    return json<ActionDataType>({ products: [] });
-  }
-
   const { items: products } = await fetchProductsByCategoryV2({
-    category: Number(targetCat.catId),
+    category,
     random: true,
     perpage: PAGE_LIMIT,
   });
