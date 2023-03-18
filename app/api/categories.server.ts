@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
-import type { Category, CategoriesMap } from '~/shared/types';
+import type { Category, TaxonomyCategory } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';
 import { CATEGORY_CACHE_TTL } from '~/utils/get_env_source';
 
@@ -84,13 +84,6 @@ const normalize = (cats: any) => {
   });
 }
 
-const normalizeToMap = (cats: Category[]): CategoriesMap => cats.reduce((prev, curr) => {
-  return {
-    ...prev,
-    [curr.name]: curr,
-  }
-}, {})
-
 const hoistCategories = (categories: Category[]) => {
   const categoryToHoist = 'hot_deal';
   const topCategories = [
@@ -150,28 +143,6 @@ const fetchPromotions = async (): Promise<Category[]> => {
   return promotions;
 };
 
-// TODO: cache to redis.
-const fetchTaxonomyCategories = async (): Promise<Category[]> => {
-  const { taxonomyCategories } = await fetchCategoriesFromServer(CategoryType.taxonomy_category);
-  return taxonomyCategories;
-};
-
-/*
-  navCategory: [hotdeal, ...]
-  categories: [...]
-*/
-const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[], Category[]]> => {
-  const [hotDeal, tcats] = await Promise.all([
-    await fetchCategoryByName('hot_deal'),
-    await fetchTaxonomyCategories(),
-  ]);
-
-  const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(tcats);
-  navBarCategories.unshift(hotDeal);
-
-  return [navBarCategories, categories];
-}
-
 const fetchCategoryByName = async (name: string): Promise<Category> => {
   const url = new URL(PEASY_DEAL_ENDPOINT);
   url.pathname = `/v1/categories/${name}`
@@ -192,15 +163,88 @@ const fetchCategoryByName = async (name: string): Promise<Category> => {
   }
 }
 
-// TODO: cache to redis.
+// Deprecated TODO: cache to redis.
 const fetchCategoriesRegardlessType = (): Promise<ICategoriesFromServerResponse> => fetchCategoriesFromServer();
+
+// TODO: cache to redis.
+interface TaxonomyCategories {
+  t1: Category[];
+  t2: Category[];
+  t3: Category[]
+}
+
+const fetchTaxonomyCategories = async (tier: number): Promise<TaxonomyCategories> => {
+  const url = new URL(PEASY_DEAL_ENDPOINT);
+  url.pathname = '/v1/categories/taxonomy';
+  if (tier) {
+    url.searchParams.append('tier', tier.toString());
+  }
+
+  const resp = await fetch(url.toString());
+  const respJSON = await resp.json();
+
+  if (resp.status !== httpStatus.OK) {
+    throw new Error(JSON.stringify(respJSON));
+  }
+
+
+  return respJSON as TaxonomyCategories;
+};
+
+const fetchTaxonomyCategoryByName = async (name: string): Promise<TaxonomyCategory> => {
+  const url = new URL(PEASY_DEAL_ENDPOINT);
+  url.pathname = `/v1/categories/taxonomy/${name}`;
+
+  const resp = await fetch(url.toString());
+  const respJSON = await resp.json();
+  if (resp.status !== httpStatus.OK) {
+    throw new Error(JSON.stringify(respJSON));
+  }
+  return respJSON as TaxonomyCategory;
+};
+
+/*
+  navCategory: [hotdeal, ...]
+  categories: [...]
+*/
+const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[], Category[]]> => {
+  const [hotDeal, tcats] = await Promise.all([
+    await fetchCategoryByName('hot_deal'),
+    await fetchTaxonomyCategories(1),
+  ]);
+
+  const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(
+    normalize(tcats.t1)
+  );
+  navBarCategories.unshift(hotDeal);
+
+  return [navBarCategories, categories];
+}
+
+const checkCategoryExists = async (name: string): Promise<boolean> => {
+  const url = new URL(PEASY_DEAL_ENDPOINT);
+  url.pathname = `/v1/categories/${name}/exists`;
+
+  const resp = await fetch(url.toString());
+  const respJSON = await resp.json();
+
+  if (resp.status !== httpStatus.OK) {
+    throw new Error(JSON.stringify(respJSON));
+  }
+
+  const { exists } = respJSON;
+
+  return exists as boolean;
+}
 
 export {
   fetchCategories,
   fetchPromotions,
-  fetchTaxonomyCategories,
-  fetchCategoriesRegardlessType,
   fetchCategoryByName,
+  fetchCategoriesRegardlessType,
+
+  fetchTaxonomyCategories,
   fetchCategoriesWithSplitAndHotDealInPlaced,
-  normalizeToMap,
+  fetchTaxonomyCategoryByName,
+  checkCategoryExists,
 };

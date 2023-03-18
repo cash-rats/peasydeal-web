@@ -80,10 +80,10 @@ const MegaMenuContent = ({
         grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4
       ">
         {
-          categories.map((category) => {
+          categories.map((category, index) => {
             return (
               <div
-                key={category.catId}
+                key={index}
                 className="
                   flex flex-start
                   py-2

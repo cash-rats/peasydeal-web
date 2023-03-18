@@ -50,7 +50,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
               topCategories.map((category, index) => (
                 <Link
                   replace
-                  key={category.catId}
+                  key={index}
                   state={{ scrollToTop: true }}
                   to={`/${category.name}`}
                   className="self-center"

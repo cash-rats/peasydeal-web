@@ -1,14 +1,17 @@
 import { json } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
-import { normalizeToMap } from '~/api/categories.utils';
+import {
+  fetchTaxonomyCategoryByName,
+  checkCategoryExists,
+} from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import type { CategoriesMap, Product, Category } from '~/shared/types';
 import { getCanonicalDomain } from '~/utils/seo';
 import { commitSession } from '~/sessions/redis_session';
 
 import { fetchProductsByCategoryV2 } from "../api";
+import type { LoadMoreDataType } from './types';
 
 interface IProductsLoader {
   request: Request;
@@ -22,7 +25,6 @@ interface LoaderDataType {
   category: Category;
   page: number;
   canonical_link: string;
-  navBarCategories: Category[];
   total: number;
   current: number;
   hasMore: boolean;
@@ -33,16 +35,16 @@ export const productsLoader = async ({
   category,
   perpage,
 }: IProductsLoader) => {
-  const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-  const catMap = normalizeToMap([...categories, ...navBarCategories]);
-
-  if (!catMap[category]) {
+  if (!await checkCategoryExists(category)) {
     throw json(`target category ${category} not found`, {
       status: httpStatus.NOT_FOUND
     });
   }
 
-  const cachedProds = await getCategoryProducts(request, category);
+  const [taxCat, cachedProds] = await Promise.all([
+    await fetchTaxonomyCategoryByName(category),
+    await getCategoryProducts(request, category),
+  ]);
 
   if (cachedProds) {
     const {
@@ -53,13 +55,13 @@ export const productsLoader = async ({
     } = await fetchProductsByCategoryV2({
       perpage: perpage * cachedProds.page,
       page: 1,
-      category: Number(catMap[category].catId),
+      category,
       random: false,
     })
 
     return json<LoaderDataType>({
-      categories: catMap,
-      category: catMap[category],
+      categories: {},
+      category: taxCat,
       products,
 
       page: cachedProds.page,
@@ -67,7 +69,6 @@ export const productsLoader = async ({
       current,
       hasMore,
 
-      navBarCategories,
       canonical_link: `${getCanonicalDomain()}/${category}`,
     });
   }
@@ -81,7 +82,7 @@ export const productsLoader = async ({
   } = await fetchProductsByCategoryV2({
     perpage,
     page: 1,
-    category: Number(catMap[category].catId),
+    category,
   })
 
   const session = await addCategoryProducts(
@@ -92,14 +93,13 @@ export const productsLoader = async ({
   )
 
   return json<LoaderDataType>({
-    categories: catMap,
+    categories: {},
     products,
     page: 1,
     total,
     current,
     hasMore,
-    category: catMap[category],
-    navBarCategories,
+    category: taxCat,
     canonical_link: `${getCanonicalDomain()}/${category}`,
   }, {
     headers: {
@@ -108,34 +108,24 @@ export const productsLoader = async ({
   });
 }
 
-interface LoaderMoreLoader {
+interface ILoaderMoreLoader {
   request: Request;
   category: string;
   page: number;
   perpage: number;
 };
 
-interface LoadMoreDataType {
-  products: Product[],
-  total: number;
-  current: number;
-  hasMore: boolean;
-  category: Category,
-  page: number,
-  navBarCategories: Category[];
-}
 
 export const loadmoreProductsLoader = async ({
   request,
   category,
   page,
   perpage,
-}: LoaderMoreLoader) => {
-  const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-  const catMap = normalizeToMap([...categories, ...navBarCategories]);
-
-  if (!catMap[category]) {
-    throw json(`target category ${category} not found`, httpStatus.NOT_FOUND);
+}: ILoaderMoreLoader) => {
+  if (!await checkCategoryExists(category)) {
+    throw json(`target category ${category} not found`, {
+      status: httpStatus.NOT_FOUND
+    });
   }
 
   const {
@@ -146,7 +136,7 @@ export const loadmoreProductsLoader = async ({
   } = await fetchProductsByCategoryV2({
     perpage,
     page,
-    category: Number(catMap[category].catId),
+    category,
   })
 
   return json<LoadMoreDataType>({
@@ -154,9 +144,8 @@ export const loadmoreProductsLoader = async ({
     total,
     current,
     hasMore,
-    category: catMap[category],
     page,
-    navBarCategories,
+    category,
   }, {
     headers: {
       'Set-Cookie': await commitSession(

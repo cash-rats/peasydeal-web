@@ -53,7 +53,7 @@ const normalizeV2Data = (apiData: any[]): Product[] => {
 	return transformed;
 }
 export interface FetchProductsByCategoryV2Params {
-	category?: number;
+	category?: string;
 	perpage?: number;
 	page?: number;
 	random?: boolean;
@@ -126,7 +126,7 @@ export const fetchProductsByCategoryV2 = async ({
 }: FetchProductsByCategoryV2Params): Promise<IFetchProductsByCategoryV2Response> => {
 	if (!perpage) perpage = 8;
 	if (!page) page = 1;
-	if (!category) category = 1;
+	if (!category) category = 'hot_deal';
 
 	const url = new URL(PEASY_DEAL_ENDPOINT)
 	url.pathname = '/v1/products';

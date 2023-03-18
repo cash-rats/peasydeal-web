@@ -135,7 +135,6 @@ function Collection({ scrollPosition }: CollectionProps) {
     category,
     products,
     page,
-    categories,
     total,
     current,
     hasMore,
@@ -176,13 +175,14 @@ function Collection({ scrollPosition }: CollectionProps) {
         page,
         category: dataCat,
       } = loadmoreFetcher.data as LoadMoreDataType;
+
       // If user changes category while load more is happening, the newly loaded data
       // would be appended to different category. Moreover, it would cause inconsistent
       // page number. Thus, we abandon appending loaded data on to the product list
       // if category of data is different from current viewing category.
       if (
         products.length === 0 ||
-        dataCat.name !== category.name
+        dataCat !== category.name
       ) return;
 
       currPage.current = page;
@@ -214,10 +214,7 @@ function Collection({ scrollPosition }: CollectionProps) {
   };
 
   const isChangingCategory = transition.state !== 'idle' &&
-    transition.location &&
-    categories.hasOwnProperty(
-      decodeURI(transition.location.pathname.substring(1))
-    );
+    transition.location;
 
   return (
     <div className="

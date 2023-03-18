@@ -6,7 +6,6 @@ export type LoaderDataType = {
   category: Category;
   page: number;
   canonical_link: string;
-  navBarCategories: Category[];
   total: number;
   current: number;
   hasMore: boolean;
@@ -17,7 +16,6 @@ export type LoadMoreDataType = {
   total: number;
   current: number;
   hasMore: boolean;
-  category: Category,
+  category: string,
   page: number,
-  navBarCategories: Category[];
 };

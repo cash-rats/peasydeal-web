@@ -65,6 +65,10 @@ export type Category = {
   type: string;
 };
 
+export type TaxonomyCategory = Category & {
+  children: Category[];
+}
+
 export type CategoriesMap = {
   [key: string]: Category;
 };
