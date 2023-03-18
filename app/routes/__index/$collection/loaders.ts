@@ -6,7 +6,7 @@ import {
   checkCategoryExists,
 } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
-import type { CategoriesMap, Product, Category } from '~/shared/types';
+import type { Product, Category } from '~/shared/types';
 import { getCanonicalDomain } from '~/utils/seo';
 import { commitSession } from '~/sessions/redis_session';
 
@@ -20,7 +20,6 @@ interface IProductsLoader {
 }
 
 interface LoaderDataType {
-  categories: CategoriesMap;
   products: Product[];
   category: Category;
   page: number;
@@ -36,7 +35,9 @@ export const productsLoader = async ({
   perpage,
 }: IProductsLoader) => {
   if (!await checkCategoryExists(category)) {
-    throw json(`target category ${category} not found`, {
+    throw json({
+      error: `target category ${category} not found`
+    }, {
       status: httpStatus.NOT_FOUND
     });
   }
@@ -45,8 +46,6 @@ export const productsLoader = async ({
     await fetchTaxonomyCategoryByName(category),
     await getCategoryProducts(request, category),
   ]);
-
-  console.log('debug taxCat', taxCat);
 
   if (cachedProds) {
     const {
@@ -62,7 +61,6 @@ export const productsLoader = async ({
     })
 
     return json<LoaderDataType>({
-      categories: {},
       category: taxCat,
       products,
 
@@ -95,7 +93,6 @@ export const productsLoader = async ({
   )
 
   return json<LoaderDataType>({
-    categories: {},
     products,
     page: 1,
     total,

@@ -30,11 +30,7 @@ const structuredData: StructuredDataFunction = ({
 
   const { collection } = params;
 
-  if (
-    !loaderData ||
-    !collection ||
-    !loaderData.categories[collection]
-  ) {
+  if (!loaderData || !collection) {
     return [];
   }
 

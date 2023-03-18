@@ -45,11 +45,7 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
 export const handle = { dynamicLinks, structuredData };
 
 export const meta: MetaFunction = ({ data, params }) => {
-  if (
-    !data ||
-    !params.collection ||
-    !data.categories[params.collection]
-  ) {
+  if (!data || !params.collection) {
     return {
       title: getFourOhFourTitleText(),
       description: getFourOhFourDescText(),
@@ -140,13 +136,12 @@ function Collection({ scrollPosition }: CollectionProps) {
     hasMore,
   } = useLoaderData<LoaderDataType>();
 
-  console.log('debug category', category);
-
   const [state, dispatch] = useReducer(reducer, {
     products,
     current,
     total,
-    hasMore
+    hasMore,
+    category,
   });
 
   const currPage = useRef(state.current);
@@ -162,6 +157,7 @@ function Collection({ scrollPosition }: CollectionProps) {
         products,
         total,
         current,
+        category,
       },
     });
     currPage.current = page;
@@ -231,7 +227,7 @@ function Collection({ scrollPosition }: CollectionProps) {
               </BreadcrumbLink>
             </BreadcrumbItem>,
 
-            ...category.parents.map(p => (
+            ...state.category.parents.map(p => (
               <BreadcrumbItem key={p.catId}>
                 <BreadcrumbLink
                   as={NavLink}
@@ -244,14 +240,14 @@ function Collection({ scrollPosition }: CollectionProps) {
               </BreadcrumbItem>
             )),
 
-            <BreadcrumbItem key={category.catId}>
+            <BreadcrumbItem key={state.category.catId}>
               <BreadcrumbLink
                 as={NavLink}
-                to={`/${category.name}`}
+                to={`/${state.category.name}`}
                 isCurrentPage
                 className="font-semibold !text-[#D02E7D]"
               >
-                {category.title}
+                {state.category.title}
               </BreadcrumbLink>
             </BreadcrumbItem>,
           ]
@@ -259,8 +255,8 @@ function Collection({ scrollPosition }: CollectionProps) {
       </div>
 
       <PageTitle
-        title={category.title}
-        subtitle={category.description}
+        title={state.category.title}
+        subtitle={state.category.description}
       />
 
       <div className="w-full pt-2.5 pb-8 max-w-screen-xl mx-auto">
