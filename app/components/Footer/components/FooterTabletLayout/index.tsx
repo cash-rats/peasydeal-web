@@ -33,7 +33,7 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
         </span>
 
         <div className="mt-[10px]">
-          <Link to={'/hot_deal'}>
+          <Link to={'/promotion/hot_deal'}>
             <Button
               style={{
                 backgroundColor: '#d85140',

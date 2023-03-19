@@ -26,9 +26,9 @@ type LoaderDataType = {
 }
 
 export const links: LinksFunction = () => {
-  return [
-    ...AllTimeCouponLink(),
-  ];
+	return [
+		...AllTimeCouponLink(),
+	];
 };
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
@@ -46,7 +46,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const landings = await fetchLandingPageFeatureProducts({
 			categoriesPreviewNames: [
-				'hot_deal',
 				'new_trend',
 				'electronic',
 				'clothes_shoes',
@@ -55,7 +54,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 				'toy',
 				'pet',
 				'car_accessories'
-			]
+			],
+			prmotionPreviewNames: ['hot_deal'],
 		});
 
 		return json<LoaderDataType>({ ...landings });

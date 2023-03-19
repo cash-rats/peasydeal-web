@@ -8,10 +8,10 @@ import ImageCategoryExtraDiscount from './ImageCategoryExtraDiscount';
 import styles from './styles/allTimeCoupon.css';
 
 export const links: LinksFunction = () => {
-	return [
-		// Google meta tags
-		{ rel: 'stylesheet', href: styles },
-	];
+  return [
+    // Google meta tags
+    { rel: 'stylesheet', href: styles },
+  ];
 }
 
 const AllTimeCoupon = () => {
@@ -33,7 +33,7 @@ const AllTimeCoupon = () => {
 
       <div className="hidden md:flex flex-1 justify-center items-center">
         <div className="flex flex-col">
-          <Link to="/electronic">
+          <Link to="/electronics">
             <div className='coupon-link-btn'>
               <ImageCategoryExtraDiscount name={'Category Extra Discount'} />
             </div>
@@ -50,7 +50,7 @@ const AllTimeCoupon = () => {
         <ImageGrandOpeningDiscount name={'Grand Opening Discount'} />
       </div>
       <div className='md:hidden flex justify-center ml-1'>
-        <Link to="/electronic">
+        <Link to="/electronics">
           <div className='coupon-link-btn'>
             <ImageCategoryExtraDiscount name={'Category Extra Discount'} />
           </div>

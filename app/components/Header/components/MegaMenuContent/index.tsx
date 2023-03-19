@@ -39,7 +39,7 @@ const iconMapper = (name: string) => {
       return <RiShirtFill className='text-[20px] text-[#FF8787] relative' />;
     case 'garden':
       return <GiFlowerPot className='text-[20px] text-[#8BDB81] relative' />;
-    case 'electronic':
+    case 'electronics':
       return <FcSmartphoneTablet className='text-[20px] relative' />;
     case 'toy':
       return <MdOutlineSmartToy className='text-[20px] text-[#FFE162] relative' />;

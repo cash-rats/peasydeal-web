@@ -60,16 +60,19 @@ export interface FetchProductsByCategoryV2Params {
 }
 
 export interface IFetchLandingPageFeatureProductsParams {
-	categoriesPreviewNames: String[];
+	categoriesPreviewNames: string[];
+	prmotionPreviewNames?: string[];
 }
 
 export const fetchLandingPageFeatureProducts = async ({
 	categoriesPreviewNames = [],
+	prmotionPreviewNames = [],
 }: IFetchLandingPageFeatureProductsParams) => {
 	const url = new URL(PEASY_DEAL_ENDPOINT)
 
 	url.pathname = '/v1/products/landing-page';
 	url.searchParams.append('cat_preview_names', categoriesPreviewNames.join(','));
+	url.searchParams.append('promotion_names', prmotionPreviewNames.join(','));
 
 	const resp = await fetch(url.toString());
 	const respJSON = await resp.json();

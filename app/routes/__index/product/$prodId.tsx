@@ -152,7 +152,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 	try {
 		const prodDetail = await fetchProductDetail(decompURL.productUUID)
-		console.log('debug prodDetail', prodDetail.categories);
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,

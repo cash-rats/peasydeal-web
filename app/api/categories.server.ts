@@ -169,9 +169,7 @@ const fetchCategoriesRegardlessType = (): Promise<ICategoriesFromServerResponse>
 
 // TODO: cache to redis.
 interface TaxonomyCategories {
-  t1: Category[];
-  t2: Category[];
-  t3: Category[]
+  categories: Category[];
 }
 
 const fetchTaxonomyCategories = async (tier: number): Promise<TaxonomyCategories> => {
@@ -187,7 +185,6 @@ const fetchTaxonomyCategories = async (tier: number): Promise<TaxonomyCategories
   if (resp.status !== httpStatus.OK) {
     throw new Error(JSON.stringify(respJSON));
   }
-
 
   return respJSON as TaxonomyCategories;
 };
@@ -220,7 +217,7 @@ const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[]
   ]);
 
   const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(
-    normalizeAll(tcats.t1)
+    normalizeAll(tcats.categories)
   );
   navBarCategories.unshift(hotDeal);
 

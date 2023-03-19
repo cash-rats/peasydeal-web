@@ -221,14 +221,14 @@ function Collection({ scrollPosition }: CollectionProps) {
       <div className="w-full py-2.5 max-w-screen-xl mx-auto">
         <Breadcrumbs breadcrumbs={
           [
-            <BreadcrumbItem key="1">
+            <BreadcrumbItem key='collection_breadcrumbs_first'>
               <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
                 Home
               </BreadcrumbLink>
             </BreadcrumbItem>,
 
             ...state.category.parents.map(p => (
-              <BreadcrumbItem key={p.catId}>
+              <BreadcrumbItem key={`collection_breadcrumbs_${p.catId}`}>
                 <BreadcrumbLink
                   as={NavLink}
                   to={`/${p.name}`}
@@ -240,7 +240,7 @@ function Collection({ scrollPosition }: CollectionProps) {
               </BreadcrumbItem>
             )),
 
-            <BreadcrumbItem key={state.category.catId}>
+            <BreadcrumbItem key='collection_breadcrumbs_last'>
               <BreadcrumbLink
                 as={NavLink}
                 to={`/${state.category.name}`}

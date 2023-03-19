@@ -52,7 +52,11 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   replace
                   key={index}
                   state={{ scrollToTop: true }}
-                  to={`/${category.name}`}
+                  to={
+                    category.name === 'hot_deal'
+                      ? `/promotion/${category.name}`
+                      : `/${category.name}`
+                  }
                   className="self-center"
                 >
                   <li className={`
