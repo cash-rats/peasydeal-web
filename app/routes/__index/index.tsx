@@ -47,13 +47,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 		const landings = await fetchLandingPageFeatureProducts({
 			categoriesPreviewNames: [
 				'new_trend',
-				'electronic',
-				'clothes_shoes',
-				'kitchen_kitchenware',
-				'home_appliances',
-				'toy',
-				'pet',
-				'car_accessories'
+				'arts-and-entertainment',
+				'home-and-garden',
+				'baby-and-toddler',
+				'vehicles-and-parts',
+				'electronics',
+				'luggage-and-bags',
+				'animals-and-pet-supplies',
 			],
 			prmotionPreviewNames: ['hot_deal'],
 		});
