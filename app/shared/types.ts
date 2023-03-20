@@ -63,9 +63,10 @@ export type Category = {
   url?: string;
   show?: boolean;
   type: string;
+  children: Category[];
 };
 
-export type TaxonomyCategory = Category & {
+export type TaxonomyWithParents = Category & {
   parents: Category[];
   children: Category[];
 }

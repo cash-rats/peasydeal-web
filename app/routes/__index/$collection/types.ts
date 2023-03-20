@@ -1,9 +1,9 @@
-import type { CategoriesMap, Product, TaxonomyCategory } from '~/shared/types';
+import type { CategoriesMap, Product, TaxonomyWithParents } from '~/shared/types';
 
 export type LoaderDataType = {
   categories: CategoriesMap;
   products: Product[];
-  category: TaxonomyCategory;
+  category: TaxonomyWithParents;
   page: number;
   canonical_link: string;
   total: number;

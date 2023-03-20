@@ -1,4 +1,4 @@
-import type { Product, TaxonomyCategory } from '~/shared/types';
+import type { Product, TaxonomyWithParents } from '~/shared/types';
 
 
 export type StateShape = {
@@ -6,7 +6,7 @@ export type StateShape = {
   total: number;
   current: number;
   hasMore: boolean;
-  category: TaxonomyCategory;
+  category: TaxonomyWithParents;
 };
 
 export enum CollectionActionType {
@@ -21,7 +21,7 @@ interface ProductsPayload {
 }
 
 interface SetProductPayload extends ProductsPayload {
-  category: TaxonomyCategory;
+  category: TaxonomyWithParents;
 }
 
 interface CollectionActions {

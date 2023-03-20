@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
-import type { Category, TaxonomyCategory } from '~/shared/types';
+import type { Category, TaxonomyWithParents } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';
 import { CATEGORY_CACHE_TTL } from '~/utils/get_env_source';
 
@@ -10,7 +10,14 @@ import { splitNavBarCatsWithCatsInMore } from './categories.utils';
 export const RedisCategoriesKey = 'categories';
 export const RedisPromotionsKey = 'promotions';
 
-const normalize = (cat: { category_id: number, label: string, name: string, desc: string, type: string }): Category => {
+const normalize = (cat: {
+  category_id: number,
+  label: string,
+  name: string,
+  desc: string,
+  type: string,
+  children: Category[],
+}): Category => {
   return {
     catId: cat.category_id,
     title: cat.label,
@@ -18,6 +25,7 @@ const normalize = (cat: { category_id: number, label: string, name: string, desc
     name: cat.name,
     url: '',
     type: cat.type,
+    children: cat.children || [],
   }
 }
 
@@ -154,14 +162,7 @@ const fetchCategoryByName = async (name: string): Promise<Category> => {
     throw new Error(JSON.stringify(respJSON));
   }
 
-  return {
-    catId: respJSON.category_id,
-    title: respJSON.label,
-    description: respJSON.desc,
-    name: respJSON.name,
-    url: '',
-    type: respJSON.type,
-  }
+  return normalize(respJSON);
 }
 
 // Deprecated TODO: cache to redis.
@@ -175,6 +176,7 @@ interface TaxonomyCategories {
 const fetchTaxonomyCategories = async (tier: number): Promise<TaxonomyCategories> => {
   const url = new URL(PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/categories/taxonomy';
+  url.searchParams.append('with_children', 'true');
   if (tier) {
     url.searchParams.append('tier', tier.toString());
   }
@@ -189,7 +191,7 @@ const fetchTaxonomyCategories = async (tier: number): Promise<TaxonomyCategories
   return respJSON as TaxonomyCategories;
 };
 
-const fetchTaxonomyCategoryByName = async (name: string): Promise<TaxonomyCategory> => {
+const fetchTaxonomyCategoryByName = async (name: string): Promise<TaxonomyWithParents> => {
   const url = new URL(PEASY_DEAL_ENDPOINT);
   url.pathname = `/v1/categories/taxonomy/${name}`;
 

@@ -136,6 +136,8 @@ function Collection({ scrollPosition }: CollectionProps) {
     hasMore,
   } = useLoaderData<LoaderDataType>();
 
+  console.log('Hello benson, i\'m category from __index/$collection/index.tsx ', category);
+
   const [state, dispatch] = useReducer(reducer, {
     products,
     current,

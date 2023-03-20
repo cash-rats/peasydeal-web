@@ -23,7 +23,6 @@ import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 type LoaderType = {
 	categories: Category[];
-	taxonomyCategories: Category[];
 	navBarCategories: Category[];
 };
 
@@ -48,7 +47,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 		return json<LoaderType>({
 			categories,
-			taxonomyCategories: [],
 			navBarCategories,
 		});
 	} catch (e) {

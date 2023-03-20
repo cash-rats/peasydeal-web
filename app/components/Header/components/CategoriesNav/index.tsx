@@ -28,6 +28,9 @@ interface CategoriesNavProps {
 export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
+  console.log('Hello benson, i\'m categories from CategoriesNav ', categories);
+  console.log('Hello benson, i\'m topCategories from CategoriesNav ', topCategories);
+
   return (
     <div className={`
       hidden md:flex
@@ -81,6 +84,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                 </Link>
               ))
             }
+
             <li className="self-center">
               <Menu isOpen={isOpen} gutter={0}>
                 <MenuButton
