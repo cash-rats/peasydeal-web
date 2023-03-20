@@ -55,7 +55,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 				'luggage-and-bags',
 				'animals-and-pet-supplies',
 			],
-			prmotionPreviewNames: ['hot_deal'],
 		});
 
 		return json<LoaderDataType>({ ...landings });
