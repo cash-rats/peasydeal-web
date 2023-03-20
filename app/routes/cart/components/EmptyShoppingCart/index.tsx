@@ -42,17 +42,19 @@ function EmptyShoppingCartPage() {
 
       {/* Product Suggestion List */}
       {/* Recommended products */}
-      {/* <HorizontalProductsLayout
-        catID={1}
-        title='top items'
+      <HorizontalProductsLayout
+        catName='hot_deal'
+        title='deals with more than 60% off!'
         seeAllLinkTo='/promotion/hot_deal'
       />
 
+
+      {/* TODOs: use new_trend when it moves to promotion */}
       <HorizontalProductsLayout
-        catID={2}
-        title='new trend'
-        seeAllLinkTo='/new_trend'
-      /> */}
+        catName='super_deal'
+        title='deals with extra 10% off'
+        seeAllLinkTo='/promotion/super_deal'
+      />
     </section>
   );
 };
