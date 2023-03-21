@@ -46,7 +46,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const landings = await fetchLandingPageFeatureProducts({
 			categoriesPreviewNames: [
-				'new_trend',
+				// 'new_trend',
 				'arts-and-entertainment',
 				'home-and-garden',
 				'baby-and-toddler',
