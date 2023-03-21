@@ -20,7 +20,8 @@ deploy_staging:
 	ssh -p $(REMOTE_PORT) -t $(SERVER_USER)@$(STAGING_SERVER) 'source ~/.nvm/nvm.sh && \
 	cd $(REMOTE_APP_PATH) && \
 	git reset --hard HEAD && \
-	git pull https://$(GITHUB_USERNAME):$(GITHUB_ACCESS_TOKEN)@github.com/$(GITHUB_USERNAME)/peasydeal_web && \
+	git pull https://$(GITHUB_USERNAME):$(GITHUB_ACCESS_TOKEN)@github.com/$(GITHUB_USERNAME)/peasydeal_web staging:staging && \
+	git checkout staging && \
 	npm install && \
 	npm run build:patched && \
 	make start_staging'
