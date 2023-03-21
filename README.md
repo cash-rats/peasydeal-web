@@ -1,7 +1,5 @@
 # PeasyDeal Web
 
-testing2
-
 ## Start dev
 
 `npm run dev`
