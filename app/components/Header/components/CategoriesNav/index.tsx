@@ -28,8 +28,8 @@ interface CategoriesNavProps {
 export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  console.log('Hello benson, i\'m categories from CategoriesNav ', categories);
-  console.log('Hello benson, i\'m topCategories from CategoriesNav ', topCategories);
+  // console.log('Hello benson, i\'m categories from CategoriesNav ', categories);
+  // console.log('Hello benson, i\'m topCategories from CategoriesNav ', topCategories);
 
   return (
     <div className={`

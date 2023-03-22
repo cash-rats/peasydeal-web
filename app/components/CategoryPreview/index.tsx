@@ -6,6 +6,7 @@ import type { ScrollPosition } from 'react-lazy-load-image-component';
 import { Link } from '@remix-run/react';
 import { VscArrowRight } from "react-icons/vsc";
 
+import { CategoryType } from '~/shared/types';
 import { ProductRow } from "~/components/ProductRow";
 
 type ICategoryPreview = {
@@ -24,6 +25,7 @@ export const CategoryPreview = ({
     name,
     desc,
     items,
+    type,
   } = category;
 
   return (
@@ -39,7 +41,11 @@ export const CategoryPreview = ({
         ">
           <span>{label}</span>
           <div className="block w-[1px] h-[25px] bg-[#757575] mr-1 ml-6" />
-          <Link to={`/${name}`}>
+          <Link to={
+            type === CategoryType.promotion
+              ? `/promotion/${name}`
+              : `/${name}`
+          }>
             <Button
               rightIcon={<VscArrowRight />}
               colorScheme='teal'

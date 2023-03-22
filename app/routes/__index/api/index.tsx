@@ -64,18 +64,15 @@ export interface IFetchLandingPageFeatureProductsParams {
 	prmotionPreviewNames?: string[];
 }
 
-export const fetchLandingPageFeatureProducts = async ({
-	categoriesPreviewNames = [],
-	prmotionPreviewNames = [],
-}: IFetchLandingPageFeatureProductsParams) => {
+export const fetchLandingPageFeatureProducts = async ({ categoriesPreviewNames = [], }: IFetchLandingPageFeatureProductsParams) => {
 	const url = new URL(PEASY_DEAL_ENDPOINT)
 
 	url.pathname = '/v1/products/landing-page';
 	url.searchParams.append('cat_preview_names', categoriesPreviewNames.join(','));
-	url.searchParams.append('promotion_names', prmotionPreviewNames.join(','));
 
 	const resp = await fetch(url.toString());
 	const respJSON = await resp.json();
+
 
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
@@ -90,8 +87,17 @@ export const fetchLandingPageFeatureProducts = async ({
 			}
 		}) : [];
 
+	const promotionPreviews = respJSON.promotion_previews
+		? respJSON.promotion_previews.map((promotionPreview: any) => {
+			return {
+				...promotionPreview,
+				items: normalizeV2Data(promotionPreview.items),
+			}
+		}) : [];
+
 	return {
 		categoryPreviews,
+		promotionPreviews,
 		promotions: respJSON?.promotions || [],
 	};
 }

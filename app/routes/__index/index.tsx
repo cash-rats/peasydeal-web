@@ -22,6 +22,7 @@ import { links as AllTimeCouponLink } from "~/components/AllTimeCoupon";
 
 type LoaderDataType = {
 	categoryPreviews: TCategoryPreview[],
+	promotionPreviews: TCategoryPreview[],
 	promotions: TPromotionType[],
 }
 
@@ -46,7 +47,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const landings = await fetchLandingPageFeatureProducts({
 			categoriesPreviewNames: [
-				// 'new_trend',
 				'arts-and-entertainment',
 				'home-and-garden',
 				'baby-and-toddler',
@@ -54,10 +54,15 @@ export const loader: LoaderFunction = async ({ request }) => {
 				'electronics',
 				'luggage-and-bags',
 				'animals-and-pet-supplies',
+				'new_trend',
 			],
 		});
 
-		return json<LoaderDataType>({ ...landings });
+		return json<LoaderDataType>({
+			categoryPreviews: landings.categoryPreviews,
+			promotionPreviews: landings.promotionPreviews,
+			promotions: landings.promotions,
+		});
 	} catch (e) {
 		throw json(e, {
 			status: httpStatus.INTERNAL_SERVER_ERROR,
@@ -84,8 +89,11 @@ type IndexProps = {
 function Index({ scrollPosition, categories }: IndexProps) {
 	const {
 		categoryPreviews,
+		promotionPreviews,
 		promotions,
 	} = useLoaderData<LoaderDataType>();
+
+	console.log('promotionPreviews', promotionPreviews);
 
 	// Redirect to product detail page when click on product.
 	const handleClickProduct = (productUUID: string) => {
@@ -97,7 +105,7 @@ function Index({ scrollPosition, categories }: IndexProps) {
 	}
 
 	return (
-		<div className="">
+		<div>
 			<h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
 			<div className="
 				py-0 px-auto
@@ -122,54 +130,57 @@ function Index({ scrollPosition, categories }: IndexProps) {
 			</div>
 
 			{
-				categoryPreviews.map((category, index) => {
-					return (
-						<div key={`${category.name}_${index}`}>
-							<div className="
+				promotionPreviews
+					.concat(categoryPreviews)
+					.map((category, index) => {
+						return (
+							<div
+								key={`/${category.name}_${index}`}>
+								<div className="
 								py-0 px-auto
 								flex flex-col
 								justify-center items-center
 								mx-2 md:mx-4
 							">
-								<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-									<CategoryPreview
-										key={`${category.name}_${index}`}
-										category={category}
-										onClickProduct={handleClickProduct}
-										scrollPosition={scrollPosition}
-									/>
+									<div className="w-full py-2.5 max-w-screen-xl mx-auto">
+										<CategoryPreview
+											key={`${category.name}_${index}`}
+											category={category}
+											onClickProduct={handleClickProduct}
+											scrollPosition={scrollPosition}
+										/>
+									</div>
 								</div>
-							</div>
 
-							{
-								index === 0
-									? <CategoriesRow />
-									: null
-							}
+								{
+									index === 0
+										? <CategoriesRow />
+										: null
+								}
 
-							{
-								index === 1
-									? (
-										<div className="
+								{
+									index === 1
+										? (
+											<div className="
 										py-0 px-auto
 										flex flex-col
 										justify-center items-center
 										bg-slate-50
 									">
-											<div className="w-full
+												<div className="w-full
 											py-6 md:py-2.5
 											md:px-2.5 lg:px-2.5 xl:px-0
 											max-w-screen-xl mx-auto
 										">
-												<PromoActivitiesVariant />
+													<PromoActivitiesVariant />
+												</div>
 											</div>
-										</div>
-									)
-									: null
-							}
-						</div>
-					);
-				})
+										)
+										: null
+								}
+							</div>
+						);
+					})
 			}
 		</div>
 	);

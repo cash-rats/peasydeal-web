@@ -30,6 +30,7 @@ export type TCategoryPreview = {
   label: string;
   desc: string;
   items: Product[];
+  type: CategoryType;
 }
 
 export type TPromotionType = {
@@ -114,3 +115,9 @@ export type TContentfulPost = {
   slug: string;
   attributes: any;
 }
+
+export enum CategoryType {
+  promotion = "promotion",
+  category = "category",
+  taxonomy_category = "taxonomy_category",
+};

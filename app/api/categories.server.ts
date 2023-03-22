@@ -2,6 +2,7 @@ import httpStatus from 'http-status-codes';
 
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 import type { Category, TaxonomyWithParents } from '~/shared/types';
+import { CategoryType } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';
 import { CATEGORY_CACHE_TTL } from '~/utils/get_env_source';
 
@@ -37,11 +38,6 @@ interface ICategoriesFromServerResponse {
   taxonomyCategories: Category[];
 };
 
-enum CategoryType {
-  promotion = "promotion",
-  category = "category",
-  taxonomy_category = "taxonomy_category",
-};
 
 const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFromServerResponse> => {
   const url = new URL(PEASY_DEAL_ENDPOINT);
