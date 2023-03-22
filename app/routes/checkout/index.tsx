@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useReducer } from 'react';
+import { useEffect, useState, useRef, useReducer, useCallback } from 'react';
 import type { FormEvent } from 'react';
 import type { LoaderFunction, LinksFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
@@ -134,30 +134,33 @@ function CheckoutPage() {
   ])
 
 
-  const stripeConfirmPayment = async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
-    setIsPaying(true);
+  const stripeConfirmPayment = useCallback(
+    async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
+      setIsPaying(true);
 
-    try {
-      const { error } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: `${getBrowserDomainUrl()}/payment/${orderUUID}?payment_method=${PaymentMethodEnum.Stripe}`,
-        },
-      });
+      try {
+        const { error } = await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: `${getBrowserDomainUrl()}/payment/${orderUUID}?payment_method=${PaymentMethodEnum.Stripe}`,
+          },
+        });
 
-      if (error.type === "card_error" || error.type === "validation_error") {
-        throw new Error(error.message);
-      } else {
-        // TODO log to remote API if error happens
-        throw new Error(`An unexpected error occurred. ${error.message}`);
+        if (error.type === "card_error" || error.type === "validation_error") {
+          throw new Error(error.message);
+        } else {
+          // TODO log to remote API if error happens
+          throw new Error(`An unexpected error occurred. ${error.message}`);
+        }
+
+      } catch (error: any) {
+        setErrorAlert(`An unexpected error occurred. ${error.message}`);
+      } finally {
+        setIsPaying(false);
       }
-
-    } catch (error: any) {
-      setErrorAlert(`An unexpected error occurred. ${error.message}`);
-    } finally {
-      setIsPaying(false);
-    }
-  }
+    },
+    [],
+  )
 
   // Scroll to top if a new error message is set so user can see.
   useEffect(() => {
@@ -182,6 +185,7 @@ function CheckoutPage() {
         if (!element || !stripe) return;
 
         const { order_uuid: orderUUID } = createOrderFetcher.data;
+
         dispatch({
           type: ReducerActionTypes.set_order_uuid,
           payload: orderUUID,
@@ -190,7 +194,7 @@ function CheckoutPage() {
         stripeConfirmPayment(orderUUID, element, stripe);
       }
     },
-    [createOrderFetcher, state.orderUUID]
+    [createOrderFetcher]
   );
 
   const isPhoneValueEmpty = (phone: string, countryCode: string) => !phone || phone === countryCode;
@@ -279,6 +283,8 @@ function CheckoutPage() {
   }
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
+    console.log('debug handleSubmit 1')
+
     evt.preventDefault();
 
     if (!formRef.current) return;
@@ -295,6 +301,8 @@ function CheckoutPage() {
     }
 
     if (!element || !stripe) return;
+
+    console.log('debug handleSubmit 2')
 
     stripeConfirmPayment(state.orderUUID, element, stripe);
   }

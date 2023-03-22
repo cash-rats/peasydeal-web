@@ -93,8 +93,6 @@ function Index({ scrollPosition, categories }: IndexProps) {
 		promotions,
 	} = useLoaderData<LoaderDataType>();
 
-	console.log('promotionPreviews', promotionPreviews);
-
 	// Redirect to product detail page when click on product.
 	const handleClickProduct = (productUUID: string) => {
 		console.log('[ga] user clicks on:', productUUID);

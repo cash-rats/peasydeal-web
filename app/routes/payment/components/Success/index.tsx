@@ -107,7 +107,7 @@ function Success({ orderId }: { orderId: string }) {
                 firstname={orderDetail.first_name}
                 lastname={orderDetail.last_name}
                 address={orderDetail.address}
-                address2={orderDetail.address}
+                address2={orderDetail.address2}
                 city={orderDetail.city}
                 postal={orderDetail.postal}
                 country={orderDetail.country}
