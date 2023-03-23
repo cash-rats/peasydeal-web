@@ -47,13 +47,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const landings = await fetchLandingPageFeatureProducts({
 			categoriesPreviewNames: [
-				'arts-and-entertainment',
-				'home-and-garden',
-				'baby-and-toddler',
+				'hardware',
 				'vehicles-and-parts',
-				'electronics',
-				'luggage-and-bags',
 				'animals-and-pet-supplies',
+				'cameras-and-optics',
+				'luggage-and-bags',
+				'apparel-and-accessories',
 				'new_trend',
 			],
 		});
@@ -62,6 +61,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 			categoryPreviews: landings.categoryPreviews,
 			promotionPreviews: landings.promotionPreviews,
 			promotions: landings.promotions,
+
+			// categoryPreviews: [],
+			// promotionPreviews: [],
+			// promotions: [],
 		});
 	} catch (e) {
 		throw json(e, {
