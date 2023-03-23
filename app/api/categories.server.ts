@@ -176,7 +176,6 @@ const fetchTaxonomyCategories = async (tier: number): Promise<TaxonomyCategories
   if (tier) {
     url.searchParams.append('tier', tier.toString());
   }
-
   const resp = await fetch(url.toString());
   const respJSON = await resp.json();
 
@@ -214,9 +213,7 @@ const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[]
     await fetchTaxonomyCategories(1),
   ]);
 
-  const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(
-    normalizeAll(tcats.categories)
-  );
+  const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(normalizeAll(tcats.categories));
   navBarCategories.unshift(hotDeal);
 
   return [navBarCategories, categories];

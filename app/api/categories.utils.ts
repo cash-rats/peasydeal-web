@@ -2,7 +2,6 @@
 // If we put all 23 taxonomy categories into category bar, it would blow up. Thus,
 // we'll pick top 9 taxonomy categories to diplay in category bar and put the rest
 // to More.
-
 import type { Category, CategoriesMap } from '~/shared/types';
 
 const splitNavBarCatsWithCatsInMore = (cats: Category[]): [Category[], Category[]] => {

@@ -61,10 +61,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 			categoryPreviews: landings.categoryPreviews,
 			promotionPreviews: landings.promotionPreviews,
 			promotions: landings.promotions,
-
-			// categoryPreviews: [],
-			// promotionPreviews: [],
-			// promotions: [],
 		});
 	} catch (e) {
 		throw json(e, {

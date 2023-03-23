@@ -627,7 +627,7 @@ function Cart() {
 					<HorizontalProductsLayout
 						catName='new_trend'
 						title='new trend'
-						seeAllLinkTo='/new_trend'
+						seeAllLinkTo='/promotion/new_trend'
 					/>
 				</div>
 			</section>

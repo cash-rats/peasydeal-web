@@ -73,7 +73,6 @@ export const fetchLandingPageFeatureProducts = async ({ categoriesPreviewNames =
 	const resp = await fetch(url.toString());
 	const respJSON = await resp.json();
 
-
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
 		throw new Error(errResp.err_message);
