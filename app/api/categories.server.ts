@@ -17,6 +17,7 @@ const normalize = (cat: {
   name: string,
   desc: string,
   type: string,
+  short_name: string,
   children: Category[],
 }): Category => {
   return {
@@ -26,6 +27,7 @@ const normalize = (cat: {
     name: cat.name,
     url: '',
     type: cat.type,
+    shortName: cat.short_name,
     children: cat.children || [],
   }
 }

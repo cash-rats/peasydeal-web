@@ -62,6 +62,7 @@ export type Category = {
   description: string;
   name: string;
   url?: string;
+  shortName: string;
   show?: boolean;
   type: string;
   children: Category[];

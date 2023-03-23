@@ -79,7 +79,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     ${index === 0 ? 'bg-[#EA4335] text-white items-center font-semibold flex flex-row' : ''}
                   `}>
                     {index === 0 ? <VscFlame className="mr-1" /> : null}
-                    <span>{category.title}</span>
+                    <span>{category.shortName || category.title}</span>
                   </li>
                 </Link>
               ))
