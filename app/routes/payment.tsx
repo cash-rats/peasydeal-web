@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useLoaderData, useFetcher } from '@remix-run/react';
 import { json } from '@remix-run/node'
-import type { LoaderFunction, LinksFunction } from '@remix-run/node';
+import type { LoaderFunction, LinksFunction, MetaFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
@@ -14,7 +14,9 @@ import MobileSearchDialog from '~/components/MobileSearchDialog'
 import type { SuggestItem } from '~/shared/types';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 import type { Category } from '~/shared/types';
-
+import {
+  getPaymentSuccessTitleText
+} from '~/utils/seo';
 import { useSearchSuggests } from './hooks/auto-complete-search';
 
 export const links: LinksFunction = () => {
@@ -29,6 +31,10 @@ type LoaderType = {
   categories: Category[];
   navBarCategories: Category[]
 };
+
+export const meta: MetaFunction = () => ({
+  title: getPaymentSuccessTitleText(),
+});
 
 export const loader: LoaderFunction = async () => {
   try {
