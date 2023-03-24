@@ -11,14 +11,12 @@ import { getCanonicalDomain } from '~/utils';
 import PromoActivities from "~/components/PromoActivities/PromoActivities";
 import { CategoryPreview } from "~/components/CategoryPreview";
 import FiveHundredError from "~/components/FiveHundreError";
-
-import { fetchLandingPageFeatureProducts } from "./api";
-
 import CategoriesRow from "~/components/CategoriesRow";
 import PromoActivitiesVariant from "~/components/PromoActivitiesVariant";
 import AllTimeCoupon from "~/components/AllTimeCoupon";
-
 import { links as AllTimeCouponLink } from "~/components/AllTimeCoupon";
+
+import { fetchLandingPageFeatureProducts } from "./api";
 
 type LoaderDataType = {
 	categoryPreviews: TCategoryPreview[],
@@ -85,7 +83,7 @@ type IndexProps = {
 	categories: Category[];
 } & LazyComponentProps;
 
-function Index({ scrollPosition, categories }: IndexProps) {
+function Index({ scrollPosition }: IndexProps) {
 	const {
 		categoryPreviews,
 		promotionPreviews,

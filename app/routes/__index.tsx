@@ -50,8 +50,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 			navBarCategories,
 		});
 	} catch (e) {
-		console.error(e);
-
 		throw json(e, {
 			status: httpStatus.INTERNAL_SERVER_ERROR,
 		});
@@ -140,7 +138,11 @@ export default function Index() {
 				/>
 
 				<main className="min-h-[35rem]">
-					<Outlet context={{ categories }} />
+					<Outlet
+						context={{
+							categories: categories.concat(navBarCategories)
+						}}
+					/>
 				</main>
 
 				<Footer categories={categories} />

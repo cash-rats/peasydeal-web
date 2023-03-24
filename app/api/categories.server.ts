@@ -226,6 +226,10 @@ const checkCategoryExists = async (name: string): Promise<boolean> => {
   const resp = await fetch(url.toString());
   const respJSON = await resp.json();
 
+  if (resp.status === httpStatus.NOT_FOUND) {
+    return false
+  }
+
   if (resp.status !== httpStatus.OK) {
     throw new Error(JSON.stringify(respJSON));
   }

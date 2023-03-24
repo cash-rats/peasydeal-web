@@ -81,32 +81,30 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const actionType = url.searchParams.get('action_type') || 'load_products' as LoaderType;
   const { collection = '' } = params;
 
-  try {
-    if (actionType === 'load_category_products') {
-      const page = Number(url.searchParams.get('page'));
-      const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
-      return loadmoreProductsLoader({
-        request,
-        category: collection,
-        page,
-        perpage,
-      });
-    }
-
-    if (actionType === 'load_products') {
-      const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
-
-      return productsLoader({
-        request,
-        category: collection,
-        perpage,
-      });
-    }
-  } catch (error) {
-    throw json(`unrecognize loader action ${actionType}`, {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
+  if (actionType === 'load_category_products') {
+    const page = Number(url.searchParams.get('page'));
+    const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
+    return loadmoreProductsLoader({
+      request,
+      category: collection,
+      page,
+      perpage,
     });
   }
+
+  if (actionType === 'load_products') {
+    const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
+
+    return productsLoader({
+      request,
+      category: collection,
+      perpage,
+    });
+  }
+
+  throw json(`unrecognize loader action ${actionType}`, {
+    status: httpStatus.INTERNAL_SERVER_ERROR,
+  });
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -135,8 +133,6 @@ function Collection({ scrollPosition }: CollectionProps) {
     current,
     hasMore,
   } = useLoaderData<LoaderDataType>();
-
-  // console.log('Hello benson, i\'m category from __index/$collection/index.tsx ', category);
 
   const [state, dispatch] = useReducer(reducer, {
     products,
