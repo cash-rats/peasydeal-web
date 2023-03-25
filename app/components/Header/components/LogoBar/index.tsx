@@ -49,8 +49,6 @@ function LogoBar({ categories = [] }: LogoBarProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const btnRef = useRef(null);
 
-
-
   return (
     <div className="flex items-center mr-4 my-auto relative">
       <div className="">

@@ -14,16 +14,13 @@ export default function PageTitle({
       className={`
         w-full p-2.5 max-w-screen-xl
         mx-auto
-        mb-6
         py-[30px] sm:py-[46px]
         px-[18px] px-[26px]
-        rounded-xl
+        border-t-[1px] border-b-[1px] border-solid border-[#d8d8d8]
       `}
-      style={{backgroundImage: `url(${bg})`}}
     >
-      <div className='flex flex-col text-white'>
+      <div className='flex flex-col text-center'>
         <h1 className={`
-          mb-2 md:mb-3
           text-2xl md:text-3xl
           font-black
           font-poppins
@@ -33,6 +30,7 @@ export default function PageTitle({
         </h1>
         {
           subtitle ? <h2 className={`
+            mt-2 md:mt-3
             text-lg md:text-xl
             font-bold
           `}>{subtitle}</h2> : null

@@ -218,7 +218,7 @@ const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[]
   const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(normalizeAll(tcats.categories));
   navBarCategories.unshift(hotDeal);
 
-  return [navBarCategories, categories];
+  return [navBarCategories, [...navBarCategories, ...categories]];
 }
 
 const checkCategoryExists = async (name: string): Promise<boolean> => {

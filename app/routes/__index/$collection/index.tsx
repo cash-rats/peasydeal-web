@@ -6,12 +6,14 @@ import {
   useFetcher,
   useLoaderData,
   NavLink,
+  Link,
 } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { Progress } from '@chakra-ui/react';
+import { VscChevronDown } from "react-icons/vsc";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -34,6 +36,20 @@ import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
 import type { LoaderDataType, LoadMoreDataType } from './types';
 import structuredData from './structured_data';
+import { Button } from '@chakra-ui/react'
+
+import {
+  Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Button,
+  useDisclosure,
+} from '@chakra-ui/react'
+
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
   {
@@ -141,6 +157,9 @@ function Collection({ scrollPosition }: CollectionProps) {
     hasMore,
     category,
   });
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const subCatRef = useRef(null);
 
   const currPage = useRef(state.current);
 
@@ -257,48 +276,134 @@ function Collection({ scrollPosition }: CollectionProps) {
         subtitle={state.category.description}
       />
 
+
+      <div className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8]">
+        <button
+          className="
+            flex items-center justify-between
+            font-bold px-4 py-2.5
+            shadow-sm rounded-lg border-[1px] border-solid border-[#AAA]
+            cursor-pointer
+            active:outline-blue-500
+            active:outline-2
+            w-full
+            color-slate-800
+          "
+          ref={subCatRef}
+          onClick={onOpen}
+        >
+          <span>
+            { `All ${state.category.title} (${state.total})` }
+          </span>
+          <VscChevronDown fontSize={16} />
+        </button>
+      </div>
+
+      <Drawer
+        isOpen={isOpen}
+        placement='bottom'
+        onClose={onClose}
+        finalFocusRef={subCatRef}
+      >
+        <DrawerOverlay />
+        <DrawerContent maxH='80vh'>
+          <DrawerCloseButton />
+          <DrawerHeader>Shop by Category</DrawerHeader>
+
+          <DrawerBody>
+            <div className="flex flex-col gap-4">
+              <span className="py-2 px-4 font-bold">
+                {
+                  `All ${state.category.title} (${state.total})`
+                }
+              </span>
+              {
+                category.children.map((subcat, index) => (
+                  <Link to={`/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
+                    <Button className="text-left whitespace-normal" colorScheme="pink" variant="ghost" onClick={onClose}>
+                      {subcat.title}
+                    </Button>
+                  </Link>
+                ))
+              }
+            </div>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
+
       <div className="w-full pt-2.5 pb-8 max-w-screen-xl mx-auto">
         <AllTimeCoupon />
       </div>
 
-      <ProductRowsContainer
-        loading={transition.state !== 'idle'}
-        products={state.products}
-        scrollPosition={scrollPosition}
-      />
-
-      <div className="
-        p-4 w-[300px]
-        flex justify-center items-center
-        flex-col gap-4
-      ">
-        <p className="font-poppins">
-          Showing {state.current} of {state.total}
-        </p>
-
-        <Progress
-          className="w-full"
-          size='sm'
-          value={Math.floor((state.current / state.total) * 100)}
-          colorScheme='teal'
-        />
-
+      {/* Create Tailwind Css 4 col grid layout */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-screen-xl mx-auto">
+        {/* Side Panel for subcategory */}
         {
-          state.hasMore
-            ? (
-              <LoadMoreButton
-                loading={loadmoreFetcher.state !== 'idle'}
-                onClick={handleLoadMore}
-                text='Show More'
-              />
-            )
-            : (
-              <p className="font-poppins capitalize font-medium">
-                Reaches end of list.
-              </p>
-            )
+          <div className="hidden md:flex md:col-span-1 lg:col-span-1 ">
+            <div className="border border-[#d8d8d8] rounded-sm flex flex-col p-4 w-full gap-1">
+              <span className="py-2 px-4 font-bold">
+                {
+                  `All ${state.category.title} (${state.total})`
+                }
+              </span>
+              {
+                category.children.map((subcat, index) => (
+                  <Link to={`/${subcat.name}`} key={`${subcat.name}_${index}`}>
+                    <Button className="text-left whitespace-normal" colorScheme="pink" variant="ghost">
+                      {subcat.title}
+                    </Button>
+                  </Link>
+                ))
+              }
+            </div>
+          </div>
         }
+        <div className="col-span-1 md:col-span-2 lg:col-span-3">
+          { state.products.length === 0 && (<h2 className="p4 text-center">{state.category.title} has no product, please checkout other categories.</h2>)}
+          <ProductRowsContainer
+            loading={transition.state !== 'idle'}
+            products={state.products}
+            scrollPosition={scrollPosition}
+          />
+        </div>
       </div>
+
+      {
+        state.total > 0 && (
+          <div className="
+            p-4 w-[300px]
+            flex justify-center items-center
+            flex-col gap-4
+          ">
+            <p className="font-poppins">
+              Showing {state.current} of {state.total}
+            </p>
+
+            <Progress
+              className="w-full"
+              size='sm'
+              value={Math.floor((state.current / state.total) * 100)}
+              colorScheme='teal'
+            />
+
+            {
+              state.hasMore
+                ? (
+                  <LoadMoreButton
+                    loading={loadmoreFetcher.state !== 'idle'}
+                    onClick={handleLoadMore}
+                    text='Show More'
+                  />
+                )
+                : (
+                  <p className="font-poppins capitalize font-medium">
+                    Reaches end of list.
+                  </p>
+                )
+            }
+          </div>
+        )
+      }
     </div>
   );
 }

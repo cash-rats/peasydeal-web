@@ -42,3 +42,7 @@ select,
 a {
     -webkit-tap-highlight-color: transparent;
 }
+
+.smooth-scrolling {
+    scroll-behavior: smooth;
+}
