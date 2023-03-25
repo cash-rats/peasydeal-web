@@ -320,7 +320,7 @@ function Collection({ scrollPosition }: CollectionProps) {
               {
                 category.children.map((subcat, index) => (
                   <Link to={`/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
-                    <Button className="text-left whitespace-normal" colorScheme="pink" variant="ghost" onClick={onClose}>
+                    <Button className="justify-start whitespace-normal w-full" colorScheme="pink" variant="ghost" onClick={onClose}>
                       {subcat.title}
                     </Button>
                   </Link>
