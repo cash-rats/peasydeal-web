@@ -14,12 +14,12 @@ export default function PageTitle({
       className={`
         w-full p-2.5 max-w-screen-xl
         mx-auto
-        py-[30px] sm:py-[46px]
-        px-[18px] px-[26px]
+        py-[24px] md:py-[46px]
+        px-0
         border-t-[1px] border-b-[1px] border-solid border-[#d8d8d8]
       `}
     >
-      <div className='flex flex-col text-center'>
+      <div className='flex flex-col text-left md:text-center'>
         <h1 className={`
           text-2xl md:text-3xl
           font-black

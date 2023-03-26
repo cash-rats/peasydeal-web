@@ -276,7 +276,6 @@ function Collection({ scrollPosition }: CollectionProps) {
         subtitle={state.category.description}
       />
 
-
       <div className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8]">
         <button
           className="
@@ -336,7 +335,7 @@ function Collection({ scrollPosition }: CollectionProps) {
       </div>
 
       {/* Create Tailwind Css 4 col grid layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-screen-xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-screen-xl mx-auto mb-4">
         {/* Side Panel for subcategory */}
         {
           <div className="hidden md:flex md:col-span-1 lg:col-span-1 ">
