@@ -36,12 +36,11 @@ import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
 import type { LoaderDataType, LoadMoreDataType } from './types';
 import structuredData from './structured_data';
-import { Button } from '@chakra-ui/react'
+import useSticky from "../hooks/useSticky";
 
 import {
   Drawer,
   DrawerBody,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
@@ -141,6 +140,7 @@ const getCategoryFromWindowPath = (window: Window): string => {
 type CollectionProps = {} & LazyComponentProps;
 
 function Collection({ scrollPosition }: CollectionProps) {
+  const mobileSubCatHalfSheetRef = useRef(null);
   const {
     category,
     products,
@@ -158,7 +158,8 @@ function Collection({ scrollPosition }: CollectionProps) {
     category,
   });
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { top, sticky } = useSticky(mobileSubCatHalfSheetRef);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const subCatRef = useRef(null);
 
   const currPage = useRef(state.current);
@@ -276,7 +277,11 @@ function Collection({ scrollPosition }: CollectionProps) {
         subtitle={state.category.description}
       />
 
-      <div className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8]">
+      <div
+        className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8] z-20 bg-white"
+        style={{ position: sticky ? 'sticky' : 'static', top: '58px' }}
+        ref={mobileSubCatHalfSheetRef}
+      >
         <button
           className="
             flex items-center justify-between
@@ -318,11 +323,11 @@ function Collection({ scrollPosition }: CollectionProps) {
               </span>
               {
                 category.children.map((subcat, index) => (
-                  <Link to={`/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
+                  subcat.count > 0 ? (<Link to={`/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
                     <Button className="justify-start whitespace-normal w-full" colorScheme="pink" variant="ghost" onClick={onClose}>
-                      {subcat.title}
+                      {subcat.title} ({subcat.count})
                     </Button>
-                  </Link>
+                  </Link>) : null
                 ))
               }
             </div>
@@ -347,11 +352,11 @@ function Collection({ scrollPosition }: CollectionProps) {
               </span>
               {
                 category.children.map((subcat, index) => (
-                  <Link to={`/${subcat.name}`} key={`${subcat.name}_${index}`}>
+                  subcat.count > 0 ? (<Link to={`/${subcat.name}`} key={`${subcat.name}_${index}`}>
                     <Button className="text-left whitespace-normal" colorScheme="pink" variant="ghost">
-                      {subcat.title}
+                      {subcat.title} ({subcat.count})
                     </Button>
-                  </Link>
+                  </Link>) : null
                 ))
               }
             </div>

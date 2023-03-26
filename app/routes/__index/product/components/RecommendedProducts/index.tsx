@@ -137,8 +137,7 @@ function RecommendedProducts({
 
       <div className='w-full p-2.5 max-w-screen-xl mx-auto'>
         <div className="flex justify-center xl:justify-start">
-          <div className="mt-6 md:mt-8 lg:mt-16">
-
+          <div className="mt-6 md:mt-8 lg:mt-16 w-full">
             <h3 className='
               font-poppins font-bold
               text-2xl md:text-3xl
@@ -152,6 +151,7 @@ function RecommendedProducts({
                 loading={fetcher.type !== 'done'}
                 onClickProduct={onClickProduct}
                 products={rows[1]}
+                defaultSkeloton={8}
               />
             }
           </div>

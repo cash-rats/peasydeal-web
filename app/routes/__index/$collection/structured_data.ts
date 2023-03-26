@@ -21,14 +21,13 @@ interface IStructuredData {
 
 const structuredData: StructuredDataFunction = ({
   data,
-  params = {
-    collection: '',
-  },
+  params,
   location,
 }: IStructuredData) => {
   const loaderData: LoaderDataType = data;
 
-  const { collection } = params;
+  const { collection = '' } = params;
+  const { pathname = '' } = location;
 
   if (!loaderData || !collection) {
     return [];
@@ -39,7 +38,7 @@ const structuredData: StructuredDataFunction = ({
     "@type": "BreadcrumbList",
     "itemListElement": composeBreadcrumbList(
       getCanonicalDomain(),
-      location.pathname,
+      pathname,
     ),
   }
 

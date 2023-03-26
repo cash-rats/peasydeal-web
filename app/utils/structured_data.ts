@@ -41,6 +41,8 @@ export const composeBreadcrumbList = (baseURL: string, pathname: string): ListIt
 export const composeProductList = (prods: Product[]): WithContext<ProductSchema>[] => {
   const prodsSchemas: WithContext<ProductSchema>[] = [];
 
+  if (!prods || Object.keys(prods).length === 0) return prodsSchemas;
+
   for (const prod of prods) {
     prodsSchemas.push({
       "@context": "https://schema.org",

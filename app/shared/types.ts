@@ -31,6 +31,7 @@ export type TCategoryPreview = {
   desc: string;
   items: Product[];
   type: CategoryType;
+  count: number;
 }
 
 export type TPromotionType = {
@@ -66,6 +67,7 @@ export type Category = {
   show?: boolean;
   type: string;
   children: Category[];
+  count: number;
 };
 
 export type TaxonomyWithParents = Category & {

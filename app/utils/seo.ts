@@ -13,7 +13,7 @@ interface FBSEO {
 
 
 // ------------------ SEO ------------------
-export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https://peasydeal.com';
+export const getCanonicalDomain = (): string => getEnvSource()?.DOMAIN || 'https://peasydeal.com';
 
 // 404 page
 // Object indicates the "thing" that is not found.
