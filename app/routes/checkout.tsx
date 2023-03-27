@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLoaderData, useOutletContext, useFetcher } from "@remix-run/react";
 import type { ShouldReloadFunction } from '@remix-run/react'
-import type { LoaderFunction, LinksFunction } from '@remix-run/node';
+import type { LoaderFunction, LinksFunction, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -13,6 +13,11 @@ import {
   PAYPAL_CLIENT_ID,
   PAYPAL_CURRENCY_CODE,
 } from '~/utils/get_env_source';
+
+import {
+  getCheckoutTitleText
+} from '~/utils/seo';
+
 import type { SuggestItem } from '~/shared/types';
 import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
@@ -30,6 +35,10 @@ import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 import { useSearchSuggests } from './hooks/auto-complete-search';
+
+export const meta: MetaFunction = () => ({
+  title: getCheckoutTitleText(),
+});
 
 export const links: LinksFunction = () => {
   return [

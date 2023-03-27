@@ -31,4 +31,8 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+.smooth-scrolling {
+  scroll-behavior: smooth;
+}
+
 /*# sourceMappingURL=global.css.map */

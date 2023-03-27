@@ -18,6 +18,7 @@ const normalize = (cat: {
   desc: string,
   type: string,
   short_name: string,
+  count: number,
   children: Category[],
 }): Category => {
   return {
@@ -28,6 +29,7 @@ const normalize = (cat: {
     url: '',
     type: cat.type,
     shortName: cat.short_name,
+    count: cat.count,
     children: cat.children || [],
   }
 }
@@ -218,7 +220,7 @@ const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[]
   const [navBarCategories, categories] = splitNavBarCatsWithCatsInMore(normalizeAll(tcats.categories));
   navBarCategories.unshift(hotDeal);
 
-  return [navBarCategories, categories];
+  return [navBarCategories, [...navBarCategories, ...categories]];
 }
 
 const checkCategoryExists = async (name: string): Promise<boolean> => {

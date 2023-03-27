@@ -21,23 +21,23 @@ const getEnvSource = (): AppConfig => {
   return process.env;
 }
 
-const DOMAIN = getEnvSource().DOMAIN || 'https://staging.peasydeal.com';
-const MYFB_ENDPOINT = getEnvSource().MYFB_ENDPOINT;
-const PEASY_DEAL_ENDPOINT = getEnvSource().PEASY_DEAL_ENDPOINT
-const CATEGORY_CACHE_TTL = getEnvSource().CATEGORY_CACHE_TTL || 43200;
-const CDN_URL = getEnvSource().CDN_URL || 'https://cdn.peasydeal.com';
+const DOMAIN = getEnvSource()?.DOMAIN || 'https://staging.peasydeal.com';
+const MYFB_ENDPOINT = getEnvSource()?.MYFB_ENDPOINT;
+const PEASY_DEAL_ENDPOINT = getEnvSource()?.PEASY_DEAL_ENDPOINT;
+const CATEGORY_CACHE_TTL = getEnvSource()?.CATEGORY_CACHE_TTL || 43200;
+const CDN_URL = getEnvSource()?.CDN_URL || 'https://cdn.peasydeal.com';
 
-const PAYPAL_CLIENT_ID = getEnvSource().PAYPAL_CLIENT_ID;
-const PAYPAL_CURRENCY_CODE = getEnvSource().PAYPAL_CURRENCY_CODE;
+const PAYPAL_CLIENT_ID = getEnvSource()?.PAYPAL_CLIENT_ID;
+const PAYPAL_CURRENCY_CODE = getEnvSource()?.PAYPAL_CURRENCY_CODE;
 
-const STRIPE_PUBLIC_KEY = getEnvSource().STRIPE_PUBLIC_KEY;
-const STRIPE_PAYMENT_RETURN_URI = getEnvSource().STRIPE_PAYMENT_RETURN_URI;
-const STRIPE_CURRENCY_CODE = getEnvSource().STRIPE_CURRENCY_CODE;
+const STRIPE_PUBLIC_KEY = getEnvSource()?.STRIPE_PUBLIC_KEY;
+const STRIPE_PAYMENT_RETURN_URI = getEnvSource()?.STRIPE_PAYMENT_RETURN_URI;
+const STRIPE_CURRENCY_CODE = getEnvSource()?.STRIPE_CURRENCY_CODE;
 
-const GOOGLE_TAG_ID = getEnvSource().GOOGLE_TAG_ID;
+const GOOGLE_TAG_ID = getEnvSource()?.GOOGLE_TAG_ID;
 
-const CONTENTFUL_SPACE_ID = getEnvSource().CONTENTFUL_SPACE_ID;
-const CONTENTFUL_ACCESS_TOKEN = getEnvSource().CONTENTFUL_ACCESS_TOKEN;
+const CONTENTFUL_SPACE_ID = getEnvSource()?.CONTENTFUL_SPACE_ID;
+const CONTENTFUL_ACCESS_TOKEN = getEnvSource()?.CONTENTFUL_ACCESS_TOKEN;
 
 
 export {

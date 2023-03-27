@@ -13,7 +13,7 @@ interface FBSEO {
 
 
 // ------------------ SEO ------------------
-export const getCanonicalDomain = (): string => getEnvSource().DOMAIN || 'https://peasydeal.com';
+export const getCanonicalDomain = (): string => getEnvSource()?.DOMAIN || 'https://peasydeal.com';
 
 // 404 page
 // Object indicates the "thing" that is not found.
@@ -56,7 +56,13 @@ export const getTrackingTitleText = () => 'Track Order | PeasyDeal';
 export const getTrackingDescText = () => 'track your order delivering status with the order id. Order id was sent to your email address by contact@peasydeal.com after you\'ve made the payment.';
 
 // SEO cart page
-export const getCartTitleText = () => 'Shopping Cart| PeasyDeal';
+export const getCartTitleText = () => 'Shopping Cart | PeasyDeal';
+
+// SEO cart page
+export const getCheckoutTitleText = () => 'Secure Checkout | PeasyDeal';
+
+// SEO cart page
+export const getPaymentSuccessTitleText = () => 'Payment Success! Thank you for shopping with us | PeasyDeal';
 
 // SEO privacy page
 export const getPrivacyTitleText = () => 'Privacy | PeasyDeal';
