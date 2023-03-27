@@ -68,7 +68,7 @@ export const meta: MetaFunction = ({ data, params }) => {
   }
 
   return {
-    title: getCollectionTitleText(data.category.title),
+    title: getCollectionTitleText(data?.category?.title),
     description: getCollectionDescText(
       data.category.title,
       data.category.description,

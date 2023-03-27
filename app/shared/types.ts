@@ -66,6 +66,7 @@ export type Category = {
   shortName: string;
   show?: boolean;
   type: string;
+  label: string;
   children: Category[];
   count: number;
 };

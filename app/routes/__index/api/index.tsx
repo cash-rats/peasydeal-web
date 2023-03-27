@@ -148,7 +148,12 @@ export const fetchProductsByCategoryV2 = async ({
 
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
-		throw new Error(errResp.err_message);
+		return {
+			items: [],
+			total: 0,
+			current: 0,
+			hasMore: false,
+		};
 	}
 
 	return {
