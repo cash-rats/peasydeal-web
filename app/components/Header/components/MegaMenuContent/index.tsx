@@ -80,7 +80,6 @@ const MegaMenuContent = ({
       ">
         {
           categories.map((category, index) => {
-            console.log('debug 1', category.type)
             return (
               <div
                 key={index}
