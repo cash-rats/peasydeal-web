@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Form, Outlet, useLoaderData, useOutletContext, useFetcher } from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext, useFetcher } from "@remix-run/react";
 import type { ShouldReloadFunction } from '@remix-run/react'
 import type { LoaderFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
@@ -128,7 +128,6 @@ export const loader: LoaderFunction = async ({ request }) => {
       promo_code: promo_code,
     });
   } catch (e) {
-    console.error(e);
     throw json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });

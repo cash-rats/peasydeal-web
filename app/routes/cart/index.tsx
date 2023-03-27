@@ -619,7 +619,7 @@ function Cart() {
 					<HorizontalProductsLayout
 						catName='hot_deal'
 						title='top items'
-						seeAllLinkTo='/hot_deal'
+						seeAllLinkTo='/promotion/hot_deal'
 					/>
 
 					{/* Recommended products - new trend */}

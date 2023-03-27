@@ -1,7 +1,8 @@
 
 import { Button } from '@chakra-ui/react';
 import { Link } from '@remix-run/react';
-
+import type { LinksFunction } from '@remix-run/node';
+import { VscFlame, VscArrowRight } from "react-icons/vsc";
 import { IoBody, IoSparklesOutline, IoPricetagsOutline } from 'react-icons/io5';
 import { MdOutlinePets, MdOutlineSmartToy } from 'react-icons/md';
 import { TbToolsKitchen2 } from 'react-icons/tb';
@@ -9,10 +10,8 @@ import { RiShirtFill } from 'react-icons/ri';
 import { GiPearlNecklace, GiFlowerPot, GiLipstick } from 'react-icons/gi';
 import { FcRating, FcSmartphoneTablet, FcHome, FcAutomotive } from 'react-icons/fc';
 
-import type { LinksFunction } from '@remix-run/node';
-import { VscFlame, VscArrowRight } from "react-icons/vsc";
-
 import type { Category } from '~/shared/types';
+import { CategoryType } from '~/shared/types';
 
 import AnnouncementBanner from "../AnnouncementBanner";
 import styles from './styles/MegaMenuContent.css';
@@ -81,6 +80,7 @@ const MegaMenuContent = ({
       ">
         {
           categories.map((category, index) => {
+            console.log('debug 1', category.type)
             return (
               <div
                 key={index}
@@ -92,7 +92,12 @@ const MegaMenuContent = ({
                 <Link
                   // prefetch='intent'
                   state={{ scrollToTop: true }}
-                  to={`/${category.name}`}
+                  to={
+                    category.type === CategoryType.promotion
+                      ? `/promotion/${category.name}`
+                      : `/${category.name}`
+
+                  }
                   className="w-full self-center"
                   onClick={onClose}
                 >
