@@ -94,7 +94,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             options={state.options}
             required
             id="postalcode"
-            label="postal"
+            label="postcode"
             name="postal"
             variant="outlined"
             aria-describedby="postalcode"
@@ -197,7 +197,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
         <TextField
           autoComplete="off"
           id="address2"
-          label="address line 2"
+          label="address line 2 (county, country)"
           name="address2"
           variant="outlined"
           aria-describedby="address2"

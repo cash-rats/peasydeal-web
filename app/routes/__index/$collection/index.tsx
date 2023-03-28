@@ -13,7 +13,7 @@ import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { Progress } from '@chakra-ui/react';
-import { VscChevronDown } from "react-icons/vsc";
+import { VscChevronDown, VscArrowLeft } from "react-icons/vsc";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -229,6 +229,9 @@ function Collection({ scrollPosition }: CollectionProps) {
     );
   };
 
+  const parentExist = category.parents && category.parents.length > 0;
+  const lastParent = parentExist ? category.parents[category.parents.length - 1] : null;
+
   return (
     <div className="
       py-0 px-auto
@@ -315,7 +318,7 @@ function Collection({ scrollPosition }: CollectionProps) {
           <DrawerHeader>Shop by Category</DrawerHeader>
 
           <DrawerBody>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-0">
               <span className="py-2 px-4 font-bold">
                 {
                   `All ${state.category.title} (${state.total})`
@@ -342,26 +345,34 @@ function Collection({ scrollPosition }: CollectionProps) {
       {/* Create Tailwind Css 4 col grid layout */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-screen-xl mx-auto mb-4">
         {/* Side Panel for subcategory */}
-        {
-          <div className="hidden md:flex md:col-span-1 lg:col-span-1 ">
-            <div className="border border-[#d8d8d8] rounded-sm flex flex-col p-4 w-full gap-1">
-              <span className="py-2 px-4 font-bold">
-                {
-                  `All ${state.category.title} (${state.total})`
-                }
-              </span>
+        <div className="hidden md:flex md:col-span-1 lg:col-span-1 ">
+          <div className="border border-[#d8d8d8] rounded-sm flex flex-col p-4 w-full gap-1">
+            {
+              parentExist && lastParent !== null ? (
+                <Link to={`/${lastParent.name}`}>
+                  <Button className="text-left mb-4" variant="ghost" leftIcon={<VscArrowLeft />}>
+                    {`${lastParent.title}`}
+                  </Button>
+                </Link>
+              ) : null
+            }
+            <span className="py-2 px-4 font-bold">
               {
-                category.children.map((subcat, index) => (
-                  subcat.count > 0 ? (<Link to={`/${subcat.name}`} key={`${subcat.name}_${index}`}>
-                    <Button className="text-left whitespace-normal" colorScheme="pink" variant="ghost">
-                      {subcat.title} ({subcat.count})
-                    </Button>
-                  </Link>) : null
-                ))
+                `All ${state.category.title} (${state.total})`
               }
-            </div>
+            </span>
+            {
+              category.children.map((subcat, index) => (
+                subcat.count > 0 ? (<Link to={`/${subcat.name}`} key={`${subcat.name}_${index}`}>
+                  <Button className="text-left whitespace-normal" colorScheme="pink" variant="ghost">
+                    {subcat.title} ({subcat.count})
+                  </Button>
+                </Link>) : null
+              ))
+            }
           </div>
-        }
+        </div>
+
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
           { state.products.length === 0 && (<h2 className="p4 text-center">{state.category.title} has no product, please checkout other categories.</h2>)}
           <ProductRowsContainer

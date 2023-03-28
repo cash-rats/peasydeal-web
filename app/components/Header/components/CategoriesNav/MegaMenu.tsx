@@ -89,8 +89,10 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
             flex
             w-[100vw]
             max-w-screen-xl
-            py-8 px-4
+            pt-4 pb-8 xl:py-8 px-4
             shadow-[2px_4px_16px_rgb(0,0,0,8%)]
+            overflow-scroll
+            md:max-h-[calc(100vh-8rem)] lg:max-h-auto
           '
         >
           <div className="flex flex-col px-3 w-full">
@@ -116,55 +118,59 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
                 <hr className="my-1 h-[1px] w-full bg-slate-50" />
               </div>
               {
-                category.children.length > 0 && category.children.map((child, index) => (
-                  <div
-                    key={index}
-                    className="flex flex-start flex-col mt-8 pr-10"
-                  >
-                    <Link
-                      // prefetch='intent'
-                      state={{ scrollToTop: true }}
-                      to={`/${child.name}`}
-                      className="w-full self-center"
-                      onClick={setClose}
-                    >
-                      <MenuItem className="flex items-center p-0">
-                        <Button variant='link' colorScheme='pink' size="lg">
-                          <span className="ml-2 text-lg whitespace-normal text-left">{child.label}</span>
-                        </Button>
-                      </MenuItem>
-                    </Link>
-                    <div className="py-1">
-                      <hr className="my-1 h-[1px] w-full bg-slate-50" />
-                    </div>
-                    {
-                      child.children.length > 0 && child.children.map((subChild, _index) => {
-                        if (subChild.count === 0) return null;
+                category.children.length > 0 && category.children.map((child, index) => {
+                  if (child.count === 0) return null;
 
-                       return (
-                          <div
-                            key={_index}
-                            className="flex flex-start py-1"
-                          >
-                            <Link
-                              // prefetch='intent'
-                              state={{ scrollToTop: true }}
-                              to={`/${subChild.name}`}
-                              className="w-full self-center"
-                              onClick={setClose}
+                  return (
+                    <div
+                      key={index}
+                      className="flex flex-start flex-col mt-4 xl:mt-8 pr-10"
+                    >
+                      <Link
+                        // prefetch='intent'
+                        state={{ scrollToTop: true }}
+                        to={`/${child.name}`}
+                        className="w-full self-center"
+                        onClick={setClose}
+                      >
+                        <MenuItem className="flex items-center p-0">
+                          <Button variant='link' colorScheme='pink' size="lg">
+                            <span className="ml-2 text-lg whitespace-normal text-left">{child.label} ({child.count})</span>
+                          </Button>
+                        </MenuItem>
+                      </Link>
+                      <div className="py-0 xl:py-1">
+                        <hr className="my-1 h-[1px] w-full bg-slate-50" />
+                      </div>
+                      {
+                        child.children.length > 0 && child.children.map((subChild, _index) => {
+                          if (subChild.count === 0) return null;
+
+                        return (
+                            <div
+                              key={_index}
+                              className="flex flex-start py-0 xl:py-1"
                             >
-                              <MenuItem className="flex items-center p-0">
-                                <Button variant='link'>
-                                  <span className="ml-2 text-base font-normal text-[#1a202c]">{subChild.label}</span>
-                                </Button>
-                              </MenuItem>
-                            </Link>
-                          </div>
-                        );
-                      })
-                    }
-                  </div>
-                ))
+                              <Link
+                                // prefetch='intent'
+                                state={{ scrollToTop: true }}
+                                to={`/${subChild.name}`}
+                                className="w-full self-center"
+                                onClick={setClose}
+                              >
+                                <MenuItem className="flex items-center p-0">
+                                  <Button variant='link'>
+                                    <span className="ml-2 text-base font-normal text-[#1a202c]">{subChild.label} ({subChild.count})</span>
+                                  </Button>
+                                </MenuItem>
+                              </Link>
+                            </div>
+                          );
+                        })
+                      }
+                    </div>
+                  )
+                })
               }
             </div>
           </div>

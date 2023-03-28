@@ -32,11 +32,13 @@ function ProductDetailSection({
 				/>
 			</div>
 
-			<div className="peasydeal-v1 mt-10 mx-0 md:mx-2 flex flex-col w-full">
+			<div className="mt-10 mx-0 md:mx-2 flex flex-col w-full">
 				<div className='hidden md:flex md:flex-col mr-4'>
 					<h3 className='text-3xl mb-4 md:mb-6'>About this product</h3>
 					{/* TODO dangerous render html */}
-					<div dangerouslySetInnerHTML={{ __html: description || '' }} />
+					<div className='pd-product-detail'>
+						<div dangerouslySetInnerHTML={{ __html: description || '' }} />
+					</div>
 				</div>
 			</div>
 		</div>

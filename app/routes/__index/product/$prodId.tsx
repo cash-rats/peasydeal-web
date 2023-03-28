@@ -253,15 +253,15 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const defaultVariation = findDefaultVariation(loaderData.product);
 
 	const [state, dispatch] = useReducer(reducer, {
-		productDetail: loaderData.product,
-		categories: loaderData.product.categories,
+		productDetail: loaderData?.product,
+		categories: loaderData?.product?.categories,
 		mainCategory,
-		images: loaderData.product.images,
+		images: loaderData?.product?.images,
 		quantity: 1,
 		variation: defaultVariation,
 		sessionStorableCartItem: normalizeToSessionStorableCartItem(
 			{
-				productDetail: loaderData.product,
+				productDetail: loaderData?.product,
 				productVariation: defaultVariation,
 				quantity: 1,
 			},

@@ -140,7 +140,7 @@ export default function Index() {
 				<main className="min-h-[35rem]">
 					<Outlet
 						context={{
-							categories: categories.concat(navBarCategories)
+							categories: categories ? categories.concat(navBarCategories) : []
 						}}
 					/>
 				</main>
