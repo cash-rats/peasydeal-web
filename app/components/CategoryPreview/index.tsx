@@ -72,7 +72,11 @@ export const CategoryPreview = ({
       />
 
       <div className="flex justify-center w-full mt-8 mb-10">
-        <Link to={`/${name}`}>
+        <Link to={
+          type === CategoryType.promotion
+            ? `/promotion/${name}`
+            : `/${name}`
+        }>
           <Button
             rightIcon={<VscArrowRight />}
             colorScheme='pink'
