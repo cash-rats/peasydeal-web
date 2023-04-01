@@ -23,7 +23,8 @@ const structuredData: StructuredDataFunction = ({
   if (
     !loaderData ||
     !promotion ||
-    !loaderData.categories[promotion]
+    !loaderData?.categories ||
+    Object.keys(loaderData.categories).length === 0
   ) {
     return [];
   }
