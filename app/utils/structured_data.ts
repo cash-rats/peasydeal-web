@@ -47,18 +47,18 @@ export const composeProductList = (prods: Product[]): WithContext<ProductSchema>
     prodsSchemas.push({
       "@context": "https://schema.org",
       "@type": "Product",
-      "name": prod.title,
-      "image": prod.main_pic,
-      "description": prod.description,
-      "sku": prod.sku,
+      "name": prod?.title,
+      "image": prod?.main_pic,
+      "description": prod?.description,
+      "sku": prod?.sku,
       "offers": {
         "@type": "Offer",
-        "price": prod.salePrice.toString(),
-        "priceCurrency": prod.currency,
+        "price": prod?.salePrice.toString(),
+        "priceCurrency": prod?.currency,
         "availability": "https://schema.org/InStock",
         "url": composeProductDetailURL({
-          productName: prod.title,
-          productUUID: prod.productUUID,
+          productName: prod?.title,
+          productUUID: prod?.productUUID,
         })
       }
     });

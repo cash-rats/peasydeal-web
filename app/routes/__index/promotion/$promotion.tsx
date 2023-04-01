@@ -51,16 +51,18 @@ export const meta: MetaFunction = ({ data, params }) => {
     }
   }
 
+  const { category = {} } = data || {};
+
   return {
-    title: getCollectionTitleText(data?.category?.title),
+    title: getCollectionTitleText(category?.title),
     description: getCollectionDescText(
-      data.category.title,
-      data.category.description,
+      category?.title,
+      category?.description,
     ),
 
     ...getCategoryFBSEO(
-      data.category.title,
-      data.category.description,
+      category?.title,
+      category?.description,
     ),
   };
 };
@@ -136,7 +138,7 @@ function Promotion({ scrollPosition }: TPromotion) {
 
   // If user changes promotion, we'll update the current category in reducer.
   useEffect(() => {
-    if (state.category.name === category.name) return;
+    if (stateCategory?.name === category.name) return;
 
     dispatch({
       type: PromotionActionType.change_category,
@@ -203,6 +205,10 @@ function Promotion({ scrollPosition }: TPromotion) {
       decodeURI(transition.location.pathname.substring(1))
     );
 
+  const {
+    category: stateCategory,
+  } = state;
+
   return (
     <div className="
       py-0 px-auto
@@ -222,11 +228,11 @@ function Promotion({ scrollPosition }: TPromotion) {
             <BreadcrumbItem key="2">
               <BreadcrumbLink
                 as={NavLink}
-                to={`/promotion/${state.category.name}`}
+                to={`/promotion/${stateCategory?.name}`}
                 isCurrentPage
                 className="font-semibold !text-[#D02E7D]"
               >
-                {state.category.title}
+                {stateCategory?.title}
               </BreadcrumbLink>
             </BreadcrumbItem>
           ]
@@ -234,9 +240,9 @@ function Promotion({ scrollPosition }: TPromotion) {
       </div>
 
       <PromotionBannerWithTitle
-        title={state.category.title}
-        subtitle={state.category.description}
-        superSale={state.category.name === 'super_deal'}
+        title={stateCategory?.title}
+        subtitle={stateCategory?.description}
+        superSale={stateCategory?.name === 'super_deal'}
       />
 
       <div className="w-full pt-2.5 pb-8 max-w-screen-xl mx-auto">

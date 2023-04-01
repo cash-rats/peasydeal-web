@@ -80,6 +80,8 @@ const MegaMenuContent = ({
       ">
         {
           categories.map((category, index) => {
+            const { name, type, title } = category || {};
+
             return (
               <div
                 key={index}
@@ -92,17 +94,17 @@ const MegaMenuContent = ({
                   // prefetch='intent'
                   state={{ scrollToTop: true }}
                   to={
-                    category.type === CategoryType.promotion
-                      ? `/promotion/${category.name}`
-                      : `/${category.name}`
+                    type === CategoryType.promotion
+                      ? `/promotion/${name}`
+                      : `/${name}`
 
                   }
                   className="w-full self-center"
                   onClick={onClose}
                 >
                   <ItemNode className="flex items-center">
-                    <span>{iconMapper(category.name)}</span>
-                    <span className="ml-2 text-base">{category.title}</span>
+                    <span>{iconMapper(name)}</span>
+                    <span className="ml-2 text-base">{title}</span>
                   </ItemNode>
                 </Link>
               </div>

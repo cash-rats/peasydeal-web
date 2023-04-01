@@ -17,6 +17,7 @@ import { VscChevronDown, VscArrowLeft } from "react-icons/vsc";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
 import { PAGE_LIMIT } from '~/shared/constants';
+import type { Category } from "~/shared/types";
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
@@ -67,16 +68,17 @@ export const meta: MetaFunction = ({ data, params }) => {
     }
   }
 
+  const { category = {} } = data || {};
   return {
-    title: getCollectionTitleText(data?.category?.title),
+    title: getCollectionTitleText(category?.title),
     description: getCollectionDescText(
-      data.category.title,
-      data.category.description,
+      category?.title,
+      category?.description,
     ),
 
     ...getCategoryFBSEO(
-      data.category.title,
-      data.category.description,
+      category?.title,
+      category?.description,
     ),
   }
 };
@@ -232,6 +234,10 @@ function Collection({ scrollPosition }: CollectionProps) {
   const parentExist = category.parents && category.parents.length > 0;
   const lastParent = parentExist ? category.parents[category.parents.length - 1] : null;
 
+  const {
+    category: stateCategory,
+  } = state;
+
   return (
     <div className="
       py-0 px-auto
@@ -248,7 +254,7 @@ function Collection({ scrollPosition }: CollectionProps) {
               </BreadcrumbLink>
             </BreadcrumbItem>,
 
-            ...state.category.parents.map(p => (
+            ...stateCategory?.parents.map(p => (
               <BreadcrumbItem key={`collection_breadcrumbs_${p.catId}`}>
                 <BreadcrumbLink
                   as={NavLink}
@@ -264,11 +270,11 @@ function Collection({ scrollPosition }: CollectionProps) {
             <BreadcrumbItem key='collection_breadcrumbs_last'>
               <BreadcrumbLink
                 as={NavLink}
-                to={`/${state.category.name}`}
+                to={`/${stateCategory?.name}`}
                 isCurrentPage
                 className="font-semibold !text-[#D02E7D]"
               >
-                {state.category.title}
+                {stateCategory?.title}
               </BreadcrumbLink>
             </BreadcrumbItem>,
           ]
@@ -276,8 +282,8 @@ function Collection({ scrollPosition }: CollectionProps) {
       </div>
 
       <PageTitle
-        title={state.category.title}
-        subtitle={state.category.description}
+        title={stateCategory?.title}
+        subtitle={stateCategory?.description}
       />
 
       <div
@@ -300,7 +306,7 @@ function Collection({ scrollPosition }: CollectionProps) {
           onClick={onOpen}
         >
           <span>
-            { `All ${state.category.title} (${state.total})` }
+            { `All ${stateCategory?.title} (${state.total})` }
           </span>
           <VscChevronDown fontSize={16} />
         </button>
@@ -321,7 +327,7 @@ function Collection({ scrollPosition }: CollectionProps) {
             <div className="flex flex-col gap-0">
               <span className="py-2 px-4 font-bold">
                 {
-                  `All ${state.category.title} (${state.total})`
+                  `All ${stateCategory?.title} (${state.total})`
                 }
               </span>
               {
@@ -358,7 +364,7 @@ function Collection({ scrollPosition }: CollectionProps) {
             }
             <span className="py-2 px-4 font-bold">
               {
-                `All ${state.category.title} (${state.total})`
+                `All ${stateCategory?.title} (${state.total})`
               }
             </span>
             {
@@ -374,7 +380,7 @@ function Collection({ scrollPosition }: CollectionProps) {
         </div>
 
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          { state.products.length === 0 && (<h2 className="p4 text-center">{state.category.title} has no product, please checkout other categories.</h2>)}
+          { state.products.length === 0 && (<h2 className="p4 text-center">{stateCategory?.title} has no product, please checkout other categories.</h2>)}
           <ProductRowsContainer
             loading={transition.state !== 'idle'}
             products={state.products}
