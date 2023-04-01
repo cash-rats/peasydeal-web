@@ -6,7 +6,6 @@ import type { Category } from '~/shared/types';
 
 import FooterTopInfo from './components/FooterTopInfo';
 import FooterMobileLayout, { links as FooterMobileAccordionLinks } from './components/FooterMobileLayout';
-import FooterTabletPortrait from './components/FooterTabletPortrait';
 import FooterTabletLayout from './components/FooterTabletLayout';
 
 export const links: LinksFunction = () => {
@@ -35,11 +34,6 @@ function Footer({ categories }: FooterProps) {
           <FooterMobileLayout categories={categories} />
         </div>
 
-        {/* width > 768px */}
-        {/* <div className="sm:hidden md:flex 1024:hidden w-full py-2.5 max-w-screen-xl mx-auto">
-          <FooterTabletPortrait categories={categories} />
-        </div> */}
-
         <div className="hidden lg:block w-full py-2.5 max-w-screen-xl mx-auto">
           <FooterTabletLayout categories={categories} />
         </div>
@@ -49,6 +43,7 @@ function Footer({ categories }: FooterProps) {
           h-[105px] mt-10 w-full
           flex flex-col justify-between
           max-w-screen-xl
+          mx-auto
           600:flex-row 600:mt-0
         ">
           <div className="
