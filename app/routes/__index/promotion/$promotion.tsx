@@ -43,6 +43,8 @@ export const meta: MetaFunction = ({ data, params }) => {
   if (
     !data ||
     !promotion ||
+    !data.categories ||
+    Object.keys(data.categories).length === 0 ||
     !data.categories[promotion]
   ) {
     return {

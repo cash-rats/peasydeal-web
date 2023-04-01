@@ -48,6 +48,7 @@ function Footer({ categories }: FooterProps) {
         <div className="
           h-[105px] mt-10 w-full
           flex flex-col justify-between
+          max-w-screen-xl
           600:flex-row 600:mt-0
         ">
           <div className="
@@ -79,7 +80,7 @@ function Footer({ categories }: FooterProps) {
               className="mr-4"
               rel="noreferrer"
               target="_blank"
-              href="https://www.instagram.com/"
+              href="https://www.instagram.com/peasydeal"
             >
               <AiFillInstagram
                 color='#fff'
@@ -91,7 +92,7 @@ function Footer({ categories }: FooterProps) {
               className="mr-4"
               rel="noreferrer"
               target="_blank"
-              href="https://www.twitter.com/"
+              href="https://www.twitter.com/peasydeal"
             >
               <AiOutlineTwitter
                 color='#fff'
@@ -102,7 +103,7 @@ function Footer({ categories }: FooterProps) {
             <a
               rel="noreferrer"
               target="_blank"
-              href="https://facebook.com"
+              href="https://www.facebook.com/people/PeasyDeal/100090539543051/"
             >
               <SiFacebook
                 color='#fff'
