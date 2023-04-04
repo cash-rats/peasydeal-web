@@ -80,7 +80,7 @@ const MegaMenuContent = ({
       ">
         {
           categories.map((category, index) => {
-            const { name, type, title } = category || {};
+            const { name, type, title, count } = category || {};
 
             return (
               <div
@@ -104,7 +104,7 @@ const MegaMenuContent = ({
                 >
                   <ItemNode className="flex items-center">
                     <span>{iconMapper(name)}</span>
-                    <span className="ml-2 text-base">{title}</span>
+                    <span className="ml-2 text-base">{title} ({count})</span>
                   </ItemNode>
                 </Link>
               </div>

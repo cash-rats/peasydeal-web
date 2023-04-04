@@ -74,6 +74,7 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
             py-2 md:py-4
             flex flex-col
             items-center relative
+            w-full
           "
         >
           <div className="flex items-center">
@@ -110,7 +111,7 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
                   onClick={setClose}
                 >
                   <Button variant='link' colorScheme='pink' size="lg" rightIcon={<VscArrowRight />}>
-                    <span className="ml-2 text-lg">Shop all {category.shortName || category.title}</span>
+                    <span className="ml-2 text-lg">Shop all {category.shortName || category.title} ({category.count})</span>
                   </Button>
                 </Link>
               </MenuItem>
