@@ -104,7 +104,7 @@ const MegaMenuContent = ({
                 >
                   <ItemNode className="flex items-center">
                     <span>{iconMapper(name)}</span>
-                    <span className="ml-2 text-base">{title} ({count})</span>
+                    <span className="ml-2 text-base">{title} {count ? `(${count})` : '' }</span>
                   </ItemNode>
                 </Link>
               </div>

@@ -131,7 +131,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     fontWeight="normal"
                     onTouchEnd={e => {
                       e.preventDefault();
-                      isOpen ? setClose() : setOpen(); z
+                      isOpen ? setClose() : setOpen();
                     }}
                     onMouseEnter={setOpen}
                     onMouseLeave={setClose}
