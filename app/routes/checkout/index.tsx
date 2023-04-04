@@ -283,13 +283,12 @@ function CheckoutPage() {
   }
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
-    console.log('debug handleSubmit 1')
-
     evt.preventDefault();
 
     if (!formRef.current) return;
     if (!validatePhone(formRef.current)) {
       formRef.current.reportValidity();
+
       return;
     };
 
@@ -301,8 +300,6 @@ function CheckoutPage() {
     }
 
     if (!element || !stripe) return;
-
-    console.log('debug handleSubmit 2')
 
     stripeConfirmPayment(state.orderUUID, element, stripe);
   }

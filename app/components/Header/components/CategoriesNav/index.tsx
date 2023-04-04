@@ -83,18 +83,16 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   key={`${index}_menu_link`}
                   state={{ scrollToTop: true }}
                   to={
-                    category.name === 'hot_deal'
+                    category.type === 'promotion'
                       ? `/promotion/${category.name}`
                       : `/${category.name}`
                   }
                   className="self-center"
                 >
-
                   {
                     index === 0
                       ? (
                         <li className={`
-                          self-center
                           cursor-pointer
                           flex-auto
                           self-center
@@ -133,7 +131,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     fontWeight="normal"
                     onTouchEnd={e => {
                       e.preventDefault();
-                      isOpen ? setClose() : setOpen();z
+                      isOpen ? setClose() : setOpen(); z
                     }}
                     onMouseEnter={setOpen}
                     onMouseLeave={setClose}
@@ -177,7 +175,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
         </nav>
       </div>
       <div
-        className={`${isOpen || displayOverlay ? "megamenu-overlay": ''}`}
+        className={`${isOpen || displayOverlay ? "megamenu-overlay" : ''}`}
         onClickCapture={() => {
           setDisplayOverlay(false);
           setActiveMenuName('');
