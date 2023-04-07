@@ -7,7 +7,7 @@ import type { DynamicLinksFunction } from 'remix-utils';
 
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import { error } from '~/utils/error';
+import { composErrorResponse } from '~/utils/error';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
@@ -80,7 +80,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   // Order id is likely to be empty, thus, is invalid.
   if (!orderID) {
-    return json(error('invalid order id'), httpStatus.BAD_REQUEST);
+    return json(composErrorResponse('invalid order id'), httpStatus.BAD_REQUEST);
   }
 
   try {

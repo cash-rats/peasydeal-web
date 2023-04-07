@@ -24,7 +24,7 @@ export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 	const respJSON = await resp.json();
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
-		throw new Error(errResp.err_message);
+		throw new Error(errResp.err_msg);
 	}
 
 	return respJSON as ActivityBanner[];
@@ -75,7 +75,7 @@ export const fetchLandingPageFeatureProducts = async ({ categoriesPreviewNames =
 
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
-		throw new Error(errResp.err_message);
+		throw new Error(errResp.err_msg);
 	}
 
 	const categoryPreviews = respJSON.category_previews
@@ -212,7 +212,7 @@ export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchPro
 
 	if (resp.status !== httpStatus.OK) {
 		const errResp = respJSON as ApiErrorResponse;
-		throw new Error(errResp.err_message);
+		throw new Error(errResp.err_msg);
 	}
 
 	return {

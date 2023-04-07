@@ -55,7 +55,7 @@ export const fetchPromotionProducts = async (params: FetchPromotionProductsParam
 
   if (resp.status !== httpStatus.OK) {
     const errResp = respJSON as ApiErrorResponse;
-    throw new Error(errResp.err_message);
+    throw new Error(errResp.err_msg);
   }
 
   return {

@@ -26,7 +26,7 @@ const cancelOrder = async ({ orderUUID, cancelReason }: ICancelOrder) => {
   const respJSON = await resp.json();
 
   if (resp.status !== httpStatus.OK) {
-    throw new Error((respJSON as ApiErrorResponse).err_message);
+    throw new Error((respJSON as ApiErrorResponse).err_msg);
   }
 };
 

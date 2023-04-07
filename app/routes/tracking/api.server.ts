@@ -18,7 +18,7 @@ export const trackOrder = async (orderUUID: string): Promise<TrackOrder> => {
 
   if (resp.status !== httpStatus.OK) {
     const errResp = respJSON as ApiErrorResponse;
-    throw new Error(errResp.err_message);
+    throw new Error(errResp.err_msg);
   }
 
   return respJSON as TrackOrder;
