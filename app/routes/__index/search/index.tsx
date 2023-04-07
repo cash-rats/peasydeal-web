@@ -101,7 +101,7 @@ type TSearch = {} & LazyComponentProps;
 //   - Need to add breadcrumbs navigation bar.
 //   - No result page.
 function Search({ scrollPosition }: TSearch) {
-  const loaderData = useLoaderData<LoaderType>();
+  const loaderData = useLoaderData<LoaderType>() || {};
   const [state, dispatch] = useReducer(reducer, {
     products: loaderData.products,
     query: loaderData.query,
