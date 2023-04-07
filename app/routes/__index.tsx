@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { json } from "@remix-run/node";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import {
@@ -20,6 +20,7 @@ import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
+import { rudderInitialize } from '~/utils/rudderInitialize';
 
 type LoaderType = {
 	categories: Category[];
@@ -63,7 +64,14 @@ export default function Index() {
 	const [suggests, searchSuggests] = useSearchSuggests();
 	const { submit } = useFetcherWithPromise();
 
+	useEffect(() => {
+    rudderInitialize();
+  }, []);
+
 	const handleSearch = (query: string) => {
+		window.rudderanalytics?.track('search_action_click', {
+			query,
+		});
 		search.submit({ query }, { method: 'post', action: '/search?index' });
 	};
 
@@ -72,6 +80,10 @@ export default function Index() {
 	const handleClose = () => setOpenSearchDialog(false);
 
 	const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
+		window.rudderanalytics?.track('search_auto_complete', {
+			query,
+		});
+
 		const data = await submit(
 			{ query },
 			{
