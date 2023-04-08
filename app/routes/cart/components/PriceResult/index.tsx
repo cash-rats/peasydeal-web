@@ -142,6 +142,9 @@ export default function PriceResult({
   }
 
   const handleApplyPromoCode = () => {
+    window.rudderanalytics?.track('click_apply_promo_code', {
+      code: promoCode,
+    });
     if (!promoCode) {
       setError('You have not enter any promo code');
 
@@ -367,13 +370,23 @@ export default function PriceResult({
               borderColor='yellow.500'
               leftIcon={<BsBagCheck fontSize={22} />}
               className="font-bold font-poppins mb-2"
+              onClick={() => {
+                window.rudderanalytics?.track('click_continue_checkout');
+              }}
             >
               Continue to checkout
             </Button>
           </Link>
 
           <Link to="/">
-            <Button colorScheme='teal' variant='ghost' className='w-full'>
+            <Button
+              colorScheme='teal'
+              variant='ghost'
+              className='w-full'
+              onClick={() => {
+                window.rudderanalytics?.track('click_continue_shopping');
+              }}
+            >
               Continue shopping
             </Button>
           </Link>

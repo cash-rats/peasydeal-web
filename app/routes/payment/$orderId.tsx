@@ -7,6 +7,7 @@ import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';
 
 import StripePaymentResult from './components/StripePaymentResult';
 import PaypalPaymentResult from './components/PaypalPaymentResult';
+import useComponentDidMountHook from '~/hooks/useComponentDidMound';
 
 type LoaderDataType = {
   paymentMethod: PaymentMethodEnum;
@@ -74,7 +75,15 @@ export default function PaymentResult() {
     paymentMethod,
     paypal,
     stripe
-  } = useLoaderData<LoaderDataType>();
+  } = useLoaderData<LoaderDataType>() || {};
+
+  useComponentDidMountHook(() => {
+    if (typeof document === 'undefined') return;
+
+    window.rudderanalytics?.track(`payment_success_${paymentMethod}`, {
+      orderId: stripe?.orderId || paypal?.orderId,
+    })
+  })
 
   if (
     paymentMethod === PaymentMethodEnum.Stripe &&

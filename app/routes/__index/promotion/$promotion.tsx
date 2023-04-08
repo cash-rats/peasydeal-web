@@ -122,7 +122,7 @@ function Promotion({ scrollPosition }: TPromotion) {
     page,
     category,
     categories,
-  } = useLoaderData<LoadProductsDataType>();
+  } = useLoaderData<LoadProductsDataType>() || {};
 
   const [state, dispatch] = useReducer(reducer, {
     products,

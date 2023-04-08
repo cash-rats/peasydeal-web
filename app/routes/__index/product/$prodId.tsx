@@ -242,10 +242,10 @@ type ProductDetailProps = {} & LazyComponentProps;
  * @see https://www.discountexperts.com/deal/uptfll2cfs/Breathable_Air_Cushion_Trainers___6_Colours___Sizes
  */
 function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
-	const loaderData = useLoaderData<LoaderTypeProductDetail>();
+	const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
 	const mainCategory = (
-		loaderData.product.categories &&
-		loaderData.product.categories.length > 0
+		loaderData?.product?.categories &&
+		loaderData?.product?.categories.length > 0
 	)
 		? loaderData.product.categories[0]
 		: null;
@@ -355,6 +355,10 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				__action: 'add_item_to_cart',
 				...state.sessionStorableCartItem
 			} as ShoppingCartItem & { __action: ActionType };
+
+			window.rudderanalytics?.track('click_add_to_cart', {
+				product: payload.productUUID,
+			});
 
 			addToCart.submit(
 				payload,

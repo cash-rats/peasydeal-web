@@ -198,12 +198,12 @@ type PreviousQuantity = {
  * - [ ] use useReducer to cleanup useState
  */
 function Cart() {
-	const preloadData = useLoaderData<LoaderType>();
+	const preloadData = useLoaderData<LoaderType>() || {};
 	const [state, dispatch] = useReducer(
 		cartReducer,
 		{
-			cartItems: preloadData.cart,
-			priceInfo: preloadData.priceInfo,
+			cartItems: preloadData?.cart,
+			priceInfo: preloadData?.priceInfo,
 		} as StateShape,
 	);
 

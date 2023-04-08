@@ -51,6 +51,11 @@ export const CategoryPreview = ({
               colorScheme='teal'
               variant='ghost'
               size='lg'
+              onClick={() => {
+                window.rudderanalytics?.track(`click_preview_top_see_all`, {
+                  category: name,
+                });
+              }}
             >
               See all
             </Button>
@@ -82,6 +87,11 @@ export const CategoryPreview = ({
             colorScheme='pink'
             variant='outline'
             size='lg'
+            onClick={() => {
+              window.rudderanalytics?.track(`click_preview_bottom_see_all`, {
+                category: name,
+              });
+            }}
           >
             See all in {label}
           </Button>

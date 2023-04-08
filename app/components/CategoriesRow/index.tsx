@@ -108,7 +108,14 @@ const CategoriesRow = () => {
               categories?.map((category: Category, index: number) => {
                 return (
                   <div className="inline-block px-3" key={`${category.name}_${index}`}>
-                    <Link to={`/${category.name}`}>
+                    <Link
+                      to={`/${category.name}`}
+                      onClick={() => {
+                        window.rudderanalytics?.track('click_shop_by_category', {
+                          category: category.name,
+                        });
+                      }}
+                    >
                       <div
                         className="
                           cursor-pointer

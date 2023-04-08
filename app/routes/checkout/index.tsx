@@ -14,7 +14,7 @@ import type {
   OnApproveActions,
   OnClickActions,
 } from "@paypal/paypal-js";
-
+import { Spinner } from '@chakra-ui/react'
 import type { ApiErrorResponse, PaymentMethod } from '~/shared/types';
 import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';
 import { getBrowserDomainUrl } from '~/utils/misc';
@@ -96,7 +96,8 @@ export const action: ActionFunction = async ({ request }) => {
     - [ ] move data to reducer
 */
 function CheckoutPage() {
-  const { cart_items: cartItems } = useLoaderData<LoaderType>();
+  const { cart_items: cartItems } = useLoaderData<LoaderType>() || {};
+
   const { paymentIntendID, priceInfo, promoCode } = useContext();
   const formRef = useRef<HTMLFormElement | null>(null);
 
@@ -131,8 +132,7 @@ function CheckoutPage() {
   }, [
     state.shippingDetailForm,
     state.contactInfoForm,
-  ])
-
+  ]);
 
   const stripeConfirmPayment = useCallback(
     async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
@@ -195,6 +195,12 @@ function CheckoutPage() {
       }
     },
     [createOrderFetcher]
+  );
+
+  if (!cartItems || !Object.keys(cartItems).length) return (
+    <div className='w-full flex items-center justify-center my-4'>
+      <Spinner size='lg' />
+    </div>
   );
 
   const isPhoneValueEmpty = (phone: string, countryCode: string) => !phone || phone === countryCode;

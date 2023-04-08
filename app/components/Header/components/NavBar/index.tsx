@@ -33,6 +33,9 @@ function NavBar({ cartItemCount = 0, toggleOpenMobileSearchBar = () => {} }: Nav
 					aria-label='super deal with extra 10% off'
 					className="flex min-w-[53px] md:min-w-[73x] basis-1/3"
 					to="/promotion/super_deal"
+					onClick={() => {
+						window.rudderanalytics?.track('click_navbar_super_deal');
+					}}
 				>
 					<li className='flex flex-col items-center'>
 						<IoPricetagsOutline
@@ -48,7 +51,14 @@ function NavBar({ cartItemCount = 0, toggleOpenMobileSearchBar = () => {} }: Nav
 					</li>
 				</Link>
 				{/* shopping cart */}
-				<Link aria-label='shopping cart' to="/cart" className='min-w-[53px] md:min-w-[73x] basis-1/3'>
+				<Link
+					aria-label='shopping cart'
+					to="/cart"
+					className='min-w-[53px] md:min-w-[73x] basis-1/3'
+					onClick={() => {
+						window.rudderanalytics?.track('click_navbar_cart');
+					}}
+				>
 					<li className="flex justify-center items-center relative transition-all ease-linear">
 						{
 							cartItemCount > 0 && (
@@ -92,6 +102,9 @@ function NavBar({ cartItemCount = 0, toggleOpenMobileSearchBar = () => {} }: Nav
 					aria-label='track order'
 					className="min-w-[53px] md:min-w-[73x] basis-1/3 hidden md:flex"
 					to="/tracking"
+					onClick={() => {
+						window.rudderanalytics?.track('click_navbar_track_order');
+					}}
 				>
 					<li className='flex flex-col items-center '>
 						<RiTruckLine

@@ -150,7 +150,7 @@ function Collection({ scrollPosition }: CollectionProps) {
     total,
     current,
     hasMore,
-  } = useLoaderData<LoaderDataType>();
+  } = useLoaderData<LoaderDataType>() || {};
 
   const [state, dispatch] = useReducer(reducer, {
     products,
@@ -303,7 +303,12 @@ function Collection({ scrollPosition }: CollectionProps) {
             color-slate-800
           "
           ref={subCatRef}
-          onClick={onOpen}
+          onClick={() => {
+            window.rudderanalytics?.track('click_open_category_halfsheet', {
+              category: stateCategory.name,
+            });
+            onOpen();
+          }}
         >
           <span>
             { `All ${stateCategory?.title} (${state.total})` }
@@ -333,7 +338,18 @@ function Collection({ scrollPosition }: CollectionProps) {
               {
                 category.children.map((subcat, index) => (
                   subcat.count > 0 ? (<Link to={`/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
-                    <Button className="justify-start whitespace-normal w-full" colorScheme="pink" variant="ghost" onClick={onClose}>
+                    <Button
+                      className="justify-start whitespace-normal w-full"
+                      colorScheme="pink"
+                      variant="ghost"
+                      onClick={() => {
+                        window.rudderanalytics?.track('click_sub_category', {
+                          category: subcat.name,
+                          layout: 'mobile',
+                        });
+                        onClose();
+                      }}
+                    >
                       {subcat.title} ({subcat.count})
                     </Button>
                   </Link>) : null
@@ -370,7 +386,17 @@ function Collection({ scrollPosition }: CollectionProps) {
             {
               category.children.map((subcat, index) => (
                 subcat.count > 0 ? (<Link to={`/${subcat.name}`} key={`${subcat.name}_${index}`}>
-                  <Button className="text-left whitespace-normal" colorScheme="pink" variant="ghost">
+                  <Button
+                    className="text-left whitespace-normal"
+                    colorScheme="pink"
+                    variant="ghost"
+                    onClick={() => {
+                      window.rudderanalytics?.track('click_sub_category', {
+                        category: subcat.name,
+                        layout: 'desktop',
+                      });
+                    }}
+                  >
                     {subcat.title} ({subcat.count})
                   </Button>
                 </Link>) : null

@@ -69,6 +69,9 @@ const ProductActionBar = forwardRef(({
             width='100%'
             size="lg"
             type='submit'
+            onClick={() => {
+              window.rudderanalytics?.track('click_buy_now');
+            }}
           >
             Buy Now
           </Button>

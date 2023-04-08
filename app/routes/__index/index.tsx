@@ -88,7 +88,7 @@ function Index({ scrollPosition }: IndexProps) {
 		categoryPreviews,
 		promotionPreviews,
 		promotions,
-	} = useLoaderData<LoaderDataType>();
+	} = useLoaderData<LoaderDataType>() || {};
 
 	// Redirect to product detail page when click on product.
 	const handleClickProduct = (productUUID: string) => {

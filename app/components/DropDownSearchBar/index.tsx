@@ -5,6 +5,7 @@ import { Link } from '@remix-run/react';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { CgSearchFound } from 'react-icons/cg';
 import { BsArrowRightShort } from 'react-icons/bs';
+import { Spinner } from '@chakra-ui/react'
 
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import useBodyClick from '~/hooks/useBodyClick';
@@ -154,6 +155,10 @@ function DropDownSearchBar({
     // we need to do some operation to fetch more results. Only perform search when use finish typing.
     timerRef.current = setTimeout(async () => {
       try {
+        window.rudderanalytics?.track('search_auto_complete', {
+          query: evt.target.value,
+          layout: 'full',
+        });
         timerRef.current = undefined;
         await onDropdownSearch(evt.target.value);
       } catch (error) {
@@ -172,6 +177,8 @@ function DropDownSearchBar({
   }
 
   const handleViewAllResults = (evt: MouseEvent<HTMLDivElement>) => {
+    window.rudderanalytics?.track('click_search_view_all_result');
+
     setShowDropdown(false);
     onSearch(searchContent, evt);
   }
@@ -271,6 +278,14 @@ function DropDownSearchBar({
                   )
               }
             </ul>
+
+            {
+              searchingState === 'searching' && (
+                <div className='w-full flex items-center justify-center'>
+                  <Spinner size='lg' />
+                </div>
+              )
+            }
 
             {
               suggests.length > 0 && searchingState === 'done' && (

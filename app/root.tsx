@@ -100,7 +100,7 @@ const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
     const serverStyleData = useContext(ServerStyleContext)
     const clientStyleData = useContext(ClientStyleContext);
-    const envData = useLoaderData();
+    const envData = useLoaderData() || {};
 
     // Only executed on client
     useEnhancedEffect(() => {

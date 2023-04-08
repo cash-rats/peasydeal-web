@@ -174,7 +174,7 @@ export const CatchBoundary = () => {
 }
 
 function TrackingOrder() {
-  const { order, categories, navBarCategories } = useLoaderData<LoaderDataType>();
+  const { order, categories, navBarCategories } = useLoaderData<LoaderDataType>() || {};
   const trackOrderFetcher = useFetcher();
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLButtonElement>) => {

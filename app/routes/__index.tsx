@@ -58,7 +58,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 };
 
 export default function Index() {
-	const { categories, navBarCategories } = useLoaderData<LoaderType>();
+	const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
 	const search = useFetcher();
 	const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 	const [suggests, searchSuggests] = useSearchSuggests();
@@ -82,6 +82,7 @@ export default function Index() {
 	const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
 		window.rudderanalytics?.track('search_auto_complete', {
 			query,
+			layout: 'mobile',
 		});
 
 		const data = await submit(

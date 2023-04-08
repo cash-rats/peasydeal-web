@@ -75,21 +75,30 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 function CartLayout() {
-  const { categories, navBarCategories } = useLoaderData<LoaderType>();
+  const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
   const [suggests, searchSuggests] = useSearchSuggests();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
   const search = useFetcher();
   const handleSearch = (query: string) => {
+    window.rudderanalytics?.track('search_action_click', {
+      query,
+    });
     search.submit({ query }, { method: 'post', action: '/search?index' });
   }
 
   const handleOpen = () => setOpenSearchDialog(true);
 
   const handleClose = () => setOpenSearchDialog(false);
+
   const { submit } = useFetcherWithPromise();
 
   const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
+    window.rudderanalytics?.track('search_auto_complete', {
+      query,
+      layout: 'mobile',
+    });
+
     const data = await submit(
       { query },
       {

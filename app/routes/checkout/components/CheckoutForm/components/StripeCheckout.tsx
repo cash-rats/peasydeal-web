@@ -56,7 +56,6 @@ function StripeCheckout({
                   <LockIcon fontSize='small' color='success' />
                 </span>
                 We won't store any of your card information.
-
               </p>
 
               <p className="promise">

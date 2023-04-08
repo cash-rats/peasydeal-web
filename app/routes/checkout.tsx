@@ -152,7 +152,7 @@ function CheckoutLayout() {
     price_info,
     promo_code,
     navBarCategories,
-  } = useLoaderData<LoaderType>();
+  } = useLoaderData<LoaderType>() || {};
 
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [suggests, searchSuggests] = useSearchSuggests();
@@ -161,10 +161,18 @@ function CheckoutLayout() {
   const search = useFetcher();
 
   const handleSearch = (query: string) => {
+    window.rudderanalytics?.track('search_action_click', {
+      query,
+    });
     search.submit({ query }, { method: 'post', action: '/search?index' });
   };
 
   const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
+    window.rudderanalytics?.track('search_auto_complete', {
+      query,
+      layout: 'mobile',
+    });
+
     const data = await submit(
       { query },
       {
