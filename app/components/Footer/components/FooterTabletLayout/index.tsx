@@ -51,7 +51,14 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
         <div className="flex flex-col gap-[10px] mt-[10px]">
           {
             categories.map((category, idx) => (
-              <Link key={idx} to={`/${category.name}`}>
+              <Link
+                key={idx}
+                to={
+                  category.type === 'promotion'
+                    ? `/promotion/${category.name}`
+                    : `/${category.name}`
+                }
+              >
                 <span
                   className="text-base text-white font-normal capitalize"
                 >
