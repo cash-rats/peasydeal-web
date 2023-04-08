@@ -40,4 +40,22 @@ const findDefaultVariation = (pd: ProductDetail) => (
   )
 );
 
-export { normalizeToSessionStorableCartItem, findDefaultVariation };
+/*
+  Check if incoming url matches old product pattern: /product/6920999698491
+*/
+const OldProdURLPattern = /product\/(\d{13})$/;
+const matchOldProductURL = (url: string): string[] => {
+  const matches = OldProdURLPattern.exec(url);
+
+  if (!matches) {
+    return [];
+  }
+
+  return matches;
+};
+
+export {
+  normalizeToSessionStorableCartItem,
+  findDefaultVariation,
+  matchOldProductURL,
+};

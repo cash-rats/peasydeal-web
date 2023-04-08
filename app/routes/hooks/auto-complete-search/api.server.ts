@@ -21,7 +21,7 @@ const searchProductPreviews = async ({ query, page = 1, perPage = 8 }: SearchPro
 
   if (resp.status !== httpStatus.OK) {
     const errResp = respJSON as ApiErrorResponse;
-    throw new Error(errResp.err_message);
+    throw new Error(errResp.err_msg);
   }
 
   return normalizeData(respJSON.items);

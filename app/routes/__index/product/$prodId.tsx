@@ -17,7 +17,6 @@ import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
-
 import { BsLightningCharge } from 'react-icons/bs';
 
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
@@ -42,7 +41,6 @@ import {
 	composeProductDetailURL,
 } from '~/utils';
 import { round10 } from '~/utils/preciseRound';
-
 import {
 	Accordion,
 	AccordionItem,
@@ -53,11 +51,13 @@ import {
 	TagLeftIcon
 } from '@chakra-ui/react'
 import extra10 from '~/images/extra10.png';
+import { composErrorResponse } from '~/utils/error';
+import type { ApiErrorResponse } from '~/shared/types';
 
 import Breadcrumbs from './components/Breadcrumbs';
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
-import { fetchProductDetail } from './api';
+import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
 import ProductActionBar from './components/ProductActionBar';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
@@ -67,8 +67,8 @@ import useSticky from './hooks/useSticky';
 import reducer, { ActionTypes } from './reducer';
 import { structuredData } from './structured_data';
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
-
-type LoaderErrorType = { error: any }
+import { matchOldProductURL } from './utils';
+import { redirectToNewProductURL } from './loaders';
 
 const SUPER_DEAL_OFF = 0.9;
 
@@ -138,14 +138,24 @@ export const handle = {
 	structuredData,
 };
 
-// Fetch product detail data.
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
+	if (!params.prodId) {
+		throw json(
+			composErrorResponse('unrecognize product'),
+			{ status: httpStatus.NOT_FOUND },
+		);
+	}
+
+	const oldMatches = matchOldProductURL(request.url);
+	if (oldMatches.length > 0) {
+		return redirectToNewProductURL(request, params.prodId);
+	}
+
 	const url = new URL(request.url);
 	const decompURL = decomposeProductDetailURL(url);
-
 	if (!decompURL.productUUID) {
-		throw json<LoaderErrorType>(
-			{ error: 'variationUUID is not found.' },
+		throw json<ApiErrorResponse>(
+			composErrorResponse('variationUUID is not found.'),
 			{ status: httpStatus.NOT_FOUND },
 		)
 	}
@@ -158,8 +168,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 			meta_image: prodDetail.images[0],
 		});
 	} catch (error: any) {
-		throw json<LoaderErrorType>(
-			{ error },
+		throw json<ApiErrorResponse>(
+			composErrorResponse(error.message),
 			{ status: httpStatus.NOT_FOUND }
 		);
 	}

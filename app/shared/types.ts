@@ -54,7 +54,7 @@ export type CartItem = {
 
 export type ApiErrorResponse = {
   err_code: string;
-  err_message: string;
+  err_msg: string;
 };
 
 export type Category = {
