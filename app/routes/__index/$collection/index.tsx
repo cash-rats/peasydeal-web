@@ -17,7 +17,6 @@ import { VscChevronDown, VscArrowLeft } from "react-icons/vsc";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
 import { PAGE_LIMIT } from '~/shared/constants';
-import type { Category } from "~/shared/types";
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
@@ -31,7 +30,9 @@ import {
 } from '~/utils/seo';
 import PageTitle from '~/components/PageTitle';
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
+import { composErrorResponse } from '~/utils/error';
 
+import { resolveCategoryName } from '../api/resolve_category_name.server';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
 import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
@@ -91,14 +92,23 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type LoaderType = 'load_products' | 'load_category_products';
+type LoaderType = 'load_products' | 'loadmore';
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const url = new URL(request.url);
   const actionType = url.searchParams.get('action_type') || 'load_products' as LoaderType;
   const { collection = '' } = params;
 
-  if (actionType === 'load_category_products') {
+  try {
+    const resolvedCategoryName = await resolveCategoryName(collection);
+    if (resolvedCategoryName !== collection) {
+      return redirect(`/${resolvedCategoryName}`)
+    }
+  } catch (e: any) {
+    throw json(composErrorResponse(e.message))
+  }
+
+  if (actionType === 'loadmore') {
     const page = Number(url.searchParams.get('page'));
     const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
     return loadmoreProductsLoader({
@@ -119,9 +129,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     });
   }
 
-  throw json(`unrecognize loader action ${actionType}`, {
-    status: httpStatus.INTERNAL_SERVER_ERROR,
-  });
+  throw json(
+    composErrorResponse(
+      `unrecognize loader action ${actionType}`),
+    { status: httpStatus.INTERNAL_SERVER_ERROR },
+  );
 }
 
 export const action: ActionFunction = async ({ request, params }) => {
@@ -223,7 +235,7 @@ function Collection({ scrollPosition }: CollectionProps) {
 
     loadmoreFetcher.submit(
       {
-        action_type: 'load_category_products',
+        action_type: 'loadmore',
         page: nextPage.toString(),
         per_page: PAGE_LIMIT.toString(),
       },
@@ -311,7 +323,7 @@ function Collection({ scrollPosition }: CollectionProps) {
           }}
         >
           <span>
-            { `All ${stateCategory?.title} (${state.total})` }
+            {`All ${stateCategory?.title} (${state.total})`}
           </span>
           <VscChevronDown fontSize={16} />
         </button>
@@ -406,7 +418,7 @@ function Collection({ scrollPosition }: CollectionProps) {
         </div>
 
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          { state.products.length === 0 && (<h2 className="p4 text-center">{stateCategory?.title} has no product, please checkout other categories.</h2>)}
+          {state.products.length === 0 && (<h2 className="p4 text-center">{stateCategory?.title} has no product, please checkout other categories.</h2>)}
           <ProductRowsContainer
             loading={transition.state !== 'idle'}
             products={state.products}

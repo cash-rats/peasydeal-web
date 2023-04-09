@@ -1,19 +1,27 @@
 import type { ApiErrorResponse } from '~/shared/types';
 
 /*
+  This function gives uniformed error format from error thrown from the API.
+
   BE gives unified error response format:
 
   {
-    msg: string
+    err_msg: string
     err_code: string
   }
 
   There are 2 ways that an API might throw an Error.
 
   1.
-    throw new Error(JSON.stringify(respJSON)) ---> throwing a string of object.
+    throw new Error(JSON.stringify(respJSON)) ---> throwing a string of json object in the above format.
   2.
-    throw new Error((respJSON as ApiErrorResponse).err_msg) ---> throwing an string of error message.
+    throw new Error((respJSON as ApiErrorResponse).err_msg) ---> throwing an string of a simple error message.
+
+  try {
+    await someAsyncFetch(...)
+  } catch (e) {
+    return composeErrorResponse(e.message)
+  }
 */
 export const composErrorResponse = (errThing: string): ApiErrorResponse => {
   try {
