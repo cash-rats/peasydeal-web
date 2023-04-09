@@ -13,7 +13,7 @@ import PageTitle from '~/components/PageTitle';
 
 import reducer, { SearchActionType } from './reducer';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
-import { searchProducts } from '../api';
+import { searchProducts } from '../api/search_products.server';
 import searchStyles from '../styles/Search.css';
 
 export const links: LinksFunction = () => {
