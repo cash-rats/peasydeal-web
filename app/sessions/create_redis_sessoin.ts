@@ -4,6 +4,7 @@ import { createSessionStorage } from '@remix-run/node';
 import crypto from "crypto";
 
 import { ioredis as redis } from '~/redis.server';
+import { addDays } from "date-fns";
 
 function genRandomID(): string {
   const randomBytes = crypto.randomBytes(8);
@@ -14,7 +15,11 @@ const expiresToSeconds = (expires: Date) => {
   const now = new Date();
   const expiresDate = new Date(expires);
   const secondsDelta = Math.floor((expiresDate.getTime() - now.getTime()) / 1000);
-  return secondsDelta < 0 ? 0 : secondsDelta;
+
+  // If session expired, extend the session by 3 more days.
+  return secondsDelta < 0
+    ? addDays(now, 3).getSeconds()
+    : secondsDelta;
 };
 
 type RedisSessionArguments = {
