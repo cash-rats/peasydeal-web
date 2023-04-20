@@ -306,41 +306,47 @@ export default function PriceResult({
         </div>
 
         {/* Promotion Applied  */}
-        <div className="flex flex-col mb-4">
-          <h4 className="
-            text-base font-bold
-            px-0 mb-2 w-full capitalize
-          "
-          >
-            discount applied!
-          </h4>
-          <div className='flex gap-2'>
-            {
-              applied_events.length === 0
-                ? null
-                : (
-                  applied_events.map((event, idx) => (
-                    <Tag
-                      key={`promotion-${idx}`}
-                      variant='outline'
-                      colorScheme='blue'
-                      className='w-fit mb-2'
-                      size="md">
-                      <ImPriceTags className='mr-1' />
-                      <TagLabel>{event}</TagLabel>
-                    </Tag>
-                  ))
-                )
-            }
-          </div>
-        </div>
+        {
 
-        <div className="py-3">
-          <hr className="my-1 h-[1px] w-full bg-slate-50" />
-        </div>
+          applied_events.length === 0
+            ? null
+            : (
+              <>
+                <div className="flex flex-col mb-4">
+                  <h4 className="
+                    text-base font-bold
+                    px-0 mb-2 w-full capitalize
+                    font-poppins
+                  ">
+                    discount applied!
+
+                  </h4>
+                  <div className='flex gap-2'>
+                    {
+                      applied_events.map((event, idx) => (
+                        <Tag
+                          key={`promotion-${idx}`}
+                          variant='outline'
+                          colorScheme='blue'
+                          className='w-fit mb-2'
+                          size="md">
+                          <ImPriceTags className='mr-1' />
+                          <TagLabel>{event}</TagLabel>
+                        </Tag>
+                      ))
+                    }
+                  </div>
+                </div>
+
+                <div className="py-3">
+                  <hr className="my-1 h-[1px] w-full bg-slate-50" />
+                </div>
+              </>
+            )
+        }
+
 
         <div className="mt-[0.7rem]">
-
           <ResultRow
             label={<strong>Total to pay</strong>}
             value={
