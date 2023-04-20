@@ -158,6 +158,8 @@ export default function PriceResult({
   // destructuring priceInfo
   const {
     shipping_fee = 0,
+    sub_total = 0,
+    tax_amount = 0,
     total_amount = 0,
     discount_amount = 0,
     discount_type = '',
@@ -167,7 +169,7 @@ export default function PriceResult({
     promo_code_discount = 0,
   } = priceInfo || {};
 
-  const taxIncl = round10(total_amount + promo_code_discount, -2);
+  const taxIncl = round10(sub_total + tax_amount + promo_code_discount, -2);
 
   return (
     <div className="p-4 bg-white">
