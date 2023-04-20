@@ -8,8 +8,7 @@ export default function LoadingSkeleton() {
           <Skeleton variant='circular' width={120} height={120} />
         </div>
 
-        {/* <div className="ResulSkeleton-annotation-title"> */}
-        <div className="text-center  mt-4">
+        <div className="text-center mt-4">
           <Skeleton variant='text' width={320} sx={{ fontSize: '1rem' }} />
           <Skeleton variant='text' width={320} sx={{ fontSize: '1rem' }} />
         </div>

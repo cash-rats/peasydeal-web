@@ -1,6 +1,6 @@
 function Content({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col mt-4 gap-1">
+    <div className="flex flex-col mt-4 gap-1 font-poppins">
       {children}
     </div>
   )
@@ -31,12 +31,12 @@ function OrderInformation({
 }: OrderInformationProps) {
   return (
     <div className="w-full mt-6">
-      <h1 className="font-semibold text-[1.4rem]">
+      <h1 className="font-semibold font-poppins text-[1.4rem]">
         Order Information
       </h1>
       <div className="flex gap-4 mt-3 w-full">
         <div className="flex-1">
-          <h2 className="font-semibold">
+          <h2 className="font-semibold font-poppins">
             Contact
           </h2>
 

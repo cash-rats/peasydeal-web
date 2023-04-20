@@ -99,7 +99,7 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
         <div className="w-full flex flex-col justify-center items-end gap-[5px]">
           <PriceInfoBox
             label="Items (VAT Incl.)"
-            info={`£${round10(priceInfo.promo_code_discount + priceInfo.total_amount, -2)}`}
+            info={`£${round10(priceInfo.promo_code_discount + priceInfo.sub_total + priceInfo.tax_amount, -2)}`}
           />
 
           {

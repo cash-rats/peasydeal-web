@@ -11,7 +11,7 @@ interface AmountRowProps {
 function AmountRow({ title, num }: AmountRowProps) {
   return (
     <div className="flex flex-row w-full">
-      <label className="text-left w-[69%] flex justify-start capitalize">
+      <label className="text-left w-[69%] flex justify-start capitalize font-poppins">
         {title}
       </label>
 
@@ -41,7 +41,7 @@ function OrderDetail({
 }: OrderDetailProps) {
   return (
     <div className="border-[1px] border-[#E6E6E6] bg-white mt-6 w-full p-3 flex flex-col">
-      <h1 className="font-bold text-[1.2rem]">
+      <h1 className="font-bold font-poppins text-[1.2rem]">
         Order details
       </h1>
 
@@ -81,13 +81,8 @@ function OrderDetail({
           <div className="w-[45%] 499:w-[60%]" />
           <div className="flex flex-col w-1/2 gap-1 499:w-[40%]" >
             <AmountRow
-              title='Subtotal (Tax Incl.)'
+              title='Subtotal (VAT Incl.)'
               num={round10(subtotal + taxAmount, -2)}
-            />
-
-            <AmountRow
-              title='Taxes(20%)'
-              num={taxAmount}
             />
 
             <AmountRow

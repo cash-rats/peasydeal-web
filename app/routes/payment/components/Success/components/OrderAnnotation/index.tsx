@@ -10,7 +10,7 @@ interface OrderAnnotationProps {
 
 function Text({ children }: { children: ReactNode }) {
   return (
-    <p className="mt-2 text-center text-base text-[#7f7f7f]">
+    <p className="mt-2 font-poppins text-center text-base text-[#7f7f7f]">
       {children}
     </p>
   )
@@ -26,7 +26,7 @@ function OrderAnnotation({ email, orderUUID }: OrderAnnotationProps) {
         />
       </div>
 
-      <h1 className="text-center font-semibold text-3xl mt-4">
+      <h1 className="text-center font-semibold text-3xl mt-4 font-poppins">
         Your order has been placed
       </h1>
 

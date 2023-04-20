@@ -4,10 +4,10 @@ import { useLoaderData } from '@remix-run/react';
 
 import type { PaymentMethod } from '~/shared/types';
 import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';
+import useComponentDidMountHook from '~/hooks/useComponentDidMound';
 
 import StripePaymentResult from './components/StripePaymentResult';
 import PaypalPaymentResult from './components/PaypalPaymentResult';
-import useComponentDidMountHook from '~/hooks/useComponentDidMound';
 
 type LoaderDataType = {
   paymentMethod: PaymentMethodEnum;

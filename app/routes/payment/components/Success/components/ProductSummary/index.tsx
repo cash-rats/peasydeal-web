@@ -19,7 +19,7 @@ function ProductSummary({ products = [] }: ProductSummaryProps) {
             return (
               <Fragment key={product.product_variation_uuid}>
                 <div className="flex flex-row my-3 mx-0">
-                  <div className="flex-1 flex justify-start flex-col gap-[10px]">
+                  <div className="flex-1 flex justify-start flex-col gap-[10px] font-poppins">
                     <label>
                       {product.order_quantity} X {product.title}
                     </label>
@@ -28,7 +28,7 @@ function ProductSummary({ products = [] }: ProductSummaryProps) {
                     </p>
                   </div>
 
-                  <div className="flex-1 flex justify-end">
+                  <div className="flex-1 flex justify-end font-poppins">
                     ${product.sale_price}
                   </div>
                 </div>

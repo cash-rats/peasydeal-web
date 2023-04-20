@@ -51,6 +51,7 @@ export function createRedisSessionStorage({ cookie }: RedisSessionArguments): Se
       return null;
     },
     async updateData(id, data, expires) {
+      // If session expires, we'll extend the session ttl.
       if (expires) {
         await redis.set(
           id,

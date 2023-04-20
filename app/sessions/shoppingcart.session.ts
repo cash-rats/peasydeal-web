@@ -55,16 +55,15 @@ export const getItemCount = async (request: Request): Promise<number> => {
 export const insertItem = async (request: Request, item: ShoppingCartItem): Promise<Session> => {
   const session = await getCookieSession(request);
   let shoppingCart: ShoppingCart = {};
+
   if (session.has(CartSessionKey)) {
     shoppingCart = session.get(CartSessionKey);
   }
 
-  const newShoppingCart = {
+  session.set(CartSessionKey, {
     ...shoppingCart,
     [item.variationUUID]: item,
-  }
-
-  session.set(CartSessionKey, newShoppingCart);
+  });
   return session;
 };
 
