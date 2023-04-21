@@ -5,14 +5,12 @@ export type StateShape = {
   total: number;
   current: number;
   hasMore: boolean;
-  loading: boolean;
   category: TaxonomyWithParents;
 };
 
 export enum CollectionActionType {
   set_products = 'set_products',
   append_products = 'append_products',
-  set_loading = 'set_loading'
 };
 
 interface ProductsPayload {
@@ -65,12 +63,6 @@ export default function collectionReducer(state: StateShape, action: CollectionA
         current,
         hasMore: current < total,
       };
-    }
-    case CollectionActionType.set_loading: {
-      return {
-        ...state,
-        loading: action.payload as boolean,
-      }
     }
     default:
       return state;

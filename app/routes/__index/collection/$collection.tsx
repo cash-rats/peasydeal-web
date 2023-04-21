@@ -169,7 +169,6 @@ function Collection({ scrollPosition }: CollectionProps) {
     total,
     hasMore,
     category,
-    loading: false,
   });
 
   const { sticky } = useSticky(mobileSubCatHalfSheetRef);
@@ -194,26 +193,6 @@ function Collection({ scrollPosition }: CollectionProps) {
     });
     currPage.current = page;
   }, [category]);
-
-  // useEffect(() => {
-  //   // If we are changing category, toggle loading state.
-  //   if (transition.state === 'idle') {
-  //     dispatch({
-  //       type: CollectionActionType.set_loading,
-  //       payload: false,
-  //     })
-  //   }
-
-  //   if (transition.state === 'loading') {
-  //     dispatch({
-  //       type: CollectionActionType.set_loading,
-  //       payload: true,
-  //     })
-  //   }
-  // }, [
-  //   transition,
-  //   category,
-  // ])
 
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from '@remix-run/react';
 import {
   Button,
@@ -19,7 +19,6 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 }
-
 
 interface IMegaMenu {
   category: Category;
@@ -121,7 +120,6 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
               {
                 category.children.length > 0 && category.children.map((child, index) => {
                   if (child.count === 0) return null;
-
                   return (
                     <div
                       key={index}
@@ -130,7 +128,7 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
                       <Link
                         // prefetch='intent'
                         state={{ scrollToTop: true }}
-                        to={`/${child.name}`}
+                        to={`/collection/${child.name}`}
                         className="w-full self-center"
                         onClick={setClose}
                       >
@@ -155,7 +153,7 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
                               <Link
                                 // prefetch='intent'
                                 state={{ scrollToTop: true }}
-                                to={`/${subChild.name}`}
+                                to={`/collection/${subChild.name}`}
                                 className="w-full self-center"
                                 onClick={setClose}
                               >
