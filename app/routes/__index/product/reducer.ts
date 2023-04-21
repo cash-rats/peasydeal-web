@@ -42,6 +42,7 @@ const reducer = (state: StateShape, action: Action): StateShape => {
       return {
         ...state,
         images: [],
+        categories: data.categories,
         mainCategory: data.categories[0],
         productDetail: { ...data },
         variation: defaultVariation,
