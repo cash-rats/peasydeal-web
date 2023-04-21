@@ -46,7 +46,11 @@ export default function ProductDetailBreadcrumbs({
               ...categories.map((category, idx) => (
                 (
                   <BreadcrumbItem key={`breadcrumb_body_${idx}`}>
-                    <BreadcrumbLink as={NavLink} to={`/${category.name}`} className="font-semibold">
+                    <BreadcrumbLink
+                      as={NavLink}
+                      to={`/collection/${category.name}`}
+                      className="font-semibold"
+                    >
                       {category.label}
                     </BreadcrumbLink>
                   </BreadcrumbItem>

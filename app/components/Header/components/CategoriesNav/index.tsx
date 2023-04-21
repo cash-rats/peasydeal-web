@@ -85,7 +85,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   to={
                     category.type === 'promotion'
                       ? `/promotion/${category.name}`
-                      : `/${category.name}`
+                      : `/collection/${category.name}`
                   }
                   className="self-center"
                 >

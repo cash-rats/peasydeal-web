@@ -109,7 +109,7 @@ const CategoriesRow = () => {
                 return (
                   <div className="inline-block px-3" key={`${category.name}_${index}`}>
                     <Link
-                      to={`/${category.name}`}
+                      to={`/collection/${category.name}`}
                       onClick={() => {
                         window.rudderanalytics?.track('click_shop_by_category', {
                           category: category.name,

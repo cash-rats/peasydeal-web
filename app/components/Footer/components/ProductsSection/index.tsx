@@ -41,7 +41,7 @@ function ProductsSection({ categories = [], showTitle = true }: ProductsSectionP
       <div className="flex flex-col gap-[10px] mt-[10px]">
         {
           categories.map((category, idx) => (
-            <Link key={idx} to={`/${category.name}`}>
+            <Link key={idx} to={`/collection/${category.name}`}>
               <span
                 className="text-base text-white font-normal capitalize"
               >

@@ -56,7 +56,7 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
                 to={
                   category.type === 'promotion'
                     ? `/promotion/${category.name}`
-                    : `/${category.name}`
+                    : `/collection/${category.name}`
                 }
               >
                 <span

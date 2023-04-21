@@ -7,6 +7,7 @@ import { MdFiberNew } from 'react-icons/md';
 import type { Product } from "~/shared/types";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 export interface IProductCard {
+  loading?: boolean;
   product?: Product;
   scrollPosition?: ScrollPosition;
   onClickProduct?: (title: string, productID: string) => void;

@@ -106,7 +106,7 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
                 <Link
                   // prefetch='intent'
                   state={{ scrollToTop: true }}
-                  to={`/${category.name}`}
+                  to={`/collection/${category.name}`}
                   className="w-full self-center"
                   onClick={setClose}
                 >
@@ -147,7 +147,7 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
                         child.children.length > 0 && child.children.map((subChild, _index) => {
                           if (subChild.count === 0) return null;
 
-                        return (
+                          return (
                             <div
                               key={_index}
                               className="flex flex-start py-0 xl:py-1"

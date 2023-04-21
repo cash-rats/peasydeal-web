@@ -2,7 +2,8 @@
  * This component render the modulared products
  * into a product grid
  */
-import { useState, useMemo, useCallback } from 'react';
+import { Skeleton, SkeletonText } from '@chakra-ui/react'
+import { useState, useMemo } from 'react';
 import { Link } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 import { LazyLoadComponent } from "react-lazy-load-image-component";
@@ -66,7 +67,20 @@ const getPriceRow = (salePrice: number, previousRetailPrice: Array<number>) => {
   )
 }
 
+function ProductCardSkeleton() {
+  return (
+    <div className='flex border-lg'>
+      <Skeleton
+        className='w-full'
+        height={[183, 183, 253]}
+      />
+      <SkeletonText mt='4' noOfLines={3} spacing='4' skeletonHeight='2' />
+    </div>
+  )
+}
+
 export default function ProductCard({
+  loading = false,
   product,
   onClickProduct = () => { },
   scrollPosition,
@@ -122,6 +136,12 @@ export default function ProductCard({
   }, [salePrice, retailPrice, hasSuperDeal]);
 
   if (!product) return null;
+
+  if (loading) {
+    return (
+      <ProductCardSkeleton />
+    )
+  }
 
   return (
     <Link

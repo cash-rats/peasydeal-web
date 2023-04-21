@@ -121,7 +121,6 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
   if (actionType === 'load_products') {
     const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
-
     return productsLoader({
       request,
       category: collection,
@@ -170,6 +169,7 @@ function Collection({ scrollPosition }: CollectionProps) {
     total,
     hasMore,
     category,
+    loading: false,
   });
 
   const { sticky } = useSticky(mobileSubCatHalfSheetRef);
@@ -195,6 +195,25 @@ function Collection({ scrollPosition }: CollectionProps) {
     currPage.current = page;
   }, [category]);
 
+  useEffect(() => {
+    // If we are changing category, toggle loading state.
+    if (transition.state === 'idle') {
+      dispatch({
+        type: CollectionActionType.set_loading,
+        payload: false,
+      })
+    }
+
+    if (transition.state === 'loading') {
+      dispatch({
+        type: CollectionActionType.set_loading,
+        payload: true,
+      })
+    }
+  }, [
+    transition,
+    category,
+  ])
 
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
@@ -270,7 +289,7 @@ function Collection({ scrollPosition }: CollectionProps) {
               <BreadcrumbItem key={`collection_breadcrumbs_${p.catId}`}>
                 <BreadcrumbLink
                   as={NavLink}
-                  to={`/${p.name}`}
+                  to={`/collection/${p.name}`}
                   isCurrentPage
                   className="font-semibold !text-[#D02E7D]"
                 >
@@ -282,7 +301,7 @@ function Collection({ scrollPosition }: CollectionProps) {
             <BreadcrumbItem key='collection_breadcrumbs_last'>
               <BreadcrumbLink
                 as={NavLink}
-                to={`/${stateCategory?.name}`}
+                to={`/collection/${stateCategory?.name}`}
                 isCurrentPage
                 className="font-semibold !text-[#D02E7D]"
               >
@@ -349,7 +368,7 @@ function Collection({ scrollPosition }: CollectionProps) {
               </span>
               {
                 category.children.map((subcat, index) => (
-                  subcat.count > 0 ? (<Link to={`/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
+                  subcat.count > 0 ? (<Link to={`/collection/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
                     <Button
                       className="justify-start whitespace-normal w-full"
                       colorScheme="pink"
@@ -383,7 +402,7 @@ function Collection({ scrollPosition }: CollectionProps) {
           <div className="border border-[#d8d8d8] rounded-sm flex flex-col p-4 w-full gap-1">
             {
               parentExist && lastParent !== null ? (
-                <Link to={`/${lastParent.name}`}>
+                <Link to={`/collection/${lastParent.name}`}>
                   <Button className="text-left mb-4" variant="ghost" leftIcon={<VscArrowLeft />}>
                     {`${lastParent.title}`}
                   </Button>
@@ -397,7 +416,7 @@ function Collection({ scrollPosition }: CollectionProps) {
             </span>
             {
               category.children.map((subcat, index) => (
-                subcat.count > 0 ? (<Link to={`/${subcat.name}`} key={`${subcat.name}_${index}`}>
+                subcat.count > 0 ? (<Link to={`/collection/${subcat.name}`} key={`${subcat.name}_${index}`}>
                   <Button
                     className="text-left whitespace-normal"
                     colorScheme="pink"
@@ -418,7 +437,13 @@ function Collection({ scrollPosition }: CollectionProps) {
         </div>
 
         <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          {state.products.length === 0 && (<h2 className="p4 text-center">{stateCategory?.title} has no product, please checkout other categories.</h2>)}
+          {
+            state.products.length === 0 && (
+              <h2 className="p4 text-center">{stateCategory?.title}
+                has no product, please checkout other categories.
+              </h2>
+            )
+          }
           <ProductRowsContainer
             loading={transition.state !== 'idle'}
             products={state.products}

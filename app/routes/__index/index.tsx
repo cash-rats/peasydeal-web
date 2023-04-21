@@ -130,7 +130,7 @@ function Index({ scrollPosition }: IndexProps) {
 					.map((category, index) => {
 						return (
 							<div
-								key={`/${category.name}_${index}`}>
+								key={`/collection/${category.name}_${index}`}>
 								<div className="
 								py-0 px-auto
 								flex flex-col

@@ -1,17 +1,18 @@
 import type { Product, TaxonomyWithParents } from '~/shared/types';
 
-
 export type StateShape = {
   products: Product[];
   total: number;
   current: number;
   hasMore: boolean;
+  loading: boolean;
   category: TaxonomyWithParents;
 };
 
 export enum CollectionActionType {
   set_products = 'set_products',
   append_products = 'append_products',
+  set_loading = 'set_loading'
 };
 
 interface ProductsPayload {
@@ -26,7 +27,7 @@ interface SetProductPayload extends ProductsPayload {
 
 interface CollectionActions {
   type: CollectionActionType;
-  payload: ProductsPayload | SetProductPayload;
+  payload: ProductsPayload | SetProductPayload | boolean;
 }
 
 export default function collectionReducer(state: StateShape, action: CollectionActions): StateShape {
@@ -64,6 +65,12 @@ export default function collectionReducer(state: StateShape, action: CollectionA
         current,
         hasMore: current < total,
       };
+    }
+    case CollectionActionType.set_loading: {
+      return {
+        ...state,
+        loading: action.payload as boolean,
+      }
     }
     default:
       return state;
