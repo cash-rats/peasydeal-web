@@ -17,6 +17,13 @@ export const links: LinksFunction = () => {
   ];
 };
 
+/*
+  @deprecated
+    We quit using LoadingRows for now since `defaultSkeloton` populates only 16 grids
+    which causes `ScrollRestoration` component remembers wrong scroll position before
+    redirecting. This is because 16 grids makes not enough height with the real loaded
+    product height.
+*/
 const LoadingRows = ({ defaultSkeloton = 16 }) => {
   return (
     <div className='
@@ -67,31 +74,27 @@ function ProductRowsContainer({
   return (
     <div className='w-full'>
       {
-        loading
-          ? (<LoadingRows defaultSkeloton={defaultSkeloton} />)
-          : (
-            <div className='w-full max-w-screen-xl mx-auto'>
-              <div className="
+        <div className='w-full max-w-screen-xl mx-auto'>
+          <div className="
                     grid
                     gap-2 md:gap-3 lg:gap-4
                     grid-cols-2 md:grid-cols-3 lg:grid-cols-4
                     mb-2 md:mb-3 lg:mb-4
                   ">
-                {
-                  Object.keys(products).length !== 0 && products.map((product: Product, index) => {
-                    return (
-                      <RegularCardWithActionButton
-                        key={`product-item-${index}-${product.productUUID}`}
-                        product={product}
-                        scrollPosition={scrollPosition}
-                        onClickProduct={onClickProduct}
-                      />
-                    )
-                  })
-                }
-              </div>
-            </div>
-          )
+            {
+              Object.keys(products).length !== 0 && products.map((product: Product, index) => {
+                return (
+                  <RegularCardWithActionButton
+                    key={`product-item-${index}-${product.productUUID}`}
+                    product={product}
+                    scrollPosition={scrollPosition}
+                    onClickProduct={onClickProduct}
+                  />
+                )
+              })
+            }
+          </div>
+        </div>
       }
     </div>
   );

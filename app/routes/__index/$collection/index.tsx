@@ -172,7 +172,7 @@ function Collection({ scrollPosition }: CollectionProps) {
     category,
   });
 
-  const { top, sticky } = useSticky(mobileSubCatHalfSheetRef);
+  const { sticky } = useSticky(mobileSubCatHalfSheetRef);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const subCatRef = useRef(null);
 
