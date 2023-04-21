@@ -195,25 +195,25 @@ function Collection({ scrollPosition }: CollectionProps) {
     currPage.current = page;
   }, [category]);
 
-  useEffect(() => {
-    // If we are changing category, toggle loading state.
-    if (transition.state === 'idle') {
-      dispatch({
-        type: CollectionActionType.set_loading,
-        payload: false,
-      })
-    }
+  // useEffect(() => {
+  //   // If we are changing category, toggle loading state.
+  //   if (transition.state === 'idle') {
+  //     dispatch({
+  //       type: CollectionActionType.set_loading,
+  //       payload: false,
+  //     })
+  //   }
 
-    if (transition.state === 'loading') {
-      dispatch({
-        type: CollectionActionType.set_loading,
-        payload: true,
-      })
-    }
-  }, [
-    transition,
-    category,
-  ])
+  //   if (transition.state === 'loading') {
+  //     dispatch({
+  //       type: CollectionActionType.set_loading,
+  //       payload: true,
+  //     })
+  //   }
+  // }, [
+  //   transition,
+  //   category,
+  // ])
 
   useEffect(() => {
     if (loadmoreFetcher.type === 'done') {
@@ -445,7 +445,10 @@ function Collection({ scrollPosition }: CollectionProps) {
             )
           }
           <ProductRowsContainer
-            loading={transition.state !== 'idle'}
+            loading={
+              transition.state !== 'idle' &&
+              transition.location.pathname.includes('/collection/')
+            }
             products={state.products}
             scrollPosition={scrollPosition}
           />
