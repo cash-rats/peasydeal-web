@@ -237,7 +237,7 @@ function Collection({ scrollPosition }: CollectionProps) {
         page: nextPage.toString(),
         per_page: PAGE_LIMIT.toString(),
       },
-      { action: `/${decodeURI(category)}?index` },
+      { action: `/collection/${decodeURI(category)}?index` },
     );
   };
 
