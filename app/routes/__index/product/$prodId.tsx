@@ -18,6 +18,7 @@ import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { BsLightningCharge } from 'react-icons/bs';
+import { add } from 'date-fns';
 
 import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
 import ClientOnly from '~/components/ClientOnly';
@@ -209,6 +210,7 @@ export const action: ActionFunction = async ({ request }) => {
 	const session = await insertItem(request, cartObj);
 
 	if (formAction === 'add_item_to_cart') {
+		// Invalidates product list pagination cache and shopping cart every 3 days.
 		return json('', {
 			headers: {
 				"Set-Cookie": await commitSession(session),
