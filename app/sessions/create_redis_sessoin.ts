@@ -1,7 +1,6 @@
 import type { SessionIdStorageStrategy, SessionStorage } from "@remix-run/server-runtime";
 import { createSessionStorage } from '@remix-run/node';
 import crypto from "crypto";
-import { addDays } from "date-fns";
 
 import { ioredis as redis } from '~/redis.server';
 import { REDIS_SESSION_TTL } from '~/utils/get_env_source'
