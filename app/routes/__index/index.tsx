@@ -79,9 +79,7 @@ export const CatchBoundary = () => {
 	);
 }
 
-type IndexProps = {
-	categories: Category[];
-} & LazyComponentProps;
+type IndexProps = {} & LazyComponentProps;
 
 function Index({ scrollPosition }: IndexProps) {
 	const {
@@ -94,10 +92,6 @@ function Index({ scrollPosition }: IndexProps) {
 	const handleClickProduct = (productUUID: string) => {
 		console.log('[ga] user clicks on:', productUUID);
 	};
-
-	const handleClickShopNow = (catID: number, catTitle: string) => {
-		console.log('user clicks on:', catID, catTitle);
-	}
 
 	return (
 		<div>

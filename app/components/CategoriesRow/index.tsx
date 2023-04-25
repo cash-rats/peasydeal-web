@@ -1,9 +1,6 @@
 import { useCallback, useRef } from 'react';
 import { Link } from '@remix-run/react';
-import type { Category } from '~/shared/types';
-
 import { IconButton } from '@chakra-ui/react';
-
 import { useOutletContext } from "@remix-run/react";
 import { VscFlame, VscArrowRight, VscArrowLeft } from 'react-icons/vsc';
 import { IoBody, IoSparklesOutline, IoPricetagsOutline } from 'react-icons/io5';
@@ -12,6 +9,9 @@ import { TbToolsKitchen2 } from 'react-icons/tb';
 import { RiShirtFill } from 'react-icons/ri';
 import { GiPearlNecklace, GiFlowerPot, GiLipstick } from 'react-icons/gi';
 import { FcRating, FcSmartphoneTablet, FcHome, FcAutomotive } from 'react-icons/fc';
+
+import type { Category } from '~/shared/types';
+
 
 type ContextType = {
   categories: Category[];
@@ -57,6 +57,7 @@ const iconMapper = (name: string) => {
       return null;
   }
 }
+
 const CategoriesRow = () => {
   const { categories } = useOutletContext<ContextType>();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,8 +68,6 @@ const CategoriesRow = () => {
 
     containerRef!.current.scrollLeft += (toRight ? offset : -offset);
   }, [containerRef]);
-
-  // const scrollOffset = 160;
 
   return (
     <div className='relative w-full bg-slate-50'>
@@ -109,7 +108,12 @@ const CategoriesRow = () => {
                 return (
                   <div className="inline-block px-3" key={`${category.name}_${index}`}>
                     <Link
-                      to={`/collection/${category.name}`}
+                      to={
+                        `/${category.type === 'promotion'
+                          ? 'promotion'
+                          : 'category'
+                        }/${category.name}`
+                      }
                       onClick={() => {
                         window.rudderanalytics?.track('click_shop_by_category', {
                           category: category.name,

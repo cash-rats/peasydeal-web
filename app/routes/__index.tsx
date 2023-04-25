@@ -45,7 +45,6 @@ type ContextType = {
 export const loader: LoaderFunction = async ({ request }) => {
 	try {
 		const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-
 		return json<LoaderType>({
 			categories,
 			navBarCategories,
@@ -65,8 +64,8 @@ export default function Index() {
 	const { submit } = useFetcherWithPromise();
 
 	useEffect(() => {
-    rudderInitialize();
-  }, []);
+		rudderInitialize();
+	}, []);
 
 	const handleSearch = (query: string) => {
 		window.rudderanalytics?.track('search_action_click', {
