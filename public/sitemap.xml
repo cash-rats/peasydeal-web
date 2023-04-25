@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
-    <loc>https://www.peasydeal.com/static_pages.xml</loc>
+    <loc>https://www.peasydeal.com/sitemap/categories.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://www.peasydeal.com/categories.xml</loc>
+    <loc>https://www.peasydeal.com/sitemap/products.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://www.peasydeal.com/products.xml</loc>
+    <loc>https://www.peasydeal.com/sitemap/base_functions.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://www.peasydeal.com/base_functions.xml</loc>
+    <loc>https://www.peasydeal.com/sitemap/promotions.xml</loc>
   </sitemap>
   <sitemap>
-    <loc>https://www.peasydeal.com/promotions.xml</loc>
+    <loc>https://www.peasydeal.com/sitemap/static_pages.xml</loc>
   </sitemap>
 </sitemapindex>
