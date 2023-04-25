@@ -1,14 +1,10 @@
 import { Link } from "@remix-run/react";
 import { VscArrowRight } from "react-icons/vsc";
 
-// interface IPromoActivitiesVariantProps {
-// }
-
 /**
  * a react-remix functional component that renders a flex box div
  */
 const PromoActivitiesVariant = () => {
-
   const promotions = [{
     to: '/promotion/super_deal',
     title1: 'Enjoy extra',
@@ -62,7 +58,7 @@ const PromoActivitiesVariant = () => {
                 flex justify-between p-4 bg-[#D43B33]
                 shadow-[2px_4px_16px_rgb(0,0,0,8%)]
                 hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
-                transition-shadow transition-transform duration-300 ease-in-out
+                transition-transform duration-300 ease-in-out
                 caterogy-card-box
                 cursor-pointer
                 rounded-lg

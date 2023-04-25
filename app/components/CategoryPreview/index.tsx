@@ -44,7 +44,7 @@ export const CategoryPreview = ({
           <Link to={
             type === CategoryType.promotion
               ? `/promotion/${name}`
-              : `/${name}`
+              : `/collection/${name}`
           }>
             <Button
               rightIcon={<VscArrowRight />}
@@ -80,7 +80,7 @@ export const CategoryPreview = ({
         <Link to={
           type === CategoryType.promotion
             ? `/promotion/${name}`
-            : `/${name}`
+            : `/collection/${name}`
         }>
           <Button
             rightIcon={<VscArrowRight />}
