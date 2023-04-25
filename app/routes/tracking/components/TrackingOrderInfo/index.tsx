@@ -300,7 +300,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
         <PriceInfo
           title={(
             <span className="font-poppins text-base text-black capitalize">
-              Subtotal &nbsp;
+              Subtotal (VAT Incl.) &nbsp;
             </span>
           )}
           priceInfo={(
@@ -311,21 +311,6 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
         />
 
         <div className="mt-2 border-b-[1px] border-border-color pb-4 flex flex-col gap-[0.3rem]">
-          <PriceInfo
-            title={(
-              <span className="flex flex-row items-center">
-                <span className="font-poppins mr-1">
-                  Tax
-                </span>
-                <Tooltip title="20% VAT" hasArrow>
-                  <span>
-                    <BsFillInfoCircleFill />
-                  </span>
-                </Tooltip>
-              </span>
-            )}
-            priceInfo={`+ £${state.orderInfo.tax_amount}`}
-          />
           <PriceInfo
             title='Shipping Fee'
             priceInfo={`+ £${state.orderInfo.shipping_fee}`}
