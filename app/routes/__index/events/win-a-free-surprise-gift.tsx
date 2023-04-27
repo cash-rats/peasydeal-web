@@ -1,6 +1,9 @@
 import type { LinksFunction } from '@remix-run/node';
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import CountDown, { links as CountDownLinks } from "./components/countdown/CountDown";
+import { trackWindowScroll, LazyLoadComponent } from "react-lazy-load-image-component";
+import type { ScrollPosition } from 'react-lazy-load-image-component';
+import Image, { MimeType } from "remix-image"
 import {
   Link,
 } from '@remix-run/react';
@@ -10,6 +13,7 @@ import {
   chakra,
   useColorModeValue,
 } from '@chakra-ui/react'
+import { DOMAIN } from '~/utils/get_env_source';
 import useSticky from "../hooks/useSticky";
 import { useScrollSpy } from '../hooks/useScrollSpy';
 
@@ -30,12 +34,15 @@ export const links: LinksFunction = () => {
   ];
 };
 
-const getItemCard = ({ price, name, link, image }) => {
+const ItemCard = ({ item, scrollPosition }) => {
+  const [loaded, setLoaded] = useState<Boolean>(false);
+  const { price, name, link, image } = item;
+
   return (
     <Link to={`${link}`}>
       <div className='flex flex-col justify-center max-w-[250px]'>
         <div
-          className='rounded-xl min-h-[280px] flex flex-col justify-center items-center p-2'
+          className='rounded-xl flex flex-col justify-center items-center p-2'
           style={{
             background: `url(${cardBG})`,
             backgroundSize: 'cover',
@@ -44,12 +51,53 @@ const getItemCard = ({ price, name, link, image }) => {
           }}
         >
           <p className='text-[#92CEFB] text-xl font-black font-poppins py-2 mx-auto'>FREE</p>
-          <div className='rounded-xl min-h-[220px] w-full bg-white mx-4'>
+          {/* <div className='rounded-xl min-h-[220px] w-full bg-white mx-4'>
             {
               image && (
-                <img src={image} alt={name} className='rounded-xl min-h-[220px] min-w-[220px]' />
+                <img
+                  src={image}
+                  alt={name}
+                  className='rounded-xl min-w-[220px]'
+                />
               )
             }
+          </div> */}
+
+          <div className={`rounded-xl bg-white ${loaded ? 'h-full' : 'h-[183px] md:h-[253px]'}`} >
+            <LazyLoadComponent
+              threshold={500}
+              scrollPosition={scrollPosition}
+            >
+              <Image
+                blurDataURL={`${loaded
+                  ? `${DOMAIN}/images/placeholder_transparent.png`
+                  : `${DOMAIN}/images/placeholder.svg`
+                  }`}
+                placeholder={loaded ? 'empty' : 'blur'}
+                placeholderAspectRatio={1}
+                onLoadingComplete={(naturalDimensions) => {
+                  setLoaded(true);
+                }}
+                options={{
+                  contentType: MimeType.WEBP,
+                  fit: 'contain',
+                }}
+                className="
+                aspect-square
+                min-w-0 min-h-0
+              "
+                loaderUrl='/remix-image'
+                src={image}
+                responsive={[
+                  {
+                    size: {
+                      width: 274,
+                      height: 274,
+                    },
+                  },
+                ]}
+              />
+            </LazyLoadComponent>
           </div>
         </div>
         <div className='flex mt-2 mx-auto'>
@@ -65,41 +113,48 @@ const getItemCard = ({ price, name, link, image }) => {
             FREE
           </span>
         </div>
-        <p className='text-xl font-poppins py-2 mx-auto text-center'>{name}</p>
+        <p className='text-md md:text-xl font-poppins py-2 mx-auto text-center'>{name}</p>
       </div>
     </Link>
   )
 }
 
-const getTierCards = () => {
+const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
   return (
-    Object.keys(prizes).map((tier: string, index) => {
-      return (
-        <div className='max-w-7xl mx-auto px-5 md:px-12 mb-8' key={`tier-category-${index}`}>
-          <div className='rounded-2xl bg-gradient-to-b from-pink-100 to-fuchsia-0 min-h-[400px] w-full p-6 sm:px-6 lg:px-8 sm:py-8 flex flex-col'>
-            <h3
-              className="text-xl text-xl md:text-2xl lg:text-3xl font-black text-[#25276C] font-poppins mb-8 lg:mb-10"
-            >
-              <span className='bg-[#25276C] rounded-xl py-2 px-4 mr-4 text-white'>TIER {tier}</span>
-              Spend <span className='rounded-xl py-2 px-4 text-white bg-[#D02E7D] mx-2'>£{prizes[tier]['threshhold']}+</span> get <span className='text-[#D02E7D]'>1</span> random gift worth <span className='rounded-xl py-2 px-4 text-white bg-[#D02E7D] mx-2'>£{prizes[tier]['worthUpTo']}</span>
-            </h3>
-            <div className='
-              grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
-            '>
-              {
-                prizes[tier]['items'].map((item: any) => {
-                  return (getItemCard(item))
-                })
-              }
+    <>
+      { Object.keys(prizes).map((tier: string, index) => {
+        return (
+          <div className='max-w-7xl mx-auto px-2 md:px-12 mb-8' key={`tier-category-${index}`}>
+            <div className='rounded-2xl bg-gradient-to-b from-pink-100 to-fuchsia-0 min-h-[400px] w-full px-2 md:px-6 lg:px-8 sm:py-8 flex flex-col'>
+              <h3
+                className="text-xl text-xl md:text-2xl lg:text-3xl font-black text-[#25276C] font-poppins mb-8 lg:mb-10"
+              >
+                <span className='bg-[#25276C] rounded-xl py-2 px-4 mr-4 text-white'>TIER {tier}</span>
+                Spend <span className='rounded-xl py-2 px-4 text-white bg-[#D02E7D] mx-2'>£{prizes[tier]['threshhold']}+</span> get <span className='text-[#D02E7D]'>1</span> random gift worth <span className='rounded-xl py-2 px-4 text-white bg-[#D02E7D] mx-2'>£{prizes[tier]['worthUpTo']}</span>
+              </h3>
+              <div className='
+                grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
+              '>
+                {
+                  prizes[tier]['items'].map((item: any) => (
+                    <ItemCard
+                      key={item.name}
+                      item={item}
+                      scrollPosition={scrollPosition}
+                    />
+                  ))
+                }
+              </div>
             </div>
           </div>
-        </div>
-      )
-    })
+        )
+      })
+    }
+    </>
   )
 }
 
-const EventsEasterHunter = () => {
+const EventsEasterHunter = ({ scrollPosition }) => {
   const headings = [
     {
       name: 'How it works',
@@ -320,11 +375,11 @@ const EventsEasterHunter = () => {
           <h2 className="text-4xl sm:text-5xl mb-8 font-bold text-center ">Sneak a Peek of Your Gifts</h2>
         </div>
 
-        <p className="leading-relaxed mt-2 mb-8 text-lg sm:text-2xl my-4 text-center mx-auto max-w-3xl">
+        <p className="leading-relaxed px-5 md:px-12 mt-2 mb-8 text-lg sm:text-2xl my-4 text-center mx-auto max-w-3xl">
           Discover the exciting items you could receive in each tier!
         </p>
         {
-          getTierCards()
+          <TierCards scrollPosition={scrollPosition} />
         }
       </div>
 
@@ -405,4 +460,4 @@ const EventsEasterHunter = () => {
   );
 }
 
-export default EventsEasterHunter;
+export default trackWindowScroll(EventsEasterHunter);
