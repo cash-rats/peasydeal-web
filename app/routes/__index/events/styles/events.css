@@ -17,6 +17,7 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shad-anim 100s linear infinite;
+  width: 100%;
 }
 
 @keyframes shad-anim {

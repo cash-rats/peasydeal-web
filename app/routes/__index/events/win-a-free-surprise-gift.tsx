@@ -1,5 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import CountDown, { links as CountDownLinks } from "./components/countdown/CountDown";
 import { trackWindowScroll, LazyLoadComponent } from "react-lazy-load-image-component";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
@@ -42,7 +42,7 @@ const ItemCard = ({ item, scrollPosition }) => {
     <Link to={`${link}`}>
       <div className='flex flex-col justify-center max-w-[250px]'>
         <div
-          className='rounded-xl flex flex-col justify-center items-center p-2'
+          className='rounded-xl flex flex-col justify-center items-center p-1 md:p-2'
           style={{
             background: `url(${cardBG})`,
             backgroundSize: 'cover',
@@ -50,19 +50,7 @@ const ItemCard = ({ item, scrollPosition }) => {
             backgroundRepeat: 'no-repeat',
           }}
         >
-          <p className='text-[#92CEFB] text-xl font-black font-poppins py-2 mx-auto'>FREE</p>
-          {/* <div className='rounded-xl min-h-[220px] w-full bg-white mx-4'>
-            {
-              image && (
-                <img
-                  src={image}
-                  alt={name}
-                  className='rounded-xl min-w-[220px]'
-                />
-              )
-            }
-          </div> */}
-
+          <p className='text-[#92CEFB] text-xl font-black font-poppins py-0 md:py-2 mx-auto'>FREE</p>
           <div className={`rounded-xl bg-white ${loaded ? 'h-full' : 'h-[183px] md:h-[253px]'}`} >
             <LazyLoadComponent
               threshold={500}
@@ -70,9 +58,9 @@ const ItemCard = ({ item, scrollPosition }) => {
             >
               <Image
                 blurDataURL={`${loaded
-                  ? `${DOMAIN}/images/placeholder_transparent.png`
-                  : `${DOMAIN}/images/placeholder.svg`
-                  }`}
+                  ? `/images/placeholder_transparent.png`
+                  : `/images/placeholder.jpg`
+                }`}
                 placeholder={loaded ? 'empty' : 'blur'}
                 placeholderAspectRatio={1}
                 onLoadingComplete={(naturalDimensions) => {
@@ -85,6 +73,7 @@ const ItemCard = ({ item, scrollPosition }) => {
                 className="
                 aspect-square
                 min-w-0 min-h-0
+                rounded-xl
               "
                 loaderUrl='/remix-image'
                 src={image}
@@ -100,20 +89,24 @@ const ItemCard = ({ item, scrollPosition }) => {
             </LazyLoadComponent>
           </div>
         </div>
-        <div className='flex mt-2 mx-auto'>
+        <div className='flex ml-2 mt-2 mr-auto md:mx-auto'>
           <span
             className='flex relative mr-2 font-medium'
           >
-            <span className="text-2xl">
+            <span className="text-base md:text-xl lg:text-2xl">
               £{price}
             </span>
-            <span className='block w-full h-[3px] absolute top-[50%] bg-black' />
+            <span className='block w-full h-[1px] md:h-[3px] absolute top-[50%] bg-black' />
           </span>
-          <span className="text-2xl font-poppins font-bold text-[#D02E7D] mr-2">
+          <span className="text-base md:text-xl lg:text-2xl font-poppins font-bold text-[#D02E7D] mr-2">
             FREE
           </span>
         </div>
-        <p className='text-md md:text-xl font-poppins py-2 mx-auto text-center'>{name}</p>
+        <p className='
+          text-sm md:text-md lg:text-lg font-poppins text-left md:text-center
+          leading-6 md:leading-8
+          py-2 ml-2
+          md:mx-auto'>{name}</p>
       </div>
     </Link>
   )
@@ -125,13 +118,28 @@ const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
       { Object.keys(prizes).map((tier: string, index) => {
         return (
           <div className='max-w-7xl mx-auto px-2 md:px-12 mb-8' key={`tier-category-${index}`}>
-            <div className='rounded-2xl bg-gradient-to-b from-pink-100 to-fuchsia-0 min-h-[400px] w-full px-2 md:px-6 lg:px-8 sm:py-8 flex flex-col'>
+            <div className='rounded-2xl bg-gradient-to-b from-pink-100 to-fuchsia-0 min-h-[400px] w-full p-2 md:px-6 lg:px-8 sm:py-8 flex flex-col'>
               <h3
-                className="text-xl text-xl md:text-2xl lg:text-3xl font-black text-[#25276C] font-poppins mb-8 lg:mb-10"
+                className="
+                  hidden md:block
+                  text-xl text-xl md:text-2xl lg:text-3xl
+                  font-black text-[#25276C] font-poppins mb-10 xl:mb-10
+                "
               >
                 <span className='bg-[#25276C] rounded-xl py-2 px-4 mr-4 text-white'>TIER {tier}</span>
                 Spend <span className='rounded-xl py-2 px-4 text-white bg-[#D02E7D] mx-2'>£{prizes[tier]['threshhold']}+</span> get <span className='text-[#D02E7D]'>1</span> random gift worth <span className='rounded-xl py-2 px-4 text-white bg-[#D02E7D] mx-2'>£{prizes[tier]['worthUpTo']}</span>
               </h3>
+
+              <div className='flex flex-col md:hidden text-center'>
+                {/* <div className='bg-[#25276C] rounded-xl py-2 px-4 flex-1 my-2 text-white'>
+                  TIER {tier}
+                </div> */}
+                <h3 className='text-2xl font-bold pt-4 pb-6'>
+                  Spend <span className='text-[#D02E7D]'>£{prizes[tier]['threshhold']}+</span><br/>
+                  Get <span className='text-[#D02E7D]'>1</span> random gift worth <span className='text-[#D02E7D]'>£{prizes[tier]['worthUpTo']}</span>
+                </h3>
+              </div>
+
               <div className='
                 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4
               '>
@@ -181,6 +189,19 @@ const EventsEasterHunter = ({ scrollPosition }) => {
     },
   )
 
+  const onNavLinkClick = useCallback((id: string) => {
+    if (typeof document === 'undefined') return;
+
+    const tEl = document.getElementById(id);
+    if (tEl) {
+      const headerOffset = 126;
+      const elementPosition = tEl.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({ behavior: 'smooth', top: offsetPosition });
+    }
+  }, [])
+
   return (
     <div className="mt-[-7px] md:mt-[-32px] lg:mt-[-15px]">
       <section
@@ -197,7 +218,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
               May 01 to May 31
             </p>
 
-            <CountDown countdown="2023-05-15T00:00:00.000Z"/>
+            <CountDown countdown="2023-06-01T00:00:00.000Z"/>
 
             <h1
               data-shadow="Get a Free Gift with Your Purchase!"
@@ -213,6 +234,9 @@ const EventsEasterHunter = ({ scrollPosition }) => {
           <div className="flex mt-4 flex-col sm:flex-row mx-auto justify-center gap-y-2 sm:gap-y-0 max-w-2xl gap-x-2 items-center px-4">
             <button
               className="rounded-lg py-4 whitespace-nowrap px-6 sm:px-12 text-base font-bold lg:text-xl text-white shadow-lg hover:opacity-90 transition focus-visible:outline focus-visible:outline-2 w-full sm:w-fit focus-visible:outline-offset-2 focus-visible:outline-white bg-[#d02e7d]"
+              onClick={() => {
+                onNavLinkClick('gift-tiers')
+              }}
             >
               See what you can get!
             </button>
@@ -220,22 +244,23 @@ const EventsEasterHunter = ({ scrollPosition }) => {
         </section>
       </section>
 
-      {/* <div className="bg-gradient-to-b bg-gradient-to-r bg-gradient-to-r from-pink-500 to-yellow-500 bg-clip-text py-10 sm:py-10">
-        <p className="font-bold text-center text-xl md:text-2xl px-4 bg-gradient-to-r from-white-0 to-white-100 bg-clip-text text-transparent">
-          Hurry Up, ending soon! Suprise Gift Hunt (Apr 15 - May 15)
-        </p>
-      </div> */}
-
       <nav
-        className='z-10 top-[56px] md:top-[122px] lg:top-[126px]'
+        className='z-10 top-[58px] md:top-[120px] lg:top-[126px]'
         style={{ position: sticky ? 'sticky' : 'static', top: '58px' }}
       >
+        <div className='lg:hidden flex justify-between shadow-lg bg-[#393939] text-white py-1 px-2'>
+          <div className='flex flex-col font-poppin text-sm justify-center'>
+            <span>HURRY UP!</span>
+            <span>DEAL ENDS IN</span>
+          </div>
+          <CountDown countdown="2023-06-01T00:00:00.000Z" noStyle />
+        </div>
         <OrderedList className="sticky top-0 z-10 bg-white shadow-lg" ml='0' styleType='none'>
           <ListItem className="flex justify-center">
             {
               headings.map(({ name, id }) => (
                 <chakra.a
-                  className="py-4 px-6 text-lg transition"
+                  className="py-2 px-3 text-md md:py-4 md:px-6 md:text-lg transition"
                   key={id}
                   py='1'
                   display='block'
@@ -243,16 +268,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
                   href={`#${id}`}
                   onClick={(e) => {
                     e.preventDefault();
-                    if (typeof document === 'undefined') return;
-
-                    const tEl = document.getElementById(id);
-                    if (tEl) {
-                      const headerOffset = 126;
-                      const elementPosition = tEl.getBoundingClientRect().top;
-                      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-                      window.scrollTo({ behavior: 'smooth', top: offsetPosition });
-                    }
+                    onNavLinkClick(id);
                   }}
                   aria-current={id === activeId ? 'location' : undefined}
                   color={id === activeId ? 'pink.800' : 'pink.400'}
@@ -296,7 +312,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
                     style={{ color: '#251629' }}>
                     Tiered Gifts
                   </h3>
-                  <p className="sm:leading-relaxed mt-2 text-lg sm:text-2xl max-w-2xl">Get a free gift with your purchase of $20, $40, $60, or $80 or more.</p>
+                  <p className="sm:leading-relaxed mt-2 text-lg sm:text-2xl max-w-2xl">Get a free gift with your purchase of $20, $50, $80, or $100+.</p>
                 </div>
                 <img src={iconTier} alt="Tiered Gifts Icon" className='pl-4 ml-auto max-w-[100px] md:max-w-[150px] max-h-[100px] md:max-h-[150px] self-center' />
               </div>
@@ -316,7 +332,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
                     style={{ color: '#251629' }}>
                     Random Selection
                   </h3>
-                  <p className="sm:leading-relaxed mt-2 text-lg sm:text-2xl max-w-2xl">All gifts are randomly selected from a set of 5 items per tier.</p>
+                  <p className="sm:leading-relaxed mt-2 text-lg sm:text-2xl max-w-2xl">All gifts are randomly selected from a set of 6-9 items per tier.</p>
                 </div>
                 <img src={iconGift} alt="Random Selection Icon" className='pl-4 ml-auto max-w-[100px] md:max-w-[150px] max-h-[100px] md:max-h-[150px] self-center' />
               </div>
@@ -431,11 +447,11 @@ const EventsEasterHunter = ({ scrollPosition }) => {
           <div className="col-span-2 space-y-16">
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>When does the campaign end?</h3>
-              <p className="text-lg text-slate-800/80 sm:text-xl">The campaign is valid until the end of this month.</p>
+              <p className="text-lg text-slate-800/80 sm:text-xl">The campaign is valid until the end of May, 2023.</p>
             </div>
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>Can I choose my gift?</h3>
-              <p className="text-lg text-slate-800/80 sm:text-xl">No, all gifts are randomly selected from a set of 5 items per tier.</p>
+              <p className="text-lg text-slate-800/80 sm:text-xl">No, all gifts are randomly selected from a set of 6-9 items per tier.</p>
             </div>
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>Are there any restrictions on the gifts?</h3>
@@ -443,7 +459,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
             </div>
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>How many gifts can I get?</h3>
-              <p className="text-lg text-slate-800/80 sm:text-xl">You can get one gift per tier you qualify for.</p>
+              <p className="text-lg text-slate-800/80 sm:text-xl">You can get one gift per tier you qualify for per order.</p>
             </div>
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>How do I know which tier I qualify for?</h3>

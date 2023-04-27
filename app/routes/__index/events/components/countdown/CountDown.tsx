@@ -8,6 +8,34 @@ export const links: LinksFunction = () => {
 		{ rel: 'stylesheet', href: styles },
 	];
 }
+function NoStyleCountdownTracker({ label, value }) {
+  const [currentValue, setCurrentValue] = useState(value);
+
+  useEffect(() => {
+    const update = (val: string) => {
+      val = ('0' + val).slice(-2);
+      if (val !== currentValue) {
+        setCurrentValue(val);
+      }
+    };
+
+    update(value);
+  }, [currentValue, value]);
+
+  return (
+    <span className="mx-auto flex flex-col justify-center mx-2">
+      <b className="text-base text-center">
+        <b className="">{ currentValue }</b>
+        <b className="" data-value={currentValue > 0 ? currentValue : ''}></b>
+        <b className="" data-value={currentValue > 0 ? currentValue : ''}>
+          <b className="" data-value={currentValue > 0 ? currentValue : ''}></b>
+        </b>
+      </b>
+      <span className="text-md text-center">{label}</span>
+    </span>
+  );
+
+}
 
 function CountdownTracker({ label, value }) {
   const [currentValue, setCurrentValue] = useState(value);
@@ -60,26 +88,18 @@ function getTimeRemaining(endtime: string) {
     Total: t,
     Days: Math.floor(t / (1000 * 60 * 60 * 24)),
     Hours: Math.floor((t / (1000 * 60 * 60)) % 24),
-    Minutes: Math.floor((t / 1000 / 60) % 60),
-    Seconds: Math.floor((t / 1000) % 60),
-  };
-}
-
-function getTime() {
-  const t = new Date();
-  return {
-    Hours: t.getHours() % 12,
-    Minutes: t.getMinutes(),
-    Seconds: t.getSeconds(),
+    Min: Math.floor((t / 1000 / 60) % 60),
+    Sec: Math.floor((t / 1000) % 60),
   };
 }
 
 interface IClock {
   countdown: string;
   onCountdownComplete?: () => void;
+  noStyle?: boolean;
 }
 
-const Clock = ({ countdown, onCountdownComplete = () => {} }: IClock) => {
+const Clock = ({ countdown, onCountdownComplete = () => {}, noStyle = false }: IClock) => {
   const [time, setTime] = useState(getTimeRemaining(countdown));
 
   useEffect(() => {
@@ -100,6 +120,15 @@ const Clock = ({ countdown, onCountdownComplete = () => {} }: IClock) => {
 
     return () => clearInterval(timeInterval);
   }, [countdown, onCountdownComplete]);
+
+  if (noStyle) return (
+    <div className='inline-flex gap-2'>
+      {Object.entries(time).map(([key, value]) => {
+        if (key === 'Total') return null;
+        return (<NoStyleCountdownTracker key={key} label={key} value={value} />)
+      })}
+    </div>
+  );
 
   return (
     <div className="flip-clock flex gap-3 justify-center items-center">
