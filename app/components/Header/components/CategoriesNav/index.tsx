@@ -79,7 +79,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
             {
               topCategories.map((category, index) => (
                 <Link
-                  replace
                   key={`${index}_menu_link`}
                   state={{ scrollToTop: true }}
                   to={
