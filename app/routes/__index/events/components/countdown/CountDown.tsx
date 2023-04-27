@@ -37,7 +37,7 @@ function CountdownTracker({ label, value }) {
 
   return (
     <span className="flip-clock__piece mx-auto">
-      <b className="flip-clock__card card">
+      <b className="flip-clock__card card text-[40px] md:text-[88px] lg:text-[100px]">
         <b className="card__top">{ currentValue }</b>
         <b className="card__bottom" data-value={currentValue > 0 ? currentValue : ''}></b>
         <b className="card__back" data-value={currentValue > 0 ? currentValue : ''}>

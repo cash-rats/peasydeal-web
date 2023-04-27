@@ -3,6 +3,7 @@ html {
   /* Fallback CSS for IE 4-6 and older browsers. Note: Without this setting, body below cannot achieve 100% height. */
   height: 100vh;
   /* Overrides 100% height in modern HTML5 browsers and uses the viewport's height. Only works in modern HTML5 browsers */
+  scroll-behavior: smooth;
 }
 
 body {
