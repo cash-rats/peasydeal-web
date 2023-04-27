@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from '@remix-run/node';
 import { useCallback, useRef, useState } from "react";
 import CountDown, { links as CountDownLinks } from "./components/countdown/CountDown";
 import { trackWindowScroll, LazyLoadComponent } from "react-lazy-load-image-component";
@@ -13,7 +13,6 @@ import {
   chakra,
   useColorModeValue,
 } from '@chakra-ui/react'
-import { DOMAIN } from '~/utils/get_env_source';
 import useSticky from "../hooks/useSticky";
 import { useScrollSpy } from '../hooks/useScrollSpy';
 
@@ -32,6 +31,13 @@ export const links: LinksFunction = () => {
     ...CountDownLinks(),
     { rel: 'stylesheet', href: styles }
   ];
+};
+
+export const meta: MetaFunction = ({ data, params }) => {
+  return {
+    title: "Win a Free Surprise Gift on every purchase above £20",
+    description: "Shop with us and get surprised with amazing gifts! Our tier-based surprise gift event is here and it's waiting for you! The more you spend, the better your gift! Don't Miss Out on Our PeasyDeal Surprise Gift Event",
+  }
 };
 
 const ItemCard = ({ item, scrollPosition }) => {
@@ -104,6 +110,7 @@ const ItemCard = ({ item, scrollPosition }) => {
         </div>
         <p className='
           text-sm md:text-md lg:text-lg font-poppins text-left md:text-center
+          font-medium md:font-normal
           leading-6 md:leading-8
           py-2 ml-2
           md:mx-auto'>{name}</p>
