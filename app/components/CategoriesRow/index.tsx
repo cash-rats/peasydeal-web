@@ -111,7 +111,7 @@ const CategoriesRow = () => {
                       to={
                         `/${category.type === 'promotion'
                           ? 'promotion'
-                          : 'category'
+                          : 'collection'
                         }/${category.name}`
                       }
                       onClick={() => {
