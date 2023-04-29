@@ -300,9 +300,11 @@ const EventsEasterHunter = ({ scrollPosition }) => {
           <h2 className="text-4xl sm:text-5xl mb-8 font-bold text-center ">How it works</h2>
         </div>
 
-        <p className="leading-relaxed mt-2 mb-8 text-lg sm:text-2xl my-4 text-center mx-auto max-w-3xl">
-          The more you spend, the better your surprise gift! And, yes, even shipping is FREE.
-        </p>
+        <div className='max-w-7xl mx-2'>
+          <p className="leading-relaxed  mt-2 mb-8 text-lg sm:text-2xl my-4 text-center mx-auto max-w-3xl">
+            The more you spend, the better your surprise gift! And, yes, even shipping is FREE for this gift.
+          </p>
+        </div>
         <section className="max-w-7xl px-5 md:px-12 mx-auto">
           <div className="flex flex-wrap gap-8">
             <div
@@ -319,7 +321,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
                     style={{ color: '#251629' }}>
                     Tiered Gifts
                   </h3>
-                  <p className="sm:leading-relaxed mt-2 text-lg sm:text-2xl max-w-2xl">Get a free gift with your purchase of $20, $50, $80, or $100+.</p>
+                  <p className="sm:leading-relaxed mt-2 text-lg sm:text-2xl max-w-2xl">Get a free gift with your purchase of $20, $50, $80, or $100+ *</p>
                 </div>
                 <img src={iconTier} alt="Tiered Gifts Icon" className='pl-4 ml-auto max-w-[100px] md:max-w-[150px] max-h-[100px] md:max-h-[150px] self-center' />
               </div>
@@ -385,6 +387,10 @@ const EventsEasterHunter = ({ scrollPosition }) => {
               </div>
             </div>
           </div>
+
+          <div className='mt-4'>
+            <small className='font-[12px] leading-5 font-slate-400'>* Order amount (excl. shipping fees) must meet or exceed the minimum amount for each tier to qualify for the corresponding gift. </small>
+          </div>
         </section>
       </div>
 
@@ -407,9 +413,9 @@ const EventsEasterHunter = ({ scrollPosition }) => {
       </div>
 
       {/* Email lead */}
-      <div className="py-20 bg-[#efefef]">
+      <div className="py-8 md:py-15 lg:py-20 bg-[#efefef]">
         <section className="relative">
-          <h2 className="mb-4 px-5 sm:text-center font-custom text-3xl font-bold max-w-4xl md:leading-tight mx-auto">
+          <h2 className="mb-4 px-5 text-center font-custom text-3xl font-bold max-w-4xl md:leading-tight mx-auto">
             Like this event?
           </h2>
           <p className="leading-relaxed mt-4 text-lg sm:text-2xl my-4 text-center mx-auto max-w-3xl">
@@ -453,12 +459,20 @@ const EventsEasterHunter = ({ scrollPosition }) => {
           </div>
           <div className="col-span-2 space-y-16">
             <div className="">
+              <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>Does shipping fees count towards the tier threshold?</h3>
+              <p className="text-lg text-slate-800/80 sm:text-xl">No, items' amount (excluding shipping fees) must meet or exceed the minimum amount for each tier to qualify for the corresponding gift.</p>
+            </div>
+            <div className="">
+              <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>How do I know which tier I qualify for?</h3>
+              <p className="text-lg text-slate-800/80 sm:text-xl">Your gift will be determined by the total amount of your purchase.</p>
+            </div>
+            <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>When does the campaign end?</h3>
-              <p className="text-lg text-slate-800/80 sm:text-xl">The campaign is valid until the end of May, 2023.</p>
+              <p className="text-lg text-slate-800/80 sm:text-xl">The campaign is valid from <b className='text-pink-500'>May 01, 2023 to May 31, 2023.</b></p>
             </div>
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>Can I choose my gift?</h3>
-              <p className="text-lg text-slate-800/80 sm:text-xl">No, all gifts are randomly selected from a set of 6-9 items per tier.</p>
+              <p className="text-lg text-slate-800/80 sm:text-xl">No, all gifts are <b className='text-pink-500'>randomly</b> selected from a set of 6-9 items per tier.</p>
             </div>
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>Are there any restrictions on the gifts?</h3>
@@ -467,10 +481,6 @@ const EventsEasterHunter = ({ scrollPosition }) => {
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>How many gifts can I get?</h3>
               <p className="text-lg text-slate-800/80 sm:text-xl">You can get one gift per tier you qualify for per order.</p>
-            </div>
-            <div className="">
-              <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>How do I know which tier I qualify for?</h3>
-              <p className="text-lg text-slate-800/80 sm:text-xl">Your gift will be determined by the total amount of your purchase.</p>
             </div>
             <div className="">
               <h3 className="text-2xl sm:text-2xl mb-2 font-bold" style={{ color: '#251629' }}>Does the purchase include sales tax?</h3>
