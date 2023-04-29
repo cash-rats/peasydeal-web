@@ -102,7 +102,7 @@ function GlobalSplatFourOhFour() {
   }
 
   return (
-    <div className="pt-48 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light">
+    <div className="pt-48 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light w-full">
       <MobileSearchDialog
         onBack={handleClose}
         isOpen={openSearchDialog}

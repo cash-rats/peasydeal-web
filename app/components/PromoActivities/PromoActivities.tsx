@@ -1,31 +1,48 @@
 import { Link } from '@remix-run/react';
 import type { TPromotionType } from '~/shared/types';
 
-import ImageBannerSuperDeal from './ImageBannerSuperDeal';
-import ImageBannerDealUnder15 from './ImageBannerDealUnder15';
-import ImageBannerLatestNewDeal from './ImageBannerLatestNewDeal';
-import ImageBannerLaunchSales from './ImageBannerLaunchSales';
+import { VscChevronRight } from "react-icons/vsc";
 
 interface IPromoActivities {
   promotions: TPromotionType[];
 };
 
-const getImageBanner = (name: string) => {
-  switch (name) {
+
+const getPromotionInfo = (name: string) => {
+switch (name) {
     case 'super_deal':
-      return <ImageBannerSuperDeal name={name} />;
+      return {
+        title: 'Super Deal',
+        description: 'Extra 10% OFF',
+      };
     case 'deal_under_15':
-      return <ImageBannerDealUnder15 name={name} />;
+      return {
+        title: 'All deal under £15',
+        description: 'Shop smart',
+      };
     case 'new_arrival':
-      return <ImageBannerLatestNewDeal name={name} />;
+      return {
+        title: 'New Arrival',
+        description: 'Up to 65%+ OFF',
+      };
     case 'launch_sales':
-      return <ImageBannerLaunchSales name={name} />;
+      return {
+        title: 'Launch Sale',
+        description: 'Up to 65%+ OFF',
+      };
+    default:
+      return {
+        title: '',
+        description: '',
+      };
   }
 }
 
 export default function PromoActivities({ promotions = [] }: IPromoActivities) {
   return (
     <div className='
+      max-w-screen-xl mx-auto
+      p-2
       grid
       gap-2 md:gap-3 lg:gap-4
       grid-cols-2 md:grid-cols-4
@@ -37,19 +54,23 @@ export default function PromoActivities({ promotions = [] }: IPromoActivities) {
           } = promotion;
 
           return (
-            <div
-              className='
-                flex-auto rounded-lg overflow-hidden
-                shadow-[2px_4px_16px_rgb(0,0,0,0%)]
-                hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
-                transition-shadow duration-300 ease-in-out
-              '
-              key={`${index}_promotion_activities`}
-            >
-              <Link to={`/promotion/${name}`}>
-                {getImageBanner(name)}
-              </Link>
-            </div>
+            <>
+              <div>
+                <Link to={`/promotion/${name}`} key={`${index}_promotion_activities`}>
+                  <div className='
+                    bg-white rounded-lg p-2 md:p-4 h-full
+                    transition ease-in-out
+                    hover:-translate-y-1 duration-150
+                  '>
+                    <h3 className='text-[#B02E28] text-lg md:text-xl font-bold font-poppins'>{getPromotionInfo(name).description}</h3>
+                    <div className='flex items-center justify-between mt-2'>
+                      <span className='text-base md:text-xl font-black font-poppins'>{getPromotionInfo(name).title}</span>
+                      <span><VscChevronRight className='text-2xl'/></span>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </>
           )
         })
       }

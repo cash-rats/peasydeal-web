@@ -1,10 +1,6 @@
 import { Link } from '@remix-run/react';
 import type { LinksFunction } from '@remix-run/node';
 
-import ImageSuperDealDiscount from './ImageSuperDealDiscount';
-import ImageGrandOpeningDiscount from './ImageGrandOpeningDiscount';
-import ImageCategoryExtraDiscount from './ImageCategoryExtraDiscount';
-
 import styles from './styles/allTimeCoupon.css';
 
 export const links: LinksFunction = () => {
@@ -16,47 +12,16 @@ export const links: LinksFunction = () => {
 
 const AllTimeCoupon = () => {
   return (
-    <div className="flex py-4 py bg-slate-50 justify-around w-full">
-      <div className="hidden md:flex flex-1 justify-center items-center gap-1 md:gap-8">
-        <Link to="/promotion/super_deal">
-          <div className="flex flex-col">
-            <div className='coupon-link-btn'>
-              <ImageSuperDealDiscount name={'Super Deal Discount'} />
-            </div>
-          </div>
-        </Link>
-
-        <div className="flex flex-col">
-          <ImageGrandOpeningDiscount name={'Grand Opening Discount'} />
+    <>
+      <Link to="/collection/electronics">
+        <div className='bg-[#1D1815] rounded-lg text-white font-medium flex items-center p-3 shadow-lg'>
+          <p>EXTR <b className='font-bold text-[#FF93E7]'>15% OFF</b> on ELECTRONIC for £19.99+</p>
+          <span className='text-[#1D1815] bg-white px-2 md:px-4 py-1 md:py-2 ml-auto rounded-lg'>
+            CODE: <b className='font-poppins'>ELEC15</b>
+          </span>
         </div>
-      </div>
-
-      <div className="hidden md:flex flex-1 justify-center items-center">
-        <div className="flex flex-col">
-          <Link to="/collection/electronics">
-            <div className='coupon-link-btn'>
-              <ImageCategoryExtraDiscount name={'Category Extra Discount'} />
-            </div>
-          </Link>
-        </div>
-      </div>
-
-      <div className='md:hidden grid grid-cols-2 gap-1 mt-[2px]'>
-        <Link to="/promotion/super_deal">
-          <div className='coupon-link-btn'>
-            <ImageSuperDealDiscount name={'Super Deal Discount'} />
-          </div>
-        </Link>
-        <ImageGrandOpeningDiscount name={'Grand Opening Discount'} />
-      </div>
-      <div className='md:hidden flex justify-center ml-1'>
-        <Link to="/collection/electronics">
-          <div className='coupon-link-btn'>
-            <ImageCategoryExtraDiscount name={'Category Extra Discount'} />
-          </div>
-        </Link>
-      </div>
-    </div>
+      </Link>
+    </>
   );
 }
 

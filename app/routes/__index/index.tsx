@@ -6,9 +6,10 @@ import { trackWindowScroll } from 'react-lazy-load-image-component';
 import type { LazyComponentProps } from 'react-lazy-load-image-component';
 import httpStatus from 'http-status-codes';
 
-import type { Category, TCategoryPreview, TPromotionType } from "~/shared/types";
+import type { TCategoryPreview, TPromotionType } from "~/shared/types";
 import { getCanonicalDomain } from '~/utils';
 import PromoActivities from "~/components/PromoActivities/PromoActivities";
+import PromoCarousell from "~/components/PromoCarousell";
 import { CategoryPreview } from "~/components/CategoryPreview";
 import FiveHundredError from "~/components/FiveHundreError";
 import CategoriesRow from "~/components/CategoriesRow";
@@ -96,24 +97,33 @@ function Index({ scrollPosition }: IndexProps) {
 	return (
 		<div>
 			<h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
+
 			<div className="
 				py-0 px-auto
 				flex flex-col
 				justify-center items-center
-				mx-2 md:mx-4
+				max-w-screen-xl
+				mx-auto
 			">
-				<div className="w-full py-0 md:py-2.5 max-w-screen-xl mx-auto">
+				<div className="w-full py-0 mx-2 px-2">
 					<AllTimeCoupon />
 				</div>
+			</div>
+
+			<div
+				className="
+					w-full py-2.5 max-w-screen-xl mx-auto
+				">
+				<PromoCarousell />
 			</div>
 
 			<div className="
 				py-0 px-auto
 				flex flex-col
 				justify-center items-center
-				mx-2 md:mx-4
+				mx-0
 			">
-				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
+				<div className="w-full bg-[#F1F1F1]">
 					<PromoActivities promotions={promotions} />
 				</div>
 			</div>
