@@ -220,6 +220,12 @@ function Cart() {
 	const targetRemovalVariationUUID = useRef<null | string>(null);
 	const justSynced = useRef<boolean>(false);
 
+	// Scroll to top when cart page rendered.
+	useEffect(() => {
+		if (!window) return;
+		window.scrollTo(0, 0);
+	}, [])
+
 	// If cart item contains no item, we simply redirect user to `/cart` so that
 	// corresponding loader can display empty cart page to user.
 	useEffect(() => {
