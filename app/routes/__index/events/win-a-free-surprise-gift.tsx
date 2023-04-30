@@ -210,7 +210,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
   }, [])
 
   return (
-    <div className="mt-[-7px] md:mt-[-32px] lg:mt-[-15px]">
+    <div className="">
       <section
         className="
           relative isolate z-0 text-2xl font-custom overflow-hidden justify-between
