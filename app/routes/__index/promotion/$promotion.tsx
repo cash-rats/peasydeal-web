@@ -212,58 +212,59 @@ function Promotion({ scrollPosition }: TPromotion) {
   } = state;
 
   return (
-    <div className="
-      py-0 px-auto
-      flex flex-col
-      justify-center items-center
-      mx-2 md:mx-4
-    ">
-
-      <div className="w-full py-2.5 max-w-screen-xl mx-auto">
-        <Breadcrumbs breadcrumbs={
-          [
-            <BreadcrumbItem key="1">
-              <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>,
-            <BreadcrumbItem key="2">
-              <BreadcrumbLink
-                as={NavLink}
-                to={`/promotion/${stateCategory?.name}`}
-                isCurrentPage
-                className="font-semibold !text-[#D02E7D]"
-              >
-                {stateCategory?.title}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          ]
-        } />
+    <>
+      <div className="w-full mb-2.5 md:pb-8">
+        <AllTimeCoupon isFullLayout />
       </div>
+      <div className="
+        py-0 px-auto
+        flex flex-col
+        justify-center items-center
+        mx-2 md:mx-4
+      ">
 
-      <PromotionBannerWithTitle
-        title={stateCategory?.title}
-        subtitle={stateCategory?.description}
-        superSale={stateCategory?.name === 'super_deal'}
-      />
+        <div className="w-full py-2.5 max-w-screen-xl mx-auto">
+          <Breadcrumbs breadcrumbs={
+            [
+              <BreadcrumbItem key="1">
+                <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>,
+              <BreadcrumbItem key="2">
+                <BreadcrumbLink
+                  as={NavLink}
+                  to={`/promotion/${stateCategory?.name}`}
+                  isCurrentPage
+                  className="font-semibold !text-[#D02E7D]"
+                >
+                  {stateCategory?.title}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+            ]
+          } />
+        </div>
 
-      <div className="w-full pt-2.5 pb-8 max-w-screen-xl mx-auto">
-        <AllTimeCoupon />
+        <PromotionBannerWithTitle
+          title={stateCategory?.title}
+          subtitle={stateCategory?.description}
+          superSale={stateCategory?.name === 'super_deal'}
+        />
+
+        <ProductRowsContainer
+          loading={isChangingPromotion}
+          products={state.products}
+          scrollPosition={scrollPosition}
+        />
+
+        <LoadMoreButtonProgressBar
+          loading={loadMoreFetcher.state !== 'idle'}
+          current={state.current}
+          total={state.total}
+          onClickLoadMore={handleLoadMore}
+        />
       </div>
-
-      <ProductRowsContainer
-        loading={isChangingPromotion}
-        products={state.products}
-        scrollPosition={scrollPosition}
-      />
-
-      <LoadMoreButtonProgressBar
-        loading={loadMoreFetcher.state !== 'idle'}
-        current={state.current}
-        total={state.total}
-        onClickLoadMore={handleLoadMore}
-      />
-    </div>
+    </>
   )
 }
 

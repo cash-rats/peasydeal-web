@@ -29,7 +29,7 @@ import {
   getFourOhFourDescText,
 } from '~/utils/seo';
 import PageTitle from '~/components/PageTitle';
-import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
+import FourOhFour from '~/components/FourOhFour';
 import { composErrorResponse } from '~/utils/error';
 
 import { resolveCategoryName } from '../api/resolve_category_name.server';
@@ -87,7 +87,6 @@ export const meta: MetaFunction = ({ data, params }) => {
 export const links: LinksFunction = () => {
   return [
     ...AllTimeCouponLink(),
-    ...FourOhFourLinks(),
     ...ProductRowsContainerLinks(),
   ];
 };
@@ -249,97 +248,147 @@ function Collection({ scrollPosition }: CollectionProps) {
   } = state;
 
   return (
-    <div className="
-      py-0 px-auto
-      flex flex-col
-      justify-center items-center
-      mx-2 md:mx-4
-    ">
-      <div className="w-full py-2.5 max-w-screen-xl mx-auto">
-        <Breadcrumbs breadcrumbs={
-          [
-            <BreadcrumbItem key='collection_breadcrumbs_first'>
-              <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
-                Home
-              </BreadcrumbLink>
-            </BreadcrumbItem>,
+    <>
+      <div className="w-full mb-2.5 md:pb-8">
+        <AllTimeCoupon isFullLayout />
+      </div>
+      <div className="
+        py-0 px-auto
+        flex flex-col
+        justify-center items-center
+        mx-2 md:mx-4
+      ">
+        <div className="w-full py-2.5 max-w-screen-xl mx-auto">
+          <Breadcrumbs breadcrumbs={
+            [
+              <BreadcrumbItem key='collection_breadcrumbs_first'>
+                <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>,
 
-            ...stateCategory?.parents.map(p => (
-              <BreadcrumbItem key={`collection_breadcrumbs_${p.catId}`}>
+              ...stateCategory?.parents.map(p => (
+                <BreadcrumbItem key={`collection_breadcrumbs_${p.catId}`}>
+                  <BreadcrumbLink
+                    as={NavLink}
+                    to={`/collection/${p.name}`}
+                    isCurrentPage
+                    className="font-semibold !text-[#D02E7D]"
+                  >
+                    {p.title}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              )),
+
+              <BreadcrumbItem key='collection_breadcrumbs_last'>
                 <BreadcrumbLink
                   as={NavLink}
-                  to={`/collection/${p.name}`}
+                  to={`/collection/${stateCategory?.name}`}
                   isCurrentPage
                   className="font-semibold !text-[#D02E7D]"
                 >
-                  {p.title}
+                  {stateCategory?.title}
                 </BreadcrumbLink>
-              </BreadcrumbItem>
-            )),
+              </BreadcrumbItem>,
+            ]
+          } />
+        </div>
 
-            <BreadcrumbItem key='collection_breadcrumbs_last'>
-              <BreadcrumbLink
-                as={NavLink}
-                to={`/collection/${stateCategory?.name}`}
-                isCurrentPage
-                className="font-semibold !text-[#D02E7D]"
-              >
-                {stateCategory?.title}
-              </BreadcrumbLink>
-            </BreadcrumbItem>,
-          ]
-        } />
-      </div>
+        <div className="w-full mb-0 md:mb-8">
+          <PageTitle
+            title={stateCategory?.title}
+            subtitle={stateCategory?.description}
+          />
+        </div>
 
-      <PageTitle
-        title={stateCategory?.title}
-        subtitle={stateCategory?.description}
-      />
-
-      <div
-        className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8] z-20 bg-white"
-        style={{ position: sticky ? 'sticky' : 'static', top: '58px' }}
-        ref={mobileSubCatHalfSheetRef}
-      >
-        <button
-          className="
-            flex items-center justify-between
-            font-bold px-4 py-2.5
-            shadow-sm rounded-lg border-[1px] border-solid border-[#AAA]
-            cursor-pointer
-            active:outline-blue-500
-            active:outline-2
-            w-full
-            color-slate-800
-          "
-          ref={subCatRef}
-          onClick={() => {
-            window.rudderanalytics?.track('click_open_category_halfsheet', {
-              category: stateCategory.name,
-            });
-            onOpen();
-          }}
+        <div
+          className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8] z-20 bg-white"
+          style={{ position: sticky ? 'sticky' : 'static', top: '58px' }}
+          ref={mobileSubCatHalfSheetRef}
         >
-          <span>
-            {`All ${stateCategory?.title} (${state.total})`}
-          </span>
-          <VscChevronDown fontSize={16} />
-        </button>
-      </div>
+          <button
+            className="
+              flex items-center justify-between
+              font-bold px-4 py-2.5
+              shadow-sm rounded-lg border-[1px] border-solid border-[#AAA]
+              cursor-pointer
+              active:outline-blue-500
+              active:outline-2
+              w-full
+              color-slate-800
+            "
+            ref={subCatRef}
+            onClick={() => {
+              window.rudderanalytics?.track('click_open_category_halfsheet', {
+                category: stateCategory.name,
+              });
+              onOpen();
+            }}
+          >
+            <span>
+              {`All ${stateCategory?.title} (${state.total})`}
+            </span>
+            <VscChevronDown fontSize={16} />
+          </button>
+        </div>
 
-      <Drawer
-        isOpen={isOpen}
-        placement='bottom'
-        onClose={onClose}
-        finalFocusRef={subCatRef}
-      >
-        <DrawerOverlay />
-        <DrawerContent maxH='80vh'>
-          <DrawerCloseButton />
-          <DrawerHeader>Shop by Category</DrawerHeader>
+        <Drawer
+          isOpen={isOpen}
+          placement='bottom'
+          onClose={onClose}
+          finalFocusRef={subCatRef}
+        >
+          <DrawerOverlay />
+          <DrawerContent maxH='80vh'>
+            <DrawerCloseButton />
+            <DrawerHeader>Shop by Category</DrawerHeader>
 
-          <DrawerBody>
-            <div className="flex flex-col gap-0">
+            <DrawerBody>
+              <div className="flex flex-col gap-0">
+                <span className="py-2 px-4 font-bold">
+                  {
+                    `All ${stateCategory?.title} (${state.total})`
+                  }
+                </span>
+                {
+                  category.children.map((subcat, index) => (
+                    subcat.count > 0 ? (<Link to={`/collection/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
+                      <Button
+                        className="justify-start whitespace-normal w-full"
+                        colorScheme="pink"
+                        variant="ghost"
+                        onClick={() => {
+                          window.rudderanalytics?.track('click_sub_category', {
+                            category: subcat.name,
+                            layout: 'mobile',
+                          });
+                          onClose();
+                        }}
+                      >
+                        {subcat.title} ({subcat.count})
+                      </Button>
+                    </Link>) : null
+                  ))
+                }
+              </div>
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+
+        {/* Create Tailwind Css 4 col grid layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-screen-xl mx-auto mb-4">
+          {/* Side Panel for subcategory */}
+          <div className="hidden md:flex md:col-span-1 lg:col-span-1 ">
+            <div className="border border-[#d8d8d8] rounded-sm flex flex-col p-4 w-full gap-1">
+              {
+                parentExist && lastParent !== null ? (
+                  <Link to={`/collection/${lastParent.name}`}>
+                    <Button className="text-left mb-4" variant="ghost" leftIcon={<VscArrowLeft />}>
+                      {`${lastParent.title}`}
+                    </Button>
+                  </Link>
+                ) : null
+              }
               <span className="py-2 px-4 font-bold">
                 {
                   `All ${stateCategory?.title} (${state.total})`
@@ -347,17 +396,16 @@ function Collection({ scrollPosition }: CollectionProps) {
               </span>
               {
                 category.children.map((subcat, index) => (
-                  subcat.count > 0 ? (<Link to={`/collection/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
+                  subcat.count > 0 ? (<Link to={`/collection/${subcat.name}`} key={`${subcat.name}_${index}`}>
                     <Button
-                      className="justify-start whitespace-normal w-full"
+                      className="text-left whitespace-normal"
                       colorScheme="pink"
                       variant="ghost"
                       onClick={() => {
                         window.rudderanalytics?.track('click_sub_category', {
                           category: subcat.name,
-                          layout: 'mobile',
+                          layout: 'desktop',
                         });
-                        onClose();
                       }}
                     >
                       {subcat.title} ({subcat.count})
@@ -366,111 +414,65 @@ function Collection({ scrollPosition }: CollectionProps) {
                 ))
               }
             </div>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+          </div>
 
-      <div className="w-full pt-2.5 pb-8 max-w-screen-xl mx-auto">
-        <AllTimeCoupon />
-      </div>
-
-      {/* Create Tailwind Css 4 col grid layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-screen-xl mx-auto mb-4">
-        {/* Side Panel for subcategory */}
-        <div className="hidden md:flex md:col-span-1 lg:col-span-1 ">
-          <div className="border border-[#d8d8d8] rounded-sm flex flex-col p-4 w-full gap-1">
+          <div className="col-span-1 md:col-span-2 lg:col-span-3">
             {
-              parentExist && lastParent !== null ? (
-                <Link to={`/collection/${lastParent.name}`}>
-                  <Button className="text-left mb-4" variant="ghost" leftIcon={<VscArrowLeft />}>
-                    {`${lastParent.title}`}
-                  </Button>
-                </Link>
-              ) : null
+              state.products.length === 0 && (
+                <h2 className="p4 text-center">{stateCategory?.title}
+                  has no product, please checkout other categories.
+                </h2>
+              )
             }
-            <span className="py-2 px-4 font-bold">
-              {
-                `All ${stateCategory?.title} (${state.total})`
+            <ProductRowsContainer
+              loading={
+                transition.state !== 'idle' &&
+                transition.location.pathname.includes('/collection/')
               }
-            </span>
-            {
-              category.children.map((subcat, index) => (
-                subcat.count > 0 ? (<Link to={`/collection/${subcat.name}`} key={`${subcat.name}_${index}`}>
-                  <Button
-                    className="text-left whitespace-normal"
-                    colorScheme="pink"
-                    variant="ghost"
-                    onClick={() => {
-                      window.rudderanalytics?.track('click_sub_category', {
-                        category: subcat.name,
-                        layout: 'desktop',
-                      });
-                    }}
-                  >
-                    {subcat.title} ({subcat.count})
-                  </Button>
-                </Link>) : null
-              ))
-            }
-          </div>
-        </div>
-
-        <div className="col-span-1 md:col-span-2 lg:col-span-3">
-          {
-            state.products.length === 0 && (
-              <h2 className="p4 text-center">{stateCategory?.title}
-                has no product, please checkout other categories.
-              </h2>
-            )
-          }
-          <ProductRowsContainer
-            loading={
-              transition.state !== 'idle' &&
-              transition.location.pathname.includes('/collection/')
-            }
-            products={state.products}
-            scrollPosition={scrollPosition}
-          />
-        </div>
-      </div>
-
-      {
-        state.total > 0 && (
-          <div className="
-            p-4 w-[300px]
-            flex justify-center items-center
-            flex-col gap-4
-          ">
-            <p className="font-poppins">
-              Showing {state.current} of {state.total}
-            </p>
-
-            <Progress
-              className="w-full"
-              size='sm'
-              value={Math.floor((state.current / state.total) * 100)}
-              colorScheme='teal'
+              products={state.products}
+              scrollPosition={scrollPosition}
             />
-
-            {
-              state.hasMore
-                ? (
-                  <LoadMoreButton
-                    loading={loadmoreFetcher.state !== 'idle'}
-                    onClick={handleLoadMore}
-                    text='Show More'
-                  />
-                )
-                : (
-                  <p className="font-poppins capitalize font-medium">
-                    Reaches end of list.
-                  </p>
-                )
-            }
           </div>
-        )
-      }
-    </div>
+        </div>
+
+        {
+          state.total > 0 && (
+            <div className="
+              p-4 w-[300px]
+              flex justify-center items-center
+              flex-col gap-4
+            ">
+              <p className="font-poppins">
+                Showing {state.current} of {state.total}
+              </p>
+
+              <Progress
+                className="w-full"
+                size='sm'
+                value={Math.floor((state.current / state.total) * 100)}
+                colorScheme='teal'
+              />
+
+              {
+                state.hasMore
+                  ? (
+                    <LoadMoreButton
+                      loading={loadmoreFetcher.state !== 'idle'}
+                      onClick={handleLoadMore}
+                      text='Show More'
+                    />
+                  )
+                  : (
+                    <p className="font-poppins capitalize font-medium">
+                      Reaches end of list.
+                    </p>
+                  )
+              }
+            </div>
+          )
+        }
+      </div>
+    </>
   );
 }
 

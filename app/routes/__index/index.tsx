@@ -99,7 +99,7 @@ function Index({ scrollPosition }: IndexProps) {
 			<h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
 
 			<div className="
-				py-0 px-auto
+				pt-2.5 px-auto
 				flex flex-col
 				justify-center items-center
 				max-w-screen-xl
@@ -161,16 +161,16 @@ function Index({ scrollPosition }: IndexProps) {
 									index === 1
 										? (
 											<div className="
-										py-0 px-auto
-										flex flex-col
-										justify-center items-center
-										bg-slate-50
-									">
+												py-0 px-auto
+												flex flex-col
+												justify-center items-center
+												bg-slate-50
+											">
 												<div className="w-full
-											py-6 md:py-2.5
-											md:px-2.5 lg:px-2.5 xl:px-0
-											max-w-screen-xl mx-auto
-										">
+													py-6 md:py-2.5
+													md:px-2.5 lg:px-2.5 xl:px-0
+													max-w-screen-xl mx-auto
+												">
 													<PromoActivitiesVariant />
 												</div>
 											</div>

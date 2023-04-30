@@ -97,7 +97,7 @@ function Header({
         />
       </div>
 
-      <div style={{ paddingTop: `${navBarHeight + fixedTop}px` }}>
+      <div className='flex' style={{ paddingTop: `${navBarHeight + fixedTop}px` }}>
         <PropBar />
       </div>
     </div>

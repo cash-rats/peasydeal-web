@@ -12,7 +12,6 @@ import { FcRating, FcSmartphoneTablet, FcHome, FcAutomotive } from 'react-icons/
 
 import type { Category } from '~/shared/types';
 
-
 type ContextType = {
   categories: Category[];
 };
@@ -58,8 +57,8 @@ const iconMapper = (name: string) => {
   }
 }
 
-const CategoriesRow = () => {
-  const { categories } = useOutletContext<ContextType>();
+const CategoriesRow = ({ defatulCategories }: { defatulCategories?: any}) => {
+  const { categories } = useOutletContext<ContextType>() || defatulCategories || {};
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scroll = useCallback((toRight: boolean) => {
@@ -126,7 +125,7 @@ const CategoriesRow = () => {
                           flex flex-col items-start
                           px-4 pt-4
                           font-poppins font-medium
-                          text-lg md:text-xl
+                          text-lg
                           leading-5
                           w-[137px] h-[137px]
                           md:w-[160px] md:h-[160px]
@@ -136,7 +135,6 @@ const CategoriesRow = () => {
                           hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
                           rounded-lg bg-white
                           transition-shadow duration-300 ease-in-out
-                          caterogy-card-box
                         "
                       >
                         <span>{iconMapper(category.name)}</span>

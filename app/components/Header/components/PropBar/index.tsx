@@ -8,7 +8,7 @@ const PropBar = () => {
       bg-white w-full
       border-b-[1px] border-b-[rgba(0,0,0,.17)]
       py-0 lg:py-3
-      mb-0 lg:mb-2 md:mb-6
+      mb-0
       inline-block
       text-center mx-auto
       whitespace-nowrap
