@@ -5,7 +5,7 @@ import httpStatus from 'http-status-codes';
 import { useLoaderData, useFetcher, Form } from '@remix-run/react';
 
 import SearchBar from '~/components/SearchBar';
-import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
+import FourOhFour from '~/components/FourOhFour';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
@@ -16,6 +16,7 @@ import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.ser
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import type { SuggestItem } from '~/shared/types';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
+import CategoriesRow from "~/components/CategoriesRow";
 
 type LoaderType = {
   categories: Category[];
@@ -24,7 +25,6 @@ type LoaderType = {
 
 export const links: LinksFunction = () => {
   return [
-    ...FourOhFourLinks(),
     ...HeaderLinks(),
     ...FooterLinks(),
     ...CategoriesNavLinks(),
@@ -102,7 +102,7 @@ function GlobalSplatFourOhFour() {
   }
 
   return (
-    <div className="pt-48 bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:pt-40 md:bg-home-gradient-light">
+    <div className="bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:bg-home-gradient-light w-full">
       <MobileSearchDialog
         onBack={handleClose}
         isOpen={openSearchDialog}
@@ -135,7 +135,10 @@ function GlobalSplatFourOhFour() {
           />
         }
       />
+
       <FourOhFour />
+
+      <CategoriesRow defatulCategories={{ categories }} />
 
       <Footer />
     </div>

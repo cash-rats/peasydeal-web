@@ -19,7 +19,7 @@ import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { BsLightningCharge } from 'react-icons/bs';
 
-import FourOhFour, { links as FourOhFourLinks } from '~/components/FourOhFour';
+import FourOhFour from '~/components/FourOhFour';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import { commitSession } from '~/sessions/redis_session';
@@ -112,7 +112,6 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 
 export const links: LinksFunction = () => {
 	return [
-		...FourOhFourLinks(),
 		...ItemAddedModalLinks(),
 		...QuantityPickerLinks(),
 		...ProductDetailSectionLinks(),

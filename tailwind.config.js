@@ -40,10 +40,15 @@ module.exports = {
           '100%': {
             'background-position': '-51.75rem',
           },
+        },
+        scrollgrid: {
+          '0%, 1%': { transform: 'translate3d(0, 0, 0)' },
+          '100%': { transform: 'translate3d(-1800px, 0, 0)' }
         }
       },
       animation: {
         play: 'animation',
+        scrollgrid: 'scrollgrid 80s linear infinite'
       },
       backgroundImage: (theme) => ({
         'home-gradient-light-sm': "url('/images/home-gradient-light-sm.png')",

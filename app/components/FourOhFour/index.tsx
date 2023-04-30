@@ -1,35 +1,25 @@
-import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 
-import BGBottom from './images/BG_bottom.png';
-import BGTop from './images/BG_top.png';
-import MountainSprite from "./images/mountain_sprite.png";
-import styles from './FourOhFour.css';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
+import fatalError from './images/fatal-error.svg';
 
 export default function NotFound() {
   return (
-    <div className="relative h-[40rem]">
+    <div className="relative py-10">
       <div className="flex mt-10 flex-col">
-        {/* title */}
+        <h1 className='font-black font-poppins text-3xl text-center mb-6 capitalized'>
+          Page Not Found
+        </h1>
+
         <div
           className="overflow-hidden h-[193px] bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${BGTop})` }}
+          style={{ backgroundImage: `url(${fatalError})` }}
         />
 
-        {/* indication */}
-        <div className="text-sm text-[#343434] font-[500] leading-normal text-center z-100 ">
-
-          {/* power line */}
+        <div className="text-sm text-[#343434] font-medium leading-normal text-center z-100 ">
           <div className="mt-3 mb-2">
-            <h1 className="font-poppins text-xl text-[#343434] leading-2">
+            <h2 className="font-poppins text-xl text-[#343434] leading-2">
               Sorry, the page you're looking for cannot be accessed
-            </h1>
+            </h2>
           </div>
 
           <div className="font-poppins mt-2 text-[#343434]">
@@ -40,14 +30,6 @@ export default function NotFound() {
           </div>
         </div>
       </div>
-
-
-      <div className="PageNotFound__mountain" style={{ backgroundImage: `url(${MountainSprite})` }} />
-
-      <div
-        className="absolute w-[100%] h-52 bottom-0 left-0 translate-y-[-77%] overflow-hidden  bg-bbefef bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${BGBottom})` }}
-      />
     </div>
   );
 }
