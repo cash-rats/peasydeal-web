@@ -300,7 +300,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
           <h2 className="text-4xl sm:text-5xl mb-8 font-bold text-center ">How it works</h2>
         </div>
 
-        <div className='max-w-7xl mx-2'>
+        <div className='max-w-7xl mx-auto'>
           <p className="leading-relaxed  mt-2 mb-8 text-lg sm:text-2xl my-4 text-center mx-auto max-w-3xl">
             The more you spend, the better your surprise gift! And, yes, even shipping is FREE for this gift.
           </p>
