@@ -16,6 +16,8 @@ export default function LoadMoreButton({
 }: LoadMoreButtonProps) {
   return (
     <Button
+      colorScheme='pink'
+      size='lg'
       disabled={disabled || loading}
       isLoading={loading}
       onClick={onClick}

@@ -16,10 +16,10 @@ function LoadMoreButtonProgressBar({
 }: ILoadMoreButtonProgressBars) {
   return (
     <div className="
-        p-4 w-[300px]
-        flex justify-center items-center
-        flex-col gap-4
-      ">
+      p-4 w-[300px]
+      flex justify-center items-center
+      flex-col gap-4
+    ">
       <p className="font-poppins">
         Showing {current} of {total}
       </p>
@@ -28,9 +28,8 @@ function LoadMoreButtonProgressBar({
         className="w-full"
         size='sm'
         value={Math.floor((current / total) * 100)}
-        colorScheme='teal'
+        colorScheme='pink'
       />
-
       {
         current < total
           ? (
