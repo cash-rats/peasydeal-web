@@ -1,7 +1,10 @@
 import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
 import type { PurchasedProduct, PriceInfo } from './cart.server';
 
-
+/**
+ * Transform newly added product to `ShoppingCartItem` so it can be
+ * add to Shopping cart.
+ */
 export const syncShoppingCartWithNewProductsInfo = (
   cart: ShoppingCart,
   purchasedProds: PurchasedProduct[],
