@@ -276,31 +276,6 @@ export default function PriceResult({
           }
         />
 
-        {
-          shipping_fee === 0
-            ? (
-              <ResultRow
-                label='Shipping Discount'
-                value={
-                  calculating
-                    ? (
-                      <Skeleton
-                        variant='text'
-                        width={40}
-                        sx={{ fontSize: '1rem' }}
-                      />
-                    )
-                    : (
-                      <>
-                        <span className='text-[#D02E7D]'>- £ {origin_shipping_fee}</span>
-                      </>
-                    )
-                }
-              />
-            )
-            : null
-        }
-
         <div className="py-3">
           <hr className="my-1 h-[1px] w-full bg-slate-50" />
         </div>
@@ -319,7 +294,6 @@ export default function PriceResult({
                     font-poppins
                   ">
                     discount applied!
-
                   </h4>
                   <div className='flex gap-2'>
                     {
@@ -336,6 +310,57 @@ export default function PriceResult({
                       ))
                     }
                   </div>
+                  {
+                    shipping_fee === 0
+                      ? (
+                        <ResultRow
+                          label='Shipping Discount'
+                          value={
+                            calculating
+                              ? (
+                                <Skeleton
+                                  variant='text'
+                                  width={40}
+                                  sx={{ fontSize: '1rem' }}
+                                />
+                              )
+                              : (
+                                <>
+                                  <span className='text-[#D02E7D]'>- £ {origin_shipping_fee}</span>
+                                </>
+                              )
+                          }
+                        />
+                      )
+                      : null
+                  }
+
+                  {
+                    promo_code_discount !== 0
+                      ? (
+                        <ResultRow
+                          label='Promo Discount'
+                          value={
+                            calculating
+                              ? (
+                                <Skeleton
+                                  variant='text'
+                                  width={40}
+                                  sx={{ fontSize: '1rem' }}
+                                />
+                              )
+                              : (
+                                <>
+                                  <span className='text-[#D02E7D]'>- £ {promo_code_discount}</span>
+                                </>
+                              )
+                          }
+                        />
+                      )
+                      : null
+                  }
+
+
                 </div>
 
                 <div className="py-3">
