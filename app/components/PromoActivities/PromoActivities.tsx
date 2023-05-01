@@ -8,8 +8,9 @@ interface IPromoActivities {
 };
 
 
+// TODO: these info should be retrieved from backend.
 const getPromotionInfo = (name: string) => {
-switch (name) {
+  switch (name) {
     case 'super_deal':
       return {
         title: 'Super Deal',
@@ -30,6 +31,11 @@ switch (name) {
         title: 'Launch Sale',
         description: 'Up to 65%+ OFF',
       };
+    case 'hot_deal':
+      return {
+        title: 'Hot Deals',
+        description: 'Deals with great savings',
+      }
     default:
       return {
         title: '',
@@ -65,7 +71,7 @@ export default function PromoActivities({ promotions = [] }: IPromoActivities) {
                     <h3 className='text-[#B02E28] text-lg md:text-xl font-bold font-poppins'>{getPromotionInfo(name).description}</h3>
                     <div className='flex items-center justify-between mt-2'>
                       <span className='text-base md:text-xl font-black font-poppins'>{getPromotionInfo(name).title}</span>
-                      <span><VscChevronRight className='text-2xl'/></span>
+                      <span><VscChevronRight className='text-2xl' /></span>
                     </div>
                   </div>
                 </Link>

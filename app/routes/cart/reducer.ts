@@ -4,20 +4,17 @@ import type { PriceInfo } from './cart.server';
 import { syncShoppingCartWithNewProductsInfo } from './utils';
 
 export enum CartActionTypes {
+  set_promo_code = 'set_promo_code',
   set_cart_items = 'set_cart_items',
   update_cart_item = 'update_cart_item',
   remove_cart_item = 'remove_cart_item',
   set_price_info = 'set_price_info',
 };
 
-export type PreviousQuantity = {
-  [key: string]: string;
-};
-
 export type StateShape = {
   cartItems: ShoppingCart;
   priceInfo: PriceInfo | null;
-  previousQuantity: PreviousQuantity;
+  promoCode: string;
 };
 
 interface UpdateCartItemPayload {
@@ -49,7 +46,7 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
       return {
         ...state,
         cartItems,
-      }
+      };
     }
     case CartActionTypes.update_cart_item: {
       const { variationUUID, quantity } = action.payload as UpdateCartItemPayload;
@@ -61,9 +58,9 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
           [variationUUID]: {
             ...state.cartItems[variationUUID],
             quantity,
-          }
-        }
-      }
+          },
+        },
+      };
     }
     case CartActionTypes.remove_cart_item: {
       const targetRemovalVariationUUID = action.payload as string;
@@ -77,12 +74,12 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
 
           newCartItems[variationUUID] = state.cartItems[variationUUID];
           return newCartItems
-        }, {})
+        }, {});
 
       return {
         ...state,
         cartItems: updatedCartItems,
-      }
+      };
     }
     case CartActionTypes.set_price_info: {
       const priceInfo = action.payload as PriceInfo | null;
@@ -91,7 +88,7 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
         return {
           ...state,
           priceInfo,
-        }
+        };
       }
 
       const updatedCartItems = syncShoppingCartWithNewProductsInfo(state.cartItems, priceInfo.products);
@@ -100,7 +97,15 @@ export default function cartReducer(state: StateShape, action: CartActions): Sta
         ...state,
         priceInfo,
         cartItems: updatedCartItems,
-      }
+      };
+    }
+    case CartActionTypes.set_promo_code: {
+      const promoCode = action.payload as string;
+
+      return {
+        ...state,
+        promoCode,
+      };
     }
     default:
       return state;

@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useReducer, useMemo } from 'react';
-import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
+import { useEffect, useState, useReducer, useMemo } from 'react';
+import type { MouseEvent } from 'react';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import type { ShouldReloadFunction } from '@remix-run/react'
@@ -22,7 +22,6 @@ import PaymentMethods from '~/components/PaymentMethods';
 import cartReducer, { CartActionTypes } from './reducer';
 import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
-import RemoveItemModal from './components/RemoveItemModal';
 import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
 import PriceResult from './components/PriceResult';
 import {
@@ -204,21 +203,16 @@ function Cart() {
 		{
 			cartItems: preloadData?.cart,
 			priceInfo: preloadData?.priceInfo,
+			promoCode: '',
 		} as StateShape,
 	);
 
-	const [prevQuantity, setPrevQuantity] = useState<PreviousQuantity>({});
 	const [syncingPrice, setSyncingPrice] = useState(false);
-	const [openRemoveItemModal, setOpenRemoveItemModal] = useState(false);
-	const [promoCode, setPromoCode] = useState('');
 
 	const removeItemFetcher = useFetcher();
 	const updateItemQuantityFetcher = useFetcher();
 	const applyPromoCodeFetcher = useFetcher();
 	const cartItemCountFetcher = useFetcher();
-
-	const targetRemovalVariationUUID = useRef<null | string>(null);
-	const justSynced = useRef<boolean>(false);
 
 	// Scroll to top when cart page rendered.
 	useEffect(() => {
@@ -266,7 +260,13 @@ function Cart() {
 	useEffect(() => {
 		if (applyPromoCodeFetcher.type === 'done') {
 			const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
-			setPromoCode(data.discount_code);
+
+			dispatch({
+				type: CartActionTypes.set_promo_code,
+				payload: data.discount_code,
+			});
+
+			// setPromoCode(data.discount_code);
 			dispatch({
 				type: CartActionTypes.set_price_info,
 				payload: data.price_info,
@@ -274,40 +274,6 @@ function Cart() {
 		}
 	}, [applyPromoCodeFetcher.type]);
 
-	const handleOnBlurQuantity = (evt: FocusEvent<HTMLInputElement>, variationUUID: string, quantity: number) => {
-		if (quantity === 0) {
-			targetRemovalVariationUUID.current = variationUUID;
-			setOpenRemoveItemModal(true);
-			return;
-		}
-
-		// We don't need to sync quantity if user has not changed anything.
-		if (prevQuantity[variationUUID] && Number(prevQuantity[variationUUID]) === quantity) return;
-
-
-		// Update item quantity in session && recalculate price info from BE.
-		if (justSynced.current) {
-			justSynced.current = false;
-
-			return;
-		}
-
-		updateQuantity(variationUUID, quantity);
-		setSyncingPrice(true);
-
-		updateItemQuantityFetcher.submit(
-			{
-				__action: 'update_item_quantity',
-				variation_uuid: variationUUID,
-				quantity: quantity.toString(),
-				promo_code: promoCode,
-			},
-			{
-				method: 'post',
-				action: '/cart?index',
-			},
-		);
-	};
 
 	const removeItem = (targetRemovalVariationUUID: string) => {
 		// Update cart state with a version without removed item.
@@ -323,43 +289,13 @@ function Cart() {
 			{
 				__action: 'remove_cart_item',
 				variation_uuid: targetRemovalVariationUUID,
-				promo_code: promoCode,
+				promo_code: state.promoCode,
 			},
 			{
 				method: 'post',
 				action: '/cart?index',
 			},
 		)
-	}
-
-	const handleRemoveItemResult = (res: boolean) => {
-		if (!res) return false;
-		if (!targetRemovalVariationUUID.current) return;
-
-		// Remove cart item on the client side before mutating session.
-		removeItem(targetRemovalVariationUUID.current);
-
-		setOpenRemoveItemModal(false);
-	}
-
-	const handleCancelRemoval = () => {
-		// User decide not to cancel, revert cartitem in session.
-		if (!targetRemovalVariationUUID || !targetRemovalVariationUUID.current) return;
-		const variationUUID = targetRemovalVariationUUID.current;
-		dispatch({
-			type: CartActionTypes.update_cart_item,
-			payload: {
-				variationUUID,
-				quantity: prevQuantity[variationUUID]
-			},
-		});
-
-		setOpenRemoveItemModal(false);
-	}
-
-	const handleOnChangeQuantity = (evt: ChangeEvent<HTMLInputElement>, variationUUID: string, quantity: number) => {
-		if (isNaN(quantity)) return;
-		updateQuantity(variationUUID, quantity);
 	}
 
 	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, variationUUID: string, number: number) => {
@@ -376,23 +312,16 @@ function Cart() {
 				__action: 'update_item_quantity',
 				variation_uuid: variationUUID,
 				quantity: number.toString(),
-				promo_code: promoCode,
+				promo_code: state.promoCode,
 			},
 			{
 				method: 'post',
 				action: '/cart?index',
 			},
 		);
-
-		justSynced.current = true;
 	}
 
 	const updateQuantity = (variationUUID: string, number: number) => {
-		setPrevQuantity(prev => ({
-			...prev,
-			[variationUUID]: state.cartItems[variationUUID].quantity,
-		}));
-
 		dispatch({
 			type: CartActionTypes.update_cart_item,
 			payload: {
@@ -442,13 +371,6 @@ function Cart() {
 	return (
 		<>
 			<LoadingBackdrop open={syncingPrice} />
-
-			<RemoveItemModal
-				open={openRemoveItemModal}
-				itemName="some item"
-				onClose={handleCancelRemoval}
-				onResult={handleRemoveItemResult}
-			/>
 
 			<section className="
 				py-0 px-auto
@@ -575,8 +497,6 @@ function Cart() {
 													}}
 													calculating={isCalculating}
 													onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
-													onChangeQuantity={(evt, number) => handleOnChangeQuantity(evt, variationUUID, number)}
-													onBlurQuantity={(evt, number) => handleOnBlurQuantity(evt, variationUUID, number)}
 													onClickRemove={handleRemove}
 												/>
 
@@ -590,7 +510,7 @@ function Cart() {
 									state.priceInfo && (
 										<PriceResult
 											onApplyPromoCode={handleClickApplyPromoCode}
-											appliedPromoCode={promoCode}
+											appliedPromoCode={state.promoCode}
 											priceInfo={state.priceInfo}
 											calculating={
 												updateItemQuantityFetcher.state !== 'idle' ||
