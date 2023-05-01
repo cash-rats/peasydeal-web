@@ -87,6 +87,7 @@ function ProductRowsContainer({
                     product={product}
                     scrollPosition={scrollPosition}
                     onClickProduct={onClickProduct}
+                    displayActionButton={false}
                   />
                 )
               })

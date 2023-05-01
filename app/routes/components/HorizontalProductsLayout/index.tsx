@@ -152,6 +152,7 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
                       key={`horzontal-prod-${index}`}
                       product={prod}
                       onClickProduct={handleClickGrid}
+                      displayActionButton={false}
                     />
                   </div>
                 )

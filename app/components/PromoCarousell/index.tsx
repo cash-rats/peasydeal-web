@@ -4,12 +4,17 @@ import bg from './images/group-prizes.png';
 
 const getEvent = () => {
   return (
-    <div className="rounded-2xl bg-gradient-to-r from-red-500 to-orange-500 text-white h-[200px] flex justify-between p-4 self-center mx-2 gap-2">
-      <div className="flex self-center flex-col flex-1">
-        <h3 className="font-poppin font-medium  text-xl md:text-2xl lg:text-3xl">Win a surprise gift for your next purchase</h3>
-        <Link
-          to='/events/win-a-free-surprise-gift'
-        >
+    <Link
+      to='/events/win-a-free-surprise-gift'
+      onClick={() => {
+        window.rudderanalytics?.track('click_event_carousell', {
+          event: 'win_a_free_surprise_gift',
+        });
+      }}
+    >
+      <div className="rounded-2xl bg-gradient-to-r from-red-500 to-orange-500 text-white h-[200px] flex justify-between p-4 self-center mx-2 gap-2">
+        <div className="flex self-center flex-col flex-1">
+          <h3 className="font-poppin font-medium  text-xl md:text-2xl lg:text-3xl">Win a surprise gift for your next purchase</h3>
           <Button
             colorScheme='whiteAlpha'
             size="lg"
@@ -18,22 +23,22 @@ const getEvent = () => {
           >
             I want free gifts
           </Button>
-        </Link>
+        </div>
+        <span className="flex-1 overflow-hidden">
+          <div
+            className='animate-scrollgrid'
+            style={{
+              height: "200px",
+              marginTop: "-12px",
+              backgroundSize: "1600px",
+              backgroundRepeat: "repeat-x",
+              backgroundPosition: "center",
+              width: "1775px",
+              backgroundImage: `url(${bg})`,
+            }} />
+        </span>
       </div>
-      <span className="flex-1 overflow-hidden">
-        <div
-          className='animate-scrollgrid'
-          style={{
-            height: "200px",
-            marginTop: "-12px",
-            backgroundSize: "1600px",
-            backgroundRepeat: "repeat-x",
-            backgroundPosition: "center",
-            width: "1775px",
-            backgroundImage: `url(${bg})`,
-          }} />
-      </span>
-    </div>
+    </Link>
   )
 }
 

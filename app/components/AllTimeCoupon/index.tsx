@@ -13,7 +13,14 @@ export const links: LinksFunction = () => {
 const AllTimeCoupon = ({ isFullLayout = false}: { isFullLayout?: boolean }) => {
   return (
     <>
-      <Link to="/collection/electronics">
+      <Link
+        to="/collection/electronics"
+        onClick={() => {
+          window.rudderanalytics?.track('click_all_time_coupon', {
+            coupon: 'ELEC15',
+          });
+        }}
+      >
         {
           isFullLayout ? (
             <div className='bg-[#1D1815] text-white font-medium flex items-center p-2.5 md:p-3 shadow-lg justify-center'>

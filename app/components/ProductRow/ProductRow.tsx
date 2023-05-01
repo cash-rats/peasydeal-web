@@ -38,6 +38,7 @@ export default function ProductRow({
             product={product}
             scrollPosition={scrollPosition}
             onClickProduct={onClickProduct}
+            displayActionButton={false}
           />
         ))
       }
