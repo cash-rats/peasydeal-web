@@ -20,7 +20,6 @@ import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
-import { rudderInitialize } from '~/utils/rudderInitialize';
 
 type LoaderType = {
 	categories: Category[];
@@ -62,10 +61,6 @@ export default function Index() {
 	const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 	const [suggests, searchSuggests] = useSearchSuggests();
 	const { submit } = useFetcherWithPromise();
-
-	useEffect(() => {
-		rudderInitialize();
-	}, []);
 
 	const handleSearch = (query: string) => {
 		window.rudderanalytics?.track('search_action_click', {
