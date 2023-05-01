@@ -4,7 +4,6 @@ import { useLoaderData } from '@remix-run/react';
 
 import type { PaymentMethod } from '~/shared/types';
 import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';
-import useComponentDidMountHook from '~/hooks/useComponentDidMound';
 
 import StripePaymentResult from './components/StripePaymentResult';
 import PaypalPaymentResult from './components/PaypalPaymentResult';
@@ -76,14 +75,6 @@ export default function PaymentResult() {
     paypal,
     stripe
   } = useLoaderData<LoaderDataType>() || {};
-
-  useComponentDidMountHook(() => {
-    if (typeof document === 'undefined') return;
-
-    window.rudderanalytics?.track(`payment_success_${paymentMethod}`, {
-      orderId: stripe?.orderId || paypal?.orderId,
-    })
-  })
 
   if (
     paymentMethod === PaymentMethodEnum.Stripe &&

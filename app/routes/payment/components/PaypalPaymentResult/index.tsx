@@ -5,5 +5,5 @@ interface PaypalPaymentResultProps {
 }
 
 export default function PaypalPaymentResult({ orderID }: PaypalPaymentResultProps) {
-  return (<Success orderId={orderID} />);
+  return (<Success orderId={orderID} paymentMethod="paypal" />);
 }

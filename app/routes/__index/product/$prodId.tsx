@@ -69,8 +69,8 @@ import { structuredData } from './structured_data';
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
 import { matchOldProductURL } from './utils';
 import { redirectToNewProductURL } from './loaders';
+import { SUPER_DEAL_OFF } from '~/shared/constants';
 
-const SUPER_DEAL_OFF = 0.9;
 
 export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
 	if (!data || !data.product) {

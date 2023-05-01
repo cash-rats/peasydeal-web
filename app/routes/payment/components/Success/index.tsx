@@ -45,7 +45,7 @@ export const action: ActionFunction = async ({ request }) => {
   );
 }
 
-function Success({ orderId }: { orderId: string }) {
+function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: string }) {
   const orderFetcher = useFetcher();
   const cartItemCountFetcher = useFetcher();
   const [orderDetail, setOrderDetail] = useState<SuccessOrderDetail | null>(null);
@@ -76,6 +76,15 @@ function Success({ orderId }: { orderId: string }) {
           replace: true,
         },
       )
+
+      // Track conversion event
+      if (typeof document === 'undefined') return;
+      window.rudderanalytics?.track(`purchase`, {
+        payment_method: paymentMethod,
+        transaction_id: orderId,
+        value: orderFetcher.data?.total,
+        currency: "GBP",
+      });
     }
   }, [orderFetcher]);
 

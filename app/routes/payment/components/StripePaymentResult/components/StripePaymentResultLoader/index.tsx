@@ -34,7 +34,7 @@ function PaymentResultLoader({ clientSecret, orderId }: PaymentResultLoaderProps
 
   function renderResult(paymentStatus: PaymentIntent.Status | null | undefined) {
     if (paymentStatus === 'succeeded') {
-      return (<Success orderId={orderId} />);
+      return (<Success orderId={orderId} paymentMethod="stripe" />);
     }
 
     if (paymentStatus === 'requires_payment_method') {
