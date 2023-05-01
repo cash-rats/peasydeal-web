@@ -35,6 +35,7 @@ export interface ProductDetail {
   order_count: number;
   rating: number;
   num_of_raters: number;
+  tag_combo_tags: string;
 };
 
 export type LoaderTypeProductDetail = {

@@ -376,6 +376,7 @@ function Cart() {
 				py-0 px-auto
 				flex flex-col
 				justify-center items-center
+				mt-4 md:mt-8
 				mx-2 md:mx-4
 				mb-8
 				bg-[#F7F8FA]
@@ -493,6 +494,7 @@ function Cart() {
 														retailPrice: Number(item.retailPrice),
 														quantity: Number(item.quantity),
 														purchaseLimit: Number(item.purchaseLimit),
+														tagComboTags: item.tagComboTags,
 														discountReason: item.discountReason,
 													}}
 													calculating={isCalculating}

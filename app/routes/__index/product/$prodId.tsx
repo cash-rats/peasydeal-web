@@ -161,6 +161,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 	try {
 		const prodDetail = await fetchProductDetail(decompURL.productUUID)
+
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
@@ -204,6 +205,7 @@ export const action: ActionFunction = async ({ request }) => {
 	) {
 		return json('');
 	}
+
 
 	const session = await insertItem(request, cartObj);
 
@@ -279,6 +281,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	});
 
 	const [variationErr, setVariationErr] = useState<string>('');
+	const [tags, setTags] = useState<Array<string>>([]);
+
 	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
@@ -310,12 +314,13 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 	useEffect(() => {
 		const currentVariation = findDefaultVariation(state.productDetail);
+		const tagComboTags = state.productDetail?.tag_combo_tags || '';
+		setTags(tagComboTags.split(','));
 
 		dispatch({
 			type: ActionTypes.set_variation,
 			payload: currentVariation,
 		})
-
 	}, [state.productDetail]);
 
 
@@ -400,17 +405,16 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	}, [addToCart.type]);
 
 	const hasSuperDeal = useMemo(function () {
-		const { categories } = state.productDetail || {}
 		let _hasSuperDeal = false;
 
-		categories.forEach(({ name }) => {
+		tags.forEach((name: string) => {
 			if (name === 'super_deal') {
 				_hasSuperDeal = true;
 			}
 		});
 
 		return _hasSuperDeal;
-	}, [state.productDetail]);
+	}, [tags]);
 
 	const PriceRowMemo = useMemo(() => {
 		if (!state.variation?.sale_price) return null;

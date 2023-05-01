@@ -13,6 +13,7 @@ export type ShoppingCartItem = {
   retailPrice: string;
   productUUID: string;
   variationUUID: string;
+  tagComboTags: string;
 
   // product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
   image: string;

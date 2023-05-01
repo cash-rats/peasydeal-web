@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
@@ -7,6 +7,8 @@ import { BsTrash } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
 import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
+import { SUPER_DEAL_OFF } from '~/shared/constants';
+import { round10 } from '~/utils/preciseRound';
 import {
 	TagLabel,
 	Tag,
@@ -34,6 +36,7 @@ type ItemProps = {
 	quantity: number;
 	purchaseLimit: number;
 	discountReason?: string;
+	tagComboTags: string;
 }
 interface CartItemProps {
 	item: ItemProps;
@@ -78,6 +81,7 @@ function CartItem({
 		quantity: 1,
 		purchaseLimit: 10,
 		discountReason: '',
+		tagComboTags: '',
 	},
 	onChangeQuantity = () => { },
 	onClickQuantity = () => { },
@@ -103,6 +107,12 @@ function CartItem({
 		};
 		onBlurQuantity(evt, quantity);
 	};
+
+	const isSuperDeal = useMemo(() => {
+		const tags = item.tagComboTags && item.tagComboTags.split(',');
+
+		return (tags || []).includes('super_deal');
+	}, [item]);
 
 	return (
 		<div className="
@@ -166,6 +176,13 @@ function CartItem({
 									</span>
 								</div>
 							</div>
+							{
+								isSuperDeal ? (
+									<div className='w-fit text-sm block md:hidden font-slate-500'>
+										Final charge will be: <span className='font-bold'>£{ round10(item.salePrice * SUPER_DEAL_OFF, -2) }</span>
+									</div>
+								) : null
+							}
 						</div>
 					</div>
 
@@ -181,6 +198,13 @@ function CartItem({
 					</span>
 				</div>
 				<span className='text-lg font-poppins font-medium text-[#D02E7D]'>£{item.salePrice}</span>
+				{
+					isSuperDeal ? (
+						<div className='w-fit text-sm font-slate-500'>
+							Final charge will be: <span className='font-bold'>£{ round10(item.salePrice * SUPER_DEAL_OFF, -2) }</span>
+						</div>
+					) : null
+				}
 			</div>
 
 			{

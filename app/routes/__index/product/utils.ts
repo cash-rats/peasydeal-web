@@ -17,13 +17,14 @@ const normalizeToSessionStorableCartItem = ({
   // other wise `Default Title` would appeared in `/cart`.
   const specName = productDetail.variations.length === 1
     ? ''
-    : productVariation?.spec_name || ''
+    : productVariation?.spec_name || '';
 
   return {
     salePrice: productVariation?.sale_price.toString() || '',
     retailPrice: productVariation?.retail_price.toString() || '',
     productUUID: productDetail.uuid,
     variationUUID: productVariation?.uuid || '',
+    tagComboTags: productDetail.tag_combo_tags,
 
     // product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
     image: productDetail.images[0] || '',
