@@ -10,6 +10,25 @@ import { RiShirtFill } from 'react-icons/ri';
 import { GiPearlNecklace, GiFlowerPot, GiLipstick } from 'react-icons/gi';
 import { FcRating, FcSmartphoneTablet, FcHome, FcAutomotive } from 'react-icons/fc';
 
+import imgHotDeal from './images/hot_deal.png';
+import imgApparel from './images/apparel.png';
+import imgArt from './images/art.png';
+import imgBaby from './images/baby.png';
+import imgBag from './images/bag.png';
+import imgBeauty from './images/beauty.png';
+import imgBusiness from './images/business.png';
+import imgCamera from './images/camera.png';
+import imgCar from './images/car.png';
+import imgElectronic from './images/electronic.png';
+import imgFurniture from './images/furniture.png';
+import imgGarden from './images/garden.png';
+import imgHardware from './images/hardware.png';
+import imgMature from './images/mature.png';
+import imgOffice from './images/office.png';
+import imgPet from './images/pet.png';
+import imgSport from './images/sport.png';
+import imgToy from './images/toy.png';
+
 import type { Category } from '~/shared/types';
 
 type ContextType = {
@@ -20,38 +39,44 @@ export function useContext() {
   return useOutletContext<ContextType>();
 }
 
-const iconMapper = (name: string) => {
+const imageMapper = (name: string) => {
   switch (name) {
     case 'hot_deal':
-      return <VscFlame className='text-[42px] pb-2 text-[#e90064] relative left-[-6px]' />;
-    case 'new_trend':
-      return <IoSparklesOutline className='text-[42px] pb-2 text-[#FF8B13]' />;
-    case 'super_deal':
-      return <IoPricetagsOutline className='text-[42px] pb-2 text-[#EB455F]' />;
-    case 'pet':
-      return <MdOutlinePets className='text-[42px] pb-2 text-[#BAD7E9] relative left-[-6px]' />;
-    case 'kitchen_kitchenware':
-      return <TbToolsKitchen2 className='text-[42px] pb-2 text-[#10A19D] relative left-[-6px]' />;
-    case 'clothes_shoes':
-      return <RiShirtFill className='text-[42px] pb-2 text-[#FF8787] relative left-[-6px]' />;
-    case 'garden':
-      return <GiFlowerPot className='text-[42px] pb-2 text-[#8BDB81] relative left-[-6px]' />;
+      return <img src={imgHotDeal} className='w-[75%] ml-auto' alt="hot_deal" />;
+    case 'apparel-and-accessories':
+      return <img src={imgApparel} className='w-[75%] ml-auto' alt="apparel-and-accessories" />;
+    case 'health-and-beauty':
+        return <img src={imgBeauty} className='w-[75%] ml-auto' alt="health-and-beauty" />;
+    case 'business-and-industrial':
+      return <img src={imgBusiness} className='w-[75%] ml-auto' alt="business-and-industrial" />;
+    case 'cameras-and-optics':
+      return <img src={imgCamera} className='w-[75%] ml-auto' alt="cameras-and-optics" />;
+    case 'arts-and-entertainment':
+      return <img src={imgArt} className='w-[75%] ml-auto' alt="arts-and-entertainment" />;
     case 'electronics':
-      return <FcSmartphoneTablet className='text-[42px] pb-2 relative left-[-6px]' />;
-    case 'toy':
-      return <MdOutlineSmartToy className='text-[42px] pb-2 text-[#FFE162] relative left-[-6px]' />;
-    case 'beauty_personal_care':
-      return <GiLipstick className='text-[42px] pb-2 text-[#FFA6D5] relative left-[-6px]' />;
-    case 'home_appliances':
-      return <FcHome className='text-[42px] pb-2 relative left-[-6px]' />;
-    case 'health_medical':
-      return <IoBody className='text-[42px] pb-2 text-[#39A388] relative left-[-6px]' />;
-    case 'car_accessories':
-      return <FcAutomotive className='text-[42px] pb-2 relative left-[-6px]' />;
-    case 'cloths_accessories':
-      return <GiPearlNecklace className='text-[42px] pb-2 text-[#FF8474] relative left-[-6px]' />;
-    case 'top_product':
-      return <FcRating className='text-[42px] pb-2 relative left-[-6px]' />;
+      return <img src={imgElectronic} className='w-[75%] ml-auto' alt="electronics" />;
+    case 'mature':
+      return <img src={imgMature} className='w-[75%] ml-auto' alt="mature" />;
+    case 'home-and-garden':
+      return <img src={imgGarden} className='w-[75%] ml-auto' alt="home-and-garden" />;
+    case 'furniture':
+      return <img src={imgFurniture} className='w-[75%] ml-auto' alt="furniture" />;
+    case 'baby-and-toddler':
+      return <img src={imgBaby} className='w-[75%] ml-auto' alt="baby-and-toddle" />;
+    case 'hardware':
+      return <img src={imgHardware} className='w-[75%] ml-auto' alt="hardware" />;
+    case 'vehicles-and-parts':
+      return <img src={imgCar} className='w-[75%] ml-auto' alt="vehicles-and-parts" />;
+    case 'office-supplies':
+      return <img src={imgOffice} className='w-[75%] ml-auto' alt="office-supplies" />;
+    case 'sporting-goods':
+      return <img src={imgSport} className='w-[75%] ml-auto' alt="sporting-goods" />;
+    case 'toys-and-games':
+      return <img src={imgToy} className='w-[75%] ml-auto' alt="toys-and-games" />;
+    case 'animals-and-pet-supplies':
+      return <img src={imgPet} className='w-[75%] ml-auto' alt="pet-supplies" />;
+    case 'luggage-and-bags':
+      return <img src={imgBag} className='w-[75%] ml-auto' alt="luggage-and-bags" />;
     default:
       return null;
   }
@@ -127,19 +152,24 @@ const CategoriesRow = ({ defatulCategories }: { defatulCategories?: any}) => {
                           font-poppins font-medium
                           text-lg
                           leading-5
-                          w-[137px] h-[137px]
-                          md:w-[160px] md:h-[160px]
+                          w-[137px]
+                          h-full
+                          md:w-[160px]
                           max-w-xs
                           overflow-hidden
+                          font-bold
                           border boder-[#efefef]
                           hover:shadow-[2px_4px_16px_rgb(0,0,0,16%)]
                           rounded-lg bg-white
                           transition-shadow duration-300 ease-in-out
+                          relative
                         "
                       >
-                        <span>{iconMapper(category.name)}</span>
                         <span>
                           {category.title}
+                        </span>
+                        <span className='inline-flex text-right mt-auto py-2'>
+                          {imageMapper(category.name)}
                         </span>
                       </div>
                     </Link>
