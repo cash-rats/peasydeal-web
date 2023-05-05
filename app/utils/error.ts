@@ -15,7 +15,7 @@ import type { ApiErrorResponse } from '~/shared/types';
   1.
     throw new Error(JSON.stringify(respJSON)) ---> throwing a string of json object in the above format.
   2.
-    throw new Error((respJSON as ApiErrorResponse).err_msg) ---> throwing an string of a simple error message.
+    throw new Error((respJSON as ApiErrorResponse).err_msg) ---> throwing an string of a simple error message responded from the BE.
 
   try {
     await someAsyncFetch(...)

@@ -1,6 +1,7 @@
+import httpStatus from 'http-status-codes';
+
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 import type { Product, ApiErrorResponse } from '~/shared/types';
-import httpStatus from 'http-status-codes';
 
 interface FetchPromotionProductsParams {
   promoName?: string;

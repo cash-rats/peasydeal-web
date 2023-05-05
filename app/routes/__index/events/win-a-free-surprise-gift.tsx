@@ -66,7 +66,7 @@ const ItemCard = ({ item, scrollPosition }) => {
                 blurDataURL={`${loaded
                   ? `/images/placeholder_transparent.png`
                   : `/images/placeholder.jpg`
-                }`}
+                  }`}
                 placeholder={loaded ? 'empty' : 'blur'}
                 placeholderAspectRatio={1}
                 onLoadingComplete={(naturalDimensions) => {
@@ -122,7 +122,7 @@ const ItemCard = ({ item, scrollPosition }) => {
 const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
   return (
     <>
-      { Object.keys(prizes).map((tier: string, index) => {
+      {Object.keys(prizes).map((tier: string, index) => {
         return (
           <div className='max-w-7xl mx-auto px-2 md:px-12 mb-8' key={`tier-category-${index}`}>
             <div className='rounded-2xl bg-gradient-to-b from-pink-100 to-fuchsia-0 min-h-[400px] w-full p-2 md:px-6 lg:px-8 sm:py-8 flex flex-col'>
@@ -142,7 +142,7 @@ const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
                   TIER {tier}
                 </div> */}
                 <h3 className='text-2xl font-bold pt-4 pb-6'>
-                  Spend <span className='text-[#D02E7D]'>£{prizes[tier]['threshhold']}+</span><br/>
+                  Spend <span className='text-[#D02E7D]'>£{prizes[tier]['threshhold']}+</span><br />
                   Get <span className='text-[#D02E7D]'>1</span> random gift worth <span className='text-[#D02E7D]'>£{prizes[tier]['worthUpTo']}</span>
                 </h3>
               </div>
@@ -164,7 +164,7 @@ const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
           </div>
         )
       })
-    }
+      }
     </>
   )
 }
@@ -184,7 +184,6 @@ const EventsEasterHunter = ({ scrollPosition }) => {
       id: 'faqs',
     },
   ];
-  const linkColor = useColorModeValue('pink.800', 'pink.300');
   const linkHoverColor = useColorModeValue('gray.900', 'gray.600');
 
   const qaRef = useRef(null);
@@ -225,7 +224,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
               May 01 to May 31
             </p>
 
-            <CountDown countdown="2023-06-01T00:00:00.000Z"/>
+            <CountDown countdown="2023-06-01T00:00:00.000Z" />
 
             <h1
               data-shadow="Get a Free Gift with Your Purchase!"
@@ -283,7 +282,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
                     color: linkHoverColor,
                   }}
                 >
-                  { name }
+                  {name}
                 </chakra.a>
               ))
             }
