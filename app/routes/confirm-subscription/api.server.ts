@@ -18,7 +18,7 @@ export const activateEmailSubscribe = async (uuid: string): Promise<string> => {
   const respJSON = await resp.json();
 
   if (resp.status !== httpStatus.OK) {
-    throw new Error((respJSON as ApiErrorResponse).err_msg);
+    throw new Error(JSON.stringify(respJSON as ApiErrorResponse));
   }
 
   return respJSON.coupon as string;
