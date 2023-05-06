@@ -126,11 +126,11 @@ const CategoriesRow = ({ defatulCategories }: { defatulCategories?: any}) => {
           ref={containerRef}
           className="flex overflow-x-scroll pt-5 pb-10 hide-scroll-bar smooth-scrolling"
         >
-          <div className="flex flex-nowrap">
+          <div className="flex flex-nowrap gap-2 md:gap-4">
             {
               categories?.map((category: Category, index: number) => {
                 return (
-                  <div className="inline-block px-3" key={`${category.name}_${index}`}>
+                  <div className="inline-block" key={`${category.name}_${index}`}>
                     <Link
                       to={
                         `/${category.type === 'promotion'
@@ -150,11 +150,12 @@ const CategoriesRow = ({ defatulCategories }: { defatulCategories?: any}) => {
                           flex flex-col items-start
                           px-4 pt-4
                           font-poppins font-medium
-                          text-lg
+                          md:text-lg
+                          text-base
                           leading-5
-                          w-[137px]
+                          min-w-[145px]
                           h-full
-                          md:w-[160px]
+                          md:min-w-[160px]
                           max-w-xs
                           overflow-hidden
                           font-bold
