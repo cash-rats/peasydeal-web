@@ -1,7 +1,24 @@
+import { useState, useEffect } from 'react';
+import type { ChangeEvent } from 'react';
+import { useFetcher } from '@remix-run/react'
 import { TextField } from '@mui/material';
-import Button from '@mui/material/Button';
+import { Button } from '@chakra-ui/react'
 
-function EmailSubscribe() {
+interface EmailSubscribeParams {
+  onSubscribe?: (email: string) => void;
+}
+
+function EmailSubscribe({ onSubscribe = () => { } }: EmailSubscribeParams) {
+  const [email, setEmail] = useState('');
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const subFetcher = useFetcher();
+
+  useEffect(() => {
+    if (subFetcher.type === 'done') {
+      // Determine the status code
+    }
+  }, [subFetcher.type]);
+
   return (
     <div className="flex flex-col">
       <span className="
@@ -26,20 +43,29 @@ function EmailSubscribe() {
               backgroundColor: '#fff',
               borderRadius: '8px',
             }}
+            value={email}
+            onChange={handleChangeEmail}
           />
         </div>
 
-        <Button
-          variant='contained'
-          style={{
-            borderRadius: '10px',
-            textTransform: 'capitalize',
-            backgroundColor: '#d02e7d',
-            fontSize: '1rem',
-          }}
-        >
-          Subscribe
-        </Button>
+        <subFetcher.Form action='/subscribe?index' method='post'>
+          <input type='hidden' name='email' value={email} />
+
+          <Button
+            isLoading={subFetcher.state !== 'idle'}
+            variant='contained'
+            type='submit'
+            className="text-white"
+            style={{
+              borderRadius: '10px',
+              textTransform: 'capitalize',
+              backgroundColor: '#d02e7d',
+              fontSize: '1rem',
+            }}
+          >
+            Subscribe
+          </Button>
+        </subFetcher.Form>
       </div>
 
       <p className="
