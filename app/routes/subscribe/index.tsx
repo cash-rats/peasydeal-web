@@ -1,0 +1,32 @@
+// This is a simple route component that accepts email subscribe requests
+// and process the request via `action`. Email subscribe request are mainly
+// from `FooterMobileLayout` and `FooterTabletLayout` for now.
+import type { ActionFunction } from '@remix-run/node';
+import { json } from '@remix-run/node';
+import httpStatus from 'http-status-codes';
+
+import { composErrorResponse } from '~/utils/error';
+
+import { subscribe } from './api.server';
+
+export const action: ActionFunction = async ({ request }) => {
+  const body = await request.formData();
+  const email = body.get('email') as string | null;
+
+  try {
+    if (!email) {
+      return json({}, httpStatus.BAD_REQUEST)
+    }
+
+    await subscribe(email);
+    return json({}, httpStatus.OK);
+  } catch (err: any) {
+    throw json(composErrorResponse(err.message), httpStatus.BAD_REQUEST);
+  }
+}
+
+function Subscribe() {
+  return ('')
+}
+
+export default Subscribe;

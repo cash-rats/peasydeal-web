@@ -35,7 +35,7 @@ const getENV = (key: string): string | null | undefined => getENVSource()[key]
 
 const DOMAIN = getENV('DOMAIN') || 'https://staging.peasydeal.com';
 const MYFB_ENDPOINT = getENV('MYFB_ENDPOINT');
-const PEASY_DEAL_ENDPOINT = getENV('PEASY_DEAL_ENDPOINT');
+const PEASY_DEAL_ENDPOINT = getENV('PEASY_DEAL_ENDPOINT') || 'https://stagingapi.peasydeal.com';
 
 const REDIS_SESSION_TTL = Number(getENV('REDIS_SESSION_TTL')) || 295200;
 const CATEGORY_CACHE_TTL = getENV('CATEGORY_CACHE_TTL') || 43200;
