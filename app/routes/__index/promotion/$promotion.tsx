@@ -140,6 +140,7 @@ function Promotion({ scrollPosition }: TPromotion) {
 
   // If user changes promotion, we'll update the current category in reducer.
   useEffect(() => {
+    if (!category) return;
     if (stateCategory?.name === category.name) return;
 
     dispatch({
@@ -168,9 +169,10 @@ function Promotion({ scrollPosition }: TPromotion) {
       // would be appended to different category. Moreover, it would cause inconsistent
       // page number. Thus, we abandon appending loaded data on to the product list
       // if category of data is different from current viewing category.
+      if (!category) return;
       if (
         products.length === 0 ||
-        dataCat.name !== category.name
+        dataCat?.name !== category.name
       ) return;
 
       currPage.current = page;
