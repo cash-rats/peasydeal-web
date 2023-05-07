@@ -20,12 +20,6 @@ interface FooterProps {
 }
 
 function Footer({ categories }: FooterProps) {
-  const subsFetcher = useFetcher();
-
-  const handleMobileSub = (email: string) => {
-    console.log('handleMobileSub', email);
-  }
-
   return (
     <>
       <FooterTopInfo />
@@ -37,7 +31,7 @@ function Footer({ categories }: FooterProps) {
         w-full
       ">
         <div className="block lg:hidden w-full p-2.5 max-w-screen-xl mx-auto">
-          <FooterMobileLayout onSubscribe={handleMobileSub} categories={categories} />
+          <FooterMobileLayout categories={categories} />
         </div>
 
         <div className="hidden lg:block w-full py-2.5 max-w-screen-xl mx-auto">

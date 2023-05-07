@@ -21,7 +21,7 @@ export const action: ActionFunction = async ({ request }) => {
     await subscribe(email);
     return json({}, httpStatus.OK);
   } catch (err: any) {
-    throw json(composErrorResponse(err.message), httpStatus.BAD_REQUEST);
+    return json(composErrorResponse(err.message), httpStatus.BAD_REQUEST);
   }
 }
 

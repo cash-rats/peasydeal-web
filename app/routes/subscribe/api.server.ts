@@ -3,7 +3,7 @@ import httpStatus from 'http-status-codes';
 import type { ApiErrorResponse } from '~/shared/types';
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 
-export const subscribe = async (email: string) => {
+export const subscribe = async (email: string): Promise<object> => {
   const url = new URL(PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/subscribe';
 
@@ -20,8 +20,6 @@ export const subscribe = async (email: string) => {
   if (resp.status !== httpStatus.OK) {
     throw new Error(JSON.stringify(respJson as ApiErrorResponse))
   }
-
-  console.log('debug respJson', respJson);
 
   return respJson
 }

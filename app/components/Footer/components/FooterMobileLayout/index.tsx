@@ -19,17 +19,16 @@ export const links: LinksFunction = () => {
 
 interface FooterMobileLayoutProps {
   categories?: Category[];
-  onSubscribe?: (email: string) => void;
 }
 
-function FooterMobileLayout({ categories = [], onSubscribe }: FooterMobileLayoutProps) {
+function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
   return (
     <ul className="w-full list-none py-0 px-4 flex flex-col gap-6">
       <li>
         <LogoSection />
       </li>
       <li className="border-b-[1px] pb-4 border-b-[#2E4E73]">
-        <EmailSubscribe onSubscribe={onSubscribe} />
+        <EmailSubscribe />
       </li>
 
       <li className="flex flex-row">
