@@ -37,8 +37,8 @@ function SubscribeModal({ open, onClose, error }: SubscribeModalParams) {
             <p className="font-poppins text-base">
               {
                 error !== null
-                  ? 'An confirmation link and coupon has send to your email.'
-                  : 'Something went wrong! Please check the email your entered and try again.'
+                  ? 'Something went wrong! Please check the email your entered and try again.'
+                  : 'An confirmation link and coupon has send to your email.'
               }
             </p>
 

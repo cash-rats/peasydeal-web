@@ -32,12 +32,14 @@ interface CartActions {
   | null;
 }
 
+
 export const setCartItems = (cartItems: ShoppingCart) => {
   return {
     type: CartActionTypes.set_cart_items,
     payload: cartItems,
   };
 }
+
 
 export default function cartReducer(state: StateShape, action: CartActions): StateShape {
   switch (action.type) {

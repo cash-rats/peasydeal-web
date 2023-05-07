@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useReducer, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import { useFetcher } from '@remix-run/react'
 import { TextField } from '@mui/material';
@@ -7,14 +7,17 @@ import { Button } from '@chakra-ui/react'
 import type { ApiErrorResponse } from '~/shared/types';
 
 import SubscribeModal from './components/SubscribeModal';
-
+import reducer, { setOpenEmailSubscribeModal, setEmail } from './reducer';
 
 function EmailSubscribe() {
-  const [email, setEmail] = useState('');
-  const [open, setOpen] = useState(false);
-  const [error, setError] = useState<null | ApiErrorResponse>(null);
+  const [state, dispatch] = useReducer(reducer, {
+    open: false,
+    error: null,
+    email: '',
+  });
 
-  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) =>
+    dispatch(setEmail(e.target.value));
   const subFetcher = useFetcher();
 
   useEffect(() => {
@@ -23,25 +26,26 @@ function EmailSubscribe() {
 
       if (data.err_code) {
         const errResp = data as ApiErrorResponse
-        setOpen(true);
-        setError(errResp);
+        dispatch(setOpenEmailSubscribeModal(true, errResp))
         return;
       }
 
       // Open modal
       // display subscription email sent.
-      setOpen(true)
+      dispatch(setOpenEmailSubscribeModal(true, null))
     }
   }, [subFetcher.type]);
 
-  const onCloseModal = () => setOpen(false);
+  const onCloseModal = () =>
+    dispatch(setOpenEmailSubscribeModal(false, null));
+
 
   return (
     <>
       <SubscribeModal
-        open={open}
+        open={state.open}
         onClose={onCloseModal}
-        error={error}
+        error={state.error}
       />
 
       <div className="flex flex-col">
@@ -67,13 +71,13 @@ function EmailSubscribe() {
                 backgroundColor: '#fff',
                 borderRadius: '8px',
               }}
-              value={email}
+              value={state.email}
               onChange={handleChangeEmail}
             />
           </div>
 
           <subFetcher.Form action='/subscribe?index' method='post'>
-            <input type='hidden' name='email' value={email} />
+            <input type='hidden' name='email' value={state.email} />
 
             <Button
               isLoading={subFetcher.state !== 'idle'}
