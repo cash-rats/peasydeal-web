@@ -2,12 +2,12 @@ import { useReducer, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
 import { useFetcher } from '@remix-run/react'
 import { TextField } from '@mui/material';
-import { Button } from '@chakra-ui/react'
+import { Button } from '@chakra-ui/react';
 
 import type { ApiErrorResponse } from '~/shared/types';
 
-import SubscribeModal from './components/SubscribeModal';
-import reducer, { setOpenEmailSubscribeModal, setEmail } from './reducer';
+import SubscribeModal from '~/components/EmailSubscribeModal';
+import reducer, { setOpenEmailSubscribeModal, setEmail } from '~/components/EmailSubscribeModal/reducer';
 
 function EmailSubscribe() {
   const [state, dispatch] = useReducer(reducer, {
@@ -39,7 +39,6 @@ function EmailSubscribe() {
   const onCloseModal = () =>
     dispatch(setOpenEmailSubscribeModal(false, null));
 
-
   return (
     <>
       <SubscribeModal
@@ -57,7 +56,7 @@ function EmailSubscribe() {
         </span>
 
         <p className="text-white mt-4 text-base">
-          Join to our news letter & get £2.99 worth Free Shipping Code
+          Join to our news letter & get £3 GBP voucher
         </p>
 
         <div className="flex flex-row mt-3 w-full gap-2">
@@ -97,10 +96,9 @@ function EmailSubscribe() {
         </div>
 
         <p className="
-        text-slate-50 mt-3 text-sm md:text-base
-      ">
-          * Can be use on order £20+, expires at March, 31, 2023
-          Terms and Condition applied
+          text-slate-50 mt-3 text-sm md:text-base
+        ">
+          * Can be use on order £30+, Terms and Condition applied
         </p>
       </div>
     </>

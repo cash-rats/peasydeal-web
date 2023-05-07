@@ -1,5 +1,7 @@
 import type { LinksFunction, MetaFunction } from '@remix-run/node';
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useEffect, useReducer } from "react";
+import type { ChangeEvent } from 'react';
+import { useFetcher } from '@remix-run/react'
 import CountDown, { links as CountDownLinks } from "./components/countdown/CountDown";
 import { trackWindowScroll, LazyLoadComponent } from "react-lazy-load-image-component";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
@@ -7,6 +9,14 @@ import Image, { MimeType } from "remix-image"
 import {
   Link,
 } from '@remix-run/react';
+import {
+  Button,
+} from '@chakra-ui/react'
+
+import SubscribeModal from '~/components/EmailSubscribeModal';
+import type { ApiErrorResponse } from '~/shared/types';
+import reducer, { setOpenEmailSubscribeModal, setEmail } from '~/components/EmailSubscribeModal/reducer';
+
 import {
   ListItem,
   OrderedList,
@@ -25,6 +35,7 @@ import styles from './styles/events.css';
 
 import cardBG from './images/card-bg.jpg';
 import prizes from '~/data/2023-may-event-items.json';
+
 
 export const links: LinksFunction = () => {
   return [
@@ -186,6 +197,33 @@ const EventsEasterHunter = ({ scrollPosition }) => {
   ];
   const linkHoverColor = useColorModeValue('gray.900', 'gray.600');
 
+  const [state, dispatch] = useReducer(reducer, {
+    open: false,
+    error: null,
+    email: '',
+  });
+
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) =>
+    dispatch(setEmail(e.target.value));
+  const onCloseModal = () =>
+    dispatch(setOpenEmailSubscribeModal(false, null));
+  const subFetcher = useFetcher();
+  useEffect(() => {
+    if (subFetcher.type === 'done') {
+      const data = subFetcher.data;
+
+      if (data.err_code) {
+        const errResp = data as ApiErrorResponse
+        dispatch(setOpenEmailSubscribeModal(true, errResp))
+        return;
+      }
+
+      // Open modal
+      // display subscription email sent.
+      dispatch(setOpenEmailSubscribeModal(true, null))
+    }
+  }, [subFetcher.type]);
+
   const qaRef = useRef(null);
   const { sticky } = useSticky(qaRef);
   const activeId = useScrollSpy(
@@ -210,6 +248,11 @@ const EventsEasterHunter = ({ scrollPosition }) => {
 
   return (
     <div className="">
+      <SubscribeModal
+        open={state.open}
+        onClose={onCloseModal}
+        error={state.error}
+      />
       <section
         className="
           relative isolate z-0 text-2xl font-custom overflow-hidden justify-between
@@ -413,40 +456,47 @@ const EventsEasterHunter = ({ scrollPosition }) => {
 
       {/* Email lead */}
       <div className="py-8 md:py-15 lg:py-20 bg-[#efefef]">
-        <section className="relative">
+        <section className="relative text-center">
           <h2 className="mb-4 px-5 text-center font-custom text-3xl font-bold max-w-4xl md:leading-tight mx-auto">
             Like this event?
           </h2>
-          <p className="leading-relaxed mt-4 text-lg sm:text-2xl my-4 text-center mx-auto max-w-3xl">
+          <p className="leading-relaxed m-4 text-lg sm:text-2xl my-4 text-center mx-auto max-w-3xl">
             Get notified about when we have new events
           </p>
           <div className="px-5">
-            <form
-              method="POST"
-              action="/subscribe"
+            <div
               className="flex flex-col sm:flex-row mx-auto justify-center gap-y-2 sm:gap-y-0 max-w-2xl gap-x-2 items-center"
             >
-              <input type="hidden" name="iframe_id" value="gift-surprise-campaign" />
               <label htmlFor="email-address" className="sr-only">
+                {/* <input type="hidden" name="iframe_id" value="gift-surprise-campaign" /> */}
                 Email address
               </label>
               <input
                 id="email-address"
-                name="email"
+                name="email-input"
                 type="email"
                 className="flex-auto rounded-lg border-0 bg-white px-4 py-4 shadow-md ring-1 ring-slate-300/80 focus:ring-2 w-full max-w-xl focus:ring-slate-400/70 sm:text-base lg:text-lg sm:leading-6"
                 placeholder="Enter your email"
                 style={{ paddingRight: "46px" }}
+                value={state.email}
+                onChange={handleChangeEmail}
               />
-              <button
-                type="submit"
-                className="rounded-lg py-4 whitespace-nowrap px-6 sm:px-12 text-base font-bold lg:text-lg text-white shadow-lg hover:opacity-90 transition focus-visible:outline focus-visible:outline-2 w-full sm:w-fit focus-visible:outline-offset-2 focus-visible:outline-white"
-                style={{ backgroundColor: "#d02e7d" }}
-              >
-                Notify me
-              </button>
-            </form>
+              <subFetcher.Form action='/subscribe?index' method='post'>
+                <div className='flex flex-col sm:flex-row mx-auto justify-center gap-y-2 sm:gap-y-0 max-w-2xl gap-x-2 items-center'>
+                  <input type='hidden' name='email' value={state.email} />
+                  <Button
+                    isLoading={subFetcher.state !== 'idle'}
+                    type='submit'
+                    className="rounded-lg h-full py-4 whitespace-nowrap px-6 sm:px-12 text-base font-bold lg:text-lg text-white shadow-lg hover:opacity-90 transition focus-visible:outline focus-visible:outline-2 w-full sm:w-fit focus-visible:outline-offset-2 focus-visible:outline-white"
+                    style={{ backgroundColor: "#d02e7d" }}
+                  >
+                    Notify me
+                  </Button>
+                </div>
+              </subFetcher.Form>
+            </div>
           </div>
+          <small className='block text-center px-2 pt-4 mx-auto'>By subscribing to our mailing list, you will get a <b>£3 GBP</b> voucher for FREE! This voucher be use on order £30+</small>
         </section>
       </div>
 

@@ -38,7 +38,11 @@ function SubscribeModal({ open, onClose, error }: SubscribeModalParams) {
               {
                 error !== null
                   ? 'Something went wrong! Please check the email your entered and try again.'
-                  : 'An confirmation link and coupon has send to your email.'
+                  : (<>
+                    <p>An confirmation link and coupon has send to your email.</p>
+                    <br/>
+                    <p>Please check your email for $3 voucher code and click the "Confirm & Validate" button in the email to activate your voucher.</p>
+                  </>)
               }
             </p>
 

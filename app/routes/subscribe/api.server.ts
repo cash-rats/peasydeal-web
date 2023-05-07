@@ -1,6 +1,5 @@
 import httpStatus from 'http-status-codes';
 
-import type { ApiErrorResponse } from '~/shared/types';
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 
 export const subscribe = async (email: string): Promise<object> => {
@@ -8,7 +7,7 @@ export const subscribe = async (email: string): Promise<object> => {
   url.pathname = '/v1/subscribe';
 
   const resp = await fetch(url.toString(), {
-    method: 'post',
+    method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
@@ -18,7 +17,10 @@ export const subscribe = async (email: string): Promise<object> => {
   const respJson = await resp.json();
 
   if (resp.status !== httpStatus.OK) {
-    throw new Error(JSON.stringify(respJson as ApiErrorResponse))
+    return {
+      ...respJson,
+      status: resp.status,
+    }
   }
 
   return respJson
