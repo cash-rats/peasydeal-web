@@ -5,7 +5,6 @@ import { TextField } from '@mui/material';
 import { Button } from '@chakra-ui/react';
 
 import type { ApiErrorResponse } from '~/shared/types';
-
 import SubscribeModal from '~/components/EmailSubscribeModal';
 import reducer, { setOpenEmailSubscribeModal, setEmail } from '~/components/EmailSubscribeModal/reducer';
 
