@@ -6,16 +6,12 @@ import CountDown, { links as CountDownLinks } from "./components/countdown/Count
 import { trackWindowScroll, LazyLoadComponent } from "react-lazy-load-image-component";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 import Image, { MimeType } from "remix-image"
-import {
-  Link,
-} from '@remix-run/react';
-import {
-  Button,
-} from '@chakra-ui/react'
+import { Link, } from '@remix-run/react';
+import { Button } from '@chakra-ui/react'
 
 import SubscribeModal from '~/components/EmailSubscribeModal';
 import type { ApiErrorResponse } from '~/shared/types';
-import reducer, { setOpenEmailSubscribeModal, setEmail } from '~/components/EmailSubscribeModal/reducer';
+import reducer, { setOpenEmailSubscribeModal } from '~/components/EmailSubscribeModal/reducer';
 
 import {
   ListItem,
@@ -200,11 +196,11 @@ const EventsEasterHunter = ({ scrollPosition }) => {
   const [state, dispatch] = useReducer(reducer, {
     open: false,
     error: null,
-    email: '',
   });
 
-  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) =>
-    dispatch(setEmail(e.target.value));
+  const [email, setEmail] = useState('');
+
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
   const onCloseModal = () =>
     dispatch(setOpenEmailSubscribeModal(false, null));
   const subFetcher = useFetcher();
@@ -256,7 +252,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
       <section
         className="
           relative isolate z-0 text-2xl font-custom overflow-hidden justify-between
-          text-slate-800 w-full relative flex flex-col
+          text-slate-800 w-full flex flex-col
           bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500
         "
       >
@@ -478,12 +474,12 @@ const EventsEasterHunter = ({ scrollPosition }) => {
                 className="flex-auto rounded-lg border-0 bg-white px-4 py-4 shadow-md ring-1 ring-slate-300/80 focus:ring-2 w-full max-w-xl focus:ring-slate-400/70 sm:text-base lg:text-lg sm:leading-6"
                 placeholder="Enter your email"
                 style={{ paddingRight: "46px" }}
-                value={state.email}
+                value={email}
                 onChange={handleChangeEmail}
               />
               <subFetcher.Form action='/subscribe?index' method='post'>
                 <div className='flex flex-col sm:flex-row mx-auto justify-center gap-y-2 sm:gap-y-0 max-w-2xl gap-x-2 items-center'>
-                  <input type='hidden' name='email' value={state.email} />
+                  <input type='hidden' name='email' value={email} />
                   <Button
                     isLoading={subFetcher.state !== 'idle'}
                     type='submit'

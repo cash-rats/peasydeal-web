@@ -1,4 +1,4 @@
-import { useReducer, useEffect } from 'react';
+import { useReducer, useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { useFetcher } from '@remix-run/react'
 import { TextField } from '@mui/material';
@@ -6,17 +6,16 @@ import { Button } from '@chakra-ui/react';
 
 import type { ApiErrorResponse } from '~/shared/types';
 import SubscribeModal from '~/components/EmailSubscribeModal';
-import reducer, { setOpenEmailSubscribeModal, setEmail } from '~/components/EmailSubscribeModal/reducer';
+import reducer, { setOpenEmailSubscribeModal } from '~/components/EmailSubscribeModal/reducer';
 
 function EmailSubscribe() {
+  const [email, setEmail] = useState('');
   const [state, dispatch] = useReducer(reducer, {
     open: false,
     error: null,
-    email: '',
   });
 
-  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) =>
-    dispatch(setEmail(e.target.value));
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
   const subFetcher = useFetcher();
 
   useEffect(() => {
@@ -69,13 +68,13 @@ function EmailSubscribe() {
                 backgroundColor: '#fff',
                 borderRadius: '8px',
               }}
-              value={state.email}
+              value={email}
               onChange={handleChangeEmail}
             />
           </div>
 
           <subFetcher.Form action='/subscribe?index' method='post'>
-            <input type='hidden' name='email' value={state.email} />
+            <input type='hidden' name='email' value={email} />
 
             <Button
               isLoading={subFetcher.state !== 'idle'}
