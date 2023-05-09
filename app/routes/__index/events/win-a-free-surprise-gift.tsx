@@ -140,7 +140,7 @@ const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
               <h3
                 className="
                   hidden md:block
-                  text-xl text-xl md:text-2xl lg:text-3xl
+                  text-xl md:text-2xl lg:text-3xl
                   font-black text-[#25276C] font-poppins mb-10 xl:mb-10
                 "
               >
