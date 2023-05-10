@@ -174,6 +174,7 @@ function CartLayout() {
 				justify-center items-center
 				px-2 md:px-4
 				bg-white
+        mt-4
 			">
         <div className="w-full py-2.5 max-w-screen-xl mx-auto">
           {/* Recommended products - top items */}

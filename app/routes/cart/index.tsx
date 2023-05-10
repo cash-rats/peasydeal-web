@@ -21,7 +21,7 @@ import PaymentMethods from '~/components/PaymentMethods';
 import cartReducer, { CartActionTypes } from './reducer';
 import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
-import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
+import EmptyShoppingCart from './components/EmptyShoppingCart';
 import PriceResult from './components/PriceResult';
 import {
 	fetchPriceInfo,
@@ -43,7 +43,6 @@ import { round10 } from '~/utils/preciseRound';
 export const links: LinksFunction = () => {
 	return [
 		...ItemLinks(),
-		...EmptyShippingCartLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };

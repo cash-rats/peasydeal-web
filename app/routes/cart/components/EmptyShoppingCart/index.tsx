@@ -1,31 +1,29 @@
-import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import Button from '@mui/material/Button';
 
 import emptyCartSVG from './images/empty_cart.svg';
-import styles from './styles/EmptyShoppingCart.css';
-
-export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: styles }];
-}
 
 function EmptyShoppingCartPage() {
 
   return (
-    <section className="empty-cart-container">
-      <div className="empty-cart-image">
-        <img alt='nothing in the shopping cart' src={emptyCartSVG} />
+    <section className="max-w-[1180px] m-h-[40rem] my-0 mx-auto pb-9 pt-4">
+      <div className="flex justify-center">
+        <img
+          className="h-56 w-56"
+          alt='nothing in the shopping cart'
+          src={emptyCartSVG}
+        />
       </div>
 
-      <h1 className="empty-cart-title">
+      <h1 className="font-poppins mt-5 font-medium text-2xl text-center">
         Your cart is empty
       </h1>
 
-      <p className="empty-cart-text">
+      <p className="font-poppin mt-5 text-center text-xl">
         Looks like you have not added anything to your cart. Go find the product you like.
       </p>
 
-      <div className="redirect-to-shopping">
+      <div className="mt-5 text-center">
         <Link to='/'>
           <Button
             color='success'
