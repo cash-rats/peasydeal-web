@@ -14,7 +14,6 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import Tooltip from '@mui/material/Tooltip';
 import MoonLoader from 'react-spinners/MoonLoader';
 
-import RoundButton from '~/components/RoundButton';
 import TextDropdownField from '~/components/TextDropdownField';
 import type { Option as DropdownOption } from '~/components/TextDropdownField';
 
@@ -67,7 +66,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
   const loadAddrOptions = (postal: string) => {
     loadAddrFetcher.submit(
       { postal },
-      { method: 'post', action: 'checkout/components/ShippingDetailForm?index' }
+      { method: 'post', action: '/checkout/components/ShippingDetailForm?index' }
     );
   };
 

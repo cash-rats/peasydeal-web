@@ -37,8 +37,6 @@ export const CatchBoundary = () => {
   const caught = useCatch()
   const errResp = caught.data;
 
-  console.log('debug errResp', errResp);
-
   // Invalid email subscription
   return (
     <div className="h-[600px] relative">

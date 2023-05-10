@@ -2,13 +2,11 @@ import type { ApiErrorResponse } from '~/shared/types';
 
 export enum EmailSubscribeActionTypes {
   set_open_subscribe_modal = 'open_subscribe_modal',
-  set_email = 'set_email',
 };
 
 type StateShape = {
   open: boolean;
   error: ApiErrorResponse | null;
-  email: string;
 }
 
 interface OpenSubscribeModalPayload {
@@ -34,13 +32,6 @@ export const setOpenEmailSubscribeModal = (open: boolean, error: null | ApiError
   };
 };
 
-export const setEmail = (email: string) => {
-  return {
-    type: EmailSubscribeActionTypes.set_email,
-    payload: email,
-  }
-}
-
 export default function EmailSubscribeReducer(state: StateShape, action: EmailSubscribeAction): StateShape {
   switch (action.type) {
     case EmailSubscribeActionTypes.set_open_subscribe_modal: {
@@ -50,13 +41,6 @@ export default function EmailSubscribeReducer(state: StateShape, action: EmailSu
         open: payload.open,
         error: payload.error,
       };
-    }
-    case EmailSubscribeActionTypes.set_email: {
-      const email = action.payload as string;
-      return {
-        ...state,
-        email,
-      }
     }
     default:
       return state

@@ -34,7 +34,9 @@ interface IPromoCodeBox {
   error: string;
   appliedPromoCode: string;
   discountCodeValid: boolean;
+  discountErrorMsgs: string[];
 }
+
 const PromoCodeBox = ({
   promoCode,
   handleChange,
@@ -43,6 +45,7 @@ const PromoCodeBox = ({
   error,
   appliedPromoCode,
   discountCodeValid,
+  discountErrorMsgs,
 }: IPromoCodeBox) => {
   return (
     <>
@@ -93,12 +96,25 @@ const PromoCodeBox = ({
         </div>
 
         {
-          discountCodeValid && (
+          discountCodeValid && discountErrorMsgs.length === 0 && (
             <div className="mt-[10px] h-10">
               <p className="text-[#00af32] font-normal text-base">
                 The promo code <span className="font-semibold">{appliedPromoCode}</span> was successfully applied.
               </p>
             </div>
+          )
+        }
+
+        {
+          discountErrorMsgs.length > 0 && (
+            discountErrorMsgs.map((msg, idx) => (
+              <div className="mt-[10px] h-10" key={`error-code-msg-${idx}`}>
+                <p className="text-[#D02E7D] font-normal text-base">
+                  { msg }
+                </p>
+              </div>
+            ))
+
           )
         }
       </div>
@@ -119,6 +135,21 @@ export default function PriceResult({
   const [promoCode, setPromoCode] = useState('');
   const [error, setError] = useState('');
 
+  // destructuring priceInfo
+  const {
+    shipping_fee = 0,
+    sub_total = 0,
+    tax_amount = 0,
+    total_amount = 0,
+    discount_amount = 0,
+    discount_type = '',
+    discount_code_valid = false,
+    applied_events = [],
+    origin_shipping_fee = 0,
+    promo_code_discount = 0,
+    discount_error_msgs: discountErrorMsgs = [],
+  } = priceInfo || {};
+
   useEffect(() => {
     if (
       appliedPromoCode &&
@@ -132,6 +163,7 @@ export default function PriceResult({
   }, [
     appliedPromoCode,
     priceInfo,
+    discount_code_valid
   ]);
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -155,20 +187,6 @@ export default function PriceResult({
     onApplyPromoCode(promoCode);
   };
 
-  // destructuring priceInfo
-  const {
-    shipping_fee = 0,
-    sub_total = 0,
-    tax_amount = 0,
-    total_amount = 0,
-    discount_amount = 0,
-    discount_type = '',
-    discount_code_valid = false,
-    applied_events = [],
-    origin_shipping_fee = 0,
-    promo_code_discount = 0,
-  } = priceInfo || {};
-
   const taxIncl = round10(sub_total + tax_amount + promo_code_discount, -2);
 
   return (
@@ -182,6 +200,7 @@ export default function PriceResult({
           calculating={calculating}
           error={error}
           appliedPromoCode={appliedPromoCode}
+          discountErrorMsgs={discountErrorMsgs}
           discountCodeValid={!!(
             !error && appliedPromoCode && discount_code_valid
           )}
@@ -295,14 +314,14 @@ export default function PriceResult({
                   ">
                     discount applied!
                   </h4>
-                  <div className='flex gap-2'>
+                  <div className='flex gap-2 flex-wrap mb-2'>
                     {
                       applied_events.map((event, idx) => (
                         <Tag
                           key={`promotion-${idx}`}
                           variant='outline'
                           colorScheme='blue'
-                          className='w-fit mb-2'
+                          className='w-fit'
                           size="md">
                           <ImPriceTags className='mr-1' />
                           <TagLabel>{event}</TagLabel>

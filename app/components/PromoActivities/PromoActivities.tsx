@@ -61,10 +61,9 @@ export default function PromoActivities({ promotions = [] }: IPromoActivities) {
 
           return (
             <>
-              <div>
+              <div key={`${index}_promotion_activities`}>
                 <Link
                   to={`/promotion/${name}`}
-                  key={`${index}_promotion_activities`}
                   onClick={() => {
                     window.rudderanalytics?.track('click_promotion_activities', {
                       promotion: name,

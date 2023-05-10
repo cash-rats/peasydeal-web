@@ -2,7 +2,7 @@ import { useEffect, useState, useReducer, useMemo } from 'react';
 import type { MouseEvent } from 'react';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
-import type { ShouldReloadFunction } from '@remix-run/react'
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
@@ -15,14 +15,13 @@ import {
 import { insertItem } from '~/sessions/shoppingcart.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
-import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
 
 import cartReducer, { CartActionTypes } from './reducer';
 import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
-import EmptyShoppingCart, { links as EmptyShippingCartLinks } from './components/EmptyShoppingCart';
+import EmptyShoppingCart from './components/EmptyShoppingCart';
 import PriceResult from './components/PriceResult';
 import {
 	fetchPriceInfo,
@@ -44,26 +43,33 @@ import { round10 } from '~/utils/preciseRound';
 export const links: LinksFunction = () => {
 	return [
 		...ItemLinks(),
-		...EmptyShippingCartLinks(),
-		...HorizontalProductsLayoutLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
 
 const FREE_SHIPPING = 19.99;
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
-	if (submission) {
-		// Prevent `HorizontalProductsLayout` from triggering loader.
-		if (submission.action.includes('/components/HorizontalProductsLayout')) {
-			return false;
-		}
-
-		// Only allow `apply_promo_code` loader action to trigger loader.
-		return submission.formData.get('__action') !== 'apply_promo_code';
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction, formData }) => {
+	if (
+		formAction &&
+		formAction.includes('/components/HorizontalProductsLayout')
+	) {
+		return false
 	}
 
-	return true;
+	if (formData) {
+		const action = formData.get('__action');
+
+		if (
+			action === 'apply_promo_code' ||
+			action === 'update_item_quantity' ||
+			action === 'remove_cart_item'
+		) {
+			return false;
+		}
+	}
+
+	return true
 }
 
 // TODOs:
@@ -177,10 +183,6 @@ export const CatchBoundary = () => {
 			statusCode={caught.status}
 		/>
 	);
-}
-
-type PreviousQuantity = {
-	[key: string]: string;
 }
 
 /*
@@ -378,7 +380,6 @@ function Cart() {
 				justify-center items-center
 				mt-4 md:mt-8
 				mx-2 md:mx-4
-				mb-8
 				bg-[#F7F8FA]
 			">
 				{
@@ -533,32 +534,6 @@ function Cart() {
 				</div>
 			</section>
 
-			<section className="
-				py-0 px-auto
-				flex flex-col
-				justify-center items-center
-				px-2 md:px-4
-				bg-white
-			">
-				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-
-					{/* Recommended products - top items */}
-					{/* @TODO catID should not be hardcoded here */}
-					<HorizontalProductsLayout
-						catName='hot_deal'
-						title='top items'
-						seeAllLinkTo='/promotion/hot_deal'
-					/>
-
-					{/* Recommended products - new trend */}
-					{/* @TODO catID should not be hardcoded here */}
-					<HorizontalProductsLayout
-						catName='new_trend'
-						title='new trend'
-						seeAllLinkTo='/promotion/new_trend'
-					/>
-				</div>
-			</section>
 		</>
 	);
 }

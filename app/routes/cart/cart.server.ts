@@ -38,6 +38,7 @@ export type PriceInfo = {
   discount_code_valid: boolean;
   products: PurchasedProduct[];
   percentage_off_amount: number;
+  discount_error_msgs: string[];
 
   // Exract discount type to enums.
   discount_type: 'free_shipping' | 'price_off' | 'percentage_off';

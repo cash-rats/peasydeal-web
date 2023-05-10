@@ -6,7 +6,9 @@
 
   *,
   *:before,
-  *:after { box-sizing: border-box; }
+  *:after {
+    box-sizing: border-box;
+  }
 }
 
 .flip-clock__piece {
@@ -39,19 +41,18 @@ $borderRadius: 0.15em;
   background: #222;
   padding: 0.25em 0.25em;
   border-radius: $borderRadius $borderRadius 0 0;
-  backface-visiblity: hidden;
   transform-style: preserve-3d;
   width: 1.8em;
   transform: translateZ(0);
 }
 
-.card__bottom { 
+.card__bottom {
   color: #FFF;
   position: absolute;
   top: 50%;
   left: 0;
   border-top: solid 1px #000;
-  background: #393939; 
+  background: #393939;
   border-radius: 0 0 $borderRadius $borderRadius;
   pointer-events: none;
   overflow: hidden;
@@ -82,7 +83,7 @@ $borderRadius: 0.15em;
 }
 
 .flip .card__back::before {
-  animation: flipTop 0.3s cubic-bezier(.37,.01,.94,.35);
+  animation: flipTop 0.3s cubic-bezier(.37, .01, .94, .35);
   animation-fill-mode: both;
   transform-origin: center bottom;
 }
@@ -90,7 +91,7 @@ $borderRadius: 0.15em;
 .flip .card__back .card__bottom {
   transform-origin: center top;
   animation-fill-mode: both;
-  animation: flipBottom 0.6s cubic-bezier(.15,.45,.28,1);// 0.3s; 
+  animation: flipBottom 0.6s cubic-bezier(.15, .45, .28, 1); // 0.3s;
 }
 
 @keyframes flipTop {
@@ -98,9 +99,12 @@ $borderRadius: 0.15em;
     transform: rotateX(0deg);
     z-index: 2;
   }
-  0%, 99% {
+
+  0%,
+  99% {
     opacity: 0.99;
   }
+
   100% {
     transform: rotateX(-90deg);
     opacity: 0;
@@ -108,18 +112,21 @@ $borderRadius: 0.15em;
 }
 
 @keyframes flipBottom {
-  0%, 50% {
+
+  0%,
+  50% {
     z-index: -1;
     transform: rotateX(90deg);
     opacity: 0;
   }
+
   51% {
     opacity: 0.99;
   }
+
   100% {
     opacity: 0.99;
     transform: rotateX(0deg);
     z-index: 5;
   }
 }
-
