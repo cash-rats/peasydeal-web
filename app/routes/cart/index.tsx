@@ -15,7 +15,6 @@ import {
 import { insertItem } from '~/sessions/shoppingcart.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
-import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
 
@@ -45,7 +44,6 @@ export const links: LinksFunction = () => {
 	return [
 		...ItemLinks(),
 		...EmptyShippingCartLinks(),
-		...HorizontalProductsLayoutLinks(),
 		{ rel: 'stylesheet', href: styles },
 	];
 };
@@ -148,13 +146,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}
 
 	try {
-		console.log('debug cart 1', convertShoppingCartToPriceQuery(cart));
-
 		const priceInfo = await fetchPriceInfo({
 			products: convertShoppingCartToPriceQuery(cart),
 		});
-
-		console.log('debug cart 2', priceInfo);
 
 		const sessionStorablePriceInfo = extractPriceInfoToStoreInSession(priceInfo);
 		const session = await setTransactionObject(request, {
@@ -387,7 +381,6 @@ function Cart() {
 				justify-center items-center
 				mt-4 md:mt-8
 				mx-2 md:mx-4
-				mb-8
 				bg-[#F7F8FA]
 			">
 				{
@@ -542,32 +535,6 @@ function Cart() {
 				</div>
 			</section>
 
-			<section className="
-				py-0 px-auto
-				flex flex-col
-				justify-center items-center
-				px-2 md:px-4
-				bg-white
-			">
-				<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-
-					{/* Recommended products - top items */}
-					{/* @TODO catID should not be hardcoded here */}
-					<HorizontalProductsLayout
-						catName='hot_deal'
-						title='top items'
-						seeAllLinkTo='/promotion/hot_deal'
-					/>
-
-					{/* Recommended products - new trend */}
-					{/* @TODO catID should not be hardcoded here */}
-					<HorizontalProductsLayout
-						catName='new_trend'
-						title='new trend'
-						seeAllLinkTo='/promotion/new_trend'
-					/>
-				</div>
-			</section>
 		</>
 	);
 }

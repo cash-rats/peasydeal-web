@@ -6,6 +6,7 @@ import { useLoaderData, useFetcher } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 
+import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 import type { SuggestItem } from '~/shared/types';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import SearchBar from '~/components/SearchBar';
@@ -34,7 +35,7 @@ export const meta: MetaFunction = () => ({
 const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
   return [
     {
-      rel: 'canonical', href: data.canonicalLink,
+      rel: 'canonical', href: data?.canonicalLink,
     },
   ];
 }
@@ -46,6 +47,7 @@ export const links: LinksFunction = () => {
     ...HeaderLinks(),
     ...FooterLinks(),
     ...DropDownSearchBarLinks(),
+    ...HorizontalProductsLayoutLinks(),
     { rel: 'stylesheet', href: cartStyles },
   ];
 };
@@ -166,6 +168,31 @@ function CartLayout() {
         <Outlet />
       </main>
 
+      <section className="
+				py-0 px-auto
+				flex flex-col
+				justify-center items-center
+				px-2 md:px-4
+				bg-white
+			">
+        <div className="w-full py-2.5 max-w-screen-xl mx-auto">
+          {/* Recommended products - top items */}
+          {/* @TODO catID should not be hardcoded here */}
+          <HorizontalProductsLayout
+            catName='hot_deal'
+            title='top items'
+            seeAllLinkTo='/promotion/hot_deal'
+          />
+
+          {/* Recommended products - new trend */}
+          {/* @TODO catID should not be hardcoded here */}
+          <HorizontalProductsLayout
+            catName='new_trend'
+            title='new trend'
+            seeAllLinkTo='/promotion/new_trend'
+          />
+        </div>
+      </section>
       <Footer categories={categories} />
     </div>
   );

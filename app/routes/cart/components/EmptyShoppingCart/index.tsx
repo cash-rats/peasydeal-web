@@ -2,8 +2,6 @@ import type { LinksFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import Button from '@mui/material/Button';
 
-import HorizontalProductsLayout from '~/routes/components/HorizontalProductsLayout';
-
 import emptyCartSVG from './images/empty_cart.svg';
 import styles from './styles/EmptyShoppingCart.css';
 
@@ -38,22 +36,6 @@ function EmptyShoppingCartPage() {
           </Button>
         </Link>
       </div>
-
-      {/* Product Suggestion List */}
-      {/* Recommended products */}
-      <HorizontalProductsLayout
-        catName='hot_deal'
-        title='deals with more than 60% off!'
-        seeAllLinkTo='/promotion/hot_deal'
-      />
-
-
-      {/* TODOs: use new_trend when it moves to promotion */}
-      <HorizontalProductsLayout
-        catName='super_deal'
-        title='deals with extra 10% off'
-        seeAllLinkTo='/promotion/super_deal'
-      />
     </section>
   );
 };

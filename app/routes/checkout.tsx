@@ -110,8 +110,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
-    console.log('debug ~ 1', transObj);
-
     // TODO this number should be coming from BE instead.
     // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
     // In stripe, the base unit is 1 cent, not 1 dollar.
