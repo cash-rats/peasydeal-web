@@ -2,7 +2,7 @@ import { useEffect, useState, useReducer, useMemo } from 'react';
 import type { MouseEvent } from 'react';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
-import type { ShouldReloadFunction } from '@remix-run/react'
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
@@ -52,18 +52,27 @@ export const links: LinksFunction = () => {
 
 const FREE_SHIPPING = 19.99;
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
-	if (submission) {
-		// Prevent `HorizontalProductsLayout` from triggering loader.
-		if (submission.action.includes('/components/HorizontalProductsLayout')) {
-			return false;
-		}
-
-		// Only allow `apply_promo_code` loader action to trigger loader.
-		return submission.formData.get('__action') !== 'apply_promo_code';
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction, formData }) => {
+	if (
+		formAction &&
+		formAction.includes('/components/HorizontalProductsLayout')
+	) {
+		return false
 	}
 
-	return true;
+	if (formData) {
+		const action = formData.get('__action');
+
+		if (
+			action === 'apply_promo_code' ||
+			action === 'update_item_quantity' ||
+			action === 'remove_cart_item'
+		) {
+			return false;
+		}
+	}
+
+	return true
 }
 
 // TODOs:
@@ -139,9 +148,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 	}
 
 	try {
+		console.log('debug cart 1', convertShoppingCartToPriceQuery(cart));
+
 		const priceInfo = await fetchPriceInfo({
 			products: convertShoppingCartToPriceQuery(cart),
 		});
+
+		console.log('debug cart 2', priceInfo);
 
 		const sessionStorablePriceInfo = extractPriceInfoToStoreInSession(priceInfo);
 		const session = await setTransactionObject(request, {
@@ -177,10 +190,6 @@ export const CatchBoundary = () => {
 			statusCode={caught.status}
 		/>
 	);
-}
-
-type PreviousQuantity = {
-	[key: string]: string;
 }
 
 /*

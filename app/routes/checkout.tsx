@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLoaderData, useOutletContext, useFetcher } from "@remix-run/react";
-import type { ShouldReloadFunction } from '@remix-run/react'
+import type { ShouldRevalidateFunction } from "@remix-run/react";
 import type { LoaderFunction, LinksFunction, MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Elements } from '@stripe/react-stripe-js';
@@ -58,16 +58,15 @@ type LoaderType = {
   promo_code: string | null | undefined;
 };
 
-export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
+export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
   // Loading addresses via postal in `ShipingDetailForm` will trigger loader which generates
   // a new stripe payment intend secret which causes stripe and the app uses different
   // payment secret. Stripe uses the old one and the app uses the new one. To prevent
   // payment secret inconformity, we prevent trigger loader when form submission is coming
   //  from `components/ShippingDetailForm`.
   if (
-    submission
-      ?.action
-      .includes('components/ShippingDetailForm')
+    formAction &&
+    formAction.includes('components/ShippingDetailForm')
   ) {
     return false;
   }
@@ -78,9 +77,8 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
   // ignores form submission coming from '/checkout/result/component/Success'
   // triggers loader.
   if (
-    submission
-      ?.action
-      .includes('/checkout/result/components/Success')
+    formAction &&
+    formAction.includes('/checkout/result/components/Success')
   ) {
     return false
   }
@@ -88,9 +86,8 @@ export const unstable_shouldReload: ShouldReloadFunction = ({ submission }) => {
   // Any component that request Header reload  cart item count would potentially trigger redirection
   // to `/cart` if cart has no item.
   if (
-    submission
-      ?.action
-      .includes('/components/Header')
+    formAction &&
+    formAction.includes('/components/Header')
   ) {
     return false;
   }
@@ -112,6 +109,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     }
 
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
+
+    console.log('debug ~ 1', transObj);
 
     // TODO this number should be coming from BE instead.
     // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error

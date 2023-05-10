@@ -68,7 +68,7 @@ export const applyPromoCode = async (request: Request, promoCode: string) => {
     });
 
   } catch (error) {
-    throw json(`failed to process \'/cart\' loader, ${error}`, {
+    throw json(`failed to process '/cart' loader, ${error}`, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
@@ -133,15 +133,15 @@ export const removeCartItemAction = async (variationUUID: string, promoCode: str
 }
 
 export const updateItemQuantity = async (request: Request, variationUUID: string, quantity: string, promoCode: string) => {
-  const cart = await getCart(request);
-  if (!cart || Object.keys(cart).length === 0) return null;
-  const item = cart[variationUUID]
-  if (!item) return null;
-  item.quantity = quantity;
-
-  const priceQuery = convertShoppingCartToPriceQuery(cart);
-
   try {
+    const cart = await getCart(request);
+    if (!cart || Object.keys(cart).length === 0) return null;
+    const item = cart[variationUUID]
+    if (!item) return null;
+    item.quantity = quantity;
+
+    const priceQuery = convertShoppingCartToPriceQuery(cart);
+
     const priceInfo = await fetchPriceInfo({
       products: priceQuery,
       discount_code: promoCode,
@@ -153,8 +153,8 @@ export const updateItemQuantity = async (request: Request, variationUUID: string
       {
         price_info: extractPriceInfoToStoreInSession(priceInfo),
         promo_code: promoCode,
-      }
-    )
+      },
+    );
 
     return json<PriceInfo>(priceInfo, {
       headers: {
