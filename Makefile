@@ -17,24 +17,17 @@ STAGING_SERVER                  = staging_peasydeal_gcp
 PROD_SERVER                     = prod_peasydeal_gcp
 
 deploy_staging:
+	rsync -Pavz -e 'ssh -i $(HOME)/.ssh/peasydealkey_gcp' build public/build $(SERVER_USER)@$(STAGING_SERVER):/home/flybuddy/peasydeal_web && \
 	ssh -p $(REMOTE_PORT) -t $(SERVER_USER)@$(STAGING_SERVER) 'source ~/.nvm/nvm.sh && \
 	cd $(REMOTE_APP_PATH) && \
 	git reset --hard HEAD && \
 	git pull https://$(GITHUB_USERNAME):$(GITHUB_ACCESS_TOKEN)@github.com/$(GITHUB_USERNAME)/peasydeal_web staging:staging && \
 	git checkout staging && \
 	npm install && \
-	npm run build:patched && \
 	make start_staging'
 
 deploy_prod:
-	ssh -p $(REMOTE_PORT) -t $(SERVER_USER)@$(PROD_SERVER) 'source ~/.nvm/nvm.sh && \
-	cd $(REMOTE_APP_PATH) && \
-	git reset --hard HEAD && \
-	git pull https://$(GITHUB_USERNAME):$(GITHUB_ACCESS_TOKEN)@github.com/$(GITHUB_USERNAME)/peasydeal_web main:main && \
-	npm install && \
-	npm run build:patched && \
-	make start_prod'
-
+	rsync -Pavz -e 'ssh -i $(HOME)/.ssh/peasydealkey_gcp' build public/build $(SERVER_USER)@$(PROD_SERVER):/home/flybuddy/peasydeal_web
 
 deploy_all: build upload_staging upload_prod
 
