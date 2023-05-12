@@ -1,6 +1,7 @@
 User-agent: *
 Disallow: /checkout/
 Disallow: /cart/
+Disallow: /payment/
 Disallow: /my-account/
 Disallow: /search/
 Disallow: /wishlist/
@@ -21,8 +22,6 @@ Disallow: /sendfriend/
 Disallow: /wishlist/
 Disallow: /enable-cookies/
 Disallow: /*?*
-Disallow: /*.js$
-Disallow: /*.css$
 Disallow: /*.php$
 Disallow: /*.phtml$
 Disallow: /*.php3$
