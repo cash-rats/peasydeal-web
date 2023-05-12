@@ -78,10 +78,16 @@ export const getLogoURL = () => `${getCanonicalDomain()}/images/peasy_deal_words
 
 // composeProductDetailURL takes product name and url to compose a product detail url in following format:
 // `https://peasydeal.com/product/some-google-product-i.{PRODUCT_UUID}`
+//
+//   - convert all characters to lowercase
+//   - convert all ' ' to '-'
+//   - convert all '/' to '_'
+//   - convert apostrophe ' to '-'
 export const composeProductDetailURL = ({ productName, productUUID }: { productName: string, productUUID: string }) => {
-  // replace empty space with '-'
   let prodName = productName.replace(/\s+/g, '-')
-  prodName = prodName.replace(/\//g, '%2F')
+  prodName = prodName.toLowerCase()
+  prodName = prodName.replace(/\//g, '_')
+  prodName = prodName.replace(/'/g, '-')
   const url = `/product/${prodName}-i.${productUUID}`;
   return url;
 }
