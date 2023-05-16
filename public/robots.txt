@@ -41,4 +41,4 @@ Disallow: /pkginfo/
 Disallow: /shell/
 Disallow: /var/
 
-Sitemap: https://www.peasydeal.com/sitemap.xml
+Sitemap: https://www.peasydeal.com/sitemaps/sitemap_index.xml
