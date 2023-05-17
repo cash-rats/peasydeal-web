@@ -15,9 +15,8 @@ interface ProductItemParams {
  * - [ ] Display category
  */
 export function ProductItem({ hit, components }: ProductItemParams) {
-  console.log('debug hit', hit)
   return (
-    <div className="flex flex-row items-center">
+    <div className="flex flex-row items-center p-1">
       <div className="mr-3">
         <BsSearch />
       </div>

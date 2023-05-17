@@ -6,6 +6,7 @@ import type { AutocompleteComponents } from '@algolia/autocomplete-shared';
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 
+import { createCategoriesPlugin } from './createCategoriesPlugin';
 import DropDownSearchBarStyles from './styles/DropDownSearchBar.css';
 import type { AlgoliaIndexItem } from './types';
 import Autocomplete from './Autocomplete';
@@ -81,6 +82,8 @@ const querySuggestionPlugin = createQuerySuggestionsPlugin({
   },
 });
 
+const categoriesPlugin = createCategoriesPlugin({ searchClient });
+
 function DropDownSearchBar() {
   return (
     <div className="w-full z-20">
@@ -89,6 +92,7 @@ function DropDownSearchBar() {
         plugins={[
           recentSearchPlugin,
           querySuggestionPlugin,
+          categoriesPlugin,
         ]}
       />
     </div>
