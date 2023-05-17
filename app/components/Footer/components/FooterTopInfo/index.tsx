@@ -34,7 +34,7 @@ const paymentMethod = [
 
 function FooterTopInfo() {
   return (
-    <div className="w-full bg-[#EEEEEE]">
+    <div className="w-full bg-[#EEEEEE] border-t-[1px] border-t-[#BABABA]">
       <div className="w-full max-w-screen-xl mx-auto grid grid-cols-2">
         <div className="
           flex flex-col
@@ -43,7 +43,6 @@ function FooterTopInfo() {
           px-2 md:px-6 lg:px-14
           py-8 md:px-14 lg:px-20
           box-border
-          border-t-[1px] border-t-[#BABABA]
           border-r-[1px] border-r-[#BABABA]
         ">
           <h3 className="
@@ -94,7 +93,6 @@ function FooterTopInfo() {
         <div className="
             flex flex-col justify-start items-center
             px-2 py-8 md:px-14 lg:px-20
-            border-t-[1px] border-t-[#BABABA]
         ">
           <h3 className="
             font-bold
