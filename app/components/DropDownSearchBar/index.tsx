@@ -6,6 +6,12 @@ import type { AutocompleteComponents } from '@algolia/autocomplete-shared';
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 
+import {
+  ALGOLIA_APP_ID,
+  ALGOLIA_APP_WRITE_KEY,
+  ALGOLIA_INDEX_NAME,
+} from '~/utils/get_env_source';
+
 import { createCategoriesPlugin } from './createCategoriesPlugin';
 import DropDownSearchBarStyles from './styles/DropDownSearchBar.css';
 import type { AlgoliaIndexItem } from './types';
@@ -19,10 +25,8 @@ export const links: LinksFunction = () => {
   ];
 }
 
-const appID = 'YPKZCN6KLC';
-const appWriteKey = '0c4331c9701338ea7244c6f40c122290';
-const indexName = 'staging_products';
-const searchClient = algoliasearch(appID, appWriteKey);
+const indexName = ALGOLIA_INDEX_NAME;
+const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_APP_WRITE_KEY);
 
 const recentSearchPlugin = createLocalStorageRecentSearchesPlugin({
   key: 'products-recent-search',

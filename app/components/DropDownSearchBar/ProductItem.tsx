@@ -1,6 +1,9 @@
 import type { AutocompleteComponents } from '@algolia/autocomplete-shared';
 import { BsSearch } from 'react-icons/bs';
 
+import { DOMAIN } from '~/utils/get_env_source';
+import { composeProductDetailURL } from '~/utils';
+
 import type { AlgoliaIndexItem } from './types';
 interface ProductItemParams {
   hit: AlgoliaIndexItem;
@@ -10,13 +13,16 @@ interface ProductItemParams {
 /**
  * We want to display hit products and categories.
  *
- * - [ ] Display hit highlight
+ * - [x] Display hit highlight
+ * - [x] Add redirection
  * - [ ] Display product image
- * - [ ] Display category
  */
 export function ProductItem({ hit, components }: ProductItemParams) {
   return (
-    <div className="flex flex-row items-center p-1">
+    <a
+      href={`${DOMAIN}${composeProductDetailURL({ productName: hit.title, productUUID: hit.uuid })}`}
+      className="flex flex-row items-center p-1"
+    >
       <div className="mr-3">
         <BsSearch />
       </div>
@@ -25,7 +31,7 @@ export function ProductItem({ hit, components }: ProductItemParams) {
           <components.Highlight hit={hit} attribute="title" />
         </div>
       </div>
-    </div>
+    </a>
   );
 }
 

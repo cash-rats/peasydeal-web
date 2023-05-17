@@ -83,6 +83,8 @@ export const getLogoURL = () => `${getCanonicalDomain()}/images/peasy_deal_words
 //   - convert all ' ' to '-'
 //   - convert all '/' to '_'
 //   - convert apostrophe ' to '-'
+// @TOOD
+// This function should be deprecated in favor of product slug.
 export const composeProductDetailURL = ({ productName, productUUID }: { productName: string, productUUID: string }) => {
   let prodName = productName.replace(/\s+/g, '-')
   prodName = prodName.toLowerCase()
