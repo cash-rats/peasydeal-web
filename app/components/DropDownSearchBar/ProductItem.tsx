@@ -16,6 +16,9 @@ interface ProductItemParams {
  * - [x] Display hit highlight
  * - [x] Add redirection
  * - [ ] Display product image
+ *
+ * @TODO
+ *   - Investigate a way to use remix <Link> component for redirection.
  */
 export function ProductItem({ hit, components }: ProductItemParams) {
   return (
