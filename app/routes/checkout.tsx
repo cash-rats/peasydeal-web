@@ -31,7 +31,7 @@ import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.ser
 import type { Category } from '~/shared/types';
 import type { PriceInfo } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/_DropDownSearchBar';
 import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
 
 import { useSearchSuggests } from './hooks/auto-complete-search';

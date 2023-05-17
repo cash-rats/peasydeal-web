@@ -16,6 +16,7 @@ import MobileSearchDialog from '~/components/MobileSearchDialog'
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
+// import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/_DropDownSearchBar';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
@@ -134,14 +135,7 @@ export default function Index() {
 						/>
 					}
 
-					searchBar={
-						<DropDownSearchBar
-							placeholder='Search products by name'
-							onDropdownSearch={searchSuggests}
-							results={suggests}
-							onSearch={handleSearch}
-						/>
-					}
+					searchBar={<DropDownSearchBar />}
 				/>
 
 				<main className="min-h-[35rem]">

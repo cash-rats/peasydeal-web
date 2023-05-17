@@ -9,7 +9,7 @@ import FourOhFour from '~/components/FourOhFour';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/_DropDownSearchBar';
 import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import type { Category } from '~/shared/types';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';

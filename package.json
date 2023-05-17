@@ -40,6 +40,10 @@
     "/public/build"
   ],
   "dependencies": {
+    "@algolia/autocomplete-js": "^1.9.2",
+    "@algolia/autocomplete-plugin-query-suggestions": "^1.9.2",
+    "@algolia/autocomplete-plugin-recent-searches": "^1.9.2",
+    "@algolia/autocomplete-theme-classic": "^1.9.2",
     "@chakra-ui/react": "^2.2.8",
     "@contentful/rich-text-react-renderer": "^15.16.2",
     "@emotion/cache": "latest",
@@ -61,6 +65,7 @@
     "@remix-run/server-runtime": "^1.6.8",
     "@stripe/react-stripe-js": "^1.16.3",
     "@stripe/stripe-js": "^1.46.0",
+    "algoliasearch": "^4.17.0",
     "bcryptjs": "^2.4.3",
     "clsx": "^1.2.1",
     "contentful": "^9.3.3",
