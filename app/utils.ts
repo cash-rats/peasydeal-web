@@ -76,15 +76,16 @@ export const checkHasMoreRecord = (count: number, divisor: number) => count % di
 export const getCanonicalDomain = (): string => getEnvSource()?.DOMAIN || 'https://peasydeal.com';
 export const getLogoURL = () => `${getCanonicalDomain()}/images/peasy_deal_words.png`
 
-// composeProductDetailURL takes product name and url to compose a product detail url in following format:
-// `https://peasydeal.com/product/some-google-product-i.{PRODUCT_UUID}`
-//
-//   - convert all characters to lowercase
-//   - convert all ' ' to '-'
-//   - convert all '/' to '_'
-//   - convert apostrophe ' to '-'
-// @TOOD
-// This function should be deprecated in favor of product slug.
+/* composeProductDetailURL takes product name and url to compose a product detail url in following format:
+ * `https://peasydeal.com/product/some-google-product-i.{PRODUCT_UUID}`
+ *
+ *   - convert all characters to lowercase
+ *   - convert all ' ' to '-'
+ *   - convert all '/' to '_'
+ *   - convert apostrophe ' to '-'
+ * @TOOD
+ * This function should be deprecated in favor of product slug.
+ */
 export const composeProductDetailURL = ({ productName, productUUID }: { productName: string, productUUID: string }) => {
   let prodName = productName.replace(/\s+/g, '-')
   prodName = prodName.toLowerCase()
@@ -97,4 +98,17 @@ export const composeProductDetailURL = ({ productName, productUUID }: { productN
 export const decomposeProductDetailURL = (url: URL) => {
   const [productName, productUUID = ''] = url.pathname.split('-i.');
   return { productName, productUUID };
+}
+/*
+ * Transform category label to seo friend name.
+ */
+export const transformCategoryLabelToName = (label: string): string => {
+  let name = label.toLowerCase();
+
+  name = name
+    .replace(/\s+/g, '-')
+    .replace(/, /g, "-")
+    .replace(/&/g, "and")
+
+  return name;
 }
