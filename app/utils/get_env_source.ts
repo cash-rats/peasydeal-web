@@ -1,21 +1,28 @@
 // Get endpoints according to different environment.
-
 type AppConfig = {
   DOMAIN: string;
   MYFB_ENDPOINT: string;
   STRIPE_PUBLIC_KEY?: string;
-
+  CDN_URL?: string;
   PEASY_DEAL_ENDPOINT?: string;
-  REDIS_SESSION_TTL?: string;
   CATEGORY_CACHE_TTL?: string;
+
+  REDIS_SESSION_TTL?: string;
+
   PAYPAL_CLIENT_ID?: string;
   PAYPAL_CURRENCY_CODE?: string;
+
   STRIPE_PAYMENT_RETURN_URI?: string;
   STRIPE_CURRENCY_CODE?: string;
-  CDN_URL?: string;
+
   GOOGLE_TAG_ID?: string;
+
   CONTENTFUL_SPACE_ID?: string;
   CONTENTFUL_ACCESS_TOKEN?: string;
+
+  ALGOLIA_APP_ID: string;
+  ALGOLIA_APP_WRITE_KEY: string;
+  ALGOLIA_INDEX_NAME: string;
 };
 
 declare global {
@@ -56,6 +63,10 @@ const CONTENTFUL_ACCESS_TOKEN = getENV('CONTENTFUL_ACCESS_TOKEN');
 const RUDDER_STACK_KEY = getENV('RUDDER_STACK_KEY') || '';
 const RUDDER_STACK_URL = getENV('RUDDER_STACK_URL') || '';
 
+const ALGOLIA_APP_ID = getENV('ALGOLIA_APP_ID') || '';
+const ALGOLIA_APP_WRITE_KEY = getENV('ALGOLIA_APP_WRITE_KEY') || '';
+const ALGOLIA_INDEX_NAME = getENV('ALGOLIA_INDEX_NAME') || '';
+
 export {
   DOMAIN,
   MYFB_ENDPOINT,
@@ -78,6 +89,10 @@ export {
 
   RUDDER_STACK_KEY,
   RUDDER_STACK_URL,
+
+  ALGOLIA_APP_ID,
+  ALGOLIA_APP_WRITE_KEY,
+  ALGOLIA_INDEX_NAME,
 };
 
 export default getENVSource
