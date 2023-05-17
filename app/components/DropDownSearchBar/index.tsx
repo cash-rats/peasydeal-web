@@ -76,7 +76,7 @@ const querySuggestionPlugin = createQuerySuggestionsPlugin({
 
           return (
             <Fragment>
-              <span className="aa-SourceHeaderTitle">Popular Searches</span>
+              <span className="aa-SourceHeaderTitle">Popular searches</span>
               <div className="aa-SourceHeaderLine" />
             </Fragment>
           );
