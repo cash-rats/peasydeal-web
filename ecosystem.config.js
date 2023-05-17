@@ -101,6 +101,10 @@ module.exports = {
 
         "RUDDER_STACK_KEY": process.env.RUDDER_STACK_KEY,
         "RUDDER_STACK_URL": process.env.RUDDER_STACK_URL,
+
+        "ALGOLIA_APP_ID": process.env.ALGOLIA_APP_ID,
+        "ALGOLIA_APP_WRITE_KEY": process.env.ALGOLIA_APP_WRITE_KEY,
+        "ALGOLIA_INDEX_NAME": process.env.ALGOLIA_INDEX_NAME
       },
     },
   ],

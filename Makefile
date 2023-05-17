@@ -18,7 +18,7 @@ PROD_SERVER                     = prod_peasydeal_gcp
 
 deploy_staging:
 	make build && \
-	rsync -Pavz -e 'ssh -i $(HOME)/.ssh/peasydealkey_gcp' build public/build $(SERVER_USER)@$(STAGING_SERVER):/home/flybuddy/peasydeal_web/ && \
+	rsync -Pavz -e 'ssh -i $(HOME)/.ssh/peasydealkey_gcp' build public $(SERVER_USER)@$(STAGING_SERVER):/home/flybuddy/peasydeal_web/ && \
 	ssh -p $(REMOTE_PORT) -t $(SERVER_USER)@$(STAGING_SERVER) 'source ~/.nvm/nvm.sh && \
 	cd $(REMOTE_APP_PATH) && \
 	git reset --hard HEAD && \
