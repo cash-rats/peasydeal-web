@@ -1,7 +1,10 @@
 import type { MouseEvent, KeyboardEvent, BaseSyntheticEvent } from 'react';
 import type { AutocompleteApi, AutocompleteState, InternalAutocompleteSource } from '@algolia/autocomplete-core'
 import { BsBox } from 'react-icons/bs';
+import { Link } from '@remix-run/react';
 
+import { DOMAIN } from '~/utils/get_env_source';
+import { transformCategoryLabelToName } from '~/utils';
 import type { CategoryRecord } from '~/components/Algolia/types';
 
 import { Highlight } from './Highlight';
@@ -16,7 +19,7 @@ interface CategoryHitsParams {
 /*
  * - [x] Display header template from source
  * - [x] Format category items
- * - [ ] Redirect on click category
+ * - [x] Redirect on click category
  */
 function CategoriesHits({
   items,
@@ -38,19 +41,21 @@ function CategoriesHits({
       >
         {
           items.map((item, index) => (
-            <div key={index} className="aa-ItemWrapper p-1">
-              <div className="aa-ItemContent">
-                <div className="aa-ItemIcon aa-ItemIcon--noBorder">
-                  <BsBox fontSize={20} />
-                </div>
+            <Link key={index} to={`${DOMAIN}/collection/${transformCategoryLabelToName(item.label)}`}>
+              <div className="aa-ItemWrapper p-1">
+                <div className="aa-ItemContent">
+                  <div className="aa-ItemIcon aa-ItemIcon--noBorder">
+                    <BsBox fontSize={20} />
+                  </div>
 
-                <div className="aa-ItemContentBody">
-                  <div className="aa-ItemContentTitle">
-                    <Highlight hit={item} attribute="label" />
+                  <div className="aa-ItemContentBody">
+                    <div className="aa-ItemContentTitle">
+                      <Highlight hit={item} attribute="label" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))
         }
       </ul>

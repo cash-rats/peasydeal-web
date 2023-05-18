@@ -8,7 +8,6 @@ import { createAutocomplete } from '@algolia/autocomplete-core';
 import type {
   AutocompleteOptions,
   AutocompleteState,
-  InternalAutocompleteSource
 } from '@algolia/autocomplete-core'
 import { getAlgoliaResults } from '@algolia/autocomplete-preset-algolia';
 import { MdClear as ClearIcon } from 'react-icons/md';
@@ -24,13 +23,32 @@ import type { AutocompleteItem } from './types';
 import ProductHits from './ProductHits';
 
 /*
- *  - [ ] query suggest header
- *  - [ ] categories results
- *  - [ ] categories title
+ * @TODOs:
+ *  - [x] query suggets
+ *  - [x] categories results
+ *  - [x] categories title
+ *  - [ ] collection order, category suggests should go after query suggests.
+ *  - [ ] query suggests
+ *  - [ ] poppular search
+ *  - [ ] hit enter or search icon redirect to search page.
  */
 export default function Autocomplete(
   props: Partial<AutocompleteOptions<AutocompleteItem>>
 ) {
+  // const [state, dispatch] = useReducer(
+  //   reducer,
+  //   {
+  //     autoCompleteState: {
+  //       activeItemId: null,
+  //       collections: [],
+  //       completion: null,
+  //       context: {},
+  //       isOpen: false,
+  //       query: '',
+  //       status: 'idle'
+  //     },
+  //   },
+  // );
   const [
     autocompleteState,
     setAutocompleteState,
