@@ -1,22 +1,16 @@
 import { Fragment } from 'react';
 import type { LinksFunction } from '@remix-run/node';
-import algoliasearch from 'algoliasearch';
 import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/dist/theme.min.css';
 import type { AutocompleteComponents } from '@algolia/autocomplete-shared';
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 
-import {
-  ALGOLIA_APP_ID,
-  ALGOLIA_APP_WRITE_KEY,
-  ALGOLIA_INDEX_NAME,
-} from '~/utils/get_env_source';
+import { ALGOLIA_INDEX_NAME } from '~/utils/get_env_source';
+import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
+import { Autocomplete, searchClient, ProductHit } from '~/components/Algolia';
+import type { AlgoliaIndexItem } from '~/components/Algolia/types';
 
-import { createCategoriesPlugin } from './createCategoriesPlugin';
 import DropDownSearchBarStyles from './styles/DropDownSearchBar.css';
-import type { AlgoliaIndexItem } from './types';
-import Autocomplete from './Autocomplete';
-import ProductItem from './ProductItem';
 
 export const links: LinksFunction = () => {
   return [
@@ -26,7 +20,6 @@ export const links: LinksFunction = () => {
 }
 
 const indexName = ALGOLIA_INDEX_NAME;
-const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_APP_WRITE_KEY);
 
 const recentSearchPlugin = createLocalStorageRecentSearchesPlugin({
   key: 'products-recent-search',
@@ -67,7 +60,7 @@ const querySuggestionPlugin = createQuerySuggestionsPlugin({
       templates: {
         ...source.templates,
         item({ item, components }: { item: AlgoliaIndexItem, components: AutocompleteComponents }) {
-          return <ProductItem hit={item} components={components} />;
+          return <ProductHit hit={item} components={components} />;
         },
         header({ state }) {
           if (state.query) {

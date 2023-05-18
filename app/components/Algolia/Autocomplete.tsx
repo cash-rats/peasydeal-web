@@ -4,7 +4,6 @@ import type { BaseItem } from '@algolia/autocomplete-shared/dist/esm/core';
 import { createElement, Fragment, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 
-
 function Autocomplete(props: Partial<AutocompleteOptions<BaseItem>>) {
   const containerRef = useRef(null);
   const panelRootRef = useRef(null);

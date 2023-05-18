@@ -6,5 +6,6 @@ export type AlgoliaIndexItem = BaseItem & {
   description: string;
   image: string;
   variations: string[];
+  categories: string[];
   objectID: string;
 };

@@ -39,6 +39,8 @@ interface SearchBarProps extends InputBaseProps {
   placeholder?: string;
 
   onMountRef?: (ref: ForwardedRef<HTMLInputElement>) => void;
+
+  disabled?: boolean;
 };
 
 const isStringEmpty = (str: string): boolean => str.trim().length === 0;
@@ -54,6 +56,7 @@ function SearchBar({
   onFocus = () => { },
   onBlur = () => { },
   onMountRef = () => { },
+  disabled = false,
   ...args
 }: SearchBarProps, ref: ForwardedRef<HTMLInputElement>) {
   const [content, setContent] = useState<string>('');
@@ -110,6 +113,7 @@ function SearchBar({
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleChange}
+        disabled
 
         rightaddon={
           <>
@@ -125,6 +129,7 @@ function SearchBar({
             }
 
             <button
+              disabled
               form={form}
               type='submit'
               onClick={(evt: MouseEvent<HTMLButtonElement>) => {

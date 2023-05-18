@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { ChangeEvent, MutableRefObject } from 'react';
-import { VscArrowLeft } from "react-icons/vsc";
+import {
+  useCallback,
+  useReducer,
+  useEffect,
+  Fragment,
+} from 'react';
+import { createAutocomplete } from '@algolia/autocomplete-core';
 import {
   Modal,
   ModalOverlay,
@@ -8,261 +12,169 @@ import {
   ModalBody,
   IconButton,
 } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
-
-import MoonLoader from 'react-spinners/MoonLoader';
-import { CgSearchFound } from 'react-icons/cg';
+import { VscArrowLeft } from "react-icons/vsc";
+import type { GetSources, OnStateChangeProps } from '@algolia/autocomplete-shared';
+import { getAlgoliaResults } from '@algolia/autocomplete-js'
+import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
+import type { AutocompleteComponents } from '@algolia/autocomplete-shared';
 
 import SearchBar from '~/components/SearchBar';
-import { rootNode } from '~/utils/trie';
-import { composeProductDetailURL } from '~/utils';
-import type { SuggestItem, ItemData } from '~/shared/types';
+import { ALGOLIA_INDEX_NAME } from '~/utils/get_env_source';
+import type { AlgoliaIndexItem } from '~/components/Algolia/types';
+// import { Autocomplete, searchClient, ProductHit } from '~/components/Algolia';
 
-import Louple from './images/loupe.png';
-
-type SearchingState = 'empty' | 'searching' | 'done' | 'error';
+// import reducer, { setAutoCompleteState } from './reducer';
+import Autocomplete from './Autocomplete';
 
 interface MobileSearchDialogProps {
   onBack?: () => void;
 
-  items?: SuggestItem[];
-
-  // Emit search request when user done typing keyword.
-  onTypeSearch?: (query: string) => Promise<SuggestItem[]>
-
-  // Emit search request when search button is clicked in mobile layout.
-  onClickMobileSearch?: () => void;
-
-  // Emit search request when hit enter in mobile layout.
-  onEnterMobileSearch?: () => void;
-
-  // Invoke when user clicks on magnifier.
-  onSearch?: (query: string) => void;
-
-  // Invoke if query does not exist in trie cache.
-  onSearchRequest?: (query: string) => Promise<SuggestItem[]>;
-
   isOpen: boolean;
 }
 
-export default function MobileSearchDialog({
+function MobileSearchDialog({
+  isOpen = false,
   onBack = () => { },
-  onSearch = (query: string) => { },
-  onSearchRequest = (query: string) => Promise.resolve([]),
-  items = [],
-  isOpen
 }: MobileSearchDialogProps) {
-  const [sugguests, setSuggests] = useState<SuggestItem[]>([]);
-  const [showSuggests, setShowSuggests] = useState(false);
-  const btnRef = useRef(null);
-  const [searchingState, setSearchingState] = useState<SearchingState>('empty');
-  const [searchContent, setSearchContent] = useState('');
-  let inputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    setSuggests(
-      items.length === 0
-        ? []
-        : items
-    );
-
-    setSearchingState('done');
-
-    items.forEach(({ title, data }) => {
-      rootNode.populatePrefixTrie<ItemData>(title, data);
-    });
-  }, [JSON.stringify(items)]);
-
-  const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
-
-  const handleChange = useCallback((evt: ChangeEvent<HTMLInputElement>) => {
-    if (timerRef && timerRef.current) {
-      clearTimeout(timerRef.current);
-      timerRef.current = undefined;
-    }
-
-    setSearchContent(evt.target.value);
-
-    if (!evt.target.value) {
-      setShowSuggests(false);
-
-      if (timerRef && timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = undefined;
-      }
-
-      return;
-    }
-
-    setSearchingState('searching');
-
-    const matches = rootNode.findAllMatchedWithData(evt.target.value);
-
-    if (evt.target.value.length < searchContent.length) {
-      setSuggests(matches.map(match => match.data));
-      setSearchingState('done');
-
-      return;
-    }
-
-    // User increases search content, If matches are found in trie increase it.
-    if (matches.length > 0) {
-      setSuggests(matches);
-      setSearchingState('done');
-      setShowSuggests(true);
-
-      return;
-    }
-
-    // Otherwise... we seek help from BE.
-    timerRef.current = setTimeout(async () => {
-      try {
-        timerRef.current = undefined;
-        const items = await onSearchRequest(evt.target.value);
-
-        if (items.length > 0) {
-          items.forEach(({ title, data }) => {
-            rootNode.populatePrefixTrie<ItemData>(title, data);
-          });
-        }
-
-        setSuggests(items);
-        setShowSuggests(true);
-        setSearchingState('done');
-      } catch (error) {
-        setSearchingState('error');
-      }
-
-    }, 700);
-  }, []);
-
-  const handleClear = useCallback(() => {
-    setSearchContent('');
-  }, []);
-
-  const handleSearch = useCallback((query: string) => {
-    if (!query) return;
-
-    onBack();
-    onSearch(query);
-  }, []);
+  // const [state, dispatch] = useReducer(
+  //   reducer,
+  //   {
+  //     autoCompleteState: {
+  //       activeItemId: null,
+  //       collections: [],
+  //       completion: null,
+  //       context: {},
+  //       isOpen: false,
+  //       query: '',
+  //       status: 'idle'
+  //     },
+  //   },
+  // );
 
 
-  const handleEnter = (evt: KeyboardEvent) => {
-    if (evt.key === 'Enter' || evt.keyCode === 13) {
-      const elem = evt.target as HTMLInputElement;
-      if (!elem.value) return;
-      onBack();
-      onSearch(elem.value);
-    }
-  }
+  // const getSources: GetSources<AlgoliaIndexItem> = useCallback(
+  //   () => {
+  //     return [
+  //       {
+  //         sourceId: 'products',
+  //         getItems({ query }) {
+  //           return getAlgoliaResults({
+  //             searchClient,
+  //             queries: [
+  //               {
+  //                 indexName: ALGOLIA_INDEX_NAME,
+  //                 query,
+  //               }
+  //             ],
+  //           });
+  //         },
+  //         templates: {
+  //           item({ item }) {
+  //             return `${item.title}`
+  //           },
+  //         },
+  //       },
+  //     ];
+  //   }, [])
 
-  useEffect(() => {
-    return () => inputRef?.current?.addEventListener('keypress', handleEnter);
-  }, []);
+  // const onStateChange = ({ state }: OnStateChangeProps<AlgoliaIndexItem>) => {
+  //   dispatch(setAutoCompleteState(state))
+  // };
 
+  // const onChangeQuery
 
-  const handleOnMountRef = (ref: MutableRefObject<HTMLInputElement | null>) => {
-    if (!ref) return;
-    inputRef = ref;
-    inputRef?.current?.addEventListener('keypress', handleEnter);
-  }
+  // const autocomplete = createAutocomplete({
+  //   onStateChange,
+  //   getSources,
+  // });
+
+  // console.log('debug autocomplete', autocomplete);
+
+  // const querySuggestionPlugin = createQuerySuggestionsPlugin({
+  //   searchClient,
+  //   indexName: ALGOLIA_INDEX_NAME,
+  //   // getSearchParams() {
+  //   //   return recentSearchPlugin.data?.getAlgoliaSearchParams({
+  //   //     hitsPerPage: 5,
+  //   //   });
+  //   // },
+  //   transformSource({ source }) {
+  //     return {
+  //       ...source,
+  //       templates: {
+  //         ...source.templates,
+  //         item({ item, components }: { item: AlgoliaIndexItem, components: AutocompleteComponents }) {
+  //           return <ProductHit hit={item} components={components} />;
+  //         },
+  //         header({ state }) {
+  //           if (state.query) {
+  //             return null;
+  //           }
+
+  //           return (
+  //             <Fragment>
+  //               <span className="aa-SourceHeaderTitle">Popular searches</span>
+  //               <div className="aa-SourceHeaderLine" />
+  //             </Fragment>
+  //           );
+  //         },
+  //       },
+  //     };
+  //   },
+  // });
 
   return (
     <Modal
-      finalFocusRef={btnRef}
-      scrollBehavior="inside"
-      size="full"
+      scrollBehavior='inside'
+      size='full'
+      // isOpen={isOpen}
+      isOpen
       onClose={onBack}
-      isOpen={isOpen}
     >
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
           <div>
             <div className="p-2 flex justify-end">
+
+              {/* Back Button */}
               <IconButton
                 aria-label='Back'
                 onClick={onBack}
                 icon={<VscArrowLeft style={{ fontSize: '32px' }} />}
               />
 
+              {/* Search bar */}
               <div className="w-full ml-[10px]">
-                <SearchBar
-                  ref={inputRef}
-                  placeholder='Search a product by name'
-                  onChange={handleChange}
-                  onClear={handleClear}
-                  onSearch={handleSearch}
-                  onMountRef={handleOnMountRef}
+                <Autocomplete
+                  placeholder='Search'
+                  openOnFocus
                 />
+
               </div>
             </div>
 
-            <div className="mt-4">
+            {/* <div>
               {
-                searchContent && (
-                  <div className="grid grid-cols-2">
-                    <p className="py-2 px-4 flex justify-start items-center">
-                      Searching {searchContent}
-                    </p>
-                    <span className="py-2 px-4 flex justify-end items-center">
+                state.autoCompleteState.collections.map((collection, cidx) => {
+                  const { source, items } = collection;
+                  return (
+                    <Fragment key={cidx}>
                       {
-                        searchingState === 'searching'
-                          ? <MoonLoader size={20} color="#009378" />
-                          : (
-                            searchingState === 'done' && sugguests.length === 0
-                              ? <img alt='no product found' src={Louple} width={24} height={24} />
-                              : <CgSearchFound fontSize={24} color='#009378' />
-
-                          )
+                        items.map(item => {
+                          return `${item.title}`
+                        })
                       }
-                    </span>
-                  </div>
-                )
+                    </Fragment>
+                  )
+                })
               }
-
-              {
-                showSuggests && (
-                  <ul className="list-none p-0 m-0">
-                    {
-                      sugguests.length === 0 && searchingState === 'done'
-                        ? <p className="m-0 py-2 px-4 font-medium text-center capitalize">
-                          no results found
-                        </p>
-                        : (
-                          sugguests.map((suggest) => {
-                            return (
-                              <Link
-                                key={suggest.data.productID}
-                                to={composeProductDetailURL({
-                                  productName: suggest.data.title,
-                                  productUUID: suggest.data.productID,
-                                })}
-                                onClick={(evt) => { onBack(); }}
-                              >
-                                <li className="
-                                    py-3 px-4 cursor-pointer
-                                    leading-5 flex justify-between items-center
-                                    hover:bg-gray-hover-bg
-                                  "
-                                >
-                                  {suggest.title}
-                                </li>
-                              </Link>
-                            )
-                          })
-                        )
-                    }
-                  </ul>
-                )
-              }
-
-            </div>
+            </div> */}
           </div>
-
         </ModalBody>
       </ModalContent>
     </Modal>
   );
-}
+};
+
+export default MobileSearchDialog;

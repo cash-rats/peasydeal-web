@@ -70,7 +70,9 @@ export default function Index() {
 		search.submit({ query }, { method: 'post', action: '/search?index' });
 	};
 
-	const handleOpen = () => setOpenSearchDialog(true);
+	const handleOpen = () => {
+		setOpenSearchDialog(true)
+	};
 
 	const handleClose = () => setOpenSearchDialog(false);
 
@@ -128,8 +130,10 @@ export default function Index() {
 							topCategories={navBarCategories}
 						/>
 					}
+
 					mobileSearchBar={
 						<SearchBar
+							disabled
 							placeholder='Search keywords...'
 							onClick={handleOpen}
 						/>
