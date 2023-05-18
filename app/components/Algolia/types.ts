@@ -9,3 +9,8 @@ export type AlgoliaIndexItem = BaseItem & {
   categories: string[];
   objectID: string;
 };
+
+export type CategoryRecord = {
+  label: string;
+  count: number;
+};

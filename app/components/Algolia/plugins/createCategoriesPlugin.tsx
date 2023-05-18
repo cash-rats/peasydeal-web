@@ -7,10 +7,8 @@ import { BsBox } from 'react-icons/bs';
 import { DOMAIN } from '~/utils/get_env_source';
 import { transformCategoryLabelToName } from '~/utils';
 
-type CategoryRecord = {
-  label: string;
-  count: number;
-};
+import type { CategoryRecord } from '../types';
+
 
 type CreateCategoriesPluginProps = {
   searchClient: SearchClient;
@@ -51,7 +49,6 @@ export function createCategoriesPlugin({
             item({ item, components }) {
               return (
                 <a href={`${DOMAIN}/collection/${transformCategoryLabelToName(item.label)}`}>
-
                   <div className="aa-ItemWrapper p-1">
                     <div className="aa-ItemContent">
                       <div className="aa-ItemIcon aa-ItemIcon--noBorder">

@@ -4,25 +4,24 @@ import {
   useMemo,
   useState,
 } from 'react';
-import {
-  createAutocomplete,
-} from '@algolia/autocomplete-core';
+import { createAutocomplete } from '@algolia/autocomplete-core';
 import type {
   AutocompleteOptions,
   AutocompleteState,
+  InternalAutocompleteSource
 } from '@algolia/autocomplete-core'
 import { getAlgoliaResults } from '@algolia/autocomplete-preset-algolia';
-import type { Hit } from '@algolia/client-search';
 import { MdClear as ClearIcon } from 'react-icons/md';
 import { BiSearch as SearchIcon } from 'react-icons/bi';
 
 import { ALGOLIA_INDEX_NAME } from '~/utils/get_env_source';
-import type { AlgoliaIndexItem } from '~/components/Algolia/types';
 import { searchClient } from '~/components/Algolia';
+import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
 
-import ProductHit from './ProductHit';
+import CategoryHits from './CategoryHits';
+import type { AutocompleteItem } from './types';
 
-type AutocompleteItem = Hit<AlgoliaIndexItem>;
+import ProductHits from './ProductHits';
 
 /*
  *  - [ ] query suggest header
@@ -32,9 +31,10 @@ type AutocompleteItem = Hit<AlgoliaIndexItem>;
 export default function Autocomplete(
   props: Partial<AutocompleteOptions<AutocompleteItem>>
 ) {
-  const [autocompleteState, setAutocompleteState] = useState<
-    AutocompleteState<AutocompleteItem>
-  >({
+  const [
+    autocompleteState,
+    setAutocompleteState,
+  ] = useState<AutocompleteState<AutocompleteItem>>({
     collections: [],
     completion: null,
     context: {},
@@ -43,6 +43,11 @@ export default function Autocomplete(
     activeItemId: null,
     status: 'idle',
   });
+
+  const categoriesPlugin = useMemo(() => {
+    return createCategoriesPlugin({ searchClient });
+  }, []);
+
   const autocomplete = useMemo(
     () =>
       createAutocomplete<
@@ -79,10 +84,12 @@ export default function Autocomplete(
             },
           ];
         },
+        plugins: [categoriesPlugin],
         ...props,
       }),
-    [props]
+    [props, categoriesPlugin]
   );
+
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -142,33 +149,38 @@ export default function Autocomplete(
         ref={panelRef}
         {...autocomplete.getPanelProps({})}
       >
-        {/* <div className="aa-PanelLayout aa-Panel--scrollable"> */}
         <div className="p-2">
-          {autocompleteState.collections.map((collection, index) => {
-            const { source, items } = collection;
+          {
+            autocompleteState
+              .collections.map((collection, index) => {
+                const { source, items } = collection;
 
-            console.log('debug source', source);
+                console.log('debug collection', index, collection);
+                console.log('debug source', index, source);
+                console.log('debug items', index, items);
 
-            return (
-              <section key={`source-${index}`} className="aa-Source">
-                {items.length > 0 && (
-                  <ul className="aa-List" {...autocomplete.getListProps()}>
-                    {
-                      items
-                        .map((item) =>
-                          <ProductHit
-                            key={item.objectID}
-                            autocomplete={autocomplete}
-                            item={item}
-                            source={source}
-                          />
-                        )
-                    }
-                  </ul>
-                )}
-              </section>
-            );
-          })}
+                // @TODO: Assert type to CategoryRecord instead of AgoliaIndexItem
+                if (source.sourceId === 'categoriesPlugin') {
+                  return (
+                    <CategoryHits
+                      key={source.sourceId}
+                      state={autocompleteState}
+                      source={source}
+                      items={items}
+                      autocomplete={autocomplete}
+                    />
+                  )
+                }
+
+                return (
+                  <ProductHits
+                    key={source.sourceId}
+                    autocomplete={autocomplete}
+                    items={items}
+                    source={source}
+                  />
+                );
+              })}
         </div>
       </div>
     </div>
