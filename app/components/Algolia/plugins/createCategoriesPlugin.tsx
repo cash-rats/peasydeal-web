@@ -37,6 +37,9 @@ export function createCategoriesPlugin({
               ],
             });
           },
+          // getItemUrl() {
+
+          // },
           templates: {
             header({ state }) {
               return (

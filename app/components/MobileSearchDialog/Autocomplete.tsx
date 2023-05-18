@@ -9,25 +9,30 @@ import type {
   AutocompleteOptions,
   AutocompleteState,
 } from '@algolia/autocomplete-core'
-import { getAlgoliaResults } from '@algolia/autocomplete-preset-algolia';
+import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
+import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 import { MdClear as ClearIcon } from 'react-icons/md';
 import { BiSearch as SearchIcon } from 'react-icons/bi';
 
-import { ALGOLIA_INDEX_NAME } from '~/utils/get_env_source';
+import { ALGOLIA_INDEX_NAME, DOMAIN } from '~/utils/get_env_source';
 import { searchClient } from '~/components/Algolia';
 import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
+import type { ProductQuerySuggestHit } from '~/components/Algolia/types';
 
 import CategoryHits from './CategoryHits';
 import type { AutocompleteItem } from './types';
-
 import ProductHits from './ProductHits';
+import RecentSearchHits from './RecentSearchHits';
 
 /*
  * @TODOs:
  *  - [x] query suggets
  *  - [x] categories results
  *  - [x] categories title
- *  - [ ] collection order, category suggests should go after query suggests.
+ *  - [x] collection order, category suggests should go after query suggests.
+ *  - [x] Add recent search items
+ *  - [x] Redirect recent search to search page
+ *  - [ ] Press enter redirect to search page
  *  - [ ] query suggests
  *  - [ ] poppular search
  *  - [ ] hit enter or search icon redirect to search page.
@@ -62,9 +67,46 @@ export default function Autocomplete(
     status: 'idle',
   });
 
+  const recentSearchPlugin = useMemo(() => {
+    return createLocalStorageRecentSearchesPlugin({
+      key: 'products-recent-search',
+      limit: 3,
+      transformSource({ source }) {
+        return {
+          ...source,
+          getItemUrl({ item }) {
+            return `${DOMAIN}/search?query=${item.label}`;
+          },
+        };
+      }
+    });
+  }, []);
+
+  const querySuggestionPlugin = useMemo(() => {
+    return createQuerySuggestionsPlugin<ProductQuerySuggestHit>({
+      searchClient,
+      indexName: ALGOLIA_INDEX_NAME,
+      getSearchParams() {
+        return recentSearchPlugin.data?.getAlgoliaSearchParams({
+          hitsPerPage: 5,
+        });
+      },
+      transformSource({ source }) {
+        return {
+          ...source,
+          getItemUrl({ item }) {
+            console.log('debug ** ~~ ', item.title);
+            return `${DOMAIN}/search?query=${item.title}`
+          },
+        };
+      },
+    });
+  }, [props]);
+
+
   const categoriesPlugin = useMemo(() => {
     return createCategoriesPlugin({ searchClient });
-  }, []);
+  }, [props]);
 
   const autocomplete = useMemo(
     () =>
@@ -78,34 +120,36 @@ export default function Autocomplete(
           setAutocompleteState(state);
         },
         insights: true,
-        getSources() {
-          return [
-            {
-              sourceId: 'products',
-              getItems({ query }) {
-                return getAlgoliaResults({
-                  searchClient,
-                  queries: [
-                    {
-                      indexName: ALGOLIA_INDEX_NAME,
-                      query,
-                      params: {
-                        hitsPerPage: 5,
-                      },
-                    },
-                  ],
-                });
-              },
-              getItemUrl({ item }) {
-                return item.url;
-              },
-            },
-          ];
+        plugins: [
+          querySuggestionPlugin,
+          recentSearchPlugin,
+          categoriesPlugin,
+        ],
+        navigator: {
+          navigate({ itemUrl }) {
+            window.location.assign(itemUrl);
+          },
+
+          navigateNewTab({ itemUrl }) {
+            const windowReference = window.open(itemUrl, '_blank', 'noopener');
+
+            if (windowReference) {
+              windowReference.focus();
+            }
+          },
+
+          navigateNewWindow({ itemUrl }) {
+            window.open(itemUrl, '_blank', 'noopener');
+          },
         },
-        plugins: [categoriesPlugin],
         ...props,
       }),
-    [props, categoriesPlugin]
+    [
+      props,
+      querySuggestionPlugin,
+      recentSearchPlugin,
+      categoriesPlugin,
+    ]
   );
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -173,9 +217,32 @@ export default function Autocomplete(
               .collections.map((collection, index) => {
                 const { source, items } = collection;
 
-                console.log('debug collection', index, collection);
-                console.log('debug source', index, source);
-                console.log('debug items', index, items);
+                // console.log('debug collection', index, collection);
+                // console.log('debug source', index, source);
+                // console.log('debug items', index, items);
+
+                if (source.sourceId === 'querySuggestionsPlugin') {
+                  return (
+                    <ProductHits
+                      key={source.sourceId}
+                      autocomplete={autocomplete}
+                      items={items}
+                      source={source}
+                    />
+                  );
+                }
+
+                if (source.sourceId === 'recentSearchesPlugin') {
+                  // console.log('debug recentSearchesPlugin', items);
+                  return (
+                    <RecentSearchHits
+                      key={source.sourceId}
+                      autocomplete={autocomplete}
+                      items={items}
+                      source={source}
+                    />
+                  );
+                }
 
                 // @TODO: Assert type to CategoryRecord instead of AgoliaIndexItem
                 if (source.sourceId === 'categoriesPlugin') {
@@ -190,14 +257,8 @@ export default function Autocomplete(
                   )
                 }
 
-                return (
-                  <ProductHits
-                    key={source.sourceId}
-                    autocomplete={autocomplete}
-                    items={items}
-                    source={source}
-                  />
-                );
+
+                return null
               })}
         </div>
       </div>

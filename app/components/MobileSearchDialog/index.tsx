@@ -40,13 +40,12 @@ function MobileSearchDialog({
                 icon={<VscArrowLeft style={{ fontSize: '32px' }} />}
               />
 
-              {/* Search bar */}
+              {/* Autocomplete search bar */}
               <div className="w-full ml-[10px]">
                 <Autocomplete
                   placeholder='Search'
                   openOnFocus
                 />
-
               </div>
             </div>
           </div>

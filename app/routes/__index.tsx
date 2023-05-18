@@ -12,7 +12,7 @@ import httpStatus from 'http-status-codes';
 import SearchBar from '~/components/SearchBar';
 import type { SuggestItem } from '~/shared/types';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import MobileSearchDialog from '~/components/MobileSearchDialog'
+import MobileSearchDialog from '~/components/MobileSearchDialog';
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
@@ -118,8 +118,6 @@ export default function Index() {
 				<MobileSearchDialog
 					onBack={handleClose}
 					isOpen={openSearchDialog}
-					onSearchRequest={handleSearchRequest}
-					onSearch={handleSearch}
 				/>
 
 				<Header
