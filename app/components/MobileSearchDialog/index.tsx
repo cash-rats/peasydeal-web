@@ -58,6 +58,7 @@ function MobileSearchDialog({
                 <Autocomplete
                   placeholder='Search'
                   openOnFocus
+                  autoFocus
                 />
               </div>
             </div>

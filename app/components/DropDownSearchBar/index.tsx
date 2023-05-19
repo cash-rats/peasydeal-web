@@ -1,4 +1,5 @@
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
+import type { OnSubmitParams } from '@algolia/autocomplete-core'
 import type { LinksFunction } from '@remix-run/node';
 import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/dist/theme.min.css';
 import type { AutocompleteComponents } from '@algolia/autocomplete-shared';
@@ -7,9 +8,10 @@ import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-pl
 
 import { ALGOLIA_INDEX_NAME } from '~/utils/get_env_source';
 import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
-import { Autocomplete, searchClient, ProductHit } from '~/components/Algolia';
+import { searchClient, ProductHit } from '~/components/Algolia';
 import type { AlgoliaIndexItem } from '~/components/Algolia/types';
 
+import Autocomplete from './Autocomplete';
 import DropDownSearchBarStyles from './styles/DropDownSearchBar.css';
 
 export const links: LinksFunction = () => {
@@ -82,13 +84,17 @@ const querySuggestionPlugin = createQuerySuggestionsPlugin({
 const categoriesPlugin = createCategoriesPlugin({ searchClient });
 
 function DropDownSearchBar() {
+  const onSubmit = ({ state }: OnSubmitParams<AlgoliaIndexItem>): void => { }
+
   return (
     <div className="w-full z-20">
       <Autocomplete
         openOnFocus
+        autoFocus
+        onSubmit={onSubmit}
         plugins={[
-          recentSearchPlugin,
           querySuggestionPlugin,
+          recentSearchPlugin,
           categoriesPlugin,
         ]}
       />

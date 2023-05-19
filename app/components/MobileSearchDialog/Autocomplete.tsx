@@ -5,9 +5,7 @@ import {
   useReducer,
 } from 'react';
 import { createAutocomplete } from '@algolia/autocomplete-core';
-import type {
-  AutocompleteOptions,
-} from '@algolia/autocomplete-core'
+import type { AutocompleteOptions } from '@algolia/autocomplete-core'
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 import { MdClear as ClearIcon } from 'react-icons/md';
