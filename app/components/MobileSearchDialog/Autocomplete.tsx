@@ -2,12 +2,11 @@ import {
   useEffect,
   useRef,
   useMemo,
-  useState,
+  useReducer,
 } from 'react';
 import { createAutocomplete } from '@algolia/autocomplete-core';
 import type {
   AutocompleteOptions,
-  AutocompleteState,
 } from '@algolia/autocomplete-core'
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
@@ -20,6 +19,7 @@ import { searchClient } from '~/components/Algolia';
 import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
 import type { ProductQuerySuggestHit } from '~/components/Algolia/types';
 
+import reducer, { setAutoCompleteState } from './reducer';
 import CategoryHits from './CategoryHits';
 import type { AutocompleteItem } from './types';
 import ProductHits from './ProductHits';
@@ -33,43 +33,29 @@ import RecentSearchHits from './RecentSearchHits';
  *  - [x] collection order, category suggests should go after query suggests.
  *  - [x] Add recent search items
  *  - [x] Redirect recent search to search page
- *  - [ ] Press enter redirect to search page with query string
- *  - [ ] Press submit button to redirect to search page with query string
- *  - [ ] query suggests
+ *  - [x] Press enter redirects user to search page with query criteria
+ *  - [x] Press submit button to redirect to search page with query criteria
  *  - [ ] poppular search
- *  - [ ] hit enter or search icon redirect to search page.
+ *  - [x] move state to reducer, why?
  */
 export default function Autocomplete(
   props: Partial<AutocompleteOptions<AutocompleteItem>>
 ) {
-  // const [state, dispatch] = useReducer(
-  //   reducer,
-  //   {
-  //     autoCompleteState: {
-  //       activeItemId: null,
-  //       collections: [],
-  //       completion: null,
-  //       context: {},
-  //       isOpen: false,
-  //       query: '',
-  //       status: 'idle'
-  //     },
-  //   },
-  // );
+  const [state, dispatch] = useReducer(
+    reducer,
+    {
+      autoCompleteState: {
+        collections: [],
+        completion: null,
+        context: {},
+        isOpen: false,
+        query: '',
+        activeItemId: null,
+        status: 'idle',
+      },
+    },
+  );
   const submitSearch = useSubmit();
-
-  const [
-    autocompleteState,
-    setAutocompleteState,
-  ] = useState<AutocompleteState<AutocompleteItem>>({
-    collections: [],
-    completion: null,
-    context: {},
-    isOpen: false,
-    query: '',
-    activeItemId: null,
-    status: 'idle',
-  });
 
   const recentSearchPlugin = useMemo(() => {
     return createLocalStorageRecentSearchesPlugin({
@@ -120,7 +106,8 @@ export default function Autocomplete(
         React.KeyboardEvent
       >({
         onStateChange({ state }) {
-          setAutocompleteState(state);
+          dispatch(setAutoCompleteState(state));
+          // setAutocompleteState(state);
         },
         onSubmit({ state }) {
           submitSearch(
@@ -189,7 +176,10 @@ export default function Autocomplete(
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchmove', onTouchMove);
     };
-  }, [getEnvironmentProps, autocompleteState.isOpen]);
+  }, [
+    getEnvironmentProps,
+    state.autoCompleteState.isOpen,
+  ]);
 
   return (
     <div className="aa-Autocomplete" {...autocomplete.getRootProps({})}>
@@ -220,7 +210,7 @@ export default function Autocomplete(
           <input
             type="hidden"
             name="query"
-            value={autocompleteState.query}
+            value={state.autoCompleteState.query}
           />
         </div>
         <div className="aa-InputWrapperSuffix">
@@ -236,7 +226,8 @@ export default function Autocomplete(
       >
         <div className="p-2">
           {
-            autocompleteState
+            state
+              .autoCompleteState
               .collections.map((collection, index) => {
                 const { source, items } = collection;
 
@@ -252,7 +243,6 @@ export default function Autocomplete(
                 }
 
                 if (source.sourceId === 'recentSearchesPlugin') {
-                  // console.log('debug recentSearchesPlugin', items);
                   return (
                     <RecentSearchHits
                       key={source.sourceId}
@@ -268,7 +258,7 @@ export default function Autocomplete(
                   return (
                     <CategoryHits
                       key={source.sourceId}
-                      state={autocompleteState}
+                      state={state.autoCompleteState}
                       source={source}
                       items={items}
                       autocomplete={autocomplete}

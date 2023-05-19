@@ -1,21 +1,21 @@
-import type { AutocompleteState } from '@algolia/autocomplete-js'
+import type { AutocompleteState } from '@algolia/autocomplete-core'
 
-import type { AlgoliaIndexItem } from '~/components/algolia/types';
+import type { AutocompleteItem } from './types';
 
 export enum MobileSearchTypes {
   set_agolia_state = 'set_agolia_state',
 };
 
 type StateShape = {
-  autoCompleteState: AutocompleteState<AlgoliaIndexItem>
+  autoCompleteState: AutocompleteState<AutocompleteItem>
 };
 
 interface MobileSearchAction {
   type: MobileSearchTypes,
-  payload: AutocompleteState<AlgoliaIndexItem>
+  payload: AutocompleteState<AutocompleteItem>
 }
 
-export const setAutoCompleteState = (state: AutocompleteState<AlgoliaIndexItem>) => {
+export const setAutoCompleteState = (state: AutocompleteState<AutocompleteItem>) => {
   return {
     type: MobileSearchTypes.set_agolia_state,
     payload: state,
@@ -26,7 +26,7 @@ export const setAutoCompleteState = (state: AutocompleteState<AlgoliaIndexItem>)
 export default function MobileSearchDialogReducer(state: StateShape, action: MobileSearchAction) {
   switch (action.type) {
     case MobileSearchTypes.set_agolia_state: {
-      const autoCompleteState = action.payload as AutocompleteState<AlgoliaIndexItem>;
+      const autoCompleteState = action.payload as AutocompleteState<AutocompleteItem>;
 
       return {
         ...state,

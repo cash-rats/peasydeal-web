@@ -23,8 +23,7 @@ function MobileSearchDialog({
     <Modal
       scrollBehavior='inside'
       size='full'
-      // isOpen={isOpen}
-      isOpen
+      isOpen={isOpen}
       onClose={onBack}
     >
       <ModalOverlay />
