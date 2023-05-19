@@ -5,10 +5,16 @@ import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/
 import type { AutocompleteComponents } from '@algolia/autocomplete-shared';
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
+import { createAutocomplete } from '@algolia/autocomplete-core';
+import insightsClient from 'search-insights';
 
-import { ALGOLIA_INDEX_NAME, DOMAIN } from '~/utils/get_env_source';
-import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
-import { searchClient, ProductHit } from '~/components/Algolia';
+import { ALGOLIA_INDEX_NAME } from '~/utils/get_env_source';
+import { searchClient } from '~/components/Algolia';
+import {
+  createProductsSuggestionsPlugin,
+  createCategoriesPlugin,
+  createRecentSearchPlugin,
+} from '~/components/Algolia/plugins';
 import type { AlgoliaIndexItem } from '~/components/Algolia/types';
 
 import Autocomplete from './Autocomplete';
@@ -21,47 +27,57 @@ export const links: LinksFunction = () => {
   ];
 }
 
+// const recentSearchPlugin = createLocalStorageRecentSearchesPlugin({
+//   key: 'products-recent-search',
+//   limit: 3,
+//   transformSource({ source }) {
+//     return {
+//       ...source,
+//       templates: {
+//         ...source.templates,
+//         header({ state }) {
+//           if (state.query) {
+//             return null;
+//           }
 
-// const categoriesPlugin = createCategoriesPlugin({ searchClient });
+//           return (
+//             <Fragment>
+//               <span className="aa-SourceHeaderTitle">Your searches</span>
+//               <div className="aa-SourceHeaderLine" />
+//             </Fragment>
+//           );
+//         },
+//       },
+//     }
+//   },
+// });
+
 
 function DropDownSearchBar() {
+  const recentSearchPlugin = useMemo(() => {
+    return createRecentSearchPlugin();
+  }, []);
 
-  // const recentSearchPlugin = createLocalStorageRecentSearchesPlugin({
-  //   key: 'products-recent-search',
-  //   limit: 3,
-  //   transformSource({ source }) {
-  //     return {
-  //       ...source,
-  //       templates: {
-  //         ...source.templates,
-  //         header({ state }) {
-  //           if (state.query) {
-  //             return null;
-  //           }
+  const productsSuggestionsPlugin = useMemo(() => {
+    return createProductsSuggestionsPlugin({
+      searchClient,
+      recentSearchPlugin,
+    });
+  }, [recentSearchPlugin]);
 
-  //           return (
-  //             <Fragment>
-  //               <span className="aa-SourceHeaderTitle">Your searches</span>
-  //               <div className="aa-SourceHeaderLine" />
-  //             </Fragment>
-  //           );
-  //         },
-  //       },
-  //     }
-  //   },
-  // });
-
+  const categoriesPlugin = useMemo(() => {
+    return createCategoriesPlugin({ searchClient })
+  }, []);
 
   return (
     <div className="w-full z-20">
       <Autocomplete
         openOnFocus
-      // onSubmit={onSubmit}
-      // plugins={[
-      //   querySuggestionPlugin,
-      // recentSearchPlugin,
-      // categoriesPlugin,
-      // ]}
+        plugins={[
+          productsSuggestionsPlugin,
+          recentSearchPlugin,
+          categoriesPlugin,
+        ]}
       />
     </div>
   )

@@ -11,7 +11,9 @@ import type {
   MouseEvent,
   KeyboardEvent
 } from 'react';
+import insightsClient from 'search-insights';
 
+import { ALGOLIA_APP_ID, ALGOLIA_APP_WRITE_KEY } from '~/utils/get_env_source';
 import type { AutocompleteItem } from '~/components/Algolia/types';
 
 import reducer, { setAutoCompleteState } from './reducer';
@@ -36,6 +38,12 @@ export function useCreateAutocomplete(props: Partial<AutocompleteOptions<Autocom
     },
   );
 
+  insightsClient(
+    'init', {
+    appId: ALGOLIA_APP_ID,
+    apiKey: ALGOLIA_APP_WRITE_KEY,
+  });
+
   const autocomplete = useMemo(() => {
     return createAutocomplete<
       AutocompleteItem,
@@ -43,8 +51,7 @@ export function useCreateAutocomplete(props: Partial<AutocompleteOptions<Autocom
       MouseEvent,
       KeyboardEvent
     >({
-      insights: true,
-      // insights: true,
+      insights: { insightsClient },
       onStateChange({ state }) {
         // console.log('debug 1', state);
         dispatch(setAutoCompleteState(state));
@@ -93,38 +100,3 @@ export function useCreateAutocomplete(props: Partial<AutocompleteOptions<Autocom
     panelRef,
   };
 };
-
-export const useAttachAutocompleteKeyboardEvents = (autocomplete) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const { getEnvironmentProps } = autocomplete;
-
-  useEffect(() => {
-    if (!formRef.current || !panelRef.current || !inputRef.current) {
-      return undefined;
-    }
-
-    const { onTouchStart, onTouchMove, onMouseDown } = getEnvironmentProps({
-      formElement: formRef.current,
-      inputElement: inputRef.current,
-      panelElement: panelRef.current,
-    });
-
-    window.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('touchstart', onTouchStart);
-    window.addEventListener('touchmove', onTouchMove);
-
-    return () => {
-      window.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-    };
-
-  }, [
-    getEnvironmentProps,
-    // state.autoCompleteState.isOpen,
-  ])
-
-  return { inputRef, formRef, panelRef }
-}

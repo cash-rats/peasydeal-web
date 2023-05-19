@@ -1,6 +1,13 @@
 import searchClient from './algoliasearch';
-import ProductHit from './ProductHit';
 import ProductHits from './ProductHits';
 import { Highlight } from './Highlight';
+import CategoryHits from './CategoryHits';
+import RecentSearchHits from './RecentSearchHits';
 
-export { searchClient, ProductHit, ProductHits, Highlight };
+export {
+  searchClient,
+  ProductHits,
+  Highlight,
+  CategoryHits,
+  RecentSearchHits,
+};

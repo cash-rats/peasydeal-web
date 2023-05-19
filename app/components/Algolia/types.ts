@@ -28,3 +28,8 @@ export type CategoryRecord = {
 };
 
 export type AutocompleteItem = Hit<AlgoliaIndexItem>;
+
+export type RecentSearchHit = {
+  id: string,
+  label: string,
+};
