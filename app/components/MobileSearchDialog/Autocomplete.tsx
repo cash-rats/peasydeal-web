@@ -13,6 +13,7 @@ import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 import { MdClear as ClearIcon } from 'react-icons/md';
 import { BiSearch as SearchIcon } from 'react-icons/bi';
+import { useSubmit } from '@remix-run/react';
 
 import { ALGOLIA_INDEX_NAME, DOMAIN } from '~/utils/get_env_source';
 import { searchClient } from '~/components/Algolia';
@@ -32,7 +33,8 @@ import RecentSearchHits from './RecentSearchHits';
  *  - [x] collection order, category suggests should go after query suggests.
  *  - [x] Add recent search items
  *  - [x] Redirect recent search to search page
- *  - [ ] Press enter redirect to search page
+ *  - [ ] Press enter redirect to search page with query string
+ *  - [ ] Press submit button to redirect to search page with query string
  *  - [ ] query suggests
  *  - [ ] poppular search
  *  - [ ] hit enter or search icon redirect to search page.
@@ -54,6 +56,8 @@ export default function Autocomplete(
   //     },
   //   },
   // );
+  const submitSearch = useSubmit();
+
   const [
     autocompleteState,
     setAutocompleteState,
@@ -95,7 +99,6 @@ export default function Autocomplete(
         return {
           ...source,
           getItemUrl({ item }) {
-            console.log('debug ** ~~ ', item.title);
             return `${DOMAIN}/search?query=${item.title}`
           },
         };
@@ -118,6 +121,15 @@ export default function Autocomplete(
       >({
         onStateChange({ state }) {
           setAutocompleteState(state);
+        },
+        onSubmit({ state }) {
+          submitSearch(
+            { query: state.query },
+            {
+              method: 'post',
+              action: '/search?index',
+            },
+          );
         },
         insights: true,
         plugins: [
@@ -182,22 +194,33 @@ export default function Autocomplete(
   return (
     <div className="aa-Autocomplete" {...autocomplete.getRootProps({})}>
       <form
+        {...autocomplete.getFormProps({ inputElement: inputRef.current })}
         ref={formRef}
         className="aa-Form"
-        {...autocomplete.getFormProps({ inputElement: inputRef.current })}
+        action='/search?index'
+        method='post'
       >
         <div className="aa-InputWrapperPrefix">
           <label className="aa-Label" {...autocomplete.getLabelProps({})}>
-            <button className="aa-SubmitButton" type="submit" title="Submit">
+            <button
+              className="aa-SubmitButton"
+              type="submit"
+              title="Submit"
+            >
               <SearchIcon />
             </button>
           </label>
         </div>
         <div className="aa-InputWrapper">
           <input
+            {...autocomplete.getInputProps({ inputElement: inputRef.current })}
             className="aa-Input"
             ref={inputRef}
-            {...autocomplete.getInputProps({ inputElement: inputRef.current })}
+          />
+          <input
+            type="hidden"
+            name="query"
+            value={autocompleteState.query}
           />
         </div>
         <div className="aa-InputWrapperSuffix">
@@ -216,10 +239,6 @@ export default function Autocomplete(
             autocompleteState
               .collections.map((collection, index) => {
                 const { source, items } = collection;
-
-                // console.log('debug collection', index, collection);
-                // console.log('debug source', index, source);
-                // console.log('debug items', index, items);
 
                 if (source.sourceId === 'querySuggestionsPlugin') {
                   return (
@@ -256,7 +275,6 @@ export default function Autocomplete(
                     />
                   )
                 }
-
 
                 return null
               })}
