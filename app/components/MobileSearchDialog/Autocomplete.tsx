@@ -4,6 +4,11 @@ import {
   useMemo,
   useReducer,
 } from 'react';
+import type {
+  BaseSyntheticEvent,
+  MouseEvent,
+  KeyboardEvent
+} from 'react';
 import { createAutocomplete } from '@algolia/autocomplete-core';
 import type { AutocompleteOptions } from '@algolia/autocomplete-core'
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
@@ -15,11 +20,10 @@ import { useSubmit } from '@remix-run/react';
 import { ALGOLIA_INDEX_NAME, DOMAIN } from '~/utils/get_env_source';
 import { searchClient } from '~/components/Algolia';
 import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
-import type { ProductQuerySuggestHit } from '~/components/Algolia/types';
+import type { ProductQuerySuggestHit, AutocompleteItem } from '~/components/Algolia/types';
 
 import reducer, { setAutoCompleteState } from './reducer';
 import CategoryHits from './CategoryHits';
-import type { AutocompleteItem } from './types';
 import ProductHits from './ProductHits';
 import RecentSearchHits from './RecentSearchHits';
 
@@ -101,9 +105,9 @@ export default function Autocomplete(
     () =>
       createAutocomplete<
         AutocompleteItem,
-        React.BaseSyntheticEvent,
-        React.MouseEvent,
-        React.KeyboardEvent
+        BaseSyntheticEvent,
+        MouseEvent,
+        KeyboardEvent
       >({
         onStateChange({ state }) {
           dispatch(setAutoCompleteState(state));
@@ -117,7 +121,7 @@ export default function Autocomplete(
             },
           );
         },
-        insights: true,
+        // insights: true,
         plugins: [
           querySuggestionPlugin,
           recentSearchPlugin,
@@ -187,8 +191,6 @@ export default function Autocomplete(
         {...autocomplete.getFormProps({ inputElement: inputRef.current })}
         ref={formRef}
         className="aa-Form"
-        action='/search?index'
-        method='post'
       >
         <div className="aa-InputWrapperPrefix">
           <label className="aa-Label" {...autocomplete.getLabelProps({})}>

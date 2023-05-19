@@ -1,3 +1,4 @@
+import type { Hit } from '@algolia/client-search';
 import type { BaseItem } from '@algolia/autocomplete-shared/dist/esm/core';
 import type { AutocompleteQuerySuggestionsHit } from '@algolia/autocomplete-plugin-query-suggestions/dist/esm/types';
 
@@ -25,3 +26,5 @@ export type CategoryRecord = {
   label: string;
   count: number;
 };
+
+export type AutocompleteItem = Hit<AlgoliaIndexItem>;
