@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import {
   Modal,
   ModalOverlay,
@@ -6,6 +7,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
+import { useNavigation } from '@remix-run/react';
 
 import Autocomplete from './Autocomplete';
 
@@ -19,6 +21,18 @@ function MobileSearchDialog({
   isOpen = false,
   onBack = () => { },
 }: MobileSearchDialogProps) {
+  const navigate = useNavigation();
+
+  useEffect(() => {
+    if (navigate.state === 'submitting') {
+      onBack();
+    }
+
+    return () => {
+      onBack();
+    }
+  }, [navigate.state]);
+
   return (
     <Modal
       scrollBehavior='inside'

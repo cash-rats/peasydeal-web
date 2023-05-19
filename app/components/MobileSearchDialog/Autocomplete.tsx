@@ -36,6 +36,7 @@ import RecentSearchHits from './RecentSearchHits';
  *  - [x] Press enter redirects user to search page with query criteria
  *  - [x] Press submit button to redirect to search page with query criteria
  *  - [ ] poppular search
+ *  - [ ] Extract `createAutocomplete` logic to a hook
  *  - [x] move state to reducer, why?
  */
 export default function Autocomplete(
@@ -55,6 +56,7 @@ export default function Autocomplete(
       },
     },
   );
+
   const submitSearch = useSubmit();
 
   const recentSearchPlugin = useMemo(() => {
@@ -107,7 +109,6 @@ export default function Autocomplete(
       >({
         onStateChange({ state }) {
           dispatch(setAutoCompleteState(state));
-          // setAutocompleteState(state);
         },
         onSubmit({ state }) {
           submitSearch(
@@ -175,6 +176,7 @@ export default function Autocomplete(
       window.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchmove', onTouchMove);
+
     };
   }, [
     getEnvironmentProps,

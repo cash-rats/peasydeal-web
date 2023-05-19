@@ -1,26 +1,27 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { json } from "@remix-run/node";
 import type { LinksFunction, LoaderFunction } from "@remix-run/node";
 import {
 	Outlet,
 	useLoaderData,
 	useOutletContext,
-	useFetcher,
 } from "@remix-run/react";
 import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
-import type { SuggestItem } from '~/shared/types';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import MobileSearchDialog from '~/components/MobileSearchDialog';
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
-// import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/_DropDownSearchBar';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
-import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
-import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
+
+// @TODOs: deprecate followings infavor of algolia
+// import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/_DropDownSearchBar';
+// import { useSearchSuggests } from '~/routes/hooks/auto-complete-search';
+// import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
+// import type { SuggestItem } from '~/shared/types';
 
 type LoaderType = {
 	categories: Category[];
@@ -58,57 +59,11 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function Index() {
 	const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
-	const search = useFetcher();
 	const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
-	const [suggests, searchSuggests] = useSearchSuggests();
-	const { submit } = useFetcherWithPromise();
 
-	const handleSearch = (query: string) => {
-		window.rudderanalytics?.track('search_action_click', {
-			query,
-		});
-		search.submit({ query }, { method: 'post', action: '/search?index' });
-	};
-
-	const handleOpen = () => {
-		setOpenSearchDialog(true)
-	};
+	const handleOpen = () => setOpenSearchDialog(true);
 
 	const handleClose = () => setOpenSearchDialog(false);
-
-	const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
-		window.rudderanalytics?.track('search_auto_complete', {
-			query,
-			layout: 'mobile',
-		});
-
-		const data = await submit(
-			{ query },
-			{
-				method: 'post',
-				action: '/hooks/auto-complete-search?index'
-			}
-		);
-
-		let suggestItems: SuggestItem[] = [];
-		const products: any[] = data.results;
-
-		if (products.length > 0) {
-			suggestItems = products.map<SuggestItem>((product) => {
-				return {
-					title: product.title,
-					data: {
-						title: product.title,
-						image: product.main_pic,
-						discount: product.discount,
-						productID: product.productUUID,
-					},
-				};
-			});
-		}
-
-		return suggestItems;
-	}
 
 	return (
 		<>
