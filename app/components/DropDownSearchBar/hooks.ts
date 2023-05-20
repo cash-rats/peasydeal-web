@@ -53,7 +53,6 @@ export function useCreateAutocomplete(props: Partial<AutocompleteOptions<Autocom
     >({
       insights: { insightsClient },
       onStateChange({ state }) {
-        // console.log('debug 1', state);
         dispatch(setAutoCompleteState(state));
       },
       ...props,

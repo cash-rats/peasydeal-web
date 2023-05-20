@@ -1,6 +1,8 @@
 import type { AutocompleteOptions } from '@algolia/autocomplete-shared';
 import { MdClear as ClearIcon } from 'react-icons/md';
 import { BiSearch as SearchIcon } from 'react-icons/bi';
+import { Form } from '@remix-run/react';
+
 import type { AlgoliaIndexItem } from '~/components/Algolia/types';
 import {
   ProductHits,
@@ -24,11 +26,18 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
       className="aa-Autocompletel relative"
       {...autocomplete.getRootProps({})}
     >
-      <form
+      <Form
+        {...autocomplete.getFormProps({ inputElement: inputRef.current })}
         ref={formRef}
         className="aa-Form"
-        {...autocomplete.getFormProps({ inputElement: inputRef.current })}
+        method="post"
+        action="/search?index"
       >
+        <input
+          type="hidden"
+          name="query"
+          value={state.autoCompleteState.query}
+        />
         <div className="aa-InputWrapperPrefix">
           <label className="aa-Label" {...autocomplete.getLabelProps({})}>
             <button className="aa-SubmitButton" type="submit" title="Submit">
@@ -48,7 +57,7 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
             <ClearIcon />
           </button>
         </div>
-      </form>
+      </Form>
 
       {state.autoCompleteState.isOpen && (
         <div
