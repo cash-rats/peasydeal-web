@@ -19,7 +19,6 @@ function ProductHit({
   autocomplete,
   source,
 }: ProductHitParams) {
-  console.log('debug 3', items);
   return (
     <section className="aa-Source">
       <ul

@@ -3,8 +3,6 @@ import type { AutocompleteApi, AutocompleteState, InternalAutocompleteSource } f
 import { BsBox } from 'react-icons/bs';
 import { Link } from '@remix-run/react';
 
-import { DOMAIN } from '~/utils/get_env_source';
-import { transformCategoryLabelToName } from '~/utils';
 import type { CategoryRecord } from '~/components/Algolia/types';
 
 import { Highlight } from './Highlight';
@@ -16,15 +14,60 @@ interface CategoryHitsParams {
   autocomplete: AutocompleteApi<CategoryRecord, BaseSyntheticEvent, MouseEvent, KeyboardEvent>;
 };
 
-/*
+type CatInfo = {
+  type: string;
+  name: string;
+  label: string;
+}
+
+/**
+ * Decompose category string sent from algolia index string.
+ * Algolia category index string is structured as:
+ *
+ * {type}:{name}:{label}
+ *
+ * This function decompose above structure to use it properly.
+ */
+const decomposeCategoryString = (catStr: string): CatInfo | null => {
+  let segs = catStr.split(":");
+
+  if (segs.length === 0 || segs.length === 1) {
+    console.error('invalid algolia category string format', catStr)
+    return null
+  }
+
+
+  if (segs.length === 2) {
+    console.error('invalid algolia category string format', catStr)
+    segs[2] = segs[1];
+  }
+
+  return {
+    type: segs[0],
+    name: segs[1],
+    label: segs[2],
+  };
+}
+
+const getCategoryUrl = (catInfo: CatInfo): string => {
+  return `${catInfo.type === "promotion"
+    ? 'promotion'
+    : 'collection'
+    }/${catInfo.name}`;
+}
+
+/**
  * - [x] Display header template from source
  * - [x] Format category items
  * - [x] Redirect on click category
+ * - [x] Split category string by `:` deliminator. {type}:{name}:{label}
  */
 function CategoriesHits({
   items,
   autocomplete,
 }: CategoryHitsParams) {
+  console.log('debug CategoriesHits', items);
+
   return (
     <section className="aa-Source">
       {/* Category header */}
@@ -40,23 +83,33 @@ function CategoriesHits({
         {...autocomplete.getListProps()}
       >
         {
-          items.map((item, index) => (
-            <Link key={index} to={`${DOMAIN}/collection/${transformCategoryLabelToName(item.label)}`}>
-              <div className="aa-ItemWrapper p-1">
-                <div className="aa-ItemContent">
-                  <div className="aa-ItemIcon aa-ItemIcon--noBorder">
-                    <BsBox fontSize={20} />
-                  </div>
+          items.map((item, index) => {
+            const catInfo = decomposeCategoryString(item.label);
+            if (catInfo === null) {
+              return null
+            }
 
-                  <div className="aa-ItemContentBody">
-                    <div className="aa-ItemContentTitle">
-                      <Highlight hit={item} attribute="label" />
+            return (
+              <Link
+                key={index}
+                to={getCategoryUrl(catInfo)}
+              >
+                <div className="aa-ItemWrapper p-1">
+                  <div className="aa-ItemContent">
+                    <div className="aa-ItemIcon aa-ItemIcon--noBorder">
+                      <BsBox fontSize={20} />
+                    </div>
+
+                    <div className="aa-ItemContentBody">
+                      <div className="aa-ItemContentTitle">
+                        <Highlight hit={catInfo} attribute="label" />
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          ))
+              </Link>
+            )
+          })
         }
       </ul>
     </section>

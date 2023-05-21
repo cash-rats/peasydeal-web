@@ -99,16 +99,3 @@ export const decomposeProductDetailURL = (url: URL) => {
   const [productName, productUUID = ''] = url.pathname.split('-i.');
   return { productName, productUUID };
 }
-/*
- * Transform category label to seo friend name.
- */
-export const transformCategoryLabelToName = (label: string): string => {
-  let name = label.toLowerCase();
-
-  name = name
-    .replace(/\s+/g, '-')
-    .replace(/, /g, "-")
-    .replace(/&/g, "and")
-
-  return name;
-}
