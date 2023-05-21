@@ -67,7 +67,7 @@ export const __paypalCreateOrder = async (form: ActionPayload) => {
 
     products: trfItemsObj,
     price_info: priceInfoObj,
-    promo_code,
+    promo_code: JSON.parse(promo_code),
   });
 
   return json<PaypalOrderActionDataType>(resp, httpStatus.OK);
