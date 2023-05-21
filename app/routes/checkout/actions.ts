@@ -104,7 +104,7 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
 
     products: trfItemsObj,
     price_info: priceInfoObj,
-    promo_code,
+    promo_code: JSON.parse(promo_code),
   });
 
   const respJSON = await resp.json();
