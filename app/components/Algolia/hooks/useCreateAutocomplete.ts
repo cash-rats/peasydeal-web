@@ -18,6 +18,12 @@ import type { AutocompleteItem } from '~/components/Algolia/types';
 
 import reducer, { setAutoCompleteState } from '../reducer';
 
+insightsClient(
+  'init', {
+  appId: ALGOLIA_APP_ID,
+  apiKey: ALGOLIA_APP_WRITE_KEY,
+});
+
 /**
  * Initialize agolia `createAutocomplete` with keyboard event hooked up
  * to algolia event handler.
@@ -37,12 +43,6 @@ export default function useCreateAutocomplete(props: Partial<AutocompleteOptions
       },
     },
   );
-
-  insightsClient(
-    'init', {
-    appId: ALGOLIA_APP_ID,
-    apiKey: ALGOLIA_APP_WRITE_KEY,
-  });
 
   const autocomplete = useMemo(() => {
     return createAutocomplete<

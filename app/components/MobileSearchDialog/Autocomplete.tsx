@@ -1,21 +1,28 @@
-import { useMemo } from 'react';
+import {
+  useEffect,
+  useRef,
+  useMemo,
+  useReducer,
+} from 'react';
+import type {
+  BaseSyntheticEvent,
+  MouseEvent,
+  KeyboardEvent
+} from 'react';
+import { createAutocomplete } from '@algolia/autocomplete-core';
 import type { AutocompleteOptions } from '@algolia/autocomplete-core'
-import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
-import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 import { MdClear as ClearIcon } from 'react-icons/md';
 import { BiSearch as SearchIcon } from 'react-icons/bi';
 import { useSubmit } from '@remix-run/react';
 
-import { ALGOLIA_INDEX_NAME, DOMAIN } from '~/utils/get_env_source';
+import type { AutocompleteItem } from '~/components/Algolia/types';
 import {
-  searchClient,
   CategoryHits,
   ProductHits,
   RecentSearchHits,
 } from '~/components/Algolia';
-import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
-import type { ProductQuerySuggestHit, AutocompleteItem } from '~/components/Algolia/types';
-import { useCreateAutocomplete } from '~/components/Algolia/hooks';
+
+import reducer, { setAutoCompleteState } from './reducer';
 
 /*
  * @TODOs:
@@ -35,89 +42,96 @@ import { useCreateAutocomplete } from '~/components/Algolia/hooks';
 export default function Autocomplete(
   props: Partial<AutocompleteOptions<AutocompleteItem>>
 ) {
+  const [state, dispatch] = useReducer(
+    reducer,
+    {
+      autoCompleteState: {
+        collections: [],
+        completion: null,
+        context: {},
+        isOpen: false,
+        query: '',
+        activeItemId: null,
+        status: 'idle',
+      },
+    },
+  );
+
   const submitSearch = useSubmit();
 
-  const recentSearchPlugin = useMemo(() => {
-    return createLocalStorageRecentSearchesPlugin({
-      key: 'products-recent-search',
-      limit: 3,
-      transformSource({ source }) {
-        return {
-          ...source,
-          getItemUrl({ item }) {
-            return `${DOMAIN}/search?query=${item.label}`;
-          },
-        };
-      }
-    });
-  }, []);
-
-  const querySuggestionPlugin = useMemo(() => {
-    return createQuerySuggestionsPlugin<ProductQuerySuggestHit>({
-      searchClient,
-      indexName: ALGOLIA_INDEX_NAME,
-      getSearchParams() {
-        return recentSearchPlugin.data?.getAlgoliaSearchParams({
-          hitsPerPage: 5,
-        });
-      },
-      transformSource({ source }) {
-        return {
-          ...source,
-          getItemUrl({ item }) {
-            return `${DOMAIN}/search?query=${item.title}`
-          },
-        };
-      },
-    });
-  }, [props]);
-
-
-  const categoriesPlugin = useMemo(() => {
-    return createCategoriesPlugin({ searchClient });
-  }, [props]);
-
-  const {
-    autocomplete,
-    state,
-    formRef,
-    inputRef,
-    panelRef,
-  } = useCreateAutocomplete({
-    ...props,
-    plugins: [
-      querySuggestionPlugin,
-      recentSearchPlugin,
-      categoriesPlugin,
-    ],
-    onSubmit({ state }) {
-      submitSearch(
-        { query: state.query },
-        {
-          method: 'post',
-          action: '/search?index',
+  const autocomplete = useMemo(
+    () =>
+      createAutocomplete<
+        AutocompleteItem,
+        BaseSyntheticEvent,
+        MouseEvent,
+        KeyboardEvent
+      >({
+        onStateChange({ state }) {
+          dispatch(setAutoCompleteState(state));
         },
-      );
-    },
-    navigator: {
-      navigate({ itemUrl }) {
-        window.location.assign(itemUrl);
-      },
+        onSubmit({ state }) {
+          submitSearch(
+            { query: state.query },
+            {
+              method: 'post',
+              action: '/search?index',
+            },
+          );
+        },
+        insights: true,
+        navigator: {
+          navigate({ itemUrl }) {
+            window.location.assign(itemUrl);
+          },
 
-      navigateNewTab({ itemUrl }) {
-        const windowReference = window.open(itemUrl, '_blank', 'noopener');
+          navigateNewTab({ itemUrl }) {
+            const windowReference = window.open(itemUrl, '_blank', 'noopener');
 
-        if (windowReference) {
-          windowReference.focus();
-        }
-      },
+            if (windowReference) {
+              windowReference.focus();
+            }
+          },
 
-      navigateNewWindow({ itemUrl }) {
-        window.open(itemUrl, '_blank', 'noopener');
-      },
-    },
-  });
+          navigateNewWindow({ itemUrl }) {
+            window.open(itemUrl, '_blank', 'noopener');
+          },
+        },
+        ...props,
+      }),
+    [props]
+  );
 
+  const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const { getEnvironmentProps } = autocomplete;
+
+  useEffect(() => {
+    if (!formRef.current || !panelRef.current || !inputRef.current) {
+      return undefined;
+    }
+
+    const { onTouchStart, onTouchMove, onMouseDown } = getEnvironmentProps({
+      formElement: formRef.current,
+      inputElement: inputRef.current,
+      panelElement: panelRef.current,
+    });
+
+    window.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('touchstart', onTouchStart);
+    window.addEventListener('touchmove', onTouchMove);
+
+    return () => {
+      window.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+
+    };
+  }, [
+    getEnvironmentProps,
+    state.autoCompleteState.isOpen,
+  ]);
 
   return (
     <div className="aa-Autocomplete" {...autocomplete.getRootProps({})}>

@@ -11,6 +11,13 @@ import {
 } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
 import { useNavigation } from '@remix-run/react';
+import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
+import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
+
+import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
+import { searchClient } from '~/components/Algolia';
+import type { ProductQuerySuggestHit } from '~/components/Algolia/types';
+import { ALGOLIA_INDEX_NAME, DOMAIN } from '~/utils/get_env_source';
 
 import Autocomplete from './Autocomplete';
 
@@ -25,6 +32,45 @@ function MobileSearchDialog({
   onBack = () => { },
 }: MobileSearchDialogProps) {
   const navigate = useNavigation();
+
+  const recentSearchPlugin = useMemo(() => {
+    return createLocalStorageRecentSearchesPlugin({
+      key: 'products-recent-search',
+      limit: 3,
+      transformSource({ source }) {
+        return {
+          ...source,
+          getItemUrl({ item }) {
+            return `${DOMAIN}/search?query=${item.label}`;
+          },
+        };
+      }
+    });
+  }, []);
+
+  const querySuggestionPlugin = useMemo(() => {
+    return createQuerySuggestionsPlugin<ProductQuerySuggestHit>({
+      searchClient,
+      indexName: ALGOLIA_INDEX_NAME,
+      getSearchParams() {
+        return recentSearchPlugin.data?.getAlgoliaSearchParams({
+          hitsPerPage: 5,
+        });
+      },
+      transformSource({ source }) {
+        return {
+          ...source,
+          getItemUrl({ item }) {
+            return `${DOMAIN}/search?query=${item.title}`
+          },
+        };
+      },
+    });
+  }, []);
+
+  const categoriesPlugin = useMemo(() => {
+    return createCategoriesPlugin({ searchClient });
+  }, []);
 
   useEffect(() => {
     if (navigate.state === 'submitting') {
@@ -62,6 +108,11 @@ function MobileSearchDialog({
                   placeholder='Search'
                   openOnFocus
                   autoFocus
+                  plugins={[
+                    recentSearchPlugin,
+                    querySuggestionPlugin,
+                    categoriesPlugin,
+                  ]}
                 />
               </div>
             </div>
