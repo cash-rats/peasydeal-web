@@ -1,15 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useMemo,
-  useReducer,
-} from 'react';
-import type {
-  BaseSyntheticEvent,
-  MouseEvent,
-  KeyboardEvent
-} from 'react';
-import { createAutocomplete } from '@algolia/autocomplete-core';
+import { useMemo } from 'react';
 import type { AutocompleteOptions } from '@algolia/autocomplete-core'
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
@@ -26,8 +15,7 @@ import {
 } from '~/components/Algolia';
 import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
 import type { ProductQuerySuggestHit, AutocompleteItem } from '~/components/Algolia/types';
-
-import reducer, { setAutoCompleteState } from './reducer';
+import { useCreateAutocomplete } from '~/components/Algolia/hooks';
 
 /*
  * @TODOs:
@@ -47,21 +35,6 @@ import reducer, { setAutoCompleteState } from './reducer';
 export default function Autocomplete(
   props: Partial<AutocompleteOptions<AutocompleteItem>>
 ) {
-  const [state, dispatch] = useReducer(
-    reducer,
-    {
-      autoCompleteState: {
-        collections: [],
-        completion: null,
-        context: {},
-        isOpen: false,
-        query: '',
-        activeItemId: null,
-        status: 'idle',
-      },
-    },
-  );
-
   const submitSearch = useSubmit();
 
   const recentSearchPlugin = useMemo(() => {
@@ -104,89 +77,47 @@ export default function Autocomplete(
     return createCategoriesPlugin({ searchClient });
   }, [props]);
 
-  const autocomplete = useMemo(
-    () =>
-      createAutocomplete<
-        AutocompleteItem,
-        BaseSyntheticEvent,
-        MouseEvent,
-        KeyboardEvent
-      >({
-        onStateChange({ state }) {
-          dispatch(setAutoCompleteState(state));
-        },
-        onSubmit({ state }) {
-          submitSearch(
-            { query: state.query },
-            {
-              method: 'post',
-              action: '/search?index',
-            },
-          );
-        },
-        // insights: true,
-        plugins: [
-          querySuggestionPlugin,
-          recentSearchPlugin,
-          categoriesPlugin,
-        ],
-        navigator: {
-          navigate({ itemUrl }) {
-            window.location.assign(itemUrl);
-          },
-
-          navigateNewTab({ itemUrl }) {
-            const windowReference = window.open(itemUrl, '_blank', 'noopener');
-
-            if (windowReference) {
-              windowReference.focus();
-            }
-          },
-
-          navigateNewWindow({ itemUrl }) {
-            window.open(itemUrl, '_blank', 'noopener');
-          },
-        },
-        ...props,
-      }),
-    [
-      props,
+  const {
+    autocomplete,
+    state,
+    formRef,
+    inputRef,
+    panelRef,
+  } = useCreateAutocomplete({
+    ...props,
+    plugins: [
       querySuggestionPlugin,
       recentSearchPlugin,
       categoriesPlugin,
-    ]
-  );
+    ],
+    onSubmit({ state }) {
+      submitSearch(
+        { query: state.query },
+        {
+          method: 'post',
+          action: '/search?index',
+        },
+      );
+    },
+    navigator: {
+      navigate({ itemUrl }) {
+        window.location.assign(itemUrl);
+      },
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const { getEnvironmentProps } = autocomplete;
+      navigateNewTab({ itemUrl }) {
+        const windowReference = window.open(itemUrl, '_blank', 'noopener');
 
-  useEffect(() => {
-    if (!formRef.current || !panelRef.current || !inputRef.current) {
-      return undefined;
-    }
+        if (windowReference) {
+          windowReference.focus();
+        }
+      },
 
-    const { onTouchStart, onTouchMove, onMouseDown } = getEnvironmentProps({
-      formElement: formRef.current,
-      inputElement: inputRef.current,
-      panelElement: panelRef.current,
-    });
+      navigateNewWindow({ itemUrl }) {
+        window.open(itemUrl, '_blank', 'noopener');
+      },
+    },
+  });
 
-    window.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('touchstart', onTouchStart);
-    window.addEventListener('touchmove', onTouchMove);
-
-    return () => {
-      window.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-
-    };
-  }, [
-    getEnvironmentProps,
-    state.autoCompleteState.isOpen,
-  ]);
 
   return (
     <div className="aa-Autocomplete" {...autocomplete.getRootProps({})}>
