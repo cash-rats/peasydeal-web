@@ -66,8 +66,6 @@ function CategoriesHits({
   items,
   autocomplete,
 }: CategoryHitsParams) {
-  console.log('debug CategoriesHits', items);
-
   return (
     <section className="aa-Source">
       {/* Category header */}
