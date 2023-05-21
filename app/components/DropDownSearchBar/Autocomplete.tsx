@@ -9,8 +9,7 @@ import {
   CategoryHits,
   RecentSearchHits,
 } from '~/components/Algolia';
-
-import { useCreateAutocomplete } from './hooks';
+import { useCreateAutocomplete } from '~/components/Algolia/hooks';
 
 function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
   const {
