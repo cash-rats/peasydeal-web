@@ -37,24 +37,27 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
           name="query"
           value={state.autoCompleteState.query}
         />
-        <div className="aa-InputWrapperPrefix">
-          <label className="aa-Label" {...autocomplete.getLabelProps({})}>
-            <button className="aa-SubmitButton" type="submit" title="Submit">
-              <SearchIcon />
+        {/* TODO: fix search box border style */}
+        <div className="border-[1px] rounded-[3px] flex flex-flow w-full">
+          <div className="aa-InputWrapperPrefix">
+            <label className="aa-Label" {...autocomplete.getLabelProps({})}>
+              <button className="aa-SubmitButton" type="submit" title="Submit">
+                <SearchIcon />
+              </button>
+            </label>
+          </div>
+          <div className="aa-InputWrapper">
+            <input
+              {...autocomplete.getInputProps({ inputElement: inputRef.current })}
+              className="aa-Input"
+              ref={inputRef}
+            />
+          </div>
+          <div className="aa-InputWrapperSuffix">
+            <button className="aa-ClearButton" title="Clear" type="reset">
+              <ClearIcon />
             </button>
-          </label>
-        </div>
-        <div className="aa-InputWrapper">
-          <input
-            className="aa-Input"
-            ref={inputRef}
-            {...autocomplete.getInputProps({ inputElement: inputRef.current })}
-          />
-        </div>
-        <div className="aa-InputWrapperSuffix">
-          <button className="aa-ClearButton" title="Clear" type="reset">
-            <ClearIcon />
-          </button>
+          </div>
         </div>
       </Form>
 

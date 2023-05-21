@@ -9,8 +9,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 
 import theme from './theme';
 import { ClientStyleContext } from './context'
-// import createEmotionCache from './createEmotionCache'
-import createEmotionCache, { defaultCache } from './createEmotionCache'
+import createEmotionCache from './createEmotionCache'
 
 
 interface ClientCacheProviderProps {
