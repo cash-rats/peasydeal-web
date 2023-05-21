@@ -125,7 +125,8 @@ export const __paypalCapturePayment = async (paypalOrderID: string, peasydealOrd
     return json(respJSON);
   }
 
-  // TODO: redirect to payment success page.
+  // TODO:
+  //   - [x] redirect to payment success page.
   return redirect(
     `/payment/${peasydealOrderID}?payment_method=${PaymentMethod.Paypal}`,
   )

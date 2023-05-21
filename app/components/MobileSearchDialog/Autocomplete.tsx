@@ -18,14 +18,16 @@ import { BiSearch as SearchIcon } from 'react-icons/bi';
 import { useSubmit } from '@remix-run/react';
 
 import { ALGOLIA_INDEX_NAME, DOMAIN } from '~/utils/get_env_source';
-import { searchClient } from '~/components/Algolia';
+import {
+  searchClient,
+  CategoryHits,
+  ProductHits,
+  RecentSearchHits,
+} from '~/components/Algolia';
 import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
 import type { ProductQuerySuggestHit, AutocompleteItem } from '~/components/Algolia/types';
 
 import reducer, { setAutoCompleteState } from './reducer';
-import CategoryHits from './CategoryHits';
-import ProductHits from './ProductHits';
-import RecentSearchHits from './RecentSearchHits';
 
 /*
  * @TODOs:
@@ -40,6 +42,7 @@ import RecentSearchHits from './RecentSearchHits';
  *  - [ ] poppular search
  *  - [ ] Extract `createAutocomplete` logic to a hook
  *  - [x] move state to reducer, why?
+ *  - [ ] use `useCreateAutocomplete`
  */
 export default function Autocomplete(
   props: Partial<AutocompleteOptions<AutocompleteItem>>
