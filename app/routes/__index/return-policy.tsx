@@ -16,13 +16,13 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = ({ data }: { data: TContentfulPost}) => {
+export const meta: MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
 
   return {
     ...getRootFBSEO(),
     'og:title': contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Return Policy',
-    'og:description': contentfulFields?.seoReference?.fields?.SEOdescription || `No hassle, no b.s. returns - get your cash back fast! We strongly believe in happy customers - and that's why PeasyDeal offer easy refund policy with no strings attached!`,
+    'og:description': contentfulFields?.seoReference?.fields?.SEOdescription || `No hassle, no quibbles. returns - get your cash back fast! We strongly believe in happy customers - and that's why PeasyDeal offer easy refund policy with no strings attached!`,
   };
 };
 
@@ -32,7 +32,7 @@ export const loader: LoaderFunction = async () => {
     const res = await fetchContentfulPostWithId({ entryId });
 
     return json<TContentfulPost>(res);
-  } catch(e) {
+  } catch (e) {
     console.error(e);
 
     throw json(e, {
@@ -51,11 +51,11 @@ export default function ReturnPolicy() {
     <div className="w-full p-4 max-w-screen-xl mx-auto">
       <div className="peasydeal-v1 pt-4">
         <h1 className="">
-          { post.postName }
+          {post.postName}
         </h1>
       </div>
       <div className="peasydeal-v1 pt-4">
-        { nodes }
+        {nodes}
       </div>
     </div>
   );

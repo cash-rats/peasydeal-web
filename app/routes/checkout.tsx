@@ -18,7 +18,6 @@ import {
   getCheckoutTitleText
 } from '~/utils/seo';
 
-import type { SuggestItem } from '~/shared/types';
 import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
@@ -31,10 +30,7 @@ import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.ser
 import type { Category } from '~/shared/types';
 import type { PriceInfo } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/_DropDownSearchBar';
-import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
-
-import { useSearchSuggests } from './hooks/auto-complete-search';
+import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 
 export const meta: MetaFunction = () => ({
   title: getCheckoutTitleText(),
@@ -152,51 +148,7 @@ function CheckoutLayout() {
   } = useLoaderData<LoaderType>() || {};
 
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-  const [suggests, searchSuggests] = useSearchSuggests();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
-  const { submit } = useFetcherWithPromise();
-  const search = useFetcher();
-
-  const handleSearch = (query: string) => {
-    window.rudderanalytics?.track('search_action_click', {
-      query,
-    });
-    search.submit({ query }, { method: 'post', action: '/search?index' });
-  };
-
-  const handleSearchRequest = async (query: string): Promise<SuggestItem[]> => {
-    window.rudderanalytics?.track('search_auto_complete', {
-      query,
-      layout: 'mobile',
-    });
-
-    const data = await submit(
-      { query },
-      {
-        method: 'post',
-        action: '/hooks/auto-complete-search?index'
-      }
-    );
-
-    let suggestItems: SuggestItem[] = [];
-    const products: any[] = data.results;
-
-    if (products.length > 0) {
-      suggestItems = products.map<SuggestItem>((product) => {
-        return {
-          title: product.title,
-          data: {
-            title: product.title,
-            image: product.main_pic,
-            discount: product.discount,
-            productID: product.productUUID,
-          },
-        };
-      });
-    }
-
-    return suggestItems;
-  }
 
   const handleOpen = () => setOpenSearchDialog(true);
 
@@ -224,28 +176,17 @@ function CheckoutLayout() {
       <MobileSearchDialog
         onBack={handleClose}
         isOpen={openSearchDialog}
-        onSearchRequest={handleSearchRequest}
-        onSearch={handleSearch}
       />
+
       <Header
         categories={categories}
-        searchBar={
-          <DropDownSearchBar
-            form='index-search-product'
-            placeholder='Search products by name'
-            onDropdownSearch={searchSuggests}
-            results={suggests}
-            onSearch={handleSearch}
-          />
-        }
-
+        searchBar={<DropDownSearchBar />}
         mobileSearchBar={
           <SearchBar
             placeholder='Search keywords...'
             onClick={handleOpen}
           />
         }
-
         categoriesBar={
           <CategoriesNav
             categories={categories}

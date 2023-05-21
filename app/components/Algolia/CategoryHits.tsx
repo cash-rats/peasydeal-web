@@ -74,7 +74,6 @@ function CategoriesHits({
         <div className="aa-SourceHeaderLine" />
       </div>
 
-
       {/* Category items */}
       <ul
         className="aa-List"
