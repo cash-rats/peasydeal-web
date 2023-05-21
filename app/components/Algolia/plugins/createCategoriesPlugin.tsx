@@ -31,35 +31,6 @@ export function createCategoriesPlugin({
               ],
             });
           },
-          // templates: {
-          //   header({ state }) {
-          //     return (
-          //       <Fragment>
-          //         <span className="aa-SourceHeaderTitle">Categories</span>
-          //         <div className="aa-SourceHeaderLine" />
-          //       </Fragment>
-          //     );
-          //   },
-          //   item({ item, components }) {
-          //     return (
-          //       <a href={`${DOMAIN}/collection/${transformCategoryLabelToName(item.label)}`}>
-          //         <div className="aa-ItemWrapper p-1">
-          //           <div className="aa-ItemContent">
-          //             <div className="aa-ItemIcon aa-ItemIcon--noBorder">
-          //               <BsBox fontSize={20} />
-          //             </div>
-
-          //             <div className="aa-ItemContentBody">
-          //               <div className="aa-ItemContentTitle">
-          //                 <components.Highlight hit={item} attribute="label" />
-          //               </div>
-          //             </div>
-          //           </div>
-          //         </div>
-          //       </a>
-          //     );
-          //   },
-          // },
         },
       ];
     },
