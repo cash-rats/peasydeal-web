@@ -29,20 +29,17 @@ insightsClient(
  * to algolia event handler.
  */
 export default function useCreateAutocomplete(props: Partial<AutocompleteOptions<AutocompleteItem>>) {
-  const [state, dispatch] = useReducer(
-    reducer,
-    {
-      autoCompleteState: {
-        collections: [],
-        completion: null,
-        context: {},
-        isOpen: false,
-        query: '',
-        activeItemId: null,
-        status: 'idle',
-      },
+  const [state, dispatch] = useReducer(reducer, {
+    autoCompleteState: {
+      collections: [],
+      completion: null,
+      context: {},
+      isOpen: false,
+      query: '',
+      activeItemId: null,
+      status: 'idle',
     },
-  );
+  });
 
   const autocomplete = useMemo(() => {
     return createAutocomplete<
@@ -57,7 +54,7 @@ export default function useCreateAutocomplete(props: Partial<AutocompleteOptions
       },
       ...props,
     });
-  }, [props]);
+  }, []);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);

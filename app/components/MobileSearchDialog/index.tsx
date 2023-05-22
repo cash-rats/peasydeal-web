@@ -1,8 +1,6 @@
 import {
   useEffect,
   useMemo,
-  useReducer,
-  useRef,
 } from 'react'
 import {
   Modal,
@@ -13,15 +11,8 @@ import {
 } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
 import { useNavigation, useSubmit } from '@remix-run/react';
-import type {
-  BaseSyntheticEvent,
-  MouseEvent,
-  KeyboardEvent
-} from 'react';
-import { createAutocomplete } from '@algolia/autocomplete-core';
 import insightsClient from 'search-insights';
 
-import type { AutocompleteItem } from '~/components/Algolia/types';
 import {
   createProductsSuggestionsPlugin,
   createCategoriesPlugin,
@@ -33,9 +24,9 @@ import {
   ProductHits,
   RecentSearchHits,
 } from '~/components/Algolia';
+import { useCreateAutocomplete } from '~/components/Algolia/hooks';
 import { ALGOLIA_APP_ID, ALGOLIA_APP_WRITE_KEY } from '~/utils/get_env_source';
 
-import reducer, { setAutoCompleteState } from './reducer';
 import SearchBar from './SearchBar';
 
 insightsClient(
@@ -57,21 +48,6 @@ function MobileSearchDialog({
   const navigate = useNavigation();
   const submitSearch = useSubmit();
 
-  const [state, dispatch] = useReducer(
-    reducer,
-    {
-      autoCompleteState: {
-        collections: [],
-        completion: null,
-        context: {},
-        isOpen: false,
-        query: '',
-        activeItemId: null,
-        status: 'idle',
-      },
-    },
-  );
-
   const recentSearchPlugin = useMemo(() => {
     return createRecentSearchPlugin();
   }, []);
@@ -87,87 +63,48 @@ function MobileSearchDialog({
     return createCategoriesPlugin({ searchClient })
   }, []);
 
-
-  const autocomplete = useMemo(
-    () =>
-      createAutocomplete<
-        AutocompleteItem,
-        BaseSyntheticEvent,
-        MouseEvent,
-        KeyboardEvent
-      >({
-        openOnFocus: true,
-        autoFocus: true,
-        onStateChange({ state }) {
-          dispatch(setAutoCompleteState(state));
+  const {
+    autocomplete,
+    state,
+    inputRef,
+    formRef,
+    panelRef,
+  } = useCreateAutocomplete({
+    openOnFocus: true,
+    autoFocus: true,
+    onSubmit({ state }) {
+      submitSearch(
+        { query: state.query },
+        {
+          method: 'post',
+          action: '/search?index',
         },
-        onSubmit({ state }) {
-          console.log('debug submit search', state.query);
-          submitSearch(
-            { query: state.query },
-            {
-              method: 'post',
-              action: '/search?index',
-            },
-          );
-        },
-        insights: { insightsClient },
-        navigator: {
-          navigate({ itemUrl }) {
-            window.location.assign(itemUrl);
-          },
+      );
+    },
+    insights: { insightsClient },
+    navigator: {
+      navigate({ itemUrl }) {
+        window.location.assign(itemUrl);
+      },
 
-          navigateNewTab({ itemUrl }) {
-            const windowReference = window.open(itemUrl, '_blank', 'noopener');
+      navigateNewTab({ itemUrl }) {
+        const windowReference = window.open(itemUrl, '_blank', 'noopener');
 
-            if (windowReference) {
-              windowReference.focus();
-            }
-          },
+        if (windowReference) {
+          windowReference.focus();
+        }
+      },
 
-          navigateNewWindow({ itemUrl }) {
-            window.open(itemUrl, '_blank', 'noopener');
-          },
-        },
-        plugins: [
-          productsSuggestionsPlugin,
-          recentSearchPlugin,
-          categoriesPlugin,
-        ]
-      }),
-    []
-  );
-
-  const inputRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
-  const { getEnvironmentProps } = autocomplete;
-
-  useEffect(() => {
-    if (!formRef.current || !panelRef.current || !inputRef.current) {
-      return undefined;
-    }
-
-    const { onTouchStart, onTouchMove, onMouseDown } = getEnvironmentProps({
-      formElement: formRef.current,
-      inputElement: inputRef.current,
-      panelElement: panelRef.current,
-    });
-
-    window.addEventListener('mousedown', onMouseDown);
-    window.addEventListener('touchstart', onTouchStart);
-    window.addEventListener('touchmove', onTouchMove);
-
-    return () => {
-      window.removeEventListener('mousedown', onMouseDown);
-      window.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-
-    };
-  }, [
-    getEnvironmentProps,
-    state.autoCompleteState.isOpen,
-  ]);
+      navigateNewWindow({ itemUrl }) {
+        window.open(itemUrl, '_blank', 'noopener');
+      },
+    },
+    plugins: [
+      productsSuggestionsPlugin,
+      recentSearchPlugin,
+      categoriesPlugin,
+    ]
+  });
 
   useEffect(() => {
     if (navigate.state === 'submitting') {
