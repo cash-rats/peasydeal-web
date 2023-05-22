@@ -22,11 +22,11 @@ import type { AutocompleteItem } from '~/components/Algolia/types';
  *  - [x] Redirect recent search to search page
  *  - [x] Press enter redirects user to search page with query criteria
  *  - [x] Press submit button to redirect to search page with query criteria
+ *  - [x] move state to reducer, why?
+ *  - [x] rudderStack analytics
  *  - [ ] poppular search
  *  - [ ] Extract `createAutocomplete` logic to a hook
- *  - [x] move state to reducer, why?
  *  - [ ] use `useCreateAutocomplete`
- *  - [x] rudderStack analytics
  */
 
 interface SearchBarProps {

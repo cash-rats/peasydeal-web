@@ -260,7 +260,6 @@ function MobileSearchDialog({
                     })}
               </div>
             </div>
-
           </div>
         </ModalBody>
       </ModalContent>
