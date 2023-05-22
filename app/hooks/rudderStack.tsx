@@ -6,7 +6,7 @@ type IUseSearchActionClick = {
   query: string;
 };
 
-export const useSearchActionClickEvent = ({ formRef, query }: IUseSearchActionClick) => {
+export const useSearchActionSubmitEvent = ({ formRef, query }: IUseSearchActionClick) => {
   useEffect(() => {
     const submitListener = () => {
       window.rudderanalytics?.track('search_action_click', {

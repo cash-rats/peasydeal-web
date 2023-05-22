@@ -28,7 +28,16 @@ function RecentSearchHits({ items, source, autocomplete }: RecentSearchHitsParam
       >
         {
           items.map((item, index) => (
-            <Link to={`/search?query=${encodeURIComponent(item.label)}`} key={index}>
+            <Link
+              to={`/search?query=${encodeURIComponent(item.label)}`}
+              key={index}
+              onClick={() => {
+                window.rudderanalytics?.track('search_action_recent_search_hit', {
+                  query: item.label,
+                });
+
+              }}
+            >
               <div className="aa-ItemWrapper p-1">
                 <div className="aa-ItemContent">
                   <div className="aa-ItemIcon aa-ItemIcon--noBorder">

@@ -90,6 +90,11 @@ function CategoriesHits({
               <Link
                 key={index}
                 to={getCategoryUrl(catInfo)}
+                onClick={() => {
+                  window.rudderanalytics?.track('search_action_category_hit', {
+                    query: catInfo.label,
+                  });
+                }}
               >
                 <div className="aa-ItemWrapper p-1">
                   <div className="aa-ItemContent">

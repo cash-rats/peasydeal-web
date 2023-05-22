@@ -10,7 +10,7 @@ import {
   RecentSearchHits,
 } from '~/components/Algolia';
 import { useCreateAutocomplete } from '~/components/Algolia/hooks';
-import { useSearchActionClickEvent } from '~/hooks/rudderStack';
+import { useSearchActionSubmitEvent } from '~/hooks/rudderStack';
 
 function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
   const {
@@ -22,7 +22,7 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
   } = useCreateAutocomplete(props)
 
   // If we are navigating to `/search?index`, we'll send analytic event via studderstack.
-  useSearchActionClickEvent({
+  useSearchActionSubmitEvent({
     formRef,
     query: state.autoCompleteState.query,
   });

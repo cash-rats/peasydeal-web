@@ -30,6 +30,11 @@ function ProductHit({
             <Link
               to={`/search?query=${encodeURIComponent(item.title)}`}
               key={item.objectID}
+              onClick={() => {
+                window.rudderanalytics?.track('search_action_product_hit', {
+                  query: item.title,
+                });
+              }}
             >
               <li
                 className="aa-Item"
