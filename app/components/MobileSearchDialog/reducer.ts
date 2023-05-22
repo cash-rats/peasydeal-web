@@ -22,7 +22,6 @@ export const setAutoCompleteState = (state: AutocompleteState<AutocompleteItem>)
   };
 };
 
-
 export default function MobileSearchDialogReducer(state: StateShape, action: MobileSearchAction) {
   switch (action.type) {
     case MobileSearchTypes.set_agolia_state: {

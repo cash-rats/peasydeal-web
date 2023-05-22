@@ -1,5 +1,5 @@
 import type { MouseEvent, KeyboardEvent, BaseSyntheticEvent } from 'react';
-import type { AutocompleteApi, AutocompleteState, InternalAutocompleteSource } from '@algolia/autocomplete-core'
+import type { AutocompleteApi, InternalAutocompleteSource } from '@algolia/autocomplete-core'
 import { BsBox } from 'react-icons/bs';
 import { Link } from '@remix-run/react';
 
@@ -10,7 +10,6 @@ import { Highlight } from './Highlight';
 interface CategoryHitsParams {
   items: CategoryRecord[];
   source: InternalAutocompleteSource<CategoryRecord>;
-  state: AutocompleteState<CategoryRecord>
   autocomplete: AutocompleteApi<CategoryRecord, BaseSyntheticEvent, MouseEvent, KeyboardEvent>;
 };
 

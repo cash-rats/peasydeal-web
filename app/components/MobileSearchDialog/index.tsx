@@ -1,6 +1,8 @@
 import {
   useEffect,
   useMemo,
+  useReducer,
+  useRef,
 } from 'react'
 import {
   Modal,
@@ -10,16 +12,37 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
-import { useNavigation } from '@remix-run/react';
-import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
-import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
+import { useNavigation, useSubmit } from '@remix-run/react';
+import type {
+  BaseSyntheticEvent,
+  MouseEvent,
+  KeyboardEvent
+} from 'react';
+import { createAutocomplete } from '@algolia/autocomplete-core';
+import insightsClient from 'search-insights';
 
-import { createCategoriesPlugin } from '~/components/Algolia/plugins/createCategoriesPlugin';
+import type { AutocompleteItem } from '~/components/Algolia/types';
+import {
+  createProductsSuggestionsPlugin,
+  createCategoriesPlugin,
+  createRecentSearchPlugin,
+} from '~/components/Algolia/plugins';
 import { searchClient } from '~/components/Algolia';
-import type { ProductQuerySuggestHit } from '~/components/Algolia/types';
-import { ALGOLIA_INDEX_NAME, DOMAIN } from '~/utils/get_env_source';
+import {
+  CategoryHits,
+  ProductHits,
+  RecentSearchHits,
+} from '~/components/Algolia';
+import { ALGOLIA_APP_ID, ALGOLIA_APP_WRITE_KEY } from '~/utils/get_env_source';
 
-import Autocomplete from './Autocomplete';
+import reducer, { setAutoCompleteState } from './reducer';
+import SearchBar from './SearchBar';
+
+insightsClient(
+  'init', {
+  appId: ALGOLIA_APP_ID,
+  apiKey: ALGOLIA_APP_WRITE_KEY,
+});
 
 interface MobileSearchDialogProps {
   onBack?: () => void;
@@ -32,45 +55,119 @@ function MobileSearchDialog({
   onBack = () => { },
 }: MobileSearchDialogProps) {
   const navigate = useNavigation();
+  const submitSearch = useSubmit();
+
+  const [state, dispatch] = useReducer(
+    reducer,
+    {
+      autoCompleteState: {
+        collections: [],
+        completion: null,
+        context: {},
+        isOpen: false,
+        query: '',
+        activeItemId: null,
+        status: 'idle',
+      },
+    },
+  );
 
   const recentSearchPlugin = useMemo(() => {
-    return createLocalStorageRecentSearchesPlugin({
-      key: 'products-recent-search',
-      limit: 3,
-      transformSource({ source }) {
-        return {
-          ...source,
-          getItemUrl({ item }) {
-            return `${DOMAIN}/search?query=${item.label}`;
-          },
-        };
-      }
-    });
+    return createRecentSearchPlugin();
   }, []);
 
-  const querySuggestionPlugin = useMemo(() => {
-    return createQuerySuggestionsPlugin<ProductQuerySuggestHit>({
+  const productsSuggestionsPlugin = useMemo(() => {
+    return createProductsSuggestionsPlugin({
       searchClient,
-      indexName: ALGOLIA_INDEX_NAME,
-      getSearchParams() {
-        return recentSearchPlugin.data?.getAlgoliaSearchParams({
-          hitsPerPage: 5,
-        });
-      },
-      transformSource({ source }) {
-        return {
-          ...source,
-          getItemUrl({ item }) {
-            return `${DOMAIN}/search?query=${item.title}`
-          },
-        };
-      },
+      recentSearchPlugin,
     });
-  }, []);
+  }, [recentSearchPlugin]);
 
   const categoriesPlugin = useMemo(() => {
-    return createCategoriesPlugin({ searchClient });
+    return createCategoriesPlugin({ searchClient })
   }, []);
+
+
+  const autocomplete = useMemo(
+    () =>
+      createAutocomplete<
+        AutocompleteItem,
+        BaseSyntheticEvent,
+        MouseEvent,
+        KeyboardEvent
+      >({
+        openOnFocus: true,
+        autoFocus: true,
+        onStateChange({ state }) {
+          dispatch(setAutoCompleteState(state));
+        },
+        onSubmit({ state }) {
+          console.log('debug submit search', state.query);
+          submitSearch(
+            { query: state.query },
+            {
+              method: 'post',
+              action: '/search?index',
+            },
+          );
+        },
+        insights: { insightsClient },
+        navigator: {
+          navigate({ itemUrl }) {
+            window.location.assign(itemUrl);
+          },
+
+          navigateNewTab({ itemUrl }) {
+            const windowReference = window.open(itemUrl, '_blank', 'noopener');
+
+            if (windowReference) {
+              windowReference.focus();
+            }
+          },
+
+          navigateNewWindow({ itemUrl }) {
+            window.open(itemUrl, '_blank', 'noopener');
+          },
+        },
+        plugins: [
+          productsSuggestionsPlugin,
+          recentSearchPlugin,
+          categoriesPlugin,
+        ]
+      }),
+    []
+  );
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const { getEnvironmentProps } = autocomplete;
+
+  useEffect(() => {
+    if (!formRef.current || !panelRef.current || !inputRef.current) {
+      return undefined;
+    }
+
+    const { onTouchStart, onTouchMove, onMouseDown } = getEnvironmentProps({
+      formElement: formRef.current,
+      inputElement: inputRef.current,
+      panelElement: panelRef.current,
+    });
+
+    window.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('touchstart', onTouchStart);
+    window.addEventListener('touchmove', onTouchMove);
+
+    return () => {
+      window.removeEventListener('mousedown', onMouseDown);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+
+    };
+  }, [
+    getEnvironmentProps,
+    state.autoCompleteState.isOpen,
+  ]);
 
   useEffect(() => {
     if (navigate.state === 'submitting') {
@@ -92,7 +189,7 @@ function MobileSearchDialog({
       <ModalOverlay />
       <ModalContent>
         <ModalBody>
-          <div>
+          <div {...autocomplete.getRootProps({})}>
             <div className="p-2 flex justify-end">
 
               {/* Back Button */}
@@ -104,18 +201,66 @@ function MobileSearchDialog({
 
               {/* Autocomplete search bar */}
               <div className="w-full ml-[10px]">
-                <Autocomplete
-                  placeholder='Search'
-                  openOnFocus
-                  autoFocus
-                  plugins={[
-                    recentSearchPlugin,
-                    querySuggestionPlugin,
-                    categoriesPlugin,
-                  ]}
+                <SearchBar
+                  autocomplete={autocomplete}
+                  formRef={formRef}
+                  inputRef={inputRef}
+                  state={state.autoCompleteState}
                 />
               </div>
             </div>
+
+            {/* Dropdown suggestions */}
+            <div
+              ref={panelRef}
+              {...autocomplete.getPanelProps({})}
+            >
+              <div className="p-2">
+                {
+                  state
+                    .autoCompleteState
+                    .collections.map((collection, index) => {
+                      const { source, items } = collection;
+
+                      if (source.sourceId === 'querySuggestionsPlugin') {
+                        return (
+                          <ProductHits
+                            key={source.sourceId}
+                            autocomplete={autocomplete}
+                            items={items}
+                            source={source}
+                          />
+                        );
+                      }
+
+                      if (source.sourceId === 'recentSearchesPlugin') {
+                        return (
+                          <RecentSearchHits
+                            key={source.sourceId}
+                            autocomplete={autocomplete}
+                            items={items}
+                            source={source}
+                          />
+                        );
+                      }
+
+                      // @TODO: Assert type to CategoryRecord instead of AgoliaIndexItem
+                      if (source.sourceId === 'categoriesPlugin') {
+                        return (
+                          <CategoryHits
+                            key={source.sourceId}
+                            source={source}
+                            items={items}
+                            autocomplete={autocomplete}
+                          />
+                        )
+                      }
+
+                      return null
+                    })}
+              </div>
+            </div>
+
           </div>
         </ModalBody>
       </ModalContent>
