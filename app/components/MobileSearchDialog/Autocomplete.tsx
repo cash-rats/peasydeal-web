@@ -15,6 +15,7 @@ import { MdClear as ClearIcon } from 'react-icons/md';
 import { BiSearch as SearchIcon } from 'react-icons/bi';
 import { useSubmit } from '@remix-run/react';
 
+import { useSearchActionClickEvent } from '~/hooks/rudderStack';
 import type { AutocompleteItem } from '~/components/Algolia/types';
 import {
   CategoryHits,
@@ -38,6 +39,7 @@ import reducer, { setAutoCompleteState } from './reducer';
  *  - [ ] Extract `createAutocomplete` logic to a hook
  *  - [x] move state to reducer, why?
  *  - [ ] use `useCreateAutocomplete`
+ *  - [x] rudderStack analytics
  */
 export default function Autocomplete(
   props: Partial<AutocompleteOptions<AutocompleteItem>>
@@ -132,6 +134,11 @@ export default function Autocomplete(
     getEnvironmentProps,
     state.autoCompleteState.isOpen,
   ]);
+
+  useSearchActionClickEvent({
+    formRef,
+    query: state.autoCompleteState.query
+  });
 
   return (
     <div className="aa-Autocomplete" {...autocomplete.getRootProps({})}>
