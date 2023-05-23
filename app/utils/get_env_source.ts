@@ -1,5 +1,6 @@
 // Get endpoints according to different environment.
 type AppConfig = {
+  NODE_ENV: string;
   DOMAIN: string;
   MYFB_ENDPOINT: string;
   STRIPE_PUBLIC_KEY?: string;
@@ -40,6 +41,7 @@ const getENVSource = (): any => {
 
 const getENV = (key: string): string | null | undefined => getENVSource()[key]
 
+const NODE_ENV = getENV('NODE_ENV') || 'development'
 const DOMAIN = getENV('DOMAIN') || 'https://staging.peasydeal.com';
 const MYFB_ENDPOINT = getENV('MYFB_ENDPOINT');
 const PEASY_DEAL_ENDPOINT = getENV('PEASY_DEAL_ENDPOINT') || 'https://stagingapi.peasydeal.com';
@@ -68,6 +70,7 @@ const ALGOLIA_APP_WRITE_KEY = getENV('ALGOLIA_APP_WRITE_KEY') || '';
 const ALGOLIA_INDEX_NAME = getENV('ALGOLIA_INDEX_NAME') || '';
 
 export {
+  NODE_ENV,
   DOMAIN,
   MYFB_ENDPOINT,
   PEASY_DEAL_ENDPOINT,
