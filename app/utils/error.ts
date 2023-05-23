@@ -20,7 +20,7 @@ import type { ApiErrorResponse } from '~/shared/types';
   try {
     await someAsyncFetch(...)
   } catch (e) {
-    return composeErrorResponse(e.message)
+    throw composeErrorResponse(e.message)
   }
 */
 export const composErrorResponse = (errThing: string): ApiErrorResponse => {

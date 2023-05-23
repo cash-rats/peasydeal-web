@@ -10,6 +10,7 @@ import { PAGE_LIMIT } from '~/shared/constants';
 import type { Product } from '~/shared/types';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import PageTitle from '~/components/PageTitle';
+import { composErrorResponse } from '~/utils/error';
 
 import reducer, { SearchActionType } from './reducer';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
@@ -41,24 +42,27 @@ export const loader: LoaderFunction = async ({ request }) => {
     return redirect('/');
   }
 
-  const { products, total, current, has_more } = await searchProducts({
-    query,
-    perpage: PAGE_LIMIT,
-    page,
-  })
+  try {
+    const { products, total, current, has_more } = await searchProducts({
+      query,
+      perpage: PAGE_LIMIT,
+      page,
+    })
 
-  if (products.length === 0) {
-    throw json({ query }, httpStatus.NOT_FOUND);
+    return json<LoaderType>({
+      products,
+      query,
+      page,
+      total,
+      current,
+      has_more,
+    });
+  } catch (e: any) {
+    throw json({
+      ...composErrorResponse(e.message),
+      query,
+    }, httpStatus.NOT_FOUND);
   }
-
-  return json<LoaderType>({
-    products,
-    query,
-    page,
-    total,
-    current,
-    has_more,
-  });
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -105,7 +109,7 @@ function Search({ scrollPosition }: TSearch) {
   const [state, dispatch] = useReducer(reducer, {
     products: loaderData.products,
     query: loaderData.query,
-    page: 1,
+    page: 0,
     total: loaderData.total,
     current: loaderData.current,
   });
