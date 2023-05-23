@@ -13,7 +13,11 @@ import type {
 } from 'react';
 import insightsClient from 'search-insights';
 
-import { ALGOLIA_APP_ID, ALGOLIA_APP_WRITE_KEY } from '~/utils/get_env_source';
+import {
+  NODE_ENV,
+  ALGOLIA_APP_ID,
+  ALGOLIA_APP_WRITE_KEY,
+} from '~/utils/get_env_source';
 import type { AutocompleteItem } from '~/components/Algolia/types';
 
 import reducer, { setAutoCompleteState } from '../reducer';
@@ -37,6 +41,7 @@ export default function useCreateAutocomplete(props: Partial<AutocompleteOptions
 
   // Initialize Algolia insights client only once in between re-render.
   useMemo(() => {
+    if (NODE_ENV === 'development') return;
     insightsClient(
       'init', {
       appId: ALGOLIA_APP_ID,
@@ -51,7 +56,9 @@ export default function useCreateAutocomplete(props: Partial<AutocompleteOptions
       MouseEvent,
       KeyboardEvent
     >({
-      insights: { insightsClient },
+      insights: NODE_ENV === 'production' || NODE_ENV === 'staging'
+        ? { insightsClient }
+        : false,
       onStateChange({ state }) {
         dispatch(setAutoCompleteState(state));
       },
