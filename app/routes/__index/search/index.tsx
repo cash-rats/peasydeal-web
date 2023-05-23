@@ -1,21 +1,23 @@
 import { useEffect, useRef, useReducer } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { useCatch, useLoaderData, useFetcher } from '@remix-run/react';
 
 import { PAGE_LIMIT } from '~/shared/constants';
-import type { Product } from '~/shared/types';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import PageTitle from '~/components/PageTitle';
-import { composErrorResponse } from '~/utils/error';
 
+import type { SearchProductsDataType } from './types';
 import reducer, { SearchActionType } from './reducer';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
-import { searchProducts } from '../api/search_products.server';
 import searchStyles from '../styles/Search.css';
+import {
+  searchProductsLoader,
+  searchMoreProductsLoader,
+} from './loaders';
 
 export const links: LinksFunction = () => {
   return [
@@ -24,17 +26,13 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type LoaderType = {
-  products: Product[];
-  query: string;
-  page: number;
-  total: number;
-  current: number;
-  has_more: boolean;
-};
+type LoaderType =
+  | 'search'
+  | 'search_more';
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url);
+  const actionType = url.searchParams.get('action_type') || 'search' as LoaderType;
   const query = url.searchParams.get("query");
   const page = Number(url.searchParams.get('page')) || 1;
 
@@ -42,27 +40,19 @@ export const loader: LoaderFunction = async ({ request }) => {
     return redirect('/');
   }
 
-  try {
-    const { products, total, current, has_more } = await searchProducts({
+  if (actionType === 'search_more') {
+    return searchMoreProductsLoader({
       query,
-      perpage: PAGE_LIMIT,
-      page,
+      perPage: PAGE_LIMIT,
+      page
     })
-
-    return json<LoaderType>({
-      products,
-      query,
-      page,
-      total,
-      current,
-      has_more,
-    });
-  } catch (e: any) {
-    throw json({
-      ...composErrorResponse(e.message),
-      query,
-    }, httpStatus.NOT_FOUND);
   }
+
+  return searchProductsLoader({
+    query,
+    perPage: PAGE_LIMIT,
+    page,
+  })
 }
 
 export const action: ActionFunction = async ({ request }) => {
@@ -105,11 +95,11 @@ type TSearch = {} & LazyComponentProps;
 //   - Need to add breadcrumbs navigation bar.
 //   - No result page.
 function Search({ scrollPosition }: TSearch) {
-  const loaderData = useLoaderData<LoaderType>() || {};
+  const loaderData = useLoaderData<SearchProductsDataType>() || {};
   const [state, dispatch] = useReducer(reducer, {
     products: loaderData.products,
     query: loaderData.query,
-    page: 0,
+    page: 1,
     total: loaderData.total,
     current: loaderData.current,
   });
@@ -126,7 +116,7 @@ function Search({ scrollPosition }: TSearch) {
       payload: {
         products: loaderData.products,
         query: loaderData.query,
-        page: 1,
+        page: currPageRef.current,
         total: loaderData.total,
         current: loaderData.current,
       },
@@ -135,7 +125,7 @@ function Search({ scrollPosition }: TSearch) {
 
   useEffect(() => {
     if (loadMoreFetcher.type === 'done') {
-      const { products, current } = loadMoreFetcher.data as LoaderType;
+      const { products, current } = loadMoreFetcher.data as SearchProductsDataType;
 
       if (products.length === 0) return;
 
@@ -160,9 +150,9 @@ function Search({ scrollPosition }: TSearch) {
 
   const handleLoadMore = () => {
     const nextPage = currPageRef.current + 1;
-
     loadMoreFetcher.submit(
       {
+        action_type: 'search_more',
         query: loaderData.query,
         page: nextPage.toString()
       },

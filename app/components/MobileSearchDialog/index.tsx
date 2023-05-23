@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
 import { useNavigation, useSubmit } from '@remix-run/react';
-import insightsClient from 'search-insights';
 
 import {
   createProductsSuggestionsPlugin,
@@ -25,15 +24,8 @@ import {
   RecentSearchHits,
 } from '~/components/Algolia';
 import { useCreateAutocomplete } from '~/components/Algolia/hooks';
-import { ALGOLIA_APP_ID, ALGOLIA_APP_WRITE_KEY } from '~/utils/get_env_source';
 
 import SearchBar from './SearchBar';
-
-insightsClient(
-  'init', {
-  appId: ALGOLIA_APP_ID,
-  apiKey: ALGOLIA_APP_WRITE_KEY,
-});
 
 interface MobileSearchDialogProps {
   onBack?: () => void;
@@ -81,7 +73,6 @@ function MobileSearchDialog({
         },
       );
     },
-    insights: { insightsClient },
     navigator: {
       navigate({ itemUrl }) {
         window.location.assign(itemUrl);
