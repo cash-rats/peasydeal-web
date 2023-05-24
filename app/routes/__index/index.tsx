@@ -56,6 +56,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 			],
 		});
 
+		console.log('debug landings', landings.categoryPreviews[0].items[0]);
+
 		return json<LoaderDataType>({
 			categoryPreviews: landings.categoryPreviews,
 			promotionPreviews: landings.promotionPreviews,
@@ -124,7 +126,7 @@ function Index({ scrollPosition }: IndexProps) {
 				mx-0
 			">
 				<div className="w-full bg-[#F1F1F1]">
-					{/* <PromoActivities promotions={promotions} /> */}
+					<PromoActivities promotions={promotions} />
 				</div>
 			</div>
 
