@@ -33,7 +33,7 @@ export enum ActionTypes {
 type Action = {
   type: ActionTypes;
   payload: any;
-}
+};
 
 // ------- action creators -------
 export const updateProductImages = (sharedImgs: ProductImg[], variationImgs: ProductImg[]) => {
@@ -43,9 +43,22 @@ export const updateProductImages = (sharedImgs: ProductImg[], variationImgs: Pro
       sharedImgs,
       variationImgs,
     },
-  }
-}
+  };
+};
 
+export const changeProduct = (product: ProductDetail) => {
+  return {
+    type: ActionTypes.change_product,
+    payload: product,
+  };
+};
+
+export const setVariation = (variation: ProductVariation) => {
+  return {
+    type: ActionTypes.set_variation,
+    payload: variation,
+  };
+}
 
 const reducer = (state: StateShape, action: Action): StateShape => {
   switch (action.type) {
@@ -54,12 +67,12 @@ const reducer = (state: StateShape, action: Action): StateShape => {
 
       const defaultVariation = findDefaultVariation(data);
 
-      // We need to clear previous images once so that those images
-      // would dissapear when new product detail is loaded.
+      // We need to clear previous images before displaying new
+      // product images.
       return {
         ...state,
-        sharedImages: data.shared_images,
-        variationImages: data.variation_images,
+        sharedImages: [],
+        variationImages: [],
         categories: data.categories,
         mainCategory: data.categories[0],
         productDetail: { ...data },

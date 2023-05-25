@@ -1,5 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 
+import type { CarouselImage } from './types';
 import CarouselMinimal from './CarouselMinimal';
 import styles from './styles/Carousel.css';
 
@@ -9,14 +10,10 @@ export const links: LinksFunction = () => {
 	];
 }
 
-interface CarouselImage {
-	id: number;
-	url: string;
-};
-
 interface PicsCarouselProps {
 	sharedImages: CarouselImage[];
 	variationImages: CarouselImage[];
+	selectedVariationUUID?: string;
 	title?: string;
 };
 
@@ -30,11 +27,11 @@ interface PicsCarouselProps {
 function PicsCarousel({
 	sharedImages,
 	variationImages,
+	selectedVariationUUID = '',
 	title = ''
 }: PicsCarouselProps) {
 	const images = variationImages.concat(sharedImages);
 
-	console.log('debug 4', images);
 	return (
 		<>
 			{/* Mobile view slider */}
@@ -64,6 +61,7 @@ function PicsCarousel({
 						style={{
 							textAlign: "center",
 						}}
+						selectedVariationUUID={selectedVariationUUID}
 					/>
 				</div>
 			</div>

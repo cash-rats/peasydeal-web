@@ -24,7 +24,7 @@ export interface Category {
 }
 
 export interface ProductImg {
-  id: number;
+  variation_uuid: string;
   url: string;
 };
 

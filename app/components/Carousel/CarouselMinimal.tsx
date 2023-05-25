@@ -1,4 +1,9 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
+import type { CSSProperties } from 'react';
 import Swipe from "react-easy-swipe";
 import { IconButton } from '@chakra-ui/react'
 import { BiChevronRight, BiChevronLeft } from 'react-icons/bi';
@@ -6,27 +11,66 @@ import { VscZoomIn } from "react-icons/vsc";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 
+import type { CarouselMinimalImage } from './types';
+
+interface CarouselProps {
+  data: CarouselMinimalImage[];
+  time: number;
+  width?: string;
+  height?: string;
+  radius?: string;
+  automatic?: boolean;
+  dots?: boolean;
+  pauseIconColor: string;
+  pauseIconSize: string;
+  slideBackgroundColor: string;
+  slideImageFit?: string;
+  thumbnails: boolean;
+  thumbnailWidth: string;
+  style?: CSSProperties;
+  selectedVariationUUID?: string;
+};
+
 function Carousel({
-  data,
+  data = [],
   time,
   width,
   height,
   radius,
   style,
-  dots,
-  automatic,
+  dots = false,
+  automatic = false,
   pauseIconColor,
   pauseIconSize,
   slideBackgroundColor,
   slideImageFit,
-  thumbnails,
+  thumbnails = true,
+  selectedVariationUUID = '',
   thumbnailWidth,
-}) {
-  console.log('debug 5', data);
+}: CarouselProps) {
+  // A map that stores variation uuid and it's corresponding
+  // image thumbnail position index.
+  //
+  // When user changes variation on product detail page, thumbnail
+  // slides would scroll to that position accordingly.
+  const variationImgPosIndexMap: Map<string, number> = useMemo(
+    () => {
+      return data.reduce((m, { variation_uuid }, idx) => {
+        if (variation_uuid) {
+          m.set(variation_uuid, idx)
+        }
+        return m
+      }, new Map())
+    },
+    []);
+
 
   //Initialize States
   const [openLightBox, setOpenLightBox] = useState(false);
-  const [slide, setSlide] = useState(0);
+  const [slide, setSlide] = useState(
+    variationImgPosIndexMap
+      .get(selectedVariationUUID) || 0
+  );
   const [isPaused, setIsPaused] = useState(false);
   const [change, setChange] = useState(false);
 
@@ -36,6 +80,18 @@ function Carousel({
     else if (slide + n < 0) setSlide(data.length - 1);
     else setSlide(slide + n);
   };
+
+  useEffect(() => {
+    const slideIdx = variationImgPosIndexMap
+      .get(selectedVariationUUID);
+
+    // If selected variation does not have a matching
+    // variation image, image stays at where it is.
+    if (!slideIdx) return;
+
+    setSlide(slideIdx);
+    setChange(!change);
+  }, [selectedVariationUUID]);
 
 
   //Start the automatic change of slide
@@ -292,25 +348,26 @@ function Carousel({
           style={{ maxWidth: width }}
         >
           {
-            data.map((item: any, index: number) => {
-              return (
-                <img
-                  style={{
-                    border: slide === index ? '3px solid #D02E7D' : '0px',
-                  }}
-                  className="mx-2 rounded-lg bg-slate-100 p-[2px] min-w-[100px] w-auto h-[100px] aspect-sqare"
-                  width={"100px"}
-                  alt={item.title}
-                  src={item.url}
-                  id={`thumbnail-${index}`}
-                  key={index}
-                  onClick={(e) => {
-                    setSlide(index);
-                    setChange(!change);
-                  }}
-                />
-              );
-            })
+            data
+              .map((item: CarouselMinimalImage, index: number) => {
+                return (
+                  <img
+                    style={{
+                      border: slide === index ? '3px solid #D02E7D' : '0px',
+                    }}
+                    className="mx-2 rounded-lg bg-slate-100 p-[2px] min-w-[100px] w-auto h-[100px] aspect-sqare"
+                    width={"100px"}
+                    alt={item.title}
+                    src={item.url}
+                    id={`thumbnail-${index}`}
+                    key={index}
+                    onClick={(e) => {
+                      setSlide(index);
+                      setChange(!change);
+                    }}
+                  />
+                );
+              })
           }
         </div>
       </div>

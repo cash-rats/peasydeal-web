@@ -64,7 +64,12 @@ import RecommendedProducts, { links as RecommendedProductsLinks } from './compon
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
 import useStickyActionBar from './hooks/useStickyActionBar';
 import useSticky from './hooks/useSticky';
-import reducer, { ActionTypes } from './reducer';
+import reducer, {
+	ActionTypes,
+	updateProductImages,
+	changeProduct,
+	setVariation,
+} from './reducer';
 import { structuredData } from './structured_data';
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
 import {
@@ -175,7 +180,6 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 			meta_image: mainPic?.url || '',
 		});
 	} catch (error: any) {
-		console.log('debug 2', error);
 		throw json<ApiErrorResponse>(
 			composErrorResponse(error.message),
 			{ status: httpStatus.NOT_FOUND }
@@ -263,7 +267,6 @@ type ProductDetailProps = {} & LazyComponentProps;
  */
 function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
-	console.log('debug loaderData', loaderData);
 	const mainCategory = (
 		loaderData?.product?.categories &&
 		loaderData?.product?.categories.length > 0
@@ -305,18 +308,14 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	// Change product.
 	useEffect(() => {
 		// This action updates detail to new product also clears images of previous product images.
-		dispatch({
-			type: ActionTypes.change_product,
-			payload: loaderData.product,
-		});
+		dispatch(changeProduct(loaderData.product));
 
 		// Update product images to new product after current event loop.
 		setTimeout(() => {
-			console.log('update images');
-			// dispatch({
-			// 	type: ActionTypes.update_product_images,
-			// 	payload: loaderData.product.images,
-			// });
+			dispatch(updateProductImages(
+				loaderData.product.shared_images,
+				loaderData.product.variation_images,
+			));
 		}, 100);
 
 		if (!window) return;
@@ -466,10 +465,11 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					<div className='ProductDetail__main-top flex lg:grid grid-cols-10' ref={productTopRef}>
 						<div className='col-span-5 xl:col-span-6'>
 							<ProductDetailSection
-								description={state.productDetail?.description}
 								sharedPics={state.sharedImages}
 								variationPics={state.variationImages}
+								selectedVariationUUID={state.variation?.uuid}
 								title={state.productDetail?.title}
+								description={state.productDetail?.description}
 							/>
 						</div>
 						<div
@@ -592,10 +592,16 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 															}}
 															onChange={(v) => {
 																if (!v) return;
-																dispatch({
-																	type: ActionTypes.set_variation,
-																	payload: state.productDetail.variations.find(variation => variation.uuid === v.value),
-																})
+
+																const selectedVariation =
+																	state
+																		.productDetail
+																		.variations
+																		.find(variation => variation.uuid === v.value);
+
+																if (!selectedVariation) return;
+
+																dispatch(setVariation(selectedVariation));
 															}}
 															options={
 																state.productDetail.variations.map(
