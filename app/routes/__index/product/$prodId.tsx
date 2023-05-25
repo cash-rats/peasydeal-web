@@ -67,7 +67,10 @@ import useSticky from './hooks/useSticky';
 import reducer, { ActionTypes } from './reducer';
 import { structuredData } from './structured_data';
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
-import { matchOldProductURL } from './utils';
+import {
+	matchOldProductURL,
+	pickMainImage,
+} from './utils';
 import { redirectToNewProductURL } from './loaders';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 
@@ -161,13 +164,18 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 	try {
 		const prodDetail = await fetchProductDetail(decompURL.productUUID)
+		const mainPic = pickMainImage(
+			prodDetail.shared_images,
+			prodDetail.variation_images,
+		);
 
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
-			meta_image: prodDetail.images[0],
+			meta_image: mainPic?.url || '',
 		});
 	} catch (error: any) {
+		console.log('debug 2', error);
 		throw json<ApiErrorResponse>(
 			composErrorResponse(error.message),
 			{ status: httpStatus.NOT_FOUND }
@@ -255,6 +263,7 @@ type ProductDetailProps = {} & LazyComponentProps;
  */
 function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
+	console.log('debug loaderData', loaderData);
 	const mainCategory = (
 		loaderData?.product?.categories &&
 		loaderData?.product?.categories.length > 0
@@ -268,7 +277,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		productDetail: loaderData?.product,
 		categories: loaderData?.product?.categories,
 		mainCategory,
-		images: loaderData?.product?.images,
+		sharedImages: loaderData?.product.shared_images,
+		variationImages: loaderData?.product.variation_images,
 		quantity: 1,
 		variation: defaultVariation,
 		sessionStorableCartItem: normalizeToSessionStorableCartItem(
@@ -302,10 +312,11 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 		// Update product images to new product after current event loop.
 		setTimeout(() => {
-			dispatch({
-				type: ActionTypes.update_product_images,
-				payload: loaderData.product.images,
-			});
+			console.log('update images');
+			// dispatch({
+			// 	type: ActionTypes.update_product_images,
+			// 	payload: loaderData.product.images,
+			// });
 		}, 100);
 
 		if (!window) return;
@@ -456,7 +467,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 						<div className='col-span-5 xl:col-span-6'>
 							<ProductDetailSection
 								description={state.productDetail?.description}
-								pics={state.images}
+								sharedPics={state.sharedImages}
+								variationPics={state.variationImages}
 								title={state.productDetail?.title}
 							/>
 						</div>

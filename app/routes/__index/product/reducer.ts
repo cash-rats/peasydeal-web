@@ -1,17 +1,22 @@
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
-import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
+import {
+  normalizeToSessionStorableCartItem,
+  findDefaultVariation,
+} from './utils';
 
 import type {
   ProductDetail,
   ProductVariation,
+  ProductImg,
   Category,
 } from './types';
 
 type StateShape = {
   productDetail: ProductDetail;
   variation: ProductVariation | undefined;
-  images: string[];
+  sharedImages: ProductImg[];
+  variationImages: ProductImg[];
   quantity: number;
   categories: Category[];
   mainCategory: Category | null;
@@ -30,6 +35,18 @@ type Action = {
   payload: any;
 }
 
+// ------- action creators -------
+export const updateProductImages = (sharedImgs: ProductImg[], variationImgs: ProductImg[]) => {
+  return {
+    type: ActionTypes.update_product_images,
+    payload: {
+      sharedImgs,
+      variationImgs,
+    },
+  }
+}
+
+
 const reducer = (state: StateShape, action: Action): StateShape => {
   switch (action.type) {
     case ActionTypes.change_product: {
@@ -41,7 +58,8 @@ const reducer = (state: StateShape, action: Action): StateShape => {
       // would dissapear when new product detail is loaded.
       return {
         ...state,
-        images: [],
+        sharedImages: data.shared_images,
+        variationImages: data.variation_images,
         categories: data.categories,
         mainCategory: data.categories[0],
         productDetail: { ...data },
@@ -55,11 +73,15 @@ const reducer = (state: StateShape, action: Action): StateShape => {
       };
     }
     case ActionTypes.update_product_images: {
-      const images = action.payload as string[];
+      const { sharedImgs, variationImgs }: {
+        sharedImgs: ProductImg[],
+        variationImgs: ProductImg[],
+      } = action.payload
 
       return {
         ...state,
-        images: [...images],
+        sharedImages: sharedImgs,
+        variationImages: variationImgs,
       };
     }
     case ActionTypes.update_quantity: {

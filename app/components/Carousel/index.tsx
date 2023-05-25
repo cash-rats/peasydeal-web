@@ -1,6 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
-import CarouselMinimal from './CarouselMinimal';
 
+import CarouselMinimal from './CarouselMinimal';
 import styles from './styles/Carousel.css';
 
 export const links: LinksFunction = () => {
@@ -9,8 +9,14 @@ export const links: LinksFunction = () => {
 	];
 }
 
+interface CarouselImage {
+	id: number;
+	url: string;
+};
+
 interface PicsCarouselProps {
-	images: string[];
+	sharedImages: CarouselImage[];
+	variationImages: CarouselImage[];
 	title?: string;
 };
 
@@ -18,19 +24,31 @@ interface PicsCarouselProps {
  * TODOs:
  * 	- [x] hover thumbnail display border.
  * 	- [x] clicks on thumbnail should display that image.
+ *  - [x] display variation_images before shared_images.
  *  - [ ] 當移動 slide 到 thumbnail 看不到的位置，要 scroll thumbnail bar.
  */
-function PicsCarousel({ images, title = '' }: PicsCarouselProps) {
+function PicsCarousel({
+	sharedImages,
+	variationImages,
+	title = ''
+}: PicsCarouselProps) {
+	const images = variationImages.concat(sharedImages);
+
+	console.log('debug 4', images);
 	return (
 		<>
 			{/* Mobile view slider */}
 			<div className="">
 				<div className="carousel-minimal" >
 					<CarouselMinimal
-						data={images.map((image: string) => ({
-							title: `${title}-${image}`,
-							image,
-						}))}
+						data={
+							images.map((image: CarouselImage) => {
+								return {
+									title: `${title}-${image.url}`,
+									...image,
+								}
+							})
+						}
 						time={2000}
 						width="850px"
 						height="500px"

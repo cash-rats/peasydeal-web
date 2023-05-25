@@ -1,7 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Swipe from "react-easy-swipe";
-// import { LazyLoadImage } from 'react-lazy-load-image-component';
-// import "./styles/index.css";
 import { IconButton } from '@chakra-ui/react'
 import { BiChevronRight, BiChevronLeft } from 'react-icons/bi';
 import { VscZoomIn } from "react-icons/vsc";
@@ -24,6 +22,8 @@ function Carousel({
   thumbnails,
   thumbnailWidth,
 }) {
+  console.log('debug 5', data);
+
   //Initialize States
   const [openLightBox, setOpenLightBox] = useState(false);
   const [slide, setSlide] = useState(0);
@@ -36,16 +36,6 @@ function Carousel({
     else if (slide + n < 0) setSlide(data.length - 1);
     else setSlide(slide + n);
   };
-
-  // const loadMyModule = useCallback(async () => {
-  //   const light = await import('yet-another-react-lightbox');
-
-  //   setLightBox(light);
-  // }, [])
-
-  // useEffect(() => {
-  //   loadMyModule();
-  // }, []);
 
 
   //Start the automatic change of slide
@@ -190,7 +180,7 @@ function Carousel({
                     key={index}
                   >
                     <img
-                      src={item.image}
+                      src={item.url}
                       alt={item.caption}
                       className="carousel-image"
                       onClick={(e) => {
@@ -311,7 +301,7 @@ function Carousel({
                   className="mx-2 rounded-lg bg-slate-100 p-[2px] min-w-[100px] w-auto h-[100px] aspect-sqare"
                   width={"100px"}
                   alt={item.title}
-                  src={item.image}
+                  src={item.url}
                   id={`thumbnail-${index}`}
                   key={index}
                   onClick={(e) => {

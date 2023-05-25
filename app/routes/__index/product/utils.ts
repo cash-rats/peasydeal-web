@@ -1,6 +1,22 @@
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
-import type { ProductDetail, ProductVariation } from './types';
+import type {
+  ProductDetail,
+  ProductVariation,
+  ProductImg,
+} from './types';
+
+export const pickMainImage = (sharedImgs: ProductImg[], variationImgs: ProductImg[]): null | ProductImg => {
+  if (sharedImgs.length === 0 && variationImgs.length === 0) {
+    return null
+  }
+
+  if (sharedImgs.length > 0) {
+    return sharedImgs[0]
+  }
+
+  return variationImgs[0];
+};
 
 type INormalizeToSessionStorableCartItem = {
   productDetail: ProductDetail;
@@ -19,6 +35,11 @@ const normalizeToSessionStorableCartItem = ({
     ? ''
     : productVariation?.spec_name || '';
 
+  const mainImg = pickMainImage(
+    productDetail.shared_images,
+    productDetail.variation_images
+  );
+
   return {
     salePrice: productVariation?.sale_price.toString() || '',
     retailPrice: productVariation?.retail_price.toString() || '',
@@ -26,8 +47,10 @@ const normalizeToSessionStorableCartItem = ({
     variationUUID: productVariation?.uuid || '',
     tagComboTags: productDetail.tag_combo_tags,
 
-    // product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
-    image: productDetail.images[0] || '',
+    image: mainImg
+      ? mainImg.url
+      : '',
+
     quantity: quantity.toString(),
     title: productDetail?.title || '',
     specName: specName,
@@ -41,9 +64,9 @@ const findDefaultVariation = (pd: ProductDetail) => (
   )
 );
 
-/*
-  Check if incoming url matches old product pattern: /product/6920999698491
-*/
+/**
+ * Check if incoming url matches old product pattern: /product/6920999698491
+ */
 const OldProdURLPattern = /product\/(\d{13})$/;
 const matchOldProductURL = (url: string): string[] => {
   const matches = OldProdURLPattern.exec(url);
@@ -54,6 +77,8 @@ const matchOldProductURL = (url: string): string[] => {
 
   return matches;
 };
+
+
 
 export {
   normalizeToSessionStorableCartItem,
