@@ -64,10 +64,18 @@ import RecommendedProducts, { links as RecommendedProductsLinks } from './compon
 import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
 import useStickyActionBar from './hooks/useStickyActionBar';
 import useSticky from './hooks/useSticky';
-import reducer, { ActionTypes } from './reducer';
+import reducer, {
+	ActionTypes,
+	updateProductImages,
+	changeProduct,
+	setVariation,
+} from './reducer';
 import { structuredData } from './structured_data';
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
-import { matchOldProductURL } from './utils';
+import {
+	matchOldProductURL,
+	pickMainImage,
+} from './utils';
 import { redirectToNewProductURL } from './loaders';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 
@@ -161,11 +169,15 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 	try {
 		const prodDetail = await fetchProductDetail(decompURL.productUUID)
+		const mainPic = pickMainImage(
+			prodDetail.shared_images,
+			prodDetail.variation_images,
+		);
 
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
-			meta_image: prodDetail.images[0],
+			meta_image: mainPic?.url || '',
 		});
 	} catch (error: any) {
 		throw json<ApiErrorResponse>(
@@ -268,7 +280,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		productDetail: loaderData?.product,
 		categories: loaderData?.product?.categories,
 		mainCategory,
-		images: loaderData?.product?.images,
+		sharedImages: loaderData?.product.shared_images,
+		variationImages: loaderData?.product.variation_images,
 		quantity: 1,
 		variation: defaultVariation,
 		sessionStorableCartItem: normalizeToSessionStorableCartItem(
@@ -295,17 +308,14 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	// Change product.
 	useEffect(() => {
 		// This action updates detail to new product also clears images of previous product images.
-		dispatch({
-			type: ActionTypes.change_product,
-			payload: loaderData.product,
-		});
+		dispatch(changeProduct(loaderData.product));
 
 		// Update product images to new product after current event loop.
 		setTimeout(() => {
-			dispatch({
-				type: ActionTypes.update_product_images,
-				payload: loaderData.product.images,
-			});
+			dispatch(updateProductImages(
+				loaderData.product.shared_images,
+				loaderData.product.variation_images,
+			));
 		}, 100);
 
 		if (!window) return;
@@ -455,9 +465,11 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					<div className='ProductDetail__main-top flex lg:grid grid-cols-10' ref={productTopRef}>
 						<div className='col-span-5 xl:col-span-6'>
 							<ProductDetailSection
-								description={state.productDetail?.description}
-								pics={state.images}
+								sharedPics={state.sharedImages}
+								variationPics={state.variationImages}
+								selectedVariationUUID={state.variation?.uuid}
 								title={state.productDetail?.title}
+								description={state.productDetail?.description}
 							/>
 						</div>
 						<div
@@ -580,10 +592,16 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 															}}
 															onChange={(v) => {
 																if (!v) return;
-																dispatch({
-																	type: ActionTypes.set_variation,
-																	payload: state.productDetail.variations.find(variation => variation.uuid === v.value),
-																})
+
+																const selectedVariation =
+																	state
+																		.productDetail
+																		.variations
+																		.find(variation => variation.uuid === v.value);
+
+																if (!selectedVariation) return;
+
+																dispatch(setVariation(selectedVariation));
 															}}
 															options={
 																state.productDetail.variations.map(

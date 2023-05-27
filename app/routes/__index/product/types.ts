@@ -23,13 +23,19 @@ export interface Category {
   is_main: boolean;
 }
 
+export interface ProductImg {
+  variation_uuid: string;
+  url: string;
+};
+
 export interface ProductDetail {
   uuid: string;
   title: string;
   subtitle: string;
   default_variation_uuid: string;
   categories: Category[];
-  images: string[];
+  shared_images: ProductImg[];
+  variation_images: ProductImg[];
   variations: ProductVariation[];
   description: string;
   order_count: number;

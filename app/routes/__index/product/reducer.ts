@@ -1,17 +1,22 @@
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
-import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
+import {
+  normalizeToSessionStorableCartItem,
+  findDefaultVariation,
+} from './utils';
 
 import type {
   ProductDetail,
   ProductVariation,
+  ProductImg,
   Category,
 } from './types';
 
 type StateShape = {
   productDetail: ProductDetail;
   variation: ProductVariation | undefined;
-  images: string[];
+  sharedImages: ProductImg[];
+  variationImages: ProductImg[];
   quantity: number;
   categories: Category[];
   mainCategory: Category | null;
@@ -28,6 +33,31 @@ export enum ActionTypes {
 type Action = {
   type: ActionTypes;
   payload: any;
+};
+
+// ------- action creators -------
+export const updateProductImages = (sharedImgs: ProductImg[], variationImgs: ProductImg[]) => {
+  return {
+    type: ActionTypes.update_product_images,
+    payload: {
+      sharedImgs,
+      variationImgs,
+    },
+  };
+};
+
+export const changeProduct = (product: ProductDetail) => {
+  return {
+    type: ActionTypes.change_product,
+    payload: product,
+  };
+};
+
+export const setVariation = (variation: ProductVariation) => {
+  return {
+    type: ActionTypes.set_variation,
+    payload: variation,
+  };
 }
 
 const reducer = (state: StateShape, action: Action): StateShape => {
@@ -37,11 +67,12 @@ const reducer = (state: StateShape, action: Action): StateShape => {
 
       const defaultVariation = findDefaultVariation(data);
 
-      // We need to clear previous images once so that those images
-      // would dissapear when new product detail is loaded.
+      // We need to clear previous images before displaying new
+      // product images.
       return {
         ...state,
-        images: [],
+        sharedImages: [],
+        variationImages: [],
         categories: data.categories,
         mainCategory: data.categories[0],
         productDetail: { ...data },
@@ -55,11 +86,15 @@ const reducer = (state: StateShape, action: Action): StateShape => {
       };
     }
     case ActionTypes.update_product_images: {
-      const images = action.payload as string[];
+      const { sharedImgs, variationImgs }: {
+        sharedImgs: ProductImg[],
+        variationImgs: ProductImg[],
+      } = action.payload
 
       return {
         ...state,
-        images: [...images],
+        sharedImages: sharedImgs,
+        variationImages: variationImgs,
       };
     }
     case ActionTypes.update_quantity: {

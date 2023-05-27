@@ -3,6 +3,7 @@ import type { LinksFunction } from '@remix-run/node';
 import PicsCarousel, { links as PicsCarouselLinks } from '~/components/Carousel';
 
 import styles from './styles/ProductDetailSection.css';
+import type { ProductImg, } from '../../types';
 
 export const links: LinksFunction = () => {
 	return [
@@ -12,15 +13,23 @@ export const links: LinksFunction = () => {
 }
 
 interface ProductDetailSectionProps {
+	title?: string;
 	description?: string;
-	pics: string[],
-	title?: string,
+
+	// Image carousel will scroll to the variation image based on the
+	// selected variation. Thus, we'll need to know corresponding variation UUID
+	// to find the DOM to scroll to.
+	selectedVariationUUID?: string;
+	sharedPics: ProductImg[];
+	variationPics: ProductImg[];
 }
 
 function ProductDetailSection({
 	title = '',
 	description = '',
-	pics = [],
+	selectedVariationUUID = '',
+	sharedPics = [],
+	variationPics = [],
 }: ProductDetailSectionProps) {
 	return (
 		<div className="product-detail mb-4">
@@ -28,7 +37,9 @@ function ProductDetailSection({
 			<div className="product-detail-img-container">
 				<PicsCarousel
 					title={title}
-					images={pics}
+					sharedImages={sharedPics}
+					variationImages={variationPics}
+					selectedVariationUUID={selectedVariationUUID}
 				/>
 			</div>
 

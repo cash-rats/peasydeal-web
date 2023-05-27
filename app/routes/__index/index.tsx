@@ -56,6 +56,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 			],
 		});
 
+		console.log('debug landings', landings.categoryPreviews[0].items[0]);
+
 		return json<LoaderDataType>({
 			categoryPreviews: landings.categoryPreviews,
 			promotionPreviews: landings.promotionPreviews,

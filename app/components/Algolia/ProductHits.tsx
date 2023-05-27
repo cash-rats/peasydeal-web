@@ -50,7 +50,7 @@ function ProductHit({
                         <Highlight hit={item} attribute="name" />
                       </div>
                       <div className="aa-ItemContentDescription">
-                        <strong>{item.title}</strong> in{' '}
+                        <strong>{item.title}</strong>
                         {/* <strong>{item.categories[0]}</strong> */}
                       </div>
                     </div>
