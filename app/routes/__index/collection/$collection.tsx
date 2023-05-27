@@ -424,11 +424,13 @@ function Collection({ scrollPosition }: CollectionProps) {
                 </h2>
               )
             }
+            {/*
+              @important
+              Please don't enable product grid loading state when redirecting for now.
+              It disrupts the scroll position stored in the session storage. i'm trying
+              to fix this behavior using remix frontend cache.
+            */}
             <ProductRowsContainer
-              loading={
-                transition.state !== 'idle' &&
-                transition.location.pathname.includes('/collection/')
-              }
               products={state.products}
               scrollPosition={scrollPosition}
             />
