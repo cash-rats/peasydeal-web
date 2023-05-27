@@ -62,8 +62,7 @@ function Carousel({
         return m
       }, new Map())
     },
-    []);
-
+    [data]);
 
   //Initialize States
   const [openLightBox, setOpenLightBox] = useState(false);
