@@ -69,7 +69,7 @@ export const productsLoader = async ({
       current,
       hasMore,
 
-      canonical_link: `${getCanonicalDomain()}/${category}`,
+      canonical_link: `${getCanonicalDomain()}/collection/${category}`,
     });
   }
 
