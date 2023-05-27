@@ -23,10 +23,6 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
     const promotions = await fetchPromotions();
     const catMap = normalizeToMap(promotions);
 
-    if (!catMap[promoName]) {
-      throw new Error('promotion does not exist');
-    }
-
     const response: LoadProductsDataType = {
       categories: catMap,
       category: catMap[promoName],
@@ -35,7 +31,7 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
       total: 1,
       current: 1,
       hasMore: true,
-      canonical_link: `${getCanonicalDomain()}/${promoName}`
+      canonical_link: `${getCanonicalDomain()}/promotion/${promoName}`
     };
 
     const cachedInfo = await getCategoryProducts(request, promoName);
@@ -47,13 +43,16 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
         page: 1,
       });
 
-      response.products = items;
-      response.total = total;
-      response.current = current;
-      response.hasMore = hasMore;
-      response.page = cachedInfo.page;
-
-      return json<LoadProductsDataType>(response);
+      return json<LoadProductsDataType>(Object.assign(
+        response,
+        {
+          products: items,
+          total,
+          current,
+          hasMore,
+          page: cachedInfo.page,
+        },
+      ));
     }
 
     const {
@@ -69,12 +68,15 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
 
     const session = await addCategoryProducts(request, [], promoName, 1);
 
-    response.products = products
-    response.total = total;
-    response.current = current;
-    response.hasMore = hasMore
-
-    return json(response, {
+    return json(Object.assign(
+      response,
+      {
+        products,
+        total,
+        current,
+        hasMore,
+      },
+    ), {
       headers: {
         'Set-Cookie': await commitSession(session),
       },

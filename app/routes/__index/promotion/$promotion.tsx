@@ -6,6 +6,7 @@ import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
+import type { DynamicLinksFunction } from 'remix-utils'
 
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
@@ -14,6 +15,7 @@ import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import { PAGE_LIMIT } from '~/shared/constants';
 import PromotionBannerWithTitle, { links as PageTitleLinks } from '~/components/PageTitle/PromotionBannerWithTitle';
 import {
+  getCanonicalDomain,
   getFourOhFourTitleText,
   getFourOhFourDescText,
   getCollectionTitleText,
@@ -27,7 +29,14 @@ import reducer, { PromotionActionType } from './reducer';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
 import structuredData from './structured_data';
 
-export const handle = { structuredData };
+const dynamicLinks: DynamicLinksFunction<LoadProductsDataType> = ({ data }) => ([
+  {
+    rel: 'canonical',
+    href: data?.canonical_link || getCanonicalDomain(),
+  }
+]);
+
+export const handle = { structuredData, dynamicLinks };
 
 export const links: LinksFunction = () => {
   return [
