@@ -1,9 +1,9 @@
-import path from 'path';
-import { Storage } from '@google-cloud/storage';
 import stream from 'stream';
 import sharp from 'sharp';
 import type { TransformOptions } from 'remix-image';
+import type { Bucket } from '@google-cloud/storage';
 
+import { bucket } from './gcs.server';
 import { MimeType, fileExtensionResolver } from './mimes';
 
 /*
@@ -39,14 +39,6 @@ type CustomTransformer = {
   }, output: Required<TransformOptions>) => Promise<Uint8Array>;
 }
 
-const storage = new Storage({
-  keyFilename: path.resolve(__dirname, '../', 'peasydeal-master-key.json')
-});
-
-const bucketName = 'peasydeal';
-
-const bucket = storage.bucket(bucketName);
-
 const getFilenameFromPath = (url: string) => {
   return url.substring(url.lastIndexOf('/') + 1, url.length);
 };
@@ -55,7 +47,14 @@ const composeObjectName = ({ width, height, filename, extension }: { width: numb
   return `${extension}/w${width}_h${height}/${filename}`;
 };
 
-const streamFileUpload = ({ filename, buffer }: { buffer: Buffer, filename: string }) => {
+interface IStreamFileUpload {
+  (
+    bucket: Bucket,
+    { filename, buffer }: { buffer: Buffer, filename: string },
+  ): Promise<boolean | any>
+}
+
+const streamFileUpload: IStreamFileUpload = (bucket, { filename, buffer }) => {
   const passthroughStream = new stream.PassThrough();
   passthroughStream.write(buffer);
   passthroughStream.end();
@@ -191,11 +190,13 @@ const transformer: CustomTransformer = {
         height,
       });
 
-      // Do not wait for file streaming to finish.
-      streamFileUpload({
-        buffer: result,
-        filename: objectName,
-      });
+      if (bucket) {
+        // Do not wait for file streaming to finish.
+        streamFileUpload(bucket, {
+          buffer: result,
+          filename: objectName,
+        });
+      }
     }
 
     return new Uint8Array(result);

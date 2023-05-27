@@ -4,6 +4,7 @@ import {
   useMemo,
 } from "react";
 import type { CSSProperties } from 'react';
+import type { Property } from 'csstype';
 import Swipe from "react-easy-swipe";
 import { IconButton } from '@chakra-ui/react'
 import { BiChevronRight, BiChevronLeft } from 'react-icons/bi';
@@ -24,7 +25,7 @@ interface CarouselProps {
   pauseIconColor: string;
   pauseIconSize: string;
   slideBackgroundColor: string;
-  slideImageFit?: string;
+  slideImageFit?: Property.ObjectFit;
   thumbnails: boolean;
   thumbnailWidth: string;
   style?: CSSProperties;

@@ -1,4 +1,3 @@
-// Get endpoints according to different environment.
 type AppConfig = {
   NODE_ENV: string;
   DOMAIN: string;
