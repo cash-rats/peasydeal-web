@@ -104,7 +104,6 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
               <MenuItem as="div" className="flex items-center p-0 w-full col-span-1 md:col-span-3 lg:col-span-3 xl:col-span-4">
                 <Link
                   // prefetch='intent'
-                  state={{ scrollToTop: true }}
                   to={`/collection/${category.name}`}
                   className="w-full self-center"
                   onClick={setClose}
@@ -127,7 +126,6 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
                     >
                       <Link
                         // prefetch='intent'
-                        state={{ scrollToTop: true }}
                         to={`/collection/${child.name}`}
                         className="w-full self-center"
                         onClick={setClose}
@@ -152,7 +150,6 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
                             >
                               <Link
                                 // prefetch='intent'
-                                state={{ scrollToTop: true }}
                                 to={`/collection/${subChild.name}`}
                                 className="w-full self-center"
                                 onClick={setClose}

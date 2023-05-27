@@ -80,7 +80,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
               topCategories.map((category, index) => (
                 <Link
                   key={`${index}_menu_link`}
-                  state={{ scrollToTop: true }}
                   to={
                     category.type === 'promotion'
                       ? `/promotion/${category.name}`

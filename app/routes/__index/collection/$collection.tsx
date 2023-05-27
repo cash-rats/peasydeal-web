@@ -303,7 +303,7 @@ function Collection({ scrollPosition }: CollectionProps) {
 
         <div
           className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8] z-20 bg-white"
-          style={{ position: sticky ? 'sticky' : 'static', top: '58px' }}
+          // style={{ position: sticky ? 'sticky' : 'static', top: '58px' }}
           ref={mobileSubCatHalfSheetRef}
         >
           <button
@@ -427,8 +427,13 @@ function Collection({ scrollPosition }: CollectionProps) {
             {/*
               @important
               Please don't enable product grid loading state when redirecting for now.
-              It disrupts the scroll position stored in the session storage. i'm trying
-              to fix this behavior using remix frontend cache.
+              It disrupts the scroll position stored in the session storage. I'm trying
+              to fix this behavior using remix frontend cache. We'll retrieve loaded list
+              from browser cache before going to the loader
+
+              refs:
+                - https://github.com/remix-run/remix/discussions/4652
+                - https://github.com/remix-run/remix/discussions/4950
             */}
             <ProductRowsContainer
               products={state.products}

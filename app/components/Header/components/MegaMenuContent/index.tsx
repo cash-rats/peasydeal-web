@@ -92,7 +92,6 @@ const MegaMenuContent = ({
               >
                 <Link
                   // prefetch='intent'
-                  state={{ scrollToTop: true }}
                   to={
                     type === CategoryType.promotion
                       ? `/promotion/${name}`

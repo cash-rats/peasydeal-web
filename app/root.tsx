@@ -14,6 +14,7 @@ import {
 } from "@remix-run/react";
 import { DynamicLinks, StructuredData } from 'remix-utils'
 import remixImageStyles from "remix-image/remix-image.css";
+import { ScrollRestoration, } from '@remix-run/react';
 
 import {
   getIndexTitleText,
@@ -29,7 +30,6 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { getUser } from "./session.server";
 import { ClientStyleContext, ServerStyleContext } from "./context"
 import styles from "./styles/global.css";
-import ScrollRestoration from './ConditionalScrollRestoration';
 import structuredData from './structured_data';
 
 export const meta: MetaFunction = () => ({
