@@ -9,9 +9,6 @@ export default function ConditionalScrollRestoration() {
   const scrollToTop = useRef<boolean>(false);
 
   useLayoutEffect(() => {
-    console.log('debug redirect 1', navigation.location);
-    console.log('debug redirect 2', navigation.location?.state);
-
     if (
       navigation.location !== undefined &&
       navigation.location.state != undefined &&
@@ -23,7 +20,6 @@ export default function ConditionalScrollRestoration() {
         navigation.state === 'submitting'
       ) {
 
-        console.log('debug redirect 3');
         scrollToTop.current = true;
       }
     }
@@ -32,7 +28,6 @@ export default function ConditionalScrollRestoration() {
       navigation.state === 'idle' &&
       scrollToTop.current === true
     ) {
-      console.log('debug redirect 4');
       typeof window !== 'undefined' && window.scrollTo(0, 0);
       scrollToTop.current = false;
     }
