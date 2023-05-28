@@ -317,9 +317,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				loaderData.product.variation_images,
 			));
 		}, 100);
-
-		if (!window) return;
-		window.scrollTo(0, 0);
 	}, [loaderData.product.uuid]);
 
 	useEffect(() => {

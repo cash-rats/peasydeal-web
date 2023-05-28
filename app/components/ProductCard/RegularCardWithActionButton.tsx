@@ -146,6 +146,7 @@ export default function ProductCard({
     <Link
       // prefetch='intent'
       to={composeProductDetailURL({ productName: title, productUUID })}
+      state={{ scrollToTop: true }}
     >
       <div className='
         flex flex-col

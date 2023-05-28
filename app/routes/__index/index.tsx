@@ -126,7 +126,7 @@ function Index({ scrollPosition }: IndexProps) {
 				mx-0
 			">
 				<div className="w-full bg-[#F1F1F1]">
-					{/* <PromoActivities promotions={promotions} /> */}
+					<PromoActivities promotions={promotions} />
 				</div>
 			</div>
 
