@@ -37,7 +37,11 @@ import {
 } from './actions';
 import type { ActionType } from './actions';
 import type { RemoveCartItemActionDataType, ApplyPromoCodeActionType } from './actions';
-import { syncShoppingCartWithNewProductsInfo, extractPriceInfoToStoreInSession } from './utils';
+import {
+	syncShoppingCartWithNewProductsInfo,
+	extractPriceInfoToStoreInSession,
+	sortItemsByAddedTime,
+} from './utils';
 import { round10 } from '~/utils/preciseRound';
 
 export const links: LinksFunction = () => {
@@ -466,11 +470,8 @@ function Cart() {
 
 								</div>
 								{
-									// TODO: add typescript to item.
-									Object.
-										keys(state.cartItems).
-										map((prodID) => {
-											const item = state.cartItems[prodID];
+									sortItemsByAddedTime(state.cartItems)
+										.map((item) => {
 											const variationUUID = item.variationUUID;
 
 											const isCalculating = (

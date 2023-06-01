@@ -54,4 +54,17 @@ export const extractPriceInfoToStoreInSession = (priceInfo: PriceInfo): CookieSt
   discount_type: priceInfo.discount_type,
   percentage_off_amount: priceInfo.percentage_off_amount,
   applied_events: priceInfo.applied_events,
+  discount_error_msgs: priceInfo.discount_error_msgs,
 });
+
+export const sortItemsByAddedTime = (cart: ShoppingCart): ShoppingCartItem[] => {
+  const now = Date.now();
+  return Object
+    .keys(cart)
+    .map(vuuid => cart[vuuid])
+    .sort((i, j) => {
+      const iAddedTime = i.added_time || now
+      const jAddedTime = j.added_time || now
+      return iAddedTime - jAddedTime;
+    });
+}

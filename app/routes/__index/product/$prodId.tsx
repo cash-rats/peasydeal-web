@@ -207,19 +207,20 @@ export const action: ActionFunction = async ({ request }) => {
 		}));
 	}
 
-	const cartObj = Object.fromEntries(form.entries()) as ShoppingCartItem;
+	const payload = Object.fromEntries(form.entries());
+	const item = JSON.parse(payload.item as string) as ShoppingCartItem;
 
 	// If item does not have a valid variationUUID, don't insert it to shopping cart.
+	// TODO output proper error resposne
 	if (
-		!cartObj ||
-		!cartObj.variationUUID ||
-		typeof cartObj.variationUUID === 'undefined'
+		!item ||
+		!item.variationUUID ||
+		typeof item.variationUUID === 'undefined'
 	) {
 		return json('');
 	}
 
-
-	const session = await insertItem(request, cartObj);
+	const session = await insertItem(request, item);
 
 	if (formAction === 'add_item_to_cart') {
 		// Invalidates product list pagination cache and shopping cart every 3 days.
@@ -373,20 +374,23 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 			setVariationErr('');
 
-			const payload = {
-				__action: 'add_item_to_cart',
-				...state.sessionStorableCartItem
-			} as ShoppingCartItem & { __action: ActionType };
+			const item = {
+				...state.sessionStorableCartItem,
+				added_time: Date.now().toString(),
+			}
 
 			window.rudderanalytics?.track('click_add_to_cart', {
-				product: payload.productUUID,
+				product: item.productUUID,
 			});
 
 			addToCart.submit(
-				payload,
+				{
+					__action: 'add_item_to_cart',
+					item: JSON.stringify(item),
+				},
 				{
 					method: 'post',
-					action: `/product/${payload.productUUID}`,
+					action: `/product/${item.productUUID}`,
 				},
 			);
 		},
