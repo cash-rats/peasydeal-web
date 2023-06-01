@@ -9,7 +9,6 @@ import httpStatus from 'http-status-codes';
 import type { TCategoryPreview, TPromotionType } from "~/shared/types";
 import { getCanonicalDomain } from '~/utils';
 import PromoActivities from "~/components/PromoActivities/PromoActivities";
-import PromoCarousell from "~/components/PromoCarousell";
 import { CategoryPreview } from "~/components/CategoryPreview";
 import FiveHundredError from "~/components/FiveHundreError";
 import CategoriesRow from "~/components/CategoriesRow";
@@ -107,16 +106,9 @@ function Index({ scrollPosition }: IndexProps) {
 				max-w-screen-xl
 				mx-auto
 			">
-				<div className="w-full py-0 mx-2 px-2">
+				<div className="w-full py-0 mx-2 px-2 pb-2.5">
 					<AllTimeCoupon />
 				</div>
-			</div>
-
-			<div
-				className="
-					w-full py-2.5 max-w-screen-xl mx-auto
-				">
-				<PromoCarousell />
 			</div>
 
 			<div className="

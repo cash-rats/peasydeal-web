@@ -7,7 +7,7 @@ import { links as FooterContentLinks } from '../FooterContent';
 import LogoSection from '../LogoSection';
 import EmailSubscribe from '../EmailSubscribe';
 import ProductsSecions from '../ProductsSection';
-import EventSection from '../EventSection';
+// import EventSection from '../EventSection';
 import CompanySection from '../CompanySection';
 
 export const links: LinksFunction = () => {
@@ -38,7 +38,7 @@ function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
       </li>
 
       <li className='flex flex-col gap-4'>
-        <EventSection />
+        {/* <EventSection /> */}
         <CompanySection />
       </li>
     </ul>
