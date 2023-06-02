@@ -19,11 +19,10 @@ import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
 
 import cartReducer, {
-	CartActionTypes,
 	setPriceInfo,
 	setPromoCode,
 	removeCartItem as removeCartItemActionCreator,
-	updateQuantity as updateQuantityActionCreator,
+	updateQuantity as updateQuantityAction,
 } from './reducer';
 import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
@@ -274,35 +273,14 @@ function Cart() {
 	}, [applyPromoCodeFetcher.type]);
 
 
-	const removeItem = (targetRemovalVariationUUID: string) => {
-		// Update cart state with a version without removed item.
-		setSyncingPrice(true);
-
-		dispatch(
-			removeCartItemActionCreator(targetRemovalVariationUUID)
-		);
-
-		// Remove item in session.
-		removeItemFetcher.submit(
-			{
-				__action: 'remove_cart_item',
-				variation_uuid: targetRemovalVariationUUID,
-				promo_code: state.promoCode,
-			},
-			{
-				method: 'post',
-				action: '/cart?index',
-			},
-		)
-	}
-
 	const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, variationUUID: string, number: number) => {
 		// If user hasn't changed anything. don't bother to update the quantity.
 		if (
 			state.cartItems[variationUUID] &&
 			Number(state.cartItems[variationUUID].quantity) === number
 		) return;
-		updateQuantity(variationUUID, number);
+
+		dispatch(updateQuantityAction(variationUUID, number));
 		setSyncingPrice(true);
 
 		updateItemQuantityFetcher.submit(
@@ -319,17 +297,27 @@ function Cart() {
 		);
 	}
 
-	const updateQuantity = (variationUUID: string, number: number) => {
-		dispatch(
-			updateQuantityActionCreator(
-				variationUUID,
-				number,
-			),
-		);
-	}
+	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) => {
+		// Update cart state with a version without removed item.
+		setSyncingPrice(true);
 
-	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) =>
-		removeItem(variationUUID);
+		dispatch(
+			removeCartItemActionCreator(variationUUID)
+		);
+
+		// Remove item in session.
+		removeItemFetcher.submit(
+			{
+				__action: 'remove_cart_item',
+				variation_uuid: variationUUID,
+				promo_code: state.promoCode,
+			},
+			{
+				method: 'post',
+				action: '/cart?index',
+			},
+		)
+	}
 
 
 	const handleClickApplyPromoCode = (code: string) => {
@@ -344,7 +332,6 @@ function Cart() {
 			},
 		);
 	};
-
 
 	const freeshippingRequiredPrice = useMemo(() => {
 		if (!state.priceInfo) return 0;
