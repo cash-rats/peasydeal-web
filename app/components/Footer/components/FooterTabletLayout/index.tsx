@@ -6,7 +6,7 @@ import type { Category } from '~/shared/types';
 
 import LogoSection from '../LogoSection';
 import EmailSubscribe from '../EmailSubscribe';
-import EventSection from '../EventSection';
+// import EventSection from '../EventSection';
 import CompanySection from '../CompanySection';
 
 /*
@@ -75,7 +75,7 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
 
       {/* Company */}
       <div className='flex flex-col gap-4'>
-        <EventSection />
+        {/* <EventSection /> */}
         <CompanySection />
       </div>
 
