@@ -31,6 +31,19 @@ interface CartActions {
   | null;
 }
 
+export const setPriceInfo = (priceInfo: PriceInfo) => {
+  return {
+    type: CartActionTypes.set_price_info,
+    payload: priceInfo,
+  };
+};
+
+export const setPromoCode = (discountCode: string) => {
+  return {
+    type: CartActionTypes.set_promo_code,
+    payload: discountCode,
+  };
+};
 
 export default function cartReducer(state: StateShape, action: CartActions): StateShape {
   switch (action.type) {

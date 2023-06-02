@@ -18,7 +18,11 @@ import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
 
-import cartReducer, { CartActionTypes } from './reducer';
+import cartReducer, {
+	CartActionTypes,
+	setPriceInfo,
+	setPromoCode,
+} from './reducer';
 import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
 import EmptyShoppingCart from './components/EmptyShoppingCart';
@@ -231,12 +235,10 @@ function Cart() {
 	useEffect(() => {
 		if (removeItemFetcher.type === 'done') {
 			const { price_info } = removeItemFetcher.data as RemoveCartItemActionDataType;
-			setSyncingPrice(false);
+			if (!price_info) return;
 
-			dispatch({
-				type: CartActionTypes.set_price_info,
-				payload: price_info
-			});
+			setSyncingPrice(false);
+			dispatch(setPriceInfo(price_info));
 
 			cartItemCountFetcher.submit(
 				null,
@@ -252,12 +254,10 @@ function Cart() {
 	// When user update the quantity, we need to update the cost info calced by backend as well.
 	useEffect(() => {
 		if (updateItemQuantityFetcher.type === 'done') {
-			const data = updateItemQuantityFetcher.data as PriceInfo;
-			if (!data) return;
-			dispatch({
-				type: CartActionTypes.set_price_info,
-				payload: data,
-			});
+			const priceInfo = updateItemQuantityFetcher.data as PriceInfo;
+			if (!priceInfo) return;
+
+			dispatch(setPriceInfo(priceInfo));
 			setSyncingPrice(false);
 		}
 	}, [updateItemQuantityFetcher.type]);
@@ -266,17 +266,8 @@ function Cart() {
 	useEffect(() => {
 		if (applyPromoCodeFetcher.type === 'done') {
 			const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
-
-			dispatch({
-				type: CartActionTypes.set_promo_code,
-				payload: data.discount_code,
-			});
-
-			// setPromoCode(data.discount_code);
-			dispatch({
-				type: CartActionTypes.set_price_info,
-				payload: data.price_info,
-			});
+			dispatch(setPromoCode(data.discount_code));
+			dispatch(setPriceInfo(data.price_info))
 		}
 	}, [applyPromoCodeFetcher.type]);
 
