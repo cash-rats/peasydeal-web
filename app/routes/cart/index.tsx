@@ -22,6 +22,8 @@ import cartReducer, {
 	CartActionTypes,
 	setPriceInfo,
 	setPromoCode,
+	removeCartItem as removeCartItemActionCreator,
+	updateQuantity as updateQuantityActionCreator,
 } from './reducer';
 import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
@@ -276,10 +278,9 @@ function Cart() {
 		// Update cart state with a version without removed item.
 		setSyncingPrice(true);
 
-		dispatch({
-			type: CartActionTypes.remove_cart_item,
-			payload: targetRemovalVariationUUID,
-		});
+		dispatch(
+			removeCartItemActionCreator(targetRemovalVariationUUID)
+		);
 
 		// Remove item in session.
 		removeItemFetcher.submit(
@@ -319,13 +320,12 @@ function Cart() {
 	}
 
 	const updateQuantity = (variationUUID: string, number: number) => {
-		dispatch({
-			type: CartActionTypes.update_cart_item,
-			payload: {
+		dispatch(
+			updateQuantityActionCreator(
 				variationUUID,
-				quantity: number.toString(),
-			},
-		});
+				number,
+			),
+		);
 	}
 
 	const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) =>

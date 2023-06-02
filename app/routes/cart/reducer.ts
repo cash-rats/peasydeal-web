@@ -45,6 +45,23 @@ export const setPromoCode = (discountCode: string) => {
   };
 };
 
+export const removeCartItem = (variationUUID: string) => {
+  return {
+    type: CartActionTypes.remove_cart_item,
+    payload: variationUUID,
+  };
+};
+
+export const updateQuantity = (variationUUID: string, quantity: number) => {
+  return {
+    type: CartActionTypes.update_cart_item,
+    payload: {
+      variationUUID,
+      quantity: quantity.toString(),
+    }
+  };
+};
+
 export default function cartReducer(state: StateShape, action: CartActions): StateShape {
   switch (action.type) {
     case CartActionTypes.update_cart_item: {
