@@ -5,7 +5,6 @@ import { syncShoppingCartWithNewProductsInfo } from './utils';
 
 export enum CartActionTypes {
   set_promo_code = 'set_promo_code',
-  set_cart_items = 'set_cart_items',
   update_cart_item = 'update_cart_item',
   remove_cart_item = 'remove_cart_item',
   set_price_info = 'set_price_info',
@@ -33,23 +32,8 @@ interface CartActions {
 }
 
 
-export const setCartItems = (cartItems: ShoppingCart) => {
-  return {
-    type: CartActionTypes.set_cart_items,
-    payload: cartItems,
-  };
-}
-
-
 export default function cartReducer(state: StateShape, action: CartActions): StateShape {
   switch (action.type) {
-    case CartActionTypes.set_cart_items: {
-      const cartItems = action.payload as ShoppingCart;
-      return {
-        ...state,
-        cartItems,
-      };
-    }
     case CartActionTypes.update_cart_item: {
       const { variationUUID, quantity } = action.payload as UpdateCartItemPayload;
 
