@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import type {
   LinksFunction,
   LoaderArgs,
@@ -29,6 +29,8 @@ import {
 } from '~/utils/seo'
 import { getRootFBSEO_V2 } from '~/utils/seo';
 import * as envs from '~/utils/get_env_source';
+import useRudderStackScript from './hooks/useRudderStackScript';
+import useGTMScript from './hooks/useGTMScript';
 
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
@@ -39,7 +41,6 @@ import { ClientStyleContext, ServerStyleContext } from "./context"
 import styles from "./styles/global.css";
 import structuredData from './structured_data';
 import ScrollRestoration from './ConditionalScrollRestoration';
-import { title } from 'process';
 
 
 export let links: LinksFunction = () => {
@@ -149,71 +150,16 @@ const Document = withEmotionCache(
       clientStyleData?.reset();
     }, []);
 
+    useGTMScript({
+      env: envData?.NODE_ENV,
+      googleTagID: envData?.GOOGLE_TAG_ID,
+    });
 
-    // <!-- Google Tag Manager. Load on client side only  -->
-    useEffect(() => {
-      if (
-        envData &&
-        envData.NODE_ENV !== 'development' &&
-        envData.GOOGLE_TAG_ID
-      ) {
-        const gtmScript = document.createElement('script');
-
-        gtmScript.innerHTML = `
-        (function(w, d, s, l, i) {
-          w[l] = w[l] || [];
-          w[l].push({
-              'gtm.start': new Date().getTime(),
-              event: 'gtm.js'
-          });
-          var f = d.getElementsByTagName(s)[0],
-              j = d.createElement(s),
-              dl = l != 'dataLayer' ? '&l=' + l : '';
-          j.async = true;
-          j.src =
-              'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
-          f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', '${envData.GOOGLE_TAG_ID}');`
-
-        document.head.appendChild(gtmScript);
-
-
-        return () => {
-          if (
-            document &&
-            document.head &&
-            document.head.contains(gtmScript)
-          ) {
-            document.head.removeChild(gtmScript)
-          }
-        }
-      }
-    }, [
-      envData,
-      envData?.GOOGLE_TAG_ID,
-    ]);
-
-    // <!-- Rudder stack. Load on client side only  -->
-    useEffect(() => {
-      if (
-        envData &&
-        envData.NODE_ENV !== 'development' &&
-        envData.RUDDER_STACK_KEY &&
-        envData.RUDDER_STACK_URL
-      ) {
-        const rudderStackScript = document.createElement('script');
-        rudderStackScript.innerHTML = `
-          !function(){var e=window.rudderanalytics=window.rudderanalytics||[];e.methods=["load","page","track","identify","alias","group","ready","reset","getAnonymousId","setAnonymousId","getUserId","getUserTraits","getGroupId","getGroupTraits","startSession","endSession"],e.factory=function(t){return function(){e.push([t].concat(Array.prototype.slice.call(arguments)))}};for(var t=0;t<e.methods.length;t++){var r=e.methods[t];e[r]=e.factory(r)}e.loadJS=function(e,t){var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.rudderlabs.com/v1.1/rudder-analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a)},e.loadJS(),
-          e.load("${envData.RUDDER_STACK_KEY}","${envData.RUDDER_STACK_URL}"),
-          e.page()}();
-        `
-        document.head.appendChild(rudderStackScript);
-      }
-    }, [
-      envData,
-      envData?.RUDDER_STACK_KEY,
-      envData?.RUDDER_STACK_URL,
-    ]);
+    useRudderStackScript({
+      env: envData?.NODE_ENV,
+      rudderStackKey: envData?.RUDDER_STACK_KEY,
+      rudderStackUrl: envData?.RUDDER_STACK_URL,
+    });
 
     return (
       <html lang="en">
@@ -232,13 +178,6 @@ const Document = withEmotionCache(
               dangerouslySetInnerHTML={{ __html: css }}
             />
           ))}
-          {/* <script dangerouslySetInnerHTML={{
-            __html: `
-                !function(){var e=window.rudderanalytics=window.rudderanalytics||[];e.methods=["load","page","track","identify","alias","group","ready","reset","getAnonymousId","setAnonymousId","getUserId","getUserTraits","getGroupId","getGroupTraits","startSession","endSession"],e.factory=function(t){return function(){e.push([t].concat(Array.prototype.slice.call(arguments)))}};for(var t=0;t<e.methods.length;t++){var r=e.methods[t];e[r]=e.factory(r)}e.loadJS=function(e,t){var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.rudderlabs.com/v1.1/rudder-analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a)},e.loadJS(),
-                e.load("${envData.RUDDER_STACK_KEY}","${envData.RUDDER_STACK_URL}"),
-                e.page()}();
-            `
-          }} /> */}
         </head>
 
         <body>
