@@ -50,13 +50,9 @@ function LogoHeader({
                   md:px-1
                   w-full">
 
-                  <Form
-                    className="w-full flex items-center"
-                    action='/search?index'
-                    method='post'
-                  >
+                  <div className="w-full flex items-center">
                     {searchBar}
-                  </Form>
+                  </div>
                 </div>
               )
             }

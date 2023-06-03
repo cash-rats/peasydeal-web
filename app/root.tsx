@@ -12,7 +12,11 @@ import {
   Scripts,
   useLoaderData,
 } from "@remix-run/react";
-import { DynamicLinks, StructuredData } from 'remix-utils'
+import {
+  DynamicLinks,
+  StructuredData,
+  ClientOnly,
+} from 'remix-utils'
 import remixImageStyles from "remix-image/remix-image.css";
 
 import {
@@ -209,7 +213,11 @@ const Document = withEmotionCache(
           <ChakraProvider>
             {children}
           </ChakraProvider>
-          <ScrollRestoration />
+
+          <ClientOnly fallback={null}>
+            {() => <ScrollRestoration />}
+          </ClientOnly>
+
           <Scripts />
 
           {process.env.NODE_ENV === "development" && <LiveReload />}
