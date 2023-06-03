@@ -7,10 +7,12 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { LinksFunction } from '@remix-run/node';
-import { Link } from '@remix-run/react';
+import { Form } from '@remix-run/react';
 import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
+
+import { ActionTypes as HeaderRouteActions } from '~/routes/components/Header';
 import MegaMenu, { links as MegaMenuLink } from './MegaMenu';
 import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
 
@@ -78,15 +80,35 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
             p-0 m-0`}>
             {
               topCategories.map((category, index) => (
-                <Link
+                <Form
                   key={`${index}_menu_link`}
-                  to={
-                    category.type === 'promotion'
-                      ? `/promotion/${category.name}`
-                      : `/collection/${category.name}`
-                  }
                   className="self-center"
+                  method='post'
+                  action='/components/Header?index'
                 >
+
+                  <input
+                    type="hidden"
+                    name="action_type"
+                    value={HeaderRouteActions.redirect_to_collection}
+                  />
+
+                  <input
+                    type="hidden"
+                    name="category_type"
+                    value={
+                      category.type === 'promotion'
+                        ? 'promotion'
+                        : 'collection'
+                    }
+                  />
+
+                  <input
+                    type="hidden"
+                    name="category_name"
+                    value={category.name}
+                  />
+
                   {
                     index === 0
                       ? (
@@ -95,16 +117,26 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                           flex-auto
                           self-center
                           transition
-                          text-center lg:text-left xl:text-center
-                          text-xs md:text-sm xl:text-base
                           nowrap
                           px-1 lg:px-2 xl:px-2
                           py-2 md:py-2 lg:py-4
                           bg-[#EA4335] text-white items-center font-semibold flex flex-row
                         `}>
-                          <VscFlame className="mr-1" />
-                          <span>{category.shortName || category.title}</span>
+                          <button
+                            type="submit"
+                            className="
+                          flex-auto
+                          flex flex-row
+                          items-center
+                          nowrap
+                          text-center lg:text-left xl:text-center
+                          text-xs md:text-sm xl:text-base
+                          bg-transparent hover:bg-transparent">
+                            <VscFlame className="mr-1" />
+                            <span>{category.shortName || category.title}</span>
+                          </button>
                         </li>
+
                       ) : (
                         <li className="CategoriesNav__item fromLeft self-center">
                           <MegaMenu
@@ -115,7 +147,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                         </li>
                       )
                   }
-                </Link>
+                </Form>
               ))
             }
 

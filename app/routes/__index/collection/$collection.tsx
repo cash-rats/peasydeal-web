@@ -177,7 +177,6 @@ function Collection({ scrollPosition }: CollectionProps) {
   const currPage = useRef(state.current);
 
   const loadmoreFetcher = useFetcher();
-  const transition = useTransition();
 
   // For any subsequent change of category, we will update current product info coming from loader data.
   useEffect(() => {
