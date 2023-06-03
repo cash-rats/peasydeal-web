@@ -65,13 +65,9 @@ function LogoHeader({
           {
             mobileSearchBar && openMobileSearchBar && (
               <div className="w-full py-1 px-2 bg-white md:hidden">
-                <Form
-                  className="w-full flex items-center"
-                  action='/search?index'
-                  method='post'
-                >
+                <div className="w-full flex items-center">
                   {mobileSearchBar}
-                </Form>
+                </div>
               </div>
             )
           }
