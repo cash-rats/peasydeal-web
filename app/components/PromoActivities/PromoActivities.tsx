@@ -60,30 +60,28 @@ export default function PromoActivities({ promotions = [] }: IPromoActivities) {
           } = promotion;
 
           return (
-            <>
-              <div key={`${index}_promotion_activities`}>
-                <Link
-                  to={`/promotion/${name}`}
-                  onClick={() => {
-                    window.rudderanalytics?.track('click_promotion_activities', {
-                      promotion: name,
-                    });
-                  }}
-                >
-                  <div className='
+            <div key={`${index}_promotion_activities`}>
+              <Link
+                to={`/promotion/${name}`}
+                onClick={() => {
+                  window.rudderanalytics?.track('click_promotion_activities', {
+                    promotion: name,
+                  });
+                }}
+              >
+                <div className='
                     bg-white rounded-lg p-2 md:p-4 h-full
                     transition ease-in-out
                     hover:-translate-y-1 duration-150
                   '>
-                    <h3 className='text-[#B02E28] text-lg md:text-xl font-bold font-poppins'>{getPromotionInfo(name).description}</h3>
-                    <div className='flex items-center justify-between mt-2'>
-                      <span className='text-base md:text-xl font-black font-poppins'>{getPromotionInfo(name).title}</span>
-                      <span><VscChevronRight className='text-2xl' /></span>
-                    </div>
+                  <h3 className='text-[#B02E28] text-lg md:text-xl font-bold font-poppins'>{getPromotionInfo(name).description}</h3>
+                  <div className='flex items-center justify-between mt-2'>
+                    <span className='text-base md:text-xl font-black font-poppins'>{getPromotionInfo(name).title}</span>
+                    <span><VscChevronRight className='text-2xl' /></span>
                   </div>
-                </Link>
-              </div>
-            </>
+                </div>
+              </Link>
+            </div>
           )
         })
       }
