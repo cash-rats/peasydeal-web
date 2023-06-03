@@ -77,6 +77,7 @@ export default function Index() {
 
 				<Header
 					categories={categories}
+					// categoriesBar={null}
 					categoriesBar={
 						<CategoriesNav
 							categories={categories}

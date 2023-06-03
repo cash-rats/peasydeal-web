@@ -1,3 +1,5 @@
+import { V2_ServerRuntimeMetaDescriptor } from '@remix-run/server-runtime';
+
 import getEnvSource from '~/utils/get_env_source';
 import { getLogoURL } from '~/utils';
 import { round10 } from '~/utils/preciseRound';
@@ -98,6 +100,42 @@ export const getRootFBSEO = (): FBSEO => ({
   'og:image': getLogoURL(),
   'og:locale': 'en_GB',
 });
+
+export const getRootFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => {
+  return [
+    {
+      tagName: 'meta',
+      property: 'og:url',
+      content: getCanonicalDomain(),
+    },
+    {
+      tagName: 'meta',
+      property: 'og:type',
+      content: 'website',
+    },
+    {
+      tagName: 'meta',
+      property: 'og:title',
+      content: getIndexTitleText(),
+    },
+    {
+      tagName: 'meta',
+      property: 'og:description',
+      content: getIndexDescText(),
+    },
+    {
+      tagName: 'meta',
+      property: 'og:image',
+      content: getLogoURL(),
+    },
+    {
+      tagName: 'meta',
+      property: 'og:locale',
+      content: 'en_GB',
+
+    },
+  ];
+};
 
 export const getCategoryFBSEO = (category: string, desc?: string): FBSEO => ({
   ...getRootFBSEO(),

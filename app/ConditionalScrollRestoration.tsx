@@ -19,7 +19,6 @@ export default function ConditionalScrollRestoration() {
         navigation.state === 'loading' ||
         navigation.state === 'submitting'
       ) {
-
         scrollToTop.current = true;
       }
     }
@@ -32,8 +31,6 @@ export default function ConditionalScrollRestoration() {
       scrollToTop.current = false;
     }
 
-
-    // console.log('debug redirect 3');
   }, [navigation.state])
 
   return <ScrollRestoration />;

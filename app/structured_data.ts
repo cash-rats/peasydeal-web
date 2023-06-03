@@ -1,9 +1,8 @@
-import type { StructuredDataFunction } from 'remix-utils';
 import type { WithContext, WebSite } from 'schema-dts';
 
 import { getCanonicalDomain } from '~/utils/seo';
 
-const structuredData: StructuredDataFunction = () => {
+const structuredData = (): WithContext<WebSite> => {
   const scheme: WithContext<WebSite> = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -14,7 +13,7 @@ const structuredData: StructuredDataFunction = () => {
     "sameAs": [],
   };
 
-  return [scheme];
+  return scheme;
 };
 
 export default structuredData;

@@ -1,5 +1,10 @@
 import React, { useContext, useEffect } from 'react'
-import type { LinksFunction, LoaderArgs, MetaFunction } from "@remix-run/node";
+import type {
+  LinksFunction,
+  LoaderArgs,
+  // MetaFunction,
+  V2_MetaFunction,
+} from "@remix-run/node";
 import { withEmotionCache } from '@emotion/react';
 import { ChakraProvider } from '@chakra-ui/react'
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
@@ -14,7 +19,6 @@ import {
 } from "@remix-run/react";
 import {
   DynamicLinks,
-  StructuredData,
   ClientOnly,
 } from 'remix-utils'
 import remixImageStyles from "remix-image/remix-image.css";
@@ -23,7 +27,7 @@ import {
   getIndexTitleText,
   getIndexDescText,
 } from '~/utils/seo'
-import { getRootFBSEO } from '~/utils/seo';
+import { getRootFBSEO_V2 } from '~/utils/seo';
 import * as envs from '~/utils/get_env_source';
 
 import FiveHundredError from './components/FiveHundreError';
@@ -35,28 +39,8 @@ import { ClientStyleContext, ServerStyleContext } from "./context"
 import styles from "./styles/global.css";
 import structuredData from './structured_data';
 import ScrollRestoration from './ConditionalScrollRestoration';
+import { title } from 'process';
 
-export const meta: MetaFunction = () => ({
-  // default tags
-  charset: "utf-8",
-  title: getIndexTitleText(),
-  viewport: "width=device-width,initial-scale=1",
-
-  // App wide SEO tags.
-  description: getIndexDescText(),
-
-  contentType: {
-    httpEquiv: 'content-type',
-    content: 'text/html; charset=UTF-8',
-  },
-
-  // Facebook meta
-  ...getRootFBSEO(),
-
-  robots: 'index,follow',
-  msapplicationTileColor: "da532c",
-  themeColor: "#ffffff",
-});
 
 export let links: LinksFunction = () => {
   return [
@@ -94,7 +78,52 @@ export async function loader({ request }: LoaderArgs) {
   });
 }
 
-export let handle = { structuredData };
+export let meta: V2_MetaFunction<typeof loader> = () => {
+  return [
+    {
+      tagName: 'meta',
+      charSet: 'utf-8',
+    },
+    {
+      title: getIndexTitleText(),
+    },
+    {
+      tagName: 'meta',
+      name: 'viewport',
+      content: 'width=device-width,initial-scale=1',
+    },
+    {
+      tagName: 'meta',
+      name: 'description',
+      content: getIndexDescText(),
+    },
+    {
+      tagName: 'meta',
+      httpEquiv: 'content-type',
+      content: 'text/html; charset=UTF-8',
+    },
+
+    // Facebook meta
+    ...getRootFBSEO_V2(),
+
+    {
+      tagName: 'meta',
+      name: 'robots',
+      content: 'index,follow',
+    },
+    {
+      tagName: 'meta',
+      name: 'msapplicationTileColor',
+      content: 'da532c',
+    },
+    {
+      tagName: 'meta',
+      name: 'themeColor',
+      content: '#ffffff',
+    },
+    { 'script:ld+json': structuredData() }
+  ];
+};
 
 interface DocumentProps {
   children: React.ReactNode;
@@ -120,6 +149,7 @@ const Document = withEmotionCache(
       clientStyleData?.reset();
     }, []);
 
+
     // <!-- Google Tag Manager. Load on client side only  -->
     useEffect(() => {
       if (
@@ -127,7 +157,7 @@ const Document = withEmotionCache(
         envData.NODE_ENV !== 'development' &&
         envData.GOOGLE_TAG_ID
       ) {
-        const gtmScript = document.createElement('script')
+        const gtmScript = document.createElement('script');
 
         gtmScript.innerHTML = `
         (function(w, d, s, l, i) {
@@ -145,7 +175,8 @@ const Document = withEmotionCache(
           f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', '${envData.GOOGLE_TAG_ID}');`
 
-        document.head.appendChild(gtmScript)
+        document.head.appendChild(gtmScript);
+
 
         return () => {
           if (
@@ -157,7 +188,32 @@ const Document = withEmotionCache(
           }
         }
       }
-    }, [envData?.GOOGLE_TAG_ID]);
+    }, [
+      envData,
+      envData?.GOOGLE_TAG_ID,
+    ]);
+
+    // <!-- Rudder stack. Load on client side only  -->
+    useEffect(() => {
+      if (
+        envData &&
+        envData.NODE_ENV !== 'development' &&
+        envData.RUDDER_STACK_KEY &&
+        envData.RUDDER_STACK_URL
+      ) {
+        const rudderStackScript = document.createElement('script');
+        rudderStackScript.innerHTML = `
+          !function(){var e=window.rudderanalytics=window.rudderanalytics||[];e.methods=["load","page","track","identify","alias","group","ready","reset","getAnonymousId","setAnonymousId","getUserId","getUserTraits","getGroupId","getGroupTraits","startSession","endSession"],e.factory=function(t){return function(){e.push([t].concat(Array.prototype.slice.call(arguments)))}};for(var t=0;t<e.methods.length;t++){var r=e.methods[t];e[r]=e.factory(r)}e.loadJS=function(e,t){var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.rudderlabs.com/v1.1/rudder-analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a)},e.loadJS(),
+          e.load("${envData.RUDDER_STACK_KEY}","${envData.RUDDER_STACK_URL}"),
+          e.page()}();
+        `
+        document.head.appendChild(rudderStackScript);
+      }
+    }, [
+      envData,
+      envData?.RUDDER_STACK_KEY,
+      envData?.RUDDER_STACK_URL,
+    ]);
 
     return (
       <html lang="en">
@@ -165,7 +221,7 @@ const Document = withEmotionCache(
           <Meta />
           <DynamicLinks />
           <Links />
-          <StructuredData />
+          {/* <StructuredData /> */}
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
           <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
 
@@ -176,13 +232,13 @@ const Document = withEmotionCache(
               dangerouslySetInnerHTML={{ __html: css }}
             />
           ))}
-          <script dangerouslySetInnerHTML={{
+          {/* <script dangerouslySetInnerHTML={{
             __html: `
                 !function(){var e=window.rudderanalytics=window.rudderanalytics||[];e.methods=["load","page","track","identify","alias","group","ready","reset","getAnonymousId","setAnonymousId","getUserId","getUserTraits","getGroupId","getGroupTraits","startSession","endSession"],e.factory=function(t){return function(){e.push([t].concat(Array.prototype.slice.call(arguments)))}};for(var t=0;t<e.methods.length;t++){var r=e.methods[t];e[r]=e.factory(r)}e.loadJS=function(e,t){var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.rudderlabs.com/v1.1/rudder-analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a)},e.loadJS(),
                 e.load("${envData.RUDDER_STACK_KEY}","${envData.RUDDER_STACK_URL}"),
                 e.page()}();
             `
-          }} />
+          }} /> */}
         </head>
 
         <body>

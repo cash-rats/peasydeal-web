@@ -20,4 +20,5 @@ module.exports = {
     "**/images/*.*",
     "**/assets/*.*"
   ],
+  future: { v2_meta: true },
 };
