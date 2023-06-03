@@ -29,12 +29,15 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
 
   return (
     <div
-      className="aa-Autocompletel relative"
       {...autocomplete.getRootProps({})}
+      className="aa-Autocompletel relative"
+      aria-labelledby='autocomplete-wrapper'
     >
       <Form
-        {...autocomplete.getFormProps({ inputElement: inputRef.current })}
         ref={formRef}
+        {...autocomplete.getFormProps({
+          inputElement: inputRef.current,
+        })}
         className="aa-Form"
         method="post"
         action="/search?index"
@@ -47,7 +50,13 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
         {/* TODO: fix search box border style */}
         <div className="border-[1px] rounded-[3px] flex flex-flow w-full">
           <div className="aa-InputWrapperPrefix">
-            <label className="aa-Label" {...autocomplete.getLabelProps({})}>
+            <label
+              {...autocomplete.getLabelProps()}
+              className="aa-Label"
+              aria-labelledby='autocomplete-label'
+              htmlFor='autocomplete-input'
+              id='autocomplete-label'
+            >
               <button className="aa-SubmitButton" type="submit" title="Submit">
                 <SearchIcon />
               </button>
@@ -55,9 +64,13 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
           </div>
           <div className="aa-InputWrapper">
             <input
-              {...autocomplete.getInputProps({ inputElement: inputRef.current })}
+              {...autocomplete.getInputProps({
+                inputElement: inputRef.current,
+              })}
               className="aa-Input"
               ref={inputRef}
+              aria-labelledby='autocomplete-form'
+              id='autocomplete-input'
             />
           </div>
           <div className="aa-InputWrapperSuffix">
