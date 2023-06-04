@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import { Outlet } from "@remix-run/react";
-import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node';
+import type {
+  LinksFunction,
+  LoaderFunction,
+  MetaFunction,
+  // MetaFunction,
+  V2_MetaFunction
+} from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
@@ -18,15 +24,17 @@ import type { Category } from '~/shared/types';
 import {
   getCartTitleText,
   getCanonicalDomain,
-  getCartFBSEO,
+  getCartFBSEO_V2,
 } from '~/utils/seo';
 
 import cartStyles from './styles/cart.css';
 
-export const meta: MetaFunction = () => ({
-  title: getCartTitleText(),
-  ...getCartFBSEO(),
-});
+export const meta: V2_MetaFunction = () => {
+  return [
+    { title: getCartTitleText() },
+    ...getCartFBSEO_V2(),
+  ]
+}
 
 const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
   return [

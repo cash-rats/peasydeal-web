@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import type {
   LinksFunction,
   LoaderArgs,
-  // MetaFunction,
   V2_MetaFunction,
 } from "@remix-run/node";
 import { withEmotionCache } from '@emotion/react';

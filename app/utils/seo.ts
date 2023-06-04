@@ -1,4 +1,4 @@
-import { V2_ServerRuntimeMetaDescriptor } from '@remix-run/server-runtime';
+import type { V2_ServerRuntimeMetaDescriptor } from '@remix-run/server-runtime';
 
 import getEnvSource from '~/utils/get_env_source';
 import { getLogoURL } from '~/utils';
@@ -132,7 +132,6 @@ export const getRootFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => {
       tagName: 'meta',
       property: 'og:locale',
       content: 'en_GB',
-
     },
   ];
 };
@@ -165,6 +164,20 @@ export const getCartFBSEO = (): FBSEO => ({
   ...getRootFBSEO(),
   'og:title': getCartTitleText(),
 });
+
+export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => {
+  return getRootFBSEO_V2().map((tag) => {
+    return tag.property === 'og:title'
+      ? {
+        tagName: 'meta',
+        property: 'og:title',
+        content: getCartTitleText(),
+      }
+      : tag;
+  });
+};
+
+
 
 export const getTrackingFBSEO = (): FBSEO => ({
   ...getRootFBSEO(),
