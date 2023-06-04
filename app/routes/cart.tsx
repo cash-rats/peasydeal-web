@@ -3,8 +3,6 @@ import { Outlet } from "@remix-run/react";
 import type {
   LinksFunction,
   LoaderFunction,
-  MetaFunction,
-  // MetaFunction,
   V2_MetaFunction
 } from '@remix-run/node';
 import { json } from '@remix-run/node';
