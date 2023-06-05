@@ -16,6 +16,8 @@ import subscribeBG from '~/images/mailing-bg.png';
 export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   return getRootFBSEO_V2()
     .map(tag => {
+      if (!('property' in tag)) return tag
+
       if (tag.property === 'og:title') {
         tag.content = 'Join our mailing list and get £3 GBP for FREE | PeasyDeals';
       }

@@ -144,11 +144,11 @@ export const getCategoryFBSEO = (category: string, desc?: string): FBSEO => ({
 
 export const getCategoryFBSEO_V2 = (category: string, desc?: string) => {
   return getRootFBSEO_V2().map(tag => {
-    if (tag.property === 'og:title') {
+    if ('property' in tag && tag.property === 'og:title') {
       tag.content = getCollectionTitleText(category)
     }
 
-    if (tag.property === 'og:description') {
+    if ('property' in tag && tag.property === 'og:description') {
       tag.content = getCollectionDescText(category, desc);
     }
 
@@ -168,6 +168,10 @@ export const getProdDetailOgSEO = ({
   url: string
 }): V2_ServerRuntimeMetaDescriptor[] => getRootFBSEO_V2()
   .map(tag => {
+    if (!('property' in tag)) {
+      return tag
+    }
+
     if (tag.property === 'og:url') {
       tag.content = url
     }
@@ -194,7 +198,7 @@ export const getCartFBSEO = (): FBSEO => ({
 
 export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => (
   getRootFBSEO_V2().map((tag) => {
-    if (tag.property === 'og:title') {
+    if ('property' in tag && tag.property === 'og:title') {
       tag.content = getCartTitleText()
     };
 
@@ -205,7 +209,7 @@ export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => (
 export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => (
   getRootFBSEO_V2()
     .map(tag => {
-      if (tag.property === 'og:title') {
+      if ('property' in tag && tag.property === 'og:title') {
         tag.content = getTrackingTitleText()
       }
       return tag

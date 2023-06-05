@@ -47,7 +47,6 @@ export const meta: V2_MetaFunction = ({ data, params }) => {
       tagName: 'meta',
       name: 'description',
       content: "Shop with us and get surprised with amazing gifts! Our tier-based surprise gift event is here and it's waiting for you! The more you spend, the better your gift! Don't Miss Out on Our PeasyDeal Surprise Gift Event",
-
     },
   ];
 };

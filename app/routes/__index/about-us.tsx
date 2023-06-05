@@ -20,6 +20,8 @@ export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
   return getRootFBSEO_V2()
     .map(tag => {
+      if (!('property' in tag)) return tag;
+
       if (tag.property === 'og:title') {
         tag.content = contentfulFields?.seoReference?.fields?.SEOtitle;
       }
