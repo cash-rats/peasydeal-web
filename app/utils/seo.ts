@@ -142,6 +142,28 @@ export const getCategoryFBSEO = (category: string, desc?: string): FBSEO => ({
   'og:description': getCollectionDescText(category, desc),
 })
 
+export const getCategoryFBSEO_V2 = (category: string, desc?: string) => {
+  return getRootFBSEO_V2().map(tag => {
+    if (tag.tagName === 'og:title') {
+      return {
+        tagName: 'meta',
+        name: 'og:title',
+        content: getCollectionTitleText(category),
+      };
+    }
+
+    if (tag.tagName === 'og:description') {
+      return {
+        tagName: 'meta',
+        name: 'og:description',
+        content: getCollectionDescText(category, desc)
+      };
+    }
+
+    return tag;
+  });
+};
+
 export const getProdDetailOgSEO = ({
   title,
   desc,

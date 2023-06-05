@@ -1,8 +1,12 @@
 import { useEffect, useRef, useReducer } from "react";
-import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
+import type {
+  LinksFunction,
+  LoaderFunction,
+  ActionFunction,
+  V2_MetaFunction,
+} from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import {
-  useTransition,
   useFetcher,
   useLoaderData,
   NavLink,
@@ -24,7 +28,7 @@ import {
   getCanonicalDomain,
   getCollectionDescText,
   getCollectionTitleText,
-  getCategoryFBSEO,
+  getCategoryFBSEO_V2,
   getFourOhFourTitleText,
   getFourOhFourDescText,
 } from '~/utils/seo';
@@ -61,27 +65,37 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
 
 export const handle = { dynamicLinks, structuredData };
 
-export const meta: MetaFunction = ({ data, params }) => {
+export const meta: V2_MetaFunction<typeof loader> = ({ data, params }) => {
   if (!data || !params.collection) {
-    return {
-      title: getFourOhFourTitleText(),
-      description: getFourOhFourDescText(),
-    }
+    return [
+      {
+        title: getFourOhFourTitleText(),
+      },
+      {
+        tagName: 'meta',
+        name: 'description',
+        content: getFourOhFourDescText(),
+      },
+    ];
   }
 
   const { category = {} } = data || {};
-  return {
-    title: getCollectionTitleText(category?.title),
-    description: getCollectionDescText(
-      category?.title,
-      category?.description,
-    ),
 
-    ...getCategoryFBSEO(
+  return [
+    { title: getCollectionTitleText(category?.title) },
+    {
+      tagName: 'meta',
+      name: 'description',
+      description: getCollectionDescText(
+        category?.title,
+        category?.description,
+      ),
+    },
+    ...getCategoryFBSEO_V2(
       category?.title,
       category?.description,
     ),
-  }
+  ];
 };
 
 export const links: LinksFunction = () => {

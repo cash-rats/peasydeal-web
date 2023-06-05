@@ -1,5 +1,5 @@
 import { useReducer, useRef, useEffect } from 'react';
-import type { LoaderFunction, LinksFunction, MetaFunction } from '@remix-run/node';
+import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useLoaderData, useFetcher, useParams, NavLink, useTransition } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
@@ -20,7 +20,7 @@ import {
   getFourOhFourDescText,
   getCollectionTitleText,
   getCollectionDescText,
-  getCategoryFBSEO,
+  getCategoryFBSEO_V2,
 } from '~/utils/seo';
 
 import { loadProducts, loadMoreProducts } from './loaders';
@@ -46,7 +46,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = ({ data, params }) => {
+export const meta: V2_MetaFunction = ({ data, params }) => {
   const { promotion = '' } = params;
 
   if (
@@ -56,26 +56,32 @@ export const meta: MetaFunction = ({ data, params }) => {
     Object.keys(data.categories).length === 0 ||
     !data.categories[promotion]
   ) {
-    return {
-      title: getFourOhFourTitleText('Promotion'),
-      description: getFourOhFourDescText('Promotion'),
-    }
+    return [
+      { title: getFourOhFourTitleText('Promotion') },
+      {
+        tagName: 'meta',
+        name: 'description',
+        content: getFourOhFourDescText('Promotion'),
+      }
+    ];
   }
 
   const { category = {} } = data || {};
-
-  return {
-    title: getCollectionTitleText(category?.title),
-    description: getCollectionDescText(
+  return [
+    { title: getCollectionTitleText(category?.title) },
+    {
+      tagName: 'meta',
+      name: 'description',
+      content: getCollectionDescText(
+        category?.title,
+        category?.description,
+      ),
+    },
+    ...getCategoryFBSEO_V2(
       category?.title,
       category?.description,
     ),
-
-    ...getCategoryFBSEO(
-      category?.title,
-      category?.description,
-    ),
-  };
+  ];
 };
 
 type LoaderType = 'load_products' | 'load_more_products'
