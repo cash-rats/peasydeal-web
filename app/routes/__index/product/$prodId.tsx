@@ -7,7 +7,7 @@ import {
 	useMemo,
 } from 'react';
 import type { ChangeEvent } from 'react';
-import type { LoaderFunction, ActionFunction, MetaFunction, LinksFunction } from '@remix-run/node';
+import type { LoaderFunction, ActionFunction, V2_MetaFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 import Select from 'react-select';
@@ -80,12 +80,16 @@ import { redirectToNewProductURL } from './loaders';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 
 
-export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
+export const meta: V2_MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
 	if (!data || !data.product) {
-		return {
-			title: getFourOhFourTitleText('product'),
-			description: getFourOhFourDescText('product'),
-		};
+		return [
+			{ title: getFourOhFourTitleText('product') },
+			{
+				tagName: 'meta',
+				name: 'description',
+				content: getFourOhFourDescText('product'),
+			}
+		];
 	}
 
 	const defaultVariation: ProductVariation | undefined = data.
@@ -105,17 +109,20 @@ export const meta: MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) 
 		)
 	}
 
-	return {
-		title: getProdDetailTitleText(data.product.title, data.product.uuid),
-		description,
-
+	return [
+		{ title: getProdDetailTitleText(data.product.title, data.product.uuid) },
+		{
+			tagName: 'meta',
+			name: 'description',
+			content: description,
+		},
 		...getProdDetailOgSEO({
 			title: getProdDetailTitleText(data.product.title, data.product.uuid),
 			desc: description,
 			image: data.meta_image,
 			url: data.canonical_url,
-		}),
-	}
+		})
+	];
 };
 
 export const links: LinksFunction = () => {

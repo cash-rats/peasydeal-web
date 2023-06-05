@@ -144,20 +144,12 @@ export const getCategoryFBSEO = (category: string, desc?: string): FBSEO => ({
 
 export const getCategoryFBSEO_V2 = (category: string, desc?: string) => {
   return getRootFBSEO_V2().map(tag => {
-    if (tag.tagName === 'og:title') {
-      return {
-        tagName: 'meta',
-        name: 'og:title',
-        content: getCollectionTitleText(category),
-      };
+    if (tag.property === 'og:title') {
+      tag.content = getCollectionTitleText(category)
     }
 
-    if (tag.tagName === 'og:description') {
-      return {
-        tagName: 'meta',
-        name: 'og:description',
-        content: getCollectionDescText(category, desc)
-      };
+    if (tag.property === 'og:description') {
+      tag.content = getCollectionDescText(category, desc);
     }
 
     return tag;
@@ -174,13 +166,26 @@ export const getProdDetailOgSEO = ({
   desc: string,
   image: string,
   url: string
-}): FBSEO => ({
-  ...getRootFBSEO(),
-  'og:url': url,
-  'og:title': title,
-  'og:description': desc,
-  'og:image': image,
-});
+}): V2_ServerRuntimeMetaDescriptor[] => getRootFBSEO_V2()
+  .map(tag => {
+    if (tag.property === 'og:url') {
+      tag.content = url
+    }
+
+    if (tag.property === 'og:title') {
+      tag.content = title
+    }
+
+    if (tag.property === 'og:description') {
+      tag.content = desc
+    }
+
+    if (tag.property === 'og:image') {
+      tag.content = image
+    }
+
+    return tag
+  });
 
 export const getCartFBSEO = (): FBSEO => ({
   ...getRootFBSEO(),
@@ -189,24 +194,21 @@ export const getCartFBSEO = (): FBSEO => ({
 
 export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => {
   return getRootFBSEO_V2().map((tag) => {
-    return tag.property === 'og:title'
-      ? {
-        tagName: 'meta',
-        property: 'og:title',
-        content: getCartTitleText(),
-      }
-      : tag;
+    if (tag.property === 'og:title') {
+      tag.content = getCartTitleText()
+    };
+
+    return tag;
   });
 };
 
-export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => ([
-  ...getRootFBSEO_V2(),
-  {
-    tagName: 'meta',
-    name: 'og:title',
-    content: getTrackingTitleText(),
-  },
-]);
+export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => getRootFBSEO_V2()
+  .map(tag => {
+    if (tag.property === 'og:title') {
+      tag.content = getTrackingTitleText()
+    }
+    return tag
+  });
 
 export const getPrivacyFBSEO = () => ({
   ...getRootFBSEO(),
