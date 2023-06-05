@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/node'
-import type { LoaderFunction, LinksFunction, MetaFunction } from '@remix-run/node';
+import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
@@ -27,9 +27,9 @@ type LoaderType = {
   navBarCategories: Category[]
 };
 
-export const meta: MetaFunction = () => ({
-  title: getPaymentSuccessTitleText(),
-});
+export const meta: V2_MetaFunction = () => ([
+  { title: getPaymentSuccessTitleText() },
+]);
 
 export const loader: LoaderFunction = async () => {
   try {

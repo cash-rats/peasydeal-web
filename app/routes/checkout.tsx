@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useLoaderData, useOutletContext, useFetcher } from "@remix-run/react";
+import { Outlet, useLoaderData, useOutletContext } from "@remix-run/react";
 import type { ShouldRevalidateFunction } from "@remix-run/react";
-import type { LoaderFunction, LinksFunction, MetaFunction } from '@remix-run/node';
+import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -32,9 +32,9 @@ import type { PriceInfo } from '~/shared/cart';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 
-export const meta: MetaFunction = () => ({
-  title: getCheckoutTitleText(),
-});
+export const meta: V2_MetaFunction = () => ([
+  { title: getCheckoutTitleText() },
+]);
 
 export const links: LinksFunction = () => {
   return [
