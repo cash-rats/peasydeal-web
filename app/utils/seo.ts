@@ -199,7 +199,7 @@ export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => (
     };
 
     return tag;
-  });
+  })
 );
 
 export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => (
