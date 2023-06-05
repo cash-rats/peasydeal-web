@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import type { LinksFunction, LoaderFunction, ActionFunction, MetaFunction } from '@remix-run/node';
+import type { LinksFunction, LoaderFunction, ActionFunction, V2_MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
@@ -45,11 +45,10 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
 }
 export const handle = { dynamicLinks };
 
-export const meta: MetaFunction = () => ({
-  title: getTrackingTitleText(),
-
+export const meta: V2_MetaFunction = () => ([
   ...getTrackingFBSEO(),
-})
+  { title: getTrackingTitleText(), },
+]);
 
 export const links: LinksFunction = () => {
   return [

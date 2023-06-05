@@ -199,12 +199,14 @@ export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => {
   });
 };
 
-
-
-export const getTrackingFBSEO = (): FBSEO => ({
-  ...getRootFBSEO(),
-  'og:title': getTrackingTitleText(),
-});
+export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => ([
+  ...getRootFBSEO_V2(),
+  {
+    tagName: 'meta',
+    name: 'og:title',
+    content: getTrackingTitleText(),
+  },
+]);
 
 export const getPrivacyFBSEO = () => ({
   ...getRootFBSEO(),

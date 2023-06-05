@@ -1,9 +1,9 @@
-import type { MetaFunction } from '@remix-run/node';
+import type { V2_MetaFunction } from '@remix-run/node';
 import { useState, useEffect, useReducer } from "react";
 import type { ChangeEvent } from 'react';
 import { useFetcher } from '@remix-run/react'
 import type { TContentfulPost } from '~/shared/types';
-import { getRootFBSEO } from '~/utils/seo';
+import { getRootFBSEO_V2 } from '~/utils/seo';
 
 import { Button } from '@chakra-ui/react'
 
@@ -13,12 +13,20 @@ import reducer, { setOpenEmailSubscribeModal } from '~/components/EmailSubscribe
 
 import subscribeBG from '~/images/mailing-bg.png';
 
-export const meta: MetaFunction = ({ data }: { data: TContentfulPost}) => {
-  return {
-    ...getRootFBSEO(),
-    'og:title': 'Join our mailing list and get £3 GBP for FREE | PeasyDeals',
-    'og:description': 'Join our mailing list to get the latest trendy idea and exclusive promotions'
-  };
+export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
+  return [
+    ...getRootFBSEO_V2(),
+    {
+      tagName: 'meta',
+      name: 'og:title',
+      content: 'Join our mailing list and get £3 GBP for FREE | PeasyDeals',
+    },
+    {
+      tagName: 'meta',
+      name: 'og:description',
+      content: 'Join our mailing list to get the latest trendy idea and exclusive promotions',
+    }
+  ];
 }
 
 export default function Subscribe() {
