@@ -20,13 +20,15 @@ export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
 
   return [
-    ...getRootFBSEO_V2(),
     { title: contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Cookie Policy' },
-    {
-      tagName: 'meta',
-      name: 'og:description',
-      content: contentfulFields?.seoReference?.fields?.SEOdescription || 'Stay informed about our cookie policy and how it affects your experience on PeasyDeal. Read our comprehensive policy here!',
-    },
+
+    ...getRootFBSEO_V2().map(tag => {
+      if (tag.property === 'og:description') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription || 'Stay informed about our cookie policy and how it affects your experience on PeasyDeal. Read our comprehensive policy here!';
+      }
+
+      return tag
+    }),
   ];
 }
 

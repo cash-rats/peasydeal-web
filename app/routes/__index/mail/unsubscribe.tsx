@@ -1,24 +1,29 @@
-import type { MetaFunction, LoaderFunction } from '@remix-run/node';
+import type { V2_MetaFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useState, useEffect } from "react";
 import { useLoaderData } from '@remix-run/react';
-
 import { useFetcher } from '@remix-run/react'
-import type { TContentfulPost } from '~/shared/types';
-import { getRootFBSEO } from '~/utils/seo';
-
 import { Button } from '@chakra-ui/react'
 
+import type { TContentfulPost } from '~/shared/types';
+import { getRootFBSEO_V2 } from '~/utils/seo';
 import type { ApiErrorResponse } from '~/shared/types';
 
 import unsubscribeBG from './images/Unsubscribe-bg.png';
 
-export const meta: MetaFunction = ({ data }: { data: TContentfulPost}) => {
-  return {
-    ...getRootFBSEO(),
-    'og:title': "We're sorry to see you go | PeasyDeals",
-    'og:description': '',
-  };
+export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
+  return getRootFBSEO_V2().
+    map(tag => {
+      if (tag.property === 'og:title') {
+        tag.content = "We're sorry to see you go | PeasyDeals";
+      }
+
+      if (tag.property === 'og:description') {
+        tag.content = '';
+      }
+
+      return tag;
+    });
 }
 
 type LoaderDataType = {

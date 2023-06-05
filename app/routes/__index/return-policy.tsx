@@ -19,20 +19,18 @@ export const links: LinksFunction = () => {
 export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
 
-  return [
-    ...getRootFBSEO_V2(),
-    {
-      tagName: 'meta',
-      name: 'og:title',
-      content: contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Return Policy',
-    },
-    {
-      tagName: 'meta',
-      name: 'og:description',
-      content: contentfulFields?.seoReference?.fields?.SEOdescription || `No hassle, no quibbles. returns - get your cash back fast! We strongly believe in happy customers - and that's why PeasyDeal offer easy refund policy with no strings attached!`,
-    },
+  return getRootFBSEO_V2()
+    .map(tag => {
+      if (tag.property === 'og:title') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Return Policy'
+      }
 
-  ];
+      if (tag.property === 'og:description') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription || `No hassle, no quibbles. returns - get your cash back fast! We strongly believe in happy customers - and that's why PeasyDeal offer easy refund policy with no strings attached!`;
+      }
+
+      return tag
+    })
 };
 
 export const loader: LoaderFunction = async () => {

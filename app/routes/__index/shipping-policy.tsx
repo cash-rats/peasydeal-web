@@ -1,13 +1,13 @@
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import type { LoaderFunction } from "@remix-run/node";
 import httpStatus from 'http-status-codes';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { TContentfulPost } from '~/shared/types';
 
 import { fetchContentfulPostWithId } from "./api";
-import { getRootFBSEO } from '~/utils/seo';
+import { getRootFBSEO_V2 } from '~/utils/seo';
 import styles from './styles/StaticPage.css';
 
 export const links: LinksFunction = () => {
@@ -16,14 +16,21 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = ({ data }: { data: TContentfulPost}) => {
+export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
 
-  return {
-    ...getRootFBSEO(),
-    'og:title': contentfulFields?.seoReference?.fields?.SEOtitle || 'Shipping Policy | PeasyDeal - Fast Shipping & Full Item Tracking',
-    'og:description': contentfulFields?.seoReference?.fields?.SEOdescription || `Order with confidence with PeasyDeal. Fast shipment with full shipment tracking. Discover our shipping policy and shop today!`,
-  };
+  return getRootFBSEO_V2()
+    .map(tag => {
+      if (tag.property === 'og:title') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOtitle || 'Shipping Policy | PeasyDeal - Fast Shipping & Full Item Tracking';
+      }
+
+      if (tag.property === 'og:description') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription || `Order with confidence with PeasyDeal. Fast shipment with full shipment tracking. Discover our shipping policy and shop today!`;
+      }
+
+      return tag;
+    })
 };
 
 export const loader: LoaderFunction = async () => {
@@ -32,7 +39,7 @@ export const loader: LoaderFunction = async () => {
     const res = await fetchContentfulPostWithId({ entryId });
 
     return json<TContentfulPost>(res);
-  } catch(e) {
+  } catch (e) {
     console.error(e);
 
     throw json(e, {
@@ -41,7 +48,7 @@ export const loader: LoaderFunction = async () => {
   }
 }
 
-export default function ShippingPolicy  () {
+export default function ShippingPolicy() {
   const post = useLoaderData() as TContentfulPost;
 
   // @ts-ignore
@@ -51,11 +58,11 @@ export default function ShippingPolicy  () {
     <div className="w-full p-4 max-w-screen-xl mx-auto">
       <div className="peasydeal-v1 pt-4">
         <h1 className="">
-          { post.postName }
+          {post.postName}
         </h1>
       </div>
       <div className="peasydeal-v1">
-        { nodes }
+        {nodes}
       </div>
     </div>
   );

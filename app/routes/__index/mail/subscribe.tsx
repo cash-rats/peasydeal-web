@@ -14,19 +14,18 @@ import reducer, { setOpenEmailSubscribeModal } from '~/components/EmailSubscribe
 import subscribeBG from '~/images/mailing-bg.png';
 
 export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
-  return [
-    ...getRootFBSEO_V2(),
-    {
-      tagName: 'meta',
-      name: 'og:title',
-      content: 'Join our mailing list and get £3 GBP for FREE | PeasyDeals',
-    },
-    {
-      tagName: 'meta',
-      name: 'og:description',
-      content: 'Join our mailing list to get the latest trendy idea and exclusive promotions',
-    }
-  ];
+  return getRootFBSEO_V2()
+    .map(tag => {
+      if (tag.property === 'og:title') {
+        tag.content = 'Join our mailing list and get £3 GBP for FREE | PeasyDeals';
+      }
+
+      if (tag.property === 'og:description') {
+        tag.content = 'Join our mailing list to get the latest trendy idea and exclusive promotions';
+      }
+
+      return tag;
+    })
 }
 
 export default function Subscribe() {

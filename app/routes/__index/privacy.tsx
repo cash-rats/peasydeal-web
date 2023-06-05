@@ -19,19 +19,18 @@ export const links: LinksFunction = () => {
 export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
 
-  return [
-    ...getRootFBSEO_V2(),
-    {
-      tagName: 'meta',
-      name: 'og:title',
-      content: contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Privacy Policy',
-    },
-    {
-      tagName: 'meta',
-      name: 'og:description',
-      content: contentfulFields?.seoReference?.fields?.SEOdescription || 'This Privacy Notice explains in detail the types of personal data we may collect about you when you interact with us. It also explains how we’ll store and handle that data, and keep it safe.',
-    },
-  ];
+  return getRootFBSEO_V2()
+    .map(tag => {
+      if (tag.property === 'og:title') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Privacy Policy';
+      }
+
+      if (tag.property === 'og:description') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription || 'This Privacy Notice explains in detail the types of personal data we may collect about you when you interact with us. It also explains how we’ll store and handle that data, and keep it safe.';
+      }
+
+      return tag;
+    });
 }
 
 export const loader: LoaderFunction = async () => {

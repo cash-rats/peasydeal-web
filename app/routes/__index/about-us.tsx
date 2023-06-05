@@ -18,24 +18,22 @@ export const links: LinksFunction = () => {
 
 export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
-  return [
-    ...getRootFBSEO_V2(),
-    {
-      tagName: 'meta',
-      name: 'og:title',
-      content: contentfulFields?.seoReference?.fields?.SEOtitle,
-    },
-    {
-      tagName: 'meta',
-      name: 'og:description',
-      content: contentfulFields?.seoReference?.fields?.SEOdescription,
-    },
-    {
-      tagName: 'meta',
-      name: 'og:image',
-      content: contentfulFields?.seoReference?.fields?.ogImage?.fields?.file?.url,
-    }
-  ];
+  return getRootFBSEO_V2()
+    .map(tag => {
+      if (tag.property === 'og:title') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOtitle;
+      }
+
+      if (tag.property === 'og:description') {
+        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription;
+      }
+
+      if (tag.property === 'og:image') {
+        tag.content = contentfulFields?.seoReference?.fields?.ogImage?.fields?.file?.url;
+      }
+
+      return tag;
+    });
 };
 
 export const loader: LoaderFunction = async () => {

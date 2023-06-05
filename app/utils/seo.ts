@@ -192,23 +192,25 @@ export const getCartFBSEO = (): FBSEO => ({
   'og:title': getCartTitleText(),
 });
 
-export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => {
-  return getRootFBSEO_V2().map((tag) => {
+export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => (
+  getRootFBSEO_V2().map((tag) => {
     if (tag.property === 'og:title') {
       tag.content = getCartTitleText()
     };
 
     return tag;
   });
-};
+);
 
-export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => getRootFBSEO_V2()
-  .map(tag => {
-    if (tag.property === 'og:title') {
-      tag.content = getTrackingTitleText()
-    }
-    return tag
-  });
+export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => (
+  getRootFBSEO_V2()
+    .map(tag => {
+      if (tag.property === 'og:title') {
+        tag.content = getTrackingTitleText()
+      }
+      return tag
+    })
+);
 
 export const getPrivacyFBSEO = () => ({
   ...getRootFBSEO(),

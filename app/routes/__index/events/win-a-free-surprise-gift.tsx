@@ -1,4 +1,4 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/node';
+import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import { useCallback, useRef, useState, useEffect, useReducer } from "react";
 import type { ChangeEvent } from 'react';
 import { useFetcher } from '@remix-run/react'
@@ -40,11 +40,16 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = ({ data, params }) => {
-  return {
-    title: "Win a Free Surprise Gift on every purchase above £20",
-    description: "Shop with us and get surprised with amazing gifts! Our tier-based surprise gift event is here and it's waiting for you! The more you spend, the better your gift! Don't Miss Out on Our PeasyDeal Surprise Gift Event",
-  }
+export const meta: V2_MetaFunction = ({ data, params }) => {
+  return [
+    { title: "Win a Free Surprise Gift on every purchase above £20" },
+    {
+      tagName: 'meta',
+      name: 'description',
+      content: "Shop with us and get surprised with amazing gifts! Our tier-based surprise gift event is here and it's waiting for you! The more you spend, the better your gift! Don't Miss Out on Our PeasyDeal Surprise Gift Event",
+
+    },
+  ];
 };
 
 const ItemCard = ({ item, scrollPosition }) => {
