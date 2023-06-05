@@ -22,15 +22,16 @@ export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   return [
     { title: contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Cookie Policy' },
 
-    ...getRootFBSEO_V2().map(tag => {
-      if (!('property' in tag)) return tag;
+    ...getRootFBSEO_V2()
+      .map(tag => {
+        if (!('property' in tag)) return tag;
 
-      if (tag.property === 'og:description') {
-        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription || 'Stay informed about our cookie policy and how it affects your experience on PeasyDeal. Read our comprehensive policy here!';
-      }
+        if (tag.property === 'og:description') {
+          tag.content = contentfulFields?.seoReference?.fields?.SEOdescription || 'Stay informed about our cookie policy and how it affects your experience on PeasyDeal. Read our comprehensive policy here!';
+        }
 
-      return tag
-    }),
+        return tag
+      }),
   ];
 }
 
