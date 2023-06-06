@@ -30,6 +30,10 @@ export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 	return respJSON as ActivityBanner[];
 }
 
+/**
+ * When a product is not assigned main image, we'll pick a main
+ * image from shared images or, from variation images.
+ */
 const pickMainImage = (sharedImgs: string[], variationImgs: string[]) => {
 	if (sharedImgs.length === 0 && variationImgs.length === 0) {
 		return ''
@@ -48,7 +52,7 @@ const normalizeV2Data = (apiData: any[]): Product[] => {
 			currency: data.currency,
 			description: '',
 			discount: data.discount,
-			main_pic: pickMainImage(
+			main_pic: data.main_pic_url || pickMainImage(
 				data.shared_images,
 				data.variation_images,
 			),
