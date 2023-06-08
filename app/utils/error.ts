@@ -10,7 +10,7 @@ import type { ApiErrorResponse } from '~/shared/types';
     err_code: string
   }
 
-  There are 2 ways that an API might throw an Error.
+  There are 2 ways that an loader might throw an Error.
 
   1.
     throw new Error(JSON.stringify(respJSON)) ---> throwing a string of json object in the above format.

@@ -81,6 +81,7 @@ function CategoriesHits({
         {
           items.map((item, index) => {
             const catInfo = decomposeCategoryString(item.label);
+
             if (catInfo === null) {
               return null
             }
@@ -91,7 +92,7 @@ function CategoriesHits({
                 to={getCategoryUrl(catInfo)}
                 onClick={() => {
                   window.rudderanalytics?.track('search_action_category_hit', {
-                    query: catInfo.label,
+                    query: catInfo,
                   });
                 }}
               >

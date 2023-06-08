@@ -47,12 +47,12 @@ function ProductHit({
                     </div>
                     <div className="flex flex-row justify-start items-center">
                       <div className="aa-ItemContentTitle m-0">
-                        <Highlight hit={item} attribute="name" />
+                        <Highlight hit={item} attribute="title" />
                       </div>
-                      <div className="aa-ItemContentDescription">
-                        <strong>{item.title}</strong>
-                        {/* <strong>{item.categories[0]}</strong> */}
-                      </div>
+
+                      {/* <div className="aa-ItemContentDescription"> */}
+                      {/* <strong>{item.categories[0]}</strong> */}
+                      {/* </div> */}
                     </div>
                   </div>
                   <div className="aa-ItemActions">
