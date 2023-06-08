@@ -202,10 +202,10 @@ const PromoCarousell = () => {
         <div className="relative w-full">
           <Swipe
             onSwipeRight={() => {
-              sliderControl(true);
+              previousImage();
             }}
             onSwipeLeft={() => {
-              sliderControl();
+              nextImage();
             }}
           >
             <div className="promo-carousel w-full">
