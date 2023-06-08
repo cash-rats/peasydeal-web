@@ -366,6 +366,7 @@ function Carousel({
                         ? 'placeholder_transparent.png'
                         : 'placeholder.svg'
                         }`}
+                      placeholder={loaded ? 'empty' : 'blur'}
                       placeholderAspectRatio={1}
                       onLoadingComplete={() => {
                         setLoaded(true)
@@ -384,6 +385,7 @@ function Carousel({
                         }
                       `}
                       loaderUrl='/remix-image'
+                      alt={item.title}
                       src={item.url}
                       id={`thumbnail-${index}`}
                       onClick={(e) => {
