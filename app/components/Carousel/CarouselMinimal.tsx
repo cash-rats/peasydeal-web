@@ -32,6 +32,7 @@ interface CarouselProps {
   selectedVariationUUID?: string;
 };
 
+
 function Carousel({
   data = [],
   time,
@@ -49,6 +50,8 @@ function Carousel({
   selectedVariationUUID = '',
   thumbnailWidth,
 }: CarouselProps) {
+
+  console.log('debug data', data);
   // A map that stores variation uuid and it's corresponding
   // image thumbnail position index.
   //
@@ -170,7 +173,7 @@ function Carousel({
       <Lightbox
         open={openLightBox}
         close={() => setOpenLightBox(false)}
-        slides={data.map((item: any) => ({ src: item.image }))}
+        slides={data.map((item: any) => ({ src: item.url }))}
         plugins={[Thumbnails]}
         index={slide}
         controller={{
