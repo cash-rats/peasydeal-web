@@ -3,11 +3,7 @@ import { Button } from '@chakra-ui/react';
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
 import React from "react";
-// import Card from "./Card";
-// import { initalState } from "./data";
-
-// import Carousel from '~/components/Carousel/index';
-
+import Swipe from "react-easy-swipe";
 import styles from './styles/PromoCarousell.css';
 // import bg from './images/group-prizes.png';
 import shoes from './images/light-up-shoes.png';
@@ -182,7 +178,7 @@ const PromoCarousell = () => {
 
   // Tailwind styles. Most importantly notice position absolute, this will sit relative to the carousel's outer div.
   const arrowStyle =
-    "absolute text-white text-2xl z-10 bg-black h-6 w-6 md:h-10 md:w-10 rounded-full opacity-75 flex items-center justify-center";
+    "absolute text-white text-2xl z-10 bg-black h-8 w-8 md:h-10 md:w-10 rounded-full opacity-75 flex items-center justify-center";
 
   // Let's create dynamic buttons. It can be either left or right. Using
   // isLeft boolean we can determine which side we'll be rendering our button
@@ -191,7 +187,7 @@ const PromoCarousell = () => {
     <button
       type="button"
       onClick={isLeft ? previousImage : nextImage}
-      className={`${arrowStyle} ${isLeft ? "left-[-4px]" : "right-[-4px]"}`}
+      className={`${arrowStyle} ${isLeft ? "left-0" : "right-0"}`}
       style={{ top: "40%" }}
     >
       <span role="img" aria-label={`Arrow ${isLeft ? "left" : "right"}`}>
@@ -204,35 +200,44 @@ const PromoCarousell = () => {
     <div className="w-full flex justify-center">
       <div className="flex justify-center w-full items-center">
         <div className="relative w-full">
-          <div className="promo-carousel w-full">
-            {sliderControl(true)}
-            {campaigns.map((campaign, i) => (
-              <div className="w-full flex-shrink-0" key={`campaign_${campaign}`} ref={refs[i]}>
-                {
-                  getEvent(i)
-                }
-              </div>
-            ))}
-            {sliderControl()}
+          <Swipe
+            onSwipeRight={() => {
+              sliderControl(true);
+            }}
+            onSwipeLeft={() => {
+              sliderControl();
+            }}
+          >
+            <div className="promo-carousel w-full">
+              {sliderControl(true)}
+              {campaigns.map((campaign, i) => (
+                <div className="w-full flex-shrink-0" key={`campaign_${campaign}`} ref={refs[i]}>
+                  {
+                    getEvent(i)
+                  }
+                </div>
+              ))}
+              {sliderControl()}
 
-            <div className="mt-2.5 absolute bottom-2.5 w-full text-center">
-            {campaigns.map((item: any, index: number) => {
-              return (
-                <span
-                  className="cursor-pointer h-2 w-2 mx-2 rounded-full inline-block transition-colors bg-white duration-200 ease-in-out hover:bg-gray-700"
-                  key={index}
-                  style={{
-                    opacity:
-                      index === currentImage ? "1" : "0.5",
-                  }}
-                  onClick={(e) => {
-                    scrollToImage(index);
-                  }}
-                />
-              );
-            })}
-          </div>
-          </div>
+              <div className="mt-2.5 absolute bottom-2.5 w-full text-center">
+                {campaigns.map((item: any, index: number) => {
+                  return (
+                    <span
+                      className="cursor-pointer h-2 w-2 mx-2 rounded-full inline-block transition-colors bg-white duration-200 ease-in-out hover:bg-gray-700"
+                      key={index}
+                      style={{
+                        opacity:
+                          index === currentImage ? "1" : "0.5",
+                      }}
+                      onClick={(e) => {
+                        scrollToImage(index);
+                      }}
+                    />
+                  );
+                })}
+              </div>
+            </div>
+          </Swipe>
         </div>
       </div>
     </div>
