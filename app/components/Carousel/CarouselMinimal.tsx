@@ -54,8 +54,6 @@ function Carousel({
   selectedVariationUUID = '',
   thumbnailWidth,
 }: CarouselProps) {
-
-  console.log('debug data', data);
   // A map that stores variation uuid and it's corresponding
   // image thumbnail position index.
   //
