@@ -96,7 +96,7 @@ function Index({ scrollPosition }: IndexProps) {
 	};
 
 	return (
-		<div>
+		<div className="overflow-hidden">
 			<h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
 
 			<div className="
