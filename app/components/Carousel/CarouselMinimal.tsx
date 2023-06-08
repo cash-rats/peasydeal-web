@@ -2,6 +2,7 @@ import {
   useEffect,
   useState,
   useMemo,
+  Fragment,
 } from "react";
 import type { CSSProperties } from 'react';
 import type { Property } from 'csstype';
@@ -11,7 +12,9 @@ import { BiChevronRight, BiChevronLeft } from 'react-icons/bi';
 import { VscZoomIn } from "react-icons/vsc";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Image, { MimeType } from "remix-image"
 
+import { DOMAIN } from '~/utils/get_env_source';
 interface CarouselMinimalImage {
   title: string;
   url: string;
@@ -76,6 +79,7 @@ function Carousel({
     variationImgPosIndexMap
       .get(selectedVariationUUID) || 0
   );
+  const [loaded, setLoaded] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState(false);
   const [change, setChange] = useState(false);
 
@@ -356,21 +360,46 @@ function Carousel({
             data
               .map((item: CarouselMinimalImage, index: number) => {
                 return (
-                  <img
-                    style={{
-                      border: slide === index ? '3px solid #D02E7D' : '0px',
-                    }}
-                    className="mx-2 rounded-lg bg-slate-100 p-[2px] min-w-[100px] w-auto h-[100px] aspect-sqare"
-                    width={"100px"}
-                    alt={item.title}
-                    src={item.url}
-                    id={`thumbnail-${index}`}
-                    key={index}
-                    onClick={(e) => {
-                      setSlide(index);
-                      setChange(!change);
-                    }}
-                  />
+                  <Fragment key={index}>
+                    <Image
+                      blurDataURL={`${DOMAIN}/images/${loaded
+                        ? 'placeholder_transparent.png'
+                        : 'placeholder.svg'
+                        }`}
+                      placeholderAspectRatio={1}
+                      onLoadingComplete={() => {
+                        setLoaded(true)
+                      }}
+                      options={{
+                        contentType: MimeType.WEBP,
+                        fit: 'contain',
+                      }}
+                      className={`
+                        mx-2 rounded-lg bg-slate-100
+                        p-[2px] min-w-[100px]
+                        w-auto h-[100px] aspect-sqare
+                        ${slide === index
+                          ? 'border-[3px] border-solid border-[#D02E7D]'
+                          : 'border-0'
+                        }
+                      `}
+                      loaderUrl='/remix-image'
+                      src={item.url}
+                      id={`thumbnail-${index}`}
+                      onClick={(e) => {
+                        setSlide(index);
+                        setChange(!change);
+                      }}
+                      responsive={[
+                        {
+                          size: {
+                            width: 100,
+                            height: 100,
+                          },
+                        },
+                      ]}
+                    />
+                  </Fragment>
                 );
               })
           }

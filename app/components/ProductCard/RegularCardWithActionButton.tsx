@@ -188,9 +188,9 @@ export default function ProductCard({
             scrollPosition={scrollPosition}
           >
             <Image
-              blurDataURL={`${loaded
-                ? `${DOMAIN}/images/placeholder_transparent.png`
-                : `${DOMAIN}/images/placeholder.svg`
+              blurDataURL={`${DOMAIN}/images/${loaded
+                  ? 'placeholder_transparent.png'
+                  : 'placeholder.svg'
                 }`}
               placeholder={loaded ? 'empty' : 'blur'}
               placeholderAspectRatio={1}
