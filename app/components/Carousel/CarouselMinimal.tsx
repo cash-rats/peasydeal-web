@@ -12,7 +12,11 @@ import { VscZoomIn } from "react-icons/vsc";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 
-import type { CarouselMinimalImage } from './types';
+interface CarouselMinimalImage {
+  title: string;
+  url: string;
+  variation_uuid: string;
+}
 
 interface CarouselProps {
   data: CarouselMinimalImage[];

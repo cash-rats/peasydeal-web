@@ -22,7 +22,6 @@ interface PicsCarouselProps {
  * 	- [x] hover thumbnail display border.
  * 	- [x] clicks on thumbnail should display that image.
  *  - [x] display variation_images before shared_images.
- *  - [ ] 當移動 slide 到 thumbnail 看不到的位置，要 scroll thumbnail bar.
  */
 function PicsCarousel({
 	sharedImages,
