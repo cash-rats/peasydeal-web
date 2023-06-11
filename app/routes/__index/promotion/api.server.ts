@@ -45,7 +45,6 @@ const normalizePromotionProducts = (data: any): Product[] => {
       retailPrice: data.retail_price,
       salePrice: data.sale_price,
       shortDescription: '',
-      subtitle: '',
       title: data.title,
       createdAt: data.created_at,
       variationID: data.variationId,

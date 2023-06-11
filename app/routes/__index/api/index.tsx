@@ -1,13 +1,15 @@
 import httpStatus from 'http-status-codes';
 
-import type { Product, ApiErrorResponse, TContentfulPost } from '~/shared/types';
-import type { ActivityBanner } from '../types';
 import {
 	MYFB_ENDPOINT,
 	PEASY_DEAL_ENDPOINT,
 	CONTENTFUL_SPACE_ID,
 	CONTENTFUL_ACCESS_TOKEN
 } from '~/utils/get_env_source';
+
+import type { Product, ApiErrorResponse, TContentfulPost } from '~/shared/types';
+import type { ActivityBanner } from '../types';
+import { pickMainImage } from '../utils';
 
 import * as contentful from 'contentful';
 
@@ -30,22 +32,6 @@ export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
 	return respJSON as ActivityBanner[];
 }
 
-/**
- * When a product is not assigned main image, we'll pick a main
- * image from shared images or, from variation images.
- */
-const pickMainImage = (sharedImgs: string[], variationImgs: string[]) => {
-	if (sharedImgs.length === 0 && variationImgs.length === 0) {
-		return ''
-	}
-
-	if (sharedImgs.length > 0) {
-		return sharedImgs[0]
-	}
-
-	return variationImgs[0];
-};
-
 const normalizeV2Data = (apiData: any[]): Product[] => {
 	const transformed: Product[] = apiData.map((data: any): Product => {
 		return {
@@ -60,7 +46,6 @@ const normalizeV2Data = (apiData: any[]): Product[] => {
 			retailPrice: data.retail_price,
 			salePrice: data.sale_price,
 			shortDescription: '',
-			subtitle: '',
 			title: data.title,
 			createdAt: data.created_at,
 			variationID: data.variationId,

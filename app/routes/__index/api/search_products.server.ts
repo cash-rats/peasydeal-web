@@ -1,7 +1,9 @@
 import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
-import { PEASY_DEAL_ENDPOINT, } from '~/utils/get_env_source';
+import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
+
+import { pickMainImage } from '../utils';
 
 export interface SearchProductResponse {
   products: Product[];
@@ -43,21 +45,6 @@ export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchPro
   }
 }
 
-export const pickMainImage = (sharedImgs: any[], variationImgs: any[]) => {
-  if (!sharedImgs) sharedImgs = [];
-  if (!variationImgs) variationImgs = [];
-
-  if (sharedImgs.length === 0 && variationImgs.length === 0) {
-    return null
-  }
-
-  if (sharedImgs.length > 0) {
-    return sharedImgs[0]
-  }
-
-  return variationImgs[0];
-};
-
 const normalizeSearchProduct = (apiData: any[]): Product[] => {
   const transformed: Product[] = apiData.map((data: any): Product => {
     return {
@@ -72,7 +59,6 @@ const normalizeSearchProduct = (apiData: any[]): Product[] => {
       retailPrice: data.retail_price,
       salePrice: data.sale_price,
       shortDescription: data.shortDescription,
-      // subtitle: data.subtitle,
       createdAt: data.created_at,
       title: data.title,
       variationID: data.variationId || '',

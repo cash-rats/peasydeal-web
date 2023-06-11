@@ -1,22 +1,7 @@
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
-import type {
-  ProductDetail,
-  ProductVariation,
-  ProductImg,
-} from './types';
-
-export const pickMainImage = (sharedImgs: ProductImg[], variationImgs: ProductImg[]): null | ProductImg => {
-  if (sharedImgs.length === 0 && variationImgs.length === 0) {
-    return null
-  }
-
-  if (sharedImgs.length > 0) {
-    return sharedImgs[0]
-  }
-
-  return variationImgs[0];
-};
+import type { ProductDetail, ProductVariation, } from './types';
+import { pickMainImage } from '../utils';
 
 type INormalizeToSessionStorableCartItem = {
   productDetail: ProductDetail;

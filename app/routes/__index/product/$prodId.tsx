@@ -53,6 +53,7 @@ import {
 import extra10 from '~/images/extra10.png';
 import { composErrorResponse } from '~/utils/error';
 import type { ApiErrorResponse } from '~/shared/types';
+import { SUPER_DEAL_OFF } from '~/shared/constants';
 
 import Breadcrumbs from './components/Breadcrumbs';
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
@@ -72,12 +73,9 @@ import reducer, {
 } from './reducer';
 import { structuredData } from './structured_data';
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
-import {
-	matchOldProductURL,
-	pickMainImage,
-} from './utils';
+import { matchOldProductURL, } from './utils';
 import { redirectToNewProductURL } from './loaders';
-import { SUPER_DEAL_OFF } from '~/shared/constants';
+import { pickMainImage } from '../utils';
 
 
 export const meta: V2_MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
