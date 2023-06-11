@@ -51,10 +51,11 @@ const normalizeSearchProduct = (apiData: any[]): Product[] => {
       currency: data.currency,
       description: data.description || '',
       discount: data.discount,
-      main_pic: pickMainImage(
-        data.shared_images,
-        data.variation_images,
-      ),
+      main_pic: pickMainImage({
+        mainImg: data.main_pic_url,
+        sharedImgs: data.shared_images,
+        variationImgs: data.variation_images
+      }),
       productUUID: data.product_uuid,
       retailPrice: data.retail_price,
       salePrice: data.sale_price,

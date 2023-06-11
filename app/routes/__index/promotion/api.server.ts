@@ -3,6 +3,8 @@ import httpStatus from 'http-status-codes';
 import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 import type { Product, ApiErrorResponse } from '~/shared/types';
 
+import { pickMainImage } from '../utils';
+
 interface FetchPromotionProductsParams {
   promoName?: string;
   page?: number;
@@ -19,28 +21,17 @@ export interface FetchPromotionProductsResponse {
   items: Product[];
 }
 
-const pickMainImage = (sharedImgs: string[], variationImgs: string[]) => {
-  if (sharedImgs.length === 0 && variationImgs.length === 0) {
-    return ''
-  }
-
-  if (sharedImgs.length > 0) {
-    return sharedImgs[0]
-  }
-
-  return variationImgs[0];
-};
-
 const normalizePromotionProducts = (data: any): Product[] => {
   return data.map((data: any): Product => {
     return {
       currency: data.currency,
       description: '',
       discount: data.discount,
-      main_pic: pickMainImage(
-        data.shared_images,
-        data.variation_images,
-      ),
+      main_pic: pickMainImage({
+        mainImg: data.main_pic_url,
+        sharedImgs: data.shared_images,
+        variationImgs: data.variation_images
+      }),
       productUUID: data.product_uuid,
       retailPrice: data.retail_price,
       salePrice: data.sale_price,

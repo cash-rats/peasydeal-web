@@ -59,7 +59,15 @@ export const modToXItems = (prods: Product[], mod: number = 8): Product[][] => {
  * When a product is not assigned main image, we'll pick a main
  * image from shared images or, from variation images.
  */
-export const pickMainImage = (sharedImgs: any[], variationImgs: any[]): null | any => {
+type PickMainImageParams = {
+  mainImg?: string | null | undefined;
+  sharedImgs: any[];
+  variationImgs: any[];
+}
+
+export const pickMainImage = ({ mainImg, sharedImgs, variationImgs }: PickMainImageParams): null | any => {
+  if (mainImg) return mainImg;
+
   if (!sharedImgs) sharedImgs = [];
   if (!variationImgs) variationImgs = [];
 

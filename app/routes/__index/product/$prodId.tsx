@@ -174,10 +174,10 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 	try {
 		const prodDetail = await fetchProductDetail(decompURL.productUUID)
-		const mainPic = pickMainImage(
-			prodDetail.shared_images,
-			prodDetail.variation_images,
-		);
+		const mainPic = pickMainImage({
+			sharedImgs: prodDetail.shared_images,
+			variationImgs: prodDetail.variation_images,
+		});
 
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
