@@ -19,7 +19,6 @@ export type Product = {
   sku?: string;
   title: string;
   createdAt: string;
-  subtitle: string;
   variations?: Variation[];
   variationID: string;
   tabComboType: string | null;
