@@ -17,29 +17,36 @@ export interface SearchProductsParams {
 };
 
 export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchProductsParams): Promise<SearchProductResponse> => {
-  const url = new URL(PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/products/search';
-  url.searchParams.append('query', query);
-  url.searchParams.append('per_page', perpage.toString());
-  url.searchParams.append('page', page.toString());
+  try {
+    const url = new URL(PEASY_DEAL_ENDPOINT);
+    url.pathname = '/v1/products/search';
+    url.searchParams.append('query', query);
+    url.searchParams.append('per_page', perpage.toString());
+    url.searchParams.append('page', page.toString());
 
-  const resp = await fetch(url.toString());
-  const respJSON = await resp.json();
+    const resp = await fetch(url.toString());
+    const respJSON = await resp.json();
 
-  if (resp.status !== httpStatus.OK) {
-    const errResp = respJSON as ApiErrorResponse;
-    throw new Error(errResp.err_msg);
-  }
+    if (resp.status !== httpStatus.OK) {
+      const errResp = respJSON as ApiErrorResponse;
+      throw new Error(errResp.err_msg);
+    }
 
-  return {
-    products: normalizeSearchProduct(respJSON.items),
-    total: respJSON.total,
-    current: respJSON.current,
-    has_more: respJSON.has_more,
+    return {
+      products: normalizeSearchProduct(respJSON.items),
+      total: respJSON.total,
+      current: respJSON.current,
+      has_more: respJSON.has_more,
+    }
+  } catch (err) {
+    throw err;
   }
 }
 
 export const pickMainImage = (sharedImgs: any[], variationImgs: any[]) => {
+  if (!sharedImgs) sharedImgs = [];
+  if (!variationImgs) variationImgs = [];
+
   if (sharedImgs.length === 0 && variationImgs.length === 0) {
     return null
   }
@@ -65,7 +72,7 @@ const normalizeSearchProduct = (apiData: any[]): Product[] => {
       retailPrice: data.retail_price,
       salePrice: data.sale_price,
       shortDescription: data.shortDescription,
-      subtitle: data.subtitle,
+      // subtitle: data.subtitle,
       createdAt: data.created_at,
       title: data.title,
       variationID: data.variationId || '',
