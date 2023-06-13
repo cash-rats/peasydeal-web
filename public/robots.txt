@@ -28,7 +28,6 @@ Disallow: /*.php3$
 Disallow: /*.php4$
 Disallow: /*.php5$
 Disallow: /*.tpl$
-Disallow: /*.xml$
 Disallow: /*.info$
 Disallow: /index.php/
 Disallow: /admin/
