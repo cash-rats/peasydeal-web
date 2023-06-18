@@ -20,10 +20,10 @@ const normalizeToSessionStorableCartItem = ({
     ? ''
     : productVariation?.spec_name || '';
 
-  const mainImg = pickMainImage(
-    productDetail.shared_images,
-    productDetail.variation_images
-  );
+  const mainImg = pickMainImage({
+    sharedImgs: productDetail.shared_images,
+    variationImgs: productDetail.variation_images
+  });
 
   return {
     salePrice: productVariation?.sale_price.toString() || '',
