@@ -42,6 +42,7 @@ export interface ProductDetail {
   rating: number;
   num_of_raters: number;
   tag_combo_tags: string;
+  main_pic_url?: string;
 };
 
 export type LoaderTypeProductDetail = {
