@@ -5,6 +5,7 @@ import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 import type { ApiErrorResponse } from '~/shared/types';
 
 import type { ProductDetail } from './types';
+import { pickMainImage } from '../utils';
 
 export const fetchProductDetail = async (prodId: string): Promise<ProductDetail> => {
   const url = new URL(PEASY_DEAL_ENDPOINT);
@@ -18,6 +19,12 @@ export const fetchProductDetail = async (prodId: string): Promise<ProductDetail>
       (respJSON as ApiErrorResponse).err_msg
     );
   }
+
+  respJSON.main_pic_url = pickMainImage({
+    mainImg: respJSON.main_pic_url,
+    sharedImgs: respJSON.shared_images,
+    variationImgs: respJSON.variation_images,
+  });
 
   return respJSON;
 }
