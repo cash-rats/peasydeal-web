@@ -20,6 +20,7 @@ import { Progress } from '@chakra-ui/react';
 import { VscChevronDown, VscArrowLeft } from "react-icons/vsc";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
+import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import { PAGE_LIMIT } from '~/shared/constants';
 import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
@@ -264,6 +265,7 @@ function Collection({ scrollPosition }: CollectionProps) {
       <div className="w-full mb-2.5 md:pb-8">
         <AllTimeCoupon isFullLayout />
       </div>
+      <PromoteSubscriptionModal />
       <div className="
         py-0 px-auto
         flex flex-col

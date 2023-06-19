@@ -21,6 +21,7 @@ const normalizeToSessionStorableCartItem = ({
     : productVariation?.spec_name || '';
 
   const mainImg = pickMainImage({
+    mainImg: productDetail.main_pic_url,
     sharedImgs: productDetail.shared_images,
     variationImgs: productDetail.variation_images
   });

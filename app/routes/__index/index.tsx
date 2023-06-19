@@ -16,6 +16,7 @@ import CategoriesRow from "~/components/CategoriesRow";
 import PromoActivitiesVariant from "~/components/PromoActivitiesVariant";
 import AllTimeCoupon from "~/components/AllTimeCoupon";
 import { links as AllTimeCouponLink } from "~/components/AllTimeCoupon";
+import PromoteSubscriptionModal from "~/components/PromoteSubscriptionModal";
 
 import { fetchLandingPageFeatureProducts } from "./api";
 
@@ -98,6 +99,7 @@ function Index({ scrollPosition }: IndexProps) {
 	return (
 		<div className="overflow-hidden">
 			<h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
+			<PromoteSubscriptionModal />
 
 			<div className="
 				pt-2.5 px-auto

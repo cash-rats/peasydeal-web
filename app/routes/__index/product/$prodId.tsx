@@ -54,7 +54,7 @@ import extra10 from '~/images/extra10.png';
 import { composErrorResponse } from '~/utils/error';
 import type { ApiErrorResponse } from '~/shared/types';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
-
+import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import Breadcrumbs from './components/Breadcrumbs';
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -75,8 +75,6 @@ import { structuredData } from './structured_data';
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
 import { matchOldProductURL, } from './utils';
 import { redirectToNewProductURL } from './loaders';
-import { pickMainImage } from '../utils';
-
 
 export const meta: V2_MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
 	if (!data || !data.product) {
@@ -173,16 +171,12 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 	}
 
 	try {
-		const prodDetail = await fetchProductDetail(decompURL.productUUID)
-		const mainPic = pickMainImage({
-			sharedImgs: prodDetail.shared_images,
-			variationImgs: prodDetail.variation_images,
-		});
+		const prodDetail = await fetchProductDetail(decompURL.productUUID);
 
 		return json<LoaderTypeProductDetail>({
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
-			meta_image: mainPic?.url || '',
+			meta_image: prodDetail.main_pic_url || '',
 		});
 	} catch (error: any) {
 		throw json<ApiErrorResponse>(
@@ -458,6 +452,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				open={openSuccessModal}
 				onClose={handleOnClose}
 			/>
+
+			<PromoteSubscriptionModal />
 
 			<Breadcrumbs
 				categories={state.categories}
