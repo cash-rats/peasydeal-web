@@ -54,7 +54,7 @@ import extra10 from '~/images/extra10.png';
 import { composErrorResponse } from '~/utils/error';
 import type { ApiErrorResponse } from '~/shared/types';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
-
+import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import Breadcrumbs from './components/Breadcrumbs';
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
@@ -452,6 +452,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				open={openSuccessModal}
 				onClose={handleOnClose}
 			/>
+
+			<PromoteSubscriptionModal />
 
 			<Breadcrumbs
 				categories={state.categories}

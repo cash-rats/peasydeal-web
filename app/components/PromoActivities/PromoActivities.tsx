@@ -70,6 +70,7 @@ export default function PromoActivities({ promotions = [] }: IPromoActivities) {
                 }}
               >
                 <div className='
+                    cursor-pointer
                     bg-white rounded-lg p-2 md:p-4 h-full
                     transition ease-in-out
                     hover:-translate-y-1 duration-150
