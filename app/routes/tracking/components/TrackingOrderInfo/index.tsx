@@ -1,23 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FaShippingFast } from 'react-icons/fa';
-import { BsFillInfoCircleFill } from 'react-icons/bs';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
-import { Tooltip } from '@chakra-ui/react'
-import type { ActionFunction } from '@remix-run/node';
+import type { ActionFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 import { useImmerReducer } from 'use-immer';
 import { FcInfo } from 'react-icons/fc';
 import { BiErrorCircle } from 'react-icons/bi';
+import { Button, useDisclosure } from '@chakra-ui/react';
 
 import PriceInfo from './components/PriceInfo';
 import DeliveryInfo from './components/DeliveryInfo';
 import CancelOrderActionBar from './components/CancelOrderActionBar';
 import type { CancelReason } from './components/CancelOrderActionBar';
+import ReviewModal, { links as ReviewModalLinks } from './components/ReviewModal';
 import { cancelOrder } from './api.server';
-import reducer, { TrackingActionTypes } from './reducer';
+import reducer, { TrackingActionTypes, reviewOnProduct } from './reducer';
 import type { TrackOrder } from '../../types';
 import { OrderStatus } from '../../types';
 
@@ -37,6 +37,10 @@ const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => ({
     - [ ] show payment status.
     - [ ] Hide.
 */
+
+export const links: LinksFunction = () => {
+  return [...ReviewModalLinks()];
+};
 
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
@@ -61,12 +65,14 @@ interface TrackingOrderIndexProps {
 
 function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
   const [state, dispatch] = useImmerReducer(reducer, {
+    reviewProduct: null,
     orderInfo: parseTrackOrderCreatedAt(orderInfo),
     error: null,
   });
 
   const fetcher = useFetcher();
   const [openCancelModal, setOpenCancelModal] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleConfirm = useCallback(
     (reason: CancelReason | null) => {
@@ -132,6 +138,12 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
 
   return (
     <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4">
+      <ReviewModal
+        isOpen={isOpen}
+        onClose={onClose}
+        reviewProduct={state.reviewProduct}
+      />
+
       <h1 className="font-poppins font-bold text-2xl leading-[1.875rem] mb-4">
         Order ID: {state.orderInfo.order_uuid}
       </h1>
@@ -283,6 +295,26 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
                       <p className="text-base font-normala text-[rgb(130,129,131)]">
                         Qty: {product.order_quantity}
                       </p>
+
+                      {
+                        product.can_review
+                          ? (
+                            <div className="mt-1 mb-1">
+                              <Button
+                                colorScheme="twitter"
+                                size="sm"
+                                variant='link'
+                                onClick={() => {
+                                  dispatch(reviewOnProduct(product))
+                                  onOpen()
+                                }}
+                              >
+                                Review
+                              </Button>
+                            </div>
+                          )
+                          : null
+                      }
                     </div>
                   </div>
                 </div>

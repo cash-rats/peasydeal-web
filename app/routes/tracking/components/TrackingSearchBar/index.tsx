@@ -11,15 +11,17 @@ import {
 import { IoMdClose } from 'react-icons/io';
 
 interface ITrackingSearchBar {
+  query?: string;
   onSearch?: (orderID: string, evt: MouseEvent<HTMLButtonElement>) => void;
   onClear?: () => void;
 }
 
 function TrackingSearchBar({
+  query = '',
   onSearch = () => { },
   onClear = () => { },
 }: ITrackingSearchBar) {
-  const [orderID, setOrderID] = useState('');
+  const [orderID, setOrderID] = useState(query);
 
   return (
     <Stack
@@ -35,7 +37,6 @@ function TrackingSearchBar({
           name='query'
           value={orderID}
           onChange={(evt) => {
-            if (!evt.target.value) return;
             setOrderID(evt.target.value);
           }}
         />

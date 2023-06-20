@@ -21,6 +21,7 @@ export type TrackOrderProduct = {
   sale_price: number;
   url: string;
   uuid: string;
+  can_review: boolean;
 }
 
 export type TrackOrder = {
