@@ -50,7 +50,7 @@ function EmailSubscribe() {
         text-white font-bold text-3xl
           capitalize
         ">
-          get free shipping code
+          get free £3 GBP
         </span>
 
         <p className="text-white mt-4 text-base">
