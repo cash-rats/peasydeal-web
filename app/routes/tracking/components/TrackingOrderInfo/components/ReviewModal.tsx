@@ -7,6 +7,8 @@ import {
   ModalBody,
   Textarea,
   IconButton,
+  ButtonGroup,
+  Button,
 } from '@chakra-ui/react';
 import Image, { MimeType } from 'remix-image';
 import { Rating, RoundedStar } from '@smastrom/react-rating';
@@ -15,6 +17,7 @@ import type { LinksFunction } from '@remix-run/node';
 import ImageUploading from 'react-images-uploading';
 import type { ImageListType } from 'react-images-uploading';
 import { RxCross1 } from 'react-icons/rx';
+import { BsFillPlusCircleFill } from 'react-icons/bs';
 
 import { DOMAIN } from '~/utils/get_env_source';
 
@@ -180,12 +183,17 @@ function ReviewModal({
                                 >
                                   <div className={`
                                 border-dashed border-2 ${isDragging ? 'border-black' : 'border-[#bbb]'} rounded-sm
-                                p-2 text-center font-poppins font-normal
-                                capitalize
+                                p-2 text-center
+                                capitalize flex justify-center items-center gap-3
                               `}
                                     {...dragProps}
                                   >
-                                    click or drop image here
+                                    <span>
+                                      <BsFillPlusCircleFill fontSize={26} color='#54B435' />
+                                    </span>
+                                    <p className="font-poppins font-normal">
+                                      click or drop image here
+                                    </p>
                                   </div>
                                 </button>
                               </div>
@@ -220,6 +228,17 @@ function ReviewModal({
                           )
                         }}
                       </ImageUploading>
+                    </div>
+
+                    {/* action buttons */}
+                    <div className="flex flex-row justify-end items-center gap-3">
+                      <Button>
+                        cancel
+                      </Button>
+
+                      <Button colorScheme='green'>
+                        submit
+                      </Button>
                     </div>
                   </div>
                 </ModalBody>
