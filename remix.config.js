@@ -13,6 +13,7 @@ module.exports = {
     "**/*.scss",
     "**/*.test.{js,jsx,ts,tsx}",
     "**/*.map",
+    "**/data/*.*",
     "**/styles/.*",
     "**/stub.*",
     "**/api/*.*",
