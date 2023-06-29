@@ -17,7 +17,7 @@ export enum TrackingActionTypes {
 };
 
 interface TrackingActions {
-  type: TrackingActionTypes,
+  type: TrackingActionTypes;
   payload:
   | TrackOrder
   | TrackOrderProduct
@@ -39,7 +39,7 @@ const reducer: ImmerReducer<StateShape, TrackingActions> = (draft, action) => {
       const trackOrder = action.payload as TrackOrder;
       draft.orderInfo = trackOrder;
       draft.error = null;
-      break;;
+      break;
     }
     case TrackingActionTypes.update_order_status: {
       const orderStatus = action.payload as OrderStatus;

@@ -56,7 +56,7 @@ type LoaderType = {
 
 export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
   // Loading addresses via postal in `ShipingDetailForm` will trigger loader which generates
-  // a new stripe payment intend secret which causes stripe and the app uses different
+  // a new stripe payment intend secret that causes stripe and the app uses different
   // payment secret. Stripe uses the old one and the app uses the new one. To prevent
   // payment secret inconformity, we prevent trigger loader when form submission is coming
   //  from `components/ShippingDetailForm`.

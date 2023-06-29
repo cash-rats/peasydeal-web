@@ -1,9 +1,7 @@
-import stream from 'stream';
 import sharp from 'sharp';
 import type { TransformOptions } from 'remix-image';
-import type { Bucket } from '@google-cloud/storage';
 
-import { bucket } from './gcs.server';
+import { bucket, streamFileUpload } from './gcs';
 import { MimeType, fileExtensionResolver } from './mimes';
 
 /*
@@ -46,31 +44,6 @@ const getFilenameFromPath = (url: string) => {
 const composeObjectName = ({ width, height, filename, extension }: { width: number, height: number, filename: string, extension: string }) => {
   return `${extension}/w${width}_h${height}/${filename}`;
 };
-
-interface IStreamFileUpload {
-  (
-    bucket: Bucket,
-    { filename, buffer }: { buffer: Buffer, filename: string },
-  ): Promise<boolean | any>
-}
-
-const streamFileUpload: IStreamFileUpload = (bucket, { filename, buffer }) => {
-  const passthroughStream = new stream.PassThrough();
-  passthroughStream.write(buffer);
-  passthroughStream.end();
-  const gcsFile = bucket.file(filename);
-
-  return new Promise((resolve, reject) => {
-    passthroughStream
-      .pipe(gcsFile.createWriteStream())
-      .on('finish', () => {
-        resolve(true);
-      })
-      .on('error', (error) => {
-        reject(error);
-      });
-  });
-}
 
 const transformer: CustomTransformer = {
   name: 'customTransformer',
@@ -192,10 +165,13 @@ const transformer: CustomTransformer = {
 
       if (bucket) {
         // Do not wait for file streaming to finish.
-        streamFileUpload(bucket, {
-          buffer: result,
-          filename: objectName,
-        });
+        streamFileUpload(
+          bucket,
+          {
+            buffer: result,
+            filename: objectName,
+          },
+        );
       }
     }
 

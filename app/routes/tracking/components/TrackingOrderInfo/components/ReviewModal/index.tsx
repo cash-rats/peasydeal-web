@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { ChangeEvent, MouseEvent } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -7,22 +8,30 @@ import {
   ModalBody,
   Textarea,
   IconButton,
-  ButtonGroup,
   Button,
 } from '@chakra-ui/react';
+import { useImmerReducer } from 'use-immer';
 import Image, { MimeType } from 'remix-image';
 import { Rating, RoundedStar } from '@smastrom/react-rating';
 import styles from '@smastrom/react-rating/style.css';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import ImageUploading from 'react-images-uploading';
 import type { ImageListType } from 'react-images-uploading';
 import { RxCross1 } from 'react-icons/rx';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
+import { BiInfoCircle } from 'react-icons/bi';
+import { useFetcher, useNavigation } from '@remix-run/react';
 
 import { DOMAIN } from '~/utils/get_env_source';
 
-import { MaxImageNumber } from '../constants';
-import type { TrackOrderProduct } from '../../../types';
+import { reviewProduct } from './actions';
+import reducer, {
+  updateRating,
+  updateReview,
+  updateImages,
+} from './reducer';
+import { MaxImageNumber } from '../../constants';
+import type { TrackOrderProduct } from '../../../../types';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }];
@@ -34,30 +43,69 @@ interface ReviewModalParams {
   reviewProduct: TrackOrderProduct | null;
 }
 
+
+export const action: ActionFunction = async ({ request }) => {
+  await reviewProduct(request)
+
+  return null
+};
+
 /**
  * Product review modal. This modal should contain:
  *
  * - [ ] Ratable stars. 5 stars
  * - [ ] Textarea for inputting comments. max 150 words
  * - [ ] image upload. max 1 image
- * - close, submit button
+ * - [ ] close, submit button
  */
 function ReviewModal({
   isOpen,
   onClose,
   reviewProduct,
 }: ReviewModalParams) {
-  const [loaded, setLoaded] = useState(false);
-  const [value, setValue] = useState(0);
-  const [images, setImages] = useState<ImageListType>([]);
+  const [state, dispatch] = useImmerReducer(reducer, {
+    review: '',
+    rating: 0,
+    images: [],
+  });
 
-  const handleChangeRating = (num: number) => setValue(num);
+  const reviewFetcher = useFetcher();
+  const [loaded, setLoaded] = useState(false);
+
+  const handleChangeRating = (num: number) =>
+    dispatch(updateRating(num));
+  const handleChangeReview = (elm: ChangeEvent<HTMLTextAreaElement>) =>
+    dispatch(updateReview(elm.target.value))
   const handleOnChangeImage = (
     imageList: ImageListType,
     addUpdateIndex: number[] | undefined,
   ) => {
-    setImages(imageList);
+    dispatch(updateImages(imageList));
   }
+  const handleSubmit = (evt: MouseEvent<HTMLButtonElement>) => {
+    const formData = new FormData();
+
+    console.log('debug 1', state.rating.toString());
+    console.log('debug 2', state.review);
+
+    // append 'rating' and 'comments'
+    formData.append('rating', state.rating.toString());
+    formData.append('review', state.review);
+
+    console.log('debug 3', state.images);
+    // console.log('debug 4', bucket);
+
+    // append 'images'
+    for (const image of state.images) {
+      formData.append('images', image.file);
+    }
+
+    reviewFetcher.submit(formData, {
+      method: 'post',
+      action: '/tracking/components/TrackingOrderInfo/components/ReviewModal?index',
+      encType: 'multipart/form-data',
+    });
+  };
 
   return (
     <Modal
@@ -120,15 +168,14 @@ function ReviewModal({
                     </div>
 
                     {/* Product rating row */}
-                    <div className="flex flex-col items-start justify-start mt-4 gap-3">
+                    <div className="flex flex-col items-start justify-start gap-3">
                       <p className="font-poppins font-medium text-base" >
                         Quality:
                       </p>
-
                       <div className="">
                         <Rating
                           className=" max-w-[150px]"
-                          value={value}
+                          value={state.rating}
                           itemStyles={{
                             itemShapes: RoundedStar,
                             activeFillColor: '#ffb700',
@@ -136,7 +183,11 @@ function ReviewModal({
                           }}
                           onChange={handleChangeRating}
                         />
-                        <input type="hidden" name="rating" value={value} />
+                        <input
+                          type="hidden"
+                          name="rating"
+                          value={state.rating}
+                        />
                       </div>
                     </div>
 
@@ -148,11 +199,30 @@ function ReviewModal({
                       >
                         Please share your experience:
                       </label>
+
+                      {/* Review data validation info */}
+                      <span className="flex flex-row items-center gap-1">
+                        <BiInfoCircle
+                          fontSize={16}
+                          color='#0A6EBD'
+                        />
+                        <span className="font-poppins font-normal text-sm text-battleship-grey mt-1 mb-1">
+                          Please limit your text to 150 characters and upload 2 images at max.
+                        </span>
+                      </span>
+
                       <Textarea
                         className="h-[150px] font-normal"
                         id="review"
                         resize='none'
-                        placeholder="share your experience here"
+                        placeholder="Share your experience here"
+                        onChange={handleChangeReview}
+                      />
+
+                      <input
+                        type="hidden"
+                        name="review"
+                        value={state.review}
                       />
                     </div>
 
@@ -160,9 +230,10 @@ function ReviewModal({
                     <div className="flex flex-col">
                       <ImageUploading
                         multiple
-                        value={images}
+                        value={state.images}
                         onChange={handleOnChangeImage}
                         maxNumber={MaxImageNumber}
+                      // dataURLKey='review-images'
                       >
                         {({
                           imageList,
@@ -201,7 +272,7 @@ function ReviewModal({
                               {/* images */}
                               <div className="flex flex-row mt-4 gap-4 p-2">
                                 {
-                                  images.map((image, idx) => (
+                                  state.images.map((image, idx) => (
                                     <div
                                       className="relative"
                                       key={idx}
@@ -232,11 +303,14 @@ function ReviewModal({
 
                     {/* action buttons */}
                     <div className="flex flex-row justify-end items-center gap-3">
-                      <Button>
+                      <Button onClick={onClose}>
                         cancel
                       </Button>
 
-                      <Button colorScheme='green'>
+                      <Button
+                        colorScheme='green'
+                        onClick={handleSubmit}
+                      >
                         submit
                       </Button>
                     </div>

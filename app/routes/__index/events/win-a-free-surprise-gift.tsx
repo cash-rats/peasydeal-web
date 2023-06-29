@@ -30,8 +30,7 @@ import iconTime from './images/icon-time.png';
 import styles from './styles/events.css';
 
 import cardBG from './images/card-bg.jpg';
-import prizes from '~/data/2023-may-event-items.json';
-
+import prizes from './data/2023-may-event-items.json';
 
 export const links: LinksFunction = () => {
   return [
