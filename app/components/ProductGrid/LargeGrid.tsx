@@ -7,13 +7,10 @@ import { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
 import { links as ScratchLinks } from '~/components/Tags/Scratch';
 import { links as SunShineLinks } from '~/components/Tags/SunShine';
 import { links as PennantLeftLinks } from '~/components/Tags/Pennant';
-import SaleTags from './SaleTag';
 import { composeProductDetailURL } from '~/utils';
 
 import styles from "./styles/LargeGrid.css";
 import type { TagsCombo } from './types';
-import { TagComboMap } from './types';
-import { normalizeTagsListToMap } from './utils';
 
 export function links() {
 	return [

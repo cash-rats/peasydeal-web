@@ -40,14 +40,13 @@ export const links: LinksFunction = () => {
 interface ReviewModalParams {
   isOpen: boolean;
   onClose: () => void;
+  orderUUID: string;
   reviewProduct: TrackOrderProduct | null;
 }
 
 
 export const action: ActionFunction = async ({ request }) => {
-  await reviewProduct(request)
-
-  return null
+  return reviewProduct(request)
 };
 
 /**
@@ -61,6 +60,7 @@ export const action: ActionFunction = async ({ request }) => {
 function ReviewModal({
   isOpen,
   onClose,
+  orderUUID,
   reviewProduct,
 }: ReviewModalParams) {
   const [state, dispatch] = useImmerReducer(reducer, {
@@ -83,17 +83,18 @@ function ReviewModal({
     dispatch(updateImages(imageList));
   }
   const handleSubmit = (evt: MouseEvent<HTMLButtonElement>) => {
-    const formData = new FormData();
+    if (!reviewProduct) return;
 
-    console.log('debug 1', state.rating.toString());
-    console.log('debug 2', state.review);
+    const formData = new FormData();
 
     // append 'rating' and 'comments'
     formData.append('rating', state.rating.toString());
     formData.append('review', state.review);
+    formData.append('product_uuid', reviewProduct.uuid)
+    formData.append('order_uuid', orderUUID)
 
-    console.log('debug 3', state.images);
-    // console.log('debug 4', bucket);
+    console.log('debug 1', reviewProduct.uuid)
+    console.log('debug 2', orderUUID)
 
     // append 'images'
     for (const image of state.images) {
@@ -233,7 +234,6 @@ function ReviewModal({
                         value={state.images}
                         onChange={handleOnChangeImage}
                         maxNumber={MaxImageNumber}
-                      // dataURLKey='review-images'
                       >
                         {({
                           imageList,

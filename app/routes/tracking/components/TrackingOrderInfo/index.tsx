@@ -141,6 +141,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
       <ReviewModal
         isOpen={isOpen}
         onClose={onClose}
+        orderUUID={state.orderInfo.order_uuid}
         reviewProduct={state.reviewProduct}
       />
 

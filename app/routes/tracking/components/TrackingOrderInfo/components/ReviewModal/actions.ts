@@ -1,47 +1,37 @@
-import {
-  unstable_composeUploadHandlers,
-  unstable_createMemoryUploadHandler,
-  unstable_parseMultipartFormData,
-} from '@remix-run/node';
+import { unstable_parseMultipartFormData } from '@remix-run/node';
 
-import { streamFileUpload } from '~/lib/gcs';
-
-import { bucket } from './gcs';
-import { retrieveDataToUint8Array } from './utils';
+import { uploadHandler } from './storage.server';
+import { submitReview } from './api.server';
 
 // 1. Upload review images
 //     - allow only jpeg & png image upload
 // 2. Submit review info
 const reviewProduct = async (request: Request) => {
-  const uploadHandler = unstable_composeUploadHandlers(
-    async ({ name, contentType, data, filename }) => {
-      if (name !== 'images') {
-        return undefined;
-      }
+  try {
+    // upload files to gcs.
+    const formData = await unstable_parseMultipartFormData(
+      request,
+      uploadHandler,
+    );
 
-      const uint8Arr = await retrieveDataToUint8Array(data);
-      const buffer = Buffer.from(uint8Arr);
+    // submit reviews to server.
+    const imgs = formData.getAll('images') as string[];
+    const review = formData.get('review') as string;
+    const rating = formData.get('rating') as string || '0';
+    const prodUUID = formData.get('product_uuid') as string;
+    const orderUUID = formData.get('order_uuid') as string;
 
-      console.log('debug uploadHandler 1', contentType);
-
-      // `review_images/{ IMAGE_NAME }.{EXT}`
-      if (bucket) {
-        await streamFileUpload(bucket, {
-          buffer,
-          filename: `review_images/testing.jpeg`,
-        });
-      }
-      return 'hello baby';
-    },
-    unstable_createMemoryUploadHandler(),
-  );
-
-  const formData = await unstable_parseMultipartFormData(
-    request,
-    uploadHandler,
-  );
-
-  console.log('debug formData', formData);
+    await submitReview({
+      product_uuid: prodUUID,
+      order_uuid: orderUUID,
+      rating: parseFloat(rating),
+      review,
+      image_links: imgs,
+    });
+  } catch (err: any) {
+    console.log('debug err', err);
+  }
+  return null;
 };
 
 export { reviewProduct };
