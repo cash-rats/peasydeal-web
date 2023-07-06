@@ -15,7 +15,6 @@ if (
   NODE_ENV === 'staging' ||
   NODE_ENV === 'development'
 ) {
-  console.log('debug *&^@#$', GCS_BUCKET_NAME, getGCSKeyPath());
   storage = new Storage({
     keyFilename: getGCSKeyPath(),
   });

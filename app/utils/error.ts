@@ -23,13 +23,13 @@ import type { ApiErrorResponse } from '~/shared/types';
     throw composeErrorResponse(e.message)
   }
 */
-export const composErrorResponse = (errThing: string): ApiErrorResponse => {
+export const composErrorResponse = (errThing: any, errCode = 'remix_app_api_error'): ApiErrorResponse => {
   try {
     const thingObj: ApiErrorResponse = JSON.parse(errThing);
     return thingObj;
   } catch (e) {
     return {
-      err_code: 'remix_app_api_error',
+      err_code: errCode,
       err_msg: errThing,
     };
   }
