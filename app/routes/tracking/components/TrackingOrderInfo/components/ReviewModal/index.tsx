@@ -56,11 +56,13 @@ export const action: ActionFunction = async ({ request }) => {
 /**
  * Product review modal. This modal should contain:
  *
- * - [ ] Display error alert when form validation failed
+ * - [x] Display error alert when form validation failed
+ * - [x] Form validation.
  * - [x] Ratable stars. 5 stars, default 3 stars
- * - [ ] Textarea for inputting comments. max 150 words
- * - [ ] image upload. max 1 image
- * - [ ] close, submit button
+ * - [x] Textarea for inputting comments. max 100 words
+ * - [x] image upload. max 2 images
+ * - [ ] submit button should remove images.
+ * - [ ] remove images when review panel is closed.
  */
 function ReviewModal({
   isOpen,
@@ -113,6 +115,13 @@ function ReviewModal({
   };
 
   useEffect(() => {
+    if (!isOpen) {
+      dispatch(updateImages([]));
+    }
+  }, [isOpen]);
+
+  // Remove all images from image uploader
+  useEffect(() => {
     if (reviewFetcher.type === 'done') {
       const data = reviewFetcher.data;
       if (data.err_code) {
@@ -122,9 +131,11 @@ function ReviewModal({
 
         return
       }
+
+      // submit success, display success check
+      // close current modal, display checkmark
     }
 
-    // submit success, display success check
   }, [reviewFetcher.type]);
 
   return (
@@ -269,93 +280,93 @@ function ReviewModal({
                     </div>
 
                     {/* image upload area */}
-                    <div className="flex flex-col">
-                      <ImageUploading
-                        multiple
-                        value={state.images}
-                        onChange={handleOnChangeImage}
-                        maxNumber={MaxImageNumber}
-                      >
-                        {({
-                          imageList,
-                          onImageUpload,
-                          onImageRemoveAll,
-                          onImageUpdate,
-                          onImageRemove,
-                          isDragging,
-                          dragProps,
-                        }) => {
-                          return (
-                            <>
-                              <div>
-                                {/* click or drop area */}
-                                <button
-                                  className="w-full p-3 bg-[#f6f6f6]"
-                                  onClick={onImageUpload}
-                                >
-                                  <div className={`
+
+                    <ImageUploading
+                      multiple
+                      value={state.images}
+                      onChange={handleOnChangeImage}
+                      maxNumber={MaxImageNumber}
+                    >
+                      {({
+                        imageList,
+                        onImageUpload,
+                        onImageRemoveAll,
+                        onImageUpdate,
+                        onImageRemove,
+                        isDragging,
+                        dragProps,
+                      }) => {
+                        return (
+                          <>
+                            <div className="flex flex-col">
+                              {/* click or drop area */}
+                              <button
+                                className="w-full p-3 bg-[#f6f6f6]"
+                                onClick={onImageUpload}
+                              >
+                                <div className={`
                                 border-dashed border-2 ${isDragging ? 'border-black' : 'border-[#bbb]'} rounded-sm
                                 p-2 text-center
                                 capitalize flex justify-center items-center gap-3
                               `}
-                                    {...dragProps}
+                                  {...dragProps}
+                                >
+                                  <span>
+                                    <BsFillPlusCircleFill fontSize={26} color='#54B435' />
+                                  </span>
+                                  <p className="font-poppins font-normal">
+                                    click or drop image here
+                                  </p>
+                                </div>
+                              </button>
+                            </div>
+
+                            {/* images */}
+                            <div className="flex flex-row mt-4 gap-4 p-2">
+                              {
+                                imageList.map((image, idx) => (
+                                  <div
+                                    className="relative"
+                                    key={idx}
                                   >
-                                    <span>
-                                      <BsFillPlusCircleFill fontSize={26} color='#54B435' />
-                                    </span>
-                                    <p className="font-poppins font-normal">
-                                      click or drop image here
-                                    </p>
+                                    <IconButton
+                                      className="absolute rounded-[50%] right-[-13px] top-[-8px]"
+                                      aria-label={`remove-review-img-${idx}`}
+                                      icon={<RxCross1 />}
+                                      fontSize='14px'
+                                      size={'xs'}
+                                      onClick={() => onImageRemove(idx)}
+                                    />
+                                    <img
+                                      alt={`review-${idx}`}
+                                      width={85}
+                                      height={85}
+                                      src={image.dataURL}
+                                    />
                                   </div>
-                                </button>
-                              </div>
+                                ))
+                              }
+                            </div>
 
-                              {/* images */}
-                              <div className="flex flex-row mt-4 gap-4 p-2">
-                                {
-                                  state.images.map((image, idx) => (
-                                    <div
-                                      className="relative"
-                                      key={idx}
-                                    >
-                                      <IconButton
-                                        className="absolute rounded-[50%] left-[-13px] top-[-8px]"
-                                        aria-label={`remove-review-img-${idx}`}
-                                        icon={<RxCross1 />}
-                                        fontSize='14px'
-                                        size={'xs'}
-                                        onClick={() => onImageRemove(idx)}
-                                      />
-                                      <img
-                                        alt={`review-${idx}`}
-                                        width={85}
-                                        height={85}
-                                        src={image.dataURL}
-                                      />
-                                    </div>
-                                  ))
-                                }
-                              </div>
-                            </>
-                          )
-                        }}
-                      </ImageUploading>
-                    </div>
+                          </>
+                        )
+                      }}
+                    </ImageUploading>
+                  </div>
 
-                    {/* action buttons */}
-                    <div className="flex flex-row justify-end items-center gap-3">
-                      <Button onClick={onClose} className="capitalize">
-                        cancel
-                      </Button>
+                  {/* action buttons */}
+                  <div className="flex flex-row justify-end items-center gap-3">
+                    <Button onClick={onClose} className="capitalize">
+                      cancel
+                    </Button>
 
-                      <Button
-                        colorScheme='green'
-                        onClick={handleSubmit}
-                        className="capitalize"
-                      >
-                        submit
-                      </Button>
-                    </div>
+                    <Button
+                      colorScheme='green'
+                      onClick={handleSubmit}
+                      className="capitalize"
+                    >
+                      submit
+                    </Button>
                   </div>
                 </ModalBody>
               </ModalHeader>

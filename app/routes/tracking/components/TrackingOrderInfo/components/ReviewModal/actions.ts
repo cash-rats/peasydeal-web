@@ -7,8 +7,12 @@ import { uploadHandler } from './storage.server';
 import { submitReview } from './api.server';
 
 const validateReview = (review: string) => {
+  if (review.length === 0) {
+    return 'review content can not be empty.';
+  }
+
   if (review.length > 100) {
-    return 'please limit your review content in 100 characters.'
+    return 'please limit your review content in 100 characters.';
   }
   return '';
 };
