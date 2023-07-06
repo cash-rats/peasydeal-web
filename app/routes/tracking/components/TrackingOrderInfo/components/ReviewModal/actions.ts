@@ -55,10 +55,11 @@ const reviewProduct = async (request: Request) => {
       review,
       image_links: imgs,
     });
+
+    return null;
   } catch (err: any) {
-    console.log('debug err', err);
+    return json(composErrorResponse(err.message));
   }
-  return null;
 };
 
 export { reviewProduct, validateForm };

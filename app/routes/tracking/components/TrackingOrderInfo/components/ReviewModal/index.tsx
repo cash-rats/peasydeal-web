@@ -92,9 +92,6 @@ function ReviewModal({
   const handleSubmit = (evt: MouseEvent<HTMLButtonElement>) => {
     if (!reviewProduct) return;
 
-    // validate form entries
-    // validateFetcher.
-
     const formData = new FormData();
 
     // append 'rating' and 'comments'
@@ -156,7 +153,7 @@ function ReviewModal({
                         <Alert status='error' >
                           <AlertIcon />
                           <p className='font-normal text-base font-poppins'>
-                            There was an error processing your request
+                            {state.error}
                           </p>
                         </Alert>
                       )
@@ -257,7 +254,7 @@ function ReviewModal({
                       {
                         state.formError?.review && (
                           <div className="h-10">
-                            <p className="capitalize text-[#b21111] font-normal font-poppins text-base">
+                            <p className="capitalize text-[#FBD1D2] font-normal font-poppins text-base">
                               {state.formError.review}
                             </p>
                           </div>
