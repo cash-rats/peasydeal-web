@@ -16,6 +16,7 @@ function AnnouncementBanner({ open = true, onClose = () => {}, hideCloseButton =
         <div className={`
           flex justify-center items-center
           py-3 w-full
+          relative
           z-40
         `}
           style={{
@@ -25,7 +26,7 @@ function AnnouncementBanner({ open = true, onClose = () => {}, hideCloseButton =
           <span className={`
             text-xs 499:text-base text-white font-bold md:text-lg
           `}>
-            Grand Launch Sale: FREE Shipping on order £19.99+
+            FREE Shipping on order £19.99+
           </span>
           {
             hideCloseButton ? null : (
