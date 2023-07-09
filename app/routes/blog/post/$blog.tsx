@@ -29,7 +29,6 @@ interface IBlogPostDataProps {
 export const meta: V2_MetaFunction = ({ data }: { data: IBlogPostDataProps }) => {
   const contentfulFields = data || {};
 
-  console.log('contentfulFields', contentfulFields)
   return getRootFBSEO_V2()
     .map(tag => {
       if (!('property' in tag)) return tag;
