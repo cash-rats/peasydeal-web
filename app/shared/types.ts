@@ -115,7 +115,7 @@ export type TContentfulPost = {
   publishedDate: string;
   seoReference: TSeoReference,
   seoTitle: string;
-  setDesc: string;
+  seoDesc: string;
   slug: string;
   attributes: any;
   tags: Array<string>;

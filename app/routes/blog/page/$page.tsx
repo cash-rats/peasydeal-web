@@ -5,11 +5,12 @@ import type { LoaderFunction } from "@remix-run/node";
 import httpStatus from 'http-status-codes';
 
 import type { IBlogStaticProps } from '~/shared/types';
-import { getRootFBSEO_V2 } from '~/utils/seo';
+import { getRootFBSEO_V2, getBlogTitleText, getBlogDescText } from '~/utils/seo';
 
 import { getStaticProps } from "../api";
 import styles from '../styles/blog.css';
 import BlogLayout from "../components/BlogLayout";
+import blogOGImage from '../images/peasydeal-blog-ogimage.jpg';
 
 export const links: LinksFunction = () => {
   return [
@@ -17,22 +18,21 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
-  const contentfulFields = data || {};
+export const meta: V2_MetaFunction = ({ data }: any) => {
   return getRootFBSEO_V2()
     .map(tag => {
       if (!('property' in tag)) return tag;
 
       if (tag.property === 'og:title') {
-        tag.content = contentfulFields?.seoReference?.fields?.SEOtitle;
+        tag.content = getBlogTitleText();
       }
 
       if (tag.property === 'og:description') {
-        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription;
+        tag.content = getBlogDescText();
       }
 
       if (tag.property === 'og:image') {
-        tag.content = contentfulFields?.seoReference?.fields?.ogImage?.fields?.file?.url;
+        tag.content = blogOGImage;
       }
 
       return tag;
@@ -41,8 +41,8 @@ export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
 
 export const loader: LoaderFunction = async ({ params }) => {
   try {
-    const { page } = params;
-    const res = await getStaticProps({ params: { page } });
+    const { page = '1' } = params;
+    const res = await getStaticProps({ params: { page: parseInt(page) } });
 
     return json<IBlogStaticProps>(res);
   } catch (e) {

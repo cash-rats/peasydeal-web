@@ -8,10 +8,6 @@ const BlogLayout = ({
   totalPages,
 }) => {
   const totalPageArray = Array.from(Array(totalPages).keys());
-  console.log({
-    currentPage,
-    totalPages,
-  })
 
   return (
     <div className="layout-medium">

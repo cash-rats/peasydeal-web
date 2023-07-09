@@ -6,7 +6,7 @@ import httpStatus from 'http-status-codes';
 import { Button, Badge } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import { BLOCKS, } from "@contentful/rich-text-types";
+import { BLOCKS, INLINES } from "@contentful/rich-text-types";
 import type { TContentfulPost } from '~/shared/types';
 
 import { getRootFBSEO_V2 } from '~/utils/seo';
@@ -21,22 +21,29 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
+interface IBlogPostDataProps {
+  blog: TContentfulPost,
+  latestPosts: TContentfulPost[],
+}
+
+export const meta: V2_MetaFunction = ({ data }: { data: IBlogPostDataProps }) => {
   const contentfulFields = data || {};
+
+  console.log('contentfulFields', contentfulFields)
   return getRootFBSEO_V2()
     .map(tag => {
       if (!('property' in tag)) return tag;
 
       if (tag.property === 'og:title') {
-        tag.content = contentfulFields?.seoReference?.fields?.SEOtitle;
+        tag.content = contentfulFields?.blog?.seoTitle;
       }
 
       if (tag.property === 'og:description') {
-        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription;
+        tag.content = contentfulFields?.blog?.seoDesc;
       }
 
       if (tag.property === 'og:image') {
-        tag.content = contentfulFields?.seoReference?.fields?.ogImage?.fields?.file?.url;
+        tag.content = contentfulFields?.blog?.featuredImage?.fields?.file?.url;
       }
 
       return tag;
@@ -84,6 +91,22 @@ function renderOptions() {
           </div>
         );
       },
+      [INLINES.HYPERLINK]: ({ data }: any, children: any) => {
+        if (data.uri.startsWith('https://peasydeal.com') || data.uri.startsWith('https://www.peasydeal.com')) {
+          // trim the uri to remove the domain
+          const uri = data.uri.replace('https://peasydeal.com', '').replace('https://www.peasydeal.com', '');
+
+          return <Link to={uri}>{children}</Link>
+        }
+
+        return (
+          <a
+            href={data.uri}
+            target="_blank"
+            rel="noopener noreferrer"
+          >{children}</a>
+        )
+      }
     },
   };
 }
