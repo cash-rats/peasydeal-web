@@ -65,36 +65,6 @@ export function PolicyContent() {
   );
 }
 
-const services = [
-  {
-    to: '/about-us',
-    title: 'About Us',
-  },
-  {
-    to: '/sell-on-peasydeal',
-    title: 'Sell on PeasyDeal',
-  },
-];
-
-export function ServiceContent() {
-  return (
-    <div className="text-[#666] md:pb-7">
-      <h3 className="mt-0 font-medium pr-8 text-[#000] text-base hidden md:block"> Service </h3>
-      <ul className="list-none pl-0 flex flex-col items-start leading-4">
-        {
-          services.map((service, index) => (
-            <li
-              className="py-[10px] cursor-pointer transition-all duration-300 text-base hover:text-[#000]"
-              key={index}>
-              <Link to={service.to}> {service.title}</Link> </li>
-          ))
-
-        }
-      </ul>
-    </div>
-  );
-}
-
 export function ContactUsContent() {
   return (
     <div className="text-[#666] md:pb-7">

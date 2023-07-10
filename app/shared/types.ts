@@ -107,7 +107,7 @@ export type TSeoReference = {
 }
 
 export type TContentfulPost = {
-  body: Contentful.EntryFields.RichText;
+  body: any;
   featuredImage: Contentful.Asset;
   introText: Contentful.EntryFields.RichText;
   metatdata: Array<string>;
@@ -115,8 +115,16 @@ export type TContentfulPost = {
   publishedDate: string;
   seoReference: TSeoReference,
   seoTitle: string;
+  seoDesc: string;
   slug: string;
   attributes: any;
+  tags: Array<string>;
+}
+
+export interface IBlogStaticProps {
+	postSummaries: any[],
+	totalPages: Number,
+	currentPage: Number,
 }
 
 export enum CategoryType {

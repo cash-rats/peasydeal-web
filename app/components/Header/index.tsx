@@ -27,6 +27,8 @@ export interface HeaderProps {
    * Number of items in shopping cart. Display `RedDot` indicator on shopping cart icon.
    */
   numOfItemsInCart?: number;
+
+  hidePropBar?: boolean;
 };
 
 function Header({
@@ -35,6 +37,7 @@ function Header({
   searchBar,
   categories = [],
   numOfItemsInCart = 0,
+  hidePropBar = false,
 }: HeaderProps) {
 
   const announcementHeight = 52;
@@ -50,14 +53,17 @@ function Header({
 
   useEffect(() => {
     setNavBarHeight(navBarRef!.current!.clientHeight);
-    setAnnouncementBarHeight(announcementBarRef!.current!.clientHeight);
-  }, [categoriesBar]);
+
+    if (!hidePropBar) {
+      setAnnouncementBarHeight(announcementBarRef!.current!.clientHeight);
+    }
+  }, [categoriesBar, hidePropBar]);
 
   return (
     <div className='relative'>
       <div
         ref={announcementBarRef}
-        className={`fixed z-19 top-0 w-full ${!openAnnouncement ? 'hidden' : 'flex'}`}
+        className={`fixed z-30 top-0 w-full ${!openAnnouncement ? 'hidden' : 'flex'}`}
       >
         <AnnouncementBanner
           open={openAnnouncement}
@@ -97,9 +103,13 @@ function Header({
         />
       </div>
 
-      <div className='flex' style={{ paddingTop: `${navBarHeight + fixedTop}px` }}>
-        <PropBar />
-      </div>
+      {
+        hidePropBar ? <div style={{ paddingTop: `${navBarHeight + fixedTop}px` }} /> : (
+          <div className='flex' style={{ paddingTop: `${navBarHeight + fixedTop}px` }}>
+            <PropBar />
+          </div>
+        )
+      }
     </div>
   );
 };

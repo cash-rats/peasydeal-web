@@ -87,6 +87,9 @@ export const getTermsOfUseTitleText = () => 'Terms of Use | PeasyDeal';
 // SEO sell with Us page
 export const getWholesaleTitleText = () => 'Terms of Use | PeasyDeal';
 
+export const getBlogTitleText = () => 'Latest Shopping Deals & Trendy Products - Signature Selection Blog | PeasyDeal';
+export const getBlogDescText = () => 'Discover the latest shopping deals and trendy products on our Signature Selection Blog. We scout the best deals from TikTok, Amazon, and more, providing you with affordable quality electronics, garden and kitchen appliances. Stay informed with our guides and enjoy quality you can trust at prices you can afford';
+
 // ------------------ END SEO ------------------
 
 
