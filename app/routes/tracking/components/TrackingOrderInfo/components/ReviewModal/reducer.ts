@@ -3,7 +3,15 @@ import type { ImageListType } from 'react-images-uploading';
 
 import type { FormError } from './types';
 
+export enum LoadingState {
+  INIT = 'init',
+  LOADING = 'loading',
+  DONE = 'done',
+  FAILED = 'failed',
+};
+
 interface StateShape {
+  loadingState: LoadingState;
   error: string | null;
   formError: FormError | null;
   rating: number;
@@ -17,6 +25,8 @@ export enum ReviewModalActionTypes {
   update_rating = 'update_rating',
   update_review = 'update_review',
   update_images = 'update_images',
+  update_loading_status = 'update_loading_status',
+  reset = 'reset',
 };
 
 interface ReviewModalActions {
@@ -25,7 +35,8 @@ interface ReviewModalActions {
   | string
   | null
   | ImageListType
-  | FormError;
+  | FormError
+  | LoadingState
 };
 
 // action creators
@@ -54,6 +65,15 @@ export const updateImages = (images: ImageListType) => ({
   payload: images,
 });
 
+export const uploadLoadingState = (state: LoadingState) => ({
+  type: ReviewModalActionTypes.update_loading_status,
+  payload: state,
+});
+
+export const reset = () => ({
+  type: ReviewModalActionTypes.reset,
+  payload: null,
+})
 
 const reducer: ImmerReducer<StateShape, ReviewModalActions> = (draft, action) => {
   switch (action.type) {
@@ -80,6 +100,19 @@ const reducer: ImmerReducer<StateShape, ReviewModalActions> = (draft, action) =>
     case ReviewModalActionTypes.set_error: {
       const error = action.payload as string | null;
       draft.error = error;
+      break;
+    }
+    case ReviewModalActionTypes.update_loading_status: {
+      const state = action.payload as LoadingState;
+      draft.loadingState = state;
+      break;
+    }
+    case ReviewModalActionTypes.reset: {
+      draft.images = [];
+      draft.error = null;
+      draft.formError = null;
+      draft.loadingState = LoadingState.INIT;
+
       break;
     }
     default:

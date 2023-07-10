@@ -11,8 +11,6 @@ interface SubmitReviewParams {
 };
 
 const submitReview = async (params: SubmitReviewParams) => {
-  console.log('debut 1 submitReview', params)
-
   const url = new URL(PEASY_DEAL_ENDPOINT);
   url.pathname = `/v1/products/${params.product_uuid}/review`;
   const resp = await fetch(url.toString(), {

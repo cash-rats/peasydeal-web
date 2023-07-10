@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import {
   Modal,
@@ -15,18 +15,25 @@ import { useFetcher } from '@remix-run/react';
 
 import type { FormError } from './types';
 import ReviewForm from './components/ReviewForm';
+import ReviewSuccess, { links as ReviewSuccessStyles } from './components/ReviewSuccess';
 import { reviewProduct } from './actions';
 import reducer, {
   updateRating,
   updateReview,
   updateImages,
+  reset,
+  uploadLoadingState,
+  LoadingState,
   setFormError,
   setError,
 } from './reducer';
 import type { TrackOrderProduct } from '../../../../types';
 
 export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: styles }];
+  return [
+    ...ReviewSuccessStyles(),
+    { rel: 'stylesheet', href: styles },
+  ];
 };
 
 interface ReviewModalParams {
@@ -59,6 +66,7 @@ function ReviewModal({
   reviewProduct,
 }: ReviewModalParams) {
   const [state, dispatch] = useImmerReducer(reducer, {
+    loadingState: LoadingState.INIT,
     error: null,
     formError: null,
     review: '',
@@ -67,7 +75,6 @@ function ReviewModal({
   });
 
   const reviewFetcher = useFetcher();
-  const [loaded, setLoaded] = useState(false);
 
   const handleChangeRating = (num: number) =>
     dispatch(updateRating(num));
@@ -104,25 +111,27 @@ function ReviewModal({
 
   useEffect(() => {
     if (!isOpen) {
-      dispatch(updateImages([]));
+      dispatch(reset());
     }
   }, [isOpen]);
 
   // Remove all images from image uploader
   useEffect(() => {
-    console.log('debug 3', reviewFetcher.type)
     if (reviewFetcher.type === 'done') {
       const data = reviewFetcher.data;
-      if (data.err_code) {
+      if (data?.err_code) {
         data.err_code === 'validation_error'
           ? dispatch(setFormError(data.err_msg as FormError))
           : dispatch(setError(data.err_msg as string));
+
+        dispatch(uploadLoadingState(LoadingState.FAILED))
 
         return
       }
 
       // submit success, display success check
       // close current modal, display checkmark
+      dispatch(uploadLoadingState(LoadingState.DONE))
     }
 
   }, [reviewFetcher.type]);
@@ -140,25 +149,54 @@ function ReviewModal({
           reviewProduct
             ? (
               <ModalHeader>
-                <p className="font-poppins text-base">
-                  Add a review
+                <p className="font-poppins font-bold text-lg">
+                  {
+                    state.loadingState === LoadingState.INIT ||
+                      state.loadingState === LoadingState.FAILED
+                      ? 'add a review'
+                      : null
+                  }
+
+                  {
+                    state.loadingState === LoadingState.INIT
+                      ? 'review success'
+                      : null
+                  }
+
                 </p>
 
-                {/* product rating form */}
                 <ModalBody className="pl-0 pr-0">
-                  <ReviewForm
-                    error={state.error}
-                    formError={state.formError}
-                    rating={state.rating}
-                    reviewProduct={reviewProduct}
-                    images={state.images}
-                    onClose={onClose}
-                    onChangeRating={handleChangeRating}
-                    onChangeReview={handleChangeReview}
-                    onChangeImage={handleChangeImage}
-                    onSubmit={handleSubmit}
-                  />
+                  {/* {
+                    state.loadingState === LoadingState.INIT ||
+                      state.loadingState === LoadingState.FAILED
+                      ? (
+                        <ReviewForm
+                          error={state.error}
+                          formError={state.formError}
+                          rating={state.rating}
+                          reviewProduct={reviewProduct}
+                          images={state.images}
+                          onClose={onClose}
+                          onChangeRating={handleChangeRating}
+                          onChangeReview={handleChangeReview}
+                          onChangeImage={handleChangeImage}
+                          onSubmit={handleSubmit}
+                        />
+                      )
+                      : null
+                  } */}
 
+                  {/* {
+                    state.loadingState === LoadingState.DONE
+                      ? (
+                        <div>
+                          done
+                        </div>
+                      )
+                      : null
+                  } */}
+
+                  <ReviewSuccess />
                 </ModalBody>
               </ModalHeader>
             )

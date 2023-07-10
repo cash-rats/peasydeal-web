@@ -7,6 +7,7 @@ interface StateShape {
   reviewProduct: TrackOrderProduct | null;
   orderInfo: TrackOrder;
   error: string | null;
+
 };
 
 export enum TrackingActionTypes {
@@ -14,6 +15,7 @@ export enum TrackingActionTypes {
   init_order_info = 'init_order_info',
   update_order_status = 'update_order_status',
   set_error = 'set_error',
+  reset = 'reset',
 };
 
 interface TrackingActions {
@@ -25,6 +27,14 @@ interface TrackingActions {
   | string
   | null;
 };
+
+// dispatch when modal is closed. so that fetcher, order_uuid, review_product
+// can be reset and refreshed.
+export const reset = () => ({
+  type: TrackingActionTypes.reset,
+  payload: null,
+});
+
 
 export const reviewOnProduct = (prod: TrackOrderProduct) => {
   return {
@@ -55,6 +65,10 @@ const reducer: ImmerReducer<StateShape, TrackingActions> = (draft, action) => {
     case TrackingActionTypes.review_on_product: {
       const prod = action.payload as TrackOrderProduct
       draft.reviewProduct = prod;
+      break;
+    }
+    case TrackingActionTypes.reset: {
+      draft.reviewProduct = null;
       break;
     }
     default:

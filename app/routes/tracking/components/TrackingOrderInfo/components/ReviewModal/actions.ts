@@ -60,7 +60,7 @@ const reviewProduct = async (request: Request) => {
       image_links: imgs,
     });
 
-    return null;
+    return {};
   } catch (err: any) {
     return json(composErrorResponse(err.message));
   }

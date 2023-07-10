@@ -17,7 +17,11 @@ import CancelOrderActionBar from './components/CancelOrderActionBar';
 import type { CancelReason } from './components/CancelOrderActionBar';
 import ReviewModal, { links as ReviewModalLinks } from './components/ReviewModal';
 import { cancelOrder } from './api.server';
-import reducer, { TrackingActionTypes, reviewOnProduct } from './reducer';
+import reducer, {
+  TrackingActionTypes,
+  reviewOnProduct,
+  reset,
+} from './reducer';
 import type { TrackOrder } from '../../types';
 import { OrderStatus } from '../../types';
 
@@ -94,6 +98,12 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
     }, [state.orderInfo]
   );
 
+  const handleClose = () => {
+    if (onClose) {
+      dispatch(reset());
+      onClose()
+    }
+  }
 
   useEffect(() => {
     if (fetcher.type === 'done') {
@@ -138,12 +148,14 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
 
   return (
     <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4">
-      <ReviewModal
-        isOpen={isOpen}
-        onClose={onClose}
-        orderUUID={state.orderInfo.order_uuid}
-        reviewProduct={state.reviewProduct}
-      />
+      {
+        <ReviewModal
+          isOpen={isOpen}
+          onClose={handleClose}
+          orderUUID={state.orderInfo.order_uuid}
+          reviewProduct={state.reviewProduct}
+        />
+      }
 
       <h1 className="font-poppins font-bold text-2xl leading-[1.875rem] mb-4">
         Order ID: {state.orderInfo.order_uuid}
