@@ -76,7 +76,7 @@ const PromoCodeBox = ({
         {
           error && (
             <div className="mt-[10px] h-10">
-              <p className="text-[#b21111] font-normal text-base">
+              <p className="text-error-msg-red font-normal text-base">
                 {error}
               </p>
             </div>
@@ -110,7 +110,7 @@ const PromoCodeBox = ({
             discountErrorMsgs.map((msg, idx) => (
               <div className="mt-[10px] h-10" key={`error-code-msg-${idx}`}>
                 <p className="text-[#D02E7D] font-normal text-base">
-                  { msg }
+                  {msg}
                 </p>
               </div>
             ))

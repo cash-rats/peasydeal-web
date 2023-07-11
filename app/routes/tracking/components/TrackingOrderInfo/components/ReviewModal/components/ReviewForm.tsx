@@ -162,7 +162,7 @@ function ReviewForm({
         {
           formError?.review && (
             <div className="h-10">
-              <p className="capitalize text-[#FBD1D2] font-normal font-poppins text-base">
+              <p className="text-error-msg-red font-normal font-poppins text-base">
                 {formError.review}
               </p>
             </div>

@@ -74,6 +74,7 @@ module.exports = {
         'battleship-grey': '#828183',
         'paymentelement-border': '#e6e6e6',
         'spring-wood': '#F7F7EE',
+        'error-msg-red': '#b21111',
       },
       boxShadow: {
         'dropdown': '0 0 3px 0 rgb(73 143 226 / 50%)',

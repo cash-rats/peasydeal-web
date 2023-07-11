@@ -6,6 +6,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalBody,
+  ModalCloseButton,
 } from '@chakra-ui/react';
 import { useImmerReducer } from 'use-immer';
 import styles from '@smastrom/react-rating/style.css';
@@ -145,28 +146,23 @@ function ReviewModal({
     >
       <ModalOverlay />
       <ModalContent>
+        <ModalHeader>
+          <ModalCloseButton />
+          <p className="font-poppins font-bold text-lg capitalize">
+            {
+              state.loadingState === LoadingState.INIT ||
+                state.loadingState === LoadingState.FAILED
+                ? 'add a review'
+                : null
+            }
+          </p>
+        </ModalHeader>
         {
           reviewProduct
             ? (
-              <ModalHeader>
-                <p className="font-poppins font-bold text-lg">
+              <ModalBody>
+                <div className="pb-4">
                   {
-                    state.loadingState === LoadingState.INIT ||
-                      state.loadingState === LoadingState.FAILED
-                      ? 'add a review'
-                      : null
-                  }
-
-                  {
-                    state.loadingState === LoadingState.INIT
-                      ? 'review success'
-                      : null
-                  }
-
-                </p>
-
-                <ModalBody className="pl-0 pr-0">
-                  {/* {
                     state.loadingState === LoadingState.INIT ||
                       state.loadingState === LoadingState.FAILED
                       ? (
@@ -184,21 +180,15 @@ function ReviewModal({
                         />
                       )
                       : null
-                  } */}
+                  }
 
-                  {/* {
+                  {
                     state.loadingState === LoadingState.DONE
-                      ? (
-                        <div>
-                          done
-                        </div>
-                      )
+                      ? <ReviewSuccess onClose={onClose} />
                       : null
-                  } */}
-
-                  <ReviewSuccess />
-                </ModalBody>
-              </ModalHeader>
+                  }
+                </div>
+              </ModalBody>
             )
             : null
         }
