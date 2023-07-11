@@ -13,8 +13,7 @@ let bucket: Bucket | null | undefined = undefined;
 
 if (
   NODE_ENV === 'production' ||
-  NODE_ENV === 'staging' ||
-  NODE_ENV === 'development'
+  NODE_ENV === 'staging'
 ) {
   storage = new Storage({
     keyFilename: path.resolve(__dirname, '../', GCS_KEY_NAME),
