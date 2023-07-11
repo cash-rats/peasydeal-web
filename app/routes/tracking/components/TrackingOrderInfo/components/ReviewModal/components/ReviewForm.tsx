@@ -27,6 +27,7 @@ interface ReviewFormParams {
   rating: number;
   reviewProduct: TrackOrderProduct;
   images: ImageListType;
+  isLoading?: boolean;
 
   onClose: () => void;
   onChangeRating: (rating: number) => void;
@@ -45,6 +46,7 @@ function ReviewForm({
   rating,
   formError,
   images,
+  isLoading = false,
 
   onClose,
   onChangeRating,
@@ -248,6 +250,7 @@ function ReviewForm({
         </Button>
 
         <Button
+          isLoading={isLoading}
           colorScheme='green'
           onClick={onSubmit}
           className="capitalize"

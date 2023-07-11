@@ -65,7 +65,7 @@ export const updateImages = (images: ImageListType) => ({
   payload: images,
 });
 
-export const uploadLoadingState = (state: LoadingState) => ({
+export const updateLoadingState = (state: LoadingState) => ({
   type: ReviewModalActionTypes.update_loading_status,
   payload: state,
 });

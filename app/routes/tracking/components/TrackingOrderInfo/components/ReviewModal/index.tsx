@@ -23,12 +23,13 @@ import reducer, {
   updateReview,
   updateImages,
   reset,
-  uploadLoadingState,
+  updateLoadingState,
   LoadingState,
   setFormError,
   setError,
 } from './reducer';
 import type { TrackOrderProduct } from '../../../../types';
+import { Loading } from '~/components/PeasyDealMessageModal/PeasyDealMessageModal.stories';
 
 export const links: LinksFunction = () => {
   return [
@@ -103,6 +104,8 @@ function ReviewModal({
       formData.append('images', image.file);
     }
 
+    dispatch(updateLoadingState(LoadingState.LOADING));
+
     reviewFetcher.submit(formData, {
       method: 'post',
       action: '/tracking/components/TrackingOrderInfo/components/ReviewModal?index',
@@ -125,14 +128,14 @@ function ReviewModal({
           ? dispatch(setFormError(data.err_msg as FormError))
           : dispatch(setError(data.err_msg as string));
 
-        dispatch(uploadLoadingState(LoadingState.FAILED))
+        dispatch(updateLoadingState(LoadingState.FAILED))
 
         return
       }
 
       // submit success, display success check
       // close current modal, display checkmark
-      dispatch(uploadLoadingState(LoadingState.DONE))
+      dispatch(updateLoadingState(LoadingState.DONE))
     }
 
   }, [reviewFetcher.type]);
@@ -164,7 +167,8 @@ function ReviewModal({
                 <div className="pb-4">
                   {
                     state.loadingState === LoadingState.INIT ||
-                      state.loadingState === LoadingState.FAILED
+                      state.loadingState === LoadingState.FAILED ||
+                      state.loadingState === LoadingState.LOADING
                       ? (
                         <ReviewForm
                           error={state.error}
@@ -172,6 +176,7 @@ function ReviewModal({
                           rating={state.rating}
                           reviewProduct={reviewProduct}
                           images={state.images}
+                          isLoading={state.loadingState === LoadingState.LOADING}
                           onClose={onClose}
                           onChangeRating={handleChangeRating}
                           onChangeReview={handleChangeReview}
