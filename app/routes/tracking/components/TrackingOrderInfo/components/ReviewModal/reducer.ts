@@ -2,13 +2,7 @@ import type { ImmerReducer } from 'use-immer';
 import type { ImageListType } from 'react-images-uploading';
 
 import type { FormError } from './types';
-
-export enum LoadingState {
-  INIT = 'init',
-  LOADING = 'loading',
-  DONE = 'done',
-  FAILED = 'failed',
-};
+import { LoadingState } from './types';
 
 interface StateShape {
   loadingState: LoadingState;
@@ -111,7 +105,7 @@ const reducer: ImmerReducer<StateShape, ReviewModalActions> = (draft, action) =>
       draft.images = [];
       draft.error = null;
       draft.formError = null;
-      draft.loadingState = LoadingState.INIT;
+      draft.loadingState = 'init';
 
       break;
     }

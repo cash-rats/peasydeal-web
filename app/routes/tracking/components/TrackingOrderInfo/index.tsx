@@ -5,7 +5,7 @@ import format from 'date-fns/format';
 import add from 'date-fns/add';
 import type { ActionFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher, useRevalidator } from '@remix-run/react';
 import { useImmerReducer } from 'use-immer';
 import { FcInfo } from 'react-icons/fc';
 import { BiErrorCircle } from 'react-icons/bi';
@@ -67,7 +67,9 @@ interface TrackingOrderIndexProps {
   orderInfo: TrackOrder;
 }
 
-function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
+function TrackingOrderIndex({
+  orderInfo,
+}: TrackingOrderIndexProps) {
   const [state, dispatch] = useImmerReducer(reducer, {
     reviewProduct: null,
     orderInfo: parseTrackOrderCreatedAt(orderInfo),
@@ -75,6 +77,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
   });
 
   const fetcher = useFetcher();
+  const revalidator = useRevalidator();
   const [openCancelModal, setOpenCancelModal] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -98,12 +101,16 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
     }, [state.orderInfo]
   );
 
-  const handleClose = () => {
+  const handleClose = (status: string) => {
     if (onClose) {
       dispatch(reset());
-      onClose()
+      onClose();
+      if (status === 'done') {
+        revalidator.revalidate();
+      }
     }
-  }
+  };
+
 
   useEffect(() => {
     if (fetcher.type === 'done') {
@@ -143,7 +150,7 @@ function TrackingOrderIndex({ orderInfo }: TrackingOrderIndexProps) {
         payload: parseTrackOrderCreatedAt(orderInfo),
       });
     },
-    [orderInfo.order_uuid],
+    [orderInfo],
   );
 
   return (

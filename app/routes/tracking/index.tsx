@@ -110,11 +110,9 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const orderUUID = body.get('query') as string || '';
-
   if (!orderUUID) {
     return redirect('/tracking');
   }
-
   return redirect(`/tracking?query=${orderUUID}`);
 }
 
@@ -207,6 +205,7 @@ function TrackingOrder() {
       },
     );
   }
+
 
   return (
     <>
