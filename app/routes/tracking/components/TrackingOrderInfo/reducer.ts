@@ -1,26 +1,36 @@
 import type { ImmerReducer } from 'use-immer';
 
-import type { TrackOrder, OrderStatus } from '../../types';
+import type { TrackOrder, OrderStatus, TrackOrderProduct } from '../../types';
 import { PaymentStatus } from '../../types';
 
 interface StateShape {
+  reviewProduct: TrackOrderProduct | null;
   orderInfo: TrackOrder;
   error: string | null;
 };
 
 export enum TrackingActionTypes {
+  review_on_product = 'review_on_product',
   init_order_info = 'init_order_info',
   update_order_status = 'update_order_status',
   set_error = 'set_error',
 };
 
 interface TrackingActions {
-  type: TrackingActionTypes,
+  type: TrackingActionTypes;
   payload:
   | TrackOrder
+  | TrackOrderProduct
   | OrderStatus
   | string
   | null;
+};
+
+export const reviewOnProduct = (prod: TrackOrderProduct) => {
+  return {
+    type: TrackingActionTypes.review_on_product,
+    payload: prod,
+  };
 };
 
 const reducer: ImmerReducer<StateShape, TrackingActions> = (draft, action) => {
@@ -29,7 +39,7 @@ const reducer: ImmerReducer<StateShape, TrackingActions> = (draft, action) => {
       const trackOrder = action.payload as TrackOrder;
       draft.orderInfo = trackOrder;
       draft.error = null;
-      break;;
+      break;
     }
     case TrackingActionTypes.update_order_status: {
       const orderStatus = action.payload as OrderStatus;
@@ -40,6 +50,11 @@ const reducer: ImmerReducer<StateShape, TrackingActions> = (draft, action) => {
     case TrackingActionTypes.set_error: {
       const error = action.payload as string;
       draft.error = error;
+      break;
+    }
+    case TrackingActionTypes.review_on_product: {
+      const prod = action.payload as TrackOrderProduct
+      draft.reviewProduct = prod;
       break;
     }
     default:

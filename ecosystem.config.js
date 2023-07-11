@@ -40,7 +40,10 @@ module.exports = {
 
         "ALGOLIA_APP_ID": process.env.ALGOLIA_APP_ID,
         "ALGOLIA_APP_WRITE_KEY": process.env.ALGOLIA_APP_WRITE_KEY,
-        "ALGOLIA_INDEX_NAME": process.env.ALGOLIA_INDEX_NAME
+        "ALGOLIA_INDEX_NAME": process.env.ALGOLIA_INDEX_NAME,
+
+        "GCS_KEY_NAME": process.env.GCS_KEY_NAME,
+        "GCS_BUCKET_NAME": process.env.GCS_BUCKET_NAME,
       },
 
       env_staging: {
@@ -76,7 +79,10 @@ module.exports = {
 
         "ALGOLIA_APP_ID": process.env.ALGOLIA_APP_ID,
         "ALGOLIA_APP_WRITE_KEY": process.env.ALGOLIA_APP_WRITE_KEY,
-        "ALGOLIA_INDEX_NAME": process.env.ALGOLIA_INDEX_NAME
+        "ALGOLIA_INDEX_NAME": process.env.ALGOLIA_INDEX_NAME,
+
+        "GCS_KEY_NAME": process.env.GCS_KEY_NAME,
+        "GCS_BUCKET_NAME": process.env.GCS_BUCKET_NAME,
       },
 
       env_production: {
@@ -112,7 +118,10 @@ module.exports = {
 
         "ALGOLIA_APP_ID": process.env.ALGOLIA_APP_ID,
         "ALGOLIA_APP_WRITE_KEY": process.env.ALGOLIA_APP_WRITE_KEY,
-        "ALGOLIA_INDEX_NAME": process.env.ALGOLIA_INDEX_NAME
+        "ALGOLIA_INDEX_NAME": process.env.ALGOLIA_INDEX_NAME,
+
+        "GCS_KEY_NAME": process.env.GCS_KEY_NAME,
+        "GCS_BUCKET_NAME": process.env.GCS_BUCKET_NAME,
       },
     },
   ],

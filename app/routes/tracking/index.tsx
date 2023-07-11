@@ -14,7 +14,7 @@ import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 
-import TrackingOrderInfo from './components/TrackingOrderInfo';
+import TrackingOrderInfo, { links as TrckingOrderInfoLinks } from './components/TrackingOrderInfo';
 import TrackingSearchBar from './components/TrackingSearchBar';
 import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
 import TrackingOrderInitPage, { links as TrackingOrderInitPageLinks } from './components/TrackingOrderInitPage';
@@ -23,13 +23,15 @@ import { normalizeTrackingOrder } from './utils';
 import type { TrackOrder } from './types';
 
 type LoaderDataType = {
-  order: TrackOrder | null
+  query: string;
+  order: TrackOrder | null;
   canonicalLink: string;
   categories: Category[];
   navBarCategories: Category[];
 };
 
 type CatchBoundaryDataType = {
+  query: string;
   errMessage: string;
   canonicalLink: string;
   categories: Category[];
@@ -58,6 +60,7 @@ export const links: LinksFunction = () => {
     ...TrackingOrderInitPageLinks(),
     ...SearchBarLinks(),
     ...CategoriesNavLinks(),
+    ...TrckingOrderInfoLinks(),
   ];
 };
 
@@ -68,6 +71,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   // Current route has just been requested. Ask user to search order by order ID.
   if (!url.searchParams.has('query')) {
     return json<LoaderDataType>({
+      query: '',
       order: null,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
       categories,
@@ -75,17 +79,18 @@ export const loader: LoaderFunction = async ({ request }) => {
     });
   }
 
-  const orderID = url.searchParams.get('query') || '';
+  const query = url.searchParams.get('query') || '';
 
   // Order id is likely to be empty, thus, is invalid.
-  if (!orderID) {
+  if (!query) {
     return json(composErrorResponse('invalid order id'), httpStatus.BAD_REQUEST);
   }
 
   try {
-    const order = normalizeTrackingOrder(await trackOrder(orderID));
+    const order = normalizeTrackingOrder(await trackOrder(query));
 
     return json<LoaderDataType>({
+      query,
       order,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
       navBarCategories,
@@ -93,7 +98,8 @@ export const loader: LoaderFunction = async ({ request }) => {
     });
   } catch (err) {
     throw json<CatchBoundaryDataType>({
-      errMessage: `Result for order ${orderID} is not found`,
+      query: '',
+      errMessage: `Result for order ${query} is not found`,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
       navBarCategories,
       categories,
@@ -103,7 +109,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
-
   const orderUUID = body.get('query') as string || '';
 
   if (!orderUUID) {
@@ -173,7 +178,12 @@ export const CatchBoundary = () => {
 }
 
 function TrackingOrder() {
-  const { order, categories, navBarCategories } = useLoaderData<LoaderDataType>() || {};
+  const {
+    query,
+    order,
+    categories,
+    navBarCategories
+  } = useLoaderData<LoaderDataType>() || {};
   const trackOrderFetcher = useFetcher();
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLButtonElement>) => {
@@ -215,10 +225,10 @@ function TrackingOrder() {
         <Form action='/tracking'>
           {/* order search form */}
           <TrackingSearchBar
+            query={query}
             onSearch={handleOnSearch}
             onClear={handleOnClear}
           />
-
         </Form>
         {
           order

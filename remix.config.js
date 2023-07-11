@@ -8,6 +8,7 @@ module.exports = {
     'yet-another-react-lightbox/plugins/thumbnails'
   ],
   ignoredRouteFiles: [
+    "**/data/*.*",
     "**/.*",
     "**/*.css",
     "**/*.scss",

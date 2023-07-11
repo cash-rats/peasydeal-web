@@ -23,6 +23,9 @@ type AppConfig = {
   ALGOLIA_APP_ID: string;
   ALGOLIA_APP_WRITE_KEY: string;
   ALGOLIA_INDEX_NAME: string;
+
+  GCS_KEY_NAME: string;
+  GCS_BUCKET_NAME: string;
 };
 
 declare global {
@@ -68,6 +71,9 @@ const ALGOLIA_APP_ID = getENV('ALGOLIA_APP_ID') || '';
 const ALGOLIA_APP_WRITE_KEY = getENV('ALGOLIA_APP_WRITE_KEY') || '';
 const ALGOLIA_INDEX_NAME = getENV('ALGOLIA_INDEX_NAME') || '';
 
+const GCS_KEY_NAME = getENV('GCS_KEY_NAME') || 'peasydeal-master-key.json';
+const GCS_BUCKET_NAME = getENV('GCS_BUCKET_NAME') || 'GCS_BUCKET_NAME';
+
 export {
   NODE_ENV,
   DOMAIN,
@@ -95,6 +101,9 @@ export {
   ALGOLIA_APP_ID,
   ALGOLIA_APP_WRITE_KEY,
   ALGOLIA_INDEX_NAME,
+
+  GCS_BUCKET_NAME,
+  GCS_KEY_NAME,
 };
 
 export default getENVSource

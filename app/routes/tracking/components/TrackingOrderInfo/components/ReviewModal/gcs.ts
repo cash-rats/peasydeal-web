@@ -1,21 +1,22 @@
 import { Storage } from '@google-cloud/storage';
 import type { Bucket } from '@google-cloud/storage';
-import path from 'path';
 
-import { NODE_ENV } from '~/utils/get_env_source';
+import { NODE_ENV, GCS_BUCKET_NAME } from '~/utils/get_env_source';
+import { getGCSKeyPath } from '~/lib/gcs';
 
 const GCS_KEY_NAME = 'peasydeal-master-key.json';
-const GCS_BUCKET_NAME = 'peasydeal';
+// const GCS_BUCKET_NAME = 'peasydeal';
 
-let storage: Storage | null;
-let bucket: Bucket | null;
+let storage: Storage | null | undefined = undefined;
+let bucket: Bucket | null | undefined = undefined;
 
 if (
   NODE_ENV === 'production' ||
-  NODE_ENV === 'staging'
+  NODE_ENV === 'staging' ||
+  NODE_ENV === 'development'
 ) {
   storage = new Storage({
-    keyFilename: path.resolve(__dirname, '../', GCS_KEY_NAME),
+    keyFilename: getGCSKeyPath(),
   });
 
   bucket = storage.bucket(GCS_BUCKET_NAME);

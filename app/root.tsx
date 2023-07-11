@@ -35,7 +35,6 @@ import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
 import tailwindStylesheetUrl from "./styles/tailwind.css";
-import { getUser } from "./session.server";
 import { ClientStyleContext, ServerStyleContext } from "./context"
 import styles from "./styles/global.css";
 import structuredData from './structured_data';
@@ -72,10 +71,7 @@ export let links: LinksFunction = () => {
 
 
 export async function loader({ request }: LoaderArgs) {
-  return json({
-    user: await getUser(request),
-    ...envs,
-  });
+  return json({ ...envs });
 }
 
 export let meta: V2_MetaFunction<typeof loader> = () => {
