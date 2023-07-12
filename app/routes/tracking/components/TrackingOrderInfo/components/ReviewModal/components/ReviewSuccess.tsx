@@ -33,7 +33,7 @@ function ReviewSuccess({ onClose }: ReviewSuccessParams) {
       </h3>
 
       <p className="font-poppins text-sm text-[#7f7f7f] mt-2 pl-10 pr-10">
-        Thank you for your review! Your feedback greatly improves the shopping experience on our platform.
+        Your feedback can greatly improves the shopping experience on our platform.
       </p>
 
       {/* close button */}
