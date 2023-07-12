@@ -2,12 +2,13 @@ import type { ImmerReducer } from 'use-immer';
 import type { ImageListType } from 'react-images-uploading';
 
 import type { FormError } from './types';
-import { LoadingState } from './types';
+import type { LoadingState } from './types';
 
 interface StateShape {
   loadingState: LoadingState;
   error: string | null;
   formError: FormError | null;
+  name: string;
   rating: number;
   review: string;
   images: ImageListType;
@@ -16,6 +17,7 @@ interface StateShape {
 export enum ReviewModalActionTypes {
   set_error = 'set_error',
   set_form_error = 'set_form_error',
+  update_name = 'update_name',
   update_rating = 'update_rating',
   update_review = 'update_review',
   update_images = 'update_images',
@@ -48,6 +50,11 @@ export const updateRating = (rating: number) => ({
   type: ReviewModalActionTypes.update_rating,
   payload: rating
 });
+
+export const updateName = (name: string) => ({
+  type: ReviewModalActionTypes.update_name,
+  payload: name,
+})
 
 export const updateReview = (review: string) => ({
   type: ReviewModalActionTypes.update_review,
@@ -99,6 +106,11 @@ const reducer: ImmerReducer<StateShape, ReviewModalActions> = (draft, action) =>
     case ReviewModalActionTypes.update_loading_status: {
       const state = action.payload as LoadingState;
       draft.loadingState = state;
+      break;
+    }
+    case ReviewModalActionTypes.update_name: {
+      const name = action.payload as string;
+      draft.name = name;
       break;
     }
     case ReviewModalActionTypes.reset: {

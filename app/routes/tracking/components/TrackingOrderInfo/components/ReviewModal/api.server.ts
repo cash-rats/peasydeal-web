@@ -5,6 +5,7 @@ import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
 interface SubmitReviewParams {
   product_uuid: string;
   order_uuid: string;
+  name: string;
   rating: number;
   review: string;
   image_links: string[];
@@ -16,6 +17,7 @@ const submitReview = async (params: SubmitReviewParams) => {
   const resp = await fetch(url.toString(), {
     method: 'POST',
     body: JSON.stringify({
+      name: params.name,
       order_uuid: params.order_uuid,
       review: params.review,
       rating: params.rating,

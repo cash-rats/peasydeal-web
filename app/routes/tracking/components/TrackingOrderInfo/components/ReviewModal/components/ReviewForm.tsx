@@ -5,6 +5,7 @@ import Image, { MimeType } from 'remix-image';
 import { Rating, RoundedStar } from '@smastrom/react-rating';
 import { BiInfoCircle } from 'react-icons/bi';
 import {
+  Input,
   Textarea,
   IconButton,
   Button,
@@ -17,6 +18,7 @@ import { RxCross1 } from 'react-icons/rx';
 import { DOMAIN } from '~/utils/get_env_source';
 
 import type { FormError } from '../types';
+import { maskName } from '../../../../../utils';
 import type { TrackOrderProduct } from '../../../../../types';
 
 const MaxImageNumber = 2;
@@ -24,12 +26,14 @@ const MaxImageNumber = 2;
 interface ReviewFormParams {
   error: string | null;
   formError: FormError | null;
+  name: string;
   rating: number;
   reviewProduct: TrackOrderProduct;
   images: ImageListType;
   isLoading?: boolean;
 
   onClose: () => void;
+  onChangeName: (elm: ChangeEvent<HTMLInputElement>) => void;
   onChangeRating: (rating: number) => void;
   onChangeReview: (elm: ChangeEvent<HTMLTextAreaElement>) => void;
   onChangeImage: (
@@ -47,14 +51,21 @@ function ReviewForm({
   formError,
   images,
   isLoading = false,
+  name,
 
   onClose,
   onChangeRating,
   onChangeReview,
   onChangeImage,
+  onChangeName,
   onSubmit,
 }: ReviewFormParams) {
   const [loaded, setLoaded] = useState(false);
+  const [maskedName, setMaskedName] = useState('');
+  const handleChangeName = (evt: ChangeEvent<HTMLInputElement>) => {
+    setMaskedName(maskName(evt.target.value));
+    onChangeName(evt);
+  };
 
   return (
     <div className="flex flex-col mt-2 gap-3">
@@ -70,10 +81,7 @@ function ReviewForm({
       }
 
       {/* Product Info Row */}
-      <div className="
-                      flex flex-row border border-gray-200
-                      rounded-lg p-2
-                    ">
+      <div className="flex flex-row border border-gray-200 rounded-lg p-2">
         {/* product thumbnail */}
         <div>
           <Image
@@ -109,12 +117,62 @@ function ReviewForm({
         </div>
       </div>
 
+      <div className="flex flex-col items-start justify-start">
+        <p className=" font-poppins font-medium text-base">
+          You name:
+        </p>
+
+        <span className="flex flex-row items-center gap-1">
+          <BiInfoCircle
+            fontSize={16}
+            color='#0A6EBD'
+          />
+
+          <span className="font-poppins font-normal text-sm text-battleship-grey mt-1 mb-1">
+            We will not display your full name.
+          </span>
+        </span>
+
+        <div className="h-7">
+          {
+            name
+              ? (
+                <span className="font-poppins font-normal text-sm">
+                  Masked name: &nbsp;
+                  <strong>
+                    {maskedName}
+                  </strong>
+                </span>
+              )
+              : null
+          }
+        </div>
+
+        <Input
+          placeholder='What is your name?'
+          name="name"
+          size="sm"
+          value={name}
+          onChange={handleChangeName}
+        />
+
+        {
+          formError?.name && (
+            <div className="h-10">
+              <p className="text-error-msg-red font-normal font-poppins text-sm">
+                {formError.name}
+              </p>
+            </div>
+          )
+        }
+      </div>
+
       {/* Product rating row */}
       <div className="flex flex-col items-start justify-start gap-3">
         <p className="font-poppins font-medium text-base" >
           Rate this product:
         </p>
-        <div className="">
+        <div>
           <Rating
             className=" max-w-[150px]"
             value={rating}
@@ -124,11 +182,6 @@ function ReviewForm({
               inactiveFillColor: '#fbf1a9'
             }}
             onChange={onChangeRating}
-          />
-          <input
-            type="hidden"
-            name="rating"
-            value={rating}
           />
         </div>
       </div>
@@ -149,7 +202,7 @@ function ReviewForm({
             color='#0A6EBD'
           />
           <span className="font-poppins font-normal text-sm text-battleship-grey mt-1 mb-1">
-            Please limit your text to 150 characters and upload 2 images at max.
+            Please limit your text to 100 characters and upload 2 images at max.
           </span>
         </span>
 
@@ -164,7 +217,7 @@ function ReviewForm({
         {
           formError?.review && (
             <div className="h-10">
-              <p className="text-error-msg-red font-normal font-poppins text-base">
+              <p className="text-error-msg-red font-normal font-poppins text-sm">
                 {formError.review}
               </p>
             </div>

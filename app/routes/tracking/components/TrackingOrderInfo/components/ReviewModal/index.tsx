@@ -19,6 +19,7 @@ import ReviewForm from './components/ReviewForm';
 import ReviewSuccess, { links as ReviewSuccessStyles } from './components/ReviewSuccess';
 import { reviewProduct } from './actions';
 import reducer, {
+  updateName,
   updateRating,
   updateReview,
   updateImages,
@@ -27,7 +28,7 @@ import reducer, {
   setFormError,
   setError,
 } from './reducer';
-import { LoadingState } from './types';
+import type { LoadingState } from './types';
 import type { TrackOrderProduct } from '../../../../types';
 
 export const links: LinksFunction = () => {
@@ -59,9 +60,10 @@ export const action: ActionFunction = async ({ request }) => {
  * - [x] Textarea for inputting comments. max 100 words
  * - [x] image upload. max 2 images
  * - [x] submit button should remove images.
- * - [x] remove images when review panel is closed.
+ * - [x] remove images when review panel is closed
  * - [x] refetch tracking info when submit success
- *  - [ ] When loadingState is 'DONE' and close is triggered
+ * - [ ] when loadingState is 'DONE' and close is triggered, revalidate tracking items.
+ * - [ ] ask user to input name.
  */
 function ReviewModal({
   isOpen,
@@ -73,6 +75,7 @@ function ReviewModal({
     loadingState: 'init',
     error: null,
     formError: null,
+    name: '',
     review: '',
     rating: 3,
     images: [],
@@ -96,6 +99,9 @@ function ReviewModal({
   ) => {
     dispatch(updateImages(imageList));
   }
+  const handleChangeName = (ele: ChangeEvent<HTMLInputElement>) => {
+    dispatch(updateName(ele.target.value));
+  };
   const handleSubmit = (evt: MouseEvent<HTMLButtonElement>) => {
     if (!reviewProduct) return;
 
@@ -104,6 +110,7 @@ function ReviewModal({
     // append 'rating' and 'comments'
     formData.append('rating', state.rating.toString());
     formData.append('review', state.review);
+    formData.append('name', state.name);
     formData.append('product_uuid', reviewProduct.uuid)
     formData.append('order_uuid', orderUUID)
 
@@ -163,7 +170,7 @@ function ReviewModal({
             {
               state.loadingState === 'init' ||
                 state.loadingState === 'failed'
-                ? 'add a review'
+                ? 'Give a review'
                 : null
             }
           </p>
@@ -184,8 +191,11 @@ function ReviewModal({
                           rating={state.rating}
                           reviewProduct={reviewProduct}
                           images={state.images}
+                          name={state.name}
                           isLoading={state.loadingState === 'loading'}
+
                           onClose={handleClose}
+                          onChangeName={handleChangeName}
                           onChangeRating={handleChangeRating}
                           onChangeReview={handleChangeReview}
                           onChangeImage={handleChangeImage}
