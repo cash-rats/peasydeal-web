@@ -115,6 +115,8 @@ const reducer: ImmerReducer<StateShape, ReviewModalActions> = (draft, action) =>
     }
     case ReviewModalActionTypes.reset: {
       draft.images = [];
+      draft.review = '';
+      draft.name = '';
       draft.error = null;
       draft.formError = null;
       draft.loadingState = 'init';

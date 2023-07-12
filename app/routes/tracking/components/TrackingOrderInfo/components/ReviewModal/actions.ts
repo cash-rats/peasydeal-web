@@ -5,6 +5,7 @@ import { composErrorResponse } from '~/utils/error';
 import type { FormError } from './types';
 import { uploadHandler } from './storage.server';
 import { submitReview } from './api.server';
+import { maskName } from '../../../../utils';
 
 const validateReview = (review: string) => {
   if (review.length === 0) {
@@ -70,6 +71,7 @@ const reviewProduct = async (request: Request) => {
       review,
       image_links: imgs,
       name,
+      masked_name: maskName(name),
     });
 
     return {};

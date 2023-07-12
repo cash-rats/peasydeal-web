@@ -6,6 +6,7 @@ interface SubmitReviewParams {
   product_uuid: string;
   order_uuid: string;
   name: string;
+  masked_name: string;
   rating: number;
   review: string;
   image_links: string[];
@@ -18,6 +19,7 @@ const submitReview = async (params: SubmitReviewParams) => {
     method: 'POST',
     body: JSON.stringify({
       name: params.name,
+      masked_name: params.masked_name,
       order_uuid: params.order_uuid,
       review: params.review,
       rating: params.rating,

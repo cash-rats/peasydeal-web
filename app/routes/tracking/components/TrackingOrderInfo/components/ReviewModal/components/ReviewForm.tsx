@@ -158,11 +158,9 @@ function ReviewForm({
 
         {
           formError?.name && (
-            <div className="h-10">
-              <p className="text-error-msg-red font-normal font-poppins text-sm">
-                {formError.name}
-              </p>
-            </div>
+            <p className="text-error-msg-red font-normal font-poppins text-sm">
+              {formError.name}
+            </p>
           )
         }
       </div>
@@ -216,7 +214,7 @@ function ReviewForm({
 
         {
           formError?.review && (
-            <div className="h-10">
+            <div>
               <p className="text-error-msg-red font-normal font-poppins text-sm">
                 {formError.review}
               </p>
