@@ -28,7 +28,7 @@ import PriceRow from './components/PriceRow';
 import useStickyActionBar from '../../hooks/useStickyActionBar';
 import useSticky from '../../hooks/useSticky';
 // @TODO: this component should be placed in nest component.
-import ProductDetailSection from '../ProductDetailSection';
+import ProductDetailSection, { links as ProductDetailSectionLinks } from '../ProductDetailSection';
 import ProductActionBar from '../../components/ProductActionBar';
 import SocialShare, { links as SocialShareLinks } from '../../components/SocialShare';
 import type {
@@ -39,6 +39,7 @@ import type {
 
 export const links: LinksFunction = () => {
   return [
+    ...ProductDetailSectionLinks(),
     ...RightTiltBoxLinks(),
     ...QuantityPickerLinks(),
     ...SocialShareLinks(),
