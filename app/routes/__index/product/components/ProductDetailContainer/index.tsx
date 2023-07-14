@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
@@ -12,12 +12,19 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  Tag,
+  TagLeftIcon,
 } from '@chakra-ui/react';
+import { BsLightningCharge } from 'react-icons/bs';
 
+import extra10 from '~/images/extra10.png';
+import { round10 } from '~/utils/preciseRound';
+import { SUPER_DEAL_OFF } from '~/shared/constants';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
+import PriceRow from './components/PriceRow';
 import useStickyActionBar from '../../hooks/useStickyActionBar';
 import useSticky from '../../hooks/useSticky';
 // @TODO: this component should be placed in nest component.
@@ -47,6 +54,7 @@ interface ProductDetailContainerParams {
   quantity: number;
   sessionStorableCartItem: ShoppingCartItem;
   isAddingToCart?: boolean;
+  tags?: string[];
 
   onChangeVariation?: (v: any) => void;
   onChangeQuantity?: (evt: ChangeEvent<HTMLInputElement>) => void;
@@ -64,6 +72,7 @@ function ProductDetailContainer({
   quantity,
   sessionStorableCartItem,
   isAddingToCart = false,
+  tags = [],
 
   onChangeVariation,
   onChangeQuantity,
@@ -77,6 +86,46 @@ function ProductDetailContainer({
 
   useSticky(productContentWrapperRef, productTopRef, 'sticky', 145);
   useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
+
+  const hasSuperDeal = useMemo(function () {
+    let _hasSuperDeal = false;
+
+    tags.forEach((name: string) => {
+      if (name === 'super_deal') {
+        _hasSuperDeal = true;
+      }
+    });
+
+    return _hasSuperDeal;
+  }, [tags]);
+
+  const PriceRowMemo = useMemo(() => {
+    if (!variation?.sale_price) return null;
+    if (!variation?.retail_price) return (
+      <PriceRow
+        salePrice={variation.sale_price}
+        previousRetailPrice={[]}
+      />
+    );
+
+    const salePrice = variation?.sale_price;
+    const retailPrice = variation?.retail_price;
+
+
+    return hasSuperDeal
+      ? (
+        <PriceRow
+          salePrice={round10(salePrice * SUPER_DEAL_OFF, -2)}
+          previousRetailPrice={[salePrice, retailPrice]}
+        />
+      )
+      : (
+        <PriceRow
+          salePrice={salePrice}
+          previousRetailPrice={[retailPrice]}
+        />
+      )
+  }, [variation, hasSuperDeal]);
 
   return (
     <div className="
@@ -109,25 +158,40 @@ function ProductDetailContainer({
 							"
       >
 
+        {
+          hasSuperDeal && (
+            <img
+              alt='extra 10% off - super deal'
+              className='
+											absolute
+											right-[-20px] md:right-[-36px]
+											top-[-45px] md:top-[-43px]
+											scale-[0.85]
+										'
+              src={extra10}
+            />
+          )
+        }
+
         <div className="absolute top-[-1.5rem] left-[-1px]">
           <RightTiltBox text={`${productDetail.order_count} bought`} />
         </div>
 
         <div>
 
-          {/* {
-								hasSuperDeal && (
-									<Tag
-										colorScheme="cyan"
-										variant='solid'
-										className="nowrap mb-2"
-										size='md'
-									>
-										<TagLeftIcon boxSize='16px' as={BsLightningCharge} />
-										<span>SUPER DEAL</span>
-									</Tag>
-								)
-							} */}
+          {
+            hasSuperDeal && (
+              <Tag
+                colorScheme="cyan"
+                variant='solid'
+                className="nowrap mb-2"
+                size='md'
+              >
+                <TagLeftIcon boxSize='16px' as={BsLightningCharge} />
+                <span>SUPER DEAL</span>
+              </Tag>
+            )
+          }
 
           <h1 className="text-xl md:text-2xl font-bold font-poppings mb-3">
             {productDetail?.title}
@@ -154,7 +218,7 @@ function ProductDetailContainer({
           }
 
           <div className="flex items-center mb-4">
-            {/* {PriceRowMemo} */}
+            {PriceRowMemo}
           </div>
 
           <div className="flex justify-start items-center mb-4">

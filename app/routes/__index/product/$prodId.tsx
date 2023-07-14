@@ -4,29 +4,21 @@ import {
 	useEffect,
 	useRef,
 	useReducer,
-	useMemo,
 } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction, V2_MetaFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
-import Select from 'react-select';
-import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
-import Rating from '@mui/material/Rating';
 import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
-import { BsLightningCharge } from 'react-icons/bs';
 
 import FourOhFour from '~/components/FourOhFour';
-import ClientOnly from '~/components/ClientOnly';
-import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import { commitSession } from '~/sessions/redis_session';
 import { insertItem } from '~/sessions/shoppingcart.session';
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
-import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
 import {
 	getCanonicalDomain,
 	getProdDetailTitleText,
@@ -40,32 +32,17 @@ import {
 	decomposeProductDetailURL,
 	composeProductDetailURL,
 } from '~/utils';
-import { round10 } from '~/utils/preciseRound';
-import {
-	Accordion,
-	AccordionItem,
-	AccordionButton,
-	AccordionPanel,
-	AccordionIcon,
-	Tag,
-	TagLeftIcon
-} from '@chakra-ui/react'
-import extra10 from '~/images/extra10.png';
 import { composErrorResponse } from '~/utils/error';
 import type { ApiErrorResponse } from '~/shared/types';
-import { SUPER_DEAL_OFF } from '~/shared/constants';
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 
 import Breadcrumbs from './components/Breadcrumbs';
 import Reviews from './components/Reviews';
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
-import ProductDetailSection, { links as ProductDetailSectionLinks } from './components/ProductDetailSection';
 import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
-import ProductActionBar from './components/ProductActionBar';
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
-import SocialShare, { links as SocialShareLinks } from './components/SocialShare';
 import useStickyActionBar from './hooks/useStickyActionBar';
 import useSticky from './hooks/useSticky';
 import reducer, {
@@ -128,11 +105,7 @@ export const links: LinksFunction = () => {
 	return [
 		...ProductDetailContainerLinks(),
 		...ItemAddedModalLinks(),
-		...QuantityPickerLinks(),
-		...ProductDetailSectionLinks(),
 		...RecommendedProductsLinks(),
-		...SocialShareLinks(),
-		...RightTiltBoxLinks(),
 		{ rel: "stylesheet", href: styles },
 	];
 };
@@ -284,6 +257,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		variationImages: loaderData?.product.variation_images,
 		quantity: 1,
 		variation: defaultVariation,
+		tags: loaderData.product.tag_combo_tags.split(','),
 		sessionStorableCartItem: normalizeToSessionStorableCartItem(
 			{
 				productDetail: loaderData?.product,
@@ -294,7 +268,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	});
 
 	const [variationErr, setVariationErr] = useState<string>('');
-	const [tags, setTags] = useState<Array<string>>([]);
 
 	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
@@ -321,9 +294,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 	useEffect(() => {
 		const currentVariation = findDefaultVariation(state.productDetail);
-		const tagComboTags = state.productDetail?.tag_combo_tags || '';
-		setTags(tagComboTags.split(','));
-
 		dispatch({
 			type: ActionTypes.set_variation,
 			payload: currentVariation,
@@ -414,29 +384,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		}
 	}, [addToCart.type]);
 
-	const hasSuperDeal = useMemo(function () {
-		let _hasSuperDeal = false;
 
-		tags.forEach((name: string) => {
-			if (name === 'super_deal') {
-				_hasSuperDeal = true;
-			}
-		});
-
-		return _hasSuperDeal;
-	}, [tags]);
-
-	const PriceRowMemo = useMemo(() => {
-		if (!state.variation?.sale_price) return null;
-		if (!state.variation?.retail_price) return getPriceRow(state.variation?.sale_price, []);
-
-		const salePrice = state.variation?.sale_price;
-		const retailPrice = state.variation?.retail_price;
-
-		return hasSuperDeal
-			? getPriceRow(round10(salePrice * SUPER_DEAL_OFF, -2), [salePrice, retailPrice])
-			: getPriceRow(salePrice, [retailPrice])
-	}, [state.variation, hasSuperDeal]);
 
 	const handleClickProduct = (title: string, productUUID: string) => {
 		console.log('ga[recommended_product]', title, productUUID);
@@ -478,10 +426,10 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 			<div className="
       relative w-full
-      xl:flex xl:mx-auto xl:my-0 xl:flex-row xl:max-w-[1280px]
-      md:flex md:pt-0 md:px-4 md:pb-[20px] md:flex-row md:justify-center
+      xl:flex xl:mx-auto xl:mb-0 xl:flex-row xl:max-w-[1280px]
+      md:flex md:mt-6 md:px-4 md:pb-[20px] md:flex-row md:justify-center
       md:items-start md:gap-[10px]
-			max-w-screen-xl
+			max-w-screen-xl mt-2
 				"
 			>
 				<ProductDetailContainer
@@ -493,6 +441,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					quantity={state.quantity}
 					sessionStorableCartItem={state.sessionStorableCartItem}
 					isAddingToCart={addToCart.state !== 'idle'}
+					tags={state.tags}
 
 					onChangeQuantity={handleUpdateQuantity}
 					onChangeVariation={handleChangeVariation}
@@ -500,27 +449,29 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					onDecreaseQuantity={decreaseQuantity}
 					onIncreaseQuantity={increaseQuantity}
 				/>
+			</div>
 
+			{/* Reviews */}
+			<Reviews />
 
-				{/*
+			{/*
 				Recommended products:
 					- Things you might like: other products that belongs to the same category.
 					- Hot deals
 					- New trend
 			*/}
-				{
-					state.mainCategory
-						? (
-							<RecommendedProducts
-								category={state.mainCategory.name}
-								onClickProduct={handleClickProduct}
-								scrollPosition={scrollPosition}
-							/>
+			{
+				state.mainCategory
+					? (
+						<RecommendedProducts
+							category={state.mainCategory.name}
+							onClickProduct={handleClickProduct}
+							scrollPosition={scrollPosition}
+						/>
 
-						)
-						: null
-				}
-			</div>
+					)
+					: null
+			}
 		</>
 	);
 };
