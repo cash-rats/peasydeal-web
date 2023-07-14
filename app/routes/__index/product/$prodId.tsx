@@ -248,7 +248,9 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		: null;
 
 	const defaultVariation = findDefaultVariation(loaderData.product);
+	const tags = loaderData.product.tag_combo_tags || '';
 
+	// TODO: extract state initializer to independent function
 	const [state, dispatch] = useReducer(reducer, {
 		productDetail: loaderData?.product,
 		categories: loaderData?.product?.categories,
@@ -257,7 +259,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		variationImages: loaderData?.product.variation_images,
 		quantity: 1,
 		variation: defaultVariation,
-		tags: loaderData.product.tag_combo_tags.split(','),
+		tags: tags.split(','),
 		sessionStorableCartItem: normalizeToSessionStorableCartItem(
 			{
 				productDetail: loaderData?.product,
@@ -268,7 +270,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	});
 
 	const [variationErr, setVariationErr] = useState<string>('');
-
 	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
