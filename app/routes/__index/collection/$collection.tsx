@@ -43,7 +43,6 @@ import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
 import type { LoaderDataType, LoadMoreDataType } from './types';
 import structuredData from './structured_data';
-import useSticky from "../hooks/useSticky";
 
 import {
   Drawer,

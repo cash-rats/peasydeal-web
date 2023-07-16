@@ -430,8 +430,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
       xl:flex xl:mx-auto xl:mb-0 xl:flex-row xl:max-w-[1280px]
       md:flex md:mt-6 md:px-4 md:pb-[20px] md:flex-row md:justify-center
       md:items-start md:gap-[10px]
-			max-w-screen-xl mt-2
-				"
+			max-w-screen-xl mt-2"
 			>
 				<ProductDetailContainer
 					productDetail={state.productDetail}
