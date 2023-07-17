@@ -222,11 +222,8 @@ export const action: ActionFunction = async ({ request }) => {
 	const session = await insertItem(request, item);
 
 	if (formAction === 'add_item_to_cart') {
-		// Invalidates product list pagination cache and shopping cart every 3 days.
 		return json('', {
-			headers: {
-				"Set-Cookie": await commitSession(session),
-			}
+			headers: { "Set-Cookie": await commitSession(session) }
 		});
 	}
 
@@ -262,8 +259,7 @@ const getPriceRow = (salePrice: number, previousRetailPrice: Array<number>) => {
 
 type ProductDetailProps = {} & LazyComponentProps;
 /*
- * Emulate discount expert
- * @see https://www.discountexperts.com/deal/uptfll2cfs/Breathable_Air_Cushion_Trainers___6_Colours___Sizes
+ * - [ ] display product reviews
  */
 function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};

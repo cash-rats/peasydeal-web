@@ -24,7 +24,6 @@ interface PromoteSubscriptionModalAction {
 
 // ------- action creators -------
 export const setOpenPromoteSubscriptionModal = (open: boolean): PromoteSubscriptionModalAction => {
-  console.log('setOpenPromoteSubscriptionModal', open);
   return {
     type: promoteSubscriptionModalActionTypes.set_open_subscribe_modal,
     payload: {

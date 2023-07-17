@@ -27,7 +27,8 @@ const uploadHandler = unstable_composeUploadHandlers(
     const objectPath = `review_images/${filename}`;
 
     if (bucket) {
-      await streamFileUpload(bucket, {
+      // do not wait for the file to upload.
+      streamFileUpload(bucket, {
         buffer,
         filename: objectPath,
       });
