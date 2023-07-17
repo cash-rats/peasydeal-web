@@ -1,12 +1,21 @@
 import { AiFillStar } from 'react-icons/ai';
+import { parseISO, format } from 'date-fns';
 
 import TruncateText from './TruncateText';
 
-interface ReviewParams {
-  text: string;
+const parseTimestampToHumanReadable = (timestamp: string) => {
+  const date = parseISO(timestamp);
+  return format(date, 'MMM-yyyy');
 }
 
-function Review({ text }: ReviewParams) {
+interface ReviewParams {
+  text: string;
+  name: string;
+  rating: number;
+  timestamp: string;
+}
+
+function Review({ text, name, rating, timestamp }: ReviewParams) {
   return (
     <div className="py-4 pr-4 border-b-[rgba(180,180,180,0.4)] border-b border-solid">
       <div className="flex flex-row items-center">
@@ -22,22 +31,28 @@ function Review({ text }: ReviewParams) {
 
         <div className="flex-[1_0_0px] flex-col">
           <div className="mx-0 text-base font-bold">
-            Katrina
+            {name}
           </div>
           <div className="flex font-poppins text-sm text-[#595959]">
-            july 2023
+            {parseTimestampToHumanReadable(timestamp)}
           </div>
         </div>
 
         <div className="self-start my-1 mx-0 leading-4 flex flex-row">
           {
-            (new Array(5)).fill(0).map((v, idx) => (
-              <AiFillStar
-                fontSize={24}
-                key={idx}
-                color='#207A41'
-              />
-            ))
+            (new Array(5)).fill(0).map((v, idx) => {
+              return (
+                <AiFillStar
+                  fontSize={24}
+                  key={idx}
+                  color={
+                    idx + 1 <= rating
+                      ? '#207A41'
+                      : '#D4D5D0'
+                  }
+                />
+              )
+            })
           }
         </div>
       </div>

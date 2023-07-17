@@ -58,7 +58,6 @@ function CheckoutForm({
   };
 
   const handleStripeChangePayment = (element: StripePaymentElementChangeEvent) => {
-    console.log('debug 1', element.collapsed);
     if (numOfChangesToSkipForStripePaymentElement.current > 0) {
       numOfChangesToSkipForStripePaymentElement.current--;
       return;

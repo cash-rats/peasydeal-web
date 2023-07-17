@@ -1,17 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { json } from '@remix-run/node';
 import type { ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 
 import Review from './components/Review';
+import type { ReviewResponse } from '../../types';
 import { fetchReviews } from '../../api.server';
 
 export const action: ActionFunction = async ({ request }) => {
   const formData = await request.formData();
   const prodUUID = await formData.get('product_uuid') as string || '';
   if (!prodUUID) return null
-  const reviews = await fetchReviews(prodUUID);
-  console.log('debug triggered !!!8* ', reviews);
-  return null
+  const resp = await fetchReviews(prodUUID);
+  return json<ReviewResponse>(resp);
 }
 
 interface ReviewsParams {
@@ -19,7 +20,14 @@ interface ReviewsParams {
 }
 
 function Reviews({ productUUID }: ReviewsParams) {
+  const [reviewInfo, setReviewInfo] = useState<ReviewResponse | null>(null);
   const fetcher = useFetcher();
+
+  useEffect(() => {
+    if (fetcher.type === 'done') {
+      setReviewInfo(fetcher.data)
+    }
+  }, [fetcher.type]);
 
   useEffect(() => {
     fetcher.submit({
@@ -30,20 +38,61 @@ function Reviews({ productUUID }: ReviewsParams) {
     });
   }, [productUUID]);
 
+  const getReviewsHelper = useMemo(() => {
+    if (
+      fetcher.state === 'submitting' ||
+      (fetcher.state === 'idle' && !reviewInfo)
+    ) {
+      return null
+    }
+
+    if (fetcher.state === 'idle' && reviewInfo) {
+      if (reviewInfo.reviews.length > 0) {
+        return (
+          reviewInfo.reviews.map((review, index) => (
+            <Review
+              key={index}
+              name={review.reviewer_name}
+              text={review.content}
+              rating={review.rating}
+              timestamp={review.review_date}
+            />
+          ))
+        );
+      }
+
+      if (reviewInfo.reviews.length === 0) {
+        return (
+          <div className="
+								w-full py-2.5 max-w-screen-xl mx-auto
+								capitalized
+								text-lg font-poppins nowrap
+								flex items-center justify-center
+								bg-white
+								p-4 mt-6
+							">
+            <span>
+              <p className='text-[#000] font-poppins first-letter:capitalize'>no reviews yet</p>
+            </span>
+          </div>
+        );
+      }
+    }
+
+    return null
+  }, [
+    fetcher.state,
+    reviewInfo,
+  ])
+
   return (
     <div>
-      <h3 className="
-        font-poppins font-bold text-2xl mt-6 lg:px-2
-      ">
+      <h3 className="font-poppins font-bold text-2xl mt-6 lg:pr-2">
         Reviews
       </h3>
 
-      {/* rating grids */}
       <div className="flex flex-col">
-        <Review text='Very friendly and on time. Very efficient, also takes very nice photos. Easy to talk to, very fluent in English. Highly recommended. Will definitely tell my family and friends about the wonderful experience.' />
-        <Review text='Jia Xin is a very friendly driver and he takes the time to give us information about the place we pass by during the ride. He is very patient and passionate about his job, which makes the whole experience even more worthwhile!😆apart from all of the above, the journey went smoothly and the ride was' />
-        <Review text='Jia Xin is a very friendly driver and he takes the time to give us information about the place we pass by during the ride. He is very patient and passionate about his job, which makes the whole experience even more worthwhile!😆apart from all of the above, the journey went smoothly and the ride was' />
-        <Review text='Jia Xin is a very friendly driver and he takes the time to give us information about the place we pass by during the ride. He is very patient and passionate about his job, which makes the whole experience even more worthwhile!😆apart from all of the above, the journey went smoothly and the ride was' />
+        {getReviewsHelper}
       </div>
     </div>
   );
