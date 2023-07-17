@@ -54,6 +54,7 @@ function CheckoutForm({
   };
 
   const handleStripeChangePayment = (element: StripePaymentElementChangeEvent) => {
+    console.log('debug 1', element.collapsed);
     if (numOfChangesToSkipForStripePaymentElement.current > 0) {
       numOfChangesToSkipForStripePaymentElement.current--;
       return;
@@ -74,6 +75,8 @@ function CheckoutForm({
   const handlePaypalCreateOrder = async (): Promise<string> => paypalCreateOrder();
 
   const handlePaypalApproveOrder = async (data: OnApproveData, action: OnApproveActions) => paypalApproveOrder(data, action);
+
+  console.log('debug 2', selectedMethod);
 
   return (
     <>

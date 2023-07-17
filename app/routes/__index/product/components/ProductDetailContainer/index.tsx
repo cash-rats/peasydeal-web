@@ -25,6 +25,7 @@ import QuantityPicker, { links as QuantityPickerLinks } from '~/components/Quant
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
 import PriceRow from './components/PriceRow';
+import Reviews from './components/Reviews';
 import useStickyActionBar from '../../hooks/useStickyActionBar';
 import useSticky from '../../hooks/useSticky';
 // @TODO: this component should be placed in nest component.
@@ -144,6 +145,9 @@ function ProductDetailContainer({
           title={productDetail.title}
           description={productDetail.description}
         />
+
+        {/* Reviews */}
+        <Reviews productUUID={productDetail.uuid} />
       </div>
 
       {/* product content */}
@@ -156,6 +160,7 @@ function ProductDetailContainer({
 								h-fit
 								sticky
 								col-span-5 xl:col-span-4
+                mt-6
 							"
       >
 

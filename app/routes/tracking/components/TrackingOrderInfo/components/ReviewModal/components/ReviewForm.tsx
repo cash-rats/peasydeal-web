@@ -172,7 +172,7 @@ function ReviewForm({
         </p>
         <div>
           <Rating
-            className=" max-w-[150px]"
+            className="max-w-[150px]"
             value={rating}
             itemStyles={{
               itemShapes: RoundedStar,

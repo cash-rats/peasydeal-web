@@ -37,7 +37,6 @@ import type { ApiErrorResponse } from '~/shared/types';
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 
 import Breadcrumbs from './components/Breadcrumbs';
-import Reviews from './components/Reviews';
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
@@ -450,9 +449,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					onIncreaseQuantity={increaseQuantity}
 				/>
 			</div>
-
-			{/* Reviews */}
-			<Reviews />
 
 			{/*
 				Recommended products:
