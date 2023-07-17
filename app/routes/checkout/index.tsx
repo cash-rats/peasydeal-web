@@ -459,13 +459,13 @@ function CheckoutPage() {
               <CheckoutForm
                 loading={createOrderFetcher.state !== 'idle' || isPaying}
 
-                // Paypal payment button enables only if all required form inputs
-                // are validated.
-                paypalDisabled={state.disablePaypalButton}
+              // Paypal payment button enables only if all required form inputs are validated.
+              // Disable paypal relative
+              // paypalDisabled={state.disablePaypalButton}
 
-                paypalCreateOrder={handlePaypalCreateOrder}
-                paypalApproveOrder={handlePaypalApproveOrder}
-                paypalInputValidate={handlePaypalInputValidate}
+              // paypalCreateOrder={handlePaypalCreateOrder}
+              // paypalApproveOrder={handlePaypalApproveOrder}
+              // paypalInputValidate={handlePaypalInputValidate}
               />
             }
           </createOrderFetcher.Form>
