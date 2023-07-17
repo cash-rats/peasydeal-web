@@ -1,11 +1,13 @@
+/** Disable paypal relative functions for business validation review  */
+
 import { useRef, useState } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import type { StripePaymentElement, StripePaymentElementChangeEvent } from '@stripe/stripe-js';
-import type { OnClickActions, OnApproveData, OnApproveActions } from "@paypal/paypal-js";
+// import type { OnClickActions, OnApproveData, OnApproveActions } from "@paypal/paypal-js";
 
 import styles from './styles/CheckoutForm.css';
 import StripeCheckout from './components/StripeCheckout';
-import PaypalCheckout from './components/PaypalCheckout';
+// import PaypalCheckout from './components/PaypalCheckout';
 
 export const links: LinksFunction = () => {
   return [
@@ -15,16 +17,18 @@ export const links: LinksFunction = () => {
 
 interface StripeCheckoutFormProps {
   loading?: boolean;
-  paypalDisabled?: boolean;
-  paypalCreateOrder: () => Promise<string>;
-  paypalInputValidate?: (
-    rec: Record<string, unknown>,
-    actions: OnClickActions
-  ) => Promise<void> | void
-  paypalApproveOrder?: (
-    data: OnApproveData,
-    actions: OnApproveActions
-  ) => Promise<void>,
+
+
+  // paypalDisabled?: boolean;
+  // paypalCreateOrder: () => Promise<string>;
+  // paypalInputValidate?: (
+  //   rec: Record<string, unknown>,
+  //   actions: OnClickActions
+  // ) => Promise<void> | void
+  // paypalApproveOrder?: (
+  //   data: OnApproveData,
+  //   actions: OnApproveActions
+  // ) => Promise<void>,
 }
 
 export type PaymentMethods = 'stripe_methods' | 'paypal';
@@ -36,12 +40,12 @@ export type PaymentMethods = 'stripe_methods' | 'paypal';
 //  - [x] [To submit payment on server](https://stripe.com/docs/payments/accept-a-payment-synchronously?html-or-react=react)
 function CheckoutForm({
   loading = false,
-  paypalDisabled = true,
-  paypalCreateOrder,
-  paypalApproveOrder = async (data: OnApproveData, actions: OnApproveActions) => { },
-  paypalInputValidate = () => { },
+  // paypalDisabled = true,
+  // paypalCreateOrder,
+  // paypalApproveOrder = async (data: OnApproveData, actions: OnApproveActions) => { },
+  // paypalInputValidate = () => { },
 }: StripeCheckoutFormProps) {
-  const [selectedMethod, setSelectedMethod] = useState<PaymentMethods>('paypal');
+  const [selectedMethod, setSelectedMethod] = useState<PaymentMethods>('stripe_methods');
   const paymentElement = useRef<StripePaymentElement | null>(null);
 
   // We'll skip 2 onChange invocation on PaymentElemet before we can `setSelectMethod`.
@@ -66,14 +70,14 @@ function CheckoutForm({
     setSelectedMethod("stripe_methods");
   }
 
-  const handleChoosePayPal = () => {
-    paymentElement.current?.collapse();
-    setSelectedMethod("paypal");
-  }
+  // const handleChoosePayPal = () => {
+  //   paymentElement.current?.collapse();
+  //   setSelectedMethod("paypal");
+  // }
 
-  const handlePaypalCreateOrder = async (): Promise<string> => paypalCreateOrder();
+  // const handlePaypalCreateOrder = async (): Promise<string> => paypalCreateOrder();
 
-  const handlePaypalApproveOrder = async (data: OnApproveData, action: OnApproveActions) => paypalApproveOrder(data, action);
+  // const handlePaypalApproveOrder = async (data: OnApproveData, action: OnApproveActions) => paypalApproveOrder(data, action);
 
   return (
     <>
@@ -81,7 +85,8 @@ function CheckoutForm({
         Payment Methods
       </h3>
 
-      <PaypalCheckout
+      {/* Disable for paypal business validation */}
+      {/* <PaypalCheckout
         collapse={selectedMethod !== 'paypal'}
         onChoose={handleChoosePayPal}
 
@@ -89,7 +94,7 @@ function CheckoutForm({
         paypalInputValidate={paypalInputValidate}
         paypalCreateOrder={handlePaypalCreateOrder}
         paypalApproveOrder={handlePaypalApproveOrder}
-      />
+      /> */}
 
       <StripeCheckout
         disabled={selectedMethod !== 'stripe_methods'}
