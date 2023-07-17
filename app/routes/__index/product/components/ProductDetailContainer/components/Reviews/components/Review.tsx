@@ -40,19 +40,21 @@ function Review({ text, name, rating, timestamp }: ReviewParams) {
 
         <div className="self-start my-1 mx-0 leading-4 flex flex-row">
           {
-            (new Array(5)).fill(0).map((v, idx) => {
-              return (
-                <AiFillStar
-                  fontSize={24}
-                  key={idx}
-                  color={
-                    idx + 1 <= rating
-                      ? '#207A41'
-                      : '#D4D5D0'
-                  }
-                />
-              )
-            })
+            (new Array(5))
+              .fill(0)
+              .map((v, idx) => {
+                return (
+                  <AiFillStar
+                    fontSize={24}
+                    key={idx}
+                    color={
+                      idx + 1 <= rating
+                        ? '#207A41'
+                        : '#D4D5D0'
+                    }
+                  />
+                )
+              })
           }
         </div>
       </div>

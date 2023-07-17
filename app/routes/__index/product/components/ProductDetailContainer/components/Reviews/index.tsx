@@ -4,6 +4,7 @@ import type { ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 
 import Review from './components/Review';
+import ReviewAggregate from './components/ReviewAggregate';
 import type { ReviewResponse } from '../../types';
 import { fetchReviews } from '../../api.server';
 
@@ -49,15 +50,23 @@ function Reviews({ productUUID }: ReviewsParams) {
     if (fetcher.state === 'idle' && reviewInfo) {
       if (reviewInfo.reviews.length > 0) {
         return (
-          reviewInfo.reviews.map((review, index) => (
-            <Review
-              key={index}
-              name={review.reviewer_name}
-              text={review.content}
-              rating={review.rating}
-              timestamp={review.review_date}
+          <>
+            <ReviewAggregate
+              averageRating={3}
             />
-          ))
+
+            {
+              reviewInfo.reviews.map((review, index) => (
+                <Review
+                  key={index}
+                  name={review.reviewer_name}
+                  text={review.content}
+                  rating={review.rating}
+                  timestamp={review.review_date}
+                />
+              ))
+            }
+          </>
         );
       }
 
