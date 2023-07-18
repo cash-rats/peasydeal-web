@@ -51,9 +51,9 @@ function Reviews({ productUUID }: ReviewsParams) {
       if (reviewInfo.reviews.length > 0) {
         return (
           <>
-            <ReviewAggregate
-              averageRating={3}
-            />
+            <div className="w-full mb-3">
+              <ReviewAggregate averageRating={reviewInfo.average_rating} numberOfRaters={reviewInfo.number_of_raters} />
+            </div>
 
             {
               reviewInfo.reviews.map((review, index) => (
@@ -96,7 +96,7 @@ function Reviews({ productUUID }: ReviewsParams) {
 
   return (
     <div>
-      <h3 className="font-poppins font-bold text-2xl mt-6 lg:pr-2">
+      <h3 className="font-poppins font-bold text-2xl mt-6 mb-3 lg:pr-2">
         Reviews
       </h3>
 
