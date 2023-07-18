@@ -1,7 +1,8 @@
-import { AiFillStar } from 'react-icons/ai';
 import { parseISO, format } from 'date-fns';
 
+import RatingStar from './RatingStar';
 import TruncateText from './TruncateText';
+import { calcStars } from '../utils';
 
 const parseTimestampToHumanReadable = (timestamp: string) => {
   const date = parseISO(timestamp);
@@ -40,20 +41,14 @@ function Review({ text, name, rating, timestamp }: ReviewParams) {
 
         <div className="self-start my-1 mx-0 leading-4 flex flex-row">
           {
-            (new Array(5))
-              .fill(0)
-              .map((v, idx) => {
+            calcStars(rating)
+              .map((st, idx) => {
                 return (
-                  <AiFillStar
-                    fontSize={24}
+                  <RatingStar
+                    starType={st}
                     key={idx}
-                    color={
-                      idx + 1 <= rating
-                        ? '#207A41'
-                        : '#D4D5D0'
-                    }
                   />
-                )
+                );
               })
           }
         </div>
