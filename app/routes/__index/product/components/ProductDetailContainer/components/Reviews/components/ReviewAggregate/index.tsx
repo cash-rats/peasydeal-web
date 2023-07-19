@@ -9,7 +9,7 @@ interface ReviewAggregateParams {
 function ReviewAggregate({ averageRating, numberOfRaters }: ReviewAggregateParams) {
   const starArr = calcStars(averageRating);
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row pl-4 md:pl-0">
       <div className="flex flex-row justify-cente items-center mr-[0.875rem]">
         {
           starArr

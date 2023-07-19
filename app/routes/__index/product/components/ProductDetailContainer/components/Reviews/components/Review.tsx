@@ -20,7 +20,7 @@ interface ReviewParams {
 
 function Review({ text, name, rating, timestamp }: ReviewParams) {
   return (
-    <div className="py-4 pr-4 border-b-[rgba(180,180,180,0.4)] border-b border-solid">
+    <div className="py-4 pr-4 pl-4 md:pl-0 border-b-[rgba(180,180,180,0.4)] border-b border-solid">
       <div className="flex flex-row items-center">
         <div className="mr-2">
           <div className="flex overflow-hidden justify-center items-center

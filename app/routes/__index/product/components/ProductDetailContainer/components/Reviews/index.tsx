@@ -91,7 +91,7 @@ function Reviews({ productUUID }: ReviewsParams) {
 
   return (
     <div>
-      <h3 className="font-poppins font-bold text-2xl mt-6 mb-3 lg:pr-2">
+      <h3 className="font-poppins font-bold text-2xl mt-6 mb-3 lg:pr-2 pl-4 md:pl-0">
         Reviews
       </h3>
 
