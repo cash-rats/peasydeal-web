@@ -170,7 +170,7 @@ function ReviewModal({
             {
               state.loadingState === 'init' ||
                 state.loadingState === 'failed'
-                ? 'Give a review'
+                ? 'leave a review'
                 : null
             }
           </p>
