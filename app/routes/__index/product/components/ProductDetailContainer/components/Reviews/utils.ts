@@ -31,7 +31,7 @@ export function calcStars(num: number): StarType[] {
     stararr[i] = 'full_star';
     placeCount++;
   }
-  console.log('debug placeCount', placeCount);
+
   stararr[placeCount] = trailingstar;
   for (let j = placeCount + 1; j < stararr.length; j++) {
     stararr[j] = 'no_star';
