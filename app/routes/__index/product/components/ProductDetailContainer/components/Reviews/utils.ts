@@ -1,6 +1,5 @@
 import type { StarType } from './types';
 
-
 /*
 > 4.5 && <= 5 ---> 5 stars
 r >= 4.3 && r <= 4.5 ---> 4.5 stars
@@ -32,7 +31,7 @@ export function calcStars(num: number): StarType[] {
     stararr[i] = 'full_star';
     placeCount++;
   }
-  console.log('debug placeCount', placeCount);
+
   stararr[placeCount] = trailingstar;
   for (let j = placeCount + 1; j < stararr.length; j++) {
     stararr[j] = 'no_star';

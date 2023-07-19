@@ -9,6 +9,8 @@ const parseTimestampToHumanReadable = (timestamp: string) => {
   return format(date, 'MMM-yyyy');
 }
 
+const getFirstChar = (str: string) => str.slice(0, 1)
+
 interface ReviewParams {
   text: string;
   name: string;
@@ -18,7 +20,7 @@ interface ReviewParams {
 
 function Review({ text, name, rating, timestamp }: ReviewParams) {
   return (
-    <div className="py-4 pr-4 border-b-[rgba(180,180,180,0.4)] border-b border-solid">
+    <div className="py-4 pr-4 pl-4 md:pl-0 border-b-[rgba(180,180,180,0.4)] border-b border-solid">
       <div className="flex flex-row items-center">
         <div className="mr-2">
           <div className="flex overflow-hidden justify-center items-center
@@ -26,7 +28,7 @@ function Review({ text, name, rating, timestamp }: ReviewParams) {
               font-bold text-2xl capitalize border rounded-[50%]
               border-solid border-[#B4B4B4] bg-[#3ECF8E]"
           >
-            h
+            {getFirstChar(name)}
           </div>
         </div>
 
@@ -34,6 +36,7 @@ function Review({ text, name, rating, timestamp }: ReviewParams) {
           <div className="mx-0 text-base font-bold">
             {name}
           </div>
+
           <div className="flex font-poppins text-sm text-[#595959]">
             {parseTimestampToHumanReadable(timestamp)}
           </div>

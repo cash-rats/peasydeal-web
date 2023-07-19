@@ -4,6 +4,7 @@ import type { ActionFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
 
 import Review from './components/Review';
+import ReviewSkeleton from './components/ReviewSkeleton';
 import ReviewAggregate from './components/ReviewAggregate';
 import type { ReviewResponse } from '../../types';
 import { fetchReviews } from '../../api.server';
@@ -40,13 +41,6 @@ function Reviews({ productUUID }: ReviewsParams) {
   }, [productUUID]);
 
   const getReviewsHelper = useMemo(() => {
-    if (
-      fetcher.state === 'submitting' ||
-      (fetcher.state === 'idle' && !reviewInfo)
-    ) {
-      return null
-    }
-
     if (fetcher.state === 'idle' && reviewInfo) {
       if (reviewInfo.reviews.length > 0) {
         return (
@@ -73,13 +67,13 @@ function Reviews({ productUUID }: ReviewsParams) {
       if (reviewInfo.reviews.length === 0) {
         return (
           <div className="
-								w-full py-2.5 max-w-screen-xl mx-auto
-								capitalized
-								text-lg font-poppins nowrap
-								flex items-center justify-center
-								bg-white
-								p-4 mt-6
-							">
+    						w-full py-2.5 max-w-screen-xl mx-auto
+    						capitalized
+    						text-lg font-poppins nowrap
+    						flex items-center justify-center
+    						bg-white
+    						p-4 mt-6
+    					">
             <span>
               <p className='text-[#000] font-poppins first-letter:capitalize'>no reviews yet</p>
             </span>
@@ -88,7 +82,8 @@ function Reviews({ productUUID }: ReviewsParams) {
       }
     }
 
-    return null
+    return (<ReviewSkeleton />)
+
   }, [
     fetcher.state,
     reviewInfo,
@@ -96,7 +91,7 @@ function Reviews({ productUUID }: ReviewsParams) {
 
   return (
     <div>
-      <h3 className="font-poppins font-bold text-2xl mt-6 mb-3 lg:pr-2">
+      <h3 className="font-poppins font-bold text-2xl mt-6 mb-3 lg:pr-2 pl-4 md:pl-0">
         Reviews
       </h3>
 
