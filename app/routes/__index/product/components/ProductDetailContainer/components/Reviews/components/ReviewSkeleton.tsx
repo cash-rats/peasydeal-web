@@ -5,7 +5,7 @@ function ReviewSkeleton() {
     <>
       {
         (new Array(3)).fill(0).map((_, idx) => (
-          <div key={idx} className="flex flex-col border-b-[rgba(180,180,180,0.4)] border-b border-solid py-4 pr-4">
+          <div key={idx} className="flex flex-col border-b-[rgba(180,180,180,0.4)] border-b border-solid py-4 pr-4 pl-4 md:pl-0">
             <div className="flex flex-row justify-start items-center mb-4">
               <Skeleton className="mr-3" height={4} width={70} />
               <Skeleton className="mr-3" height={4} width={32} />
