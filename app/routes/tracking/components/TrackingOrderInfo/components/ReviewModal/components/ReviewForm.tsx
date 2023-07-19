@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { Alert, AlertIcon } from '@chakra-ui/react';
 import Image, { MimeType } from 'remix-image';
-import { Rating, RoundedStar } from '@smastrom/react-rating';
+import { Rating, StickerStar } from '@smastrom/react-rating';
 import { BiInfoCircle } from 'react-icons/bi';
 import {
   Input,
@@ -172,10 +172,10 @@ function ReviewForm({
         </p>
         <div>
           <Rating
-            className=" max-w-[150px]"
+            style={{ maxWidth: 150 }}
             value={rating}
             itemStyles={{
-              itemShapes: RoundedStar,
+              itemShapes: StickerStar,
               activeFillColor: '#ffb700',
               inactiveFillColor: '#fbf1a9'
             }}

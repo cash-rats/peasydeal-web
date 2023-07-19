@@ -5,13 +5,13 @@ import { Button } from '@chakra-ui/react';
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
 interface ProductActionBarProps {
-  onClickAddToCart: () => void;
+  onClickAddToCart?: () => void;
   sessionStorableCartItem: ShoppingCartItem;
   loading?: boolean;
 };
 
 const ProductActionBar = forwardRef(({
-  onClickAddToCart,
+  onClickAddToCart = () => { },
   sessionStorableCartItem,
   loading = false,
 }: ProductActionBarProps, ref) => {

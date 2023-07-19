@@ -24,63 +24,6 @@
     max-width: 1400px;
   }
 }
-.productdetail-container .product-content-wrapper {
-  /* Height of the header, so it looks like the header is push the div down. */
-  padding: 0 15px;
-  margin-top: 35px;
-  margin-bottom: 60px;
-  width: 100%;
-}
-@media (min-width: 768px) {
-  .productdetail-container .product-content-wrapper {
-    margin-bottom: 0;
-    margin-top: 0;
-    padding: 0;
-  }
-}
-@media (min-width: 768px) and (max-width: 1280px) {
-  .productdetail-container .product-content-wrapper {
-    max-width: 44%;
-  }
-}
-@media (min-width: 1280px) {
-  .productdetail-container .product-content-wrapper {
-    max-width: 47%;
-  }
-}
-.productdetail-container .product-content-wrapper .product-content {
-  border: solid 1px #ccc;
-  background: white;
-  display: flex;
-  flex-direction: column;
-  padding: 20px 10px;
-  margin-bottom: 1rem;
-  position: sticky;
-  top: 145px;
-  word-break: break-all;
-}
-@media (min-width: 768px) {
-  .productdetail-container .product-content-wrapper .product-content {
-    margin-bottom: 0;
-  }
-}
-.productdetail-container .product-content-wrapper .product-content .product-tag-bar {
-  display: flex;
-  align-items: baseline;
-  justify-content: flex-start;
-}
-.productdetail-container .product-content-wrapper .product-content .product-tag-bar .detail-amount {
-  color: #D02E7D;
-  font-size: 40px;
-  font-weight: 700;
-  margin: 0;
-}
-.productdetail-container .product-content-wrapper .product-content .product-tag-bar .actual-amount {
-  color: #888;
-  font-size: 1.25rem;
-  margin-left: 0.7rem;
-  text-decoration: line-through;
-}
 
 .sales-end-timer {
   display: flex;

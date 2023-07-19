@@ -322,6 +322,7 @@ function CheckoutPage() {
   }
 
   const handlePaypalCreateOrder = async (): Promise<string> => {
+    console.log('debug handlePaypalCreateOrder');
     const orderInfo = retrieveOrderInfoForSubmission('paypal');
 
     const data: PaypalCreateOrderResponse = await submit(
