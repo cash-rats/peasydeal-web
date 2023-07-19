@@ -113,7 +113,6 @@ function ProductDetailContainer({
     const salePrice = variation?.sale_price;
     const retailPrice = variation?.retail_price;
 
-
     return hasSuperDeal
       ? (
         <PriceRow

@@ -9,6 +9,8 @@ const parseTimestampToHumanReadable = (timestamp: string) => {
   return format(date, 'MMM-yyyy');
 }
 
+const getFirstChar = (str: string) => str.slice(0, 1)
+
 interface ReviewParams {
   text: string;
   name: string;
@@ -26,7 +28,7 @@ function Review({ text, name, rating, timestamp }: ReviewParams) {
               font-bold text-2xl capitalize border rounded-[50%]
               border-solid border-[#B4B4B4] bg-[#3ECF8E]"
           >
-            h
+            {getFirstChar(name)}
           </div>
         </div>
 
@@ -34,6 +36,7 @@ function Review({ text, name, rating, timestamp }: ReviewParams) {
           <div className="mx-0 text-base font-bold">
             {name}
           </div>
+
           <div className="flex font-poppins text-sm text-[#595959]">
             {parseTimestampToHumanReadable(timestamp)}
           </div>

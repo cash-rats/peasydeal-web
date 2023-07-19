@@ -1,6 +1,5 @@
 import type { StarType } from './types';
 
-
 /*
 > 4.5 && <= 5 ---> 5 stars
 r >= 4.3 && r <= 4.5 ---> 4.5 stars
