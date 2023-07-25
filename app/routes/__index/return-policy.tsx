@@ -37,7 +37,7 @@ export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
 
 export const loader: LoaderFunction = async () => {
   try {
-    const entryId = "2V3hOJs5zIsijhGX8caGGc";
+    const entryId = "3zfDoppSa6nsRtxCU8teqz";
     const res = await fetchContentfulPostWithId({ entryId });
 
     return json<TContentfulPost>(res);
