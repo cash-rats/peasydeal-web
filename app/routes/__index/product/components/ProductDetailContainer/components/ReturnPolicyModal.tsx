@@ -31,7 +31,11 @@ function ReturnPolicyModal({
           <ModalCloseButton />
         </ModalHeader>
         <ModalBody>
-          <div className="px-4 pb-4 pt-2">
+          <h2 className="font-bold text-lg pb-3 border-b-[1px] border-b-[#E3E8EF]">
+            Return policy
+          </h2>
+
+          <div className="px-4 pb-4 pt-2 mt-4">
             <ul className="list-disc font-poppins space-y-3">
               <li>
                 Any item(s) in their original condition are eligible for a full refund within 14 days of purchase.
