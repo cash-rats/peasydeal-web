@@ -15,7 +15,8 @@ import {
   Tag,
   TagLeftIcon,
 } from '@chakra-ui/react';
-import { BsLightningCharge } from 'react-icons/bs';
+import { BsLightningCharge, BsChevronRight } from 'react-icons/bs';
+import { RiRefund2Fill } from 'react-icons/ri';
 
 import extra10 from '~/images/extra10.png';
 import { round10 } from '~/utils/preciseRound';
@@ -308,8 +309,8 @@ function ProductDetailContainer({
           <hr className='my-4' />
 
           <div className='flex flex-col'>
-            <p className='flex my-2'>
-              <TbTruckDelivery fontSize={24} className="mr-2" />
+            <span className='flex my-2'>
+              <TbTruckDelivery color="#54B435" fontSize={24} className="mr-2" />
               <span className='font-poppins'>
                 {
                   variation
@@ -317,14 +318,24 @@ function ProductDetailContainer({
                     : null
                 }
               </span>
-            </p>
+            </span>
 
-            <p className='flex my-2'>
-              <TbTruckReturn fontSize={24} className="mr-2" />
+            <span className='flex my-2'>
+              <RiRefund2Fill color="#54B435" fontSize={24} className="mr-2" />
               <span className='font-poppins'>
                 <b>100% money back</b> guarantee
               </span>
-            </p>
+            </span>
+
+            <span className='flex my-2 items-center'>
+              <TbTruckReturn color="#54B435" fontSize={24} className="mr-2" />
+              <span className="box-border hover:border-b-[1px]
+                border-b-black text-center text-base
+                font-poppins h-[22px] cursor-pointer mr-[2px] leading-[1.3rem]">
+                Free returns
+              </span>
+              <BsChevronRight size={10} />
+            </span>
           </div>
 
           <div className="product-features-mobile">
