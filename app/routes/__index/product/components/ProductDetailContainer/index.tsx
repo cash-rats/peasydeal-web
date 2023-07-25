@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useMemo, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
@@ -18,6 +18,7 @@ import {
 import { BsLightningCharge, BsChevronRight } from 'react-icons/bs';
 import { RiRefund2Fill } from 'react-icons/ri';
 
+
 import extra10 from '~/images/extra10.png';
 import { round10 } from '~/utils/preciseRound';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
@@ -27,6 +28,7 @@ import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
 import PriceRow from './components/PriceRow';
 import Reviews from './components/Reviews';
+import ReturnPolicyModal from './components/ReturnPolicyModal';
 import useStickyActionBar from '../../hooks/useStickyActionBar';
 import useSticky from '../../hooks/useSticky';
 // @TODO: this component should be placed in nest component.
@@ -83,12 +85,16 @@ function ProductDetailContainer({
   onDecreaseQuantity,
   onAddToCart,
 }: ProductDetailContainerParams) {
+  const [openOpenReturnPolicy, setOpenReturnPolicy] = useState(false);
   const productTopRef = useRef<HTMLDivElement>(null);
   const productContentWrapperRef = useRef<HTMLDivElement>(null);
   const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 
   useSticky(productContentWrapperRef, productTopRef, 'sticky', 145);
   useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
+
+  const handleOpenModal = () => setOpenReturnPolicy(true);
+  const handleCloseModal = () => setOpenReturnPolicy(false);
 
   const hasSuperDeal = useMemo(function () {
     let _hasSuperDeal = false;
@@ -136,6 +142,10 @@ function ProductDetailContainer({
       "
       ref={productTopRef}
     >
+      <ReturnPolicyModal
+        isOpen={openOpenReturnPolicy}
+        onClose={handleCloseModal}
+      />
       {/* product detail exhibit */}
       <div className='col-span-5 xl:col-span-6'>
         <ProductDetailSection
@@ -331,7 +341,9 @@ function ProductDetailContainer({
               <TbTruckReturn color="#54B435" fontSize={24} className="mr-2" />
               <span className="box-border hover:border-b-[1px]
                 border-b-black text-center text-base
-                font-poppins h-[22px] cursor-pointer mr-[2px] leading-[1.3rem]">
+                font-poppins h-[22px] cursor-pointer mr-[2px] leading-[1.3rem]"
+                onClick={handleOpenModal}
+              >
                 Free returns
               </span>
               <BsChevronRight size={10} />
