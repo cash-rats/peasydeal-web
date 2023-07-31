@@ -58,6 +58,7 @@ export default function ReturnPolicy() {
 
   return (
     <div className="w-full p-4 max-w-screen-xl mx-auto">
+      <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       <div className="peasydeal-v1 pt-4">
         <h1 className="">
           {post.postName}
