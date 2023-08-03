@@ -83,15 +83,17 @@ export const getLogoURL = () => `${getCanonicalDomain()}/images/peasy_deal_words
  *   - convert all ' ' to '-'
  *   - convert all '/' to '_'
  *   - convert apostrophe ' to '-'
+ *   - encode special characters of productName using `encodeURIComponent`
+ *
  * @TOOD
  * This function should be deprecated in favor of product slug.
  */
 export const composeProductDetailURL = ({ productName, productUUID }: { productName: string, productUUID: string }) => {
-  let prodName = productName.replace(/\s+/g, '-')
-  prodName = prodName.toLowerCase()
-  prodName = prodName.replace(/\//g, '_')
-  prodName = prodName.replace(/'/g, '-')
-  const url = `/product/${prodName}-i.${productUUID}`;
+  let prodName = productName.replace(/\s+/g, '-');
+  prodName = prodName.toLowerCase();
+  prodName = prodName.replace(/\//g, '_');
+  prodName = prodName.replace(/'/g, '-');
+  const url = `/product/${encodeURIComponent(prodName)}-i.${productUUID}`;
   return url;
 }
 
