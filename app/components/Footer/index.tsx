@@ -1,5 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 import { useFetcher } from '@remix-run/react';
+import { Link } from '@remix-run/react';
 import { AiFillInstagram, AiOutlineTwitter } from 'react-icons/ai';
 import { SiFacebook } from 'react-icons/si';
 
@@ -44,23 +45,30 @@ function Footer({ categories }: FooterProps) {
           flex flex-col justify-between
           max-w-screen-xl
           mx-auto
+          border-b-[1px] pb-4 border-b-[#2E4E73]
           600:flex-row 600:mt-0
         ">
           <div className="
             flex-1 flex flex-row items-center
             font-normal text-sm gap-4
-            600:justify-start
+            justify-center lg:justify-start
           ">
             <span className="text-white capitalize">
-              terms of service
+              <Link to="/terms-of-use">
+                terms of service
+              </Link>
             </span>
 
             <span className="text-white capitalize">
-              privacy policy
+              <Link to="/privacy">
+                privacy policy
+              </Link>
             </span>
 
             <span className="text-white capitalize">
-              © PeasyDeal Limited. 2023
+              <Link to="/return-policy">
+                return policy
+              </Link>
             </span>
           </div>
 
@@ -106,6 +114,10 @@ function Footer({ categories }: FooterProps) {
               />
             </a>
           </div>
+        </div>
+        <div className="text-center text-white px-4 py-8 flex flex-col gap-4 max-w-screen-xl mx-auto">
+          <span>PeasyDeal.com is a trading name of <b>PeasyDeal Limited</b>, a company registered in England and Wales. Company number: <b>13923560</b></span>
+          <span>© PeasyDeal Limited. 2023</span>
         </div>
       </footer>
     </>
