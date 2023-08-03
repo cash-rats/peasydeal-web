@@ -56,11 +56,7 @@ function FooterTopInfo() {
           </h3>
 
           <div className="flex flex-col gap-2 md:gap-4 lg:gap-9 md:flex-row">
-            <a
-              className="flex flex-cols"
-              aria-label='track order'
-              href="mailto:contact@peasydeal.com"
-            >
+            <Link className="flex flex-cols" aria-label='track order' to="/contact-us">
               <div className="flex font-semibold font-poppins items-center gap-1 cursor-pointer">
                 <Button
                     leftIcon={<FiMail className="self-center text-lg md:text-xl" />}
@@ -69,10 +65,10 @@ function FooterTopInfo() {
                     variant='ghost'
                     className='capitalize text-md md:text-base ml-1.5'
                   >
-                    Contac Us
+                    Contact Us
                   </Button>
               </div>
-            </a>
+            </Link>
 
             <Link className="flex flex-cols" aria-label='track order' to="/tracking">
               <div className="flex font-semibold font-poppins items-center gap-1 cursor-pointer">

@@ -63,6 +63,7 @@ export default function SellOnPeasyDeal() {
 
   return (
     <div className="w-full p-4 max-w-screen-xl mx-auto">
+      <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       <div className="static-banner-background flex flex-col justify-center py-20 px-10 rounded-xl">
         <div className="flex flex-col justify-center align-center text-center">
           <h1 className="text-white text-4xl mb-4 font-poppins font-black">{post.postName}</h1>
