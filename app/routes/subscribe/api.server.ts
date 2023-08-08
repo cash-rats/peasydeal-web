@@ -1,9 +1,9 @@
 import httpStatus from 'http-status-codes';
 
-import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 export const subscribe = async (email: string): Promise<object> => {
-  const url = new URL(PEASY_DEAL_ENDPOINT);
+  const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/subscribe';
 
   const resp = await fetch(url.toString(), {

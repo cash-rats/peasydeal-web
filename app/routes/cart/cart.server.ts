@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { MYFB_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
 export type PriceQuery = {
@@ -48,7 +48,7 @@ export type PriceInfo = {
 };
 
 export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<PriceInfo> => {
-  const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`, {
+  const resp = await fetch(`${envs.MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`, {
     method: 'post',
     body: JSON.stringify(params),
     headers: {

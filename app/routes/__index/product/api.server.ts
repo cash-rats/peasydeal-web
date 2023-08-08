@@ -1,14 +1,14 @@
 
 import httpStatus from 'http-status-codes';
 
-import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 import type { ApiErrorResponse } from '~/shared/types';
 
 import type { ProductDetail } from './types';
 import { pickMainImage } from '../utils';
 
 export const fetchProductDetail = async (prodId: string): Promise<ProductDetail> => {
-  const url = new URL(PEASY_DEAL_ENDPOINT);
+  const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = `/v1/products/${prodId}`;
 
   const resp = await fetch(url.toString());
@@ -30,7 +30,7 @@ export const fetchProductDetail = async (prodId: string): Promise<ProductDetail>
 }
 
 export const fetchNewProductURL = async (uuid: string) => {
-  const url = new URL(PEASY_DEAL_ENDPOINT);
+  const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/products/compose-new-url-link';
   url.searchParams.set('product_uuid', uuid)
   const resp = await fetch(url.toString(), { method: 'GET' });

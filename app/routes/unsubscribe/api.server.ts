@@ -1,15 +1,15 @@
 import httpStatus from 'http-status-codes';
 
-import { MYFB_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 export const unsubscribe = async (uuid: string): Promise<object> => {
-  if (!MYFB_ENDPOINT || !uuid) {
+  if (!envs.MYFB_ENDPOINT || !uuid) {
     return {
       status: httpStatus.BAD_REQUEST,
     }
   }
 
-  const url = new URL(MYFB_ENDPOINT);
+  const url = new URL(envs.MYFB_ENDPOINT);
 
   url.pathname = `/data-server/ec/edm/unsubscribe`;
 

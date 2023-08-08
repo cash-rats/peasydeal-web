@@ -15,7 +15,7 @@ import type { ImageListType } from 'react-images-uploading';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { RxCross1 } from 'react-icons/rx';
 
-import { DOMAIN } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 import type { FormError } from '../types';
 import { maskName } from '../../../../../utils';
@@ -87,7 +87,7 @@ function ReviewForm({
           <Image
             alt={`review_${reviewProduct.title}`}
             src={reviewProduct.url}
-            blurDataURL={`${DOMAIN}/images/${loaded
+            blurDataURL={`${envs.DOMAIN}/images/${loaded
               ? 'placeholder_transparent.png'
               : 'placeholder.svg'
               }`}

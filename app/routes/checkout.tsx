@@ -9,10 +9,7 @@ import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import httpStatus from 'http-status-codes';
 
-import {
-  PAYPAL_CLIENT_ID,
-  PAYPAL_CURRENCY_CODE,
-} from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 import {
   getCheckoutTitleText
@@ -23,7 +20,6 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import { createPaymentIntent } from '~/utils/stripe.server';
-import { STRIPE_PUBLIC_KEY, STRIPE_CURRENCY_CODE } from '~/utils/get_env_source';
 import { getCart } from '~/sessions/shoppingcart.session';
 import { getTransactionObject } from '~/sessions/transaction.session';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
@@ -118,7 +114,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     // In stripe, the base unit is 1 cent, not 1 dollar.
     const paymentIntent = await createPaymentIntent({
       amount: Math.round(priceInfo.total_amount * 100),
-      currency: STRIPE_CURRENCY_CODE,
+      currency: envs.STRIPE_CURRENCY_CODE,
     });
 
     return json<LoaderType>({
@@ -166,8 +162,8 @@ function CheckoutLayout() {
   };
 
   useEffect(() => {
-    if (window && STRIPE_PUBLIC_KEY) {
-      setStripePromise(loadStripe(STRIPE_PUBLIC_KEY));
+    if (window && envs.STRIPE_PUBLIC_KEY) {
+      setStripePromise(loadStripe(envs.STRIPE_PUBLIC_KEY));
     }
   }, [payment_intend_id]);
 
@@ -204,8 +200,8 @@ function CheckoutLayout() {
             >
               <PayPalScriptProvider
                 options={{
-                  "client-id": PAYPAL_CLIENT_ID,
-                  "currency": PAYPAL_CURRENCY_CODE,
+                  "client-id": envs.PAYPAL_CLIENT_ID,
+                  "currency": envs.PAYPAL_CURRENCY_CODE,
                   "intent": "capture",
                 }}
               >

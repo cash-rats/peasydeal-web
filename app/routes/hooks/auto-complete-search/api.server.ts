@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
-import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 export interface SearchProductPreviewsParams {
   page?: number;
@@ -10,7 +10,7 @@ export interface SearchProductPreviewsParams {
 }
 
 const searchProductPreviews = async ({ query, page = 1, perPage = 8 }: SearchProductPreviewsParams): Promise<Product[]> => {
-  const url = new URL(PEASY_DEAL_ENDPOINT);
+  const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/products/search-previews';
   url.searchParams.append('query', query);
   url.searchParams.append('per_page', perPage.toString());

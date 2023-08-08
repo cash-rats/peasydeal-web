@@ -3,20 +3,20 @@ import { imageLoader, MemoryCache } from 'remix-image/server';
 import type { LoaderConfig } from 'remix-image';
 import httpStatus from 'http-status-codes';
 
-import { CDN_URL } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 import transformer from './transformer';
 import { imageResponse, badImageResponse } from './response'
 import { fileExtensionResolver, MimeType } from './mimes';
 
 const config: LoaderConfig = {
-  selfUrl: `${CDN_URL}/product-images`,
+  selfUrl: `${envs.CDN_URL}/product-images`,
   cache: new MemoryCache(),
   transformer,
 };
 
 const composeCDNUrl = (params: { width: number, height: number, filename: string }) => {
-  const url = new URL(CDN_URL);
+  const url = new URL(envs.CDN_URL);
   url.pathname = `webp/w${params.width}_h${params.height}/${params.filename}`;
   return url.toString();
 };

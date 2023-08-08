@@ -1,11 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import {
-	MYFB_ENDPOINT,
-	PEASY_DEAL_ENDPOINT,
-	CONTENTFUL_SPACE_ID,
-	CONTENTFUL_ACCESS_TOKEN
-} from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 import type { Product, ApiErrorResponse, TContentfulPost } from '~/shared/types';
 import type { ActivityBanner } from '../types';
@@ -14,14 +9,14 @@ import { pickMainImage } from '../utils';
 import * as contentful from 'contentful';
 
 const contenfulClient = contentful.createClient({
-	space: CONTENTFUL_SPACE_ID,
-	accessToken: CONTENTFUL_ACCESS_TOKEN,
+	space: envs.CONTENTFUL_SPACE_ID,
+	accessToken: envs.CONTENTFUL_ACCESS_TOKEN,
 })
 
 // We will interweave activity banners in between products list to make the screen
 // more contentful.
 export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
-	const endpoint = `${MYFB_ENDPOINT}/data-server/ec/activity_banners`;
+	const endpoint = `${envs.MYFB_ENDPOINT}/data-server/ec/activity_banners`;
 	const resp = await fetch(endpoint);
 	const respJSON = await resp.json();
 	if (resp.status !== httpStatus.OK) {
@@ -70,7 +65,7 @@ export interface IFetchLandingPageFeatureProductsParams {
 }
 
 export const fetchLandingPageFeatureProducts = async ({ categoriesPreviewNames = [], }: IFetchLandingPageFeatureProductsParams) => {
-	const url = new URL(PEASY_DEAL_ENDPOINT)
+	const url = new URL(envs.PEASY_DEAL_ENDPOINT)
 
 	url.pathname = '/v1/products/landing-page';
 	url.searchParams.append('cat_preview_names', categoriesPreviewNames.join(','));
@@ -140,7 +135,7 @@ export const fetchProductsByCategoryV2 = async ({
 	if (!page) page = 1;
 	if (!category) category = 'hot_deal';
 
-	const url = new URL(PEASY_DEAL_ENDPOINT)
+	const url = new URL(envs.PEASY_DEAL_ENDPOINT)
 	url.pathname = '/v1/products';
 	url.searchParams.append('per_page', perpage.toString());
 	url.searchParams.append('page', page.toString());

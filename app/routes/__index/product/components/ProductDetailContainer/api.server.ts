@@ -1,12 +1,12 @@
 import httpStatus from 'http-status-codes';
 
 import type { ApiErrorResponse } from '~/shared/types';
-import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 import type { ReviewResponse } from './types';
 
 export const fetchReviews = async (productUUID: string): Promise<ReviewResponse> => {
-  const url = new URL(PEASY_DEAL_ENDPOINT);
+  const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = `/v1/products/${productUUID}/reviews`;
 
   const resp = await fetch(url.toString(), {

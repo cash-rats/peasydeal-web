@@ -23,7 +23,7 @@ import type {
   ITag,
 } from './utils';
 
-import { DOMAIN } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 
 import { Button } from '@chakra-ui/react'
@@ -188,9 +188,9 @@ export default function ProductCard({
             scrollPosition={scrollPosition}
           >
             <Image
-              blurDataURL={`${DOMAIN}/images/${loaded
-                  ? 'placeholder_transparent.png'
-                  : 'placeholder.svg'
+              blurDataURL={`${envs.DOMAIN}/images/${loaded
+                ? 'placeholder_transparent.png'
+                : 'placeholder.svg'
                 }`}
               placeholder={loaded ? 'empty' : 'blur'}
               placeholderAspectRatio={1}

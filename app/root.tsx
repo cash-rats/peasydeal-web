@@ -27,7 +27,7 @@ import {
   getIndexDescText,
 } from '~/utils/seo'
 import { getRootFBSEO_V2 } from '~/utils/seo';
-import * as envs from '~/utils/get_env_source';
+import { envs, isProd, isStaging, isDev } from '~/utils/get_env_source';
 import useRudderStackScript from './hooks/useRudderStackScript';
 import useGTMScript from './hooks/useGTMScript';
 
@@ -39,7 +39,6 @@ import { ClientStyleContext, ServerStyleContext } from "./context"
 import styles from "./styles/global.css";
 import structuredData from './structured_data';
 import ScrollRestoration from './ConditionalScrollRestoration';
-
 
 export let links: LinksFunction = () => {
   return [
@@ -68,7 +67,6 @@ export let links: LinksFunction = () => {
     ...LayoutLinks(),
   ]
 }
-
 
 export async function loader({ request }: LoaderArgs) {
   return json({ ...envs });
@@ -102,11 +100,25 @@ export let meta: V2_MetaFunction<typeof loader> = () => {
     // Facebook meta
     ...getRootFBSEO_V2(),
 
-    {
+    // Disallow robot crawling in dev / staging environment
+    isDev({
+      tagName: 'meta',
+      name: 'robots',
+      content: 'noindex,nofollow',
+    }),
+
+    isStaging({
+      tagName: 'meta',
+      name: 'robots',
+      content: 'noindex,nofollow',
+    }),
+
+    isProd({
       tagName: 'meta',
       name: 'robots',
       content: 'index,follow',
-    },
+    }),
+
     {
       tagName: 'meta',
       name: 'msapplicationTileColor',

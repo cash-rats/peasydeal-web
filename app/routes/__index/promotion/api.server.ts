@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 import type { Product, ApiErrorResponse } from '~/shared/types';
 
 import { pickMainImage } from '../utils';
@@ -50,7 +50,7 @@ export const fetchPromotionProducts = async (params: FetchPromotionProductsParam
   if (!params.page) params.page = 1;
   if (!params.promoName) params.promoName = 'launch_sales';
 
-  const url = new URL(PEASY_DEAL_ENDPOINT);
+  const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/products/promotion';
   url.searchParams.append('name', params.promoName);
   url.searchParams.append('page', params.page.toString());

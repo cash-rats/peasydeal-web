@@ -14,7 +14,7 @@ import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Image, { MimeType } from "remix-image"
 
-import { DOMAIN } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 interface CarouselMinimalImage {
   title: string;
   url: string;
@@ -362,7 +362,7 @@ function Carousel({
                 return (
                   <Fragment key={index}>
                     <Image
-                      blurDataURL={`${DOMAIN}/images/${loaded
+                      blurDataURL={`${envs.DOMAIN}/images/${loaded
                         ? 'placeholder_transparent.png'
                         : 'placeholder.svg'
                         }`}

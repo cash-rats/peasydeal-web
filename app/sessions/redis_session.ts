@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 
-import { REDIS_SESSION_TTL } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 import { createRedisSessionStorage } from './create_redis_sessoin';
 
@@ -14,7 +14,7 @@ const { getSession, commitSession, destroySession } = createRedisSessionStorage(
     secrets: [process.env.SESSION_SECRET],
     path: "/",
     httpOnly: true,
-    maxAge: REDIS_SESSION_TTL,
+    maxAge: envs.REDIS_SESSION_TTL,
   },
 });
 export { getSession, commitSession, destroySession };

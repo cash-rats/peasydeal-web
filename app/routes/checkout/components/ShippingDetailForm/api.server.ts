@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { MYFB_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 export type AddressParts = 'line1' | 'line2' | 'city' | 'county' | 'country';
 
@@ -48,7 +48,7 @@ const transformDataToOption = (data: any[]): Option[] => {
 ]
 */
 export const fetchAddressOptionsByPostal = async ({ postal }: { postal: string }): Promise<Option[]> => {
-  const resp = await fetch(`${MYFB_ENDPOINT}/data-server/ec/value/getaddress`, {
+  const resp = await fetch(`${envs.MYFB_ENDPOINT}/data-server/ec/value/getaddress`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

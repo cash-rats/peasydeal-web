@@ -1,14 +1,11 @@
-import {
-	CONTENTFUL_SPACE_ID,
-	CONTENTFUL_ACCESS_TOKEN
-} from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 
 import type { TContentfulPost, IBlogStaticProps } from '~/shared/types';
 import * as contentful from 'contentful';
 
 const contenfulClient = contentful.createClient({
-	space: CONTENTFUL_SPACE_ID,
-	accessToken: CONTENTFUL_ACCESS_TOKEN,
+	space: envs.CONTENTFUL_SPACE_ID,
+	accessToken: envs.CONTENTFUL_ACCESS_TOKEN,
 })
 
 interface IContentfulRes {
@@ -16,37 +13,37 @@ interface IContentfulRes {
 }
 
 export const contentfulConfig = {
-  pagination: {
-    pageSize: 8,
-  },
+	pagination: {
+		pageSize: 8,
+	},
 };
 
 export class ContentfulGQLApi {
-  static async callContentful(query: string) {
-    const fetchUrl = `https://graphql.contentful.com/content/v1/spaces/${CONTENTFUL_SPACE_ID}`;
+	static async callContentful(query: string) {
+		const fetchUrl = `https://graphql.contentful.com/content/v1/spaces/${CONTENTFUL_SPACE_ID}`;
 
-    const fetchOptions = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${CONTENTFUL_ACCESS_TOKEN}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query }),
-    };
+		const fetchOptions = {
+			method: "POST",
+			headers: {
+				Authorization: `Bearer ${envs.CONTENTFUL_ACCESS_TOKEN}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ query }),
+		};
 
-    try {
-      const data = await fetch(fetchUrl, fetchOptions).then((response) =>
-        response.json(),
-      );
-      return data;
-    } catch (error) {
-      throw new Error("Could not fetch data from Contentful!");
-    }
-  }
+		try {
+			const data = await fetch(fetchUrl, fetchOptions).then((response) =>
+				response.json(),
+			);
+			return data;
+		} catch (error) {
+			throw new Error("Could not fetch data from Contentful!");
+		}
+	}
 
 	static async getTotalPostsNumber() {
-    // Build the query
-    const query = `
+		// Build the query
+		const query = `
       {
         blogPostCollection {
           total
@@ -54,20 +51,20 @@ export class ContentfulGQLApi {
       }
     `;
 
-    // Call out to the API
-    const response = await this.callContentful(query);
-    const totalPosts = response.data.blogPostCollection.total
-      ? response.data.blogPostCollection.total
-      : 0;
+		// Call out to the API
+		const response = await this.callContentful(query);
+		const totalPosts = response.data.blogPostCollection.total
+			? response.data.blogPostCollection.total
+			: 0;
 
-    return totalPosts;
-  }
+		return totalPosts;
+	}
 
 	static async getPaginatedPostSummaries(page: any) {
-    const skipMultiplier: any = page === 1 ? 0 : page - 1;
-    const skip = skipMultiplier > 0 ? contentfulConfig.pagination.pageSize * skipMultiplier : 0;
+		const skipMultiplier: any = page === 1 ? 0 : page - 1;
+		const skip = skipMultiplier > 0 ? contentfulConfig.pagination.pageSize * skipMultiplier : 0;
 
-    const query = `{
+		const query = `{
 			blogsCollection(limit: ${contentfulConfig.pagination.pageSize}, skip: ${skip}, order: publishedDate_DESC) {
 				total
 				items {
@@ -87,15 +84,15 @@ export class ContentfulGQLApi {
 			}
 		}`;
 
-    // Call out to the API
-    const response = await this.callContentful(query);
+		// Call out to the API
+		const response = await this.callContentful(query);
 
-    const paginatedPostSummaries = response.data.blogsCollection
-      ? response.data.blogsCollection
-      : { total: 0, items: [] };
+		const paginatedPostSummaries = response.data.blogsCollection
+			? response.data.blogsCollection
+			: { total: 0, items: [] };
 
-    return paginatedPostSummaries;
-  }
+		return paginatedPostSummaries;
+	}
 
 	static async getLatestPosts(total: Number) {
 		const query = `{
@@ -160,13 +157,13 @@ export const fetchContentfulWithEntry = async ({
 
 export const getStaticProps = async ({
 	params
-}: { params: { page: Number} }) : Promise<IBlogStaticProps> => {
-  const postSummaries = await ContentfulGQLApi.getPaginatedPostSummaries(
-    params.page,
-  );
-  const totalPages = Math.ceil(postSummaries.total / contentfulConfig.pagination.pageSize);
+}: { params: { page: Number } }): Promise<IBlogStaticProps> => {
+	const postSummaries = await ContentfulGQLApi.getPaginatedPostSummaries(
+		params.page,
+	);
+	const totalPages = Math.ceil(postSummaries.total / contentfulConfig.pagination.pageSize);
 
-  return {
+	return {
 		postSummaries: postSummaries.items,
 		totalPages,
 		currentPage: params.page,
@@ -178,5 +175,5 @@ export const fetchContentfulLatestPosts = async ({
 }: { total: Number }) => {
 	const postSummaries = await ContentfulGQLApi.getLatestPosts(total);
 
-  return postSummaries.items;
+	return postSummaries.items;
 };

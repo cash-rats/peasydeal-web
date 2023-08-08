@@ -3,7 +3,7 @@ import type { Stripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
-import { STRIPE_PUBLIC_KEY } from '~/utils/get_env_source'
+import { envs } from '~/utils/get_env_source'
 
 import PaymentResultLoader from './components/StripePaymentResultLoader';
 
@@ -17,8 +17,8 @@ export default function StripePaymentResult({ orderID, clientSecret }: StripePay
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
 
   useEffect(() => {
-    if (window && STRIPE_PUBLIC_KEY) {
-      setStripePromise(loadStripe(STRIPE_PUBLIC_KEY));
+    if (window && envs.STRIPE_PUBLIC_KEY) {
+      setStripePromise(loadStripe(envs.STRIPE_PUBLIC_KEY));
     }
   }, []);
 

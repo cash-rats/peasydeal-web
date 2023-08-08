@@ -1,10 +1,10 @@
 import httpStatus from 'http-status-codes';
 
-import { PEASY_DEAL_ENDPOINT } from '~/utils/get_env_source';
+import { envs } from '~/utils/get_env_source';
 import type { ApiErrorResponse } from '~/shared/types';
 
 export const activateEmailSubscribe = async (uuid: string): Promise<string> => {
-  const url = new URL(PEASY_DEAL_ENDPOINT);
+  const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = '/v1/subscribe/activate-email';
 
   const resp = await fetch(
