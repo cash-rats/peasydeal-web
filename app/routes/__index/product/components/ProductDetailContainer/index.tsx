@@ -146,7 +146,7 @@ function ProductDetailContainer({
         isOpen={openOpenReturnPolicy}
         onClose={handleCloseModal}
       />
-      {/* product detail exhibit */}
+      {/* Desktop Display - product detail exhibit */}
       <div className='col-span-5 xl:col-span-6'>
         <ProductDetailSection
           sharedPics={sharedImages}
@@ -350,22 +350,23 @@ function ProductDetailContainer({
             </span>
           </div>
 
+          { /* Mobile Display */}
           <div className="product-features-mobile">
             <Accordion className='flex md:hidden my-4' allowMultiple>
-              <AccordionItem className="
-											w-full max-w-[calc(100vw-2rem)]
-											border-[#efefef]
-										">
-                <AccordionButton className=' px-0'>
-                  <h3 className='text-xl my-3 mr-auto'>About this product</h3>
-                  <AccordionIcon />
-                </AccordionButton>
+                <AccordionItem className="
+                  w-full max-w-[calc(100vw-2rem)]
+                border-[#efefef]
+                ">
+                  <AccordionButton className='px-0'>
+                    <h3 className='text-xl my-3 mr-auto'>About this product</h3>
+                    <AccordionIcon />
+                  </AccordionButton>
 
-                <AccordionPanel pb={4} display="flex">
-                  <div className='w-full overflow-scroll'>
-                    <div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} />
-                  </div>
-                </AccordionPanel>
+                  <AccordionPanel pb={4} display="flex">
+                    <div className='w-full overflow-scroll'>
+                      <div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} />
+                    </div>
+                  </AccordionPanel>
               </AccordionItem>
             </Accordion>
           </div>
