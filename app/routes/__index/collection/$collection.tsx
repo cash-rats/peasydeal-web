@@ -115,7 +115,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   try {
     const resolvedCategoryName = await resolveCategoryName(collection);
     if (resolvedCategoryName !== collection) {
-      return redirect(`collection/${resolvedCategoryName}`)
+      return redirect(`/collection/${resolvedCategoryName}`)
     }
   } catch (e: any) {
     throw json(composErrorResponse(e.message))
