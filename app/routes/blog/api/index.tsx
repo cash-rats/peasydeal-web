@@ -20,7 +20,7 @@ export const contentfulConfig = {
 
 export class ContentfulGQLApi {
 	static async callContentful(query: string) {
-		const fetchUrl = `https://graphql.contentful.com/content/v1/spaces/${CONTENTFUL_SPACE_ID}`;
+		const fetchUrl = `https://graphql.contentful.com/content/v1/spaces/${envs.CONTENTFUL_SPACE_ID}`;
 
 		const fetchOptions = {
 			method: "POST",
