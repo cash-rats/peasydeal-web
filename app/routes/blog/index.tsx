@@ -3,15 +3,19 @@ import { useLoaderData } from "@remix-run/react";
 import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import type { LoaderFunction } from "@remix-run/node";
 import httpStatus from 'http-status-codes';
-
+import type { DynamicLinksFunction } from 'remix-utils';
 import type { IBlogStaticProps } from '~/shared/types';
-import { getRootFBSEO_V2, getBlogTitleText, getBlogDescText } from '~/utils/seo';
-
 import { getStaticProps } from "./api";
-import styles from './styles/blog.css';
 import BlogLayout from "./components/BlogLayout";
 import gradientBg from './images/gradient-bg.jpg';
 import blogOGImage from './images/peasydeal-blog-ogimage.jpg';
+import {
+  getBlogTitleText,
+  getCanonicalDomain,
+  getBlogFBSEO_V2,
+} from '~/utils/seo';
+
+import styles from './styles/blog.css';
 
 export const links: LinksFunction = () => {
   return [
@@ -19,32 +23,40 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = ({ data }: any) => {
-  return getRootFBSEO_V2()
-    .map(tag => {
-      if (!('property' in tag)) return tag;
-
-      if (tag.property === 'og:title') {
-        tag.content = getBlogTitleText();
-      }
-
-      if (tag.property === 'og:description') {
-        tag.content = getBlogDescText();
-      }
-
-      if (tag.property === 'og:image') {
-        tag.content = blogOGImage;
-      }
-
-      return tag;
-    });
+type LoaderType = {
+  canonicalLink: string;
 };
+
+export const meta: V2_MetaFunction = () => {
+  return [
+    {
+      title: getBlogTitleText(),
+    },
+    ...getBlogFBSEO_V2(blogOGImage),
+  ]
+}
+
+const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
+  return [
+    {
+      rel: 'canonical', href: data?.canonicalLink,
+    },
+  ];
+}
+
+export const handle = { dynamicLinks };
 
 export const loader: LoaderFunction = async () => {
   try {
     const res = await getStaticProps({ params: { page: 1 } });
 
-    return json<IBlogStaticProps>(res);
+    return json<{
+      blogs: IBlogStaticProps,
+      canonicalLink: string,
+    }>({
+      blogs: res,
+      canonicalLink: `${getCanonicalDomain()}/blog/page/1`
+    });
   } catch (e) {
     console.error(e);
 
@@ -55,7 +67,7 @@ export const loader: LoaderFunction = async () => {
 }
 
 export default function BlogIndex() {
-  const { postSummaries, currentPage, totalPages } = useLoaderData() as IBlogStaticProps;
+  const { blogs: { postSummaries, currentPage, totalPages } } = useLoaderData();
 
   return (
     <div className="w-full p-4 md:px-10 md:py-8 max-w-screen-xl mx-auto bg-white">

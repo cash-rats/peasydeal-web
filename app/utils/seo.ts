@@ -209,6 +209,27 @@ export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => (
   })
 );
 
+export const getBlogFBSEO_V2 = (blogOGImage?: string): V2_ServerRuntimeMetaDescriptor[] => {
+  return getRootFBSEO_V2()
+    .map(tag => {
+      if (!('property' in tag)) return tag;
+
+      if (tag.property === 'og:title') {
+        tag.content = getBlogTitleText();
+      }
+
+      if (tag.property === 'og:description') {
+        tag.content = getBlogDescText();
+      }
+
+      if (blogOGImage && tag.property === 'og:image') {
+        tag.content = blogOGImage;
+      }
+
+      return tag;
+    });
+};
+
 export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => (
   getRootFBSEO_V2()
     .map(tag => {

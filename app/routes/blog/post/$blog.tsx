@@ -5,11 +5,12 @@ import type { LoaderFunction } from "@remix-run/node";
 import httpStatus from 'http-status-codes';
 import { Button, Badge } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
+import type { DynamicLinksFunction } from 'remix-utils';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES } from "@contentful/rich-text-types";
 import type { TContentfulPost } from '~/shared/types';
 
-import { getRootFBSEO_V2 } from '~/utils/seo';
+import { getRootFBSEO_V2, getCanonicalDomain } from '~/utils/seo';
 
 import { fetchContentfulWithSlug, fetchContentfulLatestPosts } from "../api";
 import styles from '../styles/blog.css';
@@ -25,6 +26,20 @@ interface IBlogPostDataProps {
   blog: TContentfulPost,
   latestPosts: TContentfulPost[],
 }
+
+const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
+  return [
+    {
+      rel: 'canonical', href: data?.canonicalLink,
+    },
+  ];
+}
+
+type LoaderType = {
+  canonicalLink: string;
+};
+
+export const handle = { dynamicLinks };
 
 export const meta: V2_MetaFunction = ({ data }: { data: IBlogPostDataProps }) => {
   const contentfulFields = data || {};
@@ -52,6 +67,7 @@ export const meta: V2_MetaFunction = ({ data }: { data: IBlogPostDataProps }) =>
 interface IBlog {
   blog: TContentfulPost,
   latestPosts: TContentfulPost[],
+  canonicalLink?: string,
 }
 
 export const loader: LoaderFunction = async ({ params }) => {
@@ -63,6 +79,7 @@ export const loader: LoaderFunction = async ({ params }) => {
     return json<IBlog>({
       blog: res,
       latestPosts: latest,
+      canonicalLink: `${getCanonicalDomain()}/blog/post/${blog}`
     });
   } catch (e) {
     console.error(e);
