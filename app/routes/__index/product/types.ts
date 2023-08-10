@@ -38,6 +38,7 @@ export interface ProductDetail {
   variation_images: ProductImg[];
   variations: ProductVariation[];
   description: string;
+  seo_description: string;
   order_count: number;
   rating: number;
   num_of_raters: number;

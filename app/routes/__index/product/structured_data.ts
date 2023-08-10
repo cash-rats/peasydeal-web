@@ -22,7 +22,7 @@ const structuredData = (data: LoaderTypeProductDetail) => {
     "@type": "Product",
     "name": product.title,
     "image": product.images,
-    "description": product.description,
+    "description": product.seo_description,
     "sku": firstVariation.sku,
     // TODO: We do not have product reivew feature yet. We'll enable "reiview" when the feature is implemented.
     // "review": {
@@ -35,11 +35,11 @@ const structuredData = (data: LoaderTypeProductDetail) => {
     //   "datePublished": "2022-01-01",
     //   "reviewBody": "Product review text"
     // },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": product.rating.toString(),
-      "reviewCount": product.num_of_raters,
-    },
+    // "aggregateRating": {
+    //   "@type": "AggregateRating",
+    //   "ratingValue": product.rating.toString(),
+    //   "reviewCount": product.num_of_raters,
+    // },
     "offers": {
       "@type": "Offer",
       "price": firstVariation?.sale_price.toString() || '0',

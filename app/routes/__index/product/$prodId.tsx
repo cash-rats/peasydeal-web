@@ -90,6 +90,7 @@ export const meta: V2_MetaFunction = ({ data }: { data: LoaderTypeProductDetail 
 			name: 'description',
 			content: description,
 		},
+		{ 'script:ld+json': structuredData(data) },
 		...getProdDetailOgSEO({
 			title: getProdDetailTitleText(data.product.title, data.product.uuid),
 			desc: description,
@@ -118,10 +119,7 @@ const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) =
 	];
 }
 
-export const handle = {
-	dynamicLinks,
-	structuredData,
-};
+export const handle = { dynamicLinks };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
 	if (!params.prodId) {
