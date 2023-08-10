@@ -6,7 +6,7 @@ import {
 	useReducer,
 } from 'react';
 import type { ChangeEvent } from 'react';
-import type { LoaderFunction, ActionFunction, V2_MetaFunction, LinksFunction } from '@remix-run/node';
+import type { LoaderFunction, ActionFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher } from '@remix-run/react';
 import type { DynamicLinksFunction } from 'remix-utils';
@@ -19,24 +19,13 @@ import { commitSession } from '~/sessions/redis_session';
 import { insertItem } from '~/sessions/shoppingcart.session';
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
-import {
-	getCanonicalDomain,
-	getProdDetailTitleText,
-	getProdDetailDescText,
-	getProdDetailDescTextWithoutPrice,
-	getProdDetailOgSEO,
-	getFourOhFourTitleText,
-	getFourOhFourDescText,
-} from '~/utils/seo';
-import {
-	decomposeProductDetailURL,
-	composeProductDetailURL,
-} from '~/utils';
+import { getCanonicalDomain } from '~/utils/seo';
+import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
 import { composErrorResponse } from '~/utils/error';
 import type { ApiErrorResponse } from '~/shared/types';
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import Breadcrumbs from './components/Breadcrumbs';
-import type { ProductVariation, LoaderTypeProductDetail } from './types';
+import type { LoaderTypeProductDetail } from './types';
 import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
@@ -49,56 +38,12 @@ import reducer, {
 	changeProduct,
 	setVariation,
 } from './reducer';
-import { structuredData } from './structured_data';
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
 import { matchOldProductURL, } from './utils';
 import { redirectToNewProductURL } from './loaders';
+import { meta as metaFunc } from './meta';
 
-export const meta: V2_MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
-	if (!data || !data.product) {
-		return [
-			{ title: getFourOhFourTitleText('product') },
-			{
-				tagName: 'meta',
-				name: 'description',
-				content: getFourOhFourDescText('product'),
-			}
-		];
-	}
-
-	const defaultVariation: ProductVariation | undefined = data.
-		product.
-		variations.
-		find(variation => variation.uuid === data.product.default_variation_uuid);
-
-	const category = data.product?.categories.length > 0 ? data.product.categories[0].label : '';
-	let description = getProdDetailDescTextWithoutPrice(data.product.title, category);
-
-	if (defaultVariation) {
-		description = getProdDetailDescText(
-			data.product.title,
-			defaultVariation.retail_price,
-			defaultVariation.sale_price,
-			category,
-		)
-	}
-
-	return [
-		{ title: getProdDetailTitleText(data.product.title, data.product.uuid) },
-		{
-			tagName: 'meta',
-			name: 'description',
-			content: description,
-		},
-		{ 'script:ld+json': structuredData(data) },
-		...getProdDetailOgSEO({
-			title: getProdDetailTitleText(data.product.title, data.product.uuid),
-			desc: description,
-			image: data.meta_image,
-			url: data.canonical_url,
-		})
-	];
-};
+export const meta = metaFunc;
 
 export const links: LinksFunction = () => {
 	return [
