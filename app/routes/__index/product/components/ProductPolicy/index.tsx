@@ -25,7 +25,7 @@ const ProductPolicy = ({
         allowToggle
         variant="custom"
       >
-        <AccordionItem className='md:hidden'>
+        <AccordionItem className='lg:hidden'>
           <h2>
             <AccordionButton>
               <Box as="span" flex='1' py='3' px='2' textAlign='left'>
