@@ -42,6 +42,7 @@ import { normalizeToSessionStorableCartItem, findDefaultVariation } from './util
 import { matchOldProductURL, } from './utils';
 import { redirectToNewProductURL } from './loaders';
 import { meta as metaFunc } from './meta';
+import ProductPolicy from './components/ProductPolicy';
 
 export const meta = metaFunc;
 
@@ -364,6 +365,21 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					onAddToCart={handleAddToCart}
 					onDecreaseQuantity={decreaseQuantity}
 					onIncreaseQuantity={increaseQuantity}
+				/>
+			</div>
+
+			<div className="
+				relative w-full
+				xl:flex md:flex
+				mt-2 xl:mx-auto xl:mb-0 md:mt-6
+				md:px-4 md:pb-[20px]
+				md:justify-center
+				md:items-start md:gap-[10px]
+				xl:max-w-[1280px]
+				max-w-screen-xl "
+			>
+				<ProductPolicy
+					productDetail={state.productDetail}
 				/>
 			</div>
 

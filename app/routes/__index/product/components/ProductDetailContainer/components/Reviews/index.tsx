@@ -67,15 +67,17 @@ function Reviews({ productUUID }: ReviewsParams) {
       if (reviewInfo.reviews.length === 0) {
         return (
           <div className="
-    						w-full py-2.5 max-w-screen-xl mx-auto
-    						capitalized
-    						text-lg font-poppins nowrap
-    						flex items-center justify-center
-    						bg-white
-    						p-4 mt-6
-    					">
+            w-full max-w-screen-xl mx-auto
+            capitalized
+            text-lg font-poppins nowrap
+            flex items-center justify-center
+            bg-[#f7f7f7] rounded-xl
+            py-6 px-4
+          ">
             <span>
-              <p className='text-[#000] font-poppins first-letter:capitalize'>no reviews yet</p>
+              <p className='text-[#000] font-poppins first-letter:capitalize'>
+                No reviews have been submitted yet.
+              </p>
             </span>
           </div>
         );

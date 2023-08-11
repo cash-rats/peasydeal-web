@@ -350,27 +350,6 @@ function ProductDetailContainer({
             </span>
           </div>
 
-          { /* Mobile Display */}
-          <div className="product-features-mobile">
-            <Accordion className='flex md:hidden my-4' allowMultiple>
-                <AccordionItem className="
-                  w-full max-w-[calc(100vw-2rem)]
-                border-[#efefef]
-                ">
-                  <AccordionButton className='px-0'>
-                    <h3 className='text-xl my-3 mr-auto'>About this product</h3>
-                    <AccordionIcon />
-                  </AccordionButton>
-
-                  <AccordionPanel pb={4} display="flex">
-                    <div className='w-full overflow-scroll'>
-                      <div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} />
-                    </div>
-                  </AccordionPanel>
-              </AccordionItem>
-            </Accordion>
-          </div>
-
           <div className="h-[100px] md:hidden">
             <ProductActionBar
               ref={mobileUserActionBarRef}
