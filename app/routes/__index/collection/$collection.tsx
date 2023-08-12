@@ -22,7 +22,7 @@ import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import { PAGE_LIMIT } from '~/shared/constants';
-import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, { links as BreadCrumbLink } from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
 import {
@@ -101,6 +101,7 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data, params }) => {
 export const links: LinksFunction = () => {
   return [
     ...AllTimeCouponLink(),
+    ...BreadCrumbLink(),
     ...ProductRowsContainerLinks(),
   ];
 };

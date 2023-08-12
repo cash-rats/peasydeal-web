@@ -1,12 +1,13 @@
 import type { ReactNode } from 'react';
 import { NavLink } from '@remix-run/react';
+import type { LinksFunction } from '@remix-run/node';
 
 import { composeProductDetailURL } from '~/utils';
 import {
   BreadcrumbItem,
   BreadcrumbLink,
 } from '@chakra-ui/react'
-import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, { links as BreadCrumbLink } from '~/components/Breadcrumbs/Breadcrumbs';
 
 import type { Category } from '../../types';
 
@@ -18,6 +19,12 @@ type ProductDetailBreadcrumbsProps = {
   productTitle?: ReactNode;
   productUuid?: string;
 }
+
+export const links: LinksFunction = () => {
+	return [
+		...BreadCrumbLink(),
+	];
+};
 
 export default function ProductDetailBreadcrumbs({
   categories,

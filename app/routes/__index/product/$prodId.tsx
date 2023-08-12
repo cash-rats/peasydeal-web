@@ -24,7 +24,7 @@ import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
 import { composErrorResponse } from '~/utils/error';
 import type { ApiErrorResponse } from '~/shared/types';
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
-import Breadcrumbs from './components/Breadcrumbs';
+import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
 import type { LoaderTypeProductDetail } from './types';
 import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
@@ -48,6 +48,7 @@ export const meta = metaFunc;
 
 export const links: LinksFunction = () => {
 	return [
+		...BreadCrumbLinks(),
 		...ProductDetailContainerLinks(),
 		...ItemAddedModalLinks(),
 		...RecommendedProductsLinks(),

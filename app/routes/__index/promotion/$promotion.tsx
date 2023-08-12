@@ -9,7 +9,7 @@ import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 import type { DynamicLinksFunction } from 'remix-utils'
 
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
-import Breadcrumbs from '~/components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs, { links as BreadCrumbLink } from '~/components/Breadcrumbs/Breadcrumbs';
 import FourOhFour from '~/components/FourOhFour';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -40,6 +40,7 @@ export const handle = { structuredData, dynamicLinks };
 
 export const links: LinksFunction = () => {
   return [
+    ...BreadCrumbLink(),
     ...AllTimeCouponLink(),
     ...ProductRowsContainerLinks(),
     ...PageTitleLinks(),
