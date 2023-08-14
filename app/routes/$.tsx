@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 import { useLoaderData } from '@remix-run/react';
 
@@ -14,6 +14,8 @@ import type { Category } from '~/shared/types';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import CategoriesRow from "~/components/CategoriesRow";
+
+import checkIsPossibleCategory from '../api/check_is_possible_category.server';
 
 type LoaderType = {
   categories: Category[];
@@ -31,6 +33,18 @@ export const links: LinksFunction = () => {
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
+    // We need to do a gaurd clause check to redirect possible old category url `/desks`
+    // to new category url `/collection/desks`. If `desks` can not be found fallback
+    // to ordinary flow. If `desks` is one of the categories, redirect to proper category url.
+    const [isCategoryIntent, categoryName] = await checkIsPossibleCategory(new URL(request.url));
+
+    // If the current request is intended to request category page, but the request has
+    // the old category page url pattern, we redirect the request to the newest category
+    // url.
+    if (isCategoryIntent) {
+      return redirect(`/collection/${categoryName}`);
+    }
+
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
     return json<LoaderType>({
@@ -56,7 +70,7 @@ function GlobalSplatFourOhFour() {
 
 
   return (
-    <div className="bg-center bg-cover bg-no-repeat bg-home-gradient-light-sm md:bg-home-gradient-light w-full">
+    <div className="bg-center bg-cover bg-no-repeat w-full">
       <MobileSearchDialog
         onBack={handleClose}
         isOpen={openSearchDialog}
