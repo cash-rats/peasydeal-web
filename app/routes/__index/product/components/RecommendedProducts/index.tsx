@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, forwardRef } from 'react';
+import type { ForwardedRef } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher, useTransition } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 
-import bg from './images/product-sale-section.jpeg';
-import type { Product } from '~/shared/types';
-
 // Note: we don't need to import "style links" for this component
 // because route `__index/index` already loaded it. If we load it
 // again react would echo a error saying duplicate css being loaded
+import type { Product } from '~/shared/types';
+import { PAGE_LIMIT } from '~/shared/constants';
 import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
 import { modToXItems } from '~/utils/products';
 import { fetchProductsByCategoryV2 } from '~/api';
-import { PAGE_LIMIT } from '~/shared/constants';
 import { ProductPromotionRow } from '~/components/ProductPromotionRow';
 
+import bg from './images/product-sale-section.jpeg';
 
 export const links: LinksFunction = () => {
   return [
@@ -51,9 +51,8 @@ function RecommendedProducts({
   category,
   onClickProduct,
   scrollPosition,
-}: RecommendedProductsProps) {
+}: RecommendedProductsProps, ref: ForwardedRef<HTMLDivElement>) {
   const fetcher = useFetcher();
-
   const [rows, setRows] = useState<Product[][]>([]);
   const transition = useTransition();
 
@@ -97,7 +96,7 @@ function RecommendedProducts({
   }, [fetcher])
 
   return (
-    <div>
+    <div ref={ref}>
       <div
         className={`
           flex
@@ -161,4 +160,4 @@ function RecommendedProducts({
   );
 }
 
-export default RecommendedProducts;
+export default forwardRef<HTMLDivElement, RecommendedProductsProps>(RecommendedProducts);

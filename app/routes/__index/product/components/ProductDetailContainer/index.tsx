@@ -6,15 +6,7 @@ import Select from 'react-select';
 // TODO use other component.
 import Rating from '@mui/material/Rating';
 import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Tag,
-  TagLeftIcon,
-} from '@chakra-ui/react';
+import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { BsLightningCharge, BsChevronRight } from 'react-icons/bs';
 import { RiRefund2Fill } from 'react-icons/ri';
 

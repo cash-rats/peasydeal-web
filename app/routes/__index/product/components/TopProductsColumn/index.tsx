@@ -9,9 +9,6 @@ import { ProductRow } from "~/components/ProductRow";
 import { fetchProductsByCategoryV2 } from '~/api';
 import type { Product } from '~/shared/types';
 
-import BannerProduct from './BannerProduct';
-import ProductsColumn from './ProductsColumn';
-
 type ActionType = {
   top_products: Product[];
   super_deal_products: Product[];

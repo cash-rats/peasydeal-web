@@ -30,6 +30,7 @@ import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
+import trackWindowScrollTo from './components/RecommendedProducts/hooks/track_window_scroll_to';
 import useStickyActionBar from './hooks/useStickyActionBar';
 import useSticky from './hooks/useSticky';
 import reducer, {
@@ -194,9 +195,13 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const productContentWrapperRef = useRef<HTMLDivElement>(null);
 	const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
 	const productTopRef = useRef<HTMLDivElement>(null);
+	const recmmendedProdsRef = useRef<HTMLDivElement>(null);
 
 	useSticky(productContentWrapperRef, productTopRef, 'sticky', 145);
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
+	trackWindowScrollTo(recmmendedProdsRef, () => {
+		console.log('debug scroll to rec region');
+	});
 
 	// Change product.
 	useEffect(() => {
@@ -395,6 +400,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				state.mainCategory
 					? (
 						<RecommendedProducts
+							ref={recmmendedProdsRef}
 							category={state.mainCategory.name}
 							onClickProduct={handleClickProduct}
 							scrollPosition={scrollPosition}
