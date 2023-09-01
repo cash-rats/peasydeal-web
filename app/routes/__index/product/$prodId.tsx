@@ -203,7 +203,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 	trackWindowScrollTo(recmmendedProdsRef, () => {
 		const gaSessionID = getSessionIDFromSessionStore();
-
 		if (gaSessionID) {
 			window.rudderanalytics?.track('prod_page_scroll_to_recommends', {
 				session: gaSessionID,
