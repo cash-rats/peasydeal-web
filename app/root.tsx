@@ -28,7 +28,6 @@ import {
   getRootFBSEO_V2,
 } from '~/utils/seo'
 import { envs, isProd, isStaging, isDev } from '~/utils/get_env_source';
-import { getGASessionID } from '~/utils/get_ga_session_id.server';
 import { storeDailySession } from '~/services/daily_session.server';
 import { storeSessionIDToSessionStore } from '~/services/daily_session';
 
@@ -72,9 +71,12 @@ export let links: LinksFunction = () => {
 }
 
 export async function loader({ request }: LoaderArgs) {
-  const gaSessionID = getGASessionID();  // store session ID to redis list for future tracking of actions.
-  await storeDailySession(gaSessionID);
-  return json({ envs, gaSessionID });
+  try {
+    const gaSessionID = await storeDailySession();
+    return json({ envs, gaSessionID });
+  } catch (e: any) {
+    console.log('TODO: failed to store session id to redis', e)
+  }
 }
 
 export let meta: V2_MetaFunction<typeof loader> = () => {
