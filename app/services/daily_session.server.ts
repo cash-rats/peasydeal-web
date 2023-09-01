@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 
 import { ioredis as redis } from '~/redis.server';
 
-const getTodayDate = () => format(new Date(), 'y-M-d');
+const getTodayDate = () => format(new Date(), 'y_M_d');
 
 /**
  * Store daily activity sessions to redis list with today's
