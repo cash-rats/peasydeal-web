@@ -9,6 +9,7 @@ type useRudderStackScriptParams = {
 // <!-- Rudder stack. Load on client side only  -->
 const useRudderStackScript = (params: useRudderStackScriptParams) => {
   useEffect(() => {
+    console.log('debug useRudderStackScript', params);
     const rudderStackScript = document.createElement('script');
     rudderStackScript.innerHTML = `
           !function(){var e=window.rudderanalytics=window.rudderanalytics||[];e.methods=["load","page","track","identify","alias","group","ready","reset","getAnonymousId","setAnonymousId","getUserId","getUserTraits","getGroupId","getGroupTraits","startSession","endSession"],e.factory=function(t){return function(){e.push([t].concat(Array.prototype.slice.call(arguments)))}};for(var t=0;t<e.methods.length;t++){var r=e.methods[t];e[r]=e.factory(r)}e.loadJS=function(e,t){var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.rudderlabs.com/v1.1/rudder-analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a)},e.loadJS(),
@@ -34,11 +35,7 @@ const useRudderStackScript = (params: useRudderStackScriptParams) => {
         document.head.removeChild(rudderStackScript)
       }
     };
-  }, [
-    params.env,
-    params.rudderStackKey,
-    params.rudderStackUrl,
-  ]);
+  }, [params]);
 }
 
 export default useRudderStackScript;
