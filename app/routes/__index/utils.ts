@@ -1,4 +1,5 @@
 import type { Product } from '~/shared/types';
+import type { ProductImg } from './product/types';
 
 export const transformData = (apiData: any[]): Product[] => {
   const transformed: Product[] = apiData.map((data: any): Product => {
@@ -60,7 +61,7 @@ export const modToXItems = (prods: Product[], mod: number = 8): Product[][] => {
  * image from shared images or, from variation images.
  */
 type PickMainImageParams = {
-  mainImg?: string | null | undefined;
+  mainImg?: string | null | undefined | ProductImg;
   sharedImgs: any[];
   variationImgs: any[];
 }

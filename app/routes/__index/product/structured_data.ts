@@ -21,7 +21,7 @@ const structuredData = (data: LoaderTypeProductDetail) => {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": product.title,
-    "image": product.main_pic_url || '',
+    "image": product.main_pic_url?.url || '',
     "description": product.seo_description,
     "sku": firstVariation.sku,
     // TODO: We do not have product reivew feature yet. We'll enable "reiview" when the feature is implemented.
