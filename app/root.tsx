@@ -25,12 +25,15 @@ import remixImageStyles from "remix-image/remix-image.css";
 import {
   getIndexTitleText,
   getIndexDescText,
+  getRootFBSEO_V2,
 } from '~/utils/seo'
-import { getRootFBSEO_V2 } from '~/utils/seo';
 import { envs, isProd, isStaging, isDev } from '~/utils/get_env_source';
+import { getGASessionID } from '~/utils/get_ga_session_id.server';
+import { storeDailySession } from '~/services/daily_session.server';
+import { storeSessionIDToSessionStore } from '~/services/daily_session';
+
 import useRudderStackScript from './hooks/useRudderStackScript';
 import useGTMScript from './hooks/useGTMScript';
-
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
@@ -69,7 +72,9 @@ export let links: LinksFunction = () => {
 }
 
 export async function loader({ request }: LoaderArgs) {
-  return json({ ...envs });
+  const gaSessionID = getGASessionID();  // store session ID to redis list for future tracking of actions.
+  await storeDailySession(gaSessionID);
+  return json({ envs, gaSessionID });
 }
 
 export let meta: V2_MetaFunction<typeof loader> = () => {
@@ -141,7 +146,7 @@ const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
     const serverStyleData = useContext(ServerStyleContext)
     const clientStyleData = useContext(ClientStyleContext);
-    const envData = useLoaderData() || {};
+    const { envs, gaSessionID } = useLoaderData() || {};
 
     // Only executed on client
     useEnhancedEffect(() => {
@@ -155,17 +160,21 @@ const Document = withEmotionCache(
       });
       // reset cache to reapply global styles
       clientStyleData?.reset();
+
+      // set ga session id to session storage. we'll use this ID
+      // to track actions during this session.
+      storeSessionIDToSessionStore(gaSessionID);
     }, []);
 
     useGTMScript({
-      env: envData?.NODE_ENV,
-      googleTagID: envData?.GOOGLE_TAG_ID,
+      env: envs?.NODE_ENV,
+      googleTagID: envs?.GOOGLE_TAG_ID,
     });
 
     useRudderStackScript({
-      env: envData?.NODE_ENV,
-      rudderStackKey: envData?.RUDDER_STACK_KEY,
-      rudderStackUrl: envData?.RUDDER_STACK_URL,
+      env: envs?.NODE_ENV,
+      rudderStackKey: envs?.RUDDER_STACK_KEY,
+      rudderStackUrl: envs?.RUDDER_STACK_URL,
     });
 
     return (
@@ -174,7 +183,6 @@ const Document = withEmotionCache(
           <Meta />
           <DynamicLinks />
           <Links />
-          {/* <StructuredData /> */}
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
           <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
 
@@ -191,11 +199,11 @@ const Document = withEmotionCache(
           {/* <!-- Google Tag Manager (noscript) --> */}
           <noscript>
             {
-              envData && envData.GOOGLE_TAG_ID
+              envs && envs.GOOGLE_TAG_ID
                 ? (
                   <iframe
                     title='Google Tag Manager'
-                    src={`https://www.googletagmanager.com/ns.html?id=${envData.GOOGLE_TAG_ID}`}
+                    src={`https://www.googletagmanager.com/ns.html?id=${envs.GOOGLE_TAG_ID}`}
                     height="0"
                     width="0"
                     style={{ display: 'none', visibility: 'hidden' }}
@@ -208,7 +216,7 @@ const Document = withEmotionCache(
           <script
             dangerouslySetInnerHTML={{
               __html: `
-                window.ENV=${JSON.stringify(envData)}
+                window.ENV=${JSON.stringify(envs)}
               `
             }}
           />

@@ -19,7 +19,7 @@ import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
-import { createPaymentIntent } from '~/utils/stripe.server';
+import { createPaymentIntent } from '~/services/stripe.server';
 import { getCart } from '~/sessions/shoppingcart.session';
 import { getTransactionObject } from '~/sessions/transaction.session';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';

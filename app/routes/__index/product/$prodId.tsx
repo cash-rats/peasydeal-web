@@ -26,6 +26,8 @@ import type { ApiErrorResponse } from '~/shared/types';
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
 import type { LoaderTypeProductDetail } from './types';
+import { getSessionIDFromSessionStore } from '~/services/daily_session';
+
 import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
@@ -200,7 +202,13 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	useSticky(productContentWrapperRef, productTopRef, 'sticky', 145);
 	useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 	trackWindowScrollTo(recmmendedProdsRef, () => {
-		console.log('debug scroll to rec region');
+		const gaSessionID = getSessionIDFromSessionStore();
+
+		if (gaSessionID) {
+			window.rudderanalytics?.track('prod_page_scroll_to_recommends', {
+				session: gaSessionID,
+			})
+		}
 	});
 
 	// Change product.
