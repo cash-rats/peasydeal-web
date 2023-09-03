@@ -18,8 +18,6 @@ const structuredData = (data: LoaderTypeProductDetail) => {
   const [firstVariation] = product.variations;
   const imageUrl = typeof product.main_pic_url === 'string' ? product.main_pic_url : (product.main_pic_url?.url || '');
 
-  console.log(imageUrl);
-
   const psd: WithContext<Product> = {
     "@context": "https://schema.org",
     "@type": "Product",

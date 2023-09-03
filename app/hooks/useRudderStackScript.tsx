@@ -23,7 +23,8 @@ document.head?document.head.appendChild(e):document.body.appendChild(e)},"undefi
 var t=document.createElement("script")
 ;t.src="https://polyfill.io/v3/polyfill.min.js?features=globalThis%2CPromise&callback=rudderAnalyticsMount",
 t.async=asyncScript,document.head?document.head.appendChild(t):document.body.appendChild(t)}else{
-window.rudderAnalyticsMount()}window.rudderanalytics.load("${params.rudderStackKey}","${params.rudderStackUrl}",{})}();
+window.rudderAnalyticsMount()}window.rudderanalytics.load("${params.rudderStackKey}","${params.rudderStackUrl}",{plugins:["BeaconQueue","ErrorReporting","ExternalAnonymousId","GoogleLinker","DeviceModeDestinations", "NativeDestinationQueue",
+"StorageEncryptionLegacy", "StorageEncryption", "StorageMigrator","XhrQueue", "OneTrustConsentManager", "KetchConsentManager"]})}();
         `;
 
     if (
