@@ -31,7 +31,7 @@ export const getIndexTitleText = () =>
   'PeasyDeal | Deal you can trust | Electronics, Home Supplies & More';
 
 export const getIndexDescText = () =>
-  'Shop limited-time deals on gadgets, home decor, apparel, and more at PeasyDeal. Fast shipping, easy returns, and 14-day money-back guarantee.';
+  'Shop quality deals on gadgets, home decor, apparel, and more at PeasyDeal. Fast shipping, easy returns, and 14-day money-back guarantee.';
 
 // SEO collection page
 export const getCollectionTitleText = (category: string) =>
