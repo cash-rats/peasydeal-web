@@ -38,7 +38,11 @@ export const getCollectionTitleText = (category: string) =>
   `${category} Deal | PeasyDeal`;
 
 export const getCollectionDescText = (category: string, desc?: string) => {
-  return `${category} | Quality deal you can trust at prices you can afford! Limited-time free shipping.`;
+  return `Upgrade ${category} with these great deal | Quality deal you can trust at prices you can afford! Limited-time free shipping.`;
+}
+
+export const getPromotionDescText = (category: string, desc?: string) => {
+  return `Enjoy huge dicount today! - Quality deal you can trust at prices you can afford! Limited-time free shipping.`;
 }
 
 // SEO prod page
