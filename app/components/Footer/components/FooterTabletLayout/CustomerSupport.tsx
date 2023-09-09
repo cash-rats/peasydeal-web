@@ -15,7 +15,7 @@ const links = [
   },
   {
     label: 'track your order',
-    link: '/track',
+    link: '/tracking',
   },
   {
     label: 'blog',
