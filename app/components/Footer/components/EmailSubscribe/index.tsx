@@ -45,26 +45,27 @@ function EmailSubscribe() {
         error={state.error}
       />
 
-      <div className="flex flex-col">
+      <div className="flex flex-col text-center">
         <span className="
-        text-white font-bold text-3xl
+        font-bold text-3xl
           capitalize
         ">
           get free £3 GBP
         </span>
 
-        <p className="text-white mt-4 text-base">
+        <p className="mt-4 text-base">
           Join to our news letter & get £3 GBP voucher
         </p>
 
-        <div className="flex flex-row mt-3 w-full gap-2">
-          <div className="w-[200px] 1200-[268px]">
+        <div className="flex flex-row mt-3 w-full gap-2 justify-center ">
+          <div className="w-full">
             <TextField
               fullWidth
               placeholder='Enter Your Email Address'
               variant='outlined'
-              size='small'
+              className='w-full'
               style={{
+                width: '100%',
                 backgroundColor: '#fff',
                 borderRadius: '8px',
               }}
@@ -80,12 +81,13 @@ function EmailSubscribe() {
               isLoading={subFetcher.state !== 'idle'}
               variant='contained'
               type='submit'
-              className="text-white"
+              className='text-white'
               style={{
                 borderRadius: '10px',
                 textTransform: 'capitalize',
                 backgroundColor: '#d02e7d',
                 fontSize: '1rem',
+                height: '100%',
               }}
             >
               Subscribe
@@ -94,7 +96,7 @@ function EmailSubscribe() {
         </div>
 
         <p className="
-          text-slate-50 mt-3 text-sm md:text-base
+          mt-3 text-sm md:text-base
         ">
           * Can be use on order £30+, Terms and Condition applied
         </p>

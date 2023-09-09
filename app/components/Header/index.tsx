@@ -1,11 +1,8 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import type { Category } from '~/shared/types';
-import useCheckScrolled from '~/hooks/useCheckScrolled';
-
-import AnnouncementBanner from './components/AnnouncementBanner';
 import LogoHeader from "./components/LogoHeader";
 import NavBar, { links as NavBarLinks } from './components/NavBar';
 import PropBar from './components/PropBar';
@@ -39,38 +36,12 @@ function Header({
   numOfItemsInCart = 0,
   hidePropBar = false,
 }: HeaderProps) {
-
-  const announcementHeight = 52;
-  const [openAnnouncement, setOpenAnnouncement] = useState<boolean>(true);
-  const [navBarHeight, setNavBarHeight] = useState(125);
-  const [announcementBarHeight, setAnnouncementBarHeight] = useState(announcementHeight);
+  const navBarHeight = 125;
   const [openMobileSearchBar, setOpenMobileSearchBar] = useState<boolean>(false);
-
-  const [scrolled, offset] = useCheckScrolled(announcementBarHeight);
   const navBarRef = useRef<HTMLInputElement>(null);
-  const announcementBarRef = useRef<HTMLInputElement>(null);
-  const fixedTop = scrolled || !openAnnouncement ? 0 : announcementBarHeight - offset;
-
-  useEffect(() => {
-    setNavBarHeight(navBarRef!.current!.clientHeight);
-
-    if (!hidePropBar) {
-      setAnnouncementBarHeight(announcementBarRef!.current!.clientHeight);
-    }
-  }, [categoriesBar, hidePropBar]);
 
   return (
     <div className='relative'>
-      <div
-        ref={announcementBarRef}
-        className={`fixed z-30 top-0 w-full ${!openAnnouncement ? 'hidden' : 'flex'}`}
-      >
-        <AnnouncementBanner
-          open={openAnnouncement}
-          onClose={() => setOpenAnnouncement(false)}
-        />
-      </div>
-
       <div
         ref={navBarRef}
         className={`
@@ -78,7 +49,6 @@ function Header({
           w-full
           flex flex-col
         `}
-        style={{ top: `${fixedTop}px` }}
       >
         <LogoHeader
           categories={categories}
@@ -104,8 +74,8 @@ function Header({
       </div>
 
       {
-        hidePropBar ? <div style={{ paddingTop: `${navBarHeight + fixedTop}px` }} /> : (
-          <div className='flex' style={{ paddingTop: `${navBarHeight + fixedTop}px` }}>
+        hidePropBar ? <div style={{ paddingTop: `${navBarHeight}px` }} /> : (
+          <div className='flex' style={{ paddingTop: `${navBarHeight}px` }}>
             <PropBar />
           </div>
         )
