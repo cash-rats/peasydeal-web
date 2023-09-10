@@ -185,6 +185,7 @@ const Document = withEmotionCache(
           <Links />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
           <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 
           {serverStyleData?.map(({ key, ids, css }) => (
             <style
