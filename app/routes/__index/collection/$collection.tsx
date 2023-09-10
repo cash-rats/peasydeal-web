@@ -38,7 +38,7 @@ import FourOhFour from '~/components/FourOhFour';
 import { composErrorResponse } from '~/utils/error';
 
 import { resolveCategoryName } from '../api/resolve_category_name.server';
-import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
+import ThreeColumns, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer/ThreeColumns';
 import { productsLoader, loadmoreProductsLoader } from './loaders';
 import reducer, { CollectionActionType } from './reducer';
 import type { LoaderDataType, LoadMoreDataType } from './types';
@@ -449,7 +449,7 @@ function Collection({ scrollPosition }: CollectionProps) {
                 - https://github.com/remix-run/remix/discussions/4652
                 - https://github.com/remix-run/remix/discussions/4950
             */}
-            <ProductRowsContainer
+            <ThreeColumns
               products={state.products}
               scrollPosition={scrollPosition}
             />
