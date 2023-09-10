@@ -1,13 +1,5 @@
-import { Link } from '@remix-run/react';
-import Button from '@mui/material/Button';
-import { HiOutlineFire } from 'react-icons/hi';
-
 import type { Category } from '~/shared/types';
 
-import LogoSection from '../LogoSection';
-import EmailSubscribe from '../EmailSubscribe';
-import ShoppingIdeaSection from '../ShoppingIdeaSection';
-import CompanySection from '../CompanySection';
 import CustomerSupport from './CustomerSupport';
 import OurPolicies from './OurPolicies';
 
@@ -26,7 +18,6 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
       px-4 py-8
       md:grid-cols-3
       border-b-[1px] border-b-[#2E4E73] pb-4
-      px-4
     ">
       <div className="flex flex-col">
         <span className="text-white font-bold text-lg uppercase">

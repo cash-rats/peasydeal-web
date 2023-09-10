@@ -62,9 +62,8 @@ function RecommendedProducts({
    *   `/product/LED-Light-Up-Trainers-i.7705390678254` ---> `/product/USB-Rechargeable-Menstrual-Heating-Waist-Belt-i.7773266346210`
    *
    * We'll determine whether user is transitioning between different product i.e. `/product/{product_name}` by checking.
-   *    1. Are we being transitioned.
-   *    2. Is the next route we are transitioning includes `/product/`
-   *
+   *    1. Are we being transitioned?
+   *    2. Does the next route we are transitioning includes `/product/` in the url?
    */
   useEffect(() => {
     if (

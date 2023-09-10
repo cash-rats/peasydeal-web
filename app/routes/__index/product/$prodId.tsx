@@ -116,7 +116,7 @@ type ActionType =
 
 // TODO
 //  - [x] store shopping cart items in session storage if user has not logged in yet.
-//  - [ ] what is error?
+//  - [ ] what is the error?
 export const action: ActionFunction = async ({ request }) => {
 	const form = await request.formData();
 	const formObj = Object.fromEntries(form.entries());
@@ -132,7 +132,7 @@ export const action: ActionFunction = async ({ request }) => {
 	const payload = Object.fromEntries(form.entries());
 	const item = JSON.parse(payload.item as string) as ShoppingCartItem;
 
-	// If item does not have a valid variationUUID, don't insert it to shopping cart.
+	// If item does not have a valid variationUUID, don't add it to shopping cart.
 	// TODO output proper error resposne
 	if (
 		!item ||
@@ -157,9 +157,7 @@ export const action: ActionFunction = async ({ request }) => {
 export const CatchBoundary = () => (<FourOhFour />);
 
 type ProductDetailProps = {} & LazyComponentProps;
-/*
- * - [x] display product reviews
- */
+
 function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 	const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
 	const mainCategory = (
@@ -223,6 +221,15 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				loaderData.product.variation_images,
 			));
 		}, 100);
+
+		const gaSessionID = getSessionIDFromSessionStore();
+
+		window
+			.rudderanalytics
+			?.track('view_product_detail', {
+				session: gaSessionID,
+				product: `${state.productDetail.title}_${state.productDetail.uuid}`
+			});
 	}, [loaderData.product.uuid]);
 
 	useEffect(() => {
@@ -320,7 +327,17 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 
 	const handleClickProduct = (title: string, productUUID: string) => {
-		console.log('ga[recommended_product]', title, productUUID);
+		// Intel we probably want to know
+		//   1. what is the current product
+		//   2. what is the recommend product he/she clicked on?
+		const gaSessionID = getSessionIDFromSessionStore();
+
+		window
+			.rudderanalytics
+			?.track('clicks_recommend_prod_page', {
+				session: gaSessionID,
+				product: `${title}_${productUUID}`,
+			});
 	}
 
 	const handleOnClose = () => {
