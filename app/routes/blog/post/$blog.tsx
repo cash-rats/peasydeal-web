@@ -134,7 +134,6 @@ export default function BlogPost() {
 
   return (
     <div className="w-full p-4 md:px-10 md:py-8 max-w-screen-xl mx-auto bg-white">
-      <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       <div className="peasydeal-blog pt-4">
         <div id="primary" className="content-area with-sidebar">
           { /* button to previous page */}
