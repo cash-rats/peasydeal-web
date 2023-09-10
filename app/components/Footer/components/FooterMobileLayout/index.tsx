@@ -27,9 +27,6 @@ function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
       <li>
         <LogoSection />
       </li>
-      <li className="border-b-[1px] pb-4 border-b-[#2E4E73]">
-        <EmailSubscribe />
-      </li>
 
       <li className="flex flex-row">
         <div className='flex-auto'>

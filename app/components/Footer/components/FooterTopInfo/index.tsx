@@ -8,6 +8,7 @@ import Visa from './images/visa.svg';
 import MasterCard from './images/mastercard.svg';
 import Paypal from './images/paypal.svg';
 import Klarna from './images/klarna-1.svg';
+import EmailSubscribe from '../EmailSubscribe';
 
 const paymentMethod = [
   {
@@ -34,23 +35,31 @@ const paymentMethod = [
 
 function FooterTopInfo() {
   return (
-    <div className="w-full bg-[#EEEEEE] border-t-[1px] border-t-[#BABABA]">
+    <div className="w-full bg-[#EEEEEE] border-t-[1px] border-t-[#d8d8d8]">
+      <div className="w-full max-w-screen-md mx-auto">
+        <section className='
+          px-2
+          py-8 md:px-14 lg:px-20
+        '>
+          <EmailSubscribe />
+        </section>
+      </div>
+      <div className='border-t-[1px] border-t-[#d8d8d8]'/>
       <div className="w-full max-w-screen-xl mx-auto grid grid-cols-2">
         <div className="
           flex flex-col
           justify-start
           items-center
-          px-2 md:px-6 lg:px-14
+          px-2
           py-8 md:px-14 lg:px-20
           box-border
-          border-r-[1px] border-r-[#BABABA]
+          border-r-[1px] border-r-[#d8d8d8]
         ">
           <h3 className="
             font-bold
             text-xl
             md:text-2xl
             mb-2 md:mb-3 lg:mb-4
-            capitalize
           ">
             Help and service
           </h3>

@@ -19,7 +19,7 @@ import {
   getFourOhFourTitleText,
   getFourOhFourDescText,
   getCollectionTitleText,
-  getCollectionDescText,
+  getPromotionDescText,
   getCategoryFBSEO_V2,
 } from '~/utils/seo';
 
@@ -73,7 +73,7 @@ export const meta: V2_MetaFunction = ({ data, params }) => {
     {
       tagName: 'meta',
       name: 'description',
-      content: getCollectionDescText(
+      content: getPromotionDescText(
         category?.title,
         category?.description,
       ),

@@ -20,14 +20,14 @@ export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
 
   return [
-    { title: contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Cookie Policy' },
+    { title: contentfulFields?.seoReference?.fields?.SEOtitle || 'PeasyDeal Payment Policy' },
 
     ...getRootFBSEO_V2()
       .map(tag => {
         if (!('property' in tag)) return tag;
 
         if (tag.property === 'og:description') {
-          tag.content = contentfulFields?.seoReference?.fields?.SEOdescription || 'Stay informed about our cookie policy and how it affects your experience on PeasyDeal. Read our comprehensive policy here!';
+          tag.content = contentfulFields?.seoReference?.fields?.SEOdescription || 'Stay informed about our payment policy and how it affects your experience on PeasyDeal. Read our comprehensive policy here!';
         }
 
         return tag
@@ -50,7 +50,7 @@ export const loader: LoaderFunction = async () => {
   }
 }
 
-export default function CookiePolicy() {
+export default function PaymentPolicy() {
   const post = useLoaderData() as TContentfulPost;
 
   // @ts-ignore

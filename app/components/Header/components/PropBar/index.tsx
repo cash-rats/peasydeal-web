@@ -55,7 +55,7 @@ const PropBar = () => {
         ">
           <div className='flex flex-row justify-center'>
             <img src={lowShippingIcon} alt="Shipping Starting from £2.99" className="self-center text-lg md:text-xl sm:space-x-0.5" />
-            <span className="self-center text-sm sm:text-sm md:text-base ml-1.5">Shipping Starting from <b>£2.99</b></span>
+            <span className="self-center text-sm sm:text-sm md:text-base ml-1.5"><b>FREE</b> Shipping on order <b>£19.99+</b></span>
           </div>
         </li>
       </ul>

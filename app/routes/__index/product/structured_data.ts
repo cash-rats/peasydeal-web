@@ -16,12 +16,13 @@ const structuredData = (data: LoaderTypeProductDetail) => {
 
   const { product } = data;
   const [firstVariation] = product.variations;
+  const imageUrl = typeof product.main_pic_url === 'string' ? product.main_pic_url : (product.main_pic_url?.url || '');
 
   const psd: WithContext<Product> = {
     "@context": "https://schema.org",
     "@type": "Product",
     "name": product.title,
-    "image": product.images,
+    "image": imageUrl,
     "description": product.seo_description,
     "sku": firstVariation.sku,
     // TODO: We do not have product reivew feature yet. We'll enable "reiview" when the feature is implemented.
