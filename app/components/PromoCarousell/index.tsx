@@ -1,18 +1,18 @@
-import { Link, LinksFunction } from '@remix-run/react';
+import { Link } from '@remix-run/react';
+import type { LinksFunction } from '@remix-run/node';
 import { Button } from '@chakra-ui/react';
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
 import React from "react";
 import Swipe from "react-easy-swipe";
 import styles from './styles/PromoCarousell.css';
-// import bg from './images/group-prizes.png';
 import shoes from './images/light-up-shoes.png';
 import bubble from './images/bubble-slide.png';
 
 export const links: LinksFunction = () => {
-	return [
-		{ rel: 'stylesheet', href: styles },
-	]
+  return [
+    { rel: 'stylesheet', href: styles },
+  ]
 }
 
 const campaigns = [1, 2];
@@ -191,7 +191,7 @@ const PromoCarousell = () => {
       style={{ top: "40%" }}
     >
       <span role="img" aria-label={`Arrow ${isLeft ? "left" : "right"}`}>
-        {isLeft ? <FiChevronLeft /> : <FiChevronRight /> }
+        {isLeft ? <FiChevronLeft /> : <FiChevronRight />}
       </span>
     </button>
   );

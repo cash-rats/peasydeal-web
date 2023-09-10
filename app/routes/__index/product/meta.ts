@@ -12,7 +12,9 @@ import {
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import { structuredData } from './structured_data';
 
-export const meta: V2_MetaFunction = ({ data }: { data: LoaderTypeProductDetail }) => {
+export const meta: V2_MetaFunction = ({ data, matches }) => {
+  data = data as LoaderTypeProductDetail;
+
   if (!data || !data.product) {
     return [
       { title: getFourOhFourTitleText('product') },
