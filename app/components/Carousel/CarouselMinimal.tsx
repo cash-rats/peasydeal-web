@@ -14,6 +14,7 @@ import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Image, { MimeType } from "remix-image"
 
+import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { envs } from '~/utils/get_env_source';
 interface CarouselMinimalImage {
   title: string;
@@ -185,6 +186,19 @@ function Carousel({
         controller={{
           closeOnBackdropClick: true,
           touchAction: "pan-y",
+        }}
+        on={{
+          entered() {
+            const gaSessionID = getSessionIDFromSessionStore()
+
+            if (gaSessionID) {
+              window.
+                rudderanalytics?.
+                track('click_product_light_box', {
+                  session: gaSessionID,
+                });
+            }
+          },
         }}
       />
 
