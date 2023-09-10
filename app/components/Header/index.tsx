@@ -36,7 +36,6 @@ function Header({
   numOfItemsInCart = 0,
   hidePropBar = false,
 }: HeaderProps) {
-  const navBarHeight = 125;
   const [openMobileSearchBar, setOpenMobileSearchBar] = useState<boolean>(false);
   const navBarRef = useRef<HTMLInputElement>(null);
 
@@ -74,11 +73,13 @@ function Header({
       </div>
 
       {
-        hidePropBar ? <div style={{ paddingTop: `${navBarHeight}px` }} /> : (
-          <div className='flex' style={{ paddingTop: `${navBarHeight}px` }}>
-            <PropBar />
-          </div>
-        )
+        hidePropBar
+          ? (<div className="pt-[60px] md:pt-[120px]" />)
+          : (
+            <div className='flex pt-[60px] md:pt-[120px]'>
+              <PropBar />
+            </div>
+          )
       }
     </div>
   );
