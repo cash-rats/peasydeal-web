@@ -57,7 +57,7 @@ interface ProductDetailContainerParams {
   onChangeQuantity?: (evt: ChangeEvent<HTMLInputElement>) => void;
   onIncreaseQuantity?: () => void;
   onDecreaseQuantity?: () => void;
-  onAddToCart?: () => void;
+  addToCart?: () => void;
 };
 
 function ProductDetailContainer({
@@ -75,7 +75,7 @@ function ProductDetailContainer({
   onChangeQuantity,
   onIncreaseQuantity,
   onDecreaseQuantity,
-  onAddToCart,
+  addToCart,
 }: ProductDetailContainerParams) {
   const [openOpenReturnPolicy, setOpenReturnPolicy] = useState(false);
   const productTopRef = useRef<HTMLDivElement>(null);
@@ -301,7 +301,7 @@ function ProductDetailContainer({
 
             <div className='hidden md:block'>
               <ProductActionBar
-                onClickAddToCart={onAddToCart}
+                onClickAddToCart={addToCart}
                 sessionStorableCartItem={sessionStorableCartItem}
                 loading={isAddingToCart}
               />
@@ -345,7 +345,7 @@ function ProductDetailContainer({
           <div className="h-[100px] md:hidden">
             <ProductActionBar
               ref={mobileUserActionBarRef}
-              onClickAddToCart={onAddToCart}
+              onClickAddToCart={addToCart}
               sessionStorableCartItem={sessionStorableCartItem}
               loading={isAddingToCart}
             />
