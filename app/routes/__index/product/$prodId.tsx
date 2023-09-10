@@ -334,15 +334,13 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 		window
 			.rudderanalytics
-			?.track('clicks_recommend_prod_page', {
+			?.track('select_recommend_prod_page', {
 				session: gaSessionID,
 				product: `${title}_${productUUID}`,
 			});
 	}
 
-	const handleOnClose = () => {
-		setOpenSuccessModal(false);
-	}
+	const handleOnClose = () => setOpenSuccessModal(false);
 
 	const handleChangeVariation = (v: any) => {
 		if (!v) return;
@@ -394,7 +392,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 					onChangeQuantity={handleUpdateQuantity}
 					onChangeVariation={handleChangeVariation}
-					onAddToCart={handleAddToCart}
+					addToCart={handleAddToCart}
 					onDecreaseQuantity={decreaseQuantity}
 					onIncreaseQuantity={increaseQuantity}
 				/>
