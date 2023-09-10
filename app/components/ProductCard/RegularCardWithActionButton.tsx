@@ -84,6 +84,7 @@ export default function ProductCard({
   onClickProduct = () => { },
   scrollPosition,
   displayActionButton = true,
+  noPadding = false,
 }: IProductCard) {
   const {
     main_pic: mainPic,
@@ -148,15 +149,15 @@ export default function ProductCard({
       to={composeProductDetailURL({ productName: title, productUUID })}
       state={{ scrollToTop: true }}
     >
-      <div className='
+      <div className={`
         flex flex-col
         max-w-xs
         w-full h-full
-        border border-gray-200 rounded-lg
-        p-1 md:p-2 lg:p-4
+        ${noPadding ? 'border-b-[3px] border-b-[#d53f8c]': 'border border-gray-200 rounded-lg'}
+        ${noPadding ? 'p-0': 'p-1 md:p-2 lg:p-4'}
         bg-white
-        relative
-      '>
+        relative`}
+      >
         {
           priceOff > showPriceOffThreshhold
             ? (
@@ -202,19 +203,12 @@ export default function ProductCard({
                 fit: 'contain',
               }}
               className="
-              aspect-square
-              min-w-0 min-h-0
-            "
+                aspect-square
+                min-w-0 min-h-0
+              "
               loaderUrl='/remix-image'
               src={mainPic}
-              responsive={[
-                {
-                  size: {
-                    width: 274,
-                    height: 274,
-                  },
-                },
-              ]}
+
             />
           </LazyLoadComponent>
         </div>
