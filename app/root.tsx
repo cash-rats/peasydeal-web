@@ -90,11 +90,6 @@ export let meta: V2_MetaFunction<typeof loader> = () => {
     },
     {
       tagName: 'meta',
-      name: 'viewport',
-      content: 'width=device-width,initial-scale=1',
-    },
-    {
-      tagName: 'meta',
       name: 'description',
       content: getIndexDescText(),
     },

@@ -98,6 +98,7 @@ function SearchBar({
       <BaseInput
         {...args}
         autoComplete='off'
+        autoCapitalize='off'
         aria-autocomplete='none'
         inputRef={(inputRef) => {
           myRef.current = inputRef

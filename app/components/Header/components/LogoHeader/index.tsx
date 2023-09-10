@@ -25,9 +25,7 @@ function LogoHeader({
   style,
 }: LogoHeaderProps) {
   return (
-    <header
-      style={style}
-    >
+    <header style={style} >
       <div className="bg-white flex justify-center">
         <div className={`
           box-border

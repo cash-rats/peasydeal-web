@@ -71,6 +71,7 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
               ref={inputRef}
               aria-labelledby='autocomplete-form'
               id='autocomplete-input'
+              autoCapitalize='none'
             />
           </div>
           <div className="aa-InputWrapperSuffix">
@@ -99,7 +100,7 @@ function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
               state
                 .autoCompleteState
                 .collections
-                .map((collection, index) => {
+                .map((collection) => {
                   const { source, items } = collection;
                   if (source.sourceId === "querySuggestionsPlugin") {
                     return (

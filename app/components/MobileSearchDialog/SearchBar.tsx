@@ -71,6 +71,7 @@ export default function SearchBar({
             {...autocomplete.getInputProps({ inputElement: inputRef.current })}
             className="aa-Input"
             ref={inputRef}
+            autoCapitalize="off"
           />
           <input
             type="hidden"
