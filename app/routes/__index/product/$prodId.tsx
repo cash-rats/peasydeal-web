@@ -24,10 +24,10 @@ import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
 import { composErrorResponse } from '~/utils/error';
 import type { ApiErrorResponse } from '~/shared/types';
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
-import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
-import type { LoaderTypeProductDetail } from './types';
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 
+import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
+import type { LoaderTypeProductDetail } from './types';
 import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
@@ -331,12 +331,14 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 		//   2. what is the recommend product he/she clicked on?
 		const gaSessionID = getSessionIDFromSessionStore();
 
-		window
-			.rudderanalytics
-			?.track('select_recommend_prod_page', {
-				session: gaSessionID,
-				product: `${title}_${productUUID}`,
-			});
+		if (gaSessionID) {
+			window
+				.rudderanalytics
+				?.track('select_recommend_prod_page', {
+					session: gaSessionID,
+					product: `${title}_${productUUID}`,
+				});
+		}
 	}
 
 	const handleOnClose = () => setOpenSuccessModal(false);
