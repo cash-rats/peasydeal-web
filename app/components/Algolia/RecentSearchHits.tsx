@@ -35,7 +35,6 @@ function RecentSearchHits({ items, autocomplete }: RecentSearchHitsParams) {
                 window.rudderanalytics?.track('search_action_recent_search_hit', {
                   query: item.label,
                 });
-
               }}
             >
               <div className="aa-ItemWrapper p-1">
