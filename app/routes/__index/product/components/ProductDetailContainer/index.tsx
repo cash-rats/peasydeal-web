@@ -149,7 +149,7 @@ function ProductDetailContainer({
         />
 
         {/* Reviews */}
-        <Reviews productUUID={productDetail.uuid} />
+        {/* <Reviews productUUID={productDetail.uuid} /> */}
       </div>
 
       {/* product content */}
