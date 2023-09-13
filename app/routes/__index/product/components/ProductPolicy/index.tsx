@@ -74,7 +74,7 @@ const ProductPolicy = ({
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4} className='text-xl px-6'>
-            Items offered on peasydeal.com website are available for delivery to addresses in <b>all islands in United Kingdom</b>. Any shipments out of our shipping locations are not available at this time and we will notify you with email and refund you the total amount of your order, using the original method of payment.
+          Items offered on peasydeal.com website are available for delivery to addresses in the following Islands: <b>UK Mainland, Scottish Highlands and Islands, Isle of Man Northern Ireland islands</b> in United Kingdom.
           </AccordionPanel>
         </AccordionItem>
 

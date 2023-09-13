@@ -42,7 +42,7 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
           <span className="text-base text-white font-normal capitalize">
             <b className='mr-2'>Address: </b><br />5th Floor, 167, 169 Great Portland St, London W1W 5PF, United Kingdom
           </span>
-          <span className="text-base text-white font-normal capitalize">
+          <span className="text-base text-white font-normal">
             <b className='mr-2'>Email: </b><br /> contact@peasydeal.com
           </span>
           <span className="text-base text-white font-normal capitalize">
