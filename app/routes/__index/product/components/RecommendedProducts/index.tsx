@@ -1,7 +1,7 @@
 import { useEffect, useState, forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
-import { useFetcher, useTransition } from '@remix-run/react';
+import { useFetcher, useNavigation } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 
@@ -54,7 +54,7 @@ function RecommendedProducts({
 }: RecommendedProductsProps, ref: ForwardedRef<HTMLDivElement>) {
   const fetcher = useFetcher();
   const [rows, setRows] = useState<Product[][]>([]);
-  const transition = useTransition();
+  const navigation = useNavigation();
 
   /**
    * We need to reload recommended product when user changes product. For example:
@@ -67,14 +67,14 @@ function RecommendedProducts({
    */
   useEffect(() => {
     if (
-      transition.state !== 'idle' &&
-      transition.location.pathname.includes('/product/')
+      navigation.state !== 'idle' &&
+      navigation.location.pathname.includes('/product/')
     ) {
       fetcher.submit({
         category
       }, { method: 'post', action: '/product/components/RecommendedProducts?index' });
     }
-  }, [transition]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [navigation]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetcher.submit({

@@ -1,7 +1,7 @@
 import { useReducer, useRef, useEffect } from 'react';
 import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, useFetcher, useParams, NavLink, useTransition } from '@remix-run/react';
+import { useLoaderData, useFetcher, useParams, NavLink, useNavigation } from '@remix-run/react';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
@@ -152,7 +152,7 @@ function Promotion({ scrollPosition }: TPromotion) {
 
   const { promotion } = useParams();
   const loadMoreFetcher = useFetcher();
-  const transition = useTransition();
+  const navigation = useNavigation();
 
   // If user changes promotion, we'll update the current category in reducer.
   useEffect(() => {
@@ -219,10 +219,10 @@ function Promotion({ scrollPosition }: TPromotion) {
     );
   };
 
-  const isChangingPromotion = transition.state !== 'idle' &&
-    transition.location &&
+  const isChangingPromotion = navigation.state !== 'idle' &&
+    navigation.location &&
     categories.hasOwnProperty(
-      decodeURI(transition.location.pathname.substring(1))
+      decodeURI(navigation.location.pathname.substring(1))
     );
 
   const {

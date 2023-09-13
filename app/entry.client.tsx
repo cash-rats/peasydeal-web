@@ -37,31 +37,17 @@ function ClientCacheProvider({ children }: ClientCacheProviderProps) {
 
 function hydrate() {
 	React.startTransition(() => {
-		if (process.env.NODE_ENV === 'development') {
-			require("react-dom").hydrate(
-				<React.StrictMode>
-					<ClientCacheProvider>
-						<ThemeProvider theme={theme}>
-							<CssBaseline />
-							<RemixBrowser />
-						</ThemeProvider>
-					</ClientCacheProvider>
-				</React.StrictMode>,
-				document,
-			);
-		} else {
-			hydrateRoot(
-				document,
-				<React.StrictMode>
-					<ClientCacheProvider>
-						<ThemeProvider theme={theme}>
-							<CssBaseline />
-							<RemixBrowser />
-						</ThemeProvider>
-					</ClientCacheProvider>
-				</React.StrictMode>,
-			)
-		}
+		hydrateRoot(
+			document,
+			<React.StrictMode>
+				<ClientCacheProvider>
+					<ThemeProvider theme={theme}>
+						<CssBaseline />
+						<RemixBrowser />
+					</ThemeProvider>
+				</ClientCacheProvider>
+			</React.StrictMode>,
+		)
 	});
 }
 
