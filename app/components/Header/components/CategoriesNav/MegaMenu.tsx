@@ -7,10 +7,10 @@ import {
   MenuList,
   MenuItem,
 } from "@chakra-ui/react"
+import type { LinksFunction } from '@remix-run/node';
+
 import { VscArrowRight } from "react-icons/vsc";
 import type { Category } from '~/shared/types';
-
-import type { LinksFunction } from '@remix-run/node';
 
 import styles from './styles/MegaMenu.css';
 
@@ -26,6 +26,8 @@ interface IMegaMenu {
   activeMenuName: string | null;
 }
 
+let delayOpenID: undefined | NodeJS.Timeout = undefined;
+
 const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -40,7 +42,19 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
     setIsOpen(true);
   }
 
+  /**
+   * Invoke `setOpen` after user intended to open
+   * menu panel. After cursuor is on top of the item
+   * for 300 milli-seconds we can confirm that the user
+   * has the intention to open the panel.
+   */
+  const setDelayOpen = () => {
+    delayOpenID = setTimeout(setOpen, 300);
+  }
+
   const setClose = () => {
+    clearTimeout(delayOpenID);
+    delayOpenID = undefined;
     setMenuDisplayed(false, category.name);
     setIsOpen(false);
   }
@@ -62,7 +76,7 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
             e.preventDefault();
             isOpen ? setClose() : setOpen();
           }}
-          onMouseEnter={setOpen}
+          onMouseEnter={setDelayOpen}
           onMouseLeave={setClose}
           onClick={e => {
             isOpen ? setClose() : setOpen();
