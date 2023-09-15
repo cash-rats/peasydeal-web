@@ -12,16 +12,22 @@ import {
 
 import type { ApiErrorResponse } from '~/shared/types';
 import successImage from '~/components/EmailSubscribeModal/images/email_subscription.png';
-import voucherImage from './images/3off@2x.png';
 import reducer, { setOpenPromoteSubscriptionModal } from '~/components/PromoteSubscriptionModal/reducer';
 
-interface PromoteSubscriptionModalParams {
-  // open: boolean;
-  // onClose: () => void;
-  // error: ApiErrorResponse | null;
-}
+import voucherImage from './images/3off@2x.png';
 
-function PromoteSubscriptionModal() {
+interface PromoteSubscriptionModalProps {
+  /**
+   * When `forceDisable` is set to true, this modal would not
+   * open whatsoever regardless of configs set in localstorage.
+   *
+   * Usecase: When request is from google bot agent like `StoreBot`,
+   * we don't want to display this modal.
+   */
+  forceDisable?: boolean;
+};
+
+function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionModalProps) {
   const [state, dispatch] = useReducer(reducer, {
     open: false,
     error: null,
@@ -41,7 +47,10 @@ function PromoteSubscriptionModal() {
   }
 
   const subFetcher = useFetcher();
+
   useEffect(() => {
+		if (forceDisable) return;
+
     // localStorage check
     const modalClosed = localStorage.getItem('modalClosed') === 'true';
     const expiration = localStorage.getItem('modalClosedExpiration');
@@ -59,7 +68,7 @@ function PromoteSubscriptionModal() {
     if (modalClosed && expiration && Date.now() > parseInt(expiration)) {
       openModal();
     }
-  }, []);
+  }, [forceDisable]);
 
   useEffect(() => {
     if (subFetcher.type === 'done') {
@@ -99,11 +108,11 @@ function PromoteSubscriptionModal() {
                       ? 'Something went wrong! Please check the email your entered and try again.'
                       : (
                         <>
-                        <img src={successImage} alt="email subscribe successfull" className='mx-auto mb-2'/>
-                        <p className="leading-relaxed text-base md:text-xl lg:text-2xl my-2 md:my-4 max-w-3xl font-poppins font-medium">An confirmation link and coupon has send to your email.</p>
-                        <br/>
-                        <p className="leading-relaxed text-base md:text-xl lg:text-2xl my-2 md:my-4 max-w-3xl font-poppins font-medium">Please check your email for <b>£3 GBP voucher code</b> and click the <b>Confirm & Validate</b> button in the email to activate your voucher.</p>
-                      </>)
+                          <img src={successImage} alt="email subscribe successfull" className='mx-auto mb-2' />
+                          <p className="leading-relaxed text-base md:text-xl lg:text-2xl my-2 md:my-4 max-w-3xl font-poppins font-medium">An confirmation link and coupon has send to your email.</p>
+                          <br />
+                          <p className="leading-relaxed text-base md:text-xl lg:text-2xl my-2 md:my-4 max-w-3xl font-poppins font-medium">Please check your email for <b>£3 GBP voucher code</b> and click the <b>Confirm & Validate</b> button in the email to activate your voucher.</p>
+                        </>)
                   }
                 </div>
               </div>

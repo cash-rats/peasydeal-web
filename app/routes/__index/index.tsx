@@ -17,6 +17,7 @@ import PromoActivitiesVariant from "~/components/PromoActivitiesVariant";
 import AllTimeCoupon from "~/components/AllTimeCoupon";
 import { links as AllTimeCouponLink } from "~/components/AllTimeCoupon";
 import PromoteSubscriptionModal from "~/components/PromoteSubscriptionModal";
+import { isFromGoogleStoreBot } from '~/utils';
 
 import { fetchLandingPageFeatureProducts } from "./api";
 
@@ -24,6 +25,7 @@ type LoaderDataType = {
 	categoryPreviews: TCategoryPreview[],
 	promotionPreviews: TCategoryPreview[],
 	promotions: TPromotionType[],
+	userAgent: string;
 }
 
 export const links: LinksFunction = () => {
@@ -46,6 +48,8 @@ export const handle = { dynamicLinks }
 
 export const loader: LoaderFunction = async ({ request }) => {
 	try {
+		const userAgent = request.headers.get('user-agent');
+
 		const landings = await fetchLandingPageFeatureProducts({
 			categoriesPreviewNames: [
 				'hardware',
@@ -62,6 +66,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 			categoryPreviews: landings.categoryPreviews,
 			promotionPreviews: landings.promotionPreviews,
 			promotions: landings.promotions,
+			userAgent: userAgent || '',
 		});
 	} catch (e) {
 		throw json(e, {
@@ -89,6 +94,7 @@ function Index({ scrollPosition }: IndexProps) {
 		categoryPreviews,
 		promotionPreviews,
 		promotions,
+		userAgent,
 	} = useLoaderData<LoaderDataType>() || {};
 
 	// Redirect to product detail page when click on product.
@@ -99,7 +105,7 @@ function Index({ scrollPosition }: IndexProps) {
 	return (
 		<div className="overflow-hidden">
 			<h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
-			<PromoteSubscriptionModal />
+			<PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(userAgent)} />
 
 			<div className="
 				pt-2.5 px-auto

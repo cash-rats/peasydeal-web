@@ -82,3 +82,6 @@ export const pickMainImage = ({ mainImg, sharedImgs, variationImgs }: PickMainIm
 
   return variationImgs[0];
 };
+
+
+

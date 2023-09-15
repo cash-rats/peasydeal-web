@@ -6,34 +6,24 @@ import {
   checkCategoryExists,
 } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
-import type { Product, Category } from '~/shared/types';
 import { getCanonicalDomain } from '~/utils/seo';
 import { commitSession } from '~/sessions/redis_session';
 
 import { fetchProductsByCategoryV2 } from "../api";
-import type { LoadMoreDataType } from './types';
+import type { LoadMoreDataType, LoaderDataType } from './types';
 
-interface IProductsLoader {
+interface ProductsLoaderParams {
   request: Request;
   category: string;
   perpage: number;
 }
 
-interface LoaderDataType {
-  products: Product[];
-  category: Category;
-  page: number;
-  canonical_link: string;
-  total: number;
-  current: number;
-  hasMore: boolean;
-}
 
 export const productsLoader = async ({
   request,
   category,
   perpage,
-}: IProductsLoader) => {
+}: ProductsLoaderParams) => {
   if (!await checkCategoryExists(category)) {
     throw json({
       error: `target category ${category} not found`
@@ -42,6 +32,7 @@ export const productsLoader = async ({
     });
   }
 
+  const userAgent = request.headers.get('user-agent') || '';
   const [taxCat, cachedProds] = await Promise.all([
     await fetchTaxonomyCategoryByName(category),
     await getCategoryProducts(request, category),
@@ -63,13 +54,12 @@ export const productsLoader = async ({
     return json<LoaderDataType>({
       category: taxCat,
       products,
-
       page: cachedProds.page,
       total,
       current,
       hasMore,
-
       canonical_link: `${getCanonicalDomain()}/collection/${category}`,
+      userAgent,
     });
   }
 
@@ -100,6 +90,7 @@ export const productsLoader = async ({
     hasMore,
     category: taxCat,
     canonical_link: `${getCanonicalDomain()}/${category}`,
+    userAgent,
   }, {
     headers: {
       'Set-Cookie': await commitSession(session),

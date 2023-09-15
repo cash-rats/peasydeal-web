@@ -36,6 +36,7 @@ import {
 import PageTitle from '~/components/PageTitle';
 import FourOhFour from '~/components/FourOhFour';
 import { composErrorResponse } from '~/utils/error';
+import { isFromGoogleStoreBot } from '~/utils';
 
 import { resolveCategoryName } from '../api/resolve_category_name.server';
 import ThreeColumns, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer/ThreeColumns';
@@ -149,7 +150,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   );
 }
 
-export const action: ActionFunction = async ({ request, params }) => {
+export const action: ActionFunction = async ({ request }) => {
   const body = await request.formData();
   const productID = body.get("product_id");
   return redirect(`/product/${productID}`);
@@ -175,6 +176,7 @@ function Collection({ scrollPosition }: CollectionProps) {
     total,
     current,
     hasMore,
+    userAgent,
   } = useLoaderData<LoaderDataType>() || {};
 
   const [state, dispatch] = useReducer(reducer, {
@@ -265,7 +267,9 @@ function Collection({ scrollPosition }: CollectionProps) {
       <div className="w-full mb-2.5 md:pb-8">
         <AllTimeCoupon isFullLayout />
       </div>
-      <PromoteSubscriptionModal />
+
+      <PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(userAgent)} />
+
       <div className="
         py-0 px-auto
         flex flex-col
@@ -317,7 +321,6 @@ function Collection({ scrollPosition }: CollectionProps) {
 
         <div
           className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8] z-20 bg-white"
-          // style={{ position: sticky ? 'sticky' : 'static', top: '58px' }}
           ref={mobileSubCatHalfSheetRef}
         >
           <button

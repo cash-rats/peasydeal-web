@@ -73,7 +73,10 @@ export let links: LinksFunction = () => {
 export async function loader({ request }: LoaderArgs) {
   try {
     const gaSessionID = await storeDailySession();
-    return json({ envs, gaSessionID });
+    return json({
+      envs,
+      gaSessionID,
+    });
   } catch (e: any) {
     console.log('TODO: failed to store session id to redis', e)
   }

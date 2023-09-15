@@ -25,6 +25,7 @@ import { composErrorResponse } from '~/utils/error';
 import type { ApiErrorResponse } from '~/shared/types';
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
+import { isFromGoogleStoreBot } from '~/utils';
 
 import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
 import type { LoaderTypeProductDetail } from './types';
@@ -86,6 +87,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 
 	const url = new URL(request.url);
 	const decompURL = decomposeProductDetailURL(url);
+	const userAgent = request.headers.get('user-agent') || '';
+
 	if (!decompURL.productUUID) {
 		throw json<ApiErrorResponse>(
 			composErrorResponse('variationUUID is not found.'),
@@ -100,6 +103,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 			product: prodDetail,
 			canonical_url: `${getCanonicalDomain()}${url.pathname}`,
 			meta_image: prodDetail.main_pic_url || '',
+			user_agent: userAgent,
 		});
 	} catch (error: any) {
 		throw json<ApiErrorResponse>(
@@ -364,8 +368,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				onClose={handleOnClose}
 			/>
 
-			<PromoteSubscriptionModal />
-
+			<PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(loaderData.user_agent)} />
 			<Breadcrumbs
 				categories={state.categories}
 				productTitle={state.productDetail.title}
@@ -408,9 +411,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 				xl:max-w-[1280px]
 				max-w-screen-xl "
 			>
-				<ProductPolicy
-					productDetail={state.productDetail}
-				/>
+				<ProductPolicy productDetail={state.productDetail} />
 			</div>
 
 			{/*

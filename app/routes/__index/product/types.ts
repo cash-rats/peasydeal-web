@@ -50,4 +50,5 @@ export type LoaderTypeProductDetail = {
   product: ProductDetail;
   canonical_url: string;
   meta_image: string;
+  user_agent: string;
 };

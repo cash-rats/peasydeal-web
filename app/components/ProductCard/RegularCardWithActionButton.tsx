@@ -145,7 +145,6 @@ export default function ProductCard({
 
   return (
     <Link
-      // prefetch='intent'
       to={composeProductDetailURL({ productName: title, productUUID })}
       state={{ scrollToTop: true }}
     >
@@ -153,8 +152,8 @@ export default function ProductCard({
         flex flex-col
         max-w-xs
         w-full h-full
-        ${noPadding ? 'border-b-[3px] border-b-[#d53f8c]': 'border border-gray-200 rounded-lg'}
-        ${noPadding ? 'p-0': 'p-1 md:p-2 lg:p-4'}
+        ${noPadding ? 'border-b-[3px] border-b-[#d53f8c]' : 'border border-gray-200 rounded-lg'}
+        ${noPadding ? 'p-0' : 'p-1 md:p-2 lg:p-4'}
         bg-white
         relative`}
       >

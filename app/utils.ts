@@ -78,3 +78,11 @@ export const decomposeProductDetailURL = (url: URL) => {
   const [productName, productUUID = ''] = url.pathname.split('-i.');
   return { productName, productUUID };
 }
+
+/**
+ * Check if the user-agent is coming from google store bot.
+ */
+export const isFromGoogleStoreBot = (userAgent: string): boolean => {
+  const regex = /Storebot-Google/;
+  return regex.test(userAgent);
+};

@@ -1,7 +1,6 @@
-import type { CategoriesMap, Product, TaxonomyWithParents } from '~/shared/types';
+import type { Product, TaxonomyWithParents } from '~/shared/types';
 
-export type LoaderDataType = {
-  categories: CategoriesMap;
+export interface LoaderDataType {
   products: Product[];
   category: TaxonomyWithParents;
   page: number;
@@ -9,7 +8,8 @@ export type LoaderDataType = {
   total: number;
   current: number;
   hasMore: boolean;
-};
+  userAgent: string;
+}
 
 export type LoadMoreDataType = {
   products: Product[],
