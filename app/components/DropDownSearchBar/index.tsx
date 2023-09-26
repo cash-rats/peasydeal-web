@@ -59,6 +59,7 @@ function DropDownSearchBar() {
           recentSearchPlugin,
           categoriesPlugin,
         ]}
+        placeholder='search anything you like'
         onSubmit={handleSubmit}
         navigator={{
           navigate({ itemUrl }) {

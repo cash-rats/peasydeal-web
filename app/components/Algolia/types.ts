@@ -5,11 +5,10 @@ import type { AutocompleteQuerySuggestionsHit } from '@algolia/autocomplete-plug
 export type AlgoliaIndexItem = BaseItem & {
   title: string;
   uuid: string;
-  description: string;
   image: string;
   variations: string[];
   categories: string[];
-  objectID: string;
+  price: number;
 };
 
 export type ProductQuerySuggestHit = AutocompleteQuerySuggestionsHit & {

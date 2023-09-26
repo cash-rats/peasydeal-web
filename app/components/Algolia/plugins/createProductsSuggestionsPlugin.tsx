@@ -26,6 +26,13 @@ const createProductsSuggestionsPlugin = ({
     getSearchParams() {
       return recentSearchPlugin?.data?.getAlgoliaSearchParams({
         hitsPerPage: 5,
+        attributesToRetrieve: [
+          'title',
+          'categories',
+          'uuid',
+          'image',
+          'price',
+        ],
       });
     },
     transformSource({ source }) {

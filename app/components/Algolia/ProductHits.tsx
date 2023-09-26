@@ -1,11 +1,11 @@
 import type { MouseEvent, KeyboardEvent, BaseSyntheticEvent } from 'react';
 import type { AutocompleteApi, InternalAutocompleteSource } from '@algolia/autocomplete-core';
-import { BiSearch as SearchIcon } from 'react-icons/bi';
 import { IoIosReturnLeft as Return } from 'react-icons/io'
 import { Link } from '@remix-run/react';
 
 import type { AlgoliaIndexItem } from '~/components/Algolia/types';
 
+import HitThumbnail from './components/HitThumbnail';
 import { Highlight } from './Highlight';
 
 interface ProductHitParams {
@@ -41,21 +41,27 @@ function ProductHit({
                 {...autocomplete.getItemProps({ item, source })}
               >
                 <div className="aa-ItemWrapper">
-                  <div className="aa-ItemContent">
-                    <div className="">
-                      <SearchIcon fontSize={22} />
-                    </div>
-                    <div className="flex flex-row justify-start items-center">
-                      <div className="aa-ItemContentTitle m-0">
-                        <Highlight hit={item} attribute="title" />
+                  {/* <div className="aa-ItemContent flex"> */}
+                  <div className="flex items-center">
+                    {/* thumbnail with title */}
+                    <div className="flex items-center justify-start">
+                      <div className="mx-2">
+                        <HitThumbnail url={item.image} />
                       </div>
-
-                      {/* <div className="aa-ItemContentDescription"> */}
-                      {/* <strong>{item.categories[0]}</strong> */}
-                      {/* </div> */}
+                      <div className="flex flex-row justify-start items-center">
+                        <div className="aa-ItemContentTitle m-0">
+                          <Highlight hit={item} attribute="title" />
+                        </div>
+                      </div>
                     </div>
+
                   </div>
+
                   <div className="aa-ItemActions">
+                    <div className="flex items-center justify-center font-poppins">
+                      £{item.price}
+                    </div>
+
                     <button
                       className="aa-ItemActionButton aa-DesktopOnly aa-ActiveOnly"
                       type="button"
