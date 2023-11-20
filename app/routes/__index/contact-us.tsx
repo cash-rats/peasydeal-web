@@ -58,7 +58,7 @@ export default function AboutUs() {
         <section>
           <h3 className="pt-4 pb-0 text-lg">Phone</h3>
           <p>
-            020 4577 3092
+            +44 745 8149 925
           </p>
         </section>
 
