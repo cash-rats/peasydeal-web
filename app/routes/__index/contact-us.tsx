@@ -1,4 +1,5 @@
 import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
+import FormBold from '~/components/FormBold';
 import { getRootFBSEO_V2 } from '~/utils/seo';
 import styles from './styles/StaticPage.css';
 
@@ -33,8 +34,9 @@ export default function AboutUs() {
           Contact Us
         </h1>
       </div>
+      
       <article className="peasydeal-v1 pt-8 rounded-xl border-2 p-8">
-        <p className="py-4">If you have any questions or concerns, please do not hesitate to contact us. We would love to hear from you, contact us via:</p>
+        <p className="py-2">If you have any questions or concerns, please do not hesitate to contact us. We would love to hear from you, contact us via:</p>
         <section>
           <h3 className="pt-4 pb-0 text-lg">Email</h3>
           <p>
@@ -71,6 +73,8 @@ export default function AboutUs() {
         <small>Whilst every effort is made to respond to all messages as soon as possible, during busy periods this could take up to 3 working days.</small>
 
       </article>
+
+      <FormBold />
     </div>
   );
 }
