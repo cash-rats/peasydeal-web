@@ -19,6 +19,8 @@ const shareConfigs = () => ({
   "STRIPE_PAYMENT_RETURN_URI": process.env.STRIPE_PAYMENT_RETURN_URI,
   "STRIPE_CURRENCY_CODE": process.env.STRIPE_CURRENCY_CODE,
 
+  "GOOGLE_MAP_API_KEY": process.env.GOOGLE_MAP_API_KEY,
+
   "REDIS_HOST": process.env.REDIS_HOST,
   "REDIST_PORT": process.env.REDIST_PORT,
 

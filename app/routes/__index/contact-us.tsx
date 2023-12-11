@@ -1,5 +1,6 @@
 import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import FormBold from '~/components/FormBold';
+import { envs } from '~/utils/get_env_source';
 import { getRootFBSEO_V2 } from '~/utils/seo';
 import styles from './styles/StaticPage.css';
 
@@ -55,6 +56,18 @@ export default function AboutUs() {
           <p>
             5th Floor 167 169 Great Portland Street, London, W1W 5PF, United Kingdom
           </p>
+
+          <iframe
+            title="google-map"
+            width="480"
+            height="300"
+            frameBorder="0"
+            style={{ border: 0 }}
+            referrerPolicy="no-referrer-when-downgrade"
+            src={`https://www.google.com/maps/embed/v1/view?key=${envs.GOOGLE_MAP_API_KEY}&center=51.5217089,-0.1462043&zoom=17`}
+            allowFullScreen
+          >
+          </iframe>
         </section>
 
         <section>
