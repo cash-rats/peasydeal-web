@@ -64,7 +64,7 @@ export default function AboutUs() {
             frameBorder="0"
             style={{ border: 0 }}
             referrerPolicy="no-referrer-when-downgrade"
-            src={`https://www.google.com/maps/embed/v1/view?key=${envs.GOOGLE_MAP_API_KEY}&center=51.5217089,-0.1462043&zoom=17`}
+            src={`https://www.google.com/maps/embed/v1/place?key=${envs.GOOGLE_MAP_API_KEY}&center=51.5217089,-0.1462043&zoom=15&q=5th%2BFloor%2C%2B167%2C%2B169%2BGreat%2BPortland%2BSt%2C%2BLondon%2BW1W%2B5PF%2C%2BUK`}
             allowFullScreen
           >
           </iframe>
