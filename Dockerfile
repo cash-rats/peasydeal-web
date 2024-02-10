@@ -1,5 +1,5 @@
 # base node image
-FROM node:16-bullseye-slim as base
+FROM node:18-bullseye-slim as base
 
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
@@ -13,7 +13,7 @@ FROM base as deps
 WORKDIR /myapp
 
 ADD package.json package-lock.json .npmrc ./
-RUN npm install --production=false
+RUN npm install --include=dev
 
 # Setup production node_modules
 FROM base as production-deps
@@ -22,7 +22,7 @@ WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 ADD package.json package-lock.json .npmrc ./
-RUN npm prune --production
+RUN npm prune --omit=dev
 
 # Build the app
 FROM base as build
@@ -35,14 +35,19 @@ ADD prisma .
 RUN npx prisma generate
 
 ADD . .
-RUN npm run build
+RUN npm run build:patched
 
 # Finally, build the production image with minimal footprint
 FROM base
 
-ENV DATABASE_URL=file:/data/sqlite.db
 ENV PORT="8080"
 ENV NODE_ENV="production"
+
+# Create a directory
+RUN mkdir -p /data
+
+# Create an empty file
+RUN touch /data/sqlite.db
 
 # add shortcut for connecting to database CLI
 RUN echo "#!/bin/sh\nset -x\nsqlite3 \$DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli

@@ -14,7 +14,7 @@ REMOTE_APP_PATH=/home/flybuddy/peasydeal_web
 # List of servers to deploy. Notice that these are the
 # host names on the ssh config.
 STAGING_SERVER                  = staging_peasydeal_gcp
-PROD_SERVER                     = prod_peasydeal_gcp
+PROD_SERVER                     = new_prod_peasydeal_gcp
 
 deploy_staging:
 	make build && \
@@ -40,8 +40,15 @@ deploy_prod:
 
 deploy_all: build upload_staging upload_prod
 
-build:
-	npm run build:patched
+push_image: build_image
+	docker push asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest
+
+build_image:
+	docker build --platform linux/amd64 \
+	--no-cache \
+	-f $(CURRENT_DIR)/Dockerfile \
+	-t peasydeal/web:latest . && \
+	docker tag myiws/alpha-hfun_web:latest asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest
 
 start_local:
 	pm2 stop ecosystem.config.js --env local && pm2 start ecosystem.config.js --env local
