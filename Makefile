@@ -38,6 +38,7 @@ deploy_prod:
 	-d \
 	-it \
 	-p 3000:3000 \
+	-v `pwd`/peasydeal-master-key.json:/myapp/peasydeal-master-key.json \
 	--env-file `pwd`/.env \
 	--name peasydeal_web \
 	asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest && \
