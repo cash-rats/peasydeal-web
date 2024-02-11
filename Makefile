@@ -37,6 +37,7 @@ deploy_prod:
 	docker run \
 	-d \
 	-it \
+	-p 3000:3000 \
 	--env-file `pwd`/.env \
 	--name peasydeal_web \
 	asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest && \
@@ -52,7 +53,7 @@ build_image:
 	--no-cache \
 	-f $(CURRENT_DIR)/Dockerfile \
 	-t peasydeal/web:latest . && \
-	docker tag myiws/alpha-hfun_web:latest asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest
+	docker tag peasydeal/web:latest asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest
 
 start_local:
 	pm2 stop ecosystem.config.js --env local && pm2 start ecosystem.config.js --env local
