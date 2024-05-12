@@ -28,33 +28,33 @@ deploy_staging:
 	make start_staging'
 
 deploy_prod:
-	ssh -i $(HOME)/.ssh/id_rsa -t -p $(SERVER_PORT) $(SERVER_USER)@$(SERVER_ADDR) \
-	'mkdir -p /home/flybuddy/peasydeal_web && \
-	cd /home/flybuddy/peasydeal_web && \
+	ssh $(SERVER_SSH_NAME) \
+	'mkdir -p /home/peasydeal/peasydeal_web && \
+	cd /home/peasydeal/peasydeal_web && \
 	docker ps -aqf "name=peasydeal_web" | xargs -r docker stop && \
 	docker ps -aqf "name=peasydeal_web" | xargs -r docker rm -f && \
-	docker pull asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest && \
+	docker pull 920786632098.dkr.ecr.ap-southeast-1.amazonaws.com/peasydeal_web:latest && \
 	docker run \
 	-d \
-	-it \
-	-p 3000:3000 \
-	-v `pwd`/peasydeal-master-key.json:/myapp/peasydeal-master-key.json \
-	--env-file `pwd`/.env \
+	-p 3000:3001 \
+	-v /home/peasydeal/peasydeal_web/peasydeal-master-key.json:/myapp/peasydeal-master-key.json \
+	--network="host" \
+	--env-file /home/peasydeal/peasydeal_web/.env \
 	--name peasydeal_web \
-	asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest && \
+	920786632098.dkr.ecr.ap-southeast-1.amazonaws.com/peasydeal_web:latest && \
 	docker image prune -f'
 
 deploy_all: build upload_staging upload_prod
 
 push_image: build_image
-	docker push asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest
+	./scripts/ecr-push.sh peasydeal_web
 
 build_image:
 	docker build --platform linux/amd64 \
 	--no-cache \
 	-f $(CURRENT_DIR)/Dockerfile \
 	-t peasydeal/web:latest . && \
-	docker tag peasydeal/web:latest asia-east1-docker.pkg.dev/stable-analogy-288013/peasydeal/web:latest
+	docker tag peasydeal/web:latest 920786632098.dkr.ecr.ap-southeast-1.amazonaws.com/peasydeal_web:latest
 
 start_local:
 	pm2 stop ecosystem.config.js --env local && pm2 start ecosystem.config.js --env local

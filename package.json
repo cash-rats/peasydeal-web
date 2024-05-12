@@ -4,10 +4,9 @@
   "sideEffects": false,
   "scripts": {
     "build": "run-s build:*",
-    "build:patched": "npm run build:userdeps && npm run build:sass && npm run build:postcss && npm run build:css && npm run build:remix",
+    "build:patched": "npm run build:sass && npm run build:postcss && npm run build:css && npm run build:remix",
     "build:css": "npm run generate:css -- --minify",
     "build:remix": "remix build",
-    "build:userdeps": "node scripts/generate-cosmos-userdeps.js",
     "dev": "run-p dev:*",
     "dev:patched": "concurrently \"npm run watch:sass\" \"npm run watch:postcss\" \"npm run dev:css\" \"npm run dev:remix\"",
     "dev:css": "npm run generate:css -- --watch",
