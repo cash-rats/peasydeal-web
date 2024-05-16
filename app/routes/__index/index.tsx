@@ -22,176 +22,176 @@ import { isFromGoogleStoreBot } from '~/utils';
 import { fetchLandingPageFeatureProducts } from "./api";
 
 type LoaderDataType = {
-	categoryPreviews: TCategoryPreview[],
-	promotionPreviews: TCategoryPreview[],
-	promotions: TPromotionType[],
-	userAgent: string;
+  categoryPreviews: TCategoryPreview[],
+  promotionPreviews: TCategoryPreview[],
+  promotions: TPromotionType[],
+  userAgent: string;
 }
 
 export const links: LinksFunction = () => {
-	return [
-		...AllTimeCouponLink(),
-		...PromoCarouselLink(),
-	];
+  return [
+    ...AllTimeCouponLink(),
+    ...PromoCarouselLink(),
+  ];
 };
 
 const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
-	return [
-		// Google meta tags
-		{
-			rel: 'canonical',
-			href: getCanonicalDomain(),
-		},
-	];
+  return [
+    // Google meta tags
+    {
+      rel: 'canonical',
+      href: getCanonicalDomain(),
+    },
+  ];
 }
 export const handle = { dynamicLinks }
 
 export const loader: LoaderFunction = async ({ request }) => {
-	try {
-		const userAgent = request.headers.get('user-agent');
+  try {
+    const userAgent = request.headers.get('user-agent');
 
-		const landings = await fetchLandingPageFeatureProducts({
-			categoriesPreviewNames: [
-				'hardware',
-				'vehicles-and-parts',
-				'animals-and-pet-supplies',
-				'cameras-and-optics',
-				'luggage-and-bags',
-				'apparel-and-accessories',
-				'new_trend',
-			],
-		});
+    const landings = await fetchLandingPageFeatureProducts({
+      categoriesPreviewNames: [
+        'hardware',
+        'vehicles-and-parts',
+        'animals-and-pet-supplies',
+        'cameras-and-optics',
+        'luggage-and-bags',
+        'apparel-and-accessories',
+        'new_trend',
+      ],
+    });
 
-		return json<LoaderDataType>({
-			categoryPreviews: landings.categoryPreviews,
-			promotionPreviews: landings.promotionPreviews,
-			promotions: landings.promotions,
-			userAgent: userAgent || '',
-		});
-	} catch (e) {
-		throw json(e, {
-			status: httpStatus.INTERNAL_SERVER_ERROR,
-		});
-	}
+    return json<LoaderDataType>({
+      categoryPreviews: landings.categoryPreviews,
+      promotionPreviews: landings.promotionPreviews,
+      promotions: landings.promotions,
+      userAgent: userAgent || '',
+    });
+  } catch (e) {
+    throw json(e, {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    });
+  }
 };
 
 
 export const CatchBoundary = () => {
-	const caught = useCatch();
+  const caught = useCatch();
 
-	return (
-		<FiveHundredError
-			message={caught.data}
-			statusCode={caught.status}
-		/>
-	);
+  return (
+    <FiveHundredError
+      message={caught.data}
+      statusCode={caught.status}
+    />
+  );
 }
 
 type IndexProps = {} & LazyComponentProps;
 
 function Index({ scrollPosition }: IndexProps) {
-	const {
-		categoryPreviews,
-		promotionPreviews,
-		promotions,
-		userAgent,
-	} = useLoaderData<LoaderDataType>() || {};
+  const {
+    categoryPreviews,
+    promotionPreviews,
+    promotions,
+    userAgent,
+  } = useLoaderData<LoaderDataType>() || {};
 
-	// Redirect to product detail page when click on product.
-	const handleClickProduct = (productUUID: string) => {
-		console.log('[ga] user clicks on:', productUUID);
-	};
+  // Redirect to product detail page when click on product.
+  const handleClickProduct = (productUUID: string) => {
+    console.log('[ga] user clicks on:', productUUID);
+  };
 
-	return (
-		<div className="overflow-hidden">
-			<h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
-			<PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(userAgent)} />
+  return (
+    <div className="overflow-hidden">
+      <h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">Welcome to PeasyDeal - Shop Now and Save Big!</h1>
+      <PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(userAgent)} />
 
-			<div className="
+      <div className="
 				pt-2.5 px-auto
 				flex flex-col
 				justify-center items-center
 				max-w-screen-xl
 				mx-auto
 			">
-				<div className="w-full py-0 mx-2 px-2">
-					<AllTimeCoupon />
-				</div>
-			</div>
+        <div className="w-full py-0 mx-2 px-2">
+          <AllTimeCoupon />
+        </div>
+      </div>
 
-			<div
-				className="
+      <div
+        className="
 					w-full py-2.5 max-w-screen-xl mx-auto
 				">
-				<PromoCarousell />
-			</div>
+        <PromoCarousell />
+      </div>
 
-			<div className="
+      <div className="
 				py-0 px-auto
 				flex flex-col
 				justify-center items-center
 				mx-0
 			">
-				<div className="w-full bg-[#F1F1F1]">
-					<PromoActivities promotions={promotions} />
-				</div>
-			</div>
+        <div className="w-full bg-[#F1F1F1]">
+          <PromoActivities promotions={promotions} />
+        </div>
+      </div>
 
-			{
-				promotionPreviews
-					.concat(categoryPreviews)
-					.map((category, index) => {
-						return (
-							<div
-								key={`/collection/${category.name}_${index}`}>
-								<div className="
-								py-0 px-auto
-								flex flex-col
-								justify-center items-center
-								mx-2 md:mx-4
-							">
-									<div className="w-full py-2.5 max-w-screen-xl mx-auto">
-										<CategoryPreview
-											key={`${category.name}_${index}`}
-											category={category}
-											onClickProduct={handleClickProduct}
-											scrollPosition={scrollPosition}
-										/>
-									</div>
-								</div>
+      {
+        promotionPreviews
+          .concat(categoryPreviews)
+          .map((category, index) => {
+            return (
+              <div
+                key={`/collection/${category.name}_${index}`}>
+                <div className="
+								  py-0 px-auto
+								  flex flex-col
+								  justify-center items-center
+								  mx-2 md:mx-4
+							  ">
+                  <div className="w-full py-2.5 max-w-screen-xl mx-auto">
+                    <CategoryPreview
+                      key={`${category.name}_${index}`}
+                      category={category}
+                      onClickProduct={handleClickProduct}
+                      scrollPosition={scrollPosition}
+                    />
+                  </div>
+                </div>
 
-								{
-									index === 0
-										? <CategoriesRow />
-										: null
-								}
+                {
+                  index === 0
+                    ? <CategoriesRow />
+                    : null
+                }
 
-								{
-									index === 1
-										? (
-											<div className="
+                {
+                  index === 1
+                    ? (
+                      <div className="
 												py-0 px-auto
 												flex flex-col
 												justify-center items-center
 												bg-slate-50
 											">
-												<div className="w-full
+                        <div className="w-full
 													py-6 md:py-2.5
 													md:px-2.5 lg:px-2.5 xl:px-0
 													max-w-screen-xl mx-auto
 												">
-													<PromoActivitiesVariant />
-												</div>
-											</div>
-										)
-										: null
-								}
-							</div>
-						);
-					})
-			}
-		</div>
-	);
+                          <PromoActivitiesVariant />
+                        </div>
+                      </div>
+                    )
+                    : null
+                }
+              </div>
+            );
+          })
+      }
+    </div>
+  );
 }
 
 export default trackWindowScroll(Index);

@@ -1,6 +1,6 @@
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
-import type { ProductDetail, ProductVariation, } from './types';
+import type { ProductDetail, ProductVariation, ProductImg } from './types';
 import { pickMainImage } from '../utils';
 
 type INormalizeToSessionStorableCartItem = {
@@ -39,7 +39,7 @@ const normalizeToSessionStorableCartItem = ({
 
     quantity: quantity.toString(),
     title: productDetail?.title || '',
-    specName: specName,
+    specName,
     purchaseLimit: productVariation?.purchase_limit?.toString() || '',
   }
 }
@@ -64,10 +64,18 @@ const matchOldProductURL = (url: string): string[] => {
   return matches;
 };
 
+const tryPickUserSelectedVariationImage = (uuid: string, images: ProductImg[]): string | null => {
+  const found = images
+    .find(image => image.variation_uuid === uuid);
 
+  return !!found
+    ? found.url
+    : null;
+};
 
 export {
   normalizeToSessionStorableCartItem,
   findDefaultVariation,
   matchOldProductURL,
+  tryPickUserSelectedVariationImage,
 };
