@@ -48,6 +48,8 @@ export type PriceInfo = {
 };
 
 export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<PriceInfo> => {
+  console.time(`order-amount ${`${envs.MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`}`)
+
   const resp = await fetch(`${envs.MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`, {
     method: 'post',
     body: JSON.stringify(params),
@@ -55,6 +57,8 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
       'Content-Type': 'application/json',
     },
   })
+
+  console.timeEnd(`order-amount ${`${envs.MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`}`)
 
   const respJSON = await resp.json();
 

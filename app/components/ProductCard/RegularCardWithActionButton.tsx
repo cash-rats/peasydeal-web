@@ -81,10 +81,11 @@ function ProductCardSkeleton() {
 export default function ProductCard({
   loading = false,
   product,
-  onClickProduct = () => { },
   scrollPosition,
   displayActionButton = true,
   noPadding = false,
+
+  onClickProduct = () => { },
 }: IProductCard) {
   const {
     main_pic: mainPic,
@@ -194,7 +195,7 @@ export default function ProductCard({
                 }`}
               placeholder={loaded ? 'empty' : 'blur'}
               placeholderAspectRatio={1}
-              onLoadingComplete={(naturalDimensions) => {
+              onLoadingComplete={() => {
                 setLoaded(true);
               }}
               options={{
@@ -207,7 +208,14 @@ export default function ProductCard({
               "
               loaderUrl='/remix-image'
               src={mainPic}
-
+              responsive={[
+                {
+                  size: {
+                    width: 263,
+                    height: 263,
+                  },
+                },
+              ]}
             />
           </LazyLoadComponent>
         </div>

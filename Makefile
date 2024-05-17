@@ -35,6 +35,7 @@ deploy_prod:
 	docker ps -aqf "name=peasydeal_web" | xargs -r docker rm -f && \
 	docker pull 920786632098.dkr.ecr.ap-southeast-1.amazonaws.com/peasydeal_web:latest && \
 	docker run \
+	--restart=always \
 	-d \
 	-p 3000:3001 \
 	-v /home/peasydeal/peasydeal_web/peasydeal-master-key.json:/myapp/peasydeal-master-key.json \
