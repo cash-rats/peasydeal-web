@@ -6,7 +6,7 @@ import path from 'path';
 import { envs } from '~/utils/get_env_source';
 
 const GCS_KEY_NAME = 'peasydeal-master-key.json';
-const GCS_BUCKET_NAME = 'peasydeal';
+const GCS_BUCKET_NAME = 'peasydeal2';
 
 let storage: Storage | null | undefined = undefined;
 let bucket: Bucket | null | undefined = undefined;
@@ -15,9 +15,7 @@ if (
   envs.NODE_ENV === 'production' ||
   envs.NODE_ENV === 'staging'
 ) {
-  storage = new Storage({
-    keyFilename: path.resolve(__dirname, '../', GCS_KEY_NAME),
-  });
+  storage = new Storage({ keyFilename: path.resolve(__dirname, '../', GCS_KEY_NAME) });
 
   bucket = storage.bucket(GCS_BUCKET_NAME);
 } else {
