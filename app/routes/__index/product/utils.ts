@@ -20,11 +20,18 @@ const normalizeToSessionStorableCartItem = ({
     ? ''
     : productVariation?.spec_name || '';
 
-  const mainImg = pickMainImage({
-    mainImg: productDetail.main_pic_url,
-    sharedImgs: productDetail.shared_images,
-    variationImgs: productDetail.variation_images
-  });
+  let mainImg = tryPickUserSelectedVariationImage(
+    productVariation?.uuid || '',
+    productDetail.variation_images,
+  )
+
+  if (!mainImg) {
+    mainImg = pickMainImage({
+      mainImg: productDetail.main_pic_url,
+      sharedImgs: productDetail.shared_images,
+      variationImgs: productDetail.variation_images
+    }).url || '';
+  }
 
   return {
     salePrice: productVariation?.sale_price.toString() || '',
@@ -33,9 +40,16 @@ const normalizeToSessionStorableCartItem = ({
     variationUUID: productVariation?.uuid || '',
     tagComboTags: productDetail.tag_combo_tags,
 
-    image: mainImg
-      ? mainImg.url
-      : '',
+    // image: mainImg
+    //   ? mainImg.url
+    //   : tryPickUserSelectedVariationImage(
+    //     productVariation?.uuid || '',
+    //     productDetail.variation_images,
+    //   ),
+    image: tryPickUserSelectedVariationImage(
+      productVariation?.uuid || '',
+      productDetail.variation_images,
+    ) || '',
 
     quantity: quantity.toString(),
     title: productDetail?.title || '',

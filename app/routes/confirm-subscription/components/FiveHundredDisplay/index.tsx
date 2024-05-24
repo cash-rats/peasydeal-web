@@ -5,8 +5,6 @@ interface FiveHundredDisplayParams {
 }
 
 function FiveHundredDisplay({ errResp }: FiveHundredDisplayParams) {
-  console.log('debug FiveHundredDisplay', errResp);
-
   return (
     <div className="flex flex-col justify-center items-center">
       {

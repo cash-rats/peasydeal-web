@@ -70,7 +70,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       canonicalLink: `${getCanonicalDomain()}/cart`
     });
   } catch (e) {
-    console.error(e);
+    console.error('cart error', e);
 
     throw json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
