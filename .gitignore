@@ -5,6 +5,8 @@ node_modules
 /public/build
 /public/sitemaps/*
 .env
+.env.staging
+.deploy.env
 
 /cypress/screenshots
 /cypress/videos
