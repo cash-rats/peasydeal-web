@@ -7,7 +7,7 @@ import type { ReviewResponse } from './types';
 
 export const fetchReviews = async (productUUID: string): Promise<ReviewResponse> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = `/v1/products/${productUUID}/reviews`;
+  url.pathname = `/v2/products/${productUUID}/reviews`;
 
   const resp = await fetch(url.toString(), {
     method: 'GET',

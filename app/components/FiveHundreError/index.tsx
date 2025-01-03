@@ -4,7 +4,6 @@ type FiveHundredErrorProps = {
 }
 
 const FiveHundredError = ({ error, statusCode }: FiveHundredErrorProps) => {
-  console.log(error)
   return (
     <div className="bg-[#EB455F] text-[#FCFFE7] p-10">
       <h1 className="text-2xl md:text-3xl">Internal Server Error: We will punish our bad developer, deduct his salary and make him cry</h1>

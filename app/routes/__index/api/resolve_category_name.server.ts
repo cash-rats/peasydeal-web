@@ -13,7 +13,7 @@ import { envs } from '~/utils/get_env_source';
 
 export const resolveCategoryName = async (categoryName: string): Promise<string> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/categories/resolve-category-name';
+  url.pathname = '/v2/categories/resolve-category-name';
   url.searchParams.append('category_name', categoryName)
 
   const resp = await fetch(url.toString());

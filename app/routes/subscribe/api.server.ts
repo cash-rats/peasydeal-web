@@ -4,7 +4,7 @@ import { envs } from '~/utils/get_env_source';
 
 export const subscribe = async (email: string): Promise<object> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/subscribe';
+  url.pathname = '/v2/subscribe';
 
   const resp = await fetch(url.toString(), {
     method: 'POST',

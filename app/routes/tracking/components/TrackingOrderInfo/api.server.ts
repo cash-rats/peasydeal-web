@@ -10,7 +10,7 @@ interface ICancelOrder {
 
 const cancelOrder = async ({ orderUUID, cancelReason }: ICancelOrder) => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/orders/cancel';
+  url.pathname = '/v2/orders/cancel';
 
   const resp = await fetch(url.toString(), {
     method: 'post',

@@ -21,7 +21,7 @@ export interface SearchProductsParams {
 export const searchProducts = async ({ query, perpage = 8, page = 1 }: SearchProductsParams): Promise<SearchProductResponse> => {
   try {
     const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-    url.pathname = '/v1/products/search';
+    url.pathname = '/v2/products/search';
     url.searchParams.append('query', query);
     url.searchParams.append('per_page', perpage.toString());
     url.searchParams.append('page', page.toString());

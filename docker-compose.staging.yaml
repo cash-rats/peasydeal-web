@@ -1,0 +1,21 @@
+services:
+  peasydeal-web:
+    image: 122610512149.dkr.ecr.ap-southeast-1.amazonaws.com/peasydeal/staging-web
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - ${PORT:-3000}:${PORT:-3000}
+    env_file:
+      - .env
+    networks:
+      - peasydeal-frontend
+    volumes:
+      - litefs:/litefs
+
+networks:
+  peasydeal-frontend:
+    driver: bridge
+
+volumes:
+  litefs:

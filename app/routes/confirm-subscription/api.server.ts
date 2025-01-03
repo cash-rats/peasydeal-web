@@ -5,7 +5,7 @@ import type { ApiErrorResponse } from '~/shared/types';
 
 export const activateEmailSubscribe = async (uuid: string): Promise<string> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/subscribe/activate-email';
+  url.pathname = '/v2/subscribe/activate-email';
 
   const resp = await fetch(
     url.toString(),

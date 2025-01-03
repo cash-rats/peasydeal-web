@@ -7,7 +7,7 @@ import type { TrackOrder } from './types';
 
 export const trackOrder = async (orderUUID: string): Promise<TrackOrder> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/tracking';
+  url.pathname = '/v2/tracking';
   url.searchParams.append('order_uuid', orderUUID);
 
   const resp = await fetch(url.toString(), {

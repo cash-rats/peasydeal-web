@@ -51,7 +51,7 @@ export const fetchPromotionProducts = async (params: FetchPromotionProductsParam
   if (!params.promoName) params.promoName = 'launch_sales';
 
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/products/promotion';
+  url.pathname = '/v2/products/promotion';
   url.searchParams.append('name', params.promoName);
   url.searchParams.append('page', params.page.toString());
   url.searchParams.append('per_page', params.perpage.toString());
