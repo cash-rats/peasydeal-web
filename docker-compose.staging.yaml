@@ -3,7 +3,7 @@ services:
     image: 122610512149.dkr.ecr.ap-southeast-1.amazonaws.com/peasydeal/staging-web
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./dockerfiles/staging.dockerfile
     ports:
       - ${PORT:-3000}:${PORT:-3000}
     env_file:
