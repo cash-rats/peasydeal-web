@@ -4,10 +4,6 @@ import { envs } from '~/utils/get_env_source';
 let s3Client: S3Client | null | undefined = undefined;
 
 if (envs.NODE_ENV === 'production' || envs.NODE_ENV === 'staging') {
-  console.log('R2_ACCESS_KEY_ID', envs.R2_ACCESS_KEY_ID);
-  console.log('R2_SECRET_ACCESS_KEY', envs.R2_SECRET_ACCESS_KEY);
-  console.log('R2_ACCOUNT_ID', envs.R2_ACCOUNT_ID);
-  console.log('R2_BUCKET_NAME', envs.R2_BUCKET_NAME);
   s3Client = new S3Client({
     credentials: {
       accessKeyId: envs.R2_ACCESS_KEY_ID,
