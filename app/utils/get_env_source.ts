@@ -26,6 +26,11 @@ type AppConfig = {
 
   GCS_KEY_NAME: string;
   GCS_BUCKET_NAME: string;
+
+  R2_ACCOUNT_ID: string;
+  R2_ACCESS_KEY_ID: string;
+  R2_SECRET_ACCESS_KEY: string;
+  R2_BUCKET_NAME: string;
 };
 
 declare global {
@@ -75,6 +80,11 @@ const ALGOLIA_INDEX_NAME = getENV('ALGOLIA_INDEX_NAME') || '';
 const GCS_KEY_NAME = getENV('GCS_KEY_NAME') || 'peasydeal-master-key.json';
 const GCS_BUCKET_NAME = getENV('GCS_BUCKET_NAME') || 'GCS_BUCKET_NAME';
 
+const R2_ACCOUNT_ID = getENV('R2_ACCOUNT_ID') || '';
+const R2_ACCESS_KEY_ID = getENV('R2_ACCESS_KEY_ID') || '';
+const R2_SECRET_ACCESS_KEY = getENV('R2_SECRET_ACCESS_KEY') || '';
+const R2_BUCKET_NAME = getENV('R2_BUCKET_NAME') || '';
+
 export const envs = {
   NODE_ENV,
   DOMAIN,
@@ -106,6 +116,11 @@ export const envs = {
 
   GCS_BUCKET_NAME,
   GCS_KEY_NAME,
+
+  R2_ACCOUNT_ID,
+  R2_ACCESS_KEY_ID,
+  R2_SECRET_ACCESS_KEY,
+  R2_BUCKET_NAME,
 };
 
 export const isStaging = (v: any) => !!v && getENV('NODE_ENV') === 'staging' ? v : null;

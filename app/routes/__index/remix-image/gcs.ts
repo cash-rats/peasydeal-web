@@ -16,7 +16,6 @@ if (
   envs.NODE_ENV === 'staging'
 ) {
   storage = new Storage({ keyFilename: path.resolve(__dirname, '../', GCS_KEY_NAME) });
-
   bucket = storage.bucket(GCS_BUCKET_NAME);
 } else {
   /* Ignore gcs auth on development env */
