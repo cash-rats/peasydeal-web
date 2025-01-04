@@ -165,6 +165,7 @@ const transformer: CustomTransformer = {
         await uploadToR2({
           buffer: transformedImageBuffer,
           filename: objectName,
+          contentType: outputContentType,
         });
       } catch (error) {
         console.error('Error uploading to R2:', error);

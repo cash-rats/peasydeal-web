@@ -14,10 +14,10 @@ if (envs.NODE_ENV === 'production' || envs.NODE_ENV === 'staging') {
   /* Ignore r2 auth on development env */
 }
 interface IR2FileUploader {
-  (params: { buffer: Buffer; filename: string }): Promise<boolean>;
+  (params: { buffer: Buffer; filename: string, contentType: string }): Promise<boolean>;
 }
 
-const uploadToR2: IR2FileUploader = async ({ filename, buffer }) => {
+const uploadToR2: IR2FileUploader = async ({ filename, buffer, contentType }) => {
   if (!s3Client) throw new Error('R2 client not initialized');
 
   try {
@@ -26,7 +26,7 @@ const uploadToR2: IR2FileUploader = async ({ filename, buffer }) => {
         Bucket: envs.R2_BUCKET_NAME,
         Key: filename,
         Body: buffer,
-        ContentType: 'image/jpeg', // Adjust content type as needed
+        ContentType: contentType,
       })
     );
     return true;
