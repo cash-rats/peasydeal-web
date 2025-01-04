@@ -1,8 +1,8 @@
 # base node image
-FROM node:lts-bullseye-slim as base
+FROM node:18-bullseye-slim as base
 
 # set for base and all layer that inherit from it
-ENV NODE_ENV staging
+ENV NODE_ENV production
 
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y openssl sqlite3
@@ -63,5 +63,6 @@ COPY --from=build /myapp/package.json /myapp/package.json
 COPY --from=build /myapp/start.sh /myapp/start.sh
 COPY --from=build /myapp/prisma /myapp/prisma
 COPY .env.staging /myapp/.env
+COPY peasydeal-master-key.json /myapp/peasydeal-master-key.json
 
 ENTRYPOINT [ "./start.sh" ]
