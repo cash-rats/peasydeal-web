@@ -42,8 +42,12 @@ import reducer, {
   changeProduct,
   setVariation,
 } from './reducer';
-import { normalizeToSessionStorableCartItem, findDefaultVariation } from './utils';
-import { matchOldProductURL, tryPickUserSelectedVariationImage } from './utils';
+import {
+  normalizeToSessionStorableCartItem,
+  findDefaultVariation,
+  matchOldProductURL,
+  tryPickUserSelectedVariationImage,
+} from './utils';
 import { redirectToNewProductURL } from './loaders';
 import { meta as metaFunc } from './meta';
 import ProductPolicy from './components/ProductPolicy';
@@ -184,13 +188,11 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
     quantity: 1,
     variation: defaultVariation,
     tags: tags.split(','),
-    sessionStorableCartItem: normalizeToSessionStorableCartItem(
-      {
-        productDetail: loaderData?.product,
-        productVariation: defaultVariation,
-        quantity: 1,
-      },
-    ),
+    sessionStorableCartItem: normalizeToSessionStorableCartItem({
+      productDetail: loaderData?.product,
+      productVariation: defaultVariation,
+      quantity: 1,
+    }),
   });
 
   const [variationErr, setVariationErr] = useState<string>('');

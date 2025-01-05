@@ -35,7 +35,7 @@ export const createOrder = async ({
   price_info,
   promo_code,
 }: CreateOrderParams): Promise<Response> => {
-  return fetch(`${envs.PEASY_DEAL_ENDPOINT}/v1/orders`, {
+  return fetch(`${envs.PEASY_DEAL_ENDPOINT}/v2/orders`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export type PaypalCreateOrderResponse = {
 };
 
 export const paypalCreateOrder = async (params: CreateOrderParams): Promise<PaypalCreateOrderResponse> => {
-  const resp = await fetch(`${envs.PEASY_DEAL_ENDPOINT}/v1/orders/paypal-order`, {
+  const resp = await fetch(`${envs.PEASY_DEAL_ENDPOINT}/v2/orders/paypal-order`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ interface PaypalCapturePayment {
 
 export const paypalCapturePayment = async (paypalOrderID: string) => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/orders/paypal-capture-payment';
+  url.pathname = '/v2/orders/paypal-capture-payment';
 
   const resp = await fetch(
     url.toString(),

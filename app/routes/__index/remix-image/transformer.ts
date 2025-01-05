@@ -1,12 +1,10 @@
 import sharp from 'sharp';
 import type { TransformOptions } from 'remix-image';
 
-import { bucket, streamFileUpload } from './gcs';
+import { uploadToR2 } from './r2';
 import { MimeType, fileExtensionResolver } from './mimes';
 
-/*
-  https://github.com/remix-run/remix/discussions/2905
-*/
+//  https://github.com/remix-run/remix/discussions/2905
 export const supportedInputs = new Set([
   MimeType.JPEG,
   MimeType.JPG,
@@ -121,7 +119,7 @@ const transformer: CustomTransformer = {
       image.blur(blurRadius);
     }
 
-    const result = await image
+    const transformedImageBuffer = await image
       .jpeg({
         quality,
         progressive: true,
@@ -163,19 +161,18 @@ const transformer: CustomTransformer = {
         height,
       });
 
-      if (bucket) {
-        // Do not wait for file streaming to finish.
-        streamFileUpload(
-          bucket,
-          {
-            buffer: result,
-            filename: objectName,
-          },
-        );
+      try {
+        await uploadToR2({
+          buffer: transformedImageBuffer,
+          filename: objectName,
+          contentType: outputContentType,
+        });
+      } catch (error) {
+        console.error('Error uploading to R2:', error);
       }
     }
 
-    return new Uint8Array(result);
+    return new Uint8Array(transformedImageBuffer);
   },
 };
 

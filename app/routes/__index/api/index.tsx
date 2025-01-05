@@ -67,7 +67,7 @@ export interface IFetchLandingPageFeatureProductsParams {
 export const fetchLandingPageFeatureProducts = async ({ categoriesPreviewNames = [], }: IFetchLandingPageFeatureProductsParams) => {
 	const url = new URL(envs.PEASY_DEAL_ENDPOINT)
 
-	url.pathname = '/v1/products/landing-page';
+	url.pathname = '/v2/products/landing-page';
 	url.searchParams.append('cat_preview_names', categoriesPreviewNames.join(','));
 
 	const resp = await fetch(url.toString());
@@ -136,7 +136,7 @@ export const fetchProductsByCategoryV2 = async ({
 	if (!category) category = 'hot_deal';
 
 	const url = new URL(envs.PEASY_DEAL_ENDPOINT)
-	url.pathname = '/v1/products';
+	url.pathname = '/v2/products';
 	url.searchParams.append('per_page', perpage.toString());
 	url.searchParams.append('page', page.toString());
 	url.searchParams.append('category', category.toString());

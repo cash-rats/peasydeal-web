@@ -1,5 +1,5 @@
 {
-  "name": "peasydeal_web-691e",
+  "name": "peasydeal_web",
   "private": true,
   "sideEffects": false,
   "scripts": {
@@ -44,6 +44,7 @@
     "@algolia/autocomplete-plugin-query-suggestions": "^1.9.2",
     "@algolia/autocomplete-plugin-recent-searches": "^1.9.2",
     "@algolia/autocomplete-theme-classic": "^1.9.2",
+    "@aws-sdk/client-s3": "^3.722.0",
     "@chakra-ui/react": "^2.2.8",
     "@contentful/rich-text-react-renderer": "^15.16.2",
     "@emotion/cache": "latest",

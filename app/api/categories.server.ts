@@ -45,7 +45,7 @@ interface ICategoriesFromServerResponse {
 
 const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFromServerResponse> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/categories';
+  url.pathname = '/v2/categories';
   if (type) {
     url.searchParams.append('type', type);
   }
@@ -154,7 +154,7 @@ const fetchPromotions = async (): Promise<Category[]> => {
 
 const fetchCategoryByName = async (name: string): Promise<Category> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = `/v1/categories/${name}`
+  url.pathname = `/v2/categories/${name}`
   const resp = await fetch(url.toString());
   const respJSON = await resp.json();
 
@@ -175,7 +175,7 @@ interface TaxonomyCategories {
 
 const fetchTaxonomyCategories = async (tier: number): Promise<TaxonomyCategories> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = '/v1/categories/taxonomy';
+  url.pathname = '/v2/categories/taxonomy';
   url.searchParams.append('with_children', 'true');
   if (tier) {
     url.searchParams.append('tier', tier.toString());
@@ -192,7 +192,7 @@ const fetchTaxonomyCategories = async (tier: number): Promise<TaxonomyCategories
 
 const fetchTaxonomyCategoryByName = async (name: string): Promise<TaxonomyWithParents> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = `/v1/categories/taxonomy/${name}`;
+  url.pathname = `/v2/categories/taxonomy/${name}`;
 
   const resp = await fetch(url.toString());
   const respJSON = await resp.json();
@@ -225,7 +225,7 @@ const fetchCategoriesWithSplitAndHotDealInPlaced = async (): Promise<[Category[]
 
 const checkCategoryExists = async (name: string): Promise<boolean> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
-  url.pathname = `/v1/categories/${name}/exists`;
+  url.pathname = `/v2/categories/${name}/exists`;
 
   const resp = await fetch(url.toString());
   const respJSON = await resp.json();
