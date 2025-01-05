@@ -65,20 +65,25 @@ deploy/staging/put-dotenv:
 	@scp -i $(STAGING_SSH_KEY_PATH) -P $(STAGING_PORT) ./.env.staging $(STAGING_USER)@$(STAGING_HOST):$(STAGING_DIR)/.env
 	@echo ".env.staging uploaded"
 
+## deploy/prod: deploy web to prod environment
 .PHONY: deploy/prod
-deploy/prod:
+deploy/prod: deploy/prod/put-dotenv deploy/prod/put-docker-compose
 	@ssh -i $(PROD_SSH_KEY_PATH) -p $(PROD_PORT) $(PROD_USER)@$(PROD_HOST) " \
 		cd $(PROD_DIR) && \
 		docker compose -f docker-compose.prod.yaml pull && \
 		docker compose -f docker-compose.prod.yaml up -d --no-deps --remove-orphans && \
 		docker system prune -a --volumes --force"
 
+## deploy/prod/put-dotenv: upload .env.prod to prod environment.
+.PHONY: deploy/prod/put-dotenv
 deploy/prod/put-dotenv:
 	@echo "uploading .env.prod"
 	@ssh -i $(PROD_SSH_KEY_PATH) -p $(PROD_PORT) $(PROD_USER)@$(PROD_HOST) "mkdir -p $(PROD_DIR)"
 	@scp -i $(PROD_SSH_KEY_PATH) -P $(PROD_PORT) ./.env.prod $(PROD_USER)@$(PROD_HOST):$(PROD_DIR)/.env
 	@echo ".env.prod uploaded"
 
+## deploy/prod/put-docker-compose: upload docker-compose.prod.yaml to prod environment.
+.PHONY: deploy/prod/put-docker-compose
 deploy/prod/put-docker-compose:
 	@echo "uploading docker-compose.prod.yaml"
 	@ssh -i $(PROD_SSH_KEY_PATH) -p $(PROD_PORT) $(PROD_USER)@$(PROD_HOST) "mkdir -p $(PROD_DIR)"
