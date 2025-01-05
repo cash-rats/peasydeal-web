@@ -24,6 +24,19 @@ push/staging:
 	docker compose -f docker-compose.staging.yaml push peasydeal-web && \
 	docker system prune -a --volumes --force
 
+## build/prod: build web image for prod environment
+.PHONY: build/prod
+build/prod:
+	DOCKER_DEFAULT_PLATFORM=linux/amd64 dotenvx run --env-file .env.prod \
+	-- \
+	docker compose -f docker-compose.prod.yaml build peasydeal-web
+
+## push/prod: push web image for staging environment
+.PHONY: push/prod
+push/prod:
+	docker compose -f docker-compose.prod.yaml push peasydeal-web && \
+	docker system prune -a --volumes --force
+
 # ==================================================================================== #
 # Deploy
 # ==================================================================================== #
