@@ -45,7 +45,7 @@ push/prod:
 deploy/staging: deploy/staging/put-dotenv deploy/staging/put-docker-compose
 	@ssh -i $(STAGING_SSH_KEY_PATH) -p $(STAGING_PORT) -t $(STAGING_USER)@$(STAGING_HOST) " \
 		cd $(STAGING_DIR) && \
-		docker compose -f docker-compose.staging.yaml pull && \
+		AWS_PROFILE=peasydeal	docker compose -f docker-compose.staging.yaml pull && \
 		docker compose -f docker-compose.staging.yaml up -d --no-deps --remove-orphans && \
 		docker system prune -a --volumes --force"
 
@@ -70,7 +70,7 @@ deploy/staging/put-dotenv:
 deploy/prod: deploy/prod/put-dotenv deploy/prod/put-docker-compose
 	@ssh -i $(PROD_SSH_KEY_PATH) -p $(PROD_PORT) $(PROD_USER)@$(PROD_HOST) " \
 		cd $(PROD_DIR) && \
-		docker compose -f docker-compose.prod.yaml pull && \
+		AWS_PROFILE=peasydeal docker compose -f docker-compose.prod.yaml pull && \
 		docker compose -f docker-compose.prod.yaml up -d --no-deps --remove-orphans && \
 		docker system prune -a --volumes --force"
 
