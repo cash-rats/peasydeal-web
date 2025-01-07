@@ -35,7 +35,7 @@ export default function AboutUs() {
           Contact Us
         </h1>
       </div>
-      
+
       <article className="peasydeal-v1 pt-8 rounded-xl border-2 p-8">
         <p className="py-2">If you have any questions or concerns, please do not hesitate to contact us. We would love to hear from you, contact us via:</p>
         <section>
@@ -54,7 +54,7 @@ export default function AboutUs() {
         <section>
           <h3 className="pt-4 pb-0 text-lg">Address</h3>
           <p>
-            5th Floor 167 169 Great Portland Street, London, W1W 5PF, United Kingdom
+            5th Floor 167 169 Great Portland Street, London, W1W 5PF, United Kingdom~
           </p>
 
           <iframe
