@@ -135,8 +135,7 @@ function CheckoutPage() {
 
   useEffect(() => {
     if (orderUUID && isDone) {
-      console.log("* orderUUID", orderUUID);
-      // stripeConfirmPayment(orderUUID);
+      stripeConfirmPayment(orderUUID);
     }
   }, [orderUUID, isDone, stripeConfirmPayment]);
 

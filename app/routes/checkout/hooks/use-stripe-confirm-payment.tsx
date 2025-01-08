@@ -18,7 +18,6 @@ export function useStripeConfirmPayment() {
   const stripeConfirmPayment = useCallback(
     async (orderUUID: string) => {
       if (!elements || !stripe) return;
-
       setIsPaying(true);
       try {
         const { error } = await stripe.confirmPayment({
