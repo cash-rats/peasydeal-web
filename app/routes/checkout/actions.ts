@@ -107,10 +107,12 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
     promo_code: JSON.parse(promo_code),
   });
 
-  const respJSON = await resp.json();
 
+  const respJSON = await resp.json();
+  // TODO: Refactor error handling after upgrading to newest remix version
+  // throw new Response(JSON.stringify(respJSON), { status: resp.status });
   if (resp.status !== httpStatus.OK) {
-    return json(respJSON, httpStatus.OK);
+    return json(respJSON, resp.status);
   }
 
   return json(respJSON, httpStatus.OK);
