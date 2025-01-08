@@ -1,27 +1,15 @@
-import { useEffect, useState, useRef, useReducer, useCallback } from 'react';
+import { useEffect, useRef, useReducer } from 'react';
 import type { FormEvent } from 'react';
 import type { LoaderFunction, LinksFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
-import {
-  useStripe,
-  useElements,
-} from '@stripe/react-stripe-js';
-import type { Stripe, StripeElements } from '@stripe/stripe-js';
+import { useLoaderData } from '@remix-run/react';
 import Alert from '@mui/material/Alert';
-import type {
-  OnApproveData,
-  OnApproveActions,
-  OnClickActions,
-} from "@paypal/paypal-js";
 import { Spinner } from '@chakra-ui/react'
-import type { ApiErrorResponse, PaymentMethod } from '~/shared/types';
-import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';
-import { getBrowserDomainUrl } from '~/utils/misc';
+import type { PaymentMethod } from '~/shared/types';
 import { useContext } from '~/routes/checkout';
 import { getCart } from '~/sessions/shoppingcart.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
-import useFetcherWithPromise from '~/routes/hooks/useFetcherWithPromise';
+import { useCreateOrder, useStripeConfirmPayment } from './hooks';
 
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
@@ -29,7 +17,6 @@ import ShippingDetailForm, { links as ShippingDetailFormLinks } from './componen
 import type { Option } from './components/ShippingDetailForm/api.server';
 import CartSummary from './components/CartSummary';
 import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
-import type { PaypalCreateOrderResponse } from './api.server';
 import reducer, { ActionTypes as ReducerActionTypes, initState } from './reducer';
 import type { StateShape } from './reducer';
 import {
@@ -101,17 +88,22 @@ function CheckoutPage() {
   const { paymentIntendID, priceInfo, promoCode } = useContext();
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const element = useElements();
-  const stripe = useStripe();
+  const {
+    createOrder,
+    createOrderFetcher,
+    orderUUID,
+    isDone,
+    errorAlert: createOrderErrorAlert,
+    clearErrorAlert: clearCreateOrderErrorAlert,
+  } = useCreateOrder();
+  const {
+    stripeConfirmPayment,
+    isPaying,
+    errorAlert: stripeErrorAlert,
+    clearErrorAlert: clearStripeErrorAlert,
+  } = useStripeConfirmPayment();
 
-  const createOrderFetcher = useFetcher();
-  const { submit } = useFetcherWithPromise();
   const [state, dispatch] = useReducer(reducer, initState);
-
-  // Store orderUUID when is newly created. There might be an senario where shipping information is valid but not billing info.
-  // When customer submit payment again, a new order will be created again. Thus, if orderID exists we should not create a new order again.
-  const [isPaying, setIsPaying] = useState(false);
-  const [errorAlert, setErrorAlert] = useState('');
 
   const reducerState = useRef<StateShape>(state);
   reducerState.current = state;
@@ -134,68 +126,18 @@ function CheckoutPage() {
     state.contactInfoForm,
   ]);
 
-  const stripeConfirmPayment = useCallback(
-    async (orderUUID: string, elements: StripeElements, stripe: Stripe) => {
-      setIsPaying(true);
-
-      try {
-        const { error } = await stripe.confirmPayment({
-          elements,
-          confirmParams: {
-            return_url: `${getBrowserDomainUrl()}/payment/${orderUUID}?payment_method=${PaymentMethodEnum.Stripe}`,
-          },
-        });
-
-        if (error.type === "card_error" || error.type === "validation_error") {
-          throw new Error(error.message);
-        } else {
-          // TODO log to remote API if error happens
-          throw new Error(`An unexpected error occurred. ${error.message}`);
-        }
-
-      } catch (error: any) {
-        setErrorAlert(`An unexpected error occurred. ${error.message}`);
-      } finally {
-        setIsPaying(false);
-      }
-    },
-    [],
-  )
-
   // Scroll to top if a new error message is set so user can see.
   useEffect(() => {
-    if (errorAlert) {
+    if (createOrderErrorAlert || stripeErrorAlert) {
       window.scrollTo(0, 0);
     }
+  }, [createOrderErrorAlert, stripeErrorAlert]);
 
-  }, [errorAlert]);
-
-  useEffect(
-    () => {
-      if (createOrderFetcher.type === 'done') {
-        if (createOrderFetcher.data.err_code) {
-          const errResp = createOrderFetcher.data as ApiErrorResponse;
-
-          setErrorAlert(`Failed to create order, please try again later, error code: ${errResp.err_code}`);
-
-          return;
-        }
-
-        // Order is created, confirm payment on stripe.
-        if (!element || !stripe) return;
-
-        const { order_uuid: orderUUID } = createOrderFetcher.data;
-
-        dispatch({
-          type: ReducerActionTypes.set_order_uuid,
-          payload: orderUUID,
-        })
-
-        stripeConfirmPayment(orderUUID, element, stripe);
-      }
-    },
-    [createOrderFetcher]
-  );
+  useEffect(() => {
+    if (orderUUID && isDone) {
+      stripeConfirmPayment(orderUUID);
+    }
+  }, [orderUUID, isDone, stripeConfirmPayment]);
 
   if (!cartItems || !Object.keys(cartItems).length) return (
     <div className='w-full flex items-center justify-center my-4'>
@@ -248,26 +190,18 @@ function CheckoutPage() {
     };
   }
 
-  const createOrder = (paymentMethod: PaymentMethod = "stripe") => {
+  const handleCreateOrder = async (paymentMethod: PaymentMethod = "stripe") => {
     const orderInfo = retrieveOrderInfoForSubmission(paymentMethod);
-
     dispatch({
       type: ReducerActionTypes.update_contact_info_form,
       payload: reducerState.current.contactInfoForm,
     });
-
-    createOrderFetcher.submit(
-      orderInfo,
-      {
-        method: 'post',
-        action: '/checkout?index'
-      },
-    );
+    await createOrder(orderInfo);
   };
 
   const handleFormChange = (evt: FormEvent<HTMLFormElement>) => {
-    // Remove error alert when submitting error.
-    setErrorAlert('');
+    clearCreateOrderErrorAlert();
+    clearStripeErrorAlert();
 
     let target = evt.target as HTMLInputElement;
 
@@ -294,20 +228,16 @@ function CheckoutPage() {
     if (!formRef.current) return;
     if (!validatePhone(formRef.current)) {
       formRef.current.reportValidity();
-
       return;
     };
 
     // Submit forms to action, only create a new order if order hasn't been created yet.
     if (!state.orderUUID) {
-      createOrder('stripe');
-
+      handleCreateOrder('stripe');
       return;
     }
 
-    if (!element || !stripe) return;
-
-    stripeConfirmPayment(state.orderUUID, element, stripe);
+    stripeConfirmPayment(state.orderUUID);
   }
 
   const handleSelectAddress = (option: Option) => {
@@ -321,73 +251,24 @@ function CheckoutPage() {
     });
   }
 
-  const handlePaypalCreateOrder = async (): Promise<string> => {
-    const orderInfo = retrieveOrderInfoForSubmission('paypal');
-
-    const data: PaypalCreateOrderResponse = await submit(
-      {
-        action_type: ActionType.PaypalCreateOrder,
-        ...orderInfo,
-      },
-      {
-        method: 'post',
-        action: '/checkout?index',
-      }
-    );
-
-    dispatch({
-      type: ReducerActionTypes.set_both_paypal_and_peasydeal_order_id,
-      payload: {
-        orderUUID: data.order_uuid,
-        paypalOrderID: data.paypal_order_id,
-      },
-    });
-
-    return data.paypal_order_id;
-  }
-
-  const handlePaypalApproveOrder = async (data: OnApproveData, action: OnApproveActions) => {
-    const captureErr = await submit(
-      {
-        action_type: ActionType.PaypalCapturePayment,
-        order_id: reducerState.current.orderUUID,
-        paypal_order_id: data.orderID, // This is the paypal order id
-      },
-      {
-        method: 'post',
-        action: '/checkout?index',
-      },
-    )
-
-    const errDetail = captureErr.details[0]
-    setErrorAlert(`${errDetail.issue}: ${errDetail.description}`);
-  };
-
-  const handlePaypalInputValidate = (data: Record<string, unknown>, actions: OnClickActions) => {
-    if (!formRef.current) {
-      return actions.reject();
-    }
-
-    if (
-      !formRef.current.checkValidity() ||
-      !validatePhone(formRef.current)
-    ) {
-      formRef.current.reportValidity()
-
-      return actions.reject();
-    }
-
-    return actions.resolve();
-  };
-
   return (
     <div className="checkout-page-container">
       <h1 className="title"> Shipping Information </h1>
       {
-        errorAlert
+        createOrderErrorAlert
           ? (
             <Alert severity='warning' >
-              {errorAlert}
+              {createOrderErrorAlert}
+            </Alert>
+          )
+          : null
+      }
+
+      {
+        stripeErrorAlert
+          ? (
+            <Alert severity='warning' >
+              {stripeErrorAlert}
             </Alert>
           )
           : null
@@ -457,14 +338,6 @@ function CheckoutPage() {
               // @docs https://stackoverflow.com/questions/70864433/integration-of-stripe-paymentelement-warning-unsupported-prop-change-options-c
               <CheckoutForm
                 loading={createOrderFetcher.state !== 'idle' || isPaying}
-
-              // Paypal payment button enables only if all required form inputs are validated.
-              // Disable paypal relative
-              // paypalDisabled={state.disablePaypalButton}
-
-              // paypalCreateOrder={handlePaypalCreateOrder}
-              // paypalApproveOrder={handlePaypalApproveOrder}
-              // paypalInputValidate={handlePaypalInputValidate}
               />
             }
           </createOrderFetcher.Form>
