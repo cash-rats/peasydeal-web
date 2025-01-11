@@ -81,9 +81,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 function CartLayout() {
   const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
-
   const handleOpen = () => setOpenSearchDialog(true);
-
   const handleClose = () => setOpenSearchDialog(false);
 
   return (
@@ -95,14 +93,13 @@ function CartLayout() {
 
       <Header
         categories={categories}
-
         mobileSearchBar={
           <SearchBar
             placeholder='Search keywords...'
             onClick={handleOpen}
+            onTouchEnd={handleOpen}
           />
         }
-
         searchBar={
           <DropDownSearchBar />
         }

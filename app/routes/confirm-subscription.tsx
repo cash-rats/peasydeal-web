@@ -1,6 +1,6 @@
 import type { V2_MetaFunction, LoaderArgs } from "@remix-run/node";
 import { json } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { Link, useLoaderData, useRouteError } from '@remix-run/react';
 import { activateEmailSubscribe } from '~/api';
 import { CheckCircledIcon, CopyIcon, RocketIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
@@ -21,6 +21,8 @@ export const loader = async ({ request }: LoaderArgs) => {
 };
 
 export const ErrorBoundary = () => {
+  const error = useRouteError();
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
       <Card className="w-full max-w-md">

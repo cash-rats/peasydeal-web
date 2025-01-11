@@ -1,4 +1,4 @@
-import type { ForwardedRef, MouseEvent, ChangeEvent, FocusEvent } from 'react';
+import type { ForwardedRef, MouseEvent, ChangeEvent, FocusEvent, TouchEvent } from 'react';
 import { useEffect, useState, forwardRef, useRef } from 'react';
 import type { InputBaseProps } from '@mui/material/InputBase';
 import ClearIcon from '@mui/icons-material/Clear';
@@ -21,6 +21,8 @@ interface SearchBarProps extends InputBaseProps {
   name?: string;
 
   onClick?: (evt: MouseEvent<HTMLDivElement>) => void;
+
+  onTouchEnd?: (evt: TouchEvent<HTMLDivElement>) => void;
 
   // When user clicks on magnifier icon.
   onSearch?: (criteria: string, evt: MouseEvent<HTMLButtonElement>) => void;
@@ -49,6 +51,7 @@ function SearchBar({
   form,
   name = 'query',
   onClick = () => { },
+  onTouchEnd = () => { },
   onSearch = () => { },
   onClear = () => { },
   placeholder = '',
@@ -111,6 +114,7 @@ function SearchBar({
         value={content}
         name={name}
         onClick={onClick}
+        onTouchEnd={onTouchEnd}
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleChange}

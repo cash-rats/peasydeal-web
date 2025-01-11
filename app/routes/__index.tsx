@@ -62,7 +62,6 @@ export default function Index() {
 	const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
 	const handleOpen = () => setOpenSearchDialog(true);
-
 	const handleClose = () => setOpenSearchDialog(false);
 
 	return (
@@ -86,9 +85,9 @@ export default function Index() {
 
 					mobileSearchBar={
 						<SearchBar
-							disabled
 							placeholder='Search keywords...'
 							onClick={handleOpen}
+							onTouchEnd={handleOpen}
 						/>
 					}
 

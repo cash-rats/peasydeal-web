@@ -1,4 +1,5 @@
 import type { MouseEvent } from 'react';
+import { useState } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction, V2_MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { Form, useLoaderData, useFetcher, useCatch } from '@remix-run/react';
@@ -21,6 +22,7 @@ import TrackingOrderInitPage, { links as TrackingOrderInitPageLinks } from './co
 import { trackOrder } from './api.server';
 import { normalizeTrackingOrder } from './utils';
 import type { TrackOrder } from './types';
+import MobileSearchDialog from '~/components/MobileSearchDialog';
 
 type LoaderDataType = {
   query: string;
@@ -120,6 +122,9 @@ export const CatchBoundary = () => {
   const caught = useCatch();
   const caughtData: CatchBoundaryDataType = caught.data;
   const trackOrderFetcher = useFetcher();
+  const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
+  const handleOpen = () => setOpenSearchDialog(true);
+  const handleClose = () => setOpenSearchDialog(false);
 
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLSpanElement>) => {
     evt.preventDefault();
@@ -144,12 +149,24 @@ export const CatchBoundary = () => {
 
   return (
     <>
+      <MobileSearchDialog
+        onBack={handleClose}
+        isOpen={openSearchDialog}
+      />
+
       <Header
         categories={caughtData.categories}
         categoriesBar={
           <CategoriesNav
             categories={caughtData.categories}
             topCategories={caughtData.navBarCategories}
+          />
+        }
+        mobileSearchBar={
+          <SearchBar
+            placeholder='Search keywords...'
+            onClick={handleOpen}
+            onTouchEnd={handleOpen}
           />
         }
         searchBar={
@@ -184,6 +201,10 @@ function TrackingOrder() {
   } = useLoaderData<LoaderDataType>() || {};
   const trackOrderFetcher = useFetcher();
 
+  const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
+  const handleOpen = () => setOpenSearchDialog(true);
+  const handleClose = () => setOpenSearchDialog(false);
+
   const handleOnSearch = (newOrderNum: string, evt: MouseEvent<HTMLButtonElement>) => {
     evt.preventDefault();
 
@@ -209,13 +230,31 @@ function TrackingOrder() {
 
   return (
     <>
+      <MobileSearchDialog
+        onBack={handleClose}
+        isOpen={openSearchDialog}
+      />
+
       <Header
         categories={categories}
-        searchBar={<div />}
         categoriesBar={
           <CategoriesNav
             categories={categories}
             topCategories={navBarCategories}
+          />
+        }
+        mobileSearchBar={
+          <SearchBar
+            placeholder='Search keywords...'
+            onClick={handleOpen}
+            onTouchEnd={handleOpen}
+          />
+        }
+        searchBar={
+          <SearchBar
+            onSearch={handleOnSearch}
+            onClear={handleOnClear}
+            placeholder='Search by order id'
           />
         }
       />
