@@ -1,5 +1,4 @@
-import { useState, useEffect, useReducer } from "react";
-import { useFetcher } from '@remix-run/react'
+import { useEffect, useReducer } from "react";
 import type { ChangeEvent } from 'react';
 import {
   Modal,
@@ -10,11 +9,11 @@ import {
   Button,
 } from '@chakra-ui/react';
 
-import type { ApiErrorResponse } from '~/shared/types';
 import successImage from '~/components/EmailSubscribeModal/images/email_subscription.png';
 import reducer, { setOpenPromoteSubscriptionModal } from '~/components/PromoteSubscriptionModal/reducer';
 
 import voucherImage from './images/3off@2x.png';
+import useEmailSubscribe from '~/hooks/useEmailSubscribe';
 
 interface PromoteSubscriptionModalProps {
   /**
@@ -33,9 +32,15 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
     error: null,
   });
 
-  const [email, setEmail] = useState('');
-  const [err, setErr] = useState<any>(null);
-  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
+  const {
+    email,
+    setEmail,
+    fetcher: subFetcher,
+    error: subscribeError,
+  } = useEmailSubscribe();
+
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
+
   const onCloseModal = () => {
     // Set local storage for expiration
     const expiration = Date.now() + 1 * 60 * 60 * 1000; // 1 hours in milliseconds
@@ -44,9 +49,7 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
 
     // Close Modal
     dispatch(setOpenPromoteSubscriptionModal(false));
-  }
-
-  const subFetcher = useFetcher();
+  };
 
   useEffect(() => {
 		if (forceDisable) return;
@@ -72,15 +75,6 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
 
   useEffect(() => {
     if (subFetcher.type === 'done') {
-      const data = subFetcher.data;
-
-      if (data.err_code) {
-        const errResp = data as ApiErrorResponse;
-        setErr(errResp);
-        dispatch(setOpenPromoteSubscriptionModal(true));
-        return;
-      }
-
       dispatch(setOpenPromoteSubscriptionModal(true));
     }
   }, [subFetcher.type]);
@@ -104,7 +98,7 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
               <div className="p-8 max-w-screen-sm mx-auto">
                 <div className="font-poppins text-base text-center justify-center gap-2">
                   {
-                    err !== null
+                    subscribeError !== null
                       ? 'Something went wrong! Please check the email your entered and try again.'
                       : (
                         <>
