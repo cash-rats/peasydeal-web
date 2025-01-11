@@ -1,9 +1,10 @@
 import type { V2_MetaFunction, LoaderArgs } from "@remix-run/node";
 import { json } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
 import { activateEmailSubscribe } from '~/api';
 import { CheckCircledIcon, CopyIcon, RocketIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
+
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -70,9 +71,9 @@ function ConfirmSubscription() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <div className="relative">
               <CheckCircledIcon className="h-16 w-16 text-green-500" />
@@ -144,9 +145,9 @@ function ConfirmSubscription() {
               Start Shopping
             </Link>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+          </CardContent>
+        </Card>
+      </div>
   )
 }
 
