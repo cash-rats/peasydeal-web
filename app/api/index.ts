@@ -5,3 +5,4 @@ export { searchProductPreviews } from '~/routes/hooks/auto-complete-search/api.s
 export type { SearchProductPreviewsParams } from '~/routes/hooks/auto-complete-search/api.server';
 
 export { fetchCategories } from './categories.server';
+export * from './activate-email.server';

@@ -1,7 +1,9 @@
-import type { V2_MetaFunction } from "@remix-run/node";
-import { Link } from '@remix-run/react';
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { CheckCircledIcon, CopyIcon, RocketIcon } from "@radix-ui/react-icons";
+import type { V2_MetaFunction, LoaderArgs } from "@remix-run/node";
+import { json } from '@remix-run/node';
+import { Link, useLoaderData } from '@remix-run/react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
+import { activateEmailSubscribe } from '~/api';
+import { CheckCircledIcon, CopyIcon, RocketIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -10,12 +12,61 @@ export const meta: V2_MetaFunction = () => {
   ];
 };
 
+export const loader = async ({ request }: LoaderArgs) => {
+  const url = new URL(request.url);
+  const uuid = url.searchParams.get('uuid') as string;
+  const { coupon } = await activateEmailSubscribe(uuid);
+  return json({ coupon });
+};
+
+export const ErrorBoundary = () => {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="mb-4 flex justify-center">
+            <div className="rounded-full bg-destructive/10 p-3">
+              <ExclamationTriangleIcon className="h-12 w-12 text-destructive text-error-msg-red" />
+            </div>
+          </div>
+          <CardTitle className="text-2xl text-destructive">Email Verification Failed</CardTitle>
+          <CardDescription className="mt-2 text-base">
+            We couldn't validate your email address
+          </CardDescription>
+        </CardHeader>
+
+        <CardContent className="space-y-6">
+          {/* Error Details */}
+          <div className="rounded-lg bg-destructive/10 p-4">
+            <p className="text-sm text-destructive">
+              This might have happened because:
+            </p>
+            <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+              <li>• The verification link has expired</li>
+              <li>• The link was already used</li>
+              <li>• The verification code is invalid</li>
+            </ul>
+          </div>
+
+          <div className="text-center">
+            <Link
+              to="/"
+              className="text-sm text-muted-foreground hover:text-foreground"
+            >
+              Return to Homepage
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function ConfirmSubscription() {
- // Example coupon code - in a real app, this would come from your backend
-  const couponCode = "WELCOME25";
+  const { coupon } = useLoaderData<typeof loader>();
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(couponCode);
+    navigator.clipboard.writeText(coupon);
   };
 
   return (
@@ -45,7 +96,7 @@ function ConfirmSubscription() {
             <div className="relative">
               <div className="flex items-center justify-center gap-2 rounded-lg bg-bright-blue/10 p-4">
                 <code className="text-2xl font-bold tracking-wider text-bright-blue">
-                  {couponCode}
+                  {coupon}
                 </code>
                 <button
                   onClick={copyToClipboard}
