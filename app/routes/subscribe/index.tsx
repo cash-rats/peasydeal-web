@@ -17,17 +17,16 @@ export const action: ActionFunction = async ({ request }) => {
     if (!email) {
       return json({}, httpStatus.BAD_REQUEST)
     }
-
     const resp = await subscribe(email);
-
     return json(resp, httpStatus.OK);
+
   } catch (err: any) {
     return json(composErrorResponse(err.message), httpStatus.BAD_REQUEST);
   }
 }
 
 function Subscribe() {
-  return ('')
+  return null;
 }
 
 export default Subscribe;

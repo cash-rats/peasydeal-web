@@ -2,7 +2,7 @@ import httpStatus from 'http-status-codes';
 
 import { envs } from '~/utils/get_env_source';
 import type { Category, TaxonomyWithParents } from '~/shared/types';
-import { CategoryType } from '~/shared/types';
+import type { CategoryType } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';
 
 import { splitNavBarCatsWithCatsInMore } from './categories.utils';
@@ -43,7 +43,7 @@ interface ICategoriesFromServerResponse {
 };
 
 
-const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFromServerResponse> => {
+const fetchCategoriesFromServer = async (type?: CategoryType): Promise<ICategoriesFromServerResponse> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = '/v2/categories';
   if (type) {
@@ -52,6 +52,7 @@ const fetchCategoriesFromServer = async (type?: string): Promise<ICategoriesFrom
 
   const resp = await fetch(url.toString());
   const respJSON = await resp.json();
+
 
   if (resp.status !== httpStatus.OK) {
     throw new Error(JSON.stringify(respJSON));
@@ -136,7 +137,7 @@ const fetchCategories = async (): Promise<[Category[], Category[]]> => {
   }
 
   // If it doesn't exist, fetch from server and cache to redis.
-  const { categories } = await fetchCategoriesFromServer(CategoryType.category);
+  const { categories } = await fetchCategoriesFromServer('category');
 
   await redis.set(RedisCategoriesKey, JSON.stringify(categories));
   await redis.expire(RedisCategoriesKey, envs.CATEGORY_CACHE_TTL);
@@ -148,7 +149,7 @@ const fetchCategories = async (): Promise<[Category[], Category[]]> => {
 
 // TODO: cache promotions to redis.
 const fetchPromotions = async (): Promise<Category[]> => {
-  const { promotions } = await fetchCategoriesFromServer(CategoryType.promotion);
+  const { promotions } = await fetchCategoriesFromServer('promotion');
   return promotions;
 };
 

@@ -1,49 +1,25 @@
-import { useReducer, useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
-import { useFetcher } from '@remix-run/react'
-import { TextField } from '@mui/material';
+import { TextField, FormControl } from '@mui/material';
 import { Button } from '@chakra-ui/react';
 
-import type { ApiErrorResponse } from '~/shared/types';
 import SubscribeModal from '~/components/EmailSubscribeModal';
-import reducer, { setOpenEmailSubscribeModal } from '~/components/EmailSubscribeModal/reducer';
+import useEmailSubscribe from '~/hooks/useEmailSubscribe';
 
 function EmailSubscribe() {
-  const [email, setEmail] = useState('');
-  const [state, dispatch] = useReducer(reducer, {
-    open: false,
-    error: null,
-  });
+  const {
+    setEmail,
+    openModal,
+    error,
+    email,
+    fetcher,
+    onCloseModal,
+  } = useEmailSubscribe();
 
   const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
-  const subFetcher = useFetcher();
-
-  useEffect(() => {
-    if (subFetcher.type === 'done') {
-      const data = subFetcher.data;
-
-      if (data.err_code) {
-        const errResp = data as ApiErrorResponse
-        dispatch(setOpenEmailSubscribeModal(true, errResp))
-        return;
-      }
-
-      // Open modal
-      // display subscription email sent.
-      dispatch(setOpenEmailSubscribeModal(true, null))
-    }
-  }, [subFetcher.type]);
-
-  const onCloseModal = () =>
-    dispatch(setOpenEmailSubscribeModal(false, null));
 
   return (
     <>
-      <SubscribeModal
-        open={state.open}
-        onClose={onCloseModal}
-        error={state.error}
-      />
+      <SubscribeModal open={openModal} onClose={onCloseModal} error={error} />
 
       <div className="flex flex-col text-center">
         <span className="
@@ -57,8 +33,8 @@ function EmailSubscribe() {
           Join to our news letter & get £3 GBP voucher
         </p>
 
-        <div className="flex flex-row mt-3 w-full gap-2 justify-center ">
-          <div className="w-full">
+        <div className="w-full">
+          <FormControl className="w-full flex flex-row mt-3 gap-2 justify-center">
             <TextField
               fullWidth
               placeholder='Enter Your Email Address'
@@ -71,33 +47,37 @@ function EmailSubscribe() {
               }}
               value={email}
               onChange={handleChangeEmail}
+              error={!!error}
             />
-          </div>
 
-          <subFetcher.Form action='/subscribe?index' method='post'>
-            <input type='hidden' name='email' value={email} />
+            <fetcher.Form action='/subscribe?index' method='post'>
+              <input type='hidden' name='email' value={email} />
+              <Button
+                isLoading={fetcher.state !== 'idle'}
+                variant='contained'
+                type='submit'
+                className='text-white'
+                style={{
+                  borderRadius: '10px',
+                  textTransform: 'capitalize',
+                  backgroundColor: '#d02e7d',
+                  fontSize: '1rem',
+                  height: '100%',
+                }}
+              >
+                Subscribe
+              </Button>
+            </fetcher.Form>
+          </FormControl>
 
-            <Button
-              isLoading={subFetcher.state !== 'idle'}
-              variant='contained'
-              type='submit'
-              className='text-white'
-              style={{
-                borderRadius: '10px',
-                textTransform: 'capitalize',
-                backgroundColor: '#d02e7d',
-                fontSize: '1rem',
-                height: '100%',
-              }}
-            >
-              Subscribe
-            </Button>
-          </subFetcher.Form>
+          {error && (
+            <div className="w-full text-left text-red-500 text-sm mt-1 font-poppins">
+              {error.error}
+            </div>
+          )}
         </div>
 
-        <p className="
-          mt-3 text-sm md:text-base
-        ">
+        <p className="mt-3 text-sm md:text-base">
           * Can be use on order £30+, Terms and Condition applied
         </p>
       </div>

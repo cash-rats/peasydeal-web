@@ -19,7 +19,6 @@ interface ILoadProducts {
 
 export const loadProducts = async ({ request, perpage, promoName }: ILoadProducts) => {
   try {
-
     const promotions = await fetchPromotions();
     const catMap = normalizeToMap(promotions);
 
@@ -34,8 +33,9 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
       canonical_link: `${getCanonicalDomain()}/promotion/${promoName}`
     };
 
+    // TODO: we should not retrieve product cache from cookie session.
+    // Retrieve from remix frontend cache instead.
     const cachedInfo = await getCategoryProducts(request, promoName);
-
     if (cachedInfo) {
       const { items, total, current, hasMore } = await fetchPromotionProducts({
         promoName,
@@ -67,7 +67,6 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
     });
 
     const session = await addCategoryProducts(request, [], promoName, 1);
-
     return json(Object.assign(
       response,
       {
@@ -77,9 +76,7 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
         hasMore,
       },
     ), {
-      headers: {
-        'Set-Cookie': await commitSession(session),
-      },
+      headers: { 'Set-Cookie': await commitSession(session) }
     });
   } catch (error) {
     throw json(

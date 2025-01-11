@@ -114,6 +114,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     const page = Number(url.searchParams.get('page'));
     const perpage = Number(url.searchParams.get('per_page')) || PAGE_LIMIT;
 
+    console.log('* 1 page', page)
+    console.log('* 2 perpage', perpage)
+
     return loadMoreProducts({
       request,
       page,

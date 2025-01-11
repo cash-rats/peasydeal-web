@@ -128,8 +128,4 @@ export interface IBlogStaticProps {
 	currentPage: Number,
 }
 
-export enum CategoryType {
-  promotion = "promotion",
-  category = "category",
-  taxonomy_category = "taxonomy_category",
-};
+export type CategoryType = 'promotion' | 'category' | 'taxonomy_category';
