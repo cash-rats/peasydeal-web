@@ -5,8 +5,6 @@ import { Button } from '@chakra-ui/react';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 import { Link } from '@remix-run/react';
 import { VscArrowRight } from "react-icons/vsc";
-
-import { CategoryType } from '~/shared/types';
 import { ProductRow } from "~/components/ProductRow";
 
 type ICategoryPreview = {
@@ -42,7 +40,7 @@ export const CategoryPreview = ({
           <span>{label}</span>
           <div className="block w-[1px] h-[25px] bg-[#757575] mr-1 ml-6" />
           <Link to={
-            type === CategoryType.promotion
+            type === 'promotion'
               ? `/promotion/${name}`
               : `/collection/${name}`
           }>
@@ -78,7 +76,7 @@ export const CategoryPreview = ({
 
       <div className="flex justify-center w-full mt-8 mb-10">
         <Link to={
-          type === CategoryType.promotion
+          type === 'promotion'
             ? `/promotion/${name}`
             : `/collection/${name}`
         }>

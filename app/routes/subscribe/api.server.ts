@@ -17,10 +17,7 @@ export const subscribe = async (email: string): Promise<object> => {
   const respJson = await resp.json();
 
   if (resp.status !== httpStatus.OK) {
-    return {
-      ...respJson,
-      status: resp.status,
-    }
+    throw new Error(JSON.stringify(respJson));
   }
 
   return respJson

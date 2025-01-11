@@ -78,7 +78,7 @@ export const paypalCreateOrder = async (params: CreateOrderParams): Promise<Payp
   const respJSON = await resp.json();
   if (resp.status !== httpStatus.OK) {
     const errResp = respJSON as ApiErrorResponse;
-    throw new Error(errResp.err_msg);
+    throw new Error(errResp.error);
   }
 
   return respJSON as PaypalCreateOrderResponse;
@@ -107,7 +107,7 @@ export const paypalCapturePayment = async (paypalOrderID: string) => {
 
   const respJSON = await resp.json();
   if (resp.status !== httpStatus.OK) {
-    throw new Error((respJSON as ApiErrorResponse).err_msg)
+    throw new Error((respJSON as ApiErrorResponse).error)
   };
 
   return respJSON as PaypalCapturePayment;
