@@ -33,6 +33,8 @@ const normalizeToSessionStorableCartItem = ({
     }).url || '';
   }
 
+  console.log('* productVariation 1', productVariation);
+
   return {
     salePrice: productVariation?.sale_price.toString() || '',
     retailPrice: productVariation?.retail_price.toString() || '',

@@ -32,13 +32,8 @@ import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import trackWindowScrollTo from './components/RecommendedProducts/hooks/track_window_scroll_to';
-import { useStickyActionBar, useSticky, useProductState, useAddToCart } from './hooks';
-import {
-  updateProductImages,
-  changeProduct,
-  setVariation,
-  updateQuantity,
-} from './reducer';
+import { useStickyActionBar, useSticky, useProductState, useAddToCart, useProductChange } from './hooks';
+import { setVariation, updateQuantity } from './reducer';
 import {
   findDefaultVariation,
   matchOldProductURL,
@@ -181,29 +176,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
     }
   });
 
-  // Change product.
-  useEffect(() => {
-    // This action updates detail to new product also clears images of previous product images.
-    dispatch(changeProduct(loaderData.product));
-
-    // Update product images to new product after current event loop.
-    setTimeout(() => {
-      dispatch(updateProductImages(
-        loaderData.product.shared_images,
-        loaderData.product.variation_images,
-      ));
-    }, 100);
-
-    const gaSessionID = getSessionIDFromSessionStore();
-
-    window
-      .rudderanalytics
-      ?.track('view_product_detail', {
-        session: gaSessionID,
-        product: `${state.productDetail.title}_${state.productDetail.uuid}`
-      });
-  }, [loaderData.product.uuid]);
-
+  useProductChange({ product: loaderData.product, dispatch });
 
   useEffect(() => {
     const currentVariation = findDefaultVariation(state.productDetail);
@@ -219,11 +192,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
     }
   };
 
-
   const increaseQuantity = () => {
-    if (!state.variation) return;
-    const { purchase_limit } = state.variation;
-    if (state.quantity === purchase_limit) return;
+    if (!state.variation || state.quantity === state.variation.purchase_limit) return;
     dispatch(updateQuantity(state.quantity + 1));
   };
 
