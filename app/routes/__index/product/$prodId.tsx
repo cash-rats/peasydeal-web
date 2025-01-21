@@ -1,8 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
@@ -32,17 +28,12 @@ import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import trackWindowScrollTo from './components/RecommendedProducts/hooks/track_window_scroll_to';
+import { useStickyActionBar, useSticky, useProductState, useAddToCart } from './hooks';
 import {
-  useStickyActionBar,
-  useSticky,
-  useProductState,
-  useAddToCart,
-} from './hooks';
-import {
-  ActionTypes,
   updateProductImages,
   changeProduct,
   setVariation,
+  updateQuantity,
 } from './reducer';
 import {
   findDefaultVariation,
@@ -106,7 +97,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     return json<LoaderTypeProductDetail>({
       product: prodDetail,
       canonical_url: `${getCanonicalDomain()}${url.pathname}`,
-      meta_image: prodDetail.main_pic_url || '',
+      meta_image: prodDetail.main_pic_url?.url || '',
       user_agent: userAgent,
     });
   } catch (error: any) {
@@ -147,10 +138,11 @@ export const action: ActionFunction = async ({ request }) => {
     !item.variationUUID ||
     typeof item.variationUUID === 'undefined'
   ) {
-    return json('', { status: httpStatus.BAD_REQUEST });
+    return json('',  {status: httpStatus.BAD_REQUEST});
   }
 
   const session = await insertItem(request, item);
+
   if (formAction === 'add_item_to_cart') {
     return json('', {
       headers: { "Set-Cookie": await commitSession(session) }
@@ -211,12 +203,11 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
       });
   }, [loaderData.product.uuid]);
 
+
   useEffect(() => {
     const currentVariation = findDefaultVariation(state.productDetail);
-    dispatch({
-      type: ActionTypes.set_variation,
-      payload: currentVariation,
-    })
+    if (!currentVariation) return;
+    dispatch(setVariation(currentVariation));
   }, [state.productDetail]);
 
 
@@ -225,29 +216,20 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
     const { purchase_limit } = state.variation;
     const newQuant = Number(evt.target.value);
     if (newQuant > purchase_limit) return;
-    dispatch({
-      type: ActionTypes.update_quantity,
-      payload: newQuant,
-    })
+    dispatch(updateQuantity(newQuant));
   };
+
 
   const increaseQuantity = () => {
     if (!state.variation) return;
     const { purchase_limit } = state.variation;
     if (state.quantity === purchase_limit) return;
-
-    dispatch({
-      type: ActionTypes.update_quantity,
-      payload: state.quantity + 1,
-    })
+    dispatch(updateQuantity(state.quantity + 1));
   };
 
   const decreaseQuantity = () => {
     if (state.quantity === 1) return;
-    dispatch({
-      type: ActionTypes.update_quantity,
-      payload: state.quantity - 1,
-    })
+    dispatch(updateQuantity(state.quantity - 1));
   };
 
   const {
