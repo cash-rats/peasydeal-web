@@ -1,5 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import type { ChangeEvent } from 'react';
+import {
+  useState,
+  useEffect,
+  useRef,
+  type ChangeEvent,
+} from 'react';
 import type { LoaderFunction, ActionFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
@@ -113,9 +117,6 @@ type ActionType =
   | 'add_item_to_cart'
   | 'buy_now';
 
-// TODO
-//  - [x] store shopping cart items in session storage if user has not logged in yet.
-//  - [ ] what is the error?
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
@@ -212,11 +213,10 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
 
   const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
-    if (!state.variation) return;
-    const { purchase_limit } = state.variation;
     const newQuant = Number(evt.target.value);
-    if (newQuant > purchase_limit) return;
-    dispatch(updateQuantity(newQuant));
+    if (state.variation && newQuant <= state.variation.purchase_limit) {
+      dispatch(updateQuantity(newQuant));
+    }
   };
 
 
