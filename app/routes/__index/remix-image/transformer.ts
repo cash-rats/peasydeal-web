@@ -3,6 +3,7 @@ import type { TransformOptions } from 'remix-image';
 
 import { uploadToR2 } from './r2';
 import { MimeType, fileExtensionResolver } from './mimes';
+import { envs, isProd } from '~/utils/get_env_source';
 
 //  https://github.com/remix-run/remix/discussions/2905
 export const supportedInputs = new Set([
@@ -161,14 +162,17 @@ const transformer: CustomTransformer = {
         height,
       });
 
-      try {
-        await uploadToR2({
-          buffer: transformedImageBuffer,
-          filename: objectName,
-          contentType: outputContentType,
-        });
-      } catch (error) {
-        console.error('Error uploading to R2:', error);
+      /* Ignore r2 auth on development env */
+      if (envs.NODE_ENV === 'production' || envs.NODE_ENV === 'staging') {
+        try {
+          await uploadToR2({
+            buffer: transformedImageBuffer,
+            filename: objectName,
+            contentType: outputContentType,
+          });
+        } catch (error) {
+          console.error('Error uploading to R2:', error);
+        }
       }
     }
 

@@ -1,5 +1,4 @@
 import {
-  useCallback,
   useState,
   useEffect,
   useRef,
@@ -7,7 +6,7 @@ import {
 import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
@@ -37,6 +36,7 @@ import {
   useStickyActionBar,
   useSticky,
   useProductState,
+  useAddToCart,
 } from './hooks';
 import {
   ActionTypes,
@@ -47,7 +47,6 @@ import {
 import {
   findDefaultVariation,
   matchOldProductURL,
-  tryPickUserSelectedVariationImage,
 } from './utils';
 import { redirectToNewProductURL } from './loaders';
 import { meta as metaFunc } from './meta';
@@ -148,11 +147,10 @@ export const action: ActionFunction = async ({ request }) => {
     !item.variationUUID ||
     typeof item.variationUUID === 'undefined'
   ) {
-    return json('');
+    return json('', { status: httpStatus.BAD_REQUEST });
   }
 
   const session = await insertItem(request, item);
-
   if (formAction === 'add_item_to_cart') {
     return json('', {
       headers: { "Set-Cookie": await commitSession(session) }
@@ -172,9 +170,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
   // TODO: extract state initializer to independent function
   const { state, dispatch } = useProductState(loaderData);
-
   const [variationErr, setVariationErr] = useState<string>('');
-  const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
   const productContentWrapperRef = useRef<HTMLDivElement>(null);
   const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
@@ -254,67 +250,25 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
     })
   };
 
-  const addToCart = useFetcher();
-  const reloadCartItemCount = useFetcher();
+  const {
+    addItemToCart,
+    isAddingToCart,
+    openSuccessModal,
+    setOpenSuccessModal,
+  } = useAddToCart({
+    sessionStorableCartItem: state.sessionStorableCartItem,
+    variationImages: state.variationImages,
+  });
 
-  const handleAddToCart = useCallback(
-    () => {
-      if (!state.variation) {
-        setVariationErr('Please pick a variation');
-        return;
-      }
-
-      setVariationErr('');
-
-      const item = {
-        ...state.sessionStorableCartItem,
-
-        // Try to pick image of the variation that user selected
-        // image: state.variationImages[state.sessionStorableCartItem.variationUUID] || '',
-        image: tryPickUserSelectedVariationImage(
-          state.sessionStorableCartItem.variationUUID,
-          state.variationImages,
-        ) || state.productDetail.main_pic_url,
-
-        added_time: Date.now().toString(),
-      }
-
-      window.rudderanalytics?.track('click_add_to_cart', {
-        product: item.productUUID,
-      });
-
-      addToCart.submit(
-        {
-          __action: 'add_item_to_cart',
-          item: JSON.stringify(item),
-        },
-        {
-          method: 'post',
-          action: `/product/${item.productUUID}`,
-        },
-      );
-    },
-    [state.sessionStorableCartItem],
-  );
-
-  useEffect(() => {
-    if (addToCart.type === 'done') {
-      setOpenSuccessModal(true);
-
-      setTimeout(() => {
-        setOpenSuccessModal(false);
-      }, 1000)
-
-      reloadCartItemCount.submit(
-        null,
-        {
-          method: 'post',
-          action: '/components/Header?index',
-          replace: true,
-        })
+  const handleAddToCart = () => {
+    if (!state.variation) {
+      setVariationErr('Please pick a variation');
+      return;
     }
-  }, [addToCart.type]);
 
+    setVariationErr('');
+    addItemToCart();
+  }
 
 
   const handleClickProduct = (title: string, productUUID: string) => {
@@ -378,7 +332,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
           variationErr={variationErr}
           quantity={state.quantity}
           sessionStorableCartItem={state.sessionStorableCartItem}
-          isAddingToCart={addToCart.state !== 'idle'}
+          isAddingToCart={isAddingToCart}
           tags={state.tags}
 
           onChangeQuantity={handleUpdateQuantity}
