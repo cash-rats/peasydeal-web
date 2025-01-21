@@ -52,3 +52,8 @@ export type LoaderTypeProductDetail = {
   meta_image: string;
   user_agent: string;
 };
+
+export interface OptionType {
+  value: string;
+  label: string;
+}

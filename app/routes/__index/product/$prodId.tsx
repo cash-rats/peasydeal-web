@@ -3,7 +3,6 @@ import {
   useState,
   useEffect,
   useRef,
-  useReducer,
 } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction, LinksFunction } from '@remix-run/node';
@@ -28,22 +27,24 @@ import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { isFromGoogleStoreBot } from '~/utils';
 
 import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
-import type { LoaderTypeProductDetail } from './types';
+import type { LoaderTypeProductDetail, OptionType } from './types';
 import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import trackWindowScrollTo from './components/RecommendedProducts/hooks/track_window_scroll_to';
-import useStickyActionBar from './hooks/useStickyActionBar';
-import useSticky from './hooks/useSticky';
-import reducer, {
+import {
+  useStickyActionBar,
+  useSticky,
+  useProductState,
+} from './hooks';
+import {
   ActionTypes,
   updateProductImages,
   changeProduct,
   setVariation,
 } from './reducer';
 import {
-  normalizeToSessionStorableCartItem,
   findDefaultVariation,
   matchOldProductURL,
   tryPickUserSelectedVariationImage,
@@ -168,32 +169,9 @@ type ProductDetailProps = {} & LazyComponentProps;
 
 function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
   const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
-  const mainCategory = (
-    loaderData?.product?.categories &&
-    loaderData?.product?.categories.length > 0
-  )
-    ? loaderData.product.categories[0]
-    : null;
-
-  const defaultVariation = findDefaultVariation(loaderData.product);
-  const tags = loaderData.product.tag_combo_tags || '';
 
   // TODO: extract state initializer to independent function
-  const [state, dispatch] = useReducer(reducer, {
-    productDetail: loaderData?.product,
-    categories: loaderData?.product?.categories,
-    mainCategory,
-    sharedImages: loaderData?.product.shared_images,
-    variationImages: loaderData?.product.variation_images,
-    quantity: 1,
-    variation: defaultVariation,
-    tags: tags.split(','),
-    sessionStorableCartItem: normalizeToSessionStorableCartItem({
-      productDetail: loaderData?.product,
-      productVariation: defaultVariation,
-      quantity: 1,
-    }),
-  });
+  const { state, dispatch } = useProductState(loaderData);
 
   const [variationErr, setVariationErr] = useState<string>('');
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
@@ -357,7 +335,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
   const handleOnClose = () => setOpenSuccessModal(false);
 
-  const handleChangeVariation = (v: any) => {
+  const handleChangeVariation = (v: OptionType) => {
     if (!v) return;
 
     const selectedVariation =
