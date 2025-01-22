@@ -138,7 +138,6 @@ type LoaderType = {
 export const loader: LoaderFunction = async ({ request }) => {
   // If cart contains no items, display empty cart page via CatchBoundary
   const cart = await getCart(request);
-
   if (!cart || Object.keys(cart).length === 0) {
     // Reset transaction object if we have an empty cart.
     throw json(

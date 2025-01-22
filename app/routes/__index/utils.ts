@@ -1,9 +1,9 @@
 import type { Product } from '~/shared/types';
 import type { ProductImg } from './product/types';
 
-export const transformData = (apiData: any[]): Product[] => {
-  const transformed: Product[] = apiData.map((data: any): Product => {
-    return {
+export const transformData = (apiData: any[]): Product[] => (
+  apiData.map((data: any): Product => (
+    {
       currency: data.currency,
       description: data.description,
       discount: data.discountOff,
@@ -15,11 +15,9 @@ export const transformData = (apiData: any[]): Product[] => {
       subtitle: data.subTitle,
       title: data.title,
       variationID: data.variationId,
-    };
-  })
-
-  return transformed;
-}
+    }
+  ))
+)
 
 // To render grid layout properly:
 //  - 1 ~ 3 prods in layout 1

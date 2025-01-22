@@ -89,3 +89,17 @@ deploy/prod/put-docker-compose:
 	@ssh -i $(PROD_SSH_KEY_PATH) -p $(PROD_PORT) $(PROD_USER)@$(PROD_HOST) "mkdir -p $(PROD_DIR)"
 	@scp -i $(PROD_SSH_KEY_PATH) -P $(PROD_PORT) ./docker-compose.prod.yaml $(PROD_USER)@$(PROD_HOST):$(PROD_DIR)/docker-compose.prod.yaml
 	@echo "docker-compose.prod.yaml uploaded"
+
+
+# ==================================================================================== #
+# Util command
+# ==================================================================================== #
+## fb_api_port_forwarding: port forwarding to fb api
+.PHONY: fb_api_port_forwarding
+fb_api_port_forwarding:
+	@if lsof -i :8443 >/dev/null; then \
+		echo "port is in use"; \
+	else \
+		ssh -p $(PROD_PORT) -i $(PROD_SSH_KEY_PATH) -L 8443:localhost:8080 $(PROD_USER)@$(PROD_HOST) && \
+		echo "port forwarded"; \
+	fi

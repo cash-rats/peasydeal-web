@@ -1,14 +1,11 @@
 import {
-  useCallback,
   useState,
-  useEffect,
   useRef,
-  useReducer,
+  type ChangeEvent,
 } from 'react';
-import type { ChangeEvent } from 'react';
 import type { LoaderFunction, ActionFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
@@ -28,26 +25,25 @@ import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { isFromGoogleStoreBot } from '~/utils';
 
 import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
-import type { LoaderTypeProductDetail } from './types';
+import type { LoaderTypeProductDetail, OptionType } from './types';
 import { fetchProductDetail } from './api.server';
 import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import trackWindowScrollTo from './components/RecommendedProducts/hooks/track_window_scroll_to';
-import useStickyActionBar from './hooks/useStickyActionBar';
-import useSticky from './hooks/useSticky';
-import reducer, {
-  ActionTypes,
-  updateProductImages,
-  changeProduct,
-  setVariation,
-} from './reducer';
 import {
-  normalizeToSessionStorableCartItem,
-  findDefaultVariation,
-  matchOldProductURL,
-  tryPickUserSelectedVariationImage,
-} from './utils';
+  useStickyActionBar,
+  useSticky,
+  useProductState,
+  useAddToCart,
+  useProductChange,
+  useVariationChange,
+} from './hooks';
+import {
+  setVariation,
+  updateQuantity,
+} from './reducer';
+import { matchOldProductURL, } from './utils';
 import { redirectToNewProductURL } from './loaders';
 import { meta as metaFunc } from './meta';
 import ProductPolicy from './components/ProductPolicy';
@@ -106,7 +102,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     return json<LoaderTypeProductDetail>({
       product: prodDetail,
       canonical_url: `${getCanonicalDomain()}${url.pathname}`,
-      meta_image: prodDetail.main_pic_url || '',
+      meta_image: prodDetail.main_pic_url?.url || '',
       user_agent: userAgent,
     });
   } catch (error: any) {
@@ -122,9 +118,6 @@ type ActionType =
   | 'add_item_to_cart'
   | 'buy_now';
 
-// TODO
-//  - [x] store shopping cart items in session storage if user has not logged in yet.
-//  - [ ] what is the error?
 export const action: ActionFunction = async ({ request }) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
@@ -147,7 +140,7 @@ export const action: ActionFunction = async ({ request }) => {
     !item.variationUUID ||
     typeof item.variationUUID === 'undefined'
   ) {
-    return json('');
+    return json('',  {status: httpStatus.BAD_REQUEST});
   }
 
   const session = await insertItem(request, item);
@@ -168,35 +161,10 @@ type ProductDetailProps = {} & LazyComponentProps;
 
 function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
   const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
-  const mainCategory = (
-    loaderData?.product?.categories &&
-    loaderData?.product?.categories.length > 0
-  )
-    ? loaderData.product.categories[0]
-    : null;
-
-  const defaultVariation = findDefaultVariation(loaderData.product);
-  const tags = loaderData.product.tag_combo_tags || '';
 
   // TODO: extract state initializer to independent function
-  const [state, dispatch] = useReducer(reducer, {
-    productDetail: loaderData?.product,
-    categories: loaderData?.product?.categories,
-    mainCategory,
-    sharedImages: loaderData?.product.shared_images,
-    variationImages: loaderData?.product.variation_images,
-    quantity: 1,
-    variation: defaultVariation,
-    tags: tags.split(','),
-    sessionStorableCartItem: normalizeToSessionStorableCartItem({
-      productDetail: loaderData?.product,
-      productVariation: defaultVariation,
-      quantity: 1,
-    }),
-  });
-
+  const { state, dispatch } = useProductState(loaderData.product);
   const [variationErr, setVariationErr] = useState<string>('');
-  const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
   const productContentWrapperRef = useRef<HTMLDivElement>(null);
   const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
@@ -214,129 +182,54 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
     }
   });
 
-  // Change product.
-  useEffect(() => {
-    // This action updates detail to new product also clears images of previous product images.
-    dispatch(changeProduct(loaderData.product));
+  useProductChange({
+    product: loaderData.product,
+    dispatch,
+  });
 
-    // Update product images to new product after current event loop.
-    setTimeout(() => {
-      dispatch(updateProductImages(
-        loaderData.product.shared_images,
-        loaderData.product.variation_images,
-      ));
-    }, 100);
-
-    const gaSessionID = getSessionIDFromSessionStore();
-
-    window
-      .rudderanalytics
-      ?.track('view_product_detail', {
-        session: gaSessionID,
-        product: `${state.productDetail.title}_${state.productDetail.uuid}`
-      });
-  }, [loaderData.product.uuid]);
-
-  useEffect(() => {
-    const currentVariation = findDefaultVariation(state.productDetail);
-    dispatch({
-      type: ActionTypes.set_variation,
-      payload: currentVariation,
-    })
-  }, [state.productDetail]);
-
+  useVariationChange({
+    product: loaderData.product,
+    dispatch,
+  });
 
   const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
-    if (!state.variation) return;
-    const { purchase_limit } = state.variation;
     const newQuant = Number(evt.target.value);
-    if (newQuant > purchase_limit) return;
-    dispatch({
-      type: ActionTypes.update_quantity,
-      payload: newQuant,
-    })
+    if (state.variation && newQuant <= state.variation.purchase_limit) {
+      dispatch(updateQuantity(newQuant));
+    }
   };
 
-  const increaseQuantity = () => {
+  const handleIncreaseQuantity = () => {
     if (!state.variation) return;
     const { purchase_limit } = state.variation;
     if (state.quantity === purchase_limit) return;
-
-    dispatch({
-      type: ActionTypes.update_quantity,
-      payload: state.quantity + 1,
-    })
+    dispatch(updateQuantity(state.quantity + 1));
   };
 
-  const decreaseQuantity = () => {
+  const handleDecreaseQuantity = () => {
     if (state.quantity === 1) return;
-    dispatch({
-      type: ActionTypes.update_quantity,
-      payload: state.quantity - 1,
-    })
+    dispatch(updateQuantity(state.quantity - 1));
   };
 
-  const addToCart = useFetcher();
-  const reloadCartItemCount = useFetcher();
+  const {
+    addItemToCart,
+    isAddingToCart,
+    openSuccessModal,
+    setOpenSuccessModal,
+  } = useAddToCart({
+    sessionStorableCartItem: state.sessionStorableCartItem,
+    variationImages: state.variationImages,
+  });
 
-  const handleAddToCart = useCallback(
-    () => {
-      if (!state.variation) {
-        setVariationErr('Please pick a variation');
-        return;
-      }
-
-      setVariationErr('');
-
-      const item = {
-        ...state.sessionStorableCartItem,
-
-        // Try to pick image of the variation that user selected
-        // image: state.variationImages[state.sessionStorableCartItem.variationUUID] || '',
-        image: tryPickUserSelectedVariationImage(
-          state.sessionStorableCartItem.variationUUID,
-          state.variationImages,
-        ) || state.productDetail.main_pic_url,
-
-        added_time: Date.now().toString(),
-      }
-
-      window.rudderanalytics?.track('click_add_to_cart', {
-        product: item.productUUID,
-      });
-
-      addToCart.submit(
-        {
-          __action: 'add_item_to_cart',
-          item: JSON.stringify(item),
-        },
-        {
-          method: 'post',
-          action: `/product/${item.productUUID}`,
-        },
-      );
-    },
-    [state.sessionStorableCartItem],
-  );
-
-  useEffect(() => {
-    if (addToCart.type === 'done') {
-      setOpenSuccessModal(true);
-
-      setTimeout(() => {
-        setOpenSuccessModal(false);
-      }, 1000)
-
-      reloadCartItemCount.submit(
-        null,
-        {
-          method: 'post',
-          action: '/components/Header?index',
-          replace: true,
-        })
+  const handleAddToCart = () => {
+    if (!state.variation) {
+      setVariationErr('Please pick a variation');
+      return;
     }
-  }, [addToCart.type]);
 
+    setVariationErr('');
+    addItemToCart();
+  }
 
 
   const handleClickProduct = (title: string, productUUID: string) => {
@@ -357,9 +250,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
   const handleOnClose = () => setOpenSuccessModal(false);
 
-  const handleChangeVariation = (v: any) => {
+  const handleChangeVariation = (v: OptionType) => {
     if (!v) return;
-
     const selectedVariation =
       state
         .productDetail
@@ -367,7 +259,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
         .find(variation => variation.uuid === v.value);
 
     if (!selectedVariation) return;
-
     dispatch(setVariation(selectedVariation));
   }
 
@@ -400,14 +291,14 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
           variationErr={variationErr}
           quantity={state.quantity}
           sessionStorableCartItem={state.sessionStorableCartItem}
-          isAddingToCart={addToCart.state !== 'idle'}
+          isAddingToCart={isAddingToCart}
           tags={state.tags}
 
           onChangeQuantity={handleUpdateQuantity}
           onChangeVariation={handleChangeVariation}
           addToCart={handleAddToCart}
-          onDecreaseQuantity={decreaseQuantity}
-          onIncreaseQuantity={increaseQuantity}
+          onDecreaseQuantity={handleDecreaseQuantity}
+          onIncreaseQuantity={handleIncreaseQuantity}
         />
       </div>
 
@@ -430,19 +321,18 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					- Hot deals
 					- New trend
 			*/}
-      {
-        state.mainCategory
-          ? (
-            <RecommendedProducts
-              ref={recmmendedProdsRef}
-              category={state.mainCategory.name}
-              onClickProduct={handleClickProduct}
-              scrollPosition={scrollPosition}
-            />
-
-          )
-          : null
-      }
+        {
+          state.mainCategory
+            ? (
+              <RecommendedProducts
+                ref={recmmendedProdsRef}
+                category={state.mainCategory?.name || ''}
+                onClickProduct={handleClickProduct}
+                scrollPosition={scrollPosition}
+              />
+            )
+            : null
+        }
     </>
   );
 };

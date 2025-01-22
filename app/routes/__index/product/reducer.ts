@@ -1,4 +1,5 @@
-import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
+import { produce, type Draft } from 'immer';
+import  { type ShoppingCartItem } from '~/sessions/shoppingcart.session';
 
 import {
   normalizeToSessionStorableCartItem,
@@ -12,7 +13,7 @@ import type {
   Category,
 } from './types';
 
-type StateShape = {
+type ProductState = {
   productDetail: ProductDetail;
   variation: ProductVariation | undefined;
   sharedImages: ProductImg[];
@@ -24,110 +25,90 @@ type StateShape = {
   tags: string[];
 }
 
-export enum ActionTypes {
-  change_product = 'change_product',
-  update_product_images = 'update_product_images',
-  update_quantity = 'update_quantity',
-  set_variation = 'set_variation',
-};
-
-type Action = {
-  type: ActionTypes;
-  payload: any;
-};
+export type ProductAction =
+  | { type: 'CHANGE_PRODUCT', payload: ProductDetail }
+  | { type: 'UPDATE_PRODUCT_IMAGES', payload: { sharedImgs: ProductImg[], variationImgs: ProductImg[] } }
+  | { type: 'UPDATE_QUANTITY', payload: number }
+  | { type: 'SET_VARIATION', payload: ProductVariation }
 
 // ------- action creators -------
-export const updateProductImages = (sharedImgs: ProductImg[], variationImgs: ProductImg[]) => {
-  return {
-    type: ActionTypes.update_product_images,
-    payload: {
-      sharedImgs,
-      variationImgs,
-    },
-  };
-};
+export const updateProductImages = (sharedImgs: ProductImg[], variationImgs: ProductImg[]): ProductAction => ({
+  type: 'UPDATE_PRODUCT_IMAGES',
+  payload: {
+    sharedImgs,
+    variationImgs,
+  },
+});
 
-export const changeProduct = (product: ProductDetail) => {
-  return {
-    type: ActionTypes.change_product,
-    payload: product,
-  };
-};
+export const changeProduct = (product: ProductDetail): ProductAction => ({
+  type: 'CHANGE_PRODUCT',
+  payload: product,
+});
 
-export const setVariation = (variation: ProductVariation) => {
-  return {
-    type: ActionTypes.set_variation,
-    payload: variation,
-  };
-}
+export const setVariation = (variation: ProductVariation): ProductAction => ({
+  type: 'SET_VARIATION',
+  payload: variation,
+});
 
-const reducer = (state: StateShape, action: Action): StateShape => {
+export const updateQuantity = (quantity: number): ProductAction => ({
+  type: 'UPDATE_QUANTITY',
+  payload: quantity,
+});
+
+const reducer = produce((draft: Draft<ProductState>, action: ProductAction) => {
   switch (action.type) {
-    case ActionTypes.change_product: {
-      const data = action.payload as ProductDetail;
-
-      const defaultVariation = findDefaultVariation(data);
+    case 'CHANGE_PRODUCT': {
+      const product = action.payload as ProductDetail;
+      const defaultVariation = findDefaultVariation(product);
 
       // We need to clear previous images before displaying new
       // product images.
-      return {
-        ...state,
-        sharedImages: [],
-        variationImages: [],
-        categories: data.categories,
-        mainCategory: data.categories[0],
-        productDetail: { ...data },
-        variation: defaultVariation,
+      draft.productDetail = product;
+      draft.categories = product.categories;
+      draft.mainCategory = product.categories[0];
+      draft.sharedImages = [];
+      draft.variationImages = [];
+      draft.quantity = 1;
+      draft.variation = defaultVariation;
+      draft.sessionStorableCartItem = normalizeToSessionStorableCartItem({
+        productDetail: product,
+        productVariation: defaultVariation,
         quantity: 1,
-        sessionStorableCartItem: normalizeToSessionStorableCartItem({
-          productDetail: data,
-          productVariation: defaultVariation,
-          quantity: 1,
-        }),
-      };
+      });
+      break;
     }
-    case ActionTypes.update_product_images: {
-      const { sharedImgs, variationImgs }: {
+    case 'SET_VARIATION': {
+      const variation = action.payload as ProductVariation;
+      draft.variation = variation;
+      draft.sessionStorableCartItem = normalizeToSessionStorableCartItem({
+        productDetail: draft.productDetail,
+        productVariation: variation,
+        quantity: draft.quantity,
+      });
+      break;
+    }
+    case 'UPDATE_PRODUCT_IMAGES': {
+      const { sharedImgs, variationImgs } = action.payload as {
         sharedImgs: ProductImg[],
         variationImgs: ProductImg[],
-      } = action.payload
-
-      return {
-        ...state,
-        sharedImages: sharedImgs,
-        variationImages: variationImgs,
       };
+
+      draft.sharedImages = sharedImgs;
+      draft.variationImages = variationImgs;
+      break;
     }
-    case ActionTypes.update_quantity: {
-      const quantity = action.payload;
-
-      return {
-        ...state,
-        quantity,
-        sessionStorableCartItem: {
-          ...state.sessionStorableCartItem,
-          quantity,
-        },
-      }
+    case 'UPDATE_QUANTITY': {
+      const quantity = action.payload as number;
+      draft.quantity = quantity;
+      draft.sessionStorableCartItem = {
+        ...draft.sessionStorableCartItem,
+        quantity: quantity.toString(),
+      };
+      break;
     }
-
-    case ActionTypes.set_variation: {
-      const variation = action.payload;
-
-      return {
-        ...state,
-        variation,
-        sessionStorableCartItem: normalizeToSessionStorableCartItem({
-          productDetail: state.productDetail,
-          productVariation: variation,
-          quantity: state.quantity,
-        }),
-      }
-    }
-
     default:
-      return state;
+      return draft;
   }
-}
+});
 
 export default reducer;

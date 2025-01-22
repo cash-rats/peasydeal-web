@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import type { MutableRefObject } from 'react';
 
 // Scroll to top when this page is rendered since `ScrollRestoration` would keep the scroll position at the bottom.
-function useSticky(
+export function useSticky(
   stickyRef: MutableRefObject<HTMLDivElement | null>,
   sickySectionRef: MutableRefObject<HTMLDivElement | null>,
   mode: string = 'sticky',
