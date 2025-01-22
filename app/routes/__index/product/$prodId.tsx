@@ -321,18 +321,18 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					- Hot deals
 					- New trend
 			*/}
-
-        state.mainCategory
-          ? (
-            <RecommendedProducts
-              ref={recmmendedProdsRef}
-              category={state.mainCategory?.name || ''}
-              onClickProduct={handleClickProduct}
-              scrollPosition={scrollPosition}
-            />
-          )
-          : null
-
+        {
+          state.mainCategory
+            ? (
+              <RecommendedProducts
+                ref={recmmendedProdsRef}
+                category={state.mainCategory?.name || ''}
+                onClickProduct={handleClickProduct}
+                scrollPosition={scrollPosition}
+              />
+            )
+            : null
+        }
     </>
   );
 };
