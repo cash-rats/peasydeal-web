@@ -32,58 +32,60 @@ export type ProductAction =
   | { type: 'SET_VARIATION', payload: ProductVariation }
 
 // ------- action creators -------
-export const updateProductImages = (sharedImgs: ProductImg[], variationImgs: ProductImg[]): ProductAction => {
-  return {
-    type: 'UPDATE_PRODUCT_IMAGES',
-    payload: {
-      sharedImgs,
-      variationImgs,
-    },
-  };
-};
+export const updateProductImages = (sharedImgs: ProductImg[], variationImgs: ProductImg[]): ProductAction => ({
+  type: 'UPDATE_PRODUCT_IMAGES',
+  payload: {
+    sharedImgs,
+    variationImgs,
+  },
+});
 
-export const changeProduct = (product: ProductDetail): ProductAction => {
-  return {
-    type: 'CHANGE_PRODUCT',
-    payload: product,
-  };
-};
+export const changeProduct = (product: ProductDetail): ProductAction => ({
+  type: 'CHANGE_PRODUCT',
+  payload: product,
+});
 
-export const setVariation = (variation: ProductVariation): ProductAction => {
-  return {
-    type: 'SET_VARIATION',
-    payload: variation,
-  };
-}
+export const setVariation = (variation: ProductVariation): ProductAction => ({
+  type: 'SET_VARIATION',
+  payload: variation,
+});
 
-export const updateQuantity = (quantity: number): ProductAction => {
-  return {
-    type: 'UPDATE_QUANTITY',
-    payload: quantity,
-  };
-}
+export const updateQuantity = (quantity: number): ProductAction => ({
+  type: 'UPDATE_QUANTITY',
+  payload: quantity,
+});
 
 const reducer = produce((draft: Draft<ProductState>, action: ProductAction) => {
   switch (action.type) {
     case 'CHANGE_PRODUCT': {
-      const data = action.payload as ProductDetail;
-
-      const defaultVariation = findDefaultVariation(data);
+      const product = action.payload as ProductDetail;
+      const defaultVariation = findDefaultVariation(product);
 
       // We need to clear previous images before displaying new
       // product images.
+      draft.productDetail = product;
+      draft.categories = product.categories;
+      draft.mainCategory = product.categories[0];
       draft.sharedImages = [];
       draft.variationImages = [];
-      draft.categories = data.categories;
-      draft.mainCategory = data.categories[0];
-      draft.productDetail = { ...data };
-      draft.variation = defaultVariation;
       draft.quantity = 1;
+      draft.variation = defaultVariation;
       draft.sessionStorableCartItem = normalizeToSessionStorableCartItem({
-        productDetail: data,
+        productDetail: product,
         productVariation: defaultVariation,
         quantity: 1,
       });
+      break;
+    }
+    case 'SET_VARIATION': {
+      const variation = action.payload as ProductVariation;
+      draft.variation = variation;
+      draft.sessionStorableCartItem = normalizeToSessionStorableCartItem({
+        productDetail: draft.productDetail,
+        productVariation: variation,
+        quantity: draft.quantity,
+      });
+      break;
     }
     case 'UPDATE_PRODUCT_IMAGES': {
       const { sharedImgs, variationImgs } = action.payload as {
@@ -93,6 +95,7 @@ const reducer = produce((draft: Draft<ProductState>, action: ProductAction) => {
 
       draft.sharedImages = sharedImgs;
       draft.variationImages = variationImgs;
+      break;
     }
     case 'UPDATE_QUANTITY': {
       const quantity = action.payload as number;
@@ -101,16 +104,7 @@ const reducer = produce((draft: Draft<ProductState>, action: ProductAction) => {
         ...draft.sessionStorableCartItem,
         quantity: quantity.toString(),
       };
-    }
-    case 'SET_VARIATION': {
-      const variation = action.payload as ProductVariation;
-
-      draft.variation = variation;
-      draft.sessionStorableCartItem = normalizeToSessionStorableCartItem({
-        productDetail: draft.productDetail,
-        productVariation: variation,
-        quantity: draft.quantity,
-      });
+      break;
     }
     default:
       return draft;

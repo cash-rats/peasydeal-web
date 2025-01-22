@@ -1,6 +1,5 @@
 import {
   useState,
-  useEffect,
   useRef,
   type ChangeEvent,
 } from 'react';
@@ -32,12 +31,19 @@ import styles from "./styles/ProdDetail.css";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import trackWindowScrollTo from './components/RecommendedProducts/hooks/track_window_scroll_to';
-import { useStickyActionBar, useSticky, useProductState, useAddToCart, useProductChange } from './hooks';
-import { setVariation, updateQuantity } from './reducer';
 import {
-  findDefaultVariation,
-  matchOldProductURL,
-} from './utils';
+  useStickyActionBar,
+  useSticky,
+  useProductState,
+  useAddToCart,
+  useProductChange,
+  useVariationChange,
+} from './hooks';
+import {
+  setVariation,
+  updateQuantity,
+} from './reducer';
+import { matchOldProductURL, } from './utils';
 import { redirectToNewProductURL } from './loaders';
 import { meta as metaFunc } from './meta';
 import ProductPolicy from './components/ProductPolicy';
@@ -157,7 +163,7 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
   const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
 
   // TODO: extract state initializer to independent function
-  const { state, dispatch } = useProductState(loaderData);
+  const { state, dispatch } = useProductState(loaderData.product);
   const [variationErr, setVariationErr] = useState<string>('');
 
   const productContentWrapperRef = useRef<HTMLDivElement>(null);
@@ -176,14 +182,15 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
     }
   });
 
-  useProductChange({ product: loaderData.product, dispatch });
+  useProductChange({
+    product: loaderData.product,
+    dispatch,
+  });
 
-  useEffect(() => {
-    const currentVariation = findDefaultVariation(state.productDetail);
-    if (!currentVariation) return;
-    dispatch(setVariation(currentVariation));
-  }, [state.productDetail]);
-
+  useVariationChange({
+    product: loaderData.product,
+    dispatch,
+  });
 
   const handleUpdateQuantity = (evt: ChangeEvent<HTMLInputElement>) => {
     const newQuant = Number(evt.target.value);
@@ -192,12 +199,14 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
     }
   };
 
-  const increaseQuantity = () => {
-    if (!state.variation || state.quantity === state.variation.purchase_limit) return;
+  const handleIncreaseQuantity = () => {
+    if (!state.variation) return;
+    const { purchase_limit } = state.variation;
+    if (state.quantity === purchase_limit) return;
     dispatch(updateQuantity(state.quantity + 1));
   };
 
-  const decreaseQuantity = () => {
+  const handleDecreaseQuantity = () => {
     if (state.quantity === 1) return;
     dispatch(updateQuantity(state.quantity - 1));
   };
@@ -243,7 +252,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 
   const handleChangeVariation = (v: OptionType) => {
     if (!v) return;
-
     const selectedVariation =
       state
         .productDetail
@@ -251,7 +259,6 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
         .find(variation => variation.uuid === v.value);
 
     if (!selectedVariation) return;
-
     dispatch(setVariation(selectedVariation));
   }
 
@@ -290,8 +297,8 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
           onChangeQuantity={handleUpdateQuantity}
           onChangeVariation={handleChangeVariation}
           addToCart={handleAddToCart}
-          onDecreaseQuantity={decreaseQuantity}
-          onIncreaseQuantity={increaseQuantity}
+          onDecreaseQuantity={handleDecreaseQuantity}
+          onIncreaseQuantity={handleIncreaseQuantity}
         />
       </div>
 
@@ -314,19 +321,18 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					- Hot deals
 					- New trend
 			*/}
-      {
+
         state.mainCategory
           ? (
             <RecommendedProducts
               ref={recmmendedProdsRef}
-              category={state.mainCategory.name}
+              category={state.mainCategory?.name || ''}
               onClickProduct={handleClickProduct}
               scrollPosition={scrollPosition}
             />
-
           )
           : null
-      }
+
     </>
   );
 };

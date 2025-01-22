@@ -1,39 +1,33 @@
 import { useReducer, useMemo } from 'react';
 
 import { normalizeToSessionStorableCartItem, findDefaultVariation } from '../utils';
-import type { LoaderTypeProductDetail } from '../types';
+import type { ProductDetail } from '../types';
 import reducer from '../reducer';
 
-export function useProductState(loaderData: LoaderTypeProductDetail) {
+export function useProductState(product: ProductDetail) {
   const mainCategory = useMemo(() => {
     return (
-      loaderData?.product?.categories &&
-      loaderData?.product?.categories.length > 0
+      product?.categories &&
+      product?.categories.length > 0
     )
-      ? loaderData.product.categories[0]
+      ? product.categories[0]
       : null;
-  }, [loaderData?.product?.categories]);
+  }, [product?.categories]);
 
-  const defaultVariation = useMemo(() => {
-    return findDefaultVariation(loaderData.product);
-  }, [loaderData?.product]);
-
-  const tags = useMemo(() => {
-    // return loaderData.product.tag_combo_tags || '';
-    return loaderData.product.tag_combo_tags?.split(',') || [];
-  }, [loaderData?.product]);
+  const defaultVariation = useMemo(() => findDefaultVariation(product), [product]);
+  const tags = useMemo(() => product.tag_combo_tags?.split(',') || [], [product]);
 
   const [state, dispatch] = useReducer(reducer, {
-    productDetail: loaderData?.product,
-    categories: loaderData?.product?.categories,
+    productDetail: product,
+    categories: product?.categories,
     mainCategory,
-    sharedImages: loaderData?.product.shared_images,
-    variationImages: loaderData?.product.variation_images,
+    sharedImages: product.shared_images,
+    variationImages: product.variation_images,
     quantity: 1,
     variation: defaultVariation,
     tags,
     sessionStorableCartItem: normalizeToSessionStorableCartItem({
-      productDetail: loaderData?.product,
+      productDetail: product,
       productVariation: defaultVariation,
       quantity: 1,
     }),
