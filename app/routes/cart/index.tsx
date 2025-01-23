@@ -1,5 +1,4 @@
-import { useEffect, useState, useReducer, useMemo } from 'react';
-import type { MouseEvent } from 'react';
+import { useEffect, useMemo } from 'react';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import type { ShouldRevalidateFunction } from "@remix-run/react";
@@ -17,14 +16,8 @@ import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
+import { useCartState, useUpdateItemQuantity, useApplyPromoCode } from './hooks';
 
-import cartReducer, {
-  setPriceInfo,
-  setPromoCode,
-  removeCartItem as removeCartItemActionCreator,
-  updateQuantity as updateQuantityAction,
-} from './reducer';
-import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
 import EmptyShoppingCart from './components/EmptyShoppingCart';
 import PriceResult from './components/PriceResult';
@@ -32,7 +25,7 @@ import {
   fetchPriceInfo,
   convertShoppingCartToPriceQuery,
 } from './cart.server';
-import type { PriceInfo } from './cart.server';
+import type { PriceInfo, ActionType } from './types';
 import styles from './styles/cart.css';
 import sslCheckout from './images/SSL-Secure-Connection.png';
 import {
@@ -40,14 +33,13 @@ import {
   removeCartItemAction,
   updateItemQuantity,
 } from './actions';
-import type { ActionType } from './actions';
-import type { RemoveCartItemActionDataType, ApplyPromoCodeActionType } from './actions';
 import {
   syncShoppingCartWithNewProductsInfo,
   extractPriceInfoToStoreInSession,
   sortItemsByAddedTime,
 } from './utils';
 import { round10 } from '~/utils/preciseRound';
+import { useRemoveItem } from './hooks/useRemoveItem';
 
 export const links: LinksFunction = () => {
   return [
@@ -68,7 +60,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction, formDat
 
   if (formData) {
     const action = formData.get('__action');
-
     if (
       action === 'apply_promo_code' ||
       action === 'update_item_quantity' ||
@@ -132,9 +123,6 @@ type LoaderType = {
   priceInfo: PriceInfo | null;
 };
 
-/*
- * Fetch cart items from product list when user is not logged in.
- */
 export const loader: LoaderFunction = async ({ request }) => {
   // If cart contains no items, display empty cart page via CatchBoundary
   const cart = await getCart(request);
@@ -203,27 +191,17 @@ export const CatchBoundary = () => {
  * - [x] Add `~~$99.98 Now $49.99 You Saved $50` text.
  * - [x] When quantity is deducted to 0, popup a notification that the item is going to be removed.
  * - [x] Checkout flow.
- * - [ ] 重複點擊同個 quantity 會 重新 calculate price。
- * - [ ] use useReducer to cleanup useState
+ * - [x] 重複點擊同個 quantity 會 重新 calculate price。
+ * - [x] use useReducer to cleanup useState
  */
 function Cart() {
   const preloadData = useLoaderData<LoaderType>() || {};
-  const [state, dispatch] = useReducer(
-    cartReducer,
-    {
-      cartItems: preloadData?.cart,
-      priceInfo: preloadData?.priceInfo,
-      promoCode: '',
-    } as StateShape,
-  );
+  const { state, dispatch } = useCartState({
+    cart: preloadData?.cart,
+    priceInfo: preloadData?.priceInfo,
+  });
 
-
-  const [syncingPrice, setSyncingPrice] = useState(false);
-
-  const removeItemFetcher = useFetcher();
-  const updateItemQuantityFetcher = useFetcher();
   const applyPromoCodeFetcher = useFetcher();
-  const cartItemCountFetcher = useFetcher();
 
   // Scroll to top when cart page rendered.
   useEffect(() => {
@@ -231,107 +209,17 @@ function Cart() {
     window.scrollTo(0, 0);
   }, [])
 
-  // If cart item contains no item, we simply redirect user to `/cart` so that
-  // corresponding loader can display empty cart page to user.
-  useEffect(() => {
-    if (removeItemFetcher.type === 'done') {
-      const { price_info } = removeItemFetcher.data as RemoveCartItemActionDataType;
-      if (!price_info) return;
-
-      setSyncingPrice(false);
-      dispatch(setPriceInfo(price_info));
-
-      cartItemCountFetcher.submit(
-        null,
-        {
-          method: 'post',
-          action: '/components/Header?index',
-          replace: true,
-        },
-      )
-    }
-  }, [removeItemFetcher.type]);
-
-  // When user update the quantity, we need to update the cost info calced by backend as well.
-  useEffect(() => {
-    if (updateItemQuantityFetcher.type === 'done') {
-      const priceInfo = updateItemQuantityFetcher.data as PriceInfo;
-      if (!priceInfo) return;
-
-      dispatch(setPriceInfo(priceInfo));
-      setSyncingPrice(false);
-    }
-  }, [updateItemQuantityFetcher.type]);
-
-  // Update the resulting price info to display when user applied promo code.
-  useEffect(() => {
-    if (applyPromoCodeFetcher.type === 'done') {
-      const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
-      dispatch(setPromoCode(data.discount_code));
-      dispatch(setPriceInfo(data.price_info))
-    }
-  }, [applyPromoCodeFetcher.type]);
-
-
-  const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, variationUUID: string, number: number) => {
-    // If user hasn't changed anything. don't bother to update the quantity.
-    if (
-      state.cartItems[variationUUID] &&
-      Number(state.cartItems[variationUUID].quantity) === number
-    ) return;
-
-    dispatch(updateQuantityAction(variationUUID, number));
-    setSyncingPrice(true);
-
-    updateItemQuantityFetcher.submit(
-      {
-        __action: 'update_item_quantity',
-        variation_uuid: variationUUID,
-        quantity: number.toString(),
-        promo_code: state.promoCode,
-      },
-      {
-        method: 'post',
-        action: '/cart?index',
-      },
-    );
-  }
-
-  const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) => {
-    // Update cart state with a version without removed item.
-    setSyncingPrice(true);
-
-    dispatch(
-      removeCartItemActionCreator(variationUUID)
-    );
-
-    // Remove item in session.
-    removeItemFetcher.submit(
-      {
-        __action: 'remove_cart_item',
-        variation_uuid: variationUUID,
-        promo_code: state.promoCode,
-      },
-      {
-        method: 'post',
-        action: '/cart?index',
-      },
-    )
-  }
-
-
-  const handleClickApplyPromoCode = (code: string) => {
-    applyPromoCodeFetcher.submit(
-      {
-        __action: 'apply_promo_code',
-        promo_code: code,
-      },
-      {
-        method: 'post',
-        action: '/cart?index',
-      },
-    );
-  };
+  const { removing, handleRemove, itemRemoveFetcher } = useRemoveItem({ dispatch, promoCode: state.promoCode });
+  const {
+    updatingQuantity,
+    updateItemQuantityFetcher,
+    handleOnClickQuantity,
+  } = useUpdateItemQuantity({
+    dispatch,
+    shoppingCart: state.cartItems,
+    promoCode: state.promoCode,
+  });
+  const { handleClickApplyPromoCode, applying } = useApplyPromoCode({ dispatch });
 
   const freeshippingRequiredPrice = useMemo(() => {
     if (!state.priceInfo) return 0;
@@ -354,7 +242,7 @@ function Cart() {
 
   return (
     <>
-      <LoadingBackdrop open={syncingPrice} />
+      <LoadingBackdrop open={removing || updatingQuantity || applying} />
 
       <section className="
 				py-0 px-auto
@@ -457,8 +345,8 @@ function Cart() {
                         updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
 
                       ) || (
-                          removeItemFetcher.state !== 'idle' &&
-                          removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
+                          itemRemoveFetcher.state !== 'idle' &&
+                          itemRemoveFetcher.submission?.formData.get('variation_uuid') === variationUUID
                         );
 
                       return (
@@ -496,7 +384,7 @@ function Cart() {
                       priceInfo={state.priceInfo}
                       calculating={
                         updateItemQuantityFetcher.state !== 'idle' ||
-                        removeItemFetcher.state !== 'idle' ||
+                        itemRemoveFetcher.state !== 'idle' ||
                         applyPromoCodeFetcher.state !== 'idle'
                       }
                     />
@@ -508,7 +396,6 @@ function Cart() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>

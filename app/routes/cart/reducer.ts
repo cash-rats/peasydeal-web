@@ -1,129 +1,92 @@
+import { produce } from 'immer';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 
-import type { PriceInfo } from './cart.server';
+import type { PriceInfo } from './types';
 import { syncShoppingCartWithNewProductsInfo } from './utils';
 
-export enum CartActionTypes {
-  set_promo_code = 'set_promo_code',
-  update_cart_item = 'update_cart_item',
-  remove_cart_item = 'remove_cart_item',
-  set_price_info = 'set_price_info',
-};
-
-export type StateShape = {
+export type CartState = {
   cartItems: ShoppingCart;
   priceInfo: PriceInfo | null;
   promoCode: string;
 };
 
-interface UpdateCartItemPayload {
-  variationUUID: string;
-  quantity: string;
-};
+export type CartAction =
+  | { type: 'SET_PRICE_INFO', payload: PriceInfo }
+  | { type: 'SET_PROMO_CODE', payload: string }
+  | { type: 'REMOVE_CART_ITEM', payload: string }
+  | { type: 'UPDATE_ITEM_QUANTITY', payload: { variationUUID: string, quantity: number } }
 
-interface CartActions {
-  type: CartActionTypes;
-  payload:
-  | ShoppingCart
-  | UpdateCartItemPayload
-  | PriceInfo
-  | string
-  | null;
-}
+export const setPriceInfo = (priceInfo: PriceInfo): CartAction => ({
+  type: 'SET_PRICE_INFO',
+  payload: priceInfo,
+});
 
-export const setPriceInfo = (priceInfo: PriceInfo) => {
-  return {
-    type: CartActionTypes.set_price_info,
-    payload: priceInfo,
-  };
-};
+export const setPromoCode = (discountCode: string): CartAction => ({
+  type: 'SET_PROMO_CODE',
+  payload: discountCode,
+});
 
-export const setPromoCode = (discountCode: string) => {
-  return {
-    type: CartActionTypes.set_promo_code,
-    payload: discountCode,
-  };
-};
+export const removeCartItem = (variationUUID: string): CartAction => ({
+  type: 'REMOVE_CART_ITEM',
+  payload: variationUUID,
+});
 
-export const removeCartItem = (variationUUID: string) => {
-  return {
-    type: CartActionTypes.remove_cart_item,
-    payload: variationUUID,
-  };
-};
+export const updateQuantity = (variationUUID: string, quantity: number): CartAction => ({
+  type: 'UPDATE_ITEM_QUANTITY',
+  payload: {
+    variationUUID,
+    quantity,
+  }
+});
 
-export const updateQuantity = (variationUUID: string, quantity: number) => {
-  return {
-    type: CartActionTypes.update_cart_item,
-    payload: {
-      variationUUID,
-      quantity: quantity.toString(),
-    }
-  };
-};
-
-export default function cartReducer(state: StateShape, action: CartActions): StateShape {
+const cartReducer = produce((draft: CartState, action: CartAction) => {
   switch (action.type) {
-    case CartActionTypes.update_cart_item: {
-      const { variationUUID, quantity } = action.payload as UpdateCartItemPayload;
+    case 'UPDATE_ITEM_QUANTITY': {
+      const { variationUUID, quantity } = action.payload;
 
-      return {
-        ...state,
-        cartItems: {
-          ...state.cartItems,
-          [variationUUID]: {
-            ...state.cartItems[variationUUID],
-            quantity,
-          },
-        },
-      };
+      draft.cartItems[variationUUID].quantity = quantity.toString();
+      break;
     }
-    case CartActionTypes.remove_cart_item: {
+    case 'REMOVE_CART_ITEM': {
       const targetRemovalVariationUUID = action.payload as string;
 
       const updatedCartItems = Object.
-        keys(state.cartItems).
+        keys(draft.cartItems).
         reduce((newCartItems: ShoppingCart, variationUUID) => {
           if (variationUUID === targetRemovalVariationUUID) {
             return newCartItems;
           }
 
-          newCartItems[variationUUID] = state.cartItems[variationUUID];
+          newCartItems[variationUUID] = draft.cartItems[variationUUID];
           return newCartItems
         }, {});
 
-      return {
-        ...state,
-        cartItems: updatedCartItems,
-      };
+      draft.cartItems = updatedCartItems;
+      break;
     }
-    case CartActionTypes.set_price_info: {
+    case 'SET_PRICE_INFO': {
       const priceInfo = action.payload as PriceInfo | null;
 
       if (priceInfo === null) {
-        return {
-          ...state,
-          priceInfo,
-        };
+        draft.priceInfo = null;
+        break;
       }
 
-      const updatedCartItems = syncShoppingCartWithNewProductsInfo(state.cartItems, priceInfo.products);
+      const updatedCartItems = syncShoppingCartWithNewProductsInfo(draft.cartItems, priceInfo.products);
 
-      return {
-        ...state,
-        priceInfo,
-        cartItems: updatedCartItems,
-      };
+      draft.priceInfo = priceInfo;
+      draft.cartItems = updatedCartItems;
+      break;
     }
-    case CartActionTypes.set_promo_code: {
+    case 'SET_PROMO_CODE': {
       const promoCode = action.payload as string;
 
-      return {
-        ...state,
-        promoCode,
-      };
+      draft.promoCode = promoCode;
+      break;
     }
     default:
-      return state;
+      return draft;
   }
-};
+});
+
+export default cartReducer;

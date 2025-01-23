@@ -20,19 +20,11 @@ import {
 } from './cart.server';
 import { extractPriceInfoToStoreInSession } from './utils';
 
-import type { PriceInfo } from './cart.server';
-
-
-export type ActionType =
-  | 'remove_cart_item'
-  | 'update_item_quantity'
-  | 'apply_promo_code'
-  | 'buy_now';
-
-export type ApplyPromoCodeActionType = {
-  discount_code: string;
-  price_info: PriceInfo;
-}
+import type {
+  PriceInfo,
+  RemoveCartItemActionDataType,
+  ApplyPromoCodeActionType,
+} from './types';
 
 export const applyPromoCode = async (request: Request, promoCode: string) => {
   try {
@@ -73,11 +65,6 @@ export const applyPromoCode = async (request: Request, promoCode: string) => {
     });
   }
 }
-
-export type RemoveCartItemActionDataType = {
-  cart_item_count: number,
-  price_info: PriceInfo | null,
-};
 
 export const removeCartItemAction = async (variationUUID: string, promoCode: string, request: Request) => {
   const session = await sessionRemoveItem(request, variationUUID);
