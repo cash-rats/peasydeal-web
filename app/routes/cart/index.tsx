@@ -1,4 +1,4 @@
-import { useEffect, useState, useReducer, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import type { MouseEvent } from 'react';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
@@ -17,14 +17,14 @@ import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
+import { useCartState } from './hooks';
 
-import cartReducer, {
+import {
   setPriceInfo,
   setPromoCode,
   removeCartItem as removeCartItemActionCreator,
   updateQuantity as updateQuantityAction,
 } from './reducer';
-import type { StateShape } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
 import EmptyShoppingCart from './components/EmptyShoppingCart';
 import PriceResult from './components/PriceResult';
@@ -32,7 +32,7 @@ import {
   fetchPriceInfo,
   convertShoppingCartToPriceQuery,
 } from './cart.server';
-import type { PriceInfo } from './cart.server';
+import type { PriceInfo } from './types';
 import styles from './styles/cart.css';
 import sslCheckout from './images/SSL-Secure-Connection.png';
 import {
@@ -68,7 +68,6 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction, formDat
 
   if (formData) {
     const action = formData.get('__action');
-
     if (
       action === 'apply_promo_code' ||
       action === 'update_item_quantity' ||
@@ -203,20 +202,15 @@ export const CatchBoundary = () => {
  * - [x] Add `~~$99.98 Now $49.99 You Saved $50` text.
  * - [x] When quantity is deducted to 0, popup a notification that the item is going to be removed.
  * - [x] Checkout flow.
- * - [ ] 重複點擊同個 quantity 會 重新 calculate price。
- * - [ ] use useReducer to cleanup useState
+ * - [x] 重複點擊同個 quantity 會 重新 calculate price。
+ * - [x] use useReducer to cleanup useState
  */
 function Cart() {
   const preloadData = useLoaderData<LoaderType>() || {};
-  const [state, dispatch] = useReducer(
-    cartReducer,
-    {
-      cartItems: preloadData?.cart,
-      priceInfo: preloadData?.priceInfo,
-      promoCode: '',
-    } as StateShape,
-  );
-
+  const { state, dispatch } = useCartState({
+    cart: preloadData?.cart,
+    priceInfo: preloadData?.priceInfo,
+  });
 
   const [syncingPrice, setSyncingPrice] = useState(false);
 
@@ -508,7 +502,6 @@ function Cart() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </section>

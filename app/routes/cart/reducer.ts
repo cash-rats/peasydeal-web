@@ -1,6 +1,6 @@
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 
-import type { PriceInfo } from './cart.server';
+import type { PriceInfo } from './types';
 import { syncShoppingCartWithNewProductsInfo } from './utils';
 
 export enum CartActionTypes {
@@ -10,7 +10,7 @@ export enum CartActionTypes {
   set_price_info = 'set_price_info',
 };
 
-export type StateShape = {
+export type CartState = {
   cartItems: ShoppingCart;
   priceInfo: PriceInfo | null;
   promoCode: string;
@@ -62,7 +62,7 @@ export const updateQuantity = (variationUUID: string, quantity: number) => {
   };
 };
 
-export default function cartReducer(state: StateShape, action: CartActions): StateShape {
+export default function cartReducer(state: CartState, action: CartActions): CartState {
   switch (action.type) {
     case CartActionTypes.update_cart_item: {
       const { variationUUID, quantity } = action.payload as UpdateCartItemPayload;
