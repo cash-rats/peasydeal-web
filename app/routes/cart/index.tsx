@@ -1,5 +1,4 @@
 import { useEffect, useState, useMemo } from 'react';
-import type { MouseEvent } from 'react';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import type { ShouldRevalidateFunction } from "@remix-run/react";
@@ -17,12 +16,11 @@ import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
-import { useCartState } from './hooks';
+import { useCartState, useUpdateItemQuantity } from './hooks';
 
 import {
   setPriceInfo,
   setPromoCode,
-  updateQuantity as updateQuantityAction,
 } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
 import EmptyShoppingCart from './components/EmptyShoppingCart';
@@ -214,10 +212,8 @@ function Cart() {
 
   const [syncingPrice, setSyncingPrice] = useState(false);
 
-  const removeItemFetcher = useFetcher();
-  const updateItemQuantityFetcher = useFetcher();
+  // const updateItemQuantityFetcher = useFetcher();
   const applyPromoCodeFetcher = useFetcher();
-  const cartItemCountFetcher = useFetcher();
 
   // Scroll to top when cart page rendered.
   useEffect(() => {
@@ -225,20 +221,16 @@ function Cart() {
     window.scrollTo(0, 0);
   }, [])
 
-  // If cart item contains no item, we simply redirect user to `/cart` so that
-  // corresponding loader can display empty cart page to user.
-  const { removing, handleRemove } = useRemoveItem({ dispatch, promoCode: state.promoCode });
-
-  // When user update the quantity, we need to update the cost info calced by backend as well.
-  useEffect(() => {
-    if (updateItemQuantityFetcher.type === 'done') {
-      const priceInfo = updateItemQuantityFetcher.data as PriceInfo;
-      if (!priceInfo) return;
-
-      dispatch(setPriceInfo(priceInfo));
-      setSyncingPrice(false);
-    }
-  }, [updateItemQuantityFetcher.type]);
+  const { removing, handleRemove, itemRemoveFetcher } = useRemoveItem({ dispatch, promoCode: state.promoCode });
+  const {
+    updatingQuantity,
+    updateItemQuantityFetcher,
+    handleOnClickQuantity,
+  } = useUpdateItemQuantity({
+    dispatch,
+    shoppingCart: state.cartItems,
+    promoCode: state.promoCode,
+  });
 
   // Update the resulting price info to display when user applied promo code.
   useEffect(() => {
@@ -248,54 +240,6 @@ function Cart() {
       dispatch(setPriceInfo(data.price_info))
     }
   }, [applyPromoCodeFetcher.type]);
-
-
-  const handleOnClickQuantity = (evt: MouseEvent<HTMLLIElement>, variationUUID: string, number: number) => {
-    // If user hasn't changed anything. don't bother to update the quantity.
-    if (
-      state.cartItems[variationUUID] &&
-      Number(state.cartItems[variationUUID].quantity) === number
-    ) return;
-
-    dispatch(updateQuantityAction(variationUUID, number));
-    setSyncingPrice(true);
-
-    updateItemQuantityFetcher.submit(
-      {
-        __action: 'update_item_quantity',
-        variation_uuid: variationUUID,
-        quantity: number.toString(),
-        promo_code: state.promoCode,
-      },
-      {
-        method: 'post',
-        action: '/cart?index',
-      },
-    );
-  }
-
-  // const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) => {
-  //   // Update cart state with a version without removed item.
-  //   setSyncingPrice(true);
-
-  //   dispatch(
-  //     removeCartItemActionCreator(variationUUID)
-  //   );
-
-  //   // Remove item in session.
-  //   removeItemFetcher.submit(
-  //     {
-  //       __action: 'remove_cart_item',
-  //       variation_uuid: variationUUID,
-  //       promo_code: state.promoCode,
-  //     },
-  //     {
-  //       method: 'post',
-  //       action: '/cart?index',
-  //     },
-  //   )
-  // }
-
 
   const handleClickApplyPromoCode = (code: string) => {
     applyPromoCodeFetcher.submit(
@@ -331,7 +275,7 @@ function Cart() {
 
   return (
     <>
-      <LoadingBackdrop open={syncingPrice || removing} />
+      <LoadingBackdrop open={syncingPrice || removing || updatingQuantity} />
 
       <section className="
 				py-0 px-auto
@@ -434,8 +378,8 @@ function Cart() {
                         updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
 
                       ) || (
-                          removeItemFetcher.state !== 'idle' &&
-                          removeItemFetcher.submission?.formData.get('variation_uuid') === variationUUID
+                          itemRemoveFetcher.state !== 'idle' &&
+                          itemRemoveFetcher.submission?.formData.get('variation_uuid') === variationUUID
                         );
 
                       return (
@@ -473,7 +417,7 @@ function Cart() {
                       priceInfo={state.priceInfo}
                       calculating={
                         updateItemQuantityFetcher.state !== 'idle' ||
-                        removeItemFetcher.state !== 'idle' ||
+                        itemRemoveFetcher.state !== 'idle' ||
                         applyPromoCodeFetcher.state !== 'idle'
                       }
                     />

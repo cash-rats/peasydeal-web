@@ -12,6 +12,8 @@ interface UseRemoveItemProps {
   promoCode: string;
 }
 
+// If cart item contains no item, we simply redirect user to `/cart` so that
+// corresponding loader can display empty cart page to user.
 export const useRemoveItem = ({ dispatch, promoCode }: UseRemoveItemProps) => {
   const fetcher = useFetcher();
   const cartItemCountFetcher = useFetcher();
@@ -59,6 +61,7 @@ export const useRemoveItem = ({ dispatch, promoCode }: UseRemoveItemProps) => {
   ]);
 
   return {
+    itemRemoveFetcher: fetcher,
     removing,
     handleRemove,
   }
