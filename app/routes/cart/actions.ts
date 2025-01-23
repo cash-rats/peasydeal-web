@@ -23,19 +23,8 @@ import { extractPriceInfoToStoreInSession } from './utils';
 import type {
   PriceInfo,
   RemoveCartItemActionDataType,
+  ApplyPromoCodeActionType,
 } from './types';
-
-
-export type ActionType =
-  | 'remove_cart_item'
-  | 'update_item_quantity'
-  | 'apply_promo_code'
-  | 'buy_now';
-
-export type ApplyPromoCodeActionType = {
-  discount_code: string;
-  price_info: PriceInfo;
-}
 
 export const applyPromoCode = async (request: Request, promoCode: string) => {
   try {

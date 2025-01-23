@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { json, redirect } from '@remix-run/node';
 import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
 import type { ShouldRevalidateFunction } from "@remix-run/react";
@@ -16,12 +16,8 @@ import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
-import { useCartState, useUpdateItemQuantity } from './hooks';
+import { useCartState, useUpdateItemQuantity, useApplyPromoCode } from './hooks';
 
-import {
-  setPriceInfo,
-  setPromoCode,
-} from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
 import EmptyShoppingCart from './components/EmptyShoppingCart';
 import PriceResult from './components/PriceResult';
@@ -29,7 +25,7 @@ import {
   fetchPriceInfo,
   convertShoppingCartToPriceQuery,
 } from './cart.server';
-import type { PriceInfo } from './types';
+import type { PriceInfo, ActionType, ApplyPromoCodeActionType } from './types';
 import styles from './styles/cart.css';
 import sslCheckout from './images/SSL-Secure-Connection.png';
 import {
@@ -37,8 +33,6 @@ import {
   removeCartItemAction,
   updateItemQuantity,
 } from './actions';
-import type { ActionType } from './actions';
-import type { ApplyPromoCodeActionType } from './actions';
 import {
   syncShoppingCartWithNewProductsInfo,
   extractPriceInfoToStoreInSession,
@@ -210,9 +204,6 @@ function Cart() {
     priceInfo: preloadData?.priceInfo,
   });
 
-  const [syncingPrice, setSyncingPrice] = useState(false);
-
-  // const updateItemQuantityFetcher = useFetcher();
   const applyPromoCodeFetcher = useFetcher();
 
   // Scroll to top when cart page rendered.
@@ -231,28 +222,7 @@ function Cart() {
     shoppingCart: state.cartItems,
     promoCode: state.promoCode,
   });
-
-  // Update the resulting price info to display when user applied promo code.
-  useEffect(() => {
-    if (applyPromoCodeFetcher.type === 'done') {
-      const data = applyPromoCodeFetcher.data as ApplyPromoCodeActionType
-      dispatch(setPromoCode(data.discount_code));
-      dispatch(setPriceInfo(data.price_info))
-    }
-  }, [applyPromoCodeFetcher.type]);
-
-  const handleClickApplyPromoCode = (code: string) => {
-    applyPromoCodeFetcher.submit(
-      {
-        __action: 'apply_promo_code',
-        promo_code: code,
-      },
-      {
-        method: 'post',
-        action: '/cart?index',
-      },
-    );
-  };
+  const { handleClickApplyPromoCode, applying } = useApplyPromoCode({ dispatch });
 
   const freeshippingRequiredPrice = useMemo(() => {
     if (!state.priceInfo) return 0;
@@ -275,7 +245,7 @@ function Cart() {
 
   return (
     <>
-      <LoadingBackdrop open={syncingPrice || removing || updatingQuantity} />
+      <LoadingBackdrop open={removing || updatingQuantity || applying} />
 
       <section className="
 				py-0 px-auto

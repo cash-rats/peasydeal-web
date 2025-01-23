@@ -37,3 +37,14 @@ export type RemoveCartItemActionDataType = {
   cart_item_count: number,
   price_info: PriceInfo | null,
 };
+
+export type ActionType =
+  | 'remove_cart_item'
+  | 'update_item_quantity'
+  | 'apply_promo_code'
+  | 'buy_now';
+
+export type ApplyPromoCodeActionType = {
+  discount_code: string;
+  price_info: PriceInfo;
+}
