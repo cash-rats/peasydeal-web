@@ -31,3 +31,9 @@ export type PriceInfo = {
   // Extract `applied_events` to enums.
   applied_events: string[];
 };
+
+
+export type RemoveCartItemActionDataType = {
+  cart_item_count: number,
+  price_info: PriceInfo | null,
+};

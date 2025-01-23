@@ -22,7 +22,6 @@ import { useCartState } from './hooks';
 import {
   setPriceInfo,
   setPromoCode,
-  removeCartItem as removeCartItemActionCreator,
   updateQuantity as updateQuantityAction,
 } from './reducer';
 import CartItem, { links as ItemLinks } from './components/Item';
@@ -41,13 +40,14 @@ import {
   updateItemQuantity,
 } from './actions';
 import type { ActionType } from './actions';
-import type { RemoveCartItemActionDataType, ApplyPromoCodeActionType } from './actions';
+import type { ApplyPromoCodeActionType } from './actions';
 import {
   syncShoppingCartWithNewProductsInfo,
   extractPriceInfoToStoreInSession,
   sortItemsByAddedTime,
 } from './utils';
 import { round10 } from '~/utils/preciseRound';
+import { useRemoveItem } from './hooks/useRemoveItem';
 
 export const links: LinksFunction = () => {
   return [
@@ -227,24 +227,7 @@ function Cart() {
 
   // If cart item contains no item, we simply redirect user to `/cart` so that
   // corresponding loader can display empty cart page to user.
-  useEffect(() => {
-    if (removeItemFetcher.type === 'done') {
-      const { price_info } = removeItemFetcher.data as RemoveCartItemActionDataType;
-      if (!price_info) return;
-
-      setSyncingPrice(false);
-      dispatch(setPriceInfo(price_info));
-
-      cartItemCountFetcher.submit(
-        null,
-        {
-          method: 'post',
-          action: '/components/Header?index',
-          replace: true,
-        },
-      )
-    }
-  }, [removeItemFetcher.type]);
+  const { removing, handleRemove } = useRemoveItem({ dispatch, promoCode: state.promoCode });
 
   // When user update the quantity, we need to update the cost info calced by backend as well.
   useEffect(() => {
@@ -291,27 +274,27 @@ function Cart() {
     );
   }
 
-  const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) => {
-    // Update cart state with a version without removed item.
-    setSyncingPrice(true);
+  // const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) => {
+  //   // Update cart state with a version without removed item.
+  //   setSyncingPrice(true);
 
-    dispatch(
-      removeCartItemActionCreator(variationUUID)
-    );
+  //   dispatch(
+  //     removeCartItemActionCreator(variationUUID)
+  //   );
 
-    // Remove item in session.
-    removeItemFetcher.submit(
-      {
-        __action: 'remove_cart_item',
-        variation_uuid: variationUUID,
-        promo_code: state.promoCode,
-      },
-      {
-        method: 'post',
-        action: '/cart?index',
-      },
-    )
-  }
+  //   // Remove item in session.
+  //   removeItemFetcher.submit(
+  //     {
+  //       __action: 'remove_cart_item',
+  //       variation_uuid: variationUUID,
+  //       promo_code: state.promoCode,
+  //     },
+  //     {
+  //       method: 'post',
+  //       action: '/cart?index',
+  //     },
+  //   )
+  // }
 
 
   const handleClickApplyPromoCode = (code: string) => {
@@ -348,7 +331,7 @@ function Cart() {
 
   return (
     <>
-      <LoadingBackdrop open={syncingPrice} />
+      <LoadingBackdrop open={syncingPrice || removing} />
 
       <section className="
 				py-0 px-auto
