@@ -25,7 +25,7 @@ import {
   fetchPriceInfo,
   convertShoppingCartToPriceQuery,
 } from './cart.server';
-import type { PriceInfo, ActionType, ApplyPromoCodeActionType } from './types';
+import type { PriceInfo, ActionType } from './types';
 import styles from './styles/cart.css';
 import sslCheckout from './images/SSL-Secure-Connection.png';
 import {
@@ -123,9 +123,6 @@ type LoaderType = {
   priceInfo: PriceInfo | null;
 };
 
-/*
- * Fetch cart items from product list when user is not logged in.
- */
 export const loader: LoaderFunction = async ({ request }) => {
   // If cart contains no items, display empty cart page via CatchBoundary
   const cart = await getCart(request);
