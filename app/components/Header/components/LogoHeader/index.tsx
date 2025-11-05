@@ -1,5 +1,4 @@
 import type { ReactNode, CSSProperties } from 'react';
-import { Form } from '@remix-run/react';
 
 import type { Category } from '~/shared/types';
 import LogoBar from '~/components/Header/components/LogoBar';
