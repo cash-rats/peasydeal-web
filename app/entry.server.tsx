@@ -1,9 +1,8 @@
 import { renderToString } from "react-dom/server";
 import { CacheProvider } from '@emotion/react'
 import createEmotionServer from '@emotion/server/create-instance'
-import { RemixServer } from "@remix-run/react";
-import { Response } from "@remix-run/node";
-import type { EntryContext, Headers } from "@remix-run/node";
+import { ServerRouter } from "react-router";
+import type { EntryContext } from "react-router";
 
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
@@ -16,7 +15,7 @@ export default function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext
+  entryContext: EntryContext
 ) {
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
@@ -26,8 +25,8 @@ export default function handleRequest(
       <CacheProvider value={cache}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <RemixServer
-            context={remixContext}
+          <ServerRouter
+            context={entryContext}
             url={request.url}
           />
         </ThemeProvider>
@@ -43,8 +42,8 @@ export default function handleRequest(
       <CacheProvider value={cache}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <RemixServer
-            context={remixContext}
+          <ServerRouter
+            context={entryContext}
             url={request.url}
           />
         </ThemeProvider>

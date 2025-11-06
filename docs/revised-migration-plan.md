@@ -146,6 +146,8 @@ vercel
 
 **Step 1.3: Set up environment variables**
 
+**Note**: This project uses a centralized environment variable management system via `app/utils/env.ts` with Zod validation. All environment variables are validated on startup.
+
 Create `.env.local` with your service credentials:
 
 ```bash
@@ -470,9 +472,10 @@ Update `app/session.server.ts`:
 ```typescript
 // app/session.server.ts
 import { createCookieSessionStorage, redirect } from "react-router";
-import invariant from "tiny-invariant";
+import { env } from "~/utils/env";
 
-invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
+// SESSION_SECRET is now managed via env.ts
+// Add SESSION_SECRET to your env schema if not already present
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -480,8 +483,8 @@ export const sessionStorage = createCookieSessionStorage({
     httpOnly: true,
     path: "/",
     sameSite: "lax",
-    secrets: [process.env.SESSION_SECRET],
-    secure: process.env.NODE_ENV === "production",
+    secrets: [env.SESSION_SECRET || "fallback-secret-change-in-production"],
+    secure: env.NODE_ENV === "production",
   },
 });
 
@@ -594,20 +597,22 @@ import {
 } from "react-router";
 import type { Route } from './+types/root';
 import { Analytics } from "@vercel/analytics/react";
+import { env } from "~/utils/env";
 
 import tailwindStyles from "~/styles/tailwind.css?url";
 
 export async function loader(args: Route.LoaderArgs) {
+  // Use centralized env.ts for environment variables
   const ENV = {
     // Only expose PUBLIC environment variables
-    STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
-    PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID,
-    GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY,
-    GOOGLE_TAG_ID: process.env.GOOGLE_TAG_ID,
-    ALGOLIA_APP_ID: process.env.ALGOLIA_APP_ID,
-    RUDDER_STACK_KEY: process.env.RUDDER_STACK_KEY,
-    RUDDER_STACK_URL: process.env.RUDDER_STACK_URL,
-    R2_PUBLIC_URL: process.env.R2_PUBLIC_URL,
+    STRIPE_PUBLIC_KEY: env.STRIPE_PUBLIC_KEY,
+    PAYPAL_CLIENT_ID: env.PAYPAL_CLIENT_ID,
+    GOOGLE_MAP_API_KEY: env.GOOGLE_MAP_API_KEY,
+    GOOGLE_TAG_ID: env.GOOGLE_TAG_ID,
+    ALGOLIA_APP_ID: env.ALGOLIA_APP_ID,
+    RUDDER_STACK_KEY: env.RUDDER_STACK_KEY,
+    RUDDER_STACK_URL: env.RUDDER_STACK_URL,
+    CDN_URL: env.CDN_URL,
   };
 
   return { ENV };

@@ -7,6 +7,7 @@ const envSchema = z.object({
   // Core configuration
   NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
   DOMAIN: z.string().default('https://staging.peasydeal.com'),
+  SESSION_SECRET: z.string().min(1, 'SESSION_SECRET is required'),
 
   // API Endpoints
   MYFB_ENDPOINT: z.string().default(''),
@@ -27,8 +28,8 @@ const envSchema = z.object({
   CATEGORY_CACHE_TTL: z.string().transform((val: string) => Number(val) || 43200).default(43200),
 
   // Payment - PayPal
-  PAYPAL_CLIENT_ID: z.string().optional(),
-  PAYPAL_CURRENCY_CODE: z.string().optional(),
+  PAYPAL_CLIENT_ID: z.string(),
+  PAYPAL_CURRENCY_CODE: z.string(),
 
   // Payment - Stripe
   STRIPE_PUBLIC_KEY: z.string().optional(),

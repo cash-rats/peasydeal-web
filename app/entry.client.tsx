@@ -1,7 +1,5 @@
 import * as React from "react";
-import { RemixBrowser } from "@remix-run/react";
-
-// ISSUE: https://github.com/remix-run/remix/issues/2570
+import { HydratedRouter } from "react-router/dom";
 import { hydrateRoot } from "react-dom/client";
 import { CacheProvider } from '@emotion/react'
 import { ThemeProvider } from '@mui/material/styles';
@@ -43,7 +41,7 @@ function hydrate() {
 				<ClientCacheProvider>
 					<ThemeProvider theme={theme}>
 						<CssBaseline />
-						<RemixBrowser />
+						<HydratedRouter />
 					</ThemeProvider>
 				</ClientCacheProvider>
 			</React.StrictMode>,

@@ -1,26 +1,23 @@
 import React, { useContext } from 'react'
 import type {
   LinksFunction,
-  LoaderArgs,
-  V2_MetaFunction,
-} from "@remix-run/node";
+  MetaFunction,
+} from "react-router";
+import type { Route } from "./+types/root";
 import { withEmotionCache } from '@emotion/react';
 import { ChakraProvider } from '@chakra-ui/react'
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
-import { json } from "@remix-run/node";
 import {
   Links,
-  LiveReload,
   Meta,
   Outlet,
   Scripts,
+  ScrollRestoration,
   useLoaderData,
-} from "@remix-run/react";
-import {
-  DynamicLinks,
-  ClientOnly,
-} from 'remix-utils'
-import remixImageStyles from "remix-image/remix-image.css";
+  isRouteErrorResponse,
+  useRouteError,
+} from "react-router";
+import remixImageStyles from "remix-image/remix-image.css?url";
 
 import {
   getIndexTitleText,
@@ -40,7 +37,6 @@ import tailwindStylesheetUrl from "./styles/tailwind.css";
 import { ClientStyleContext, ServerStyleContext } from "./context"
 import styles from "./styles/global.css";
 import structuredData from './structured_data';
-import ScrollRestoration from './ConditionalScrollRestoration';
 
 export let links: LinksFunction = () => {
   return [
@@ -70,70 +66,39 @@ export let links: LinksFunction = () => {
   ]
 }
 
-export async function loader({ request }: LoaderArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   try {
     const gaSessionID = await storeDailySession();
-    return json({
+    return {
       env,
       gaSessionID,
-    });
+    };
   } catch (e: any) {
     console.log('TODO: failed to store session id to redis', e)
+    return {
+      env,
+      gaSessionID: null,
+    };
   }
 }
 
-export let meta: V2_MetaFunction<typeof loader> = () => {
+export const meta: MetaFunction = () => {
   return [
-    {
-      tagName: 'meta',
-      charSet: 'utf-8',
-    },
-    {
-      title: getIndexTitleText(),
-    },
-    {
-      tagName: 'meta',
-      name: 'description',
-      content: getIndexDescText(),
-    },
-    {
-      tagName: 'meta',
-      httpEquiv: 'content-type',
-      content: 'text/html; charset=UTF-8',
-    },
+    { charSet: 'utf-8' },
+    { title: getIndexTitleText() },
+    { name: 'description', content: getIndexDescText() },
+    { httpEquiv: 'content-type', content: 'text/html; charset=UTF-8' },
 
     // Facebook meta
     ...getRootFBSEO_V2(),
 
     // Disallow robot crawling in dev / staging environment
-    isDev({
-      tagName: 'meta',
-      name: 'robots',
-      content: 'noindex,nofollow',
-    }),
+    ...(env.NODE_ENV === 'development' ? [{ name: 'robots', content: 'noindex,nofollow' }] : []),
+    ...(env.NODE_ENV === 'staging' ? [{ name: 'robots', content: 'noindex,nofollow' }] : []),
+    ...(env.NODE_ENV === 'production' ? [{ name: 'robots', content: 'index,follow' }] : []),
 
-    isStaging({
-      tagName: 'meta',
-      name: 'robots',
-      content: 'noindex,nofollow',
-    }),
-
-    isProd({
-      tagName: 'meta',
-      name: 'robots',
-      content: 'index,follow',
-    }),
-
-    {
-      tagName: 'meta',
-      name: 'msapplicationTileColor',
-      content: 'da532c',
-    },
-    {
-      tagName: 'meta',
-      name: 'themeColor',
-      content: '#ffffff',
-    },
+    { name: 'msapplicationTileColor', content: 'da532c' },
+    { name: 'themeColor', content: '#ffffff' },
     { 'script:ld+json': structuredData() }
   ];
 };
@@ -181,7 +146,6 @@ const Document = withEmotionCache(
       <html lang="en">
         <head>
           <Meta />
-          <DynamicLinks />
           <Links />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
           <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
@@ -201,11 +165,11 @@ const Document = withEmotionCache(
           {/* <!-- Google Tag Manager (noscript) --> */}
           <noscript>
             {
-              envs && envs.GOOGLE_TAG_ID
+              env && env.GOOGLE_TAG_ID
                 ? (
                   <iframe
                     title='Google Tag Manager'
-                    src={`https://www.googletagmanager.com/ns.html?id=${envs.GOOGLE_TAG_ID}`}
+                    src={`https://www.googletagmanager.com/ns.html?id=${env.GOOGLE_TAG_ID}`}
                     height="0"
                     width="0"
                     style={{ display: 'none', visibility: 'hidden' }}
@@ -218,7 +182,7 @@ const Document = withEmotionCache(
           <script
             dangerouslySetInnerHTML={{
               __html: `
-                window.ENV=${JSON.stringify(envs)}
+                window.ENV=${JSON.stringify(env)}
               `
             }}
           />
@@ -226,34 +190,33 @@ const Document = withEmotionCache(
             {children}
           </ChakraProvider>
 
-          <ClientOnly fallback={null}>
-            {() => <ScrollRestoration />}
-          </ClientOnly>
-
+          <ScrollRestoration />
           <Scripts />
-
-          {process.env.NODE_ENV === "development" && <LiveReload />}
         </body>
       </html>
     );
   }
 );
 
-export function CatchBoundary() {
-  return (
-    <Document>
-      <Layout>
-        <FourOhFour />
-      </Layout>
-    </Document>
-  );
-};
+export function ErrorBoundary() {
+  const error = useRouteError();
 
-export function ErrorBoundary({ error }: { error: Error }) {
+  if (isRouteErrorResponse(error)) {
+    // Handle 404 and other route errors
+    return (
+      <Document>
+        <Layout>
+          <FourOhFour />
+        </Layout>
+      </Document>
+    );
+  }
+
+  // Handle runtime errors
   return (
     <Document>
       <Layout>
-        <FiveHundredError error={error} />
+        <FiveHundredError error={error instanceof Error ? error : new Error('Unknown error')} />
       </Layout>
     </Document>
   );
