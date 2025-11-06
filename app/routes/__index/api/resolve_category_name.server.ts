@@ -9,7 +9,7 @@
 
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 export const resolveCategoryName = async (categoryName: string): Promise<string> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);

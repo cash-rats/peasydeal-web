@@ -15,7 +15,7 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Image, { MimeType } from "remix-image"
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 interface CarouselMinimalImage {
   title: string;
   url: string;

@@ -9,7 +9,7 @@ import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 import {
   getCheckoutTitleText

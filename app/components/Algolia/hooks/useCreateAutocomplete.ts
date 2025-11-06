@@ -13,7 +13,7 @@ import type {
 } from 'react';
 import insightsClient from 'search-insights';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 import type { AutocompleteItem } from '~/components/Algolia/types';
 
 import reducer, { setAutoCompleteState } from '../reducer';

@@ -3,7 +3,7 @@ import { createSessionStorage } from '@remix-run/node';
 import crypto from "crypto";
 
 import { ioredis as redis } from '~/redis.server';
-import { envs } from '~/utils/get_env_source'
+import { envs } from '~/utils/env'
 
 function genRandomID(): string {
   const randomBytes = crypto.randomBytes(8);

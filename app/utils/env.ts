@@ -1,0 +1,118 @@
+import { z } from 'zod';
+
+/**
+ * Environment variable schema with validation and default values
+ */
+const envSchema = z.object({
+  // Core configuration
+  NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+  DOMAIN: z.string().default('https://staging.peasydeal.com'),
+
+  // API Endpoints
+  MYFB_ENDPOINT: z.string().default(''),
+  PEASY_DEAL_ENDPOINT: z.string().default('https://stagingapi.peasydeal.com'),
+
+  // CDN
+  CDN_URL: z.string().default('https://cdn.peasydeal.com'),
+
+  // Redis (required for server)
+  REDIS_HOST: z.string(),
+  REDIS_USER: z.string(),
+  REDIS_PASSWORD: z.string(),
+  REDIS_PORT: z.string().transform((val: string) => Number(val) || 6379).default(6379),
+  REDIS_DB: z.string().transform((val: string) => Number(val) || 0).default(0),
+  REDIS_SESSION_TTL: z.string().transform((val: string) => Number(val) || 295200).default(295200),
+
+  // Caching
+  CATEGORY_CACHE_TTL: z.string().transform((val: string) => Number(val) || 43200).default(43200),
+
+  // Payment - PayPal
+  PAYPAL_CLIENT_ID: z.string().optional(),
+  PAYPAL_CURRENCY_CODE: z.string().optional(),
+
+  // Payment - Stripe
+  STRIPE_PUBLIC_KEY: z.string().optional(),
+  STRIPE_PAYMENT_RETURN_URI: z.string().optional(),
+  STRIPE_CURRENCY_CODE: z.string().default('GBP'),
+
+  // Google Services
+  GOOGLE_MAP_API_KEY: z.string().default(''),
+  GOOGLE_TAG_ID: z.string().optional(),
+
+  // Contentful CMS
+  CONTENTFUL_SPACE_ID: z.string().optional(),
+  CONTENTFUL_ACCESS_TOKEN: z.string().optional(),
+
+  // Analytics
+  RUDDER_STACK_KEY: z.string().default(''),
+  RUDDER_STACK_URL: z.string().default(''),
+
+  // Algolia Search
+  ALGOLIA_APP_ID: z.string().default(''),
+  ALGOLIA_APP_WRITE_KEY: z.string().default(''),
+  ALGOLIA_INDEX_NAME: z.string().default(''),
+
+  // Google Cloud Storage
+  GCS_KEY_NAME: z.string().default('peasydeal-master-key.json'),
+  GCS_BUCKET_NAME: z.string().default('GCS_BUCKET_NAME'),
+
+  // Cloudflare R2
+  R2_ACCOUNT_ID: z.string().default(''),
+  R2_ACCESS_KEY_ID: z.string().default(''),
+  R2_SECRET_ACCESS_KEY: z.string().default(''),
+  R2_BUCKET_NAME: z.string().default(''),
+});
+
+// Infer the TypeScript type from the Zod schema
+export type Env = z.infer<typeof envSchema>;
+
+/**
+ * Load and validate environment variables
+ *
+ * @returns Validated environment object or throws if validation fails
+ */
+export function getEnv(): Env {
+  const result = envSchema.safeParse(process.env);
+
+  if (!result.success) {
+    console.error('❌ Environment validation failed:');
+    result.error.issues.forEach(issue => {
+      console.error(`  • ${issue.path.join('.')}: ${issue.message}`);
+    });
+    throw new Error('Environment validation failed');
+  }
+
+  const envData = result.data;
+  const missingVars: string[] = [];
+
+  // Check each environment variable for empty strings (optional fields)
+  Object.entries(envData).forEach(([key, value]) => {
+    if (typeof value === 'string' && value.trim() === '' && !key.startsWith('RUDDER') && !key.startsWith('GOOGLE_MAP')) {
+      // Only warn for truly critical missing vars, not optional ones with empty defaults
+      const criticalVars = ['MYFB_ENDPOINT'];
+      if (criticalVars.includes(key)) {
+        missingVars.push(key);
+      }
+    }
+  });
+
+  if (missingVars.length > 0) {
+    console.error('⚠️  Warning: Some environment variables are empty:');
+    missingVars.forEach(varName => {
+      console.error(`  • ${varName}: is empty`);
+    });
+    console.error('⚠️  Application will continue with default empty values');
+  }
+
+  return envData;
+}
+
+export const env = getEnv();
+
+// Helper functions for environment checking
+export const isStaging = env.NODE_ENV === 'staging';
+export const isDev = env.NODE_ENV === 'development';
+export const isProd = env.NODE_ENV === 'production';
+
+// Legacy compatibility exports
+export const envs = env;

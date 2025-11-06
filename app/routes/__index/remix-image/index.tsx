@@ -3,7 +3,7 @@ import { imageLoader, MemoryCache } from 'remix-image/server';
 import type { LoaderConfig } from 'remix-image';
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 import transformer from './transformer';
 import { imageResponse, badImageResponse } from './response'

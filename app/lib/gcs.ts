@@ -2,7 +2,7 @@ import stream from 'stream';
 import type { Bucket } from '@google-cloud/storage';
 import path from 'path';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 interface IStreamFileUpload {
   (

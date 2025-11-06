@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import type { ApiErrorResponse } from '~/shared/types';
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 import type { TrackOrder } from './types';
 

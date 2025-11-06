@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 import type { Product, ApiErrorResponse, TContentfulPost } from '~/shared/types';
 import type { ActivityBanner } from '../types';

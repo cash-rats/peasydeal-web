@@ -1,6 +1,6 @@
 import Image, { MimeType } from 'remix-image';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 interface HitThumbnailImage {
   url: string;

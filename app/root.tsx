@@ -27,7 +27,7 @@ import {
   getIndexDescText,
   getRootFBSEO_V2,
 } from '~/utils/seo'
-import { envs, isProd, isStaging, isDev } from '~/utils/get_env_source';
+import { env, isProd, isStaging, isDev } from '~/utils/env';
 import { storeDailySession } from '~/services/daily_session.server';
 import { storeSessionIDToSessionStore } from '~/services/daily_session';
 
@@ -74,7 +74,7 @@ export async function loader({ request }: LoaderArgs) {
   try {
     const gaSessionID = await storeDailySession();
     return json({
-      envs,
+      env,
       gaSessionID,
     });
   } catch (e: any) {
@@ -146,7 +146,7 @@ const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
     const serverStyleData = useContext(ServerStyleContext)
     const clientStyleData = useContext(ClientStyleContext);
-    const { envs, gaSessionID } = useLoaderData() || {};
+    const { env: envData, gaSessionID } = useLoaderData() || {};
 
     // Only executed on client
     useEnhancedEffect(() => {
@@ -167,14 +167,14 @@ const Document = withEmotionCache(
     }, []);
 
     useGTMScript({
-      env: envs?.NODE_ENV,
-      googleTagID: envs?.GOOGLE_TAG_ID,
+      env: envData?.NODE_ENV,
+      googleTagID: envData?.GOOGLE_TAG_ID,
     });
 
     useRudderStackScript({
-      env: envs?.NODE_ENV,
-      rudderStackKey: envs?.RUDDER_STACK_KEY,
-      rudderStackUrl: envs?.RUDDER_STACK_URL,
+      env: envData?.NODE_ENV,
+      rudderStackKey: envData?.RUDDER_STACK_KEY,
+      rudderStackUrl: envData?.RUDDER_STACK_URL,
     });
 
     return (

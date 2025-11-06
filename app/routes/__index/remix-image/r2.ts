@@ -1,5 +1,5 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 let s3Client: S3Client | null | undefined = undefined;
 

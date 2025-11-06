@@ -1,6 +1,6 @@
 import type { V2_ServerRuntimeMetaDescriptor } from '@remix-run/server-runtime';
 
-import getEnvSource from '~/utils/get_env_source';
+import getEnvSource from '~/utils/env';
 import { getLogoURL } from '~/utils';
 // import { round10 } from '~/utils/preciseRound';
 

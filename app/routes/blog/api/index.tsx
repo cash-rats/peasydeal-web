@@ -1,4 +1,4 @@
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 import type { TContentfulPost, IBlogStaticProps } from '~/shared/types';
 import * as contentful from 'contentful';

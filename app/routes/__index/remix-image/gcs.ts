@@ -3,7 +3,7 @@ import { Storage } from '@google-cloud/storage';
 import type { Bucket } from '@google-cloud/storage';
 import path from 'path';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 const GCS_KEY_NAME = 'peasydeal-master-key.json';
 const GCS_BUCKET_NAME = 'peasydeal2';

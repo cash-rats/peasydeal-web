@@ -23,7 +23,7 @@ import type {
   ITag,
 } from './utils';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 
 import { Button } from '@chakra-ui/react'

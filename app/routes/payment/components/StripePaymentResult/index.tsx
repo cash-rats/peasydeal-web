@@ -3,7 +3,7 @@ import type { Stripe, StripeElementsOptions } from '@stripe/stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 
-import { envs } from '~/utils/get_env_source'
+import { envs } from '~/utils/env'
 
 import PaymentResultLoader from './components/StripePaymentResultLoader';
 

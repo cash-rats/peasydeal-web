@@ -1,7 +1,7 @@
 import { useMatches } from "@remix-run/react";
 import { useMemo } from "react";
 
-import getEnvSource from '~/utils/get_env_source';
+import getEnvSource from '~/utils/env';
 
 const DEFAULT_REDIRECT = "/";
 

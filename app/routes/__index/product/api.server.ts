@@ -1,7 +1,7 @@
 
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 import type { ApiErrorResponse } from '~/shared/types';
 
 import type { ProductDetail } from './types';

@@ -15,7 +15,7 @@ import type { ImageListType } from 'react-images-uploading';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { RxCross1 } from 'react-icons/rx';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 import type { FormError } from '../types';
 import { maskName } from '../../../../../utils';

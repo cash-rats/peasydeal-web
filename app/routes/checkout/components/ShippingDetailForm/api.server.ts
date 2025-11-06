@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 export type AddressParts = 'line1' | 'line2' | 'city' | 'county' | 'country';
 
