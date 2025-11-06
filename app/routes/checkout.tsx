@@ -10,11 +10,7 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import httpStatus from 'http-status-codes';
 
 import { envs } from '~/utils/env';
-
-import {
-  getCheckoutTitleText
-} from '~/utils/seo';
-
+import { getCheckoutTitleText } from '~/utils/seo';
 import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
