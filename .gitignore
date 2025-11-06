@@ -26,3 +26,7 @@ app/playground/*
 peasydeal-master-key.json
 public/robots.txt
 .vercel
+
+# React Router 7
+.react-router/
+.env.local
