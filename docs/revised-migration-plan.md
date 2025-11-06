@@ -757,7 +757,68 @@ startTransition(() => {
 
 ---
 
-### Day 4: Automated Import Updates
+### ✅ Day 3 COMPLETED (Step 3)
+
+**Summary of Changes:**
+
+✅ **Core App Files Migrated:**
+- `app/root.tsx` - Migrated to React Router 7 with new error boundary API
+  - Updated all imports from `@remix-run` to `react-router`
+  - Changed `LoaderArgs` → `Route.LoaderArgs`
+  - Changed `V2_MetaFunction` → `MetaFunction`
+  - Removed `json()` wrapper (plain object return)
+  - Updated meta function format (no `tagName` wrappers)
+  - Removed `DynamicLinks` (remix-utils)
+  - Removed `ClientOnly` wrapper
+  - Removed `LiveReload`
+  - Replaced `CatchBoundary` with unified `ErrorBoundary` using `useRouteError()`
+  - Integrated centralized `env` from `~/utils/env`
+
+- `app/entry.server.tsx` - Migrated to ServerRouter
+  - Changed `RemixServer` → `ServerRouter`
+  - Changed `remixContext` → `entryContext`
+  - Updated imports to `react-router`
+  - Maintained MUI/Emotion SSR integration
+
+- `app/entry.client.tsx` - Migrated to HydratedRouter
+  - Changed `RemixBrowser` → `HydratedRouter`
+  - Updated imports to `react-router/dom`
+  - Maintained MUI/Emotion client integration
+
+- `app/session.server.ts` - Updated to use React Router and env.ts
+  - Updated imports to `react-router`
+  - Added `SESSION_SECRET` to env schema
+  - Using centralized `env.SESSION_SECRET`
+
+✅ **Documentation Updated:**
+- Migration plan now reflects centralized `env.ts` approach throughout
+
+⚠️ **Known Issues Found:**
+
+❌ **Build Blocker**: Server-only module import
+- File: `app/routes/checkout.tsx`
+- Issue: Imports `~/services/stripe.server` at module level
+- Error: `[commonjs--resolver] Server-only module referenced by client`
+- Fix needed: Move server imports to loader/action only
+
+⚠️ **Route ID Collisions** (warnings, non-blocking):
+- `__index.tsx` vs `__index/index.tsx`
+- `cart.tsx` vs `cart/index.tsx`
+- `checkout.tsx` vs `checkout/index.tsx`
+- Several other routes with duplicate naming
+
+📝 **Remaining Migration Work:**
+- 168 route files still using `@remix-run` imports
+- 13 files still using `remix-utils` imports
+- All route loaders/actions need type updates
+
+**Next Step**: Day 4 - Fix server-only imports, then automated route migration
+
+**Checkpoint**: ✓ Core framework migration complete, build blocked by server-only import issue
+
+---
+
+### Day 4: Fix Server-Only Imports & Automated Import Updates
 
 **Step 4.1: Create import update script**
 
