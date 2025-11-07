@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(node --input-type=module -e:*)",
+      "Bash(node -e:*)",
+      "Bash(npm view:*)",
+      "WebSearch",
+      "WebFetch(domain:www.algolia.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

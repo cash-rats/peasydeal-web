@@ -1,7 +1,5 @@
-import { json } from "@remix-run/node";
-import type { LoaderFunction, LinksFunction } from "@remix-run/node";
-import { useLoaderData, useCatch } from "react-router";
-import type { DynamicLinksFunction } from 'remix-utils';
+import type { LoaderFunction, LinksFunction } from "react-router";
+import { useLoaderData, useRouteError, isRouteErrorResponse } from "react-router";
 import { trackWindowScroll } from 'react-lazy-load-image-component';
 import type { LazyComponentProps } from 'react-lazy-load-image-component';
 import httpStatus from 'http-status-codes';
@@ -32,19 +30,13 @@ export const links: LinksFunction = () => {
   return [
     ...AllTimeCouponLink(),
     ...PromoCarouselLink(),
-  ];
-};
-
-const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
-  return [
-    // Google meta tags
+    // Canonical link
     {
       rel: 'canonical',
       href: getCanonicalDomain(),
     },
   ];
-}
-export const handle = { dynamicLinks }
+};
 
 export const loader: LoaderFunction = async ({ request }) => {
   try {
@@ -62,27 +54,36 @@ export const loader: LoaderFunction = async ({ request }) => {
       ],
     });
 
-    return json<LoaderDataType>({
+    return Response.json({
       categoryPreviews: landings.categoryPreviews,
       promotionPreviews: landings.promotionPreviews,
       promotions: landings.promotions,
       userAgent: userAgent || '',
     });
   } catch (e) {
-    throw json(e, {
+    throw Response.json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
 };
 
 
-export const CatchBoundary = () => {
-  const caught = useCatch();
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <FiveHundredError
+        error={new Error(error.statusText || 'Route Error')}
+        statusCode={error.status}
+      />
+    );
+  }
 
   return (
     <FiveHundredError
-      message={caught.data}
-      statusCode={caught.status}
+      error={error instanceof Error ? error : new Error('Unknown error')}
+      statusCode={500}
     />
   );
 }

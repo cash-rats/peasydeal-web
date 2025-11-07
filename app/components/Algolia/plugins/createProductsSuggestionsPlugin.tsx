@@ -1,5 +1,5 @@
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
-import type { SearchClient } from 'algoliasearch/lite';
+import type { SearchClient } from 'algoliasearch';
 import type { RecentSearchesPluginData } from '@algolia/autocomplete-plugin-recent-searches';
 import type { AutocompletePlugin } from '@algolia/autocomplete-core';
 

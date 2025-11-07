@@ -1,7 +1,6 @@
-import pkg from '@algolia/autocomplete-js';
-const { getAlgoliaFacets } = pkg;
+import { getAlgoliaFacets } from '@algolia/autocomplete-preset-algolia';
 import type { AutocompletePlugin } from '@algolia/autocomplete-js';
-import type { SearchClient } from 'algoliasearch/lite';
+import type { SearchClient } from 'algoliasearch';
 
 import type { CategoryRecord } from '../types';
 
@@ -12,6 +11,7 @@ type CreateCategoriesPluginProps = {
 export function createCategoriesPlugin({
   searchClient,
 }: CreateCategoriesPluginProps): AutocompletePlugin<CategoryRecord, undefined> {
+
   return {
     getSources({ query }) {
       return [
@@ -31,6 +31,11 @@ export function createCategoriesPlugin({
                 },
               ],
             });
+          },
+          templates: {
+            item({ item }) {
+              return item.label;
+            },
           },
         },
       ];
