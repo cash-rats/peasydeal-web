@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import Skeleton from '@mui/material/Skeleton';
 
 import { composeProductDetailURL } from '~/utils';

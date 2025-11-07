@@ -1,12 +1,12 @@
 import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import { useCallback, useRef, useState, useEffect, useReducer } from "react";
 import type { ChangeEvent } from 'react';
-import { useFetcher } from '@remix-run/react'
+import { useFetcher } from 'react-router'
 import CountDown, { links as CountDownLinks } from "./components/countdown/CountDown";
 import { trackWindowScroll, LazyLoadComponent } from "react-lazy-load-image-component";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 import Image, { MimeType } from "remix-image"
-import { Link, } from '@remix-run/react';
+import { Link, } from 'react-router';
 import { Button } from '@chakra-ui/react'
 
 import SubscribeModal from '~/components/EmailSubscribeModal';

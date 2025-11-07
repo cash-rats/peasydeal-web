@@ -1,5 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { TextField, } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import { AiOutlineArrowRight } from 'react-icons/ai';

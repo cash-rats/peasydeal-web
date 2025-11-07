@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useFetcher, Link } from '@remix-run/react';
+import { useFetcher, Link } from 'react-router';
 
 import { IconButton, Button } from '@chakra-ui/react';
 import { VscChevronLeft, VscChevronRight, VscArrowRight } from 'react-icons/vsc';

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/dist/theme.min.css';
-import { useSubmit } from '@remix-run/react';
+import { useSubmit } from 'react-router';
 import type { OnSubmitParams } from '@algolia/autocomplete-core';
 
 import { searchClient } from '~/components/Algolia';

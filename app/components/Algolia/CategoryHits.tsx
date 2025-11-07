@@ -1,7 +1,7 @@
 import type { MouseEvent, KeyboardEvent, BaseSyntheticEvent } from 'react';
 import type { AutocompleteApi, InternalAutocompleteSource } from '@algolia/autocomplete-core'
 import { BsBox } from 'react-icons/bs';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 
 import type { CategoryRecord } from '~/components/Algolia/types';
 

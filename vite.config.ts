@@ -23,4 +23,16 @@ export default defineConfig({
       '@mui/material',
     ],
   },
+  ssr: {
+    noExternal: [
+      '@emotion/cache',
+      '@emotion/react',
+      '@emotion/server',
+      '@emotion/styled',
+      '@emotion/memoize',
+      '@emotion/weak-memoize',
+      '@emotion/sheet',
+      '@emotion/utils',
+    ],
+  },
 });

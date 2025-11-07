@@ -1,4 +1,4 @@
-import { useFetcher } from '@remix-run/react';
+import { useFetcher } from 'react-router';
 import { useEffect, useCallback, useState } from 'react';
 
 import { type ApplyPromoCodeActionType } from '../types';

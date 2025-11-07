@@ -11,7 +11,7 @@ import {
   useLoaderData,
   NavLink,
   Link,
-} from '@remix-run/react';
+} from 'react-router';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 import { trackWindowScroll } from "react-lazy-load-image-component";

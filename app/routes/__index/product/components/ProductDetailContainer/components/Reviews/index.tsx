@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { json } from '@remix-run/node';
 import type { ActionFunction } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher } from 'react-router';
 
 import Review from './components/Review';
 import ReviewSkeleton from './components/ReviewSkeleton';

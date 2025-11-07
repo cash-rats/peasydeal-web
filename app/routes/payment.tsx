@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, useLoaderData } from '@remix-run/react';
+import { Outlet, useLoaderData } from 'react-router';
 import { json } from '@remix-run/node'
 import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';

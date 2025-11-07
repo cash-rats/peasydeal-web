@@ -3,7 +3,7 @@
 import type { TCategoryPreview } from "~/shared/types";
 import { Button } from '@chakra-ui/react';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { VscArrowRight } from "react-icons/vsc";
 import { ProductRow } from "~/components/ProductRow";
 

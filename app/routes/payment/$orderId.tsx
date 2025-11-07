@@ -1,6 +1,6 @@
 import type { LoaderFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData } from 'react-router';
 
 import type { PaymentMethod } from '~/shared/types';
 import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';

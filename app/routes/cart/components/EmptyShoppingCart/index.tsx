@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import Button from '@mui/material/Button';
 
 import emptyCartSVG from './images/empty_cart.svg';

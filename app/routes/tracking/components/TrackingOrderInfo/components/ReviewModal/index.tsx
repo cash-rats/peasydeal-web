@@ -12,7 +12,7 @@ import { useImmerReducer } from 'use-immer';
 import styles from '@smastrom/react-rating/style.css';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import type { ImageListType } from 'react-images-uploading';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher } from 'react-router';
 
 import type { FormError } from './types';
 import ReviewForm from './components/ReviewForm';

@@ -1,7 +1,7 @@
 import { useReducer, useRef, useEffect } from 'react';
 import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useLoaderData, useFetcher, useParams, NavLink, useNavigation } from '@remix-run/react';
+import { useLoaderData, useFetcher, useParams, NavLink, useNavigation } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";

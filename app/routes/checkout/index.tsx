@@ -2,7 +2,7 @@ import { useEffect, useRef, useReducer } from 'react';
 import type { FormEvent } from 'react';
 import type { LoaderFunction, LinksFunction, ActionFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData } from 'react-router';
 import Alert from '@mui/material/Alert';
 import { Spinner } from '@chakra-ui/react'
 import type { PaymentMethod } from '~/shared/types';

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import type { LinksFunction } from '@remix-run/node';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
 import { BsTrash } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';

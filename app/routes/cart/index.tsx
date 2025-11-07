@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher, useCatch } from '@remix-run/react';
-import type { ShouldRevalidateFunction } from "@remix-run/react";
+import { useLoaderData, useFetcher, useCatch } from 'react-router';
+import type { ShouldRevalidateFunction } from "react-router";
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';

@@ -7,7 +7,7 @@
 import { useState, useEffect } from 'react';
 import type { ActionFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher } from 'react-router';
 
 import type { Product, SuggestItem } from '~/shared/types';
 

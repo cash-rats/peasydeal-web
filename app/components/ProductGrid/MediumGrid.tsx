@@ -1,5 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
-import { Link, Form } from '@remix-run/react';
+import { Link, Form } from 'react-router';
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 

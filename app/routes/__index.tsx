@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { json } from "@remix-run/node";
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
+import type { LinksFunction, LoaderFunction } from "react-router";
 import {
-	Outlet,
-	useLoaderData,
-	useOutletContext,
-} from "@remix-run/react";
+  Outlet,
+  useLoaderData,
+  useOutletContext,
+} from "react-router";
 import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
@@ -24,90 +23,90 @@ import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.ser
 // import type { SuggestItem } from '~/shared/types';
 
 type LoaderType = {
-	categories: Category[];
-	navBarCategories: Category[];
+  categories: Category[];
+  navBarCategories: Category[];
 };
 
 export const links: LinksFunction = () => {
-	return [
-		...FooterLinks(),
-		...HeaderLinks(),
-		...CategoriesNavLinks(),
-		...DropDownSearchBarLinks(),
-	];
+  return [
+    ...FooterLinks(),
+    ...HeaderLinks(),
+    ...CategoriesNavLinks(),
+    ...DropDownSearchBarLinks(),
+  ];
 };
 
 type ContextType = {
-	categories: Category[],
-	navBarCategories: Category[]
+  categories: Category[],
+  navBarCategories: Category[]
 };
 
 
 export const loader: LoaderFunction = async ({ request }) => {
-	try {
-		const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-		return json<LoaderType>({
-			categories,
-			navBarCategories,
-		});
-	} catch (e) {
-		throw json(e, {
-			status: httpStatus.INTERNAL_SERVER_ERROR,
-		});
-	}
+  try {
+    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
+    return Response.json({
+      categories,
+      navBarCategories,
+    });
+  } catch (e) {
+    throw Response.json(e, {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    });
+  }
 };
 
 export default function Index() {
-	const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
-	const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
+  const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
+  const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
-	const handleOpen = () => setOpenSearchDialog(true);
-	const handleClose = () => setOpenSearchDialog(false);
+  const handleOpen = () => setOpenSearchDialog(true);
+  const handleClose = () => setOpenSearchDialog(false);
 
-	return (
-		<>
-			{/* sharethis popup for news letter subscription */}
-			{/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
-			<div className="bg-white w-full">
-				<MobileSearchDialog
-					onBack={handleClose}
-					isOpen={openSearchDialog}
-				/>
+  return (
+    <>
+      {/* sharethis popup for news letter subscription */}
+      {/* <div className="powr-popup" id="sharethis-popup-635bb7bc9c9fa7001910fbe2"></div> */}
+      <div className="bg-white w-full">
+        <MobileSearchDialog
+          onBack={handleClose}
+          isOpen={openSearchDialog}
+        />
 
-				<Header
-					categories={categories}
-					categoriesBar={
-						<CategoriesNav
-							categories={categories}
-							topCategories={navBarCategories}
-						/>
-					}
+        <Header
+          categories={categories}
+          categoriesBar={
+            <CategoriesNav
+              categories={categories}
+              topCategories={navBarCategories}
+            />
+          }
 
-					mobileSearchBar={
-						<SearchBar
-							placeholder='Search keywords...'
-							onClick={handleOpen}
-							onTouchEnd={handleOpen}
-						/>
-					}
+          mobileSearchBar={
+            <SearchBar
+              placeholder='Search keywords...'
+              onClick={handleOpen}
+              onTouchEnd={handleOpen}
+            />
+          }
 
-					searchBar={<DropDownSearchBar />}
-				/>
+          searchBar={<DropDownSearchBar />}
+        />
 
-				<main className="min-h-[35rem]">
-					<Outlet
-						context={{
-							categories: categories ? categories.concat(navBarCategories) : []
-						}}
-					/>
-				</main>
+        <main className="min-h-[35rem]">
+          <Outlet
+            context={{
+              categories: categories ? categories.concat(navBarCategories) : []
+            }}
+          />
+        </main>
 
-				<Footer categories={categories} />
-			</div>
-		</>
-	);
+        <Footer categories={categories} />
+      </div>
+    </>
+  );
 }
 
 export function useContext() {
-	return useOutletContext<ContextType>();
+  return useOutletContext<ContextType>();
 };

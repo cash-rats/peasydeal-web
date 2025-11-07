@@ -4,7 +4,7 @@
  */
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { useState, useMemo } from 'react';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import type { LinksFunction } from '@remix-run/node';
 import { LazyLoadComponent } from "react-lazy-load-image-component";
 import Image, { MimeType } from "remix-image"

@@ -10,7 +10,7 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
-import { useNavigation, useSubmit } from '@remix-run/react';
+import { useNavigation, useSubmit } from 'react-router';
 
 import {
   createProductsSuggestionsPlugin,

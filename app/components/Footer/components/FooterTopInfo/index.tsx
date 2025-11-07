@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { FiMail } from 'react-icons/fi';
 import { MdOutlineLocalShipping } from 'react-icons/md';
 import { Button } from '@chakra-ui/react'

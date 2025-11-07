@@ -1,6 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 import { useEffect } from 'react';
-import { useNavigation } from '@remix-run/react';
+import { useNavigation } from 'react-router';
 import NProgress from 'nprogress';
 import nprogressStyles from 'nprogress/nprogress.css';
 

@@ -11,7 +11,7 @@ import { createMemoryHistory } from "history";
 import { RemixEntry } from "@remix-run/react/dist/components";
 
 import type { MemoryHistory, Update } from "history";
-import type { ShouldReloadFunction } from "@remix-run/react";
+import type { ShouldReloadFunction } from "react-router";
 import type {
   ErrorBoundaryComponent,
   LinksFunction,

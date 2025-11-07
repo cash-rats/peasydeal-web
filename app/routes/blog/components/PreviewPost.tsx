@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { Badge } from '@chakra-ui/react'
 
 const PreviewPost = ({ post }: { post: any }) => {

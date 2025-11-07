@@ -7,7 +7,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { LinksFunction } from '@remix-run/node';
-import { Form } from '@remix-run/react';
+import { Form } from 'react-router';
 import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';

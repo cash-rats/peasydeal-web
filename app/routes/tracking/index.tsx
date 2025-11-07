@@ -2,7 +2,7 @@ import type { MouseEvent } from 'react';
 import { useState } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction, V2_MetaFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { Form, useLoaderData, useFetcher, useCatch } from '@remix-run/react';
+import { Form, useLoaderData, useFetcher, useCatch } from 'react-router';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
 

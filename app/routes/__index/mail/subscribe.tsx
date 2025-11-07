@@ -1,7 +1,7 @@
 import type { V2_MetaFunction } from '@remix-run/node';
 import { useState, useEffect, useReducer } from "react";
 import type { ChangeEvent } from 'react';
-import { useFetcher } from '@remix-run/react'
+import { useFetcher } from 'react-router'
 import type { TContentfulPost } from '~/shared/types';
 import { getRootFBSEO_V2 } from '~/utils/seo';
 

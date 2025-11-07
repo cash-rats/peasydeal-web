@@ -4,7 +4,7 @@ import { redirect } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";
 import type { LazyComponentProps } from "react-lazy-load-image-component";
-import { useCatch, useLoaderData, useFetcher } from '@remix-run/react';
+import { useCatch, useLoaderData, useFetcher } from 'react-router';
 
 import { PAGE_LIMIT } from '~/shared/constants';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';

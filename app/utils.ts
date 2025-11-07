@@ -1,7 +1,7 @@
-import { useMatches } from "@remix-run/react";
+import { useMatches } from "react-router";
 import { useMemo } from "react";
 
-import getEnvSource from '~/utils/env';
+import { env } from '~/utils/env';
 
 const DEFAULT_REDIRECT = "/";
 
@@ -50,7 +50,7 @@ export function validateEmail(email: unknown): email is string {
 
 export const checkHasMoreRecord = (count: number, divisor: number) => count % divisor === 0;
 
-export const getCanonicalDomain = (): string => getEnvSource()?.DOMAIN || 'https://peasydeal.com';
+export const getCanonicalDomain = (): string => env.DOMAIN || 'https://peasydeal.com';
 export const getLogoURL = () => `${getCanonicalDomain()}/images/peasy_deal_words.png`
 
 /* composeProductDetailURL takes product name and url to compose a product detail url in following format:

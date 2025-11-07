@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { LinksFunction, LoaderFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData } from 'react-router';
 
 import SearchBar from '~/components/SearchBar';
 import FourOhFour from '~/components/FourOhFour';

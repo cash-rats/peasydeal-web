@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback } from 'react';
-import { useFetcher } from '@remix-run/react';
-import type { SubmitOptions } from '@remix-run/react';
+import { useFetcher } from 'react-router';
+import type { SubmitOptions } from 'react-router';
 
 export interface SubmitFunctionWithPromise {
   (

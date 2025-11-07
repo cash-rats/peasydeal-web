@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { RxCounterClockwiseClock as RecentSearch } from 'react-icons/rx';
 import type { MouseEvent, KeyboardEvent, BaseSyntheticEvent } from 'react';
 import type { AutocompleteApi, InternalAutocompleteSource } from '@algolia/autocomplete-core';

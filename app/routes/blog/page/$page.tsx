@@ -1,5 +1,5 @@
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "react-router";
 import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import type { LoaderFunction } from "@remix-run/node";
 import type { DynamicLinksFunction } from 'remix-utils';

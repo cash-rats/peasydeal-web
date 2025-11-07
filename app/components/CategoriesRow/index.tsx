@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { IconButton } from '@chakra-ui/react';
-import { useOutletContext } from "@remix-run/react";
+import { useOutletContext } from "react-router";
 import { VscFlame, VscArrowRight, VscArrowLeft } from 'react-icons/vsc';
 import { IoBody, IoSparklesOutline, IoPricetagsOutline } from 'react-icons/io5';
 import { MdOutlinePets, MdOutlineSmartToy } from 'react-icons/md';

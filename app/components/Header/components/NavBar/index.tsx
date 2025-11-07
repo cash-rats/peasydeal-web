@@ -1,5 +1,5 @@
 import type { LinksFunction } from '@remix-run/node';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { FiShoppingCart } from 'react-icons/fi';
 import { RiTruckLine, RiSearchLine } from 'react-icons/ri';
 import { IoPricetagsOutline } from "react-icons/io5"

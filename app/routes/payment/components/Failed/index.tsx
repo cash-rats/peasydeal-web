@@ -2,7 +2,7 @@
 import Button from '@mui/material/Button';
 import ErrorIcon from '@mui/icons-material/Error';
 import type { PaymentIntent } from '@stripe/stripe-js';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 
 interface FailedProps {
   reason?: string;

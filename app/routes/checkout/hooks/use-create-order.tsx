@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher } from 'react-router';
 import type { ApiErrorResponse, PaymentMethod } from '~/shared/types';
 
 // This hook creates a new PeasyDeal order.

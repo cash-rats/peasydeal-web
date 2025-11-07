@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher } from 'react-router';
 import { json } from '@remix-run/node';
 import type { ActionFunction } from '@remix-run/node';
 import parseISO from 'date-fns/parseISO';

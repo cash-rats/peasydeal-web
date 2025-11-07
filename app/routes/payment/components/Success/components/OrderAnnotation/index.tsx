@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import Button from '@mui/material/Button';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 
 interface OrderAnnotationProps {
   email: string;

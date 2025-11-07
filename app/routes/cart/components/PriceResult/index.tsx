@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { ChangeEvent } from 'react';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { BsBagCheck } from 'react-icons/bs';
 import Skeleton from '@mui/material/Skeleton';
 import { Input, Button } from '@chakra-ui/react'

@@ -1,5 +1,5 @@
 import { useEffect, useState, type MouseEvent } from 'react';
-import { useFetcher } from "@remix-run/react"
+import { useFetcher } from "react-router"
 
 import { setPriceInfo } from '../reducer';
 import {

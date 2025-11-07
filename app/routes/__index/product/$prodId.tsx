@@ -5,7 +5,7 @@ import {
 } from 'react';
 import type { LoaderFunction, ActionFunction, LinksFunction } from '@remix-run/node';
 import { json, redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData } from 'react-router';
 import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
 import { trackWindowScroll } from "react-lazy-load-image-component";

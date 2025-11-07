@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import Skeleton from '@mui/material/Skeleton';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 

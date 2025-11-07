@@ -5,7 +5,7 @@ import format from 'date-fns/format';
 import add from 'date-fns/add';
 import type { ActionFunction, LinksFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { useFetcher, useRevalidator } from '@remix-run/react';
+import { useFetcher, useRevalidator } from 'react-router';
 import { useImmerReducer } from 'use-immer';
 import { FcInfo } from 'react-icons/fc';
 import { BiErrorCircle } from 'react-icons/bi';

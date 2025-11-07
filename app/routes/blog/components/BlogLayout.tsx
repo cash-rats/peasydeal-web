@@ -1,6 +1,6 @@
 import FollowUs from './FollowUs';
 import PreviewPost from './PreviewPost';
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 
 const BlogLayout = ({
   postSummaries,

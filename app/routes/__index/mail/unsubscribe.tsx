@@ -1,8 +1,8 @@
 import type { V2_MetaFunction, LoaderFunction } from '@remix-run/node';
 import { json } from '@remix-run/node';
 import { useState, useEffect } from "react";
-import { useLoaderData } from '@remix-run/react';
-import { useFetcher } from '@remix-run/react'
+import { useLoaderData } from 'react-router';
+import { useFetcher } from 'react-router'
 import { Button } from '@chakra-ui/react'
 
 import type { TContentfulPost } from '~/shared/types';

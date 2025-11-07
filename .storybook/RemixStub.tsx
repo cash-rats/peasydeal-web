@@ -1,4 +1,4 @@
-import { RemixBrowser, Remix } from "@remix-run/react";
+import { RemixBrowser, Remix } from "react-router";
 import React from "react";
 
 // @see https://github.com/remix-run/remix/discussions/2481

@@ -1,7 +1,7 @@
 import { useEffect, useState, forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
-import { useFetcher, useNavigation } from '@remix-run/react';
+import { useFetcher, useNavigation } from 'react-router';
 import { json } from '@remix-run/node';
 import type { ScrollPosition } from 'react-lazy-load-image-component';
 

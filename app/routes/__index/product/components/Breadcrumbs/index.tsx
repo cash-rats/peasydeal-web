@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { NavLink } from '@remix-run/react';
+import { NavLink } from 'react-router';
 import type { LinksFunction } from '@remix-run/node';
 
 import { composeProductDetailURL } from '~/utils';

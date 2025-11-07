@@ -2,7 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import {
   ScrollRestoration,
   useNavigation,
-} from '@remix-run/react';
+} from 'react-router';
 
 export default function ConditionalScrollRestoration() {
   const navigation = useNavigation();

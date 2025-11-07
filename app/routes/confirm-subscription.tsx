@@ -1,6 +1,6 @@
 import type { V2_MetaFunction, LoaderArgs } from "@remix-run/node";
 import { json } from '@remix-run/node';
-import { Link, useLoaderData, useRouteError } from '@remix-run/react';
+import { Link, useLoaderData, useRouteError } from 'react-router';
 import { activateEmailSubscribe } from '~/api';
 import { CheckCircledIcon, CopyIcon, RocketIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
