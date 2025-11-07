@@ -1,4 +1,5 @@
-import { getAlgoliaFacets } from '@algolia/autocomplete-js';
+import pkg from '@algolia/autocomplete-js';
+const { getAlgoliaFacets } = pkg;
 import type { AutocompletePlugin } from '@algolia/autocomplete-js';
 import type { SearchClient } from 'algoliasearch/lite';
 

@@ -1,6 +1,9 @@
-import { useRef, useState } from 'react';
-import type { ReactNode } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import {
+  type ReactNode,
+  useRef,
+  useState,
+} from 'react';
+import type { LinksFunction } from 'react-router';
 
 import type { Category } from '~/shared/types';
 import LogoHeader from "./components/LogoHeader";

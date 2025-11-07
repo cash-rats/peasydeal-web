@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useFetcher, useFetchers } from 'react-router';
-import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
+import {
+  type LinksFunction, LoaderFunction, ActionFunction,
+  redirect
+} from 'react-router';
 
 import Header, { links as HeaderLinks } from '~/components/Header';
 import type { HeaderProps } from '~/components/Header';
@@ -13,17 +15,9 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type LoaderDataType = {
-  numOfItemsInCart: number;
-};
-
-type ActionDataType = {
-  numOfItemsInCart: number;
-}
-
 // Header compoent it's self would submit a GET request to this loader to reload `numOfItemsInCart`
 export const loader: LoaderFunction = async ({ request }) => {
-  return json<LoaderDataType>({ numOfItemsInCart: await getItemCount(request) });
+  return Response.json({ numOfItemsInCart: await getItemCount(request) });
 }
 
 export enum ActionTypes {
@@ -70,7 +64,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 
   const itemCount = await getItemCount(request);
-  return json<ActionDataType>({ numOfItemsInCart: itemCount });
+  return Response.json({ numOfItemsInCart: itemCount });
 }
 
 type HeaderRouteProps = Omit<HeaderProps, 'numOfItemsInCart'>
@@ -82,8 +76,8 @@ function HeaderRoute(props: HeaderRouteProps) {
 
   const reloadCartCountFetcher = fetchers.find(
     (f) =>
-      f.submission?.action.includes('/components/Header') &&
-      f.submission.method === 'POST'
+      f.formAction?.includes('/components/Header') &&
+      f.formMethod === 'POST'
   );
 
   useEffect(() => {
@@ -94,19 +88,24 @@ function HeaderRoute(props: HeaderRouteProps) {
   }, []);
 
   useEffect(() => {
-    if (reloadCartCountFetcher?.type === 'actionReload') {
+    if (
+      reloadCartCountFetcher &&
+      reloadCartCountFetcher.state === 'loading' &&
+      reloadCartCountFetcher.data !== undefined &&
+      reloadCartCountFetcher.formMethod === 'POST'
+    ) {
       fetcher.submit(
         { action_type: ActionTypes.reload_cart_count },
         { action: '/components/Header?index' },
       );
     }
-  }, [reloadCartCountFetcher?.type])
+  }, [reloadCartCountFetcher?.state, reloadCartCountFetcher?.data, reloadCartCountFetcher?.formMethod])
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
+    if (fetcher.state === 'idle' && fetcher.data !== undefined) {
       setNumOfItemsInCart(Number(fetcher.data.numOfItemsInCart));
     }
-  }, [fetcher.type]);
+  }, [fetcher.state, fetcher.data]);
 
   return (
     <Header
