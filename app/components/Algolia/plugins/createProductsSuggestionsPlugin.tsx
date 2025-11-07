@@ -1,5 +1,5 @@
 import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
-import type { SearchClient } from 'algoliasearch';
+import type { SearchClient } from '@algolia/autocomplete-preset-algolia';
 import type { RecentSearchesPluginData } from '@algolia/autocomplete-plugin-recent-searches';
 import type { AutocompletePlugin } from '@algolia/autocomplete-core';
 
@@ -12,7 +12,7 @@ import type {
 
 type ICreateProductsSuggestionsPlugin = {
   searchClient: SearchClient;
-  recentSearchPlugin?: AutocompletePlugin<RecentSearchHit, RecentSearchesPluginData<TItem>>
+  recentSearchPlugin?: AutocompletePlugin<RecentSearchHit, RecentSearchesPluginData<RecentSearchHit>>
 };
 
 const createProductsSuggestionsPlugin = ({

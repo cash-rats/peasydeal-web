@@ -1,6 +1,6 @@
 import { getAlgoliaFacets } from '@algolia/autocomplete-preset-algolia';
 import type { AutocompletePlugin } from '@algolia/autocomplete-js';
-import type { SearchClient } from 'algoliasearch';
+import type { SearchClient } from '@algolia/autocomplete-preset-algolia';
 
 import type { CategoryRecord } from '../types';
 
@@ -24,9 +24,10 @@ export function createCategoriesPlugin({
                 {
                   indexName: 'staging_products',
                   facet: 'categories',
+                  type: 'facet',
                   params: {
-                    facetQuery: query,
-                    maxFacetHits: query ? 3 : 6,
+                    query,
+                    maxValuesPerFacet: query ? 3 : 6,
                   },
                 },
               ],
