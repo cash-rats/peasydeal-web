@@ -1,6 +1,4 @@
 import type { LinksFunction } from '@remix-run/node';
-import type { ScrollPosition } from 'react-lazy-load-image-component';
-
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import type { Product } from '~/shared/types';
@@ -22,9 +20,6 @@ interface ProductRowsContainerProps {
 
   loading?: boolean;
 
-  // Used to improve performance for react-lazy-load-image-component
-  scrollPosition?: ScrollPosition;
-
   // Reacts shopnow button in activity banner.
   onClickShopNow?: (catID: number, catTitle: string) => void;
 
@@ -35,7 +30,6 @@ function ThreeColumns({
   onClickProduct = () => { },
   products = [],
   loading = false,
-  scrollPosition,
 }: ProductRowsContainerProps) {
 
   return (
@@ -55,7 +49,6 @@ function ThreeColumns({
                     key={`product-item-${index}-${product.productUUID}`}
                     loading={loading}
                     product={product}
-                    scrollPosition={scrollPosition}
                     onClickProduct={onClickProduct}
                     displayActionButton={false}
                     noPadding={true}

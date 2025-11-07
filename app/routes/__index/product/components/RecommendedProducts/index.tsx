@@ -3,7 +3,6 @@ import type { ForwardedRef } from 'react';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import { useFetcher, useNavigation } from 'react-router';
 import { json } from '@remix-run/node';
-import type { ScrollPosition } from 'react-lazy-load-image-component';
 
 // Note: we don't need to import "style links" for this component
 // because route `__index/index` already loaded it. If we load it
@@ -44,13 +43,11 @@ export const action: ActionFunction = async ({ request }) => {
 interface RecommendedProductsProps {
   category: string;
   onClickProduct: (title: string, productID: string) => void;
-  scrollPosition?: ScrollPosition;
 }
 
 function RecommendedProducts({
   category,
   onClickProduct,
-  scrollPosition,
 }: RecommendedProductsProps, ref: ForwardedRef<HTMLDivElement>) {
   const fetcher = useFetcher();
   const [rows, setRows] = useState<Product[][]>([]);
@@ -125,7 +122,6 @@ function RecommendedProducts({
               Get The Most Popular Items Today
             </h4>
             <ProductPromotionRow
-              scrollPosition={scrollPosition}
               onClickProduct={onClickProduct}
               products={rows[0]}
             />
@@ -145,7 +141,6 @@ function RecommendedProducts({
             </h3>
             {
               <ProductRowsLayout
-                scrollPosition={scrollPosition}
                 loading={fetcher.type !== 'done'}
                 onClickProduct={onClickProduct}
                 products={rows[1]}

@@ -2,8 +2,6 @@ import { useEffect, useRef, useReducer } from 'react';
 import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import httpStatus from 'http-status-codes';
-import { trackWindowScroll } from "react-lazy-load-image-component";
-import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { useCatch, useLoaderData, useFetcher } from 'react-router';
 
 import { PAGE_LIMIT } from '~/shared/constants';
@@ -89,12 +87,12 @@ export const CatchBoundary = () => {
   )
 }
 
-type TSearch = {} & LazyComponentProps;
+type TSearch = {};
 
 // TODOs:
 //   - Need to add breadcrumbs navigation bar.
 //   - No result page.
-function Search({ scrollPosition }: TSearch) {
+function Search() {
   const loaderData = useLoaderData<SearchProductsDataType>() || {};
   const [state, dispatch] = useReducer(reducer, {
     products: loaderData.products,
@@ -170,7 +168,6 @@ function Search({ scrollPosition }: TSearch) {
         <ProductRowsContainer
           products={state.products}
           onClickProduct={handleClickProduct}
-          scrollPosition={scrollPosition}
         />
       </div>
 
@@ -185,4 +182,4 @@ function Search({ scrollPosition }: TSearch) {
     </div>
   )
 }
-export default trackWindowScroll(Search);
+export default Search;

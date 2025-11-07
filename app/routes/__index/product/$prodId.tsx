@@ -3,14 +3,10 @@ import {
   useRef,
   type ChangeEvent,
 } from 'react';
-import type { LoaderFunction, ActionFunction, LinksFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
-import { useLoaderData } from 'react-router';
-import type { DynamicLinksFunction } from 'remix-utils';
+import type { LoaderFunction, ActionFunction, LinksFunction } from 'react-router';
+import { redirect, useLoaderData } from 'react-router';
+// import type { DynamicLinksFunction } from 'react-router';
 import httpStatus from 'http-status-codes';
-import { trackWindowScroll } from "react-lazy-load-image-component";
-import type { LazyComponentProps } from "react-lazy-load-image-component";
-
 import FourOhFour from '~/components/FourOhFour';
 import { commitSession } from '~/sessions/redis_session';
 import { insertItem } from '~/sessions/shoppingcart.session';
@@ -74,7 +70,7 @@ export const handle = { dynamicLinks };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   if (!params.prodId) {
-    throw json(
+    throw Response.json(
       composErrorResponse('unrecognize product'),
       { status: httpStatus.NOT_FOUND },
     );
@@ -140,7 +136,7 @@ export const action: ActionFunction = async ({ request }) => {
     !item.variationUUID ||
     typeof item.variationUUID === 'undefined'
   ) {
-    return json('',  {status: httpStatus.BAD_REQUEST});
+    return json('', { status: httpStatus.BAD_REQUEST });
   }
 
   const session = await insertItem(request, item);
@@ -157,9 +153,9 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const CatchBoundary = () => (<FourOhFour />);
 
-type ProductDetailProps = {} & LazyComponentProps;
+type ProductDetailProps = {};
 
-function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
+function ProductDetailPage() {
   const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
 
   // TODO: extract state initializer to independent function
@@ -321,20 +317,19 @@ function ProductDetailPage({ scrollPosition }: ProductDetailProps) {
 					- Hot deals
 					- New trend
 			*/}
-        {
-          state.mainCategory
-            ? (
-              <RecommendedProducts
-                ref={recmmendedProdsRef}
-                category={state.mainCategory?.name || ''}
-                onClickProduct={handleClickProduct}
-                scrollPosition={scrollPosition}
-              />
-            )
-            : null
-        }
+      {
+        state.mainCategory
+          ? (
+            <RecommendedProducts
+              ref={recmmendedProdsRef}
+              category={state.mainCategory?.name || ''}
+              onClickProduct={handleClickProduct}
+            />
+          )
+          : null
+      }
     </>
   );
 };
 
-export default trackWindowScroll(ProductDetailPage);
+export default ProductDetailPage;

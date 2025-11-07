@@ -3,8 +3,6 @@ import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/
 import { json } from '@remix-run/node';
 import { useLoaderData, useFetcher, useParams, NavLink, useNavigation } from 'react-router';
 import httpStatus from 'http-status-codes';
-import { trackWindowScroll } from "react-lazy-load-image-component";
-import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
 import type { DynamicLinksFunction } from 'remix-utils'
 
@@ -130,9 +128,9 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 export const CatchBoundary = () => (<FourOhFour />);
 
-type TPromotion = {} & LazyComponentProps;
+type TPromotion = {};
 
-function Promotion({ scrollPosition }: TPromotion) {
+function Promotion() {
   const {
     products,
     total,
@@ -275,7 +273,6 @@ function Promotion({ scrollPosition }: TPromotion) {
         <ProductRowsContainer
           loading={isChangingPromotion}
           products={state.products}
-          scrollPosition={scrollPosition}
         />
 
         <div className='mb-4'>
@@ -291,4 +288,4 @@ function Promotion({ scrollPosition }: TPromotion) {
   )
 }
 
-export default trackWindowScroll(Promotion);
+export default Promotion;

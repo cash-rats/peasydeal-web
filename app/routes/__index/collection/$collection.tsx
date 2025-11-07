@@ -14,8 +14,6 @@ import {
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
-import { trackWindowScroll } from "react-lazy-load-image-component";
-import type { LazyComponentProps } from "react-lazy-load-image-component";
 import { Progress } from '@chakra-ui/react';
 import { VscChevronDown, VscArrowLeft } from "react-icons/vsc";
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
@@ -165,9 +163,9 @@ const getCategoryFromWindowPath = (window: Window): string => {
   return category;
 };
 
-type CollectionProps = {} & LazyComponentProps;
+type CollectionProps = {};
 
-function Collection({ scrollPosition }: CollectionProps) {
+function Collection() {
   const mobileSubCatHalfSheetRef = useRef(null);
   const {
     category,
@@ -454,7 +452,6 @@ function Collection({ scrollPosition }: CollectionProps) {
             */}
             <ThreeColumns
               products={state.products}
-              scrollPosition={scrollPosition}
             />
           </div>
         </div>
@@ -500,4 +497,4 @@ function Collection({ scrollPosition }: CollectionProps) {
   );
 }
 
-export default trackWindowScroll(Collection);
+export default Collection;

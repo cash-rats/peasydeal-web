@@ -1,8 +1,12 @@
 import { useEffect, useMemo } from 'react';
-import { json, redirect } from '@remix-run/node';
-import { useLoaderData, useFetcher, useCatch } from 'react-router';
-import type { ShouldRevalidateFunction } from "react-router";
-import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
+import { redirect } from 'react-router';
+import { useLoaderData, useFetcher, useRouteError, isRouteErrorResponse } from 'react-router';
+import type {
+  LinksFunction,
+  ShouldRevalidateFunction,
+  ActionFunctionArgs,
+  LoaderFunctionArgs
+} from "react-router";
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
 import { commitSession } from '~/sessions/redis_session';
@@ -75,7 +79,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction, formDat
 // TODOs:
 //   - [ ] handle prod_id is falsey value
 //   - [ ] handle session key not exists
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formEntries = Object.fromEntries(form.entries());
   const actionType = formEntries['__action'] as ActionType;
@@ -123,12 +127,12 @@ type LoaderType = {
   priceInfo: PriceInfo | null;
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   // If cart contains no items, display empty cart page via CatchBoundary
   const cart = await getCart(request);
   if (!cart || Object.keys(cart).length === 0) {
     // Reset transaction object if we have an empty cart.
-    throw json(
+    throw Response.json(
       'Shopping cart empty',
       {
         status: httpStatus.NOT_FOUND,
@@ -151,7 +155,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       price_info: sessionStorablePriceInfo,
     })
 
-    return json<LoaderType>({
+    return Response.json({
       cart: syncShoppingCartWithNewProductsInfo(cart, priceInfo.products),
       priceInfo,
     }, {
@@ -160,23 +164,32 @@ export const loader: LoaderFunction = async ({ request }) => {
       }
     });
   } catch (err) {
-    throw json(err, {
+    throw Response.json(err, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
 };
 
-export const CatchBoundary = () => {
-  const caught = useCatch();
+export function ErrorBoundary() {
+  const error = useRouteError();
 
-  if (caught.status === httpStatus.NOT_FOUND) {
-    return (<EmptyShoppingCart />);
+  if (isRouteErrorResponse(error)) {
+    if (error.status === httpStatus.NOT_FOUND) {
+      return (<EmptyShoppingCart />);
+    }
+
+    return (
+      <FiveHundredError
+        error={new Error(error.data)}
+        statusCode={error.status}
+      />
+    );
   }
 
   return (
     <FiveHundredError
-      message={caught.data}
-      statusCode={caught.status}
+      error={error instanceof Error ? error : new Error('Unknown error')}
+      statusCode={httpStatus.INTERNAL_SERVER_ERROR}
     />
   );
 }
@@ -342,11 +355,11 @@ function Cart() {
 
                       const isCalculating = (
                         updateItemQuantityFetcher.state !== 'idle' &&
-                        updateItemQuantityFetcher.submission?.formData.get('variation_uuid') === variationUUID
+                        updateItemQuantityFetcher.formData?.get('variation_uuid') === variationUUID
 
                       ) || (
                           itemRemoveFetcher.state !== 'idle' &&
-                          itemRemoveFetcher.submission?.formData.get('variation_uuid') === variationUUID
+                          itemRemoveFetcher.formData?.get('variation_uuid') === variationUUID
                         );
 
                       return (

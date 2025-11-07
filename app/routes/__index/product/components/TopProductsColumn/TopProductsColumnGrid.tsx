@@ -1,8 +1,7 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import Skeleton from '@mui/material/Skeleton';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
-
+import { LazyImage } from '~/components/LazyImage';
 import { composeProductDetailURL } from '~/utils';
 
 interface TopProductsColumnGridProps {
@@ -27,17 +26,11 @@ export default function TopProductsColumnGrid({ productUUID = '', title = '', im
                   productName: title as string,
                   productUUID,
                 })}>
-                  <LazyLoadImage
+                  <LazyImage
                     src={image}
-                    className="w-[90px] h-[90px]"
                     alt={title as string}
-                    placeholder={
-                      <img
-                        alt={title as string}
-                        src="/images/placeholder.svg"
-                        className="w-[90px] h-[90px]"
-                      />
-                    }
+                    className="w-[90px] h-[90px]"
+                    placeholder="/images/placeholder.svg"
                   />
                 </Link>
               </>

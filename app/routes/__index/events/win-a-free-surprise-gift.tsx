@@ -3,8 +3,7 @@ import { useCallback, useRef, useState, useEffect, useReducer } from "react";
 import type { ChangeEvent } from 'react';
 import { useFetcher } from 'react-router'
 import CountDown, { links as CountDownLinks } from "./components/countdown/CountDown";
-import { trackWindowScroll, LazyLoadComponent } from "react-lazy-load-image-component";
-import type { ScrollPosition } from 'react-lazy-load-image-component';
+import { LazyWrapper } from '~/components/LazyWrapper';
 import Image, { MimeType } from "remix-image"
 import { Link, } from 'react-router';
 import { Button } from '@chakra-ui/react'
@@ -50,7 +49,7 @@ export const meta: V2_MetaFunction = ({ data, params }) => {
   ];
 };
 
-const ItemCard = ({ item, scrollPosition }) => {
+const ItemCard = ({ item }) => {
   const [loaded, setLoaded] = useState<Boolean>(false);
   const { price, name, link, image } = item;
 
@@ -68,10 +67,7 @@ const ItemCard = ({ item, scrollPosition }) => {
         >
           <p className='text-[#92CEFB] text-xl font-black font-poppins py-0 md:py-2 mx-auto'>FREE</p>
           <div className={`rounded-xl bg-white ${loaded ? 'h-full' : 'h-[183px] md:h-[253px]'}`} >
-            <LazyLoadComponent
-              threshold={500}
-              scrollPosition={scrollPosition}
-            >
+            <LazyWrapper threshold={500}>
               <Image
                 blurDataURL={`${loaded
                   ? `/images/placeholder_transparent.png`
@@ -102,7 +98,7 @@ const ItemCard = ({ item, scrollPosition }) => {
                   },
                 ]}
               />
-            </LazyLoadComponent>
+            </LazyWrapper>
           </div>
         </div>
         <div className='flex ml-2 mt-2 mr-auto md:mx-auto'>
@@ -129,7 +125,7 @@ const ItemCard = ({ item, scrollPosition }) => {
   )
 }
 
-const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
+const TierCards = () => {
   return (
     <>
       {Object.keys(prizes).map((tier: string, index) => {
@@ -165,7 +161,6 @@ const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
                     <ItemCard
                       key={item.name}
                       item={item}
-                      scrollPosition={scrollPosition}
                     />
                   ))
                 }
@@ -179,7 +174,7 @@ const TierCards = ({ scrollPosition }: { scrollPosition: ScrollPosition }) => {
   )
 }
 
-const EventsEasterHunter = ({ scrollPosition }) => {
+const EventsEasterHunter = () => {
   const headings = [
     {
       name: 'How it works',
@@ -449,7 +444,7 @@ const EventsEasterHunter = ({ scrollPosition }) => {
           Discover the exciting items you could receive in each tier!
         </p>
         {
-          <TierCards scrollPosition={scrollPosition} />
+          <TierCards />
         }
       </div>
 
@@ -541,4 +536,4 @@ const EventsEasterHunter = ({ scrollPosition }) => {
   );
 }
 
-export default trackWindowScroll(EventsEasterHunter);
+export default EventsEasterHunter;

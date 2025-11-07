@@ -1,7 +1,5 @@
 import { useState } from "react";
 import type { LinksFunction } from "@remix-run/node";
-import type { ScrollPosition } from 'react-lazy-load-image-component';
-
 import type { Product } from "~/shared/types";
 import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';
@@ -29,14 +27,12 @@ interface LeftLayoutProps {
 	product?: Product;
 	onClickProduct?: (title: string, productUUID: string) => void;
 	loading?: boolean
-	scrollPosition?: ScrollPosition;
 };
 
 function LeftLayout({
 	product,
 	onClickProduct = () => { },
 	loading = false,
-	scrollPosition,
 }: LeftLayoutProps) {
 	if (loading) {
 		return (
@@ -56,7 +52,6 @@ function LeftLayout({
 						title={product.title}
 						description={product.description}
 						onClickProduct={onClickProduct}
-						scrollPosition={scrollPosition}
 					/>
 				)
 			}
@@ -68,13 +63,11 @@ interface RightLayoutProps {
 	products?: Product[];
 	onClickProduct?: (title: string, productUUID: string) => void;
 	loading?: boolean;
-	scrollPosition?: ScrollPosition;
 };
 
 function RightLayout({
 	loading = false,
 	products = [],
-	scrollPosition,
 	onClickProduct = () => { }
 }: RightLayoutProps) {
 	const [one, two] = products;
@@ -100,7 +93,6 @@ function RightLayout({
 						onClickProduct={onClickProduct}
 						tagCombo={one.tabComboType as TagsCombo | null}
 						discount={one.discount}
-						scrollPosition={scrollPosition}
 					/>
 				)
 			}
@@ -114,7 +106,6 @@ function RightLayout({
 						description={two.shortDescription}
 						onClickProduct={onClickProduct}
 						discount={two.discount}
-						scrollPosition={scrollPosition}
 					/>
 				)
 			}
@@ -140,8 +131,6 @@ interface OneMainTwoSubsProps {
 	onClickProduct?: (title: string, productID: string) => void;
 
 	loading?: boolean;
-
-	scrollPosition?: ScrollPosition;
 };
 
 // What if we only have 1, or 2 products?
@@ -150,7 +139,6 @@ function OneMainTwoSubs({
 	reverse = false,
 	onClickProduct = () => { },
 	loading = false,
-	scrollPosition,
 }: OneMainTwoSubsProps) {
 	const [one, two, three] = products;
 	const [enoughForReverse, setEnoughForReverse] = useState(false);
@@ -184,13 +172,11 @@ function OneMainTwoSubs({
 												<RightLayout
 													products={[one, two]}
 													onClickProduct={onClickProduct}
-													scrollPosition={scrollPosition}
 												/>
 
 												<LeftLayout
 													product={three}
 													onClickProduct={onClickProduct}
-													scrollPosition={scrollPosition}
 												/>
 											</>
 										)
@@ -199,13 +185,11 @@ function OneMainTwoSubs({
 												<LeftLayout
 													product={one}
 													onClickProduct={onClickProduct}
-													scrollPosition={scrollPosition}
 												/>
 
 												<RightLayout
 													products={[two, three]}
 													onClickProduct={onClickProduct}
-													scrollPosition={scrollPosition}
 												/>
 											</>
 										)

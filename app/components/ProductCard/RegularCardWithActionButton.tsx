@@ -6,8 +6,8 @@ import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router';
 import type { LinksFunction } from '@remix-run/node';
-import { LazyLoadComponent } from "react-lazy-load-image-component";
 import Image, { MimeType } from "remix-image"
+import { LazyWrapper } from '~/components/LazyWrapper';
 import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { composeProductDetailURL } from '~/utils';
 import { round10 } from '~/utils/preciseRound';
@@ -27,12 +27,7 @@ import { envs } from '~/utils/env';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 
 import { Button } from '@chakra-ui/react'
-import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
 import extra10 from '~/images/extra10.png';
-
-export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: llimageStyle }];
-}
 
 const splitNumber = (n: number): [number, number] => {
   if (!n) return [0, 0];
@@ -82,7 +77,6 @@ export default function ProductCard({
   loading = false,
   product,
   onClickProduct = () => { },
-  scrollPosition,
   displayActionButton = true,
   noPadding = false,
 }: IProductCard) {
@@ -183,10 +177,7 @@ export default function ProductCard({
         }
 
         <div className={`${loaded ? 'h-full' : 'h-[183px] md:h-[253px]'}`} >
-          <LazyLoadComponent
-            threshold={500}
-            scrollPosition={scrollPosition}
-          >
+          <LazyWrapper threshold={500}>
             <Image
               blurDataURL={`${envs.DOMAIN}/images/${loaded
                 ? 'placeholder_transparent.png'
@@ -209,7 +200,7 @@ export default function ProductCard({
               src={mainPic}
 
             />
-          </LazyLoadComponent>
+          </LazyWrapper>
         </div>
 
         {/* TITLES */}

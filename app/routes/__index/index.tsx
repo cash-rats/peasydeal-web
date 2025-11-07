@@ -1,7 +1,5 @@
 import type { LoaderFunction, LinksFunction } from "react-router";
 import { useLoaderData, useRouteError, isRouteErrorResponse } from "react-router";
-import { trackWindowScroll } from 'react-lazy-load-image-component';
-import type { LazyComponentProps } from 'react-lazy-load-image-component';
 import httpStatus from 'http-status-codes';
 
 import type { TCategoryPreview, TPromotionType } from "~/shared/types";
@@ -88,9 +86,8 @@ export function ErrorBoundary() {
   );
 }
 
-type IndexProps = {} & LazyComponentProps;
 
-function Index({ scrollPosition }: IndexProps) {
+function Index() {
   const {
     categoryPreviews,
     promotionPreviews,
@@ -156,7 +153,6 @@ function Index({ scrollPosition }: IndexProps) {
                       key={`${category.name}_${index}`}
                       category={category}
                       onClickProduct={handleClickProduct}
-                      scrollPosition={scrollPosition}
                     />
                   </div>
                 </div>
@@ -195,4 +191,4 @@ function Index({ scrollPosition }: IndexProps) {
   );
 }
 
-export default trackWindowScroll(Index);
+export default Index;
