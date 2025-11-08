@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import type { ReactNode } from 'react';
 
 import styles from './styles/Pennant.css?url';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import PhoneInput from 'react-phone-input-2'
 import type { CountryData } from 'react-phone-input-2';
 import reactPhoneInput2Styles from 'react-phone-input-2/lib/material.css?url';

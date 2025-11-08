@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import EmptyBox from './images/empty-box.png';
 import styles from './styles/TrackingOrderErrorPage.css?url';

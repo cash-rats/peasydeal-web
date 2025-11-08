@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { clsx } from 'clsx'
 import { AiOutlineSearch } from "react-icons/ai";
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import styles from './styles/SearchBar.css?url';
 

@@ -1,15 +1,15 @@
 // This is a simple route component that accepts email subscribe requests
 // and process the request via `action`. Email subscribe request are mainly
 // from `FooterMobileLayout` and `FooterTabletLayout` for now.
-import type { ActionFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import type { ActionFunctionArgs } from 'react-router';
+import { json } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import { composErrorResponse } from '~/utils/error';
 
 import { subscribe } from './api.server';
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const body = await request.formData();
   const email = body.get('email') as string | null;
 

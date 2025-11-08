@@ -3,7 +3,7 @@ import { useEffect, useState, forwardRef, useRef } from 'react';
 import type { InputBaseProps } from '@mui/material/InputBase';
 import ClearIcon from '@mui/icons-material/Clear';
 import clsx from 'clsx';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import BaseInput from '~/components/BaseInput';
 

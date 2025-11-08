@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet, useLoaderData, useOutletContext } from 'react-router';
 import type { ShouldRevalidateFunction } from "react-router";
-import type { LoaderFunction, LinksFunction, MetaFunction } from 'react-router';
+import type { LoaderFunctionArgs, LinksFunction, MetaFunction } from 'react-router';
 import { redirect } from 'react-router';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -83,7 +83,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
   return true;
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const transObj = await getTransactionObject(request);
     const cartItems = await getCart(request);

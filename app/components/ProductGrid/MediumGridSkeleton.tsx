@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import styles from './styles/MediumGrid.css?url';
 

@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { Link, Form } from 'react-router';
 import { LazyImage } from '~/components/LazyImage';
 import RoundButton from '~/components/RoundButton';

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import FocusLock from "react-focus-lock";
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import {
   Popover,
   PopoverTrigger,

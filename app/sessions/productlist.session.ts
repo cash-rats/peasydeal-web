@@ -1,4 +1,4 @@
-import type { Session } from '@remix-run/node';
+import type { Session } from 'react-router';
 
 import type { Product } from '~/shared/types';
 import { getSession } from '~/sessions/redis_session';

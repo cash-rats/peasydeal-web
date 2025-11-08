@@ -5,9 +5,9 @@ import {
   useReducer,
 } from 'react';
 import {
-  type LoaderFunction,
+  type LoaderFunctionArgs,
   type LinksFunction,
-  type ActionFunction,
+  type ActionFunctionArgs,
   redirect,
   useLoaderData,
 } from 'react-router';
@@ -49,7 +49,7 @@ type LoaderType = {
   cart_items: ShoppingCart;
 }
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const cart = await getCart(request);
 
@@ -63,7 +63,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries()) as ActionPayload;
 

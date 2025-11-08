@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import type { ReactNode } from 'react';
 
 import scratchPNG from './assets/scratch.png';

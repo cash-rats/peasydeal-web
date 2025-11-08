@@ -1,6 +1,6 @@
 import { useReducer, useRef, useEffect } from 'react';
-import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import type { LoaderFunctionArgs, LinksFunction, MetaFunction } from 'react-router';
+import { json } from 'react-router';
 import { useLoaderData, useFetcher, useParams, NavLink, useNavigation } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
@@ -45,7 +45,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = ({ data, params }) => {
+export const meta: MetaFunction = ({ data, params }) => {
   const { promotion = '' } = params;
 
   if (
@@ -85,7 +85,7 @@ export const meta: V2_MetaFunction = ({ data, params }) => {
 
 type LoaderType = 'load_products' | 'load_more_products'
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const loaderType = url.searchParams.get('action_type') || 'load_products' as LoaderType;
 

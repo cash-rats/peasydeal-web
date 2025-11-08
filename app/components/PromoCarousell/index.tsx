@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { Button } from '@chakra-ui/react';
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 

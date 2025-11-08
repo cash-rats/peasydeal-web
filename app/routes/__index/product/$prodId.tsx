@@ -3,7 +3,7 @@ import {
   useRef,
   type ChangeEvent,
 } from 'react';
-import type { LoaderFunction, ActionFunction, LinksFunction } from 'react-router';
+import type { LoaderFunctionArgs, ActionFunctionArgs, LinksFunction } from 'react-router';
 import { redirect, useLoaderData } from 'react-router';
 // import type { DynamicLinksFunction } from 'react-router';
 import httpStatus from 'http-status-codes';
@@ -68,7 +68,7 @@ const dynamicLinks: DynamicLinksFunction<LoaderTypeProductDetail> = ({ data }) =
 
 export const handle = { dynamicLinks };
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!params.prodId) {
     throw Response.json(
       composErrorResponse('unrecognize product'),
@@ -114,7 +114,7 @@ type ActionType =
   | 'add_item_to_cart'
   | 'buy_now';
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
   const formAction = formObj['__action'] as ActionType;

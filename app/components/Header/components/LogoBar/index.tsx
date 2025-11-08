@@ -1,6 +1,6 @@
 import { useRef, memo } from 'react';
 import { Link, } from 'react-router';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { FiMenu } from 'react-icons/fi';
 import {
   IconButton,

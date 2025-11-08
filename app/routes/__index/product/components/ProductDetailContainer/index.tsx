@@ -1,6 +1,6 @@
 import { useRef, useMemo, useState } from 'react';
 import type { ChangeEvent } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
 import Select from 'react-select';
 // TODO use other component.

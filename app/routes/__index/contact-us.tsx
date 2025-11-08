@@ -1,4 +1,4 @@
-import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from 'react-router';
 import FormBold from '~/components/FormBold';
 import { envs } from '~/utils/env';
 import { getRootFBSEO_V2 } from '~/utils/seo';
@@ -10,7 +10,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return getRootFBSEO_V2()
     .map(tag => {
       if (!('property' in tag)) return tag;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useFetcher, useFetchers } from 'react-router';
 import {
-  type LinksFunction, LoaderFunction, ActionFunction,
+  type LinksFunction, LoaderFunctionArgs, ActionFunctionArgs,
   redirect
 } from 'react-router';
 
@@ -16,7 +16,7 @@ export const links: LinksFunction = () => {
 };
 
 // Header compoent it's self would submit a GET request to this loader to reload `numOfItemsInCart`
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   return Response.json({ numOfItemsInCart: await getItemCount(request) });
 }
 
@@ -51,7 +51,7 @@ export enum ActionTypes {
  *  This action handles redirection from `/components/Header/components/CategoriesNav` `promotion` or `collection`.
  */
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
   const formAction = formObj['action_type'] as ActionTypes;

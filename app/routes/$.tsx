@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
+import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
+import { json, redirect } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { useLoaderData } from 'react-router';
 
@@ -31,7 +31,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     // We need to do a gaurd clause check to redirect possible old category url `/desks`
     // to new category url `/collection/desks`. If `desks` can not be found fallback

@@ -1,7 +1,4 @@
-import { installGlobals } from "@remix-run/node";
 import "@testing-library/jest-dom/extend-expect";
-
-installGlobals();
 
 beforeAll(() => {
   process.env.REDIST_PORT = import.meta.env.VITE_REDIS_PORT;

@@ -1,8 +1,8 @@
 import { useEffect, useState, forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
-import type { LinksFunction, ActionFunction } from '@remix-run/node';
+import type { LinksFunction, ActionFunctionArgs } from 'react-router';
 import { useFetcher, useNavigation } from 'react-router';
-import { json } from '@remix-run/node';
+import { json } from 'react-router';
 
 // Note: we don't need to import "style links" for this component
 // because route `__index/index` already loaded it. If we load it
@@ -26,7 +26,7 @@ type ActionDataType = {
   products: Product[];
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const body = await request.formData();
   const category = body.get('category') as string || '';
 

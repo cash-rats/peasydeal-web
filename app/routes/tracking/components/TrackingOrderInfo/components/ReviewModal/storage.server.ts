@@ -1,7 +1,7 @@
 import {
   unstable_composeUploadHandlers,
   unstable_createMemoryUploadHandler,
-} from '@remix-run/node';
+} from 'react-router';
 
 import type { MimeType } from '~/utils/mimes';
 import { streamFileUpload } from '~/lib/gcs';

@@ -1,5 +1,5 @@
 
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { AiFillCheckCircle } from 'react-icons/ai';
 
 import styles from './styles/ItemAddedModal.css?url';

@@ -1,7 +1,7 @@
-import { json } from "@remix-run/node";
+import { json } from "react-router";
 import { useLoaderData } from "react-router";
-import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
-import type { LoaderFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from 'react-router';
+import type { LoaderFunctionArgs } from "react-router";
 import httpStatus from 'http-status-codes';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import type { TContentfulPost } from '~/shared/types';
@@ -16,7 +16,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
+export const meta: MetaFunction = ({ data }: { data: TContentfulPost }) => {
   const contentfulFields = data || {};
   return getRootFBSEO_V2()
     .map(tag => {
@@ -38,7 +38,7 @@ export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
     });
 };
 
-export const loader: LoaderFunction = async () => {
+export const loader = async (: LoaderFunctionArgs) => {
   try {
     const entryId = "2ihmYXUn9a3TVZB0AJLL1Z";
     const res = await fetchContentfulPostWithId({ entryId });

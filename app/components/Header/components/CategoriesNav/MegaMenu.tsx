@@ -7,7 +7,7 @@ import {
   MenuList,
   MenuItem,
 } from "@chakra-ui/react"
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import { VscArrowRight } from "react-icons/vsc";
 import type { Category } from '~/shared/types';

@@ -1,11 +1,11 @@
 import { useEffect, useRef, useReducer } from "react";
 import type {
   LinksFunction,
-  LoaderFunction,
-  ActionFunction,
-  V2_MetaFunction,
-} from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
+  LoaderFunctionArgs,
+  ActionFunctionArgs,
+  MetaFunction,
+} from 'react-router';
+import { json, redirect } from 'react-router';
 import {
   useFetcher,
   useLoaderData,
@@ -64,7 +64,7 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => ([
 
 export const handle = { dynamicLinks, structuredData };
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data, params }) => {
+export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
   if (!data || !params.collection) {
     return [
       {
@@ -107,7 +107,7 @@ export const links: LinksFunction = () => {
 
 type LoaderType = 'load_products' | 'loadmore';
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const actionType = url.searchParams.get('action_type') || 'load_products' as LoaderType;
   const { collection = '' } = params;
@@ -148,7 +148,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   );
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const body = await request.formData();
   const productID = body.get("product_id");
   return redirect(`/product/${productID}`);

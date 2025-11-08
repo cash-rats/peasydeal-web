@@ -1,4 +1,4 @@
-import { type LoaderFunction, redirect } from 'react-router';
+import { type LoaderFunctionArgs, redirect } from 'react-router';
 import { useLoaderData } from 'react-router';
 
 import type { PaymentMethod } from '~/shared/types';
@@ -18,7 +18,7 @@ type LoaderDataType = {
   }
 }
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   // Determine which payment method the client used, perform
   // corresponding payment logic afterwards. payment method will be given
   // in query param `payment_method`. Each `payment_method` has different response

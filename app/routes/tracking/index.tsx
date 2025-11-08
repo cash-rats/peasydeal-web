@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react';
 import { useState } from 'react';
-import type { LinksFunction, LoaderFunction, ActionFunction, V2_MetaFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
+import type { LinksFunction, LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from 'react-router';
+import { json, redirect } from 'react-router';
 import { Form, useLoaderData, useFetcher, useCatch } from 'react-router';
 import httpStatus from 'http-status-codes';
 import type { DynamicLinksFunction } from 'remix-utils';
@@ -49,7 +49,7 @@ const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
 }
 export const handle = { dynamicLinks };
 
-export const meta: V2_MetaFunction = () => ([
+export const meta: MetaFunction = () => ([
   ...getTrackingFBSEO(),
   { title: getTrackingTitleText(), },
 ]);
@@ -66,7 +66,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
   const url = new URL(request.url);
 
@@ -109,7 +109,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   }
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const body = await request.formData();
   const orderUUID = body.get('query') as string || '';
   if (!orderUUID) {

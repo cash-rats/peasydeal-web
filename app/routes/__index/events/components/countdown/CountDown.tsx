@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { useState, useEffect } from 'react'
 
 import styles from './styles/CountDown.css?url';

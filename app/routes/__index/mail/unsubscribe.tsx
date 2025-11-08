@@ -1,5 +1,5 @@
-import type { V2_MetaFunction, LoaderFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
+import { json } from 'react-router';
 import { useState, useEffect } from "react";
 import { useLoaderData } from 'react-router';
 import { useFetcher } from 'react-router'
@@ -11,7 +11,7 @@ import type { ApiErrorResponse } from '~/shared/types';
 
 import unsubscribeBG from './images/Unsubscribe-bg.png';
 
-export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
+export const meta: MetaFunction = ({ data }: { data: TContentfulPost }) => {
   return getRootFBSEO_V2().
     map(tag => {
       if (!('property' in tag)) return tag
@@ -32,7 +32,7 @@ type LoaderDataType = {
   uuid: string,
 }
 
-export const loader: LoaderFunction = async ({ params, request }) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const uuid = url.searchParams.get('uuid') || '';
 

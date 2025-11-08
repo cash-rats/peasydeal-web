@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
-import { json } from '@remix-run/node';
-import type { ActionFunction } from '@remix-run/node';
+import { json } from 'react-router';
+import type { ActionFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
 
 import Review from './components/Review';
@@ -9,7 +9,7 @@ import ReviewAggregate from './components/ReviewAggregate';
 import type { ReviewResponse } from '../../types';
 import { fetchReviews } from '../../api.server';
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const prodUUID = await formData.get('product_uuid') as string || '';
   if (!prodUUID) return null

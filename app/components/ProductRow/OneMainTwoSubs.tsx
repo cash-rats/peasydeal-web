@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction } from "react-router";
 import type { Product } from "~/shared/types";
 import MqNotifier from '~/components/MqNotifier';
 import { breakPoints } from '~/styles/breakpoints';

@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { links as OneMainTwoSubsLinks } from "~/components/ProductRow/OneMainTwoSubs";
 import { links as EvenRowLinks } from '~/components/ProductRow/EvenRow';
 import type { Product } from '~/shared/types';

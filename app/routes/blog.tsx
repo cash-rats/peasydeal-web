@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import {
   type LinksFunction,
-  type LoaderFunction,
+  type LoaderFunctionArgs,
   type MetaFunction,
   Outlet,
   useLoaderData,
@@ -47,7 +47,7 @@ type LoaderType = {
   navBarCategories: Category[];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 

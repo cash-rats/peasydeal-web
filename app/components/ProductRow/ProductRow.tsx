@@ -2,7 +2,7 @@
  * This component render the modulared products
  * into a product grid
  */
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import type { Product } from "~/shared/types";
 
 import { RegularCardWithActionButton, links as ProductCartLinks } from '../ProductCard';

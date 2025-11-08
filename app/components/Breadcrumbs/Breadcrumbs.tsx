@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 // import Breadcrumbs from '@mui/material/Breadcrumbs';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import { Breadcrumb } from '@chakra-ui/react'
 

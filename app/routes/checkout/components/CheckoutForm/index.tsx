@@ -1,7 +1,7 @@
 /** Disable paypal relative functions for business validation review  */
 
 import { useRef, useState } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import type { StripePaymentElement, StripePaymentElementChangeEvent } from '@stripe/stripe-js';
 // import type { OnClickActions, OnApproveData, OnApproveActions } from "@paypal/paypal-js";
 

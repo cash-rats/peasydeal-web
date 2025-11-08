@@ -1,4 +1,4 @@
-import type { V2_MetaFunction } from '@remix-run/node';
+import type { MetaFunction } from 'react-router';
 import { useState, useEffect, useReducer } from "react";
 import type { ChangeEvent } from 'react';
 import { useFetcher } from 'react-router'
@@ -13,7 +13,7 @@ import reducer, { setOpenEmailSubscribeModal } from '~/components/EmailSubscribe
 
 import subscribeBG from '~/images/mailing-bg.png';
 
-export const meta: V2_MetaFunction = ({ data }: { data: TContentfulPost }) => {
+export const meta: MetaFunction = ({ data }: { data: TContentfulPost }) => {
   return getRootFBSEO_V2()
     .map(tag => {
       if (!('property' in tag)) return tag

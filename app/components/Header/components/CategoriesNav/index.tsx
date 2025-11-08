@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react"
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { Form } from 'react-router';
 import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
 

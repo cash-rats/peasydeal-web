@@ -1,4 +1,4 @@
-import { unstable_parseMultipartFormData, json } from '@remix-run/node';
+import { parseMultipartFormData, json } from 'react-router';
 
 import { composErrorResponse } from '~/utils/error';
 
@@ -45,7 +45,7 @@ const validateForm = ({ review, name }: ValidateFormParams) => {
 const reviewProduct = async (request: Request) => {
   try {
     // upload files to gcs.
-    const formData = await unstable_parseMultipartFormData(
+    const formData = await parseMultipartFormData(
       request,
       uploadHandler,
     );

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useReducer } from 'react';
-import type { LinksFunction, LoaderFunction, ActionFunction } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
+import type { LinksFunction, LoaderFunctionArgs, ActionFunctionArgs } from 'react-router';
+import { redirect } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { useCatch, useLoaderData, useFetcher } from 'react-router';
 
@@ -28,7 +28,7 @@ type LoaderType =
   | 'search'
   | 'search_more';
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const actionType = url.searchParams.get('action_type') || 'search' as LoaderType;
   const query = url.searchParams.get("query");
@@ -53,7 +53,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   })
 }
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
   return redirect(

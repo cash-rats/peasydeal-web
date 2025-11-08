@@ -1,6 +1,6 @@
-import type { ActionFunction } from '@remix-run/node';
+import type { ActionFunctionArgs } from 'react-router';
 import { useFetcher, useNavigation } from 'react-router';
-import { json } from '@remix-run/node';
+import { json } from 'react-router';
 import { useEffect, useState } from 'react';
 
 import { ProductRow } from "~/components/ProductRow";
@@ -14,7 +14,7 @@ type ActionType = {
   super_deal_products: Product[];
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const [{ items: topProds }, { items: superDealProds }] = await Promise.all([
     await fetchProductsByCategoryV2({
       category: 22,

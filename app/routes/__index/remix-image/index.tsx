@@ -1,4 +1,4 @@
-import type { LoaderFunction } from "@remix-run/server-runtime";
+import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
 import { imageLoader, MemoryCache } from 'remix-image/server';
 import type { LoaderConfig } from 'remix-image';
 import httpStatus from 'http-status-codes';
@@ -23,7 +23,7 @@ const composeCDNUrl = (params: { width: number, height: number, filename: string
 
 const maxAge = 60 * 60 * 24 * 365;
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const width = url.searchParams.get('width') as string || '';
   const height = url.searchParams.get('height') as string || '';

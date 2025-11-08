@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { AiFillInstagram, AiOutlineTwitter } from 'react-icons/ai';
 import { SiFacebook } from 'react-icons/si';
 

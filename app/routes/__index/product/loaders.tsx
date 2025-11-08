@@ -1,5 +1,5 @@
 import httpStatus from 'http-status-codes';
-import { redirect, json } from '@remix-run/node'
+import { redirect, json } from 'react-router'
 
 import { fetchNewProductURL } from './api.server';
 

@@ -1,5 +1,5 @@
 import { FaCheck } from 'react-icons/fa';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { Button, Stack } from '@chakra-ui/react';
 
 import styles from './styles/check.css?url';

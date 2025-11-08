@@ -3,8 +3,8 @@ import { FaShippingFast } from 'react-icons/fa';
 import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
-import type { ActionFunction, LinksFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import type { ActionFunctionArgs, LinksFunction } from 'react-router';
+import { json } from 'react-router';
 import { useFetcher, useRevalidator } from 'react-router';
 import { useImmerReducer } from 'use-immer';
 import { FcInfo } from 'react-icons/fc';
@@ -46,7 +46,7 @@ export const links: LinksFunction = () => {
   return [...ReviewModalLinks()];
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formEntries = Object.fromEntries(form.entries());
 

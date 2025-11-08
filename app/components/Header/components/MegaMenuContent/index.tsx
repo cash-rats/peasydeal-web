@@ -1,7 +1,7 @@
 
 import { Button } from '@chakra-ui/react';
 import { Link } from 'react-router';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { VscFlame, VscArrowRight } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';

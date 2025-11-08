@@ -20,8 +20,8 @@ import type {
 import type {
   InitialEntry,
   StaticHandler,
-  LoaderFunction,
-  ActionFunction,
+  LoaderFunctionArgs,
+  ActionFunctionArgs,
   Location,
 } from "@remix-run/router";
 import type { AssetsManifest, EntryContext } from "@remix-run/react/dist/entry";
@@ -32,6 +32,10 @@ import type {
 } from "@remix-run/react/dist/routeModules";
 import type { EntryRoute, RouteManifest } from "@remix-run/react/dist/routes";
 import type { AgnosticRouteMatch } from "@remix-run/router/dist/utils";
+
+// Type aliases for compatibility
+type LoaderFunction = (args: LoaderFunctionArgs) => Promise<Response> | Response | Promise<any> | any;
+type ActionFunction = (args: ActionFunctionArgs) => Promise<Response> | Response | Promise<any> | any;
 
 /**
  * Base RouteObject with common props shared by all types of mock routes

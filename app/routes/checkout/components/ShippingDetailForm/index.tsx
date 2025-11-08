@@ -7,7 +7,7 @@ import { useEffect, useReducer } from 'react';
 import type { ChangeEvent } from 'react';
 import {
   type LinksFunction,
-  type ActionFunction,
+  type ActionFunctionArgs,
   useFetcher,
 } from 'react-router';
 import { TextField } from '@mui/material';
@@ -31,7 +31,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formEntries = Object.fromEntries(form.entries());
   const postal = formEntries.postal as string;

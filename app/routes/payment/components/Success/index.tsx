@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
-import { json } from '@remix-run/node';
-import type { ActionFunction } from '@remix-run/node';
+import type { ActionFunctionArgs } from 'react-router';
 import parseISO from 'date-fns/parseISO';
 
 import { clearCart } from '~/sessions/shoppingcart.session';
@@ -22,7 +21,7 @@ import LoadingSkeleton from '../LoadingSkeleton';
   TODOs:
    - [ ] Remove items from shopping cart once payment success.
 */
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const url = new URL(request.url);
   const orderUUID = url.searchParams.get('order_uuid');
 
@@ -30,7 +29,7 @@ export const action: ActionFunction = async ({ request }) => {
     throw Error('no order id presented in query params');
   }
 
-  return json<SuccessOrderDetail>(
+  return Response.json(
     await fetchOrder(orderUUID),
     {
       headers: {

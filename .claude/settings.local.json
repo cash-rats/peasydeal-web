@@ -9,7 +9,8 @@
       "WebFetch(domain:www.algolia.com)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:aibolik.com)"
+      "WebFetch(domain:aibolik.com)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

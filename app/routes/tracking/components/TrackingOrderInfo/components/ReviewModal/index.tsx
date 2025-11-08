@@ -10,7 +10,7 @@ import {
 } from '@chakra-ui/react';
 import { useImmerReducer } from 'use-immer';
 import styles from '@smastrom/react-rating/style.css?url';
-import type { LinksFunction, ActionFunction } from '@remix-run/node';
+import type { LinksFunction, ActionFunctionArgs } from 'react-router';
 import type { ImageListType } from 'react-images-uploading';
 import { useFetcher } from 'react-router';
 
@@ -47,7 +47,7 @@ interface ReviewModalParams {
 }
 
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   return reviewProduct(request);
 };
 

@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 import IconButton from '@mui/material/IconButton';
 

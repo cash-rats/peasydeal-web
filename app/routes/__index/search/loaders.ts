@@ -1,4 +1,4 @@
-import { json } from '@remix-run/node';
+import { json } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import { composErrorResponse } from '~/utils/error';

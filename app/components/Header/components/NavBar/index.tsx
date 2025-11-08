@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { Link } from 'react-router';
 import { FiShoppingCart } from 'react-icons/fi';
 import { RiTruckLine, RiSearchLine } from 'react-icons/ri';

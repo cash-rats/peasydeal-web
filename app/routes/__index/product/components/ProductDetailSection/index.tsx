@@ -1,4 +1,4 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import PicsCarousel, { links as PicsCarouselLinks } from '~/components/Carousel';
 

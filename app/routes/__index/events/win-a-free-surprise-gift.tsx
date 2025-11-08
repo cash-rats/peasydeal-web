@@ -1,4 +1,4 @@
-import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from 'react-router';
 import { useCallback, useRef, useState, useEffect, useReducer } from "react";
 import type { ChangeEvent } from 'react';
 import { useFetcher } from 'react-router'
@@ -38,7 +38,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: V2_MetaFunction = ({ data, params }) => {
+export const meta: MetaFunction = ({ data, params }) => {
   return [
     { title: "Win a Free Surprise Gift on every purchase above £20" },
     {

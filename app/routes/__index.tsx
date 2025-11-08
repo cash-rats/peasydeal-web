@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { LinksFunction, LoaderFunction } from "react-router";
+import type { LinksFunction, LoaderFunctionArgs } from "react-router";
 import {
   Outlet,
   useLoaderData,
@@ -42,7 +42,7 @@ type ContextType = {
 };
 
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
     return Response.json({

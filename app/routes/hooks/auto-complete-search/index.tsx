@@ -5,8 +5,8 @@
 */
 
 import { useState, useEffect } from 'react';
-import type { ActionFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
+import type { ActionFunctionArgs } from 'react-router';
+import { json } from 'react-router';
 import { useFetcher } from 'react-router';
 
 import type { Product, SuggestItem } from '~/shared/types';
@@ -17,7 +17,7 @@ type ActionType = {
   results: Product[];
 };
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const body = await request.formData();
   const query = body.get("query") as string;
 

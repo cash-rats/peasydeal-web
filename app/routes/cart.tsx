@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Outlet } from "react-router";
 import type {
   LinksFunction,
-  LoaderFunction,
+  LoaderFunctionArgs,
   MetaFunction
 } from 'react-router';
 import { useLoaderData } from 'react-router';
@@ -50,7 +50,7 @@ type LoaderType = {
   canonicalLink: string;
 };
 
-export const loader = async ({ request }: Parameters<LoaderFunction>[0]) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 

@@ -3,7 +3,7 @@ import { IconButton, Button } from '@chakra-ui/react';
 import { VscChevronLeft, VscChevronRight, VscArrowRight } from 'react-icons/vsc';
 import {
   type LinksFunction,
-  type ActionFunction,
+  type ActionFunctionArgs,
   useFetcher,
   Link,
 } from 'react-router';
@@ -32,7 +32,7 @@ type ActionType = {
 
 const loadingGrids = new Array(12).fill({});
 
-export const action: ActionFunction = async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formEntries = Object.fromEntries(form.entries());
   const catName = formEntries['cat_name'] as string || 'hot_deal';

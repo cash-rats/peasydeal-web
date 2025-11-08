@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { Link } from 'react-router';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { CgSearchFound } from 'react-icons/cg';

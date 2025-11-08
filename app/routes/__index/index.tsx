@@ -1,4 +1,4 @@
-import type { LoaderFunction, LinksFunction } from "react-router";
+import type { LoaderFunctionArgs, LinksFunction } from "react-router";
 import { useLoaderData, useRouteError, isRouteErrorResponse } from "react-router";
 import httpStatus from 'http-status-codes';
 
@@ -36,7 +36,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const userAgent = request.headers.get('user-agent');
 

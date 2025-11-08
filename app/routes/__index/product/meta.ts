@@ -1,4 +1,4 @@
-import type { V2_MetaFunction } from '@remix-run/node';
+import type { MetaFunction } from 'react-router';
 
 import {
   getProdDetailTitleText,
@@ -12,7 +12,7 @@ import {
 import type { ProductVariation, LoaderTypeProductDetail } from './types';
 import { structuredData } from './structured_data';
 
-export const meta: V2_MetaFunction = ({ data, matches }) => {
+export const meta: MetaFunction = ({ data, matches }) => {
   data = data as LoaderTypeProductDetail;
 
   if (!data || !data.product) {
