@@ -33,9 +33,9 @@ import useGTMScript from './hooks/useGTMScript';
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
-import tailwindStylesheetUrl from "./styles/tailwind.css";
+import tailwindStylesheetUrl from "./styles/tailwind.css?url";
 import { ClientStyleContext, ServerStyleContext } from "./context"
-import styles from "./styles/global.css";
+import styles from "./styles/global.css?url";
 import structuredData from './structured_data';
 
 export let links: LinksFunction = () => {

@@ -13,7 +13,7 @@ import { composeProductDetailURL } from '~/utils';
 import { normalizeTagsListToMap } from './utils';
 import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
-import styles from "./styles/MediumGrid.css";
+import styles from "./styles/MediumGrid.css?url";
 
 export const links: LinksFunction = () => {
 	return [

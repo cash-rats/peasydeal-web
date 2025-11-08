@@ -2,7 +2,7 @@ import type { LinksFunction } from '@remix-run/node';
 
 import type { Category } from '~/shared/types';
 
-import styles from './styles/FooterMobileLayout.css';
+import styles from './styles/FooterMobileLayout.css?url';
 import { links as FooterContentLinks } from '../FooterContent';
 import LogoSection from '../LogoSection';
 import EmailSubscribe from '../EmailSubscribe';

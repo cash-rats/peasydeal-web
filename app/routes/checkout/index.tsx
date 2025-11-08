@@ -20,7 +20,7 @@ import { getCart } from '~/sessions/shoppingcart.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
 
 import { useCreateOrder, useStripeConfirmPayment } from './hooks';
-import styles from './styles/Checkout.css';
+import styles from './styles/Checkout.css?url';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
 import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
 import type { Option } from './components/ShippingDetailForm/api.server';

@@ -2,7 +2,7 @@ import type { LinksFunction } from '@remix-run/node';
 import MediumGridSkeleton, { links as MediumGridSkeletonLinks } from "~/components/ProductGrid/MediumGridSkeleton";
 import type { Product } from "~/shared/types";
 
-import styles from './styles/EventRow.css';
+import styles from './styles/EventRow.css?url';
 import type { TagsCombo } from '../ProductGrid/types';
 import { MediumGrid } from "../ProductGrid";
 

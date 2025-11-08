@@ -2,7 +2,7 @@ import { FaCheck } from 'react-icons/fa';
 import type { LinksFunction } from '@remix-run/node';
 import { Button, Stack } from '@chakra-ui/react';
 
-import styles from './styles/check.css';
+import styles from './styles/check.css?url';
 
 export const links: LinksFunction = () => {
   return [{ rel: 'stylesheet', href: styles }]

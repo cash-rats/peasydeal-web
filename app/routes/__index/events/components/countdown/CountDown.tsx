@@ -1,7 +1,7 @@
 import type { LinksFunction } from '@remix-run/node';
 import { useState, useEffect } from 'react'
 
-import styles from './styles/CountDown.css';
+import styles from './styles/CountDown.css?url';
 
 export const links: LinksFunction = () => {
 	return [

@@ -1,6 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 
-import styles from './styles/LargeGrid.css';
+import styles from './styles/LargeGrid.css?url';
 
 export const links: LinksFunction = () => {
   return [

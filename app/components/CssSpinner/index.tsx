@@ -1,6 +1,6 @@
 import type { LinksFunction } from '@remix-run/node';
 
-import styles from './styles/CssSpinner.css';
+import styles from './styles/CssSpinner.css?url';
 
 export const links: LinksFunction = () => {
   return [

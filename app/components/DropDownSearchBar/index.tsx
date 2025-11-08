@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { LinksFunction } from '@remix-run/node';
-import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/dist/theme.min.css';
+import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/dist/theme.min.css?url';
 import { useSubmit } from 'react-router';
 import type { OnSubmitParams } from '@algolia/autocomplete-core';
 
@@ -13,7 +13,7 @@ import {
 import type { AutocompleteItem } from '~/components/Algolia/types';
 
 import Autocomplete from './Autocomplete';
-import DropDownSearchBarStyles from './styles/DropDownSearchBar.css';
+import DropDownSearchBarStyles from './styles/DropDownSearchBar.css?url';
 
 export const links: LinksFunction = () => {
   return [

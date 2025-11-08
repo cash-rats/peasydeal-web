@@ -3,7 +3,7 @@ import type { LinksFunction } from '@remix-run/node';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
 import IconButton from '@mui/material/IconButton';
 
-import styles from './styles/QuantityPicker.css';
+import styles from './styles/QuantityPicker.css?url';
 
 export const links: LinksFunction = () => {
   return [

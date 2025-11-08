@@ -1,7 +1,7 @@
 import type { LinksFunction } from '@remix-run/node';
 import type { ReactNode } from 'react';
 
-import styles from './styles/RightTiltBox.css';
+import styles from './styles/RightTiltBox.css?url';
 
 export const links: LinksFunction = () => {
   return [

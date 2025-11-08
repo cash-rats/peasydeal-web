@@ -4,7 +4,7 @@ import { TextField, } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 
-import styles from './styles/FooterContent.css';
+import styles from './styles/FooterContent.css?url';
 
 export const links: LinksFunction = () => {
   return [

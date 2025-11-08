@@ -6,7 +6,7 @@ import { Breadcrumb } from '@chakra-ui/react'
 
 import { FiChevronRight } from 'react-icons/fi';
 
-import styles from "./styles/breadcrumbs.css";
+import styles from "./styles/breadcrumbs.css?url";
 
 interface BreadcrumbsNavProps {
   breadcrumbs: ReactNode | ReactNode[];

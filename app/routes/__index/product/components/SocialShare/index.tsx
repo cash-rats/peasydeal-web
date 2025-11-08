@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { MdOutlineIosShare } from 'react-icons/md';
 
-import styles from './styles/SocialShare.css';
+import styles from './styles/SocialShare.css?url';
 
 export const links: LinksFunction = () => {
   return [

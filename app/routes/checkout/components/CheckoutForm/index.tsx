@@ -5,7 +5,7 @@ import type { LinksFunction } from '@remix-run/node';
 import type { StripePaymentElement, StripePaymentElementChangeEvent } from '@stripe/stripe-js';
 // import type { OnClickActions, OnApproveData, OnApproveActions } from "@paypal/paypal-js";
 
-import styles from './styles/CheckoutForm.css';
+import styles from './styles/CheckoutForm.css?url';
 import StripeCheckout from './components/StripeCheckout';
 // import PaypalCheckout from './components/PaypalCheckout';
 

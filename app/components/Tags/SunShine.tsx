@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 import SunShinePng from './assets/SunShine.png';
-import styles from './styles/SunShineTag.css';
+import styles from './styles/SunShineTag.css?url';
 
 export const links: LinksFunction = () => {
   return [

@@ -11,7 +11,7 @@ import {
 import { VscChevronDown } from "react-icons/vsc";
 import useBodyClick from '~/hooks/useBodyClick';
 
-import styles from './styles/QuantityDropDown.css';
+import styles from './styles/QuantityDropDown.css?url';
 
 export const links: LinksFunction = () => {
   return [{ href: styles, rel: 'stylesheet' }];

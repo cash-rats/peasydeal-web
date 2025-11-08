@@ -1,7 +1,7 @@
 import type { LinksFunction } from '@remix-run/node';
 import { Link } from 'react-router';
 
-import styles from './styles/SeasonalGrid.css';
+import styles from './styles/SeasonalGrid.css?url';
 
 export const links: LinksFunction = () => {
   return [

@@ -13,7 +13,7 @@ import type { TContentfulPost } from '~/shared/types';
 import { getRootFBSEO_V2, getCanonicalDomain } from '~/utils/seo';
 
 import { fetchContentfulWithSlug, fetchContentfulLatestPosts } from "../api";
-import styles from '../styles/blog.css';
+import styles from '../styles/blog.css?url';
 import FollowUs from "../components/FollowUs";
 
 export const links: LinksFunction = () => {

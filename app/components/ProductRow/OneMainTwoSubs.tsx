@@ -10,7 +10,7 @@ import MediumGrid, { links as MediumGridLinks } from "~/components/ProductGrid/M
 import MediumGridSkeleton, { links as MediumGridSkeletonLinks } from "~/components/ProductGrid/MediumGridSkeleton";
 import LargeGridSkeleton, { links as LargeGridSkeletonLinks } from "../ProductGrid/LargeGridSkeleton";
 import LargeGrid, { links as LargeGridLinks } from "../ProductGrid/LargeGrid";
-import styles from "./styles/OneMainTwoSubs.css";
+import styles from "./styles/OneMainTwoSubs.css?url";
 
 export const links: LinksFunction = () => {
 	return [

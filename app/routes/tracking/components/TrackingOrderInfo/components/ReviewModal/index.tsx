@@ -9,7 +9,7 @@ import {
   ModalCloseButton,
 } from '@chakra-ui/react';
 import { useImmerReducer } from 'use-immer';
-import styles from '@smastrom/react-rating/style.css';
+import styles from '@smastrom/react-rating/style.css?url';
 import type { LinksFunction, ActionFunction } from '@remix-run/node';
 import type { ImageListType } from 'react-images-uploading';
 import { useFetcher } from 'react-router';

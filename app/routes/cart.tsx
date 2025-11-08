@@ -23,7 +23,7 @@ import {
   getCartFBSEO_V2,
 } from '~/utils/seo';
 
-import cartStyles from './styles/cart.css';
+import cartStyles from './styles/cart.css?url';
 
 export const meta: MetaFunction = () => {
   return [

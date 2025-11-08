@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
 
-import styles from './styles/LoadMore.css';
+import styles from './styles/LoadMore.css?url';
 
 export const links: LinksFunction = () => {
 	return [

@@ -1,4 +1,4 @@
-import { json, redirect } from '@remix-run/node';
+import { redirect } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import type { PriceInfo } from '~/shared/cart';
@@ -111,11 +111,10 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
   const respJSON = await resp.json();
   // TODO: Refactor error handling after upgrading to newest remix version
   // throw new Response(JSON.stringify(respJSON), { status: resp.status });
-  if (resp.status !== httpStatus.OK) {
-    return json(respJSON, resp.status);
-  }
-
-  return json(respJSON, httpStatus.OK);
+  // return Response.json(respJSON, resp.status);
+  return Response.json(respJSON, {
+    status: resp.status,
+  });
 };
 
 export const __paypalCapturePayment = async (paypalOrderID: string, peasydealOrderID: string) => {
@@ -124,7 +123,7 @@ export const __paypalCapturePayment = async (paypalOrderID: string, peasydealOrd
 
   // TODO: redirect to paypal failed page.
   if (!respJSON.status || respJSON.status !== 'COMPLETED') {
-    return json(respJSON);
+    return Response.json(respJSON);
   }
 
   // TODO:

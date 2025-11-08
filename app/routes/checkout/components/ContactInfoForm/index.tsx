@@ -2,12 +2,12 @@ import { useState } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 import PhoneInput from 'react-phone-input-2'
 import type { CountryData } from 'react-phone-input-2';
-import reactPhoneInput2Styles from 'react-phone-input-2/lib/material.css';
+import reactPhoneInput2Styles from 'react-phone-input-2/lib/material.css?url';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
 import HelpIcon from '@mui/icons-material/Help';
 
-import styles from './styles/ContactInfoForm.css';
+import styles from './styles/ContactInfoForm.css?url';
 import type { ContactInfoFormType } from '../../types';
 
 export const links: LinksFunction = () => {

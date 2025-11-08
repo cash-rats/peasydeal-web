@@ -5,7 +5,7 @@ import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
 import React from "react";
 import Swipe from "react-easy-swipe";
-import styles from './styles/promoCarousell.css';
+import styles from './styles/promoCarousell.css?url';
 import shoes from './images/light-up-shoes.png';
 import bubble from './images/bubble-slide.png';
 

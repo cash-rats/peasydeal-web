@@ -7,7 +7,7 @@ import type { LinksFunction } from '@remix-run/node';
 
 import BaseInput from '~/components/BaseInput';
 
-import styles from './styles/SearchBar.css';
+import styles from './styles/SearchBar.css?url';
 
 export const links: LinksFunction = () => {
   return [

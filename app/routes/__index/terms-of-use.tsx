@@ -8,7 +8,7 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import type { TContentfulPost } from '~/shared/types';
 import { fetchContentfulPostWithId } from "./api";
 import { getRootFBSEO_V2 } from '~/utils/seo';
-import styles from './styles/StaticPage.css';
+import styles from './styles/StaticPage.css?url';
 
 export const links: LinksFunction = () => {
   return [

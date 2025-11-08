@@ -12,7 +12,7 @@ import type { LinksFunction } from '@remix-run/node';
 import { VscArrowRight } from "react-icons/vsc";
 import type { Category } from '~/shared/types';
 
-import styles from './styles/MegaMenu.css';
+import styles from './styles/MegaMenu.css?url';
 
 export const links: LinksFunction = () => {
   return [

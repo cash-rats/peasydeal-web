@@ -2,7 +2,7 @@ import type { LinksFunction } from '@remix-run/node';
 
 import PicsCarousel, { links as PicsCarouselLinks } from '~/components/Carousel';
 
-import styles from './styles/ProductDetailSection.css';
+import styles from './styles/ProductDetailSection.css?url';
 import type { ProductImg, } from '../../types';
 
 export const links: LinksFunction = () => {

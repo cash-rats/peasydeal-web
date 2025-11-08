@@ -2,7 +2,7 @@ import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
 import FormBold from '~/components/FormBold';
 import { envs } from '~/utils/env';
 import { getRootFBSEO_V2 } from '~/utils/seo';
-import styles from './styles/StaticPage.css';
+import styles from './styles/StaticPage.css?url';
 
 export const links: LinksFunction = () => {
   return [

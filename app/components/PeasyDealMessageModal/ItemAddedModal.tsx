@@ -2,7 +2,7 @@
 import type { LinksFunction } from '@remix-run/node';
 import { AiFillCheckCircle } from 'react-icons/ai';
 
-import styles from './styles/ItemAddedModal.css';
+import styles from './styles/ItemAddedModal.css?url';
 import GeneralModal from './index';
 
 export const links: LinksFunction = () => {

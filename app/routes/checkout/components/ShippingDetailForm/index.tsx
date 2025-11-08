@@ -5,13 +5,15 @@
 */
 import { useEffect, useReducer } from 'react';
 import type { ChangeEvent } from 'react';
-import { json } from '@remix-run/node';
-import type { LinksFunction, ActionFunction } from '@remix-run/node';
-import { useFetcher } from 'react-router';
+import {
+  type LinksFunction,
+  type ActionFunction,
+  useFetcher,
+} from 'react-router';
 import { TextField } from '@mui/material';
+import Tooltip from '@mui/material/Tooltip';
 import { Button } from '@chakra-ui/react'
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import Tooltip from '@mui/material/Tooltip';
 import MoonLoader from 'react-spinners/MoonLoader';
 
 import TextDropdownField from '~/components/TextDropdownField';
@@ -19,7 +21,7 @@ import type { Option as DropdownOption } from '~/components/TextDropdownField';
 
 import { fetchAddressOptionsByPostal, } from './api.server';
 import type { Option } from './api.server';
-import styles from './styles/ShippingDetailForm.css';
+import styles from './styles/ShippingDetailForm.css?url';
 import { inistialState, addressOptionsReducer, AddressOptionsActionTypes } from './reducer';
 import type { ShippingDetailFormType } from '../../types';
 
@@ -36,9 +38,9 @@ export const action: ActionFunction = async ({ request }) => {
   if (!postal) return null;
   try {
     const options = await fetchAddressOptionsByPostal({ postal });
-    return json<Option[]>(options);
+    return Response.json(options);
   } catch (err) {
-    return json<Option[]>([]);
+    return Response.json([]);
   }
 }
 

@@ -1,7 +1,7 @@
 
 import type { LinksFunction } from '@remix-run/node';
 
-import styles from './styles/TrackingOrderInitPage.css';
+import styles from './styles/TrackingOrderInitPage.css?url';
 
 export const links: LinksFunction = () => {
   return [

@@ -3,7 +3,7 @@ import { clsx } from 'clsx'
 import { AiOutlineSearch } from "react-icons/ai";
 import type { LinksFunction } from '@remix-run/node';
 
-import styles from './styles/SearchBar.css';
+import styles from './styles/SearchBar.css?url';
 
 export const links: LinksFunction = () => {
 	return [

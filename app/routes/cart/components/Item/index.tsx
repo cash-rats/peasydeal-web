@@ -16,7 +16,7 @@ import {
 
 import { composeProductDetailURL } from '~/utils';
 
-import styles from './styles/Item.css';
+import styles from './styles/Item.css?url';
 
 export const links: LinksFunction = () => {
   return [

@@ -23,7 +23,7 @@ import { isFromGoogleStoreBot } from '~/utils';
 import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
 import type { LoaderTypeProductDetail, OptionType } from './types';
 import { fetchProductDetail } from './api.server';
-import styles from "./styles/ProdDetail.css";
+import styles from "./styles/ProdDetail.css?url";
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import trackWindowScrollTo from './components/RecommendedProducts/hooks/track_window_scroll_to';

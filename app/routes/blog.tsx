@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Outlet } from "react-router";
-import type {
-  LinksFunction,
-  LoaderFunction,
-  V2_MetaFunction
-} from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useLoaderData } from 'react-router';
+import {
+  type LinksFunction,
+  type LoaderFunction,
+  type MetaFunction,
+  Outlet,
+  useLoaderData,
+} from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
@@ -24,7 +23,7 @@ import {
   getBlogFBSEO_V2
 } from '~/utils/seo';
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     {
       title: getBlogTitleText(),
@@ -52,14 +51,14 @@ export const loader: LoaderFunction = async ({ request }) => {
   try {
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
-    return json<LoaderType>({
+    return Response.json({
       categories,
       navBarCategories,
     });
   } catch (e) {
     console.error(e);
 
-    throw json(e, {
+    throw Response.json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }

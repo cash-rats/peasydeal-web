@@ -35,7 +35,7 @@ import {
   convertShoppingCartToPriceQuery,
 } from './cart.server';
 import type { PriceInfo, ActionType } from './types';
-import styles from './styles/cart.css';
+import styles from './styles/cart.css?url';
 import sslCheckout from './images/SSL-Secure-Connection.png';
 import {
   applyPromoCode,

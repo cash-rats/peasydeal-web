@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react';
 import type { LinksFunction } from '@remix-run/node';
 
-import styles from './styles/ScrollButton.css';
+import styles from './styles/ScrollButton.css?url';
 
 export const links: LinksFunction = () => {
   return [

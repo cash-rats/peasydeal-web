@@ -11,7 +11,7 @@ import PageTitle from '~/components/PageTitle';
 import type { SearchProductsDataType } from './types';
 import reducer, { SearchActionType } from './reducer';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '../components/ProductRowsContainer';
-import searchStyles from '../styles/Search.css';
+import searchStyles from '../styles/Search.css?url';
 import {
   searchProductsLoader,
   searchMoreProductsLoader,

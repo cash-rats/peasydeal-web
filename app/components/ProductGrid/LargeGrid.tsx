@@ -7,7 +7,7 @@ import { links as SunShineLinks } from '~/components/Tags/SunShine';
 import { links as PennantLeftLinks } from '~/components/Tags/Pennant';
 import { composeProductDetailURL } from '~/utils';
 
-import styles from "./styles/LargeGrid.css";
+import styles from "./styles/LargeGrid.css?url";
 import type { TagsCombo } from './types';
 
 export function links() {

@@ -1,7 +1,7 @@
 import type { LinksFunction } from '@remix-run/node';
 
 import EmptyBox from './images/empty-box.png';
-import styles from './styles/TrackingOrderErrorPage.css';
+import styles from './styles/TrackingOrderErrorPage.css?url';
 
 export const links: LinksFunction = () => {
   return [

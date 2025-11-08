@@ -7,7 +7,7 @@ import { VscFlame, VscArrowRight } from "react-icons/vsc";
 import type { Category } from '~/shared/types';
 
 import AnnouncementBanner from "../AnnouncementBanner";
-import styles from './styles/MegaMenuContent.css';
+import styles from './styles/MegaMenuContent.css?url';
 
 export const links: LinksFunction = () => {
   return [

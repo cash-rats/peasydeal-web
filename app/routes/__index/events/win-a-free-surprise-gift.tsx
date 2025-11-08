@@ -26,7 +26,7 @@ import iconGift from './images/icon-gift.png';
 import iconTier from './images/icon-tier.png';
 import iconTime from './images/icon-time.png';
 
-import styles from './styles/events.css';
+import styles from './styles/events.css?url';
 
 import cardBG from './images/card-bg.jpg';
 import prizes from './data/2023-may-event-items.json';

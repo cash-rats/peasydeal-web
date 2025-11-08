@@ -16,7 +16,7 @@ import {
   getBlogFBSEO_V2,
 } from '~/utils/seo';
 
-import styles from '../styles/blog.css';
+import styles from '../styles/blog.css?url';
 
 export const links: LinksFunction = () => {
   return [
