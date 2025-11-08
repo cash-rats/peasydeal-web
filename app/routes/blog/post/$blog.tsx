@@ -1,11 +1,12 @@
-import { json } from "@remix-run/node";
-import { useLoaderData, Link } from "react-router";
-import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
-import type { LoaderFunction } from "@remix-run/node";
+import {
+  type LinksFunction,
+  type MetaFunction,
+  useLoaderData,
+  Link,
+} from "react-router";
 import httpStatus from 'http-status-codes';
 import { Button, Badge } from '@chakra-ui/react';
 import { VscArrowLeft } from "react-icons/vsc";
-import type { DynamicLinksFunction } from 'remix-utils';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES } from "@contentful/rich-text-types";
 import type { TContentfulPost } from '~/shared/types';
@@ -25,58 +26,16 @@ export const links: LinksFunction = () => {
 interface IBlogPostDataProps {
   blog: TContentfulPost,
   latestPosts: TContentfulPost[],
+  canonicalLink: string,
 }
 
-const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
-  return [
-    {
-      rel: 'canonical', href: data?.canonicalLink,
-    },
-  ];
-}
-
-type LoaderType = {
-  canonicalLink: string;
-};
-
-export const handle = { dynamicLinks };
-
-export const meta: V2_MetaFunction = ({ data }: { data: IBlogPostDataProps }) => {
-  const contentfulFields = data || {};
-
-  return getRootFBSEO_V2()
-    .map(tag => {
-      if (!('property' in tag)) return tag;
-
-      if (tag.property === 'og:title') {
-        tag.content = contentfulFields?.blog?.seoTitle;
-      }
-
-      if (tag.property === 'og:description') {
-        tag.content = contentfulFields?.blog?.seoDesc;
-      }
-
-      if (tag.property === 'og:image') {
-        tag.content = contentfulFields?.blog?.featuredImage?.fields?.file?.url;
-      }
-
-      return tag;
-    });
-};
-
-interface IBlog {
-  blog: TContentfulPost,
-  latestPosts: TContentfulPost[],
-  canonicalLink?: string,
-}
-
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({ params }: { params: Record<string, string | undefined> }) => {
   try {
     const { blog = '' } = params;
     const res = await fetchContentfulWithSlug({ slug: blog });
     const latest = await fetchContentfulLatestPosts({ total: 6 });
 
-    return json<IBlog>({
+    return Response.json({
       blog: res,
       latestPosts: latest,
       canonicalLink: `${getCanonicalDomain()}/blog/post/${blog}`
@@ -84,11 +43,37 @@ export const loader: LoaderFunction = async ({ params }) => {
   } catch (e) {
     console.error(e);
 
-    throw json(e, {
+    throw Response.json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
 }
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  const contentfulFields = data || {} as IBlogPostDataProps;
+
+  return [
+    { tagName: 'link', rel: 'canonical', href: data?.canonicalLink },
+    ...getRootFBSEO_V2()
+      .map(tag => {
+        if (!('property' in tag)) return tag;
+
+        if (tag.property === 'og:title') {
+          tag.content = contentfulFields?.blog?.seoTitle;
+        }
+
+        if (tag.property === 'og:description') {
+          tag.content = contentfulFields?.blog?.seoDesc;
+        }
+
+        if (tag.property === 'og:image') {
+          tag.content = contentfulFields?.blog?.featuredImage?.fields?.file?.url;
+        }
+
+        return tag;
+      })
+  ];
+};
 
 
 // Create a bespoke renderOptions object to target BLOCKS.EMBEDDED_ENTRY (linked block entries e.g. code blocks)
