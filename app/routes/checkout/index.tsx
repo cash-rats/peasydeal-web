@@ -1,16 +1,25 @@
-import { useEffect, useRef, useReducer } from 'react';
-import type { FormEvent } from 'react';
-import type { LoaderFunction, LinksFunction, ActionFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
-import { useLoaderData } from 'react-router';
+import {
+  type FormEvent,
+  useEffect,
+  useRef,
+  useReducer,
+} from 'react';
+import {
+  type LoaderFunction,
+  type LinksFunction,
+  type ActionFunction,
+  redirect,
+  useLoaderData,
+} from 'react-router';
 import Alert from '@mui/material/Alert';
 import { Spinner } from '@chakra-ui/react'
+
 import type { PaymentMethod } from '~/shared/types';
 import { useContext } from '~/routes/checkout';
 import { getCart } from '~/sessions/shoppingcart.session';
 import type { ShoppingCart } from '~/sessions/shoppingcart.session';
-import { useCreateOrder, useStripeConfirmPayment } from './hooks';
 
+import { useCreateOrder, useStripeConfirmPayment } from './hooks';
 import styles from './styles/Checkout.css';
 import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
 import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
@@ -48,9 +57,9 @@ export const loader: LoaderFunction = async ({ request }) => {
       throw redirect("/cart");
     }
 
-    return json<LoaderType>({ cart_items: cart });
+    return Response.json({ cart_items: cart });
   } catch (error) {
-    return json<LoaderType>({ cart_items: {} });
+    return Response.json({ cart_items: {} });
   }
 };
 

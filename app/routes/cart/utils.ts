@@ -1,5 +1,6 @@
 import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
-import type { PurchasedProduct, PriceInfo } from './cart.server';
+
+import type { PurchasedProduct, PriceInfo } from './types'
 
 /**
  * Transform newly added product to `ShoppingCartItem` so it can be
