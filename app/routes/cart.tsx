@@ -3,13 +3,11 @@ import { Outlet } from "react-router";
 import type {
   LinksFunction,
   LoaderFunction,
-  V2_MetaFunction
-} from '@remix-run/node';
-import { json } from '@remix-run/node';
+  MetaFunction
+} from 'react-router';
 import { useLoaderData } from 'react-router';
-import httpStatus from 'http-status-codes';
-import type { DynamicLinksFunction } from 'remix-utils';
 
+import httpStatus from 'http-status-codes';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import SearchBar from '~/components/SearchBar';
@@ -27,21 +25,13 @@ import {
 
 import cartStyles from './styles/cart.css';
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: getCartTitleText() },
     ...getCartFBSEO_V2(),
+    { tagName: 'link', rel: 'canonical', href: `${getCanonicalDomain()}/cart` },
   ]
 }
-
-const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
-  return [
-    {
-      rel: 'canonical', href: data?.canonicalLink,
-    },
-  ];
-}
-export const handle = { dynamicLinks };
 
 export const links: LinksFunction = () => {
   return [
@@ -60,11 +50,11 @@ type LoaderType = {
   canonicalLink: string;
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: Parameters<LoaderFunction>[0]) => {
   try {
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
-    return json<LoaderType>({
+    return Response.json({
       categories,
       navBarCategories,
       canonicalLink: `${getCanonicalDomain()}/cart`
@@ -72,7 +62,7 @@ export const loader: LoaderFunction = async ({ request }) => {
   } catch (e) {
     console.error('cart error', e);
 
-    throw json(e, {
+    throw Response.json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
