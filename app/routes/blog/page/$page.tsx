@@ -1,10 +1,6 @@
-import { json } from "@remix-run/node";
 import { useLoaderData } from "react-router";
-import type { LinksFunction, V2_MetaFunction } from '@remix-run/node';
-import type { LoaderFunction } from "@remix-run/node";
-import type { DynamicLinksFunction } from 'remix-utils';
+import type { LinksFunction, MetaFunction } from 'react-router';
 import httpStatus from 'http-status-codes';
-import type { IBlogStaticProps } from '~/shared/types';
 
 import { getStaticProps } from "../api";
 import BlogLayout from "../components/BlogLayout";
@@ -24,48 +20,30 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type LoaderType = {
-  canonicalLink: string;
-};
-
-export const meta: V2_MetaFunction = () => {
-  return [
-    {
-      title: getBlogTitleText(),
-    },
-    ...getBlogFBSEO_V2(blogOGImage),
-  ]
-}
-
-const dynamicLinks: DynamicLinksFunction<LoaderType> = ({ data }) => {
-  return [
-    {
-      rel: 'canonical', href: data?.canonicalLink,
-    },
-  ];
-}
-
-export const handle = { dynamicLinks };
-
-export const loader: LoaderFunction = async ({ params }) => {
+export const loader = async ({ params }: { params: Record<string, string | undefined> }) => {
   try {
     const { page = '1' } = params;
     const res = await getStaticProps({ params: { page: parseInt(page) } });
 
-    return json<{
-      blogs: IBlogStaticProps
-      canonicalLink: string,
-    }>({
+    return Response.json({
       blogs: res,
       canonicalLink: `${getCanonicalDomain()}/blog/page/${parseInt(page)}`
     });
   } catch (e) {
     console.error(e);
 
-    throw json(e, {
+    throw Response.json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
+}
+
+export const meta: MetaFunction<typeof loader> = ({ loaderData }) => {
+  return [
+    { title: getBlogTitleText() },
+    { tagName: 'link', rel: 'canonical', href: loaderData?.canonicalLink },
+    ...getBlogFBSEO_V2(blogOGImage),
+  ]
 }
 
 export default function BlogIndex() {
