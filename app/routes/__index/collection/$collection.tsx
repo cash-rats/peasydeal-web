@@ -5,7 +5,7 @@ import type {
   ActionFunctionArgs,
   MetaFunction,
 } from 'react-router';
-import { json, redirect } from 'react-router';
+import { data, redirect } from 'react-router';
 import {
   useFetcher,
   useLoaderData,
@@ -118,7 +118,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
       return redirect(`/collection/${resolvedCategoryName}`)
     }
   } catch (e: any) {
-    throw json(composErrorResponse(e.message))
+    throw data(composErrorResponse(e.message))
   }
 
   if (actionType === 'loadmore') {
@@ -141,7 +141,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     });
   }
 
-  throw json(
+  throw data(
     composErrorResponse(
       `unrecognize loader action ${actionType}`),
     { status: httpStatus.INTERNAL_SERVER_ERROR },

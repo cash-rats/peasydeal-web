@@ -1,4 +1,4 @@
-import { json } from 'react-router';
+import { data } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import {
@@ -25,7 +25,7 @@ export const productsLoader = async ({
   perpage,
 }: ProductsLoaderParams) => {
   if (!await checkCategoryExists(category)) {
-    throw json({
+    throw data({
       error: `target category ${category} not found`
     }, {
       status: httpStatus.NOT_FOUND
@@ -51,7 +51,7 @@ export const productsLoader = async ({
       random: false,
     })
 
-    return json<LoaderDataType>({
+    return data<LoaderDataType>({
       category: taxCat,
       products,
       page: cachedProds.page,
@@ -82,7 +82,7 @@ export const productsLoader = async ({
     1,
   )
 
-  return json<LoaderDataType>({
+  return data<LoaderDataType>({
     products,
     page: 1,
     total,
@@ -113,7 +113,7 @@ export const loadmoreProductsLoader = async ({
   perpage,
 }: ILoaderMoreLoader) => {
   if (!await checkCategoryExists(category)) {
-    throw json(`target category ${category} not found`, {
+    throw data(`target category ${category} not found`, {
       status: httpStatus.NOT_FOUND
     });
   }
@@ -129,7 +129,7 @@ export const loadmoreProductsLoader = async ({
     category,
   })
 
-  return json<LoadMoreDataType>({
+  return data<LoadMoreDataType>({
     products,
     total,
     current,

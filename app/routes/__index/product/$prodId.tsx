@@ -95,7 +95,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   try {
     const prodDetail = await fetchProductDetail(decompURL.productUUID);
 
-    return json<LoaderTypeProductDetail>({
+    return data<LoaderTypeProductDetail>({
       product: prodDetail,
       canonical_url: `${getCanonicalDomain()}${url.pathname}`,
       meta_image: prodDetail.main_pic_url?.url || '',
@@ -136,13 +136,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     !item.variationUUID ||
     typeof item.variationUUID === 'undefined'
   ) {
-    return json('', { status: httpStatus.BAD_REQUEST });
+    return data('', { status: httpStatus.BAD_REQUEST });
   }
 
   const session = await insertItem(request, item);
 
   if (formAction === 'add_item_to_cart') {
-    return json('', {
+    return data('', {
       headers: { "Set-Cookie": await commitSession(session) }
     });
   }

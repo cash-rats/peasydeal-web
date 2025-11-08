@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from 'react';
-import { json } from 'react-router';
+import { data } from 'react-router';
 import type { ActionFunctionArgs } from 'react-router';
 import { useFetcher } from 'react-router';
 
@@ -14,7 +14,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const prodUUID = await formData.get('product_uuid') as string || '';
   if (!prodUUID) return null
   const resp = await fetchReviews(prodUUID);
-  return json<ReviewResponse>(resp);
+  return data<ReviewResponse>(resp);
 }
 
 interface ReviewsParams {

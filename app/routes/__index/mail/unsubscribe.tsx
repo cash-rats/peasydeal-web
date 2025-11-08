@@ -1,5 +1,5 @@
 import type { MetaFunction, LoaderFunctionArgs } from 'react-router';
-import { json } from 'react-router';
+import { data } from 'react-router';
 import { useState, useEffect } from "react";
 import { useLoaderData } from 'react-router';
 import { useFetcher } from 'react-router'
@@ -36,7 +36,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const uuid = url.searchParams.get('uuid') || '';
 
-  return json<LoaderDataType>({
+  return data<LoaderDataType>({
     uuid,
   })
 }

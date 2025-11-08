@@ -1,4 +1,4 @@
-import { json } from 'react-router';
+import { data } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import { composErrorResponse } from '~/utils/error';
@@ -31,10 +31,10 @@ export const searchProductsLoader = async ({
     })
 
     if (products.length === 0) {
-      throw json({ query }, httpStatus.NOT_FOUND);
+      throw data({ query }, { status: httpStatus.NOT_FOUND });
     }
 
-    return json<SearchProductsDataType>({
+    return data<SearchProductsDataType>({
       products,
       query,
       page,
@@ -43,10 +43,10 @@ export const searchProductsLoader = async ({
       has_more,
     });
   } catch (e: any) {
-    throw json({
+    throw data({
       ...composErrorResponse(e.message),
       query,
-    }, httpStatus.NOT_FOUND);
+    }, { status: httpStatus.NOT_FOUND });
   }
 }
 
@@ -73,7 +73,7 @@ export const searchMoreProductsLoader = async ({
       page,
     });
 
-    return json<SearchProductsDataType>({
+    return data<SearchProductsDataType>({
       products,
       query,
       page,
@@ -82,6 +82,6 @@ export const searchMoreProductsLoader = async ({
       has_more,
     });
   } catch (e: any) {
-    throw json(composErrorResponse(e.message));
+    throw data(composErrorResponse(e.message));
   }
 }

@@ -1,6 +1,6 @@
 import { useReducer, useRef, useEffect } from 'react';
 import type { LoaderFunctionArgs, LinksFunction, MetaFunction } from 'react-router';
-import { json } from 'react-router';
+import { data } from 'react-router';
 import { useLoaderData, useFetcher, useParams, NavLink, useNavigation } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react'
@@ -91,7 +91,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
   // if promotion not provided.
   if (!params.promotion) {
-    throw json('promotion not found', {
+    throw data('promotion not found', {
       status: httpStatus.BAD_REQUEST,
     })
   }
@@ -123,7 +123,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     });
   }
 
-  throw json('unrecognized action');
+  throw data('unrecognized action');
 }
 
 export const CatchBoundary = () => (<FourOhFour />);

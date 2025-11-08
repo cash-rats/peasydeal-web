@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs } from 'react-router';
 import { useFetcher, useNavigation } from 'react-router';
-import { json } from 'react-router';
+import { data } from 'react-router';
 import { useEffect, useState } from 'react';
 
 import { ProductRow } from "~/components/ProductRow";
@@ -31,7 +31,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // Load 5 TOP products 22
   // Load 4 Super deals 2
   // You may also like 3
-  return json<ActionType>({
+  return data<ActionType>({
     top_products: topProds,
     super_deal_products: superDealProds,
   });

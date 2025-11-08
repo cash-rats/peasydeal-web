@@ -2,7 +2,7 @@
 // and process the request via `action`. Email subscribe request are mainly
 // from `FooterMobileLayout` and `FooterTabletLayout` for now.
 import type { ActionFunctionArgs } from 'react-router';
-import { json } from 'react-router';
+import { data } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import { composErrorResponse } from '~/utils/error';
@@ -15,13 +15,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   try {
     if (!email) {
-      return json({}, httpStatus.BAD_REQUEST)
+      return data({}, { status: httpStatus.BAD_REQUEST })
     }
     const resp = await subscribe(email);
-    return json(resp, httpStatus.OK);
+    return data(resp, { status: httpStatus.OK });
 
   } catch (err: any) {
-    return json(composErrorResponse(err.message), httpStatus.BAD_REQUEST);
+    return data(composErrorResponse(err.message), { status: httpStatus.BAD_REQUEST });
   }
 }
 

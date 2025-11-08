@@ -1,4 +1,4 @@
-import { parseMultipartFormData, json } from 'react-router';
+import { parseMultipartFormData, data } from 'react-router';
 
 import { composErrorResponse } from '~/utils/error';
 
@@ -61,7 +61,7 @@ const reviewProduct = async (request: Request) => {
     // validate form data
     const formError = validateForm({ review, name });
     if (Object.values(formError).some(e => !!e)) {
-      return json(composErrorResponse(formError, 'validation_error'));
+      return data(composErrorResponse(formError, 'validation_error'));
     }
 
     await submitReview({
@@ -76,7 +76,7 @@ const reviewProduct = async (request: Request) => {
 
     return {};
   } catch (err: any) {
-    return json(composErrorResponse(err.message));
+    return data(composErrorResponse(err.message));
   }
 };
 

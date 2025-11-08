@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
-import { json, redirect } from 'react-router';
+import { data, redirect } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { useLoaderData } from 'react-router';
 
@@ -47,14 +47,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
-    return json<LoaderType>({
+    return data<LoaderType>({
       categories,
       navBarCategories,
     });
   } catch (e) {
     console.error(e);
 
-    throw json(e, {
+    throw data(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }

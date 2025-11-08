@@ -2,7 +2,7 @@ import { useEffect, useState, forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
 import type { LinksFunction, ActionFunctionArgs } from 'react-router';
 import { useFetcher, useNavigation } from 'react-router';
-import { json } from 'react-router';
+import { data } from 'react-router';
 
 // Note: we don't need to import "style links" for this component
 // because route `__index/index` already loaded it. If we load it
@@ -36,7 +36,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     perpage: PAGE_LIMIT,
   });
 
-  return json<ActionDataType>({ products });
+  return data<ActionDataType>({ products });
 }
 
 

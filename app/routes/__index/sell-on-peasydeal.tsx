@@ -1,4 +1,4 @@
-import { json } from "react-router";
+import { data } from "react-router";
 import { useLoaderData } from "react-router";
 import type { LinksFunction, MetaFunction } from 'react-router';
 import type { LoaderFunctionArgs } from "react-router";
@@ -41,11 +41,11 @@ export const loader = async (: LoaderFunctionArgs) => {
     const entryId = "1LNn5LAShbDcw9nMG2Rh9v";
     const res = await fetchContentfulPostWithId({ entryId });
 
-    return json<TContentfulPost>(res);
+    return data<TContentfulPost>(res);
   } catch (e) {
     console.error(e);
 
-    throw json(e, {
+    throw data(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }

@@ -6,7 +6,7 @@
 
 import { useState, useEffect } from 'react';
 import type { ActionFunctionArgs } from 'react-router';
-import { json } from 'react-router';
+import { data } from 'react-router';
 import { useFetcher } from 'react-router';
 
 import type { Product, SuggestItem } from '~/shared/types';
@@ -25,7 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return null;
   }
 
-  return json<ActionType>({
+  return data<ActionType>({
     results: await searchProductPreviews({ query, perPage: 6 })
   });
 };

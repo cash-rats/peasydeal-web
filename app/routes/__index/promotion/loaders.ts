@@ -1,4 +1,4 @@
-import { json } from 'react-router';
+import { data } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
@@ -43,7 +43,7 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
         page: 1,
       });
 
-      return json<LoadProductsDataType>(Object.assign(
+      return data<LoadProductsDataType>(Object.assign(
         response,
         {
           products: items,
@@ -67,7 +67,7 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
     });
 
     const session = await addCategoryProducts(request, [], promoName, 1);
-    return json(Object.assign(
+    return data(Object.assign(
       response,
       {
         products,
@@ -79,7 +79,7 @@ export const loadProducts = async ({ request, perpage, promoName }: ILoadProduct
       headers: { 'Set-Cookie': await commitSession(session) }
     });
   } catch (error) {
-    throw json(
+    throw data(
       { error },
       { status: httpStatus.NOT_FOUND, }
     );
@@ -113,7 +113,7 @@ export const loadMoreProducts = async ({ request, promoName, page, perpage }: IL
       throw new Error('promotion does not exist');
     }
 
-    return json<LoadMoreDataType>({
+    return data<LoadMoreDataType>({
       products,
       total,
       current,
@@ -128,7 +128,7 @@ export const loadMoreProducts = async ({ request, promoName, page, perpage }: IL
       }
     });
   } catch (error) {
-    throw json(
+    throw data(
       { error },
       { status: httpStatus.NOT_FOUND, }
     );
