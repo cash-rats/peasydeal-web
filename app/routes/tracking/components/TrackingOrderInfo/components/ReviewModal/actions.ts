@@ -1,11 +1,12 @@
-import { parseMultipartFormData, data } from 'react-router';
+import { parseFormData } from '@remix-run/form-data-parser';
+import { data } from 'react-router';
 
 import { composErrorResponse } from '~/utils/error';
 
 import type { FormError } from './types';
 import { uploadHandler } from './storage.server';
 import { submitReview } from './api.server';
-import { maskName } from '../../../../utils';
+import { maskName } from '../../../../utils'; // TODO: fix import path
 
 const validateReview = (review: string) => {
   if (review.length === 0) {
@@ -45,7 +46,7 @@ const validateForm = ({ review, name }: ValidateFormParams) => {
 const reviewProduct = async (request: Request) => {
   try {
     // upload files to gcs.
-    const formData = await parseMultipartFormData(
+    const formData = await parseFormData(
       request,
       uploadHandler,
     );

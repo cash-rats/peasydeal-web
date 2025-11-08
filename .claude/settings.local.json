@@ -15,7 +15,8 @@
       "WebFetch(domain:remix.run)",
       "WebFetch(domain:medium.com)",
       "WebFetch(domain:v2.remix.run)",
-      "Bash(npm run typecheck:*)"
+      "Bash(npm run typecheck:*)",
+      "WebFetch(domain:www.npmjs.com)"
     ],
     "deny": [],
     "ask": []
