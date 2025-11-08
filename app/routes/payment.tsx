@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useLoaderData } from 'react-router';
-import { json } from '@remix-run/node'
-import type { LoaderFunction, LinksFunction, V2_MetaFunction } from '@remix-run/node';
+import type { LinksFunction, MetaFunction } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
@@ -27,29 +26,29 @@ type LoaderType = {
   navBarCategories: Category[]
 };
 
-export const meta: V2_MetaFunction = () => ([
+export const meta: MetaFunction = () => ([
   { title: getPaymentSuccessTitleText() },
 ]);
 
-export const loader: LoaderFunction = async () => {
+export const loader = async () => {
   try {
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
-    return json<LoaderType>({
+    return Response.json({
       categories,
       navBarCategories,
     })
   } catch (e) {
     console.error(e);
 
-    throw json(e, {
+    throw Response.json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
 }
 
 export default function Payment() {
-  const { categories, navBarCategories } = useLoaderData() || {};
+  const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
   const handleOpen = () => setOpenSearchDialog(true);

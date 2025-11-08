@@ -1,5 +1,4 @@
-import type { LoaderFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
+import { type LoaderFunction, redirect } from 'react-router';
 import { useLoaderData } from 'react-router';
 
 import type { PaymentMethod } from '~/shared/types';
@@ -36,11 +35,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   const { orderId } = params;
 
   if (!orderId) {
-    throw json('404 not found');
+    throw Response.json('404 not found');
   }
 
   if (paymentMethod === PaymentMethodEnum.Paypal) {
-    return json<LoaderDataType>({
+    return Response.json({
       paymentMethod: PaymentMethodEnum.Paypal,
       paypal: {
         orderId,
@@ -56,7 +55,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
     }
 
     // Get stripe client secret
-    return json<LoaderDataType>({
+    return Response.json({
       paymentMethod: PaymentMethodEnum.Stripe,
       stripe: {
         clientSecret,
@@ -66,7 +65,7 @@ export const loader: LoaderFunction = async ({ params, request }) => {
   }
 
   // Payment method not specified. We'll throw an error out.
-  throw json('payment method not specified');
+  throw Response.json('payment method not specified');
 }
 
 export default function PaymentResult() {
