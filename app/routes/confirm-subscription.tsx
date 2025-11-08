@@ -1,28 +1,25 @@
-import type { V2_MetaFunction, LoaderArgs } from "@remix-run/node";
-import { json } from '@remix-run/node';
-import { Link, useLoaderData, useRouteError } from 'react-router';
+import type { MetaFunction, LoaderFunctionArgs } from "react-router";
+import { Link, useLoaderData } from 'react-router';
 import { activateEmailSubscribe } from '~/api';
 import { CheckCircledIcon, CopyIcon, RocketIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
 
-export const meta: V2_MetaFunction = () => {
+export const meta: MetaFunction = () => {
   return [
     { title: "Email Verified - Your Coupon is Ready!" },
     { name: "description", content: "Your email is verified and coupon is ready to use" },
   ];
 };
 
-export const loader = async ({ request }: LoaderArgs) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const uuid = url.searchParams.get('uuid') as string;
   const { coupon } = await activateEmailSubscribe(uuid);
-  return json({ coupon });
+  return Response.json({ coupon });
 };
 
 export const ErrorBoundary = () => {
-  const error = useRouteError();
-
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
       <Card className="w-full max-w-md">
@@ -73,9 +70,9 @@ function ConfirmSubscription() {
   };
 
   return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4 dark:bg-gray-900">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <div className="relative">
               <CheckCircledIcon className="h-16 w-16 text-green-500" />
@@ -147,9 +144,9 @@ function ConfirmSubscription() {
               Start Shopping
             </Link>
           </div>
-          </CardContent>
-        </Card>
-      </div>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
