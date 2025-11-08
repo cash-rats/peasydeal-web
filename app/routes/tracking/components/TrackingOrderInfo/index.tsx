@@ -4,7 +4,6 @@ import parseISO from 'date-fns/parseISO';
 import format from 'date-fns/format';
 import add from 'date-fns/add';
 import type { ActionFunctionArgs, LinksFunction } from 'react-router';
-import { json } from 'react-router';
 import { useFetcher, useRevalidator } from 'react-router';
 import { useImmerReducer } from 'use-immer';
 import { FcInfo } from 'react-icons/fc';
@@ -59,7 +58,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
     return null
   } catch (err) {
-    return json(err);
+    return Response.json(err);
   }
 };
 

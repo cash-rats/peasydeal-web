@@ -39,13 +39,13 @@ type CatchBoundaryDataType = {
   navBarCategories: Category[];
 }
 
-export const meta: MetaFunction<typeof loader> = ({ loaderData }) => ([
+export const meta: MetaFunction<typeof loader> = ({ data }) => ([
   ...getTrackingFBSEO(),
   { title: getTrackingTitleText() },
   {
     tagName: 'link',
     rel: 'canonical',
-    href: loaderData?.canonicalLink || `${getCanonicalDomain()}/tracking`,
+    href: data?.canonicalLink || `${getCanonicalDomain()}/tracking`,
   },
 ]);
 
