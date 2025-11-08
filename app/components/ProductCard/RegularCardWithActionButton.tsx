@@ -11,16 +11,14 @@ import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { composeProductDetailURL } from '~/utils';
 import { round10 } from '~/utils/preciseRound';
 import {
+  type IProductCard,
+  type ITag,
   capitalizeWords,
   getColorByTag,
   getLeftIconByTag,
   showPriceOffThreshhold,
 } from './utils';
 
-import type {
-  IProductCard,
-  ITag,
-} from './utils';
 
 import { envs } from '~/utils/env';
 import { SUPER_DEAL_OFF } from '~/shared/constants';

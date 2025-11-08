@@ -1,10 +1,9 @@
 import type { MouseEvent } from 'react';
 import { useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from 'react-router';
-import { json, redirect } from 'react-router';
-import { Form, useLoaderData, useFetcher, useCatch } from 'react-router';
+import { redirect, useRouteError, isRouteErrorResponse } from 'react-router';
+import { Form, useLoaderData, useFetcher } from 'react-router';
 import httpStatus from 'http-status-codes';
-import type { DynamicLinksFunction } from 'remix-utils';
 
 import Header, { links as HeaderLinks } from '~/routes/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
@@ -40,18 +39,14 @@ type CatchBoundaryDataType = {
   navBarCategories: Category[];
 }
 
-const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => {
-  return [
-    {
-      rel: 'canonical', href: `${getCanonicalDomain()}/tracking`,
-    },
-  ];
-}
-export const handle = { dynamicLinks };
-
-export const meta: MetaFunction = () => ([
+export const meta: MetaFunction<typeof loader> = ({ loaderData }) => ([
   ...getTrackingFBSEO(),
-  { title: getTrackingTitleText(), },
+  { title: getTrackingTitleText() },
+  {
+    tagName: 'link',
+    rel: 'canonical',
+    href: loaderData?.canonicalLink || `${getCanonicalDomain()}/tracking`,
+  },
 ]);
 
 export const links: LinksFunction = () => {
@@ -72,7 +67,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   // Current route has just been requested. Ask user to search order by order ID.
   if (!url.searchParams.has('query')) {
-    return json<LoaderDataType>({
+    return Response.json({
       query: '',
       order: null,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
@@ -85,13 +80,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   // Order id is likely to be empty, thus, is invalid.
   if (!query) {
-    return json(composErrorResponse('invalid order id'), httpStatus.BAD_REQUEST);
+    return Response.json(
+      composErrorResponse('invalid order id'), {
+      status: httpStatus.BAD_REQUEST,
+    });
   }
 
   try {
     const order = normalizeTrackingOrder(await trackOrder(query));
 
-    return json<LoaderDataType>({
+    return Response.json({
       query,
       order,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
@@ -99,13 +97,15 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       categories,
     });
   } catch (err) {
-    throw json<CatchBoundaryDataType>({
+    throw Response.json({
       query: '',
       errMessage: `Result for order ${query} is not found`,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
       navBarCategories,
       categories,
-    }, httpStatus.NOT_FOUND);
+    }, {
+      status: httpStatus.NOT_FOUND,
+    });
   }
 }
 
@@ -118,9 +118,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return redirect(`/tracking?query=${orderUUID}`);
 }
 
-export const CatchBoundary = () => {
-  const caught = useCatch();
-  const caughtData: CatchBoundaryDataType = caught.data;
+export function ErrorBoundary() {
+  const error = useRouteError();
   const trackOrderFetcher = useFetcher();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
   const handleOpen = () => setOpenSearchDialog(true);
@@ -147,49 +146,61 @@ export const CatchBoundary = () => {
     );
   }
 
-  return (
-    <>
-      <MobileSearchDialog
-        onBack={handleClose}
-        isOpen={openSearchDialog}
-      />
+  if (isRouteErrorResponse(error)) {
+    const caughtData: CatchBoundaryDataType = error.data;
 
-      <Header
-        categories={caughtData.categories}
-        categoriesBar={
-          <CategoriesNav
-            categories={caughtData.categories}
-            topCategories={caughtData.navBarCategories}
-          />
-        }
-        mobileSearchBar={
-          <SearchBar
-            placeholder='Search keywords...'
-            onClick={handleOpen}
-            onTouchEnd={handleOpen}
-          />
-        }
-        searchBar={
-          <SearchBar
+    return (
+      <>
+        <MobileSearchDialog
+          onBack={handleClose}
+          isOpen={openSearchDialog}
+        />
+
+        <Header
+          categories={caughtData.categories}
+          categoriesBar={
+            <CategoriesNav
+              categories={caughtData.categories}
+              topCategories={caughtData.navBarCategories}
+            />
+          }
+          mobileSearchBar={
+            <SearchBar
+              placeholder='Search keywords...'
+              onClick={handleOpen}
+              onTouchEnd={handleOpen}
+            />
+          }
+          searchBar={
+            <SearchBar
+              onSearch={handleOnSearch}
+              onClear={handleOnClear}
+              placeholder='Search by order id'
+            />
+          }
+        />
+
+        <Form action='/tracking'>
+          <TrackingSearchBar
             onSearch={handleOnSearch}
             onClear={handleOnClear}
-            placeholder='Search by order id'
           />
-        }
-      />
+        </Form>
 
-      <Form action='/tracking'>
-        <TrackingSearchBar
-          onSearch={handleOnSearch}
-          onClear={handleOnClear}
-        />
-      </Form>
+        <TrackingOrderErrorPage message={caughtData.errMessage} />
 
-      <TrackingOrderErrorPage message={caughtData.errMessage} />
+        <Footer />
+      </>
+    )
+  }
 
-      <Footer />
-    </>
-  )
+  // Handle unexpected errors
+  return (
+    <div>
+      <h1>Unexpected Error</h1>
+      <p>{error instanceof Error ? error.message : 'Unknown error occurred'}</p>
+    </div>
+  );
 }
 
 function TrackingOrder() {

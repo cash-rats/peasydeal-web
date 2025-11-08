@@ -10,7 +10,11 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:aibolik.com)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:remix.run)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:v2.remix.run)"
     ],
     "deny": [],
     "ask": []
