@@ -20,13 +20,20 @@ export default function handleRequest(
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
+  // Create a modified context without the serverHandoffStream
+  // to prevent "ReadableStream is locked" errors on the second render
+  const renderContext = {
+    ...entryContext,
+    serverHandoffStream: undefined,
+  } as EntryContext;
+
   const html = renderToString(
     <ServerStyleContext.Provider value={null}>
       <CacheProvider value={cache}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <ServerRouter
-            context={entryContext}
+            context={renderContext}
             url={request.url}
           />
         </ThemeProvider>
@@ -43,7 +50,7 @@ export default function handleRequest(
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <ServerRouter
-            context={entryContext}
+            context={renderContext}
             url={request.url}
           />
         </ThemeProvider>
