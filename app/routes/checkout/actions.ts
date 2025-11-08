@@ -70,7 +70,7 @@ export const __paypalCreateOrder = async (form: ActionPayload) => {
     promo_code: JSON.parse(promo_code),
   });
 
-  return json<PaypalOrderActionDataType>(resp, httpStatus.OK);
+  return Response.json(resp);
 }
 
 export const __stripeCreateOrder = async (formObj: ActionPayload) => {
