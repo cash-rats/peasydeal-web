@@ -1,23 +1,25 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import type { LinksFunction, ActionFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useFetcher, Link } from 'react-router';
-
 import { IconButton, Button } from '@chakra-ui/react';
 import { VscChevronLeft, VscChevronRight, VscArrowRight } from 'react-icons/vsc';
+import {
+  type LinksFunction,
+  type ActionFunction,
+  useFetcher,
+  Link,
+} from 'react-router';
 
 import { composeProductDetailURL } from '~/utils';
 import type { Product } from '~/shared/types';
 import { fetchProductsByCategoryV2 } from '~/api';
-import slickStyles from "slick-carousel/slick/slick.css";
-import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
-import { RegularCardWithActionButton, links as ProductCardLinks } from '~/components/ProductCard';
+import slickStyles from "slick-carousel/slick/slick.css?url";
+import slickThemeStyles from "slick-carousel/slick/slick-theme.css?url";
+import { RegularCardWithActionButton } from '~/components/ProductCard';
 
-import styles from './styles/HorizontalProductsLayout.css';
+import styles from './styles/HorizontalProductsLayout.css?url';
 
 export const links: LinksFunction = () => {
   return [
-    ...ProductCardLinks(),
+    // ...ProductCardLinks(),
     { rel: 'stylesheet', href: styles },
     { rel: 'stylesheet', href: slickStyles },
     { rel: 'stylesheet', href: slickThemeStyles },
@@ -42,7 +44,7 @@ export const action: ActionFunction = async ({ request }) => {
     random: true,
   });
 
-  return json<ActionType>({ recProds: recProds });
+  return Response.json({ recProds: recProds });
 }
 
 interface HorizontalProductsLayoutProps {
@@ -72,11 +74,11 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
   }, []);
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
+    if (fetcher.state === 'idle' && fetcher.data) {
       const data = fetcher.data as ActionType;
       setRecProds(data.recProds);
     }
-  }, [fetcher.type]);
+  }, [fetcher.state, fetcher.data]);
 
 
   const handleClickGrid = (title: string, prodUUID: string) => {

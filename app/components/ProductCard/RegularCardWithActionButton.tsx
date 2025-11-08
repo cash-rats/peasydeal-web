@@ -5,7 +5,6 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router';
-import type { LinksFunction } from '@remix-run/node';
 import Image, { MimeType } from "remix-image"
 import { LazyWrapper } from '~/components/LazyWrapper';
 import { Tag, TagLeftIcon } from '@chakra-ui/react';
