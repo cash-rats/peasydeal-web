@@ -33,6 +33,7 @@ export default defineConfig({
       '@emotion/weak-memoize',
       '@emotion/sheet',
       '@emotion/utils',
+      '@mui/material',
       '@chakra-ui/react',
       '@algolia/autocomplete-js',
       '@algolia/autocomplete-core',

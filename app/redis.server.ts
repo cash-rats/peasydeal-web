@@ -3,11 +3,15 @@ import { env } from '~/utils/env';
 
 let ioredis: Redis;
 declare global {
-  var __redis__: Redis;
+  var __redis__: Redis | undefined;
 }
 
-const dsn = `rediss://${env.REDIS_USER}:${env.REDIS_PASSWORD}@${env.REDIS_HOST}:${env.REDIS_PORT}`;
-ioredis = new IORedis(dsn);
+// Initialize Redis instance with singleton pattern
+if (!global.__redis__) {
+  const dsn = `rediss://${env.REDIS_USER}:${env.REDIS_PASSWORD}@${env.REDIS_HOST}:${env.REDIS_PORT}`;
+  global.__redis__ = new IORedis(dsn);
+}
+
 ioredis = global.__redis__;
 
 export { ioredis };
