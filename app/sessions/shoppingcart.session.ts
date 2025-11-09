@@ -1,6 +1,6 @@
 import type { Session } from 'react-router';
 
-import { getCookieSession } from './session_utils';
+import { getCookieSession } from './session_utils.server';
 import type { ShoppingCart, ShoppingCartItem } from './types';
 
 export const CartSessionKey = 'shopping_cart';

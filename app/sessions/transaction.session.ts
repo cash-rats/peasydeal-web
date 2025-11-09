@@ -1,6 +1,6 @@
 import type { Session } from 'react-router';
 
-import { getCookieSession } from './session_utils';
+import { getCookieSession } from './session_utils.server';
 import type { TransactionObject } from './types';
 
 export const TransactinoObjectSessionKey = 'transaction_object';

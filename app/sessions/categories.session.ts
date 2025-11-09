@@ -2,7 +2,7 @@ import type { Session } from 'react-router';
 
 import type { CategoriesMap } from '~/shared/types';
 
-import { getCookieSession } from '../sessions/session_utils';
+import { getCookieSession } from '../sessions/session_utils.server';
 
 export const CategoriesKey = 'categories_key';
 
