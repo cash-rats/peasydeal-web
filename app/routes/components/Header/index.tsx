@@ -1,24 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useFetcher, useFetchers } from 'react-router';
-import {
-  type LinksFunction, LoaderFunctionArgs, ActionFunctionArgs,
-  redirect
-} from 'react-router';
+import { type LinksFunction } from 'react-router';
 
 import Header, { links as HeaderLinks } from '~/components/Header';
 import type { HeaderProps } from '~/components/Header';
-import { getItemCount } from '~/sessions/shoppingcart.session.server';
+
+// Export loader and action from server module
+export { loader, action } from './route.server';
 
 export const links: LinksFunction = () => {
   return [
     ...HeaderLinks(),
   ];
 };
-
-// Header compoent it's self would submit a GET request to this loader to reload `numOfItemsInCart`
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  return Response.json({ numOfItemsInCart: await getItemCount(request) });
-}
 
 export enum ActionTypes {
   reload_cart_count = 'reload_cart_count',
@@ -50,22 +44,6 @@ export enum ActionTypes {
  *
  *  This action handles redirection from `/components/Header/components/CategoriesNav` `promotion` or `collection`.
  */
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const form = await request.formData();
-  const formObj = Object.fromEntries(form.entries());
-  const formAction = formObj['action_type'] as ActionTypes;
-
-  if (formAction === ActionTypes.redirect_to_collection) {
-    const catType = formObj['category_type'];
-    const catName = formObj['category_name'];
-
-    return redirect(`/${catType}/${catName}`);
-  }
-
-  const itemCount = await getItemCount(request);
-  return Response.json({ numOfItemsInCart: itemCount });
-}
 
 type HeaderRouteProps = Omit<HeaderProps, 'numOfItemsInCart'>
 

@@ -6,6 +6,7 @@ import { z } from 'zod';
 const envSchema = z.object({
   // Core configuration
   NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
+  VERCEL_ENV: z.enum(['development', 'preview', 'production']).default('development'),
   DOMAIN: z.string().default('https://staging.peasydeal.com'),
   SESSION_SECRET: z.string().min(1, 'SESSION_SECRET is required'),
 
@@ -111,9 +112,10 @@ export function getEnv(): Env {
 export const env = getEnv();
 
 // Helper functions for environment checking
-export const isStaging = env.NODE_ENV === 'staging';
-export const isDev = env.NODE_ENV === 'development';
-export const isProd = env.NODE_ENV === 'production';
+export const isProd = env.VERCEL_ENV === 'production';
+export const isStaging = env.VERCEL_ENV === 'preview';
+export const isPreview = isStaging;
+export const isDev = !isProd && !isStaging;
 
 // Legacy compatibility exports
 export const envs = env;
