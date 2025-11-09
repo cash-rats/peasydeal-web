@@ -5,13 +5,13 @@ import {
   removeItem as sessionRemoveItem,
   CartSessionKey,
   updateCart,
-} from '~/sessions/shoppingcart.session';
+} from '~/sessions/shoppingcart.session.server';
 import { commitSession } from '~/sessions/redis_session.server';
 import {
   setTransactionObject,
   sessionResetTransactionObject,
   sessionSetTransactionObject,
-} from '~/sessions/transaction.session';
+} from '~/sessions/transaction.session.server';
 
 import {
   fetchPriceInfo,

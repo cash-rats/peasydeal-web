@@ -16,7 +16,7 @@ import { Spinner } from '@chakra-ui/react'
 
 import type { PaymentMethod } from '~/shared/types';
 import { useContext } from '~/routes/checkout';
-import { getCart } from '~/sessions/shoppingcart.session';
+import { getCart } from '~/sessions/shoppingcart.session.server';
 import type { ShoppingCart } from '~/sessions/types';
 
 import { useCreateOrder, useStripeConfirmPayment } from './hooks';

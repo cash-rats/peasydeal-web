@@ -7,7 +7,7 @@ import {
 
 import Header, { links as HeaderLinks } from '~/components/Header';
 import type { HeaderProps } from '~/components/Header';
-import { getItemCount } from '~/sessions/shoppingcart.session';
+import { getItemCount } from '~/sessions/shoppingcart.session.server';
 
 export const links: LinksFunction = () => {
   return [

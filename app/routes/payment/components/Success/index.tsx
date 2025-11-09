@@ -3,9 +3,9 @@ import { useFetcher } from 'react-router';
 import type { ActionFunctionArgs } from 'react-router';
 import parseISO from 'date-fns/parseISO';
 
-import { clearCart } from '~/sessions/shoppingcart.session';
+import { clearCart } from '~/sessions/shoppingcart.session.server';
 import { commitSession } from '~/sessions/redis_session.server';
-import { sessionResetTransactionObject } from '~/sessions/transaction.session';
+import { sessionResetTransactionObject } from '~/sessions/transaction.session.server';
 
 import OrderAnnotation from './components/OrderAnnotation';
 import OrderDetail from './components/OrderDetail';

@@ -15,13 +15,12 @@ import type {
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
 import { commitSession } from '~/sessions/redis_session.server';
-import { getCart } from '~/sessions/shoppingcart.session';
+import { getCart, insertItem } from '~/sessions/shoppingcart.session.server';
 import {
   setTransactionObject,
   resetTransactionObject,
-} from '~/sessions/transaction.session';
-import { insertItem } from '~/sessions/shoppingcart.session';
-import type { ShoppingCart } from '~/sessions/shoppingcart.session';
+} from '~/sessions/transaction.session.server';
+import type { ShoppingCart } from '~/sessions/types';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';

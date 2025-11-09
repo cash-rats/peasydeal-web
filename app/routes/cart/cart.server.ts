@@ -2,7 +2,7 @@ import httpStatus from 'http-status-codes';
 import type { PriceInfo } from './types';
 
 import { envs } from '~/utils/env';
-import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart, ShoppingCartItem } from '~/sessions/types';
 
 export type PriceQuery = {
   variation_uuid: string;
