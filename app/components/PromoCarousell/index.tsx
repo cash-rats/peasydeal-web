@@ -4,7 +4,8 @@ import { Button } from '@chakra-ui/react';
 import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
 
 import React from "react";
-import Swipe from "react-easy-swipe";
+import ReactSwipe from "react-easy-swipe";
+const Swipe = (ReactSwipe as any).default || ReactSwipe;
 import styles from './styles/promoCarousell.css?url';
 import shoes from './images/light-up-shoes.png';
 import bubble from './images/bubble-slide.png';

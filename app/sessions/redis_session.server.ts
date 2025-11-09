@@ -2,7 +2,7 @@ import invariant from 'tiny-invariant';
 
 import { envs } from '~/utils/env';
 
-import { createRedisSessionStorage } from './create_redis_sessoin';
+import { createRedisSessionStorage } from './create_redis_session.server';
 
 invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
 

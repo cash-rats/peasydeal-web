@@ -1,6 +1,6 @@
 import type { Session } from 'react-router';
 
-import { getSession } from '~/sessions/redis_session';
+import { getSession } from '~/sessions/redis_session.server';
 import type { ProductListInfo, CategoryProducts } from './types';
 
 export const ProductListKey = 'product_list';

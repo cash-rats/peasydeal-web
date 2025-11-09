@@ -4,7 +4,7 @@ import type { ActionFunctionArgs } from 'react-router';
 import parseISO from 'date-fns/parseISO';
 
 import { clearCart } from '~/sessions/shoppingcart.session';
-import { commitSession } from '~/sessions/redis_session';
+import { commitSession } from '~/sessions/redis_session.server';
 import { sessionResetTransactionObject } from '~/sessions/transaction.session';
 
 import OrderAnnotation from './components/OrderAnnotation';

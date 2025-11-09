@@ -7,7 +7,7 @@ import {
 } from '~/api/categories.server';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { getCanonicalDomain } from '~/utils/seo';
-import { commitSession } from '~/sessions/redis_session';
+import { commitSession } from '~/sessions/redis_session.server';
 
 import { fetchProductsByCategoryV2 } from "../api";
 import type { LoadMoreDataType, LoaderDataType } from './types';

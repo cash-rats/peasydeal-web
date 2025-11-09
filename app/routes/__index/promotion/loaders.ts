@@ -2,7 +2,7 @@ import { data } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
-import { commitSession } from '~/sessions/redis_session';
+import { commitSession } from '~/sessions/redis_session.server';
 import { fetchPromotions } from '~/api/categories.server';
 import { normalizeToMap } from '~/api/categories.utils';
 import { getCanonicalDomain } from '~/utils/seo';

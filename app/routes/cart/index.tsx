@@ -14,7 +14,7 @@ import type {
 } from "react-router";
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
-import { commitSession } from '~/sessions/redis_session';
+import { commitSession } from '~/sessions/redis_session.server';
 import { getCart } from '~/sessions/shoppingcart.session';
 import {
   setTransactionObject,

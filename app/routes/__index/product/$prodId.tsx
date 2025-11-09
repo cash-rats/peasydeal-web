@@ -8,7 +8,7 @@ import { redirect, useLoaderData } from 'react-router';
 // import type { DynamicLinksFunction } from 'react-router';
 import httpStatus from 'http-status-codes';
 import FourOhFour from '~/components/FourOhFour';
-import { commitSession } from '~/sessions/redis_session';
+import { commitSession } from '~/sessions/redis_session.server';
 import { insertItem } from '~/sessions/shoppingcart.session';
 import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
