@@ -2,7 +2,7 @@ import { useFetcher } from 'react-router';
 import { useCallback, useEffect, useState } from 'react';
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
-import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
+import type { ShoppingCartItem } from '~/sessions/types';
 
 import { tryPickUserSelectedVariationImage } from '../utils';
 import type { ProductImg } from '../types';

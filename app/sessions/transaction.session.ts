@@ -1,13 +1,7 @@
 import type { Session } from 'react-router';
 
-import type { CookieStorablePriceInfo } from '~/shared/cart';
-
 import { getCookieSession } from './session_utils';
-
-export interface TransactionObject {
-  promo_code?: string | null;
-  price_info: CookieStorablePriceInfo;
-}
+import type { TransactionObject } from './types';
 
 export const TransactinoObjectSessionKey = 'transaction_object';
 

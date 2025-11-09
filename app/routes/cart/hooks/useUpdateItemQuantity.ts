@@ -5,7 +5,7 @@ import type { PriceInfo } from '../types';
 import { setPriceInfo, updateQuantity } from '../reducer';
 import type { CartAction } from '../reducer';
 
-import { type ShoppingCart } from '~/sessions/shoppingcart.session';
+import { type ShoppingCart } from '~/sessions/types';
 
 interface UseUpdateItemQuantityProps {
   dispatch: (action: CartAction) => void;

@@ -3,7 +3,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router';
 import { Button } from '@chakra-ui/react'
 
-import type { ShoppingCart } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart } from '~/sessions/types';
 import type { PriceInfo } from '~/shared/cart';
 import { round10 } from '~/utils/preciseRound';
 

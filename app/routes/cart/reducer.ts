@@ -1,5 +1,5 @@
 import { produce } from 'immer';
-import type { ShoppingCart } from '~/sessions/shoppingcart.session';
+import type { ShoppingCart } from '~/sessions/types';
 
 import type { PriceInfo } from './types';
 import { syncShoppingCartWithNewProductsInfo } from './utils';

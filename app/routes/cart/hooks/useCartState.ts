@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { type ShoppingCart } from '~/sessions/shoppingcart.session';
+import { type ShoppingCart } from '~/sessions/types';
 
 import cartReducer, { type CartState } from '../reducer';
 import { type PriceInfo } from '../types';

@@ -1,29 +1,9 @@
 import type { Session } from 'react-router';
 
 import { getCookieSession } from './session_utils';
+import type { ShoppingCart, ShoppingCartItem } from './types';
 
 export const CartSessionKey = 'shopping_cart';
-
-export type ShoppingCart = {
-  [variationUUID: string]: ShoppingCartItem;
-};
-
-export type ShoppingCartItem = {
-  salePrice: string;
-  retailPrice: string;
-  productUUID: string;
-  variationUUID: string;
-  tagComboTags: string;
-
-  // product variation does not have "main_pic" yet, thus, we take the first product image to be displayed in shopping cart.
-  image: string;
-  quantity: string;
-  title: string;
-  specName: string
-  purchaseLimit: string;
-  discountReason?: string;
-  added_time?: number;
-};
 
 // getCart get current shopping cart data in session. return "undefined" If no key exists.
 export const getCart = async (request: Request): Promise<ShoppingCart | undefined> => {

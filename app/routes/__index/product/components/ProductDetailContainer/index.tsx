@@ -16,7 +16,7 @@ import { round10 } from '~/utils/preciseRound';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
-import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
+import type { ShoppingCartItem } from '~/sessions/types';
 
 import PriceRow from './components/PriceRow';
 import Reviews from './components/Reviews';

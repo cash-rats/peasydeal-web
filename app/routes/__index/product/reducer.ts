@@ -1,5 +1,5 @@
 import { produce, type Draft } from 'immer';
-import  { type ShoppingCartItem } from '~/sessions/shoppingcart.session';
+import  { type ShoppingCartItem } from '~/sessions/types';
 
 import {
   normalizeToSessionStorableCartItem,

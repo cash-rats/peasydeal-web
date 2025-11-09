@@ -1,4 +1,4 @@
-import type { ShoppingCartItem } from '~/sessions/shoppingcart.session';
+import type { ShoppingCartItem } from '~/sessions/types';
 
 import type { ProductDetail, ProductVariation, ProductImg } from './types';
 import { pickMainImage } from '../utils';
