@@ -9,7 +9,7 @@ invariant(envs.SESSION_SECRET, "SESSION_SECRET must be set");
 const { getSession, commitSession, destroySession } = createRedisSessionStorage({
   cookie: {
     name: "__rsession",
-    secure: isProd || isPreview,
+    secure: isProd() || isPreview(),
     sameSite: "lax",
     secrets: [envs.SESSION_SECRET],
     path: "/",

@@ -3,7 +3,7 @@ import type { TransformOptions } from 'remix-image';
 
 import { uploadToR2 } from './r2';
 import { MimeType, fileExtensionResolver } from './mimes';
-import { envs, isProd } from '~/utils/env';
+import { envs } from '~/utils/env';
 
 //  https://github.com/remix-run/remix/discussions/2905
 export const supportedInputs = new Set([
