@@ -24,7 +24,7 @@ import {
   getIndexDescText,
   getRootFBSEO_V2,
 } from '~/utils/seo'
-import { env} from '~/utils/env';
+import { env } from '~/utils/env';
 import { storeDailySession } from '~/services/daily_session.server';
 import { storeSessionIDToSessionStore } from '~/services/daily_session';
 import { getItemCount } from '~/sessions/shoppingcart.session.server';
