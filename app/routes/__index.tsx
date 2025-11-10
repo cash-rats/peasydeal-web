@@ -12,7 +12,7 @@ import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/
 import MobileSearchDialog from '~/components/MobileSearchDialog';
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/routes/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/Header/route';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 

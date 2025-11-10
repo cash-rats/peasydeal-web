@@ -6,7 +6,7 @@ import { useLoaderData } from 'react-router';
 
 import SearchBar from '~/components/SearchBar';
 import FourOhFour from '~/components/FourOhFour';
-import Header, { links as HeaderLinks } from '~/routes/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/Header/route';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';

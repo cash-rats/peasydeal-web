@@ -12,7 +12,7 @@ import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
-import { ActionTypes as HeaderRouteActions } from '~/routes/components/Header';
+import { ActionTypes as HeaderRouteActions } from '~/routes/Header/types';
 import MegaMenu, { links as MegaMenuLink } from './MegaMenu';
 import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
 

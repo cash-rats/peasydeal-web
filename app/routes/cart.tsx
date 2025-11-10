@@ -12,7 +12,7 @@ import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/routes/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/Header/route';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';

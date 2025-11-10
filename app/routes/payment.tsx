@@ -5,7 +5,7 @@ import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
-import Header, { links as HeaderLinks } from '~/routes/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/Header/route';
 import Footer from '~/components/Footer';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';

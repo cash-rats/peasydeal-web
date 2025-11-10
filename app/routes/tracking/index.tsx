@@ -5,7 +5,7 @@ import { redirect, useRouteError, isRouteErrorResponse } from 'react-router';
 import { Form, useLoaderData, useFetcher } from 'react-router';
 import httpStatus from 'http-status-codes';
 
-import Header, { links as HeaderLinks } from '~/routes/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/Header/route';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { composErrorResponse } from '~/utils/error';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';

@@ -13,7 +13,7 @@ import { envs } from '~/utils/env';
 import { getCheckoutTitleText } from '~/utils/seo';
 import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/routes/components/Header';
+import Header, { links as HeaderLinks } from '~/routes/Header/route';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import { createPaymentIntent } from '~/services/stripe.server';
 import { getCart } from '~/sessions/shoppingcart.session.server';
