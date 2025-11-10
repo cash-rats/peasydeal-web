@@ -2,10 +2,10 @@ import type { MouseEvent } from 'react';
 import { useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from 'react-router';
 import { redirect, useRouteError, isRouteErrorResponse } from 'react-router';
-import { Form, useLoaderData, useFetcher } from 'react-router';
+import { Form, useLoaderData, useFetcher, useRouteLoaderData } from 'react-router';
 import httpStatus from 'http-status-codes';
 
-import Header, { links as HeaderLinks } from '~/routes/Header/route';
+import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import { composErrorResponse } from '~/utils/error';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
@@ -120,6 +120,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  const rootData = useRouteLoaderData("root") as any;
+  const cartCount = rootData?.cartCount || 0;
   const trackOrderFetcher = useFetcher();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
   const handleOpen = () => setOpenSearchDialog(true);
@@ -158,6 +160,7 @@ export function ErrorBoundary() {
 
         <Header
           categories={caughtData.categories}
+          numOfItemsInCart={cartCount}
           categoriesBar={
             <CategoriesNav
               categories={caughtData.categories}
@@ -210,6 +213,8 @@ function TrackingOrder() {
     categories,
     navBarCategories
   } = useLoaderData<LoaderDataType>() || {};
+  const rootData = useRouteLoaderData("root") as any;
+  const cartCount = rootData?.cartCount || 0;
   const trackOrderFetcher = useFetcher();
 
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
@@ -248,6 +253,7 @@ function TrackingOrder() {
 
       <Header
         categories={categories}
+        numOfItemsInCart={cartCount}
         categoriesBar={
           <CategoriesNav
             categories={categories}

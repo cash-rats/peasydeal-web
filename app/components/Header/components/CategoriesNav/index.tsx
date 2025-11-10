@@ -7,12 +7,11 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { LinksFunction } from 'react-router';
-import { Form } from 'react-router';
+import { Link } from 'react-router';
 import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
-import { ActionTypes as HeaderRouteActions } from '~/routes/Header/types';
 import MegaMenu, { links as MegaMenuLink } from './MegaMenu';
 import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
 
@@ -79,76 +78,50 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
             justify-between
             p-0 m-0`}>
             {
-              topCategories.map((category, index) => (
-                <Form
-                  key={`${index}_menu_link`}
-                  className="self-center"
-                  method='post'
-                  action='/components/Header?index'
-                >
+              topCategories.map((category, index) => {
+                const categoryUrl = category.type === 'promotion'
+                  ? `/promotion/${category.name}`
+                  : `/collection/${category.name}`;
 
-                  <input
-                    type="hidden"
-                    name="action_type"
-                    value={HeaderRouteActions.redirect_to_collection}
-                  />
-
-                  <input
-                    type="hidden"
-                    name="category_type"
-                    value={
-                      category.type === 'promotion'
-                        ? 'promotion'
-                        : 'collection'
-                    }
-                  />
-
-                  <input
-                    type="hidden"
-                    name="category_name"
-                    value={category.name}
-                  />
-
-                  {
-                    index === 0
-                      ? (
-                        <li className={`
-                          cursor-pointer
-                          flex-auto
-                          self-center
-                          transition
-                          nowrap
-                          px-1 lg:px-2 xl:px-2
-                          py-2 md:py-2 lg:py-4
-                          bg-[#EA4335] text-white items-center font-semibold flex flex-row
-                        `}>
-                          <button
-                            type="submit"
-                            className="
-                          flex-auto
-                          flex flex-row
-                          items-center
-                          nowrap
-                          text-center lg:text-left xl:text-center
-                          text-xs md:text-sm xl:text-base
-                          bg-transparent hover:bg-transparent">
-                            <VscFlame className="mr-1" />
-                            <span>{category.shortName || category.title}</span>
-                          </button>
-                        </li>
-
-                      ) : (
-                        <li className="CategoriesNav__item fromLeft self-center">
-                          <MegaMenu
-                            category={category}
-                            setMenuDisplayed={setMenuDisplayed}
-                            activeMenuName={activeMenuName}
-                          />
-                        </li>
-                      )
-                  }
-                </Form>
-              ))
+                return index === 0 ? (
+                  <li
+                    key={`${index}_menu_link`}
+                    className={`
+                      cursor-pointer
+                      flex-auto
+                      self-center
+                      transition
+                      nowrap
+                      px-1 lg:px-2 xl:px-2
+                      py-2 md:py-2 lg:py-4
+                      bg-[#EA4335] text-white items-center font-semibold flex flex-row
+                    `}
+                  >
+                    <Link
+                      to={categoryUrl}
+                      className="
+                        flex-auto
+                        flex flex-row
+                        items-center
+                        nowrap
+                        text-center lg:text-left xl:text-center
+                        text-xs md:text-sm xl:text-base
+                      "
+                    >
+                      <VscFlame className="mr-1" />
+                      <span>{category.shortName || category.title}</span>
+                    </Link>
+                  </li>
+                ) : (
+                  <li key={`${index}_menu_link`} className="CategoriesNav__item fromLeft self-center">
+                    <MegaMenu
+                      category={category}
+                      setMenuDisplayed={setMenuDisplayed}
+                      activeMenuName={activeMenuName}
+                    />
+                  </li>
+                );
+              })
             }
 
             <li className="self-center ">

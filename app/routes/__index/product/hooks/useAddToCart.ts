@@ -14,7 +14,6 @@ interface UseAddToCartProps {
 
 export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAddToCartProps) {
   const addToCartFetcher = useFetcher();
-  const reloadCartItemCount = useFetcher();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
   const addItemToCart = useCallback(() => {
@@ -59,15 +58,7 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
         setOpenSuccessModal(false);
       }, 1000);
 
-      // Reload the cart item count
-      reloadCartItemCount.submit(
-        null,
-        {
-          method: 'post',
-          action: '/components/Header?index',
-          replace: true,
-        }
-      );
+      // Cart count updates automatically via root loader revalidation
     }
   }, [ addToCartFetcher.type ]);
 

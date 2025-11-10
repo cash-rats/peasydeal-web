@@ -2,11 +2,11 @@ import { useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
 import { data, redirect } from 'react-router';
 import httpStatus from 'http-status-codes';
-import { useLoaderData } from 'react-router';
+import { useLoaderData, useRouteLoaderData } from 'react-router';
 
 import SearchBar from '~/components/SearchBar';
 import FourOhFour from '~/components/FourOhFour';
-import Header, { links as HeaderLinks } from '~/routes/Header/route';
+import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
@@ -62,6 +62,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 function GlobalSplatFourOhFour() {
   const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
+  const rootData = useRouteLoaderData("root") as any;
+  const cartCount = rootData?.cartCount || 0;
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
   const handleOpen = () => setOpenSearchDialog(true);
@@ -78,6 +80,7 @@ function GlobalSplatFourOhFour() {
 
       <Header
         categories={categories}
+        numOfItemsInCart={cartCount}
 
         mobileSearchBar={
           <SearchBar

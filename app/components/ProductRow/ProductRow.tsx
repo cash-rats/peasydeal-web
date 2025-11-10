@@ -2,14 +2,9 @@
  * This component render the modulared products
  * into a product grid
  */
-import type { LinksFunction } from 'react-router';
 import type { Product } from "~/shared/types";
 
-import { RegularCardWithActionButton, links as ProductCartLinks } from '../ProductCard';
-
-export const links: LinksFunction = () => {
-  return [...ProductCartLinks()];
-}
+import { RegularCardWithActionButton } from '../ProductCard';
 
 interface IProductRow {
   products?: Product[];

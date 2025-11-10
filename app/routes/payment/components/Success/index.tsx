@@ -46,7 +46,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: string }) {
   const orderFetcher = useFetcher();
-  const cartItemCountFetcher = useFetcher();
   const [orderDetail, setOrderDetail] = useState<SuccessOrderDetail | null>(null);
 
   useEffect(() => {
@@ -65,16 +64,7 @@ function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: s
     if (orderFetcher.type === 'done') {
       setOrderDetail(orderFetcher.data as SuccessOrderDetail);
 
-      // Once we are done fetching order info and cleared cart,
-      // Notify Header component to reload cart item count.
-      cartItemCountFetcher.submit(
-        null,
-        {
-          method: 'post',
-          action: '/components/Header?index',
-          replace: true,
-        },
-      )
+      // Cart count updates automatically via root loader revalidation
 
       // Track conversion event
       if (typeof document === 'undefined') return;

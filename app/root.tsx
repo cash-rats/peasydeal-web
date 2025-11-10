@@ -27,6 +27,7 @@ import {
 import { env, isProd, isStaging, isDev } from '~/utils/env';
 import { storeDailySession } from '~/services/daily_session.server';
 import { storeSessionIDToSessionStore } from '~/services/daily_session';
+import { getItemCount } from '~/sessions/shoppingcart.session.server';
 
 import useRudderStackScript from './hooks/useRudderStackScript';
 import useGTMScript from './hooks/useGTMScript';
@@ -69,15 +70,18 @@ export let links: LinksFunction = () => {
 export async function loader({ request }: Route.LoaderArgs) {
   try {
     const gaSessionID = await storeDailySession();
+    const cartCount = await getItemCount(request);
     return {
       env,
       gaSessionID,
+      cartCount,
     };
   } catch (e: any) {
     console.log('TODO: failed to store session id to redis', e)
     return {
       env,
       gaSessionID: null,
+      cartCount: 0,
     };
   }
 }

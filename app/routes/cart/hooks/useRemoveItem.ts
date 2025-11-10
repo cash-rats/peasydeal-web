@@ -16,7 +16,6 @@ interface UseRemoveItemProps {
 // corresponding loader can display empty cart page to user.
 export const useRemoveItem = ({ dispatch, promoCode }: UseRemoveItemProps) => {
   const fetcher = useFetcher();
-  const cartItemCountFetcher = useFetcher();
   const [removing, setRemoving] = useState(false);
 
   const handleRemove = (evt: MouseEvent<HTMLButtonElement>, variationUUID: string) => {
@@ -47,14 +46,7 @@ export const useRemoveItem = ({ dispatch, promoCode }: UseRemoveItemProps) => {
       setRemoving(false);
       dispatch(setPriceInfo(price_info));
 
-      cartItemCountFetcher.submit(
-        null,
-        {
-          method: 'post',
-          action: '/components/Header?index',
-          replace: true,
-        },
-      )
+      // Cart count updates automatically via root loader revalidation
     }
   }, [
     fetcher.type,

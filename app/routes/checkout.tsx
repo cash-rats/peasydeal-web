@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useLoaderData, useOutletContext } from 'react-router';
+import { Outlet, useLoaderData, useOutletContext, useRouteLoaderData } from 'react-router';
 import type { ShouldRevalidateFunction } from "react-router";
 import type { LoaderFunctionArgs, LinksFunction, MetaFunction } from 'react-router';
 import { redirect } from 'react-router';
@@ -13,7 +13,7 @@ import { envs } from '~/utils/env';
 import { getCheckoutTitleText } from '~/utils/seo';
 import SearchBar from '~/components/SearchBar';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/routes/Header/route';
+import Header, { links as HeaderLinks } from '~/components/Header';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import { createPaymentIntent } from '~/services/stripe.server';
 import { getCart } from '~/sessions/shoppingcart.session.server';
@@ -139,6 +139,8 @@ function CheckoutLayout() {
     navBarCategories,
   } = useLoaderData<LoaderType>() || {};
 
+  const rootData = useRouteLoaderData("root") as any;
+  const cartCount = rootData?.cartCount || 0;
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
@@ -172,6 +174,7 @@ function CheckoutLayout() {
 
       <Header
         categories={categories}
+        numOfItemsInCart={cartCount}
         searchBar={<DropDownSearchBar />}
         mobileSearchBar={
           <SearchBar

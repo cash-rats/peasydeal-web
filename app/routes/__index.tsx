@@ -4,6 +4,7 @@ import {
   Outlet,
   useLoaderData,
   useOutletContext,
+  useRouteLoaderData,
 } from "react-router";
 import httpStatus from 'http-status-codes';
 
@@ -12,7 +13,7 @@ import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/
 import MobileSearchDialog from '~/components/MobileSearchDialog';
 import type { Category } from '~/shared/types';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/routes/Header/route';
+import Header, { links as HeaderLinks } from '~/components/Header';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 
@@ -58,6 +59,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Index() {
   const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
+  const rootData = useRouteLoaderData("root") as any;
+  const cartCount = rootData?.cartCount || 0;
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
   const handleOpen = () => setOpenSearchDialog(true);
@@ -75,6 +78,7 @@ export default function Index() {
 
         <Header
           categories={categories}
+          numOfItemsInCart={cartCount}
           categoriesBar={
             <CategoriesNav
               categories={categories}
