@@ -1,7 +1,8 @@
 import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData } from 'react-router';
 import { activateEmailSubscribe } from '~/api';
-import { CheckCircledIcon, CopyIcon, RocketIcon, ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { IoCheckmarkCircle, IoWarningOutline, IoRocketSharp } from "react-icons/io5";
+import { FiCopy } from "react-icons/fi";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
 
@@ -26,7 +27,7 @@ export const ErrorBoundary = () => {
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <div className="rounded-full bg-destructive/10 p-3">
-              <ExclamationTriangleIcon className="h-12 w-12 text-destructive text-error-msg-red" />
+              <IoWarningOutline className="h-12 w-12 text-destructive text-error-msg-red" />
             </div>
           </div>
           <CardTitle className="text-2xl text-destructive">Email Verification Failed</CardTitle>
@@ -75,9 +76,9 @@ function ConfirmSubscription() {
         <CardHeader className="text-center">
           <div className="mb-4 flex justify-center">
             <div className="relative">
-              <CheckCircledIcon className="h-16 w-16 text-green-500" />
+              <IoCheckmarkCircle className="h-16 w-16 text-green-500" />
               <div className="absolute -right-1 -top-1 rounded-full bg-bright-blue p-1">
-                <RocketIcon className="h-4 w-4 text-white" />
+                <IoRocketSharp className="h-4 w-4 text-white" />
               </div>
             </div>
           </div>
@@ -103,7 +104,7 @@ function ConfirmSubscription() {
                   className="rounded-md p-1.5 hover:bg-bright-blue/20"
                   title="Copy to clipboard"
                 >
-                  <CopyIcon className="h-4 w-4 text-bright-blue" />
+                  <FiCopy className="h-4 w-4 text-bright-blue" />
                 </button>
               </div>
             </div>
@@ -140,7 +141,7 @@ function ConfirmSubscription() {
               to="/"
               className="inline-flex items-center gap-2 rounded-lg bg-bright-blue px-4 py-2 text-sm font-medium text-white hover:bg-bright-blue/90"
             >
-              <RocketIcon className="h-4 w-4" />
+              <IoRocketSharp className="h-4 w-4" />
               Start Shopping
             </Link>
           </div>
