@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from "@remix-run/server-runtime";
+import type { LoaderFunctionArgs } from "react-router";
 import { imageLoader, MemoryCache } from 'remix-image/server';
 import type { LoaderConfig } from 'remix-image';
 import httpStatus from 'http-status-codes';

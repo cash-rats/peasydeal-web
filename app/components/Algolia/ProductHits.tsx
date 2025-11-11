@@ -14,7 +14,7 @@ interface ProductHitParams {
   autocomplete: AutocompleteApi<AlgoliaIndexItem, BaseSyntheticEvent, MouseEvent, KeyboardEvent>;
 }
 
-function ProductHit({
+export function ProductHit({
   items,
   autocomplete,
   source,
@@ -81,5 +81,3 @@ function ProductHit({
     </section>
   );
 }
-
-export default ProductHit;

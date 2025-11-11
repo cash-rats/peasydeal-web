@@ -12,7 +12,7 @@ import { BiChevronRight, BiChevronLeft } from 'react-icons/bi';
 import { VscZoomIn } from "react-icons/vsc";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
-import Image, { MimeType } from "remix-image"
+import { OptimizedImage as Image } from '~/components/OptimizedImage';
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { envs } from '~/utils/env';
@@ -375,46 +375,48 @@ function Carousel({
               .map((item: CarouselMinimalImage, index: number) => {
                 return (
                   <Fragment key={index}>
-                    <Image
-                      blurDataURL={`${envs.DOMAIN}/images/${loaded
-                        ? 'placeholder_transparent.png'
-                        : 'placeholder.svg'
-                        }`}
-                      placeholder={loaded ? 'empty' : 'blur'}
-                      placeholderAspectRatio={1}
-                      onLoadingComplete={() => {
-                        setLoaded(true)
-                      }}
-                      options={{
-                        contentType: MimeType.WEBP,
-                        fit: 'contain',
-                      }}
-                      className={`
-                        mx-2 rounded-lg bg-slate-100
-                        p-[2px] min-w-[100px]
-                        w-auto h-[100px] aspect-sqare
-                        ${slide === index
-                          ? 'border-[3px] border-solid border-[#D02E7D]'
-                          : 'border-0'
-                        }
-                      `}
-                      loaderUrl='/remix-image'
-                      alt={item.title}
-                      src={item.url}
+                    <div
                       id={`thumbnail-${index}`}
                       onClick={(e) => {
                         setSlide(index);
                         setChange(!change);
                       }}
-                      responsive={[
-                        {
-                          size: {
-                            width: 100,
-                            height: 100,
+                    >
+                      <Image
+                        blurDataURL={`${envs.DOMAIN}/images/${loaded
+                          ? 'placeholder_transparent.png'
+                          : 'placeholder.svg'
+                          }`}
+                        placeholder={loaded ? 'empty' : 'blur'}
+                        placeholderAspectRatio={1}
+                        onLoadingComplete={() => {
+                          setLoaded(true)
+                        }}
+                        options={{
+                          contentType: 'image/webp',
+                          fit: 'contain',
+                        }}
+                        className={`
+                          mx-2 rounded-lg bg-slate-100
+                          p-[2px] min-w-[100px]
+                          w-auto h-[100px] aspect-sqare
+                          ${slide === index
+                            ? 'border-[3px] border-solid border-[#D02E7D]'
+                            : 'border-0'
+                          }
+                        `}
+                        alt={item.title}
+                        src={item.url}
+                        responsive={[
+                          {
+                            size: {
+                              width: 100,
+                              height: 100,
+                            },
                           },
-                        },
-                      ]}
-                    />
+                        ]}
+                      />
+                    </div>
                   </Fragment>
                 );
               })

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { Alert, AlertIcon } from '@chakra-ui/react';
-import Image, { MimeType } from 'remix-image';
+import { OptimizedImage as Image } from '~/components/OptimizedImage';
 import { Rating, StickerStar } from '@smastrom/react-rating';
 import { BiInfoCircle } from 'react-icons/bi';
 import {
@@ -95,10 +95,9 @@ function ReviewForm({
             className="rounded-sm aspect-square"
             placeholderAspectRatio={1}
             options={{
-              contentType: MimeType.WEBP,
+              contentType: 'image/webp',
               fit: 'contain',
             }}
-            loaderUrl='/remix-image'
             responsive={[
               {
                 size: {

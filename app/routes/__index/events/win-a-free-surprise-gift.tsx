@@ -4,7 +4,7 @@ import type { ChangeEvent } from 'react';
 import { useFetcher } from 'react-router'
 import CountDown, { links as CountDownLinks } from "./components/countdown/CountDown";
 import { LazyWrapper } from '~/components/LazyWrapper';
-import Image, { MimeType } from "remix-image"
+import { OptimizedImage as Image } from '~/components/OptimizedImage';
 import { Link, } from 'react-router';
 import { Button } from '@chakra-ui/react'
 
@@ -75,11 +75,11 @@ const ItemCard = ({ item }) => {
                   }`}
                 placeholder={loaded ? 'empty' : 'blur'}
                 placeholderAspectRatio={1}
-                onLoadingComplete={(naturalDimensions) => {
+                onLoadingComplete={() => {
                   setLoaded(true);
                 }}
                 options={{
-                  contentType: MimeType.WEBP,
+                  contentType: 'image/webp',
                   fit: 'contain',
                 }}
                 className="
@@ -87,7 +87,6 @@ const ItemCard = ({ item }) => {
                 min-w-0 min-h-0
                 rounded-xl
               "
-                loaderUrl='/remix-image'
                 src={image}
                 responsive={[
                   {

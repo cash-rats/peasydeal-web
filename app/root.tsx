@@ -17,7 +17,6 @@ import {
   isRouteErrorResponse,
   useRouteError,
 } from "react-router";
-import remixImageStyles from "remix-image/remix-image.css?url";
 
 import {
   getIndexTitleText,
@@ -62,7 +61,6 @@ export let links: LinksFunction = () => {
     },
 
     { rel: 'stylesheet', href: styles },
-    { rel: 'stylesheet', href: remixImageStyles },
     ...LayoutLinks(),
   ]
 }

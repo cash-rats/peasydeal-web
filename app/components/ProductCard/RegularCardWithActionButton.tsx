@@ -5,7 +5,7 @@
 import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router';
-import Image, { MimeType } from "remix-image"
+import { OptimizedImage as Image } from '~/components/OptimizedImage';
 import { LazyWrapper } from '~/components/LazyWrapper';
 import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { composeProductDetailURL } from '~/utils';
@@ -182,18 +182,18 @@ export default function ProductCard({
                 }`}
               placeholder={loaded ? 'empty' : 'blur'}
               placeholderAspectRatio={1}
-              onLoadingComplete={(naturalDimensions) => {
+              onLoadingComplete={() => {
                 setLoaded(true);
               }}
               options={{
-                contentType: MimeType.WEBP,
+                contentType: 'image/webp',
                 fit: 'contain',
               }}
               className="
                 aspect-square
                 min-w-0 min-h-0
               "
-              loaderUrl='/remix-image'
+              responsive={[{ size: { width: 274, height: 274 } }]}
               src={mainPic}
 
             />

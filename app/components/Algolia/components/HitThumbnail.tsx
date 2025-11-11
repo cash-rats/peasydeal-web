@@ -1,4 +1,4 @@
-import Image, { MimeType } from 'remix-image';
+import { OptimizedImage as Image } from '~/components/OptimizedImage';
 
 import { envs } from '~/utils/env';
 
@@ -12,9 +12,8 @@ function HitThumbnail({ url }: HitThumbnailImage) {
       blurDataURL={`${envs.DOMAIN}/images/placeholder.svg`}
       placeholder='blur'
       placeholderAspectRatio={1}
-      loaderUrl='/remix-image'
       options={{
-        contentType: MimeType.WEBP,
+        contentType: 'image/webp',
         fit: 'contain',
       }}
       src={url}
