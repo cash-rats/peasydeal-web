@@ -11,7 +11,47 @@ import { ServerStyleContext } from './context';
 import createEmotionCache from "./createEmotionCache";
 import theme from './theme';
 
-export default function handleRequest(
+const ESCAPE_LOOKUP: Record<string, string> = {
+  '&': '\\u0026',
+  '>': '\\u003e',
+  '<': '\\u003c',
+  '\u2028': '\\u2028',
+  '\u2029': '\\u2029',
+};
+
+const ESCAPE_REGEX = /[&><\u2028\u2029]/g;
+
+function escapeHtml(html: string) {
+  return html.replace(ESCAPE_REGEX, (match) => ESCAPE_LOOKUP[match]);
+}
+
+async function renderStreamScripts(stream?: ReadableStream<Uint8Array>) {
+  if (!stream) {
+    return '';
+  }
+
+  const reader = stream.getReader();
+  const decoder = new TextDecoder();
+  let scripts = '';
+
+  while (true) {
+    const { value, done } = await reader.read();
+    if (value) {
+      const chunk = decoder.decode(value, { stream: !done });
+      const escapedChunk = escapeHtml(JSON.stringify(chunk));
+      scripts += `<script>window.__reactRouterContext.streamController.enqueue(${escapedChunk});</script>`;
+    }
+
+    if (done) {
+      scripts += `<script>window.__reactRouterContext.streamController.close();</script>`;
+      break;
+    }
+  }
+
+  return scripts;
+}
+
+export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
@@ -20,8 +60,8 @@ export default function handleRequest(
   const cache = createEmotionCache();
   const { extractCriticalToChunks } = createEmotionServer(cache);
 
-  // Create a modified context without the serverHandoffStream
-  // to prevent "ReadableStream is locked" errors on the second render
+  // Render without the handoff stream twice (once for extraction, once for final markup)
+  // so Emotion can collect styles without consuming the stream React Router needs.
   const renderContext = {
     ...entryContext,
     serverHandoffStream: undefined,
@@ -32,10 +72,7 @@ export default function handleRequest(
       <CacheProvider value={cache}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <ServerRouter
-            context={renderContext}
-            url={request.url}
-          />
+          <ServerRouter context={renderContext} url={request.url} />
         </ThemeProvider>
       </CacheProvider>
     </ServerStyleContext.Provider>,
@@ -49,10 +86,7 @@ export default function handleRequest(
       <CacheProvider value={cache}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <ServerRouter
-            context={renderContext}
-            url={request.url}
-          />
+          <ServerRouter context={renderContext} url={request.url} />
         </ThemeProvider>
       </CacheProvider>
     </ServerStyleContext.Provider>,
@@ -73,7 +107,17 @@ export default function handleRequest(
 
   responseHeaders.set("Content-Type", "text/html");
 
-  return new Response(`<!DOCTYPE html>${markup}`, {
+  const streamScripts = await renderStreamScripts(entryContext.serverHandoffStream);
+  let finalMarkup = markup;
+  if (streamScripts) {
+    if (finalMarkup.includes('</body>')) {
+      finalMarkup = finalMarkup.replace('</body>', `${streamScripts}</body>`);
+    } else {
+      finalMarkup = `${finalMarkup}${streamScripts}`;
+    }
+  }
+
+  return new Response(`<!DOCTYPE html>${finalMarkup}`, {
     status: responseStatusCode,
     headers: responseHeaders,
   });

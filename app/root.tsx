@@ -1,11 +1,8 @@
 import React, { useContext } from 'react'
-import type {
-  LinksFunction,
-  MetaFunction,
-} from "react-router";
-import type { Route } from "./+types/root";
+import type { LinksFunction, MetaFunction } from 'react-router';
+import type { Route } from './+types/root';
 import { withEmotionCache } from '@emotion/react';
-import { ChakraProvider } from '@chakra-ui/react'
+import { ChakraProvider } from '@chakra-ui/react';
 import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
 import {
   Links,
@@ -16,14 +13,14 @@ import {
   useLoaderData,
   isRouteErrorResponse,
   useRouteError,
-} from "react-router";
+} from 'react-router';
 
 import {
   getIndexTitleText,
   getIndexDescText,
   getRootFBSEO_V2,
-} from '~/utils/seo'
-import { env, envs } from '~/utils/env';
+} from '~/utils/seo';
+import { env } from '~/utils/env';
 import { storeDailySession } from '~/services/daily_session.server';
 import { storeSessionIDToSessionStore } from '~/services/daily_session';
 import { getItemCount } from '~/sessions/shoppingcart.session.server';
@@ -33,21 +30,19 @@ import useGTMScript from './hooks/useGTMScript';
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
-import tailwindStylesheetUrl from "./styles/tailwind.css?url";
-import { ClientStyleContext, ServerStyleContext } from "./context"
-import styles from "./styles/global.css?url";
+import tailwindStylesheetUrl from './styles/tailwind.css?url';
+import { ClientStyleContext, ServerStyleContext } from './context';
+import styles from './styles/global.css?url';
 import structuredData from './structured_data';
 
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [
     { rel: 'icon', type: 'image/x-icon', sizes: 'any', href: '/favicon.ico' },
     { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
     { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
     { rel: 'icon', type: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
-
     { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon-180x180.png' },
     { rel: 'manifest', href: '/manifest.webmanifest' },
-
     { rel: 'stylesheet', href: tailwindStylesheetUrl },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
@@ -57,13 +52,12 @@ export let links: LinksFunction = () => {
     },
     {
       rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap'
+      href: 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap',
     },
-
     { rel: 'stylesheet', href: styles },
     ...LayoutLinks(),
-  ]
-}
+  ];
+};
 
 export async function loader({ request }: Route.LoaderArgs) {
   try {
@@ -74,8 +68,8 @@ export async function loader({ request }: Route.LoaderArgs) {
       gaSessionID,
       cartCount,
     };
-  } catch (e: any) {
-    console.log('TODO: failed to store session id to redis', e)
+  } catch (e) {
+    console.log('TODO: failed to store session id to redis', e);
     return {
       env,
       gaSessionID: null,
@@ -90,18 +84,13 @@ export const meta: MetaFunction = () => {
     { title: getIndexTitleText() },
     { name: 'description', content: getIndexDescText() },
     { httpEquiv: 'content-type', content: 'text/html; charset=UTF-8' },
-
-    // Facebook meta
     ...getRootFBSEO_V2(),
-
-    // Disallow robot crawling in dev / staging environment
     ...(env.NODE_ENV === 'development' ? [{ name: 'robots', content: 'noindex,nofollow' }] : []),
     ...(env.NODE_ENV === 'staging' ? [{ name: 'robots', content: 'noindex,nofollow' }] : []),
     ...(env.NODE_ENV === 'production' ? [{ name: 'robots', content: 'index,follow' }] : []),
-
     { name: 'msapplicationTileColor', content: 'da532c' },
     { name: 'themeColor', content: '#ffffff' },
-    { 'script:ld+json': structuredData() }
+    { 'script:ld+json': structuredData() },
   ];
 };
 
@@ -111,25 +100,19 @@ interface DocumentProps {
 
 const Document = withEmotionCache(
   ({ children }: DocumentProps, emotionCache) => {
-    const serverStyleData = useContext(ServerStyleContext)
+    const serverStyleData = useContext(ServerStyleContext);
     const clientStyleData = useContext(ClientStyleContext);
     const { env: envData, gaSessionID } = useLoaderData() || {};
 
-    // Only executed on client
+    // Only executed on client; mirrors MUI SSR recipe
     useEnhancedEffect(() => {
-      // re-link sheet container
       emotionCache.sheet.container = document.head;
-      // re-inject tags
       const tags = emotionCache.sheet.tags;
       emotionCache.sheet.flush();
       tags.forEach((tag) => {
         (emotionCache.sheet as any)._insertTag(tag);
       });
-      // reset cache to reapply global styles
       clientStyleData?.reset();
-
-      // set ga session id to session storage. we'll use this ID
-      // to track actions during this session.
       storeSessionIDToSessionStore(gaSessionID);
     }, []);
 
@@ -152,8 +135,7 @@ const Document = withEmotionCache(
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
           <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
           <meta name="google-site-verification" content="y_IC62RND-gmcbw_K_Hr9uw_8UHGnO9XIyO_fG2q09E" />
-          <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
           {serverStyleData?.map(({ key, ids, css }) => (
             <style
               key={key}
@@ -162,30 +144,24 @@ const Document = withEmotionCache(
             />
           ))}
         </head>
-
         <body>
-          {/* <!-- Google Tag Manager (noscript) --> */}
           <noscript>
-            {
-              env && env.GOOGLE_TAG_ID
-                ? (
-                  <iframe
-                    title='Google Tag Manager'
-                    src={`https://www.googletagmanager.com/ns.html?id=${env.GOOGLE_TAG_ID}`}
-                    height="0"
-                    width="0"
-                    style={{ display: 'none', visibility: 'hidden' }}
-                  />
-                )
-                : null
-            }
+            {env && env.GOOGLE_TAG_ID ? (
+              <iframe
+                title="Google Tag Manager"
+                src={`https://www.googletagmanager.com/ns.html?id=${env.GOOGLE_TAG_ID}`}
+                height="0"
+                width="0"
+                style={{ display: 'none', visibility: 'hidden' }}
+              />
+            ) : null}
           </noscript>
 
           <script
             dangerouslySetInnerHTML={{
               __html: `
                 window.ENV=${JSON.stringify(env)}
-              `
+              `,
             }}
           />
           <ChakraProvider>
@@ -204,7 +180,6 @@ export function ErrorBoundary() {
   const error = useRouteError();
 
   if (isRouteErrorResponse(error)) {
-    // Handle 404 and other route errors
     return (
       <Document>
         <Layout>
@@ -214,7 +189,6 @@ export function ErrorBoundary() {
     );
   }
 
-  // Handle runtime errors
   return (
     <Document>
       <Layout>
@@ -225,6 +199,7 @@ export function ErrorBoundary() {
 }
 
 export default function App() {
+  console.log('~~ 1');
   return (
     <Document>
       <Layout>
