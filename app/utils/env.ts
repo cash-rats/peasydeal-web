@@ -151,15 +151,11 @@ export function getEnv(): Env {
 
 // Lazy initialization to avoid module-level errors
 let _env: Env | null = null;
+if (!_env) {
+  _env = getEnv();
+}
 
-export const env = new Proxy({} as Env, {
-  get(target, prop) {
-    if (!_env) {
-      _env = getEnv();
-    }
-    return _env[prop as keyof Env];
-  }
-});
+export const env = _env;
 
 // Helper functions for environment checking (now as getters to avoid module-level execution)
 export const isProd = () => env.VERCEL_ENV === 'production';
@@ -168,4 +164,4 @@ export const isPreview = () => isStaging();
 export const isDev = () => !isProd() && !isStaging();
 
 // Legacy compatibility exports
-export const envs = env;
+export const envs = getEnv();
