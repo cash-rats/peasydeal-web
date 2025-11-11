@@ -17,7 +17,7 @@ import {
   createCategoriesPlugin,
   createRecentSearchPlugin,
 } from '~/components/Algolia/plugins';
-import { searchClient } from '~/components/Algolia';
+import { getSearchClient } from '~/components/Algolia';
 import {
   CategoryHits,
   ProductHits,
@@ -46,13 +46,13 @@ function MobileSearchDialog({
 
   const productsSuggestionsPlugin = useMemo(() => {
     return createProductsSuggestionsPlugin({
-      searchClient,
+      searchClient: getSearchClient(),
       recentSearchPlugin,
     });
   }, [recentSearchPlugin]);
 
   const categoriesPlugin = useMemo(() => {
-    return createCategoriesPlugin({ searchClient })
+    return createCategoriesPlugin({ searchClient: getSearchClient() })
   }, []);
 
   const {

@@ -12,7 +12,7 @@ interface RecentSearchHitsParams {
   autocomplete: AutocompleteApi<RecentSearchHit, BaseSyntheticEvent, MouseEvent, KeyboardEvent>;
 };
 
-function RecentSearchHits({ items, autocomplete }: RecentSearchHitsParams) {
+export function RecentSearchHits({ items, autocomplete }: RecentSearchHitsParams) {
   return (
     <section className="aa-Source">
       {/* Recent searchs header */}

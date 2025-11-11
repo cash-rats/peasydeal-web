@@ -61,7 +61,7 @@ const getCategoryUrl = (catInfo: CatInfo): string => {
  * - [x] Redirect on click category
  * - [x] Split category string by `:` deliminator. {type}:{name}:{label}
  */
-function CategoriesHits({
+export function CategoryHits({
   items,
   autocomplete,
 }: CategoryHitsParams) {
@@ -118,4 +118,4 @@ function CategoriesHits({
   );
 };
 
-export default CategoriesHits;
+export default CategoryHits;

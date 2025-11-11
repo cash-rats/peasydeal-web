@@ -4,7 +4,7 @@ import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/
 import { useSubmit } from 'react-router';
 import type { OnSubmitParams } from '@algolia/autocomplete-core';
 
-import { searchClient } from '~/components/Algolia';
+import { getSearchClient } from '~/components/Algolia';
 import {
   createProductsSuggestionsPlugin,
   createCategoriesPlugin,
@@ -31,13 +31,13 @@ function DropDownSearchBar() {
 
   const productsSuggestionsPlugin = useMemo(() => {
     return createProductsSuggestionsPlugin({
-      searchClient,
+      searchClient: getSearchClient(),
       recentSearchPlugin,
     });
   }, [recentSearchPlugin]);
 
   const categoriesPlugin = useMemo(() => {
-    return createCategoriesPlugin({ searchClient })
+    return createCategoriesPlugin({ searchClient: getSearchClient() })
   }, []);
 
   const handleSubmit = ({ state }: OnSubmitParams<AutocompleteItem>) => {

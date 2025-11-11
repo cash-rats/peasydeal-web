@@ -21,6 +21,12 @@ export default defineConfig({
       '@emotion/react',
       '@emotion/styled',
       '@mui/material',
+      '@algolia/autocomplete-core',
+      '@algolia/autocomplete-js',
+      '@algolia/autocomplete-plugin-query-suggestions',
+      '@algolia/autocomplete-plugin-recent-searches',
+      '@algolia/autocomplete-plugin-algolia-insights',
+      'search-insights',
     ],
   },
   ssr: {
