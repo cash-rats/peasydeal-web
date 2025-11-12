@@ -7,7 +7,7 @@ const envSchema = z.object({
   // Core configuration
   NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
   VERCEL_ENV: z.enum(['development', 'preview', 'production']).default('development'),
-  DOMAIN: z.string().default('https://staging.peasydeal.com'),
+  DOMAIN: z.string().default('https://staging.peasydeal.shop'),
   SESSION_SECRET: z.string().min(1, 'SESSION_SECRET is required'),
 
   // API Endpoints
@@ -88,44 +88,14 @@ export function getEnv(): Env {
   }
   const result = envSchema.safeParse(rawEnv);
 
-  // Handle validation failure (e.g., in browser before window.ENV is available)
   if (!result.success) {
-    // In browser context, return a minimal safe object to prevent crashes
-    if (typeof window !== 'undefined') {
-      return {
-        NODE_ENV: 'development',
-        VERCEL_ENV: 'development',
-        DOMAIN: 'https://staging.peasydeal.com',
-        SESSION_SECRET: '',
-        MYFB_ENDPOINT: '',
-        PEASY_DEAL_ENDPOINT: 'https://stagingapi.peasydeal.com',
-        CDN_URL: 'https://cdn.peasydeal.com',
-        REDIS_HOST: '',
-        REDIS_USER: '',
-        REDIS_PASSWORD: '',
-        REDIS_PORT: 6379,
-        REDIS_DB: 0,
-        REDIS_SESSION_TTL: 295200,
-        CATEGORY_CACHE_TTL: 43200,
-        PAYPAL_CLIENT_ID: '',
-        PAYPAL_CURRENCY_CODE: '',
-        STRIPE_CURRENCY_CODE: 'GBP',
-        GOOGLE_MAP_API_KEY: '',
-        RUDDER_STACK_KEY: '',
-        RUDDER_STACK_URL: '',
-        ALGOLIA_APP_ID: '',
-        ALGOLIA_APP_WRITE_KEY: '',
-        ALGOLIA_INDEX_NAME: '',
-        GCS_KEY_NAME: 'peasydeal-master-key.json',
-        GCS_BUCKET_NAME: 'GCS_BUCKET_NAME',
-        R2_ACCOUNT_ID: '',
-        R2_ACCESS_KEY_ID: '',
-        R2_SECRET_ACCESS_KEY: '',
-        R2_BUCKET_NAME: '',
-      } as Env;
-    }
-    // On server, throw error if validation fails
-    throw new Error(`Environment validation failed: ${JSON.stringify(result.error.format())}`);
+    console.error('❌ Environment validation failed:');
+    result.error.issues.forEach(issue => {
+      const path = issue.path.join('.') || '(root)';
+      console.error(`  • ${path}: ${issue.message}`);
+    });
+
+    throw new Error('Environment validation failed. See logs for details.');
   }
 
   const envData = result.data;

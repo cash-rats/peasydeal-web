@@ -106,7 +106,14 @@ const Document = withEmotionCache(
 
     // Only executed on client; mirrors MUI SSR recipe
     useEnhancedEffect(() => {
-      emotionCache.sheet.container = document.head;
+      const insertionPoint = document.querySelector<HTMLMetaElement>(
+        'meta[name="emotion-insertion-point"]',
+      );
+      const headElement = insertionPoint?.parentElement ?? document.head;
+
+      emotionCache.sheet.container = headElement;
+      (emotionCache.sheet as any).insertionPoint = insertionPoint;
+
       const tags = emotionCache.sheet.tags;
       emotionCache.sheet.flush();
       tags.forEach((tag) => {
@@ -129,7 +136,7 @@ const Document = withEmotionCache(
 
     return (
       <html lang="en">
-        <head>
+        <head suppressHydrationWarning>
           <Meta />
           <Links />
           <meta name="emotion-insertion-point" content="emotion-insertion-point" />
@@ -146,7 +153,7 @@ const Document = withEmotionCache(
         </head>
         <body>
           <noscript>
-            {env && env.GOOGLE_TAG_ID ? (
+            {envData && envData.GOOGLE_TAG_ID ? (
               <iframe
                 title="Google Tag Manager"
                 src={`https://www.googletagmanager.com/ns.html?id=${env.GOOGLE_TAG_ID}`}
@@ -160,7 +167,7 @@ const Document = withEmotionCache(
           <script
             dangerouslySetInnerHTML={{
               __html: `
-                window.ENV=${JSON.stringify(env)}
+                window.ENV=${JSON.stringify(envData)}
               `,
             }}
           />
@@ -203,7 +210,7 @@ export default function App() {
   return (
     <Document>
       <Layout>
-        <Outlet />
+        <div> hello </div>
       </Layout>
     </Document>
   );

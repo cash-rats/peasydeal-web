@@ -92,19 +92,6 @@ export default async function handleRequest(
     </ServerStyleContext.Provider>,
   )
 
-  let stylesHTML = '';
-
-  styles.forEach(({ key, ids, css }) => {
-    const emotionKey = `${key} ${ids.join(' ')}`;
-    const newStyleTag = `<style data-emotion="${emotionKey}">${css}</style>`;
-    stylesHTML = `${stylesHTML}${newStyleTag}`;
-  });
-
-  markup = markup.replace(
-    /<meta(\s)*name="emotion-insertion-point"(\s)*content="emotion-insertion-point"(\s)*\/>/,
-    `<meta name="emotion-insertion-point" content="emotion-insertion-point"/>${stylesHTML}`,
-  )
-
   responseHeaders.set("Content-Type", "text/html");
 
   const streamScripts = await renderStreamScripts(entryContext.serverHandoffStream);
