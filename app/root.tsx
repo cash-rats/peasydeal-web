@@ -173,11 +173,10 @@ export function ErrorBoundary() {
 }
 
 export default function App() {
-  console.log('~~ 1');
   return (
     <Document>
       <Layout>
-        <div> hello </div>
+        <Outlet />
       </Layout>
     </Document>
   );
