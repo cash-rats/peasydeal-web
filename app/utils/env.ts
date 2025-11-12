@@ -21,12 +21,12 @@ const envSchema = z.object({
   REDIS_HOST: z.string(),
   REDIS_USER: z.string(),
   REDIS_PASSWORD: z.string(),
-  REDIS_PORT: z.string().transform((val: string) => Number(val) || 6379).default(6379),
-  REDIS_DB: z.string().transform((val: string) => Number(val) || 0).default(0),
-  REDIS_SESSION_TTL: z.string().transform((val: string) => Number(val) || 295200).default(295200),
+  REDIS_PORT: z.coerce.number().default(6379),
+  REDIS_DB: z.coerce.number().default(0),
+  REDIS_SESSION_TTL: z.coerce.number().default(295200),
 
   // Caching
-  CATEGORY_CACHE_TTL: z.string().transform((val: string) => Number(val) || 43200).default(43200),
+  CATEGORY_CACHE_TTL: z.coerce.number().default(43200),
 
   // Payment - PayPal
   PAYPAL_CLIENT_ID: z.string(),

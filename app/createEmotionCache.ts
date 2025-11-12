@@ -1,7 +1,5 @@
 import createCache from '@emotion/cache'
 
-export const defaultCache = createEmotionCache()
-
 export default function createEmotionCache() {
   let insertionPoint
 
@@ -12,5 +10,7 @@ export default function createEmotionCache() {
     insertionPoint = emotionInsertionPoint ?? undefined
   }
 
-  return createCache({ key: 'cha', insertionPoint })
+  const cache = createCache({ key: 'cha', insertionPoint })
+  cache.compat = true
+  return cache
 }
