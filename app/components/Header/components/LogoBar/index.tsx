@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useId, useState } from 'react';
 import { Link } from 'react-router';
 import type { LinksFunction } from 'react-router';
 import { FiMenu } from 'react-icons/fi';
@@ -9,7 +9,7 @@ import PeasyDeal from './images/peasydeal_logo.svg';
 import type { IMegaMenuContent} from '../MegaMenuContent';
 import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
 import { Button } from '~/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '~/components/ui/sheet';
+import { Sheet, SheetContent } from '~/components/ui/sheet';
 
 interface LogoBarProps {
   categories?: Category[];
@@ -39,24 +39,27 @@ MegaMemo.displayName = 'MegaMenuContent';
 
 function LogoBar({ categories = [] }: LogoBarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const mobileSheetId = useId();
 
   return (
     <div className="flex items-center mr-4 my-auto relative">
       <div className="">
         <div className="block md:hidden">
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button
-                aria-label='Open Category Menu'
-                variant='ghost'
-                size='icon'
-                className='h-11 w-11 rounded-full bg-white shadow-sm md:hidden'
-              >
-                <FiMenu className="text-[28px] text-[#e6007e]" />
-              </Button>
-            </SheetTrigger>
+            <Button
+              aria-label='Open Category Menu'
+              aria-haspopup='dialog'
+              aria-controls={mobileSheetId}
+              variant='ghost'
+              size='icon'
+              onClick={() => setIsOpen(true)}
+              className='h-11 w-11 rounded-full bg-white shadow-sm md:hidden'
+            >
+              <FiMenu className="text-[28px] text-[#e6007e]" />
+            </Button>
 
             <SheetContent
+              id={mobileSheetId}
               side="left"
               className="w-[85vw] max-w-sm border-r border-border p-0"
             >

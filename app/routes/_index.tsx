@@ -58,7 +58,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export default function LandingPage() {
-  console.log('** aaa');
   const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
   const rootData = useRouteLoaderData("root") as any;
   const cartCount = rootData?.cartCount || 0;
@@ -95,6 +94,12 @@ export default function LandingPage() {
 
         searchBar={<DropDownSearchBar />}
       />
+
+      <main className="min-h-[35rem]">
+        hello outlet
+      </main>
+
+      <Footer categories={categories} />
     </>
   );
 }
