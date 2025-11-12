@@ -1,202 +1,186 @@
-import { Link } from 'react-router';
 import type { LinksFunction } from 'react-router';
-import { Button } from '@chakra-ui/react';
-import { FiChevronRight, FiChevronLeft } from "react-icons/fi";
+import { Link } from 'react-router';
+import { useMemo, useRef, useState } from 'react';
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import ReactSwipe from 'react-easy-swipe';
 
-import React from "react";
-import ReactSwipe from "react-easy-swipe";
-const Swipe = (ReactSwipe as any).default || ReactSwipe;
+import { Button } from '~/components/ui/button';
+import { cn } from '~/lib/utils';
+
 import styles from './styles/promoCarousell.css?url';
 import shoes from './images/light-up-shoes.png';
 import bubble from './images/bubble-slide.png';
 
+const Swipe = (ReactSwipe as any).default || ReactSwipe;
+
+type Campaign = {
+  id: string;
+  href: string;
+  eventName: string;
+  title: string;
+  subtitle: string;
+  image: string;
+  imageAlt: string;
+  gradient: string;
+};
+
 export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ]
-}
+  return [{ rel: 'stylesheet', href: styles }];
+};
 
-const campaigns = [1, 2];
-
-const getEvent = (index: number) => {
-  const campaign = [
-    (
-      <Link
-        key={`campaign_card_${index}`}
-        to='/product/massage-bubble-slides-slippers-i.7925634138350'
-        onClick={() => {
-          window.rudderanalytics?.track('click_event_carousell', {
-            event: 'bubble_slides_slippers',
-          });
-        }}
-      >
-        <div className='rounded-2xl bg-[#e6decf] h-[250px] flex justify-between self-center mx-2 gap-2 overflow-hidden' style={{
-          background: 'linear-gradient(28deg, #f2bd56 50%, #fec85e 50.1%)'
-        }}>
-          <div className="flex self-center flex-col flex-1 p-8">
-            <h3 className="font-poppin font-medium text-xl md:text-2xl lg:text-3xl">Bubble Slides Slippers</h3>
-            <h4 className="font-base text-xl md:text-2xl mt-2">Message your feet for only £16.16</h4>
-            <Button
-              colorScheme='whiteAlpha'
-              size="lg"
-              variant='solid'
-              className='capitalize text-lg md:text-xl mt-3 md:mt-4 bg-white text-orange-800 inline-flex w-[180px] md:w-[200px]'
-            >
-              Check now
-            </Button>
-          </div>
-          <span className="flex-1 align-right self-center">
-            <img alt='Bubble Slides Slippers' src={bubble} className='max-h-[250px] object-cover mx-auto' />
-          </span>
-        </div>
-      </Link>
-    ),
-
-    (
-      <Link
-        key={`campaign_card_${index}`}
-        to='/product/led-light-up-trainers-i.7705390678254'
-        onClick={() => {
-          window.rudderanalytics?.track('click_event_carousell', {
-            event: 'light_up_shoes',
-          });
-        }}
-      >
-        <div className='rounded-2xl bg-[#e6decf] h-[250px] flex justify-between self-center mx-2 gap-2 overflow-hidden' style={{
-          background: 'linear-gradient(28deg, #e6decf 50%, #e2d3b5 50.1%)'
-        }}>
-          <div className="flex self-center flex-col flex-1 p-8">
-            <h3 className="font-poppin font-medium text-xl md:text-2xl lg:text-3xl">Light Up Trainers Shoes</h3>
-            <h4 className="font-base text-xl md:text-2xl mt-2">Now £17.99</h4>
-            <Button
-              colorScheme='whiteAlpha'
-              size="lg"
-              variant='solid'
-              className='capitalize text-lg md:text-xl mt-3 md:mt-4 bg-white text-orange-800 inline-flex w-[180px] md:w-[200px]'
-            >
-              Check now
-            </Button>
-          </div>
-          <span className="flex-1 align-right self-center">
-            <img alt='LED Light-Up Trainers' src={shoes} className='max-h-[100%] w-[100%] object-cover mx-auto' />
-          </span>
-        </div>
-      </Link>
-    )
-  ]
-
-  return index <= campaign.length ? campaign[index] : null;
-}
+const campaigns: Campaign[] = [
+  {
+    id: 'bubble-slides',
+    href: '/product/massage-bubble-slides-slippers-i.7925634138350',
+    eventName: 'bubble_slides_slippers',
+    title: 'Bubble Slides Slippers',
+    subtitle: 'Massage your feet for only £16.16',
+    image: bubble,
+    imageAlt: 'Bubble Slides Slippers',
+    gradient: 'linear-gradient(28deg, #f2bd56 50%, #fec85e 50.1%)',
+  },
+  {
+    id: 'light-up-shoes',
+    href: '/product/led-light-up-trainers-i.7705390678254',
+    eventName: 'light_up_shoes',
+    title: 'Light Up Trainers Shoes',
+    subtitle: 'Now £17.99',
+    image: shoes,
+    imageAlt: 'LED Light-Up Trainers',
+    gradient: 'linear-gradient(28deg, #e6decf 50%, #e2d3b5 50.1%)',
+  },
+];
 
 const PromoCarousell = () => {
-  // We will start by storing the index of the current image in the state.
-  const [currentImage, setCurrentImage] = React.useState(0);
+  const [currentImage, setCurrentImage] = useState(0);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const totalImages = campaigns.length;
 
-  // We are using react ref to 'tag' each of the images. Below will create an array of
-  // objects with numbered keys. We will use those numbers (i) later to access a ref of a
-  // specific image in this array.
-  const refs = campaigns.reduce((acc, val, i) => {
-    acc[i] = React.createRef();
-    return acc;
-  }, {});
+  const scrollToImage = (index: number) => {
+    const target = cardRefs.current[index];
+    if (!target) return;
 
-  const scrollToImage = (i) => {
-    // First let's set the index of the image we want to see next
-    setCurrentImage(i);
-    // Now, this is where the magic happens. We 'tagged' each one of the images with a ref,
-    // we can then use built-in scrollIntoView API to do eaxactly what it says on the box - scroll it into
-    // your current view! To do so we pass an index of the image, which is then use to identify our current
-    // image's ref in 'refs' array above.
-    refs[i].current.scrollIntoView({
-      //     Defines the transition animation.
-      behavior: "smooth",
-      //      Defines vertical alignment.
-      block: "nearest",
-      //      Defines horizontal alignment.
-      inline: "start",
+    setCurrentImage(index);
+    target.scrollIntoView({
+      behavior: 'smooth',
+      block: 'nearest',
+      inline: 'start',
     });
   };
 
-  // Some validation for checking the array length could be added if needed
-  const totalImages = campaigns.length;
-
-  // Below functions will assure that after last image we'll scroll back to the start,
-  // or another way round - first to last in previousImage method.
   const nextImage = () => {
     if (currentImage >= totalImages - 1) {
       scrollToImage(0);
-    } else {
-      scrollToImage(currentImage + 1);
+      return;
     }
+
+    scrollToImage(currentImage + 1);
   };
 
   const previousImage = () => {
     if (currentImage === 0) {
       scrollToImage(totalImages - 1);
-    } else {
-      scrollToImage(currentImage - 1);
+      return;
     }
+
+    scrollToImage(currentImage - 1);
   };
 
-  // Tailwind styles. Most importantly notice position absolute, this will sit relative to the carousel's outer div.
-  const arrowStyle =
-    "absolute text-white text-2xl z-10 bg-black h-8 w-8 md:h-10 md:w-10 rounded-full opacity-75 flex items-center justify-center";
-
-  // Let's create dynamic buttons. It can be either left or right. Using
-  // isLeft boolean we can determine which side we'll be rendering our button
-  // as well as change its position and content.
-  const sliderControl = (isLeft?: boolean) => (
-    <button
+  const sliderControl = (direction: 'left' | 'right') => (
+    <Button
       type="button"
-      onClick={isLeft ? previousImage : nextImage}
-      className={`${arrowStyle} ${isLeft ? "left-0" : "right-0"}`}
-      style={{ top: "40%" }}
+      variant="secondary"
+      size="icon"
+      onClick={direction === 'left' ? previousImage : nextImage}
+      className={cn(
+        'absolute z-10 h-8 w-8 md:h-10 md:w-10 rounded-full bg-black text-white hover:bg-black/80 opacity-75',
+        direction === 'left' ? 'left-0' : 'right-0'
+      )}
+      style={{ top: '40%' }}
     >
-      <span role="img" aria-label={`Arrow ${isLeft ? "left" : "right"}`}>
-        {isLeft ? <FiChevronLeft /> : <FiChevronRight />}
-      </span>
-    </button>
+      {direction === 'left' ? <FiChevronLeft aria-hidden /> : <FiChevronRight aria-hidden />}
+      <span className="sr-only">{direction === 'left' ? 'Previous slide' : 'Next slide'}</span>
+    </Button>
+  );
+
+  const renderedSlides = useMemo(
+    () =>
+      campaigns.map(campaign => (
+        <Link
+          key={campaign.id}
+          to={campaign.href}
+          onClick={() =>
+            window.rudderanalytics?.track('click_event_carousell', {
+              event: campaign.eventName,
+            })
+          }
+        >
+          <div
+            className="rounded-2xl h-[250px] flex justify-between self-center mx-2 gap-2 overflow-hidden"
+            style={{ background: campaign.gradient }}
+          >
+            <div className="flex self-center flex-col flex-1 p-8">
+              <h3 className="font-poppin font-medium text-xl md:text-2xl lg:text-3xl">
+                {campaign.title}
+              </h3>
+              <h4 className="font-base text-xl md:text-2xl mt-2">{campaign.subtitle}</h4>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="capitalize text-lg md:text-xl mt-3 md:mt-4 bg-white text-orange-800 hover:bg-orange-100 inline-flex w-[180px] md:w-[200px]"
+              >
+                Check now
+              </Button>
+            </div>
+            <span className="flex-1 align-right self-center">
+              <img
+                alt={campaign.imageAlt}
+                src={campaign.image}
+                className="max-h-[250px] object-cover mx-auto w-full"
+              />
+            </span>
+          </div>
+        </Link>
+      )),
+    []
   );
 
   return (
     <div className="w-full flex justify-center">
       <div className="flex justify-center w-full items-center">
         <div className="relative w-full">
-          <Swipe
-            onSwipeRight={() => {
-              previousImage();
-            }}
-            onSwipeLeft={() => {
-              nextImage();
-            }}
-          >
+          <Swipe onSwipeRight={previousImage} onSwipeLeft={nextImage}>
             <div className="promo-carousel w-full">
-              {sliderControl(true)}
-              {campaigns.map((campaign, i) => (
-                <div className="w-full flex-shrink-0" key={`campaign_${campaign}`} ref={refs[i]}>
-                  {
-                    getEvent(i)
-                  }
+              {sliderControl('left')}
+              {campaigns.map((campaign, index) => (
+                <div
+                  className="w-full flex-shrink-0"
+                  key={campaign.id}
+                  ref={el => (cardRefs.current[index] = el)}
+                >
+                  {renderedSlides[index]}
                 </div>
               ))}
-              {sliderControl()}
+              {sliderControl('right')}
 
               <div className="mt-2.5 absolute bottom-2.5 w-full text-center">
-                {campaigns.map((item: any, index: number) => {
-                  return (
-                    <span
-                      className="cursor-pointer h-2 w-2 mx-2 rounded-full inline-block transition-colors bg-white duration-200 ease-in-out hover:bg-gray-700"
-                      key={index}
-                      style={{
-                        opacity:
-                          index === currentImage ? "1" : "0.5",
-                      }}
-                      onClick={(e) => {
+                {campaigns.map((campaign, index) => (
+                  <span
+                    key={campaign.id}
+                    className="cursor-pointer h-2 w-2 mx-2 rounded-full inline-block transition-colors bg-white duration-200 ease-in-out hover:bg-gray-700"
+                    style={{ opacity: index === currentImage ? '1' : '0.5' }}
+                    onClick={() => scrollToImage(index)}
+                    aria-label={`Go to slide ${index + 1}`}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={event => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
                         scrollToImage(index);
-                      }}
-                    />
-                  );
-                })}
+                      }
+                    }}
+                  />
+                ))}
               </div>
             </div>
           </Swipe>
