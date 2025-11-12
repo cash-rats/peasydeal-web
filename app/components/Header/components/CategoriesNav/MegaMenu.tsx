@@ -25,7 +25,8 @@ interface IMegaMenu {
   activeMenuName: string | null;
 }
 
-let delayOpenID: undefined | NodeJS.Timeout = undefined;
+let delayOpenID: undefined | ReturnType<typeof setTimeout> = undefined;
+let delayCloseID: undefined | ReturnType<typeof setTimeout> = undefined;
 
 const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +38,10 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
   }, [activeMenuName, category]);
 
   const setOpen = () => {
+    if (delayCloseID) {
+      clearTimeout(delayCloseID);
+      delayCloseID = undefined;
+    }
     setMenuDisplayed(true, category.name);
     setIsOpen(true);
   }
@@ -48,12 +53,36 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
    * has the intention to open the panel.
    */
   const setDelayOpen = () => {
+    if (delayOpenID) clearTimeout(delayOpenID);
+    if (delayCloseID) {
+      clearTimeout(delayCloseID);
+      delayCloseID = undefined;
+    }
     delayOpenID = setTimeout(setOpen, 300);
   }
 
+  const setDelayClose = () => {
+    if (delayOpenID) {
+      clearTimeout(delayOpenID);
+      delayOpenID = undefined;
+    }
+    if (delayCloseID) clearTimeout(delayCloseID);
+    delayCloseID = setTimeout(() => {
+      setMenuDisplayed(false, category.name);
+      setIsOpen(false);
+      delayCloseID = undefined;
+    }, 150);
+  }
+
   const setClose = () => {
-    clearTimeout(delayOpenID);
-    delayOpenID = undefined;
+    if (delayOpenID) {
+      clearTimeout(delayOpenID);
+      delayOpenID = undefined;
+    }
+    if (delayCloseID) {
+      clearTimeout(delayCloseID);
+      delayCloseID = undefined;
+    }
     setMenuDisplayed(false, category.name);
     setIsOpen(false);
   }
@@ -82,7 +111,7 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
               isOpen ? setClose() : setOpen();
             }}
             onMouseEnter={setDelayOpen}
-            onMouseLeave={setClose}
+            onMouseLeave={setDelayClose}
           >
             <div className="flex items-center">
               <span>{category.shortName || category.title}</span>
@@ -91,19 +120,21 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          align="start"
+          align="center"
           sideOffset={12}
           onMouseEnter={setOpen}
-          onMouseLeave={setClose}
+          onMouseLeave={setDelayClose}
           className='
             mega-menu-content
             flex
             w-[100vw]
             max-w-screen-xl
+            bg-white
             pt-4 pb-8 xl:py-8 px-4
             shadow-[2px_4px_16px_rgb(0,0,0,8%)]
             overflow-scroll
             md:max-h-[calc(100vh-8rem)] lg:max-h-auto
+            z-[9999]
           '
         >
           <div className="flex flex-col px-3 w-full">

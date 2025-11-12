@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -36,10 +37,11 @@ interface CategoriesNavProps {
 
 export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
   const ALL_CATEGORIES = 'ALL';
-  const [displayOverlay, setDisplayOverlay] = useState(false);
   const [activeMenuName, setActiveMenuName] = useState<string | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
+  const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (activeMenuName !== ALL_CATEGORIES) {
@@ -47,20 +49,57 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     }
   }, [activeMenuName]);
 
-  const setOpen = () => {
+  const clearHoverTimeouts = () => {
+    if (openTimeoutRef.current) {
+      clearTimeout(openTimeoutRef.current);
+      openTimeoutRef.current = null;
+    }
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+  };
+
+  const openMenu = () => {
+    clearHoverTimeouts();
     setMenuDisplayed(true, ALL_CATEGORIES);
     setIsOpen(true);
-  }
+  };
 
-  const setClose = () => {
+  const closeMenu = () => {
+    clearHoverTimeouts();
     setMenuDisplayed(false, ALL_CATEGORIES);
     setIsOpen(false);
-  }
+  };
 
-  const setMenuDisplayed = useCallback((show: boolean, name: string) => {
-    setDisplayOverlay(show);
+  const setDelayedOpen = () => {
+    if (openTimeoutRef.current) {
+      clearTimeout(openTimeoutRef.current);
+    }
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    openTimeoutRef.current = setTimeout(openMenu, 200);
+  };
+
+  const setDelayedClose = () => {
+    if (openTimeoutRef.current) {
+      clearTimeout(openTimeoutRef.current);
+      openTimeoutRef.current = null;
+    }
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    closeTimeoutRef.current = setTimeout(closeMenu, 150);
+  };
+
+  const setOpen = () => openMenu();
+  const setClose = () => closeMenu();
+
+  const setMenuDisplayed = useCallback((_show: boolean, name: string) => {
     setActiveMenuName(name);
-  }, [setDisplayOverlay])
+  }, []);
 
   const MegaMenuListItem = ({ className, children }: { className?: string; children: ReactNode }) => (
     <div className={cn('flex items-center rounded px-2 py-1 text-base hover:bg-gray-100', className)}>
@@ -138,7 +177,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
 
             <li className="self-center ">
               <div className="mega-menu-wrapper">
-                <DropdownMenu open={isOpen} onOpenChange={(open) => (open ? setOpen() : setClose())}>
+                <DropdownMenu open={isOpen} onOpenChange={(open) => (open ? openMenu() : closeMenu())}>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
@@ -150,11 +189,11 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                         flex flex-col
                         items-center relative
                       "
-                      onMouseEnter={setOpen}
-                      onMouseLeave={setClose}
+                      onMouseEnter={setDelayedOpen}
+                      onMouseLeave={setDelayedClose}
                       onTouchEnd={e => {
                         e.preventDefault();
-                        isOpen ? setClose() : setOpen();
+                        isOpen ? closeMenu() : openMenu();
                       }}
                     >
                       <div className="flex items-center">
@@ -165,16 +204,17 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     modal={false}
-                    align="start"
+                    align="center"
                     sideOffset={12}
                     className="
                       mega-menu-content
                       flex w-[100vw] max-w-screen-xl border-none bg-white
                       shadow-[2px_4px_16px_rgb(0,0,0,0.08)]
                       pt-4 pb-8 xl:py-8 px-4
+                      z-[9999]
                     "
-                    onMouseEnter={setOpen}
-                    onMouseLeave={setClose}
+                    onMouseEnter={openMenu}
+                    onMouseLeave={setDelayedClose}
                   >
                     <MegaMenuContent
                       categories={categories}
@@ -189,13 +229,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
           </ul>
         </nav>
       </div>
-      <div
-        className={`${isOpen || displayOverlay ? "megamenu-overlay" : ''}`}
-        onClickCapture={() => {
-          setDisplayOverlay(false);
-          setActiveMenuName('');
-        }}
-      />
     </div>
   );
 }
