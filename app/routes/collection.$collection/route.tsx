@@ -1,4 +1,4 @@
-import { useEffect, useRef, useReducer } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from 'react-router';
 import {
   data,
@@ -10,14 +10,10 @@ import {
   isRouteErrorResponse,
   useRouteError,
 } from 'react-router';
-import type { DynamicLinksFunction } from 'remix-utils';
 import httpStatus from 'http-status-codes';
-import { Progress } from '@chakra-ui/react';
-import { BreadcrumbItem, BreadcrumbLink } from '@chakra-ui/react';
 import { VscChevronDown, VscArrowLeft } from 'react-icons/vsc';
 
 import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
-import Breadcrumbs, { links as BreadCrumbLink } from '~/components/Breadcrumbs/Breadcrumbs';
 import LoadMoreButton from '~/components/LoadMoreButton';
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
 import PageTitle from '~/components/PageTitle';
@@ -34,16 +30,11 @@ import reducer, { CollectionActionType } from './reducer';
 import type { LoaderDataType, LoadMoreDataType } from './types';
 import structuredData from './structured_data';
 
-import { Drawer, DrawerBody, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, Button, useDisclosure } from '@chakra-ui/react';
+import { Button } from '~/components/ui/button';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '~/components/ui/sheet';
+import { FiChevronRight } from 'react-icons/fi';
 
-const dynamicLinks: DynamicLinksFunction<LoaderDataType> = ({ data }) => [
-  {
-    rel: 'canonical',
-    href: data?.canonical_link || getCanonicalDomain(),
-  },
-];
-
-export const handle = { dynamicLinks, structuredData };
+export const handle = { structuredData };
 
 export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
   if (!data || !params.collection) {
@@ -68,15 +59,16 @@ export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
       name: 'description',
       description: getCollectionDescText(category?.title, category?.description),
     },
+    {
+      tagName: 'link',
+      rel: 'canonical',
+      href: data?.canonical_link || getCanonicalDomain(),
+    },
     ...getCategoryFBSEO_V2(category?.title, category?.description),
   ];
 };
 
-export const links: LinksFunction = () => [
-  ...AllTimeCouponLink(),
-  ...BreadCrumbLink(),
-  ...ProductRowsContainerLinks(),
-];
+export const links: LinksFunction = () => [...AllTimeCouponLink(), ...ProductRowsContainerLinks()];
 
 type LoaderType = 'load_products' | 'loadmore';
 
@@ -132,7 +124,6 @@ const getCategoryFromWindowPath = (windowObj: Window): string => {
 };
 
 function Collection() {
-  const mobileSubCatHalfSheetRef = useRef<HTMLDivElement | null>(null);
   const loaderData = useLoaderData<LoaderDataType>() || ({} as LoaderDataType);
   const { category, products, page, total, current, hasMore, userAgent } = loaderData;
   const [state, dispatch] = useReducer(reducer, {
@@ -143,8 +134,7 @@ function Collection() {
     category,
   });
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const subCatRef = useRef<HTMLButtonElement | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const currPage = useRef(state.current);
   const loadmoreFetcher = useFetcher();
 
@@ -162,24 +152,26 @@ function Collection() {
   }, [category, current, page, products, total]);
 
   useEffect(() => {
-    if (loadmoreFetcher.type === 'done') {
-      const { products: fetchedProducts, total: fetchedTotal, current: fetchedCurrent, page: fetchedPage, category: dataCat } =
-        loadmoreFetcher.data as LoadMoreDataType;
+    if (loadmoreFetcher.state !== 'idle') return;
+    const fetcherData = loadmoreFetcher.data as LoadMoreDataType | undefined;
+    if (!fetcherData) return;
 
-      if (fetchedProducts.length === 0 || dataCat !== category.name) return;
+    const { products: fetchedProducts, total: fetchedTotal, current: fetchedCurrent, page: fetchedPage, category: dataCat } =
+      fetcherData;
 
-      currPage.current = fetchedPage;
+    if (fetchedProducts.length === 0 || dataCat !== category.name) return;
 
-      dispatch({
-        type: CollectionActionType.append_products,
-        payload: {
-          products: fetchedProducts,
-          total: fetchedTotal,
-          current: fetchedCurrent,
-        },
-      });
-    }
-  }, [loadmoreFetcher.type, category]);
+    currPage.current = fetchedPage;
+
+    dispatch({
+      type: CollectionActionType.append_products,
+      payload: {
+        products: fetchedProducts,
+        total: fetchedTotal,
+        current: fetchedCurrent,
+      },
+    });
+  }, [loadmoreFetcher.state, loadmoreFetcher.data, category]);
 
   const handleLoadMore = () => {
     const categoryName = getCategoryFromWindowPath(window);
@@ -195,9 +187,32 @@ function Collection() {
     );
   };
 
-  const parentExist = category.parents && category.parents.length > 0;
-  const lastParent = parentExist ? category.parents[category.parents.length - 1] : null;
+  const parentCategories = category?.parents ?? [];
+  const parentExist = parentCategories.length > 0;
+  const lastParent = parentExist ? parentCategories[parentCategories.length - 1] : null;
   const { category: stateCategory } = state;
+  const childCategories = category?.children ?? [];
+  const breadcrumbs = [
+    {
+      key: 'collection_breadcrumbs_first',
+      label: 'Home',
+      to: '/',
+      isCurrent: false,
+    },
+    ...(stateCategory?.parents?.map((p) => ({
+      key: `collection_breadcrumbs_${p.catId}`,
+      label: p.title,
+      to: `/collection/${p.name}`,
+      isCurrent: false,
+    })) ?? []),
+    {
+      key: 'collection_breadcrumbs_last',
+      label: stateCategory?.title,
+      to: `/collection/${stateCategory?.name}`,
+      isCurrent: true,
+    },
+  ];
+  const progressPercent = state.total ? Math.floor((state.current / state.total) * 100) : 0;
 
   return (
     <>
@@ -208,47 +223,38 @@ function Collection() {
       <PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(userAgent)} />
 
       <div className="py-0 px-auto flex flex-col justify-center items-center mx-2 md:mx-4">
-        <div className="w-full py-2.5 max-w-screen-xl mx-auto">
-          <Breadcrumbs
-            breadcrumbs={[
-              <BreadcrumbItem key='collection_breadcrumbs_first'>
-                <BreadcrumbLink as={NavLink} to='/' className="font-semibold">
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>,
-
-              ...(stateCategory?.parents?.map((p) => (
-                <BreadcrumbItem key={`collection_breadcrumbs_${p.catId}`}>
-                  <BreadcrumbLink as={NavLink} to={`/collection/${p.name}`} isCurrentPage className="font-semibold !text-[#D02E7D]">
-                    {p.title}
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-              )) ?? []),
-
-              <BreadcrumbItem key='collection_breadcrumbs_last'>
-                <BreadcrumbLink
-                  as={NavLink}
-                  to={`/collection/${stateCategory?.name}`}
-                  isCurrentPage
-                  className="font-semibold !text-[#D02E7D]"
-                >
-                  {stateCategory?.title}
-                </BreadcrumbLink>
-              </BreadcrumbItem>,
-            ]}
-          />
-        </div>
+        <nav className="w-full py-2.5 max-w-screen-xl mx-auto" aria-label="Breadcrumb">
+          <ol className="flex flex-wrap items-center gap-1 text-sm md:text-base font-semibold">
+            {breadcrumbs.map((crumb, index) => {
+              if (!crumb.label) return null;
+              const isLast = index === breadcrumbs.length - 1;
+              return (
+                <li key={crumb.key} className="flex items-center gap-1">
+                  <NavLink
+                    to={crumb.to}
+                    aria-current={crumb.isCurrent ? 'page' : undefined}
+                    className={crumb.isCurrent ? '!text-[#D02E7D]' : undefined}
+                  >
+                    {crumb.label}
+                  </NavLink>
+                  {!isLast ? <FiChevronRight className="text-[16px] md:text-[24px]" /> : null}
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
 
         <div className="w-full mb-0 md:mb-8">
           <PageTitle title={stateCategory?.title} subtitle={stateCategory?.description} />
         </div>
 
-        <div
-          className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8] z-20 bg-white"
-          ref={mobileSubCatHalfSheetRef}
-        >
-          <button
-            className="
+        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+          <div
+            className="flex md:hidden w-full py-2 max-w-screen-xl mx-auto border-b-[1px] border-solid border-[#d8d8d8] z-20 bg-white"
+          >
+            <SheetTrigger asChild>
+              <button
+                className="
               flex items-center justify-between
               font-bold px-4 py-2.5
               shadow-sm rounded-lg border-[1px] border-solid border-[#AAA]
@@ -258,71 +264,77 @@ function Collection() {
               w-full
               color-slate-800
             "
-            ref={subCatRef}
-            onClick={() => {
-              window.rudderanalytics?.track('click_open_category_halfsheet', {
-                category: stateCategory.name,
-              });
-              onOpen();
-            }}
-          >
-            <span>{`All ${stateCategory?.title} (${state.total})`}</span>
-            <VscChevronDown fontSize={16} />
-          </button>
-        </div>
+                onClick={() => {
+                  window.rudderanalytics?.track('click_open_category_halfsheet', {
+                    category: stateCategory?.name,
+                  });
+                }}
+              >
+                <span>{`All ${stateCategory?.title} (${state.total})`}</span>
+                <VscChevronDown fontSize={16} />
+              </button>
+            </SheetTrigger>
+          </div>
 
-        <Drawer isOpen={isOpen} placement='bottom' onClose={onClose} finalFocusRef={subCatRef}>
-          <DrawerOverlay />
-          <DrawerContent maxH='80vh'>
-            <DrawerCloseButton />
-            <DrawerHeader>Shop by Category</DrawerHeader>
-
-            <DrawerBody>
-              <div className="flex flex-col gap-0">
-                <span className="py-2 px-4 font-bold">{`All ${stateCategory?.title} (${state.total})`}</span>
-                {category.children.map((subcat, index) =>
-                  subcat.count > 0 ? (
-                    <Link to={`/collection/${subcat.name}`} key={`mobile_${subcat.name}_${index}`}>
-                      <Button
-                        className="justify-start whitespace-normal w-full"
-                        colorScheme="pink"
-                        variant="ghost"
-                        onClick={() => {
-                          window.rudderanalytics?.track('click_sub_category', {
-                            category: subcat.name,
-                            layout: 'mobile',
-                          });
-                          onClose();
-                        }}
-                      >
-                        {subcat.title} ({subcat.count})
-                      </Button>
+          <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto px-0">
+            <SheetHeader className="px-6">
+              <SheetTitle>Shop by Category</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col gap-0">
+              <span className="py-2 px-6 font-bold">{`All ${stateCategory?.title} (${state.total})`}</span>
+              {childCategories.map((subcat, index) =>
+                subcat.count > 0 ? (
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="justify-start whitespace-normal rounded-none px-6 py-4 text-left"
+                    key={`mobile_${subcat.name}_${index}`}
+                  >
+                    <Link
+                      to={`/collection/${subcat.name}`}
+                      onClick={() => {
+                        window.rudderanalytics?.track('click_sub_category', {
+                          category: subcat.name,
+                          layout: 'mobile',
+                        });
+                        setIsSheetOpen(false);
+                      }}
+                    >
+                      {subcat.title} ({subcat.count})
                     </Link>
-                  ) : null
-                )}
-              </div>
-            </DrawerBody>
-          </DrawerContent>
-        </Drawer>
+                  </Button>
+                ) : null
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
 
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full max-w-screen-xl mx-auto mb-4">
           <div className="hidden md:flex md:col-span-1 lg:col-span-1 ">
             <div className="border border-[#d8d8d8] rounded-sm flex flex-col p-4 w-full gap-1">
               {parentExist && lastParent !== null ? (
-                <Link to={`/collection/${lastParent.name}`}>
-                  <Button className="text-left mb-4" variant="ghost" leftIcon={<VscArrowLeft />}>
+                <Button
+                  asChild
+                  variant="ghost"
+                  className="mb-4 justify-start gap-2 text-left"
+                >
+                  <Link to={`/collection/${lastParent.name}`}>
+                    <VscArrowLeft />
                     {`${lastParent.title}`}
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               ) : null}
               <span className="py-2 px-4 font-bold">{`All ${stateCategory?.title} (${state.total})`}</span>
-              {category.children.map((subcat, index) =>
+              {childCategories.map((subcat, index) =>
                 subcat.count > 0 ? (
-                  <Link to={`/collection/${subcat.name}`} key={`${subcat.name}_${index}`}>
-                    <Button
-                      className="text-left whitespace-normal"
-                      colorScheme="pink"
-                      variant="ghost"
+                  <Button
+                    asChild
+                    variant="ghost"
+                    className="justify-start whitespace-normal text-left"
+                    key={`${subcat.name}_${index}`}
+                  >
+                    <Link
+                      to={`/collection/${subcat.name}`}
                       onClick={() => {
                         window.rudderanalytics?.track('click_sub_category', {
                           category: subcat.name,
@@ -331,8 +343,8 @@ function Collection() {
                       }}
                     >
                       {subcat.title} ({subcat.count})
-                    </Button>
-                  </Link>
+                    </Link>
+                  </Button>
                 ) : null
               )}
             </div>
@@ -356,7 +368,18 @@ function Collection() {
             ">
             <p className="font-poppins">Showing {state.current} of {state.total}</p>
 
-            <Progress className="w-full" size='sm' value={Math.floor((state.current / state.total) * 100)} colorScheme='teal' />
+            <div
+              className="h-2 w-full rounded-full bg-slate-200"
+              role="progressbar"
+              aria-valuenow={progressPercent}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all"
+                style={{ width: `${Math.min(100, progressPercent)}%` }}
+              />
+            </div>
 
             {state.hasMore ? (
               <LoadMoreButton loading={loadmoreFetcher.state !== 'idle'} onClick={handleLoadMore} text='Show More' />
