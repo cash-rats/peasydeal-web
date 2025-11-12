@@ -1,4 +1,4 @@
-// import { resolveCategoryName } from '../routes/__index/api/resolve_category_name.server';
+import { resolveCategoryName } from './resolve-category-name.server';
 
 const checkIsPossibleCategory = async (url: URL): Promise<[boolean, string]> => {
   try {
@@ -11,8 +11,7 @@ const checkIsPossibleCategory = async (url: URL): Promise<[boolean, string]> => 
     }
 
     // Ok, segment is 1, this segment might be category name.
-    // const catName = await resolveCategoryName(segments[segments.length - 1]);
-    const catName = '';
+    const catName = await resolveCategoryName(segments[segments.length - 1]);
 
     return [true, catName];
   } catch (e: any) {

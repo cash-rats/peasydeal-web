@@ -3,6 +3,9 @@
     "target": "ES2019",
     "baseUrl": "./",
     "paths": {
+      "~/routes/__index/*": [
+        "./__index/*"
+      ],
       "~/*": [
         "./app/*"
       ]

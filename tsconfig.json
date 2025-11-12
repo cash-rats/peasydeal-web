@@ -23,6 +23,7 @@
     "baseUrl": ".",
     "rootDirs": [".", "./.react-router/types"],
     "paths": {
+      "~/routes/__index/*": ["./__index/*"],
       "~/*": ["./app/*"]
     },
     "noEmit": true

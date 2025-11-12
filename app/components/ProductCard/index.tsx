@@ -1,4 +1,3 @@
-import RegularCardWithActionButton from "./RegularCardWithActionButton";
+import RegularCardWithActionButton from './RegularCardWithActionButton';
 
 export { RegularCardWithActionButton };
-
