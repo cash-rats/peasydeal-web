@@ -1,9 +1,6 @@
-import React, { useContext } from 'react'
+import React, { useEffect } from 'react'
 import type { LinksFunction, MetaFunction } from 'react-router';
 import type { Route } from './+types/root';
-import { withEmotionCache } from '@emotion/react';
-import { ChakraProvider } from '@chakra-ui/react';
-import { unstable_useEnhancedEffect as useEnhancedEffect } from '@mui/material';
 import {
   Links,
   Meta,
@@ -31,7 +28,6 @@ import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
 import tailwindStylesheetUrl from './styles/tailwind.css?url';
-import { ClientStyleContext, ServerStyleContext } from './context';
 import styles from './styles/global.css?url';
 import structuredData from './structured_data';
 
@@ -98,90 +94,61 @@ interface DocumentProps {
   children: React.ReactNode;
 }
 
-const Document = withEmotionCache(
-  ({ children }: DocumentProps, emotionCache) => {
-    const serverStyleData = useContext(ServerStyleContext);
-    const clientStyleData = useContext(ClientStyleContext);
-    const { env: envData, gaSessionID } = useLoaderData() || {};
+function Document({ children }: DocumentProps) {
+  const { env: envData, gaSessionID } = useLoaderData() || {};
 
-    // Only executed on client; mirrors MUI SSR recipe
-    useEnhancedEffect(() => {
-      const insertionPoint = document.querySelector<HTMLMetaElement>(
-        'meta[name="emotion-insertion-point"]',
-      );
-      const headElement = insertionPoint?.parentElement ?? document.head;
+  useEffect(() => {
+    storeSessionIDToSessionStore(gaSessionID);
+  }, [gaSessionID]);
 
-      emotionCache.sheet.container = headElement;
-      (emotionCache.sheet as any).insertionPoint = insertionPoint;
+  useGTMScript({
+    env: envData?.NODE_ENV,
+    googleTagID: envData?.GOOGLE_TAG_ID,
+  });
 
-      const tags = emotionCache.sheet.tags;
-      emotionCache.sheet.flush();
-      tags.forEach((tag) => {
-        (emotionCache.sheet as any)._insertTag(tag);
-      });
-      clientStyleData?.reset();
-      storeSessionIDToSessionStore(gaSessionID);
-    }, []);
+  useRudderStackScript({
+    env: envData?.NODE_ENV,
+    rudderStackKey: envData?.RUDDER_STACK_KEY,
+    rudderStackUrl: envData?.RUDDER_STACK_URL,
+  });
 
-    useGTMScript({
-      env: envData?.NODE_ENV,
-      googleTagID: envData?.GOOGLE_TAG_ID,
-    });
-
-    useRudderStackScript({
-      env: envData?.NODE_ENV,
-      rudderStackKey: envData?.RUDDER_STACK_KEY,
-      rudderStackUrl: envData?.RUDDER_STACK_URL,
-    });
-
-    return (
-      <html lang="en">
-        <head suppressHydrationWarning>
-          <Meta />
-          <Links />
-          <meta name="emotion-insertion-point" content="emotion-insertion-point" />
-          <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
-          <meta name="google-site-verification" content="y_IC62RND-gmcbw_K_Hr9uw_8UHGnO9XIyO_fG2q09E" />
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          {serverStyleData?.map(({ key, ids, css }) => (
-            <style
-              key={key}
-              data-emotion={`${key} ${ids.join(' ')}`}
-              dangerouslySetInnerHTML={{ __html: css }}
+  return (
+    <html lang="en">
+      <head suppressHydrationWarning>
+        <Meta />
+        <Links />
+        <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
+        <meta name="google-site-verification" content="y_IC62RND-gmcbw_K_Hr9uw_8UHGnO9XIyO_fG2q09E" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body>
+        <noscript>
+          {envData && envData.GOOGLE_TAG_ID ? (
+            <iframe
+              title="Google Tag Manager"
+              src={`https://www.googletagmanager.com/ns.html?id=${env.GOOGLE_TAG_ID}`}
+              height="0"
+              width="0"
+              style={{ display: 'none', visibility: 'hidden' }}
             />
-          ))}
-        </head>
-        <body>
-          <noscript>
-            {envData && envData.GOOGLE_TAG_ID ? (
-              <iframe
-                title="Google Tag Manager"
-                src={`https://www.googletagmanager.com/ns.html?id=${env.GOOGLE_TAG_ID}`}
-                height="0"
-                width="0"
-                style={{ display: 'none', visibility: 'hidden' }}
-              />
-            ) : null}
-          </noscript>
+          ) : null}
+        </noscript>
 
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
                 window.ENV=${JSON.stringify(envData)}
               `,
-            }}
-          />
-          <ChakraProvider>
-            {children}
-          </ChakraProvider>
+          }}
+        />
+        {children}
 
-          <ScrollRestoration />
-          <Scripts />
-        </body>
-      </html>
-    );
-  }
-);
+        <ScrollRestoration />
+        <Scripts />
+      </body>
+    </html>
+  );
+}
 
 export function ErrorBoundary() {
   const error = useRouteError();
