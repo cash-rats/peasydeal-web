@@ -1,9 +1,10 @@
 import type { ChangeEvent } from 'react';
-import { TextField, FormControl } from '@mui/material';
-import { Button } from '@chakra-ui/react';
 
 import SubscribeModal from '~/components/EmailSubscribeModal';
 import useEmailSubscribe from '~/hooks/useEmailSubscribe';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { cn } from '~/lib/utils';
 
 function EmailSubscribe() {
   const {
@@ -34,41 +35,34 @@ function EmailSubscribe() {
         </p>
 
         <div className="w-full">
-          <FormControl className="w-full flex flex-row mt-3 gap-2 justify-center">
-            <TextField
-              fullWidth
+          <fetcher.Form
+            action='/subscribe?index'
+            method='post'
+            className="mt-3 flex w-full flex-col gap-2 sm:flex-row sm:items-center"
+          >
+            <Input
+              name="email"
+              type="email"
               placeholder='Enter Your Email Address'
-              variant='outlined'
-              className='w-full'
-              style={{
-                width: '100%',
-                backgroundColor: '#fff',
-                borderRadius: '8px',
-              }}
+              className={cn(
+                'w-full rounded-lg border bg-white text-foreground',
+                error && 'border-destructive focus-visible:ring-destructive'
+              )}
               value={email}
               onChange={handleChangeEmail}
-              error={!!error}
+              autoComplete="email"
+              aria-invalid={!!error}
+              required
             />
 
-            <fetcher.Form action='/subscribe?index' method='post'>
-              <input type='hidden' name='email' value={email} />
-              <Button
-                isLoading={fetcher.state !== 'idle'}
-                variant='contained'
-                type='submit'
-                className='text-white'
-                style={{
-                  borderRadius: '10px',
-                  textTransform: 'capitalize',
-                  backgroundColor: '#d02e7d',
-                  fontSize: '1rem',
-                  height: '100%',
-                }}
-              >
-                Subscribe
-              </Button>
-            </fetcher.Form>
-          </FormControl>
+            <Button
+              type='submit'
+              className='rounded-lg bg-[#d02e7d] text-base font-semibold text-white hover:bg-[#b6266a]'
+              disabled={fetcher.state !== 'idle'}
+            >
+              {fetcher.state !== 'idle' ? 'Subscribing…' : 'Subscribe'}
+            </Button>
+          </fetcher.Form>
 
           {error && (
             <div className="w-full text-left text-red-500 text-sm mt-1 font-poppins">

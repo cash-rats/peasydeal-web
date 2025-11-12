@@ -10,9 +10,9 @@ import httpStatus from 'http-status-codes';
 
 import SearchBar from '~/components/SearchBar';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-// import MobileSearchDialog from '~/components/MobileSearchDialog';
-// import type { Category } from '~/shared/types';
-// import Footer, { links as FooterLinks } from '~/components/Footer';
+import MobileSearchDialog from '~/components/MobileSearchDialog';
+import type { Category } from '~/shared/types';
+import Footer, { links as FooterLinks } from '~/components/Footer';
 // import Header, { links as HeaderLinks } from '~/components/Header';
 // import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 // import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
