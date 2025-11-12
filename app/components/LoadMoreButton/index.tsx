@@ -1,5 +1,7 @@
 import type { ReactNode, MouseEvent } from 'react';
-import { Button } from '@chakra-ui/react';
+import { Loader2 } from 'lucide-react';
+
+import { Button } from '~/components/ui/button';
 
 interface LoadMoreButtonProps {
   disabled?: boolean;
@@ -11,18 +13,25 @@ interface LoadMoreButtonProps {
 export default function LoadMoreButton({
   disabled = false,
   loading = false,
-  text,
+  text = 'Show More',
   onClick = () => { },
 }: LoadMoreButtonProps) {
   return (
     <Button
-      colorScheme='pink'
-      size='lg'
       disabled={disabled || loading}
-      isLoading={loading}
       onClick={onClick}
+      size="lg"
+      aria-busy={loading}
+      className="min-w-[140px]"
     >
-      {text}
+      {loading ? (
+        <span className="flex items-center gap-2">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Loading...
+        </span>
+      ) : (
+        text
+      )}
     </Button>
   );
 };
