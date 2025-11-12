@@ -60,7 +60,11 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
 
   return (
     <div className='mega-menu-wrapper'>
-      <DropdownMenu open={isOpen} onOpenChange={(open) => (open ? setOpen() : setClose())}>
+      <DropdownMenu
+        modal={false}
+        open={isOpen}
+        onOpenChange={(open) => (open ? setOpen() : setClose())}
+      >
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
@@ -87,7 +91,6 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          modal={false}
           align="start"
           sideOffset={12}
           onMouseEnter={setOpen}
