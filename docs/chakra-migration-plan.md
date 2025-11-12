@@ -1,24 +1,29 @@
 # Chakra/MUI/Emotion Removal – Root Shell Plan
 
-## Immediate Scope
-Focus on `app/root.tsx` only (keep the temporary `<div> hello </div>` placeholder).
+## Completed Work
+- Root shell (`app/root.tsx`, `entry.client.tsx`, `entry.server.tsx`) no longer uses Emotion/Chakra/MUI; head content and env injection preserved.
+- Shadcn primitives added (`app/components/ui/button.tsx`, `input.tsx`, `dropdown-menu.tsx`) along with global CSS vars in `app/styles/global.css`.
+- Search experience rebuilt:
+  * `app/components/BaseInput` now composes shadcn `Input` with forwardRef support.
+  * Header desktop/mobile search bars use the new primitives (no Chakra styles).
+- Categories navigation migrated off Chakra:
+  * `CategoriesNav`, `CategoriesNav/MegaMenu`, and `MegaMenuContent` use Radix dropdowns and shadcn buttons.
+  * Old Chakra-specific stylesheets removed where possible.
 
-### Steps
-1. **Prune Imports**
-   - Remove `withEmotionCache`, `ChakraProvider`, `unstable_useEnhancedEffect`, and the context imports (`ClientStyleContext`, `ServerStyleContext`).
+## Outstanding Issues
+- `npm run typecheck` fails due to legacy files:
+  * Duplicate routes (`routes/blog.tsx`, `cart.tsx`, `checkout.tsx`) collide with their folder-based counterparts.
+  * Several `__index/*.tsx` and `_index.disabled/*.tsx` files contain syntax errors; they block CI until fixed/removed.
+- Chakra components still remain elsewhere (e.g., `LogoBar` uses Chakra `Drawer`, `IconButton`, etc.).
 
-2. **Simplify `Document` Component**
-   - Convert `Document` to a plain component; drop the Emotion cache wrapper and Chakra provider.
-   - Delete the `<meta name="emotion-insertion-point">` and the serverStyle loop that injects `data-emotion` styles (no cache = no extra tags).
-
-3. **Replace the MUI Effect**
-   - Recreate the client-only effect using `useEffect` to call `storeSessionIDToSessionStore(gaSessionID)` and remove the cache manipulation/reset logic.
-
-4. **Keep Existing Head Content**
-   - Preserve all current `<Meta />`, `<Links />`, SEO tags, GTM/Rudder scripts, and the `window.ENV` script so SSR output stays stable.
-
-5. **Verification**
-   - Run `npm run typecheck` (or `npm run dev`) to ensure the app builds and the placeholder renders without Chakra/MUI/Emotion warnings.
-
-## Next Steps (after root shell cleanup)
-Once the root shell no longer depends on Chakra/MUI/Emotion, we can migrate actual route components to shadcn/radix one page at a time while slowly removing remaining legacy dependencies.
+## Next In-Line Tasks
+1. **Resolve Legacy Route Errors**
+   - Decide whether to delete or update `routes/blog.tsx`, `cart.tsx`, `checkout.tsx` so only one version exists.
+   - Fix or retire the `__index` and `_index.disabled` files causing syntax errors (lines ~38-41).
+2. **Continue Chakra Migration**
+   - Migrate `LogoBar` (drawer/icon button) and any remaining header components to Radix/shadcn primitives.
+   - Search the repo for `@chakra-ui` imports to build a punch list (e.g., drawers, modals, buttons).
+3. **Cleanup Styles**
+   - Remove any unused Chakra CSS/SCSS files tied to components already migrated.
+4. **Verification**
+   - Once the above blockers are resolved, rerun `npm run typecheck`/`npm run dev` to ensure the app works without Chakra/MUI.

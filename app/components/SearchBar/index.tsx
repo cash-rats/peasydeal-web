@@ -1,12 +1,18 @@
-import type { ForwardedRef, MouseEvent, ChangeEvent, FocusEvent, TouchEvent } from 'react';
-import { useEffect, useState, forwardRef, useRef } from 'react';
-import type { InputBaseProps } from '@mui/material/InputBase';
+import type {
+  ChangeEvent,
+  ComponentProps,
+  FocusEvent,
+  MouseEvent,
+  MutableRefObject,
+  Ref,
+  TouchEvent,
+} from 'react';
+import { forwardRef, useRef, useState } from 'react';
 import ClearIcon from '@mui/icons-material/Clear';
 import clsx from 'clsx';
 import type { LinksFunction } from 'react-router';
 
 import BaseInput from '~/components/BaseInput';
-
 import styles from './styles/SearchBar.css?url';
 
 export const links: LinksFunction = () => {
@@ -15,7 +21,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-interface SearchBarProps extends InputBaseProps {
+interface SearchBarProps extends Omit<ComponentProps<'input'>, 'ref'> {
   form?: string | undefined;
 
   name?: string;
@@ -40,7 +46,7 @@ interface SearchBarProps extends InputBaseProps {
 
   placeholder?: string;
 
-  onMountRef?: (ref: ForwardedRef<HTMLInputElement>) => void;
+  onMountRef?: (ref: MutableRefObject<HTMLInputElement | null>) => void;
 
   disabled?: boolean;
 };
@@ -61,18 +67,21 @@ function SearchBar({
   onMountRef = () => { },
   disabled = false,
   ...args
-}: SearchBarProps, ref: ForwardedRef<HTMLInputElement>) {
+}: SearchBarProps, ref: Ref<HTMLInputElement | null>) {
   const [content, setContent] = useState<string>('');
   const [focusSearch, setFocusSearch] = useState(false);
   const myRef = useRef<HTMLInputElement | null>(null);
+  const handleInputRef = (inputEl: HTMLInputElement | null) => {
+    myRef.current = inputEl;
 
-  useEffect(() => {
-    if (!ref) return;
-    ref = myRef;
+    if (typeof ref === 'function') {
+      ref(inputEl);
+    } else if (ref && typeof ref === 'object') {
+      (ref as MutableRefObject<HTMLInputElement | null>).current = inputEl;
+    }
 
-    if (!myRef || !myRef.current) return;
-    onMountRef(myRef);
-  }, []);
+    onMountRef?.(myRef);
+  };
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     setContent(evt.target.value);
@@ -103,14 +112,8 @@ function SearchBar({
         autoComplete='off'
         autoCapitalize='off'
         aria-autocomplete='none'
-        inputRef={(inputRef) => {
-          myRef.current = inputRef
-          if (!ref) return;
-          ref.current = inputRef
-        }}
-        fullWidth
+        ref={handleInputRef}
         placeholder={placeholder}
-        size='small'
         value={content}
         name={name}
         onClick={onClick}
@@ -118,7 +121,7 @@ function SearchBar({
         onFocus={handleFocus}
         onBlur={handleBlur}
         onChange={handleChange}
-        disabled
+        disabled={disabled}
 
         rightaddon={
           <>

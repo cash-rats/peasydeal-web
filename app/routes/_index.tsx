@@ -1,20 +1,3 @@
-// import { useEffect } from 'react';
-//
-// export default function LandingPage() {
-//   console.log('** aaa');
-//
-//  useEffect(() => {
-//       console.log('** aaa');
-//   }, []);
-//
-//   return (
-//     <div>
-//       landing
-//       <button onClick={() => console.log('Client JS is working!')}>Test Click</button>
-//     </div>
-//   );
-// }
-
 import { useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs } from "react-router";
 import {
@@ -25,8 +8,8 @@ import {
 } from "react-router";
 import httpStatus from 'http-status-codes';
 
-// import SearchBar from '~/components/SearchBar';
-// import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
+import SearchBar from '~/components/SearchBar';
+import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 // import MobileSearchDialog from '~/components/MobileSearchDialog';
 // import type { Category } from '~/shared/types';
 // import Footer, { links as FooterLinks } from '~/components/Footer';
