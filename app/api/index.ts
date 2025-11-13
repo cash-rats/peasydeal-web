@@ -14,3 +14,5 @@ export type {
   FetchProductsByCategoryV2Params,
   IFetchLandingPageFeatureProductsParams,
 } from './products.server';
+export { searchProducts } from './search-products.server';
+export type { SearchProductsParams } from './search-products.server';

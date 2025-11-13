@@ -18,7 +18,7 @@ import LoadMoreButton from '~/components/LoadMoreButton';
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
 import PageTitle from '~/components/PageTitle';
 import FourOhFour from '~/components/FourOhFour';
-import ThreeColumns, { links as ProductRowsContainerLinks } from '~/routes/__index/components/ProductRowsContainer/ThreeColumns';
+import ThreeColumns, { links as ProductRowsContainerLinks } from '~/components/ProductRowsContainer/ThreeColumns';
 import { composErrorResponse } from '~/utils/error';
 import { isFromGoogleStoreBot } from '~/utils';
 import { getCanonicalDomain, getCollectionDescText, getCollectionTitleText, getCategoryFBSEO_V2, getFourOhFourDescText, getFourOhFourTitleText } from '~/utils/seo';

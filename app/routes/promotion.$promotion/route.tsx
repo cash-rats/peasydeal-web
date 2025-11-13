@@ -16,7 +16,7 @@ import FourOhFour from '~/components/FourOhFour';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import { PAGE_LIMIT } from '~/shared/constants';
 import PromotionBannerWithTitle, { links as PageTitleLinks } from '~/components/PageTitle/PromotionBannerWithTitle';
-import ProductRowsContainer, { links as ProductRowsContainerLinks } from '~/routes/__index/components/ProductRowsContainer';
+import ProductRowsContainer, { links as ProductRowsContainerLinks } from '~/components/ProductRowsContainer';
 import {
   getCanonicalDomain,
   getFourOhFourTitleText,

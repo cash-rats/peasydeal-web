@@ -3,7 +3,7 @@ import httpStatus from 'http-status-codes';
 
 import { composErrorResponse } from '~/utils/error';
 
-import { searchProducts } from '../api/search_products.server';
+import { searchProducts } from '~/api/search-products.server';
 import type { SearchProductsDataType } from './types';
 
 

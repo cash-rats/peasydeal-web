@@ -12,11 +12,11 @@ import httpStatus from 'http-status-codes';
 import { PAGE_LIMIT } from '~/shared/constants';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import PageTitle from '~/components/PageTitle';
-import ProductRowsContainer, { links as ProductRowsContainerLinks } from '~/routes/__index/components/ProductRowsContainer';
-import reducer, { SearchActionType } from '~/routes/__index/search/reducer';
-import searchStyles from '~/routes/__index/styles/Search.css?url';
-import { searchMoreProductsLoader, searchProductsLoader } from '~/routes/__index/search/loaders';
-import type { SearchProductsDataType } from '~/routes/__index/search/types';
+import ProductRowsContainer, { links as ProductRowsContainerLinks } from '~/components/ProductRowsContainer';
+import reducer, { SearchActionType } from './reducer';
+import searchStyles from './styles/Search.css?url';
+import { searchMoreProductsLoader, searchProductsLoader } from './loaders';
+import type { SearchProductsDataType } from './types';
 
 export const links: LinksFunction = () => [
   ...ProductRowsContainerLinks(),
