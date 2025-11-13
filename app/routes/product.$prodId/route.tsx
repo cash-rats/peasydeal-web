@@ -45,10 +45,10 @@ import {
 } from './reducer';
 import { matchOldProductURL } from './utils';
 import { redirectToNewProductURL } from './loaders';
-import { meta as metaFunc } from './meta';
+// import { meta as metaFunc } from './meta';
 import ProductPolicy from './components/ProductPolicy';
 
-export const meta = metaFunc;
+// export const meta = metaFunc;
 
 export const links: LinksFunction = () => {
   return [
@@ -316,15 +316,15 @@ function ProductDetailPage() {
 					- New trend
 			*/}
       {
-        state.mainCategory
-          ? (
-            <RecommendedProducts
-              ref={recmmendedProdsRef}
-              category={state.mainCategory?.name || ''}
-              onClickProduct={handleClickProduct}
-            />
-          )
-          : null
+        // state.mainCategory
+        //   ? (
+        //     <RecommendedProducts
+        //       ref={recmmendedProdsRef}
+        //       category={state.mainCategory?.name || ''}
+        //       onClickProduct={handleClickProduct}
+        //     />
+        //   )
+        //   : null
       }
     </>
   );

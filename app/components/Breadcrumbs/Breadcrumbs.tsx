@@ -1,37 +1,60 @@
 import type { ReactNode } from 'react';
-// import Breadcrumbs from '@mui/material/Breadcrumbs';
+import { NavLink } from 'react-router';
 import type { LinksFunction } from 'react-router';
-
-import { Breadcrumb } from '@chakra-ui/react'
 
 import { FiChevronRight } from 'react-icons/fi';
 
-import styles from "./styles/breadcrumbs.css?url";
+export type BreadcrumbItem = {
+  id?: string;
+  label: ReactNode;
+  href?: string;
+  isCurrent?: boolean;
+  className?: string;
+};
 
 interface BreadcrumbsNavProps {
-  breadcrumbs: ReactNode | ReactNode[];
-  showBack?: boolean;
-  onClickBack?: () => void;
+  items: BreadcrumbItem[];
 }
 
 export const links: LinksFunction = () => {
-	return [
-		{ rel: "stylesheet", href: styles },
-	];
+  return [];
 };
 
-export default function BreadcrumsNav({
-  breadcrumbs,
+export default function BreadcrumbsNav({
+  items,
 }: BreadcrumbsNavProps) {
   return (
-    <div className="flex flex-row items-center w-full pd-breadcrumb">
-      <Breadcrumb
-        py="1"
-        className='flex flex-row flex-wrap'
-        separator={<FiChevronRight className="text-[16px] md:text-[24px] mx-[-1px] md:mx-0" />}
-      >
-        {breadcrumbs}
-      </Breadcrumb>
-    </div>
+    <nav className="w-full" aria-label="Breadcrumb">
+      <ol className="flex flex-row flex-wrap items-center gap-1 text-sm md:text-base">
+        {items.map((item, index) => {
+          const isLast = index === items.length - 1;
+          const ariaCurrent = item.isCurrent ? 'page' : undefined;
+          const content = item.href && !item.isCurrent ? (
+            <NavLink
+              to={item.href}
+              className={`font-semibold hover:text-neutral-700 transition-colors ${item.className ?? ''}`}
+            >
+              {item.label}
+            </NavLink>
+          ) : (
+            <span
+              aria-current={ariaCurrent}
+              className={`font-semibold ${item.isCurrent ? '!text-[#D02E7D]' : ''} ${item.className ?? ''}`}
+            >
+              {item.label}
+            </span>
+          );
+
+          return (
+            <li key={item.id ?? index} className="flex items-center">
+              {content}
+              {!isLast && (
+                <FiChevronRight className="text-[16px] md:text-[24px] mx-1 text-gray-400" />
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
   );
 }

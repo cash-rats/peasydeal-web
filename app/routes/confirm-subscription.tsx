@@ -1,6 +1,6 @@
 import type { MetaFunction, LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData } from 'react-router';
-import { activateEmailSubscribe } from '~/api';
+import { activateEmailSubscribe } from '~/api/activate-email.server';
 import { IoCheckmarkCircle, IoWarningOutline, IoRocketSharp } from "react-icons/io5";
 import { FiCopy } from "react-icons/fi";
 

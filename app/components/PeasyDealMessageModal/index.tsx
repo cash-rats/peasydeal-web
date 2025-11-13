@@ -1,22 +1,6 @@
 import type { ReactNode } from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  maxWidth: 400,
-  maxHeight: 150,
-  width: '100%',
-  height: '100%',
-  bgcolor: '#323131',
-  boxShadow: 24,
-  borderRadius: '4px',
-  p: 4,
-  display: 'flex'
-};
+import { Dialog, DialogContent } from '~/components/ui/dialog';
 
 interface LoadingModalProps {
   open?: boolean;
@@ -26,17 +10,33 @@ interface LoadingModalProps {
 
 export default function LoadingModal({ open = true, onClose, children }: LoadingModalProps) {
   return (
-    <Modal
-      aria-labelledby="modal-title"
-      aria-describedby="modal-desc"
+    <Dialog
       open={open}
-      onClose={onClose}
-      hideBackdrop
-      disableScrollLock
+      onOpenChange={(isOpen) => {
+        if (!isOpen) {
+          onClose?.();
+        }
+      }}
     >
-      <Box sx={style}>
+      <DialogContent
+        aria-labelledby="modal-title"
+        aria-describedby="modal-desc"
+        className="
+          max-w-sm
+          w-full
+          border-0
+          bg-[#323131]
+          text-white
+          shadow-2xl
+          sm:rounded
+          p-4
+          flex
+          items-center
+          justify-center
+        "
+      >
         {children}
-      </Box>
-    </Modal>
-  )
+      </DialogContent>
+    </Dialog>
+  );
 }

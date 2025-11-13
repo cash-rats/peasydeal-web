@@ -2,7 +2,7 @@ import { data } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import { fetchTaxonomyCategoryByName, checkCategoryExists } from '~/api/categories.server';
-import { fetchProductsByCategoryV2 } from '~/api/products.server';
+import { fetchProductsByCategoryV2 } from '~/api/products';
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { commitSession } from '~/sessions/redis_session.server';
 import { getCanonicalDomain } from '~/utils/seo';

@@ -1,20 +1,18 @@
 import { useEffect, useState, forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
-import type { LinksFunction, ActionFunctionArgs } from 'react-router';
+import type { LinksFunction } from 'react-router';
 import { useFetcher, useNavigation } from 'react-router';
-import { data } from 'react-router';
 
 // Note: we don't need to import "style links" for this component
 // because route `__index/index` already loaded it. If we load it
 // again react would echo a error saying duplicate css being loaded
 import type { Product } from '~/shared/types';
-import { PAGE_LIMIT } from '~/shared/constants';
 import ProductRowsLayout, { links as ProductRowsLayoutLinks } from '~/components/ProductRowsLayout';
 import { modToXItems } from '~/utils/products';
-import { fetchProductsByCategoryV2 } from '~/api';
 import { ProductPromotionRow } from '~/components/ProductPromotionRow';
 
 import bg from './images/product-sale-section.jpeg';
+export { action } from './action';
 
 export const links: LinksFunction = () => {
   return [
@@ -22,28 +20,14 @@ export const links: LinksFunction = () => {
   ];
 };
 
-type ActionDataType = {
-  products: Product[];
-}
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const body = await request.formData();
-  const category = body.get('category') as string || '';
-
-  const { items: products } = await fetchProductsByCategoryV2({
-    category,
-    random: true,
-    perpage: PAGE_LIMIT,
-  });
-
-  return data<ActionDataType>({ products });
-}
-
-
 interface RecommendedProductsProps {
   category: string;
   onClickProduct: (title: string, productID: string) => void;
 }
+
+type RecommendedProductsFetcherData = {
+  products: Product[];
+};
 
 function RecommendedProducts({
   category,
@@ -80,16 +64,16 @@ function RecommendedProducts({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
-      const { products } = fetcher.data;
+    if (fetcher.state === 'idle' && fetcher.data) {
+      const { products } = fetcher.data as RecommendedProductsFetcherData;
 
       // Transform before using it.
       if (products.length > 0) {
         const rows = modToXItems(products);
-        setRows(rows)
+        setRows(rows);
       }
     }
-  }, [fetcher])
+  }, [fetcher.state, fetcher.data]);
 
   return (
     <div ref={ref}>
@@ -141,7 +125,7 @@ function RecommendedProducts({
             </h3>
             {
               <ProductRowsLayout
-                loading={fetcher.type !== 'done'}
+                loading={fetcher.state !== 'idle'}
                 onClickProduct={onClickProduct}
                 products={rows[1]}
                 defaultSkeloton={8}

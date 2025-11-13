@@ -2,7 +2,7 @@ import type { LinksFunction } from 'react-router';
 import { Link } from 'react-router';
 import { useMemo, useRef, useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import ReactSwipe from 'react-easy-swipe';
+import Swipe from '~/lib/shims/react-easy-swipe';
 
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
@@ -10,8 +10,6 @@ import { cn } from '~/lib/utils';
 import styles from './styles/promoCarousell.css?url';
 import shoes from './images/light-up-shoes.png';
 import bubble from './images/bubble-slide.png';
-
-const Swipe = (ReactSwipe as any).default || ReactSwipe;
 
 type Campaign = {
   id: string;
