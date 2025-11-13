@@ -6,7 +6,7 @@ import {
 } from "react";
 import type { CSSProperties } from 'react';
 import type { Property } from 'csstype';
-import Swipe from '~/lib/shims/react-easy-swipe';
+import { useSwipe } from '~/hooks/useSwipe';
 import { IconButton } from '@chakra-ui/react'
 import { BiChevronRight, BiChevronLeft } from 'react-icons/bi';
 import { VscZoomIn } from "react-icons/vsc";
@@ -83,6 +83,16 @@ function Carousel({
   const [loaded, setLoaded] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState(false);
   const [change, setChange] = useState(false);
+  const swipeHandlers = useSwipe({
+    onSwipeLeft: () => {
+      addSlide(1);
+      setChange((prev) => !prev);
+    },
+    onSwipeRight: () => {
+      addSlide(-1);
+      setChange((prev) => !prev);
+    },
+  });
 
   //Function to change slide
   const addSlide = (n: number) => {
@@ -212,16 +222,7 @@ function Carousel({
             overflow-hidden
           `}
         >
-          <Swipe
-            onSwipeRight={() => {
-              addSlide(-1);
-              setChange(!change);
-            }}
-            onSwipeLeft={() => {
-              addSlide(1);
-              setChange(!change);
-            }}
-          >
+          <div {...swipeHandlers}>
             <div
               className="carousel-container"
               style={{
@@ -358,7 +359,7 @@ function Carousel({
                 icon={<VscZoomIn />}
               />
             </div>
-          </Swipe>
+          </div>
         </div>
 
         <div className='bg-slate-100 my-2 w-full h-[24px] flex justify-center items-center'>

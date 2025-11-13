@@ -3,8 +3,6 @@ import type { ChangeEvent } from 'react';
 import type { LinksFunction } from 'react-router';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
 import Select from 'react-select';
-// TODO use other component.
-import Rating from '@mui/material/Rating';
 import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
 import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { BsLightningCharge, BsChevronRight } from 'react-icons/bs';
@@ -18,6 +16,7 @@ import ClientOnly from '~/components/ClientOnly';
 import QuantityPicker, { links as QuantityPickerLinks } from '~/components/QuantityPicker';
 import type { ShoppingCartItem } from '~/sessions/types';
 
+import ProductRating from '~/components/ProductRating';
 import PriceRow from './components/PriceRow';
 import Reviews from './components/Reviews';
 import ReturnPolicyModal from './components/ReturnPolicyModal';
@@ -208,16 +207,13 @@ function ProductDetailContainer({
           {
             productDetail.num_of_raters > 0
               ? (
-                <div className="flex items-center mb-3">
-                  <Rating
-                    className="scale-75 translate-x-[-1.125rem]"
-                    name="product-rating"
+                <div className="flex items-center mb-3 gap-2">
+                  <ProductRating
+                    className="text-lg"
                     value={productDetail?.rating || 0}
-                    precision={0.1}
-                    readOnly
                   />
 
-                  <span className="text-sm translate-x-[-1.125rem]">
+                  <span className="text-sm">
                     {productDetail?.rating} ({productDetail.num_of_raters})
                   </span>
                 </div>

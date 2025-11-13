@@ -2,8 +2,8 @@ import type { LinksFunction } from 'react-router';
 import { Link } from 'react-router';
 import { useMemo, useRef, useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
-import Swipe from '~/lib/shims/react-easy-swipe';
 
+import { useSwipe } from '~/hooks/useSwipe';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
@@ -143,11 +143,16 @@ const PromoCarousell = () => {
     []
   );
 
+  const swipeHandlers = useSwipe({
+    onSwipeLeft: nextImage,
+    onSwipeRight: previousImage,
+  });
+
   return (
     <div className="w-full flex justify-center">
       <div className="flex justify-center w-full items-center">
         <div className="relative w-full">
-          <Swipe onSwipeRight={previousImage} onSwipeLeft={nextImage}>
+          <div {...swipeHandlers}>
             <div className="promo-carousel w-full">
               {sliderControl('left')}
               {campaigns.map((campaign, index) => (
@@ -181,7 +186,7 @@ const PromoCarousell = () => {
                 ))}
               </div>
             </div>
-          </Swipe>
+          </div>
         </div>
       </div>
     </div>
