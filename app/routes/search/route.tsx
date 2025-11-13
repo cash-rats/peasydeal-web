@@ -5,6 +5,7 @@ import {
   redirect,
   useFetcher,
   useLoaderData,
+  useRouteLoaderData,
   useRouteError,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
@@ -13,12 +14,21 @@ import { PAGE_LIMIT } from '~/shared/constants';
 import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import PageTitle from '~/components/PageTitle';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '~/components/ProductRowsContainer';
+import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import reducer, { SearchActionType } from './reducer';
 import searchStyles from './styles/Search.css?url';
 import { searchMoreProductsLoader, searchProductsLoader } from './loaders';
 import type { SearchProductsDataType } from './types';
+import type { Category } from '~/shared/types';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
+
+type LoaderData = SearchProductsDataType & {
+  categories: Category[];
+  navBarCategories: Category[];
+};
 
 export const links: LinksFunction = () => [
+  ...CatalogLayoutLinks(),
   ...ProductRowsContainerLinks(),
   { rel: 'stylesheet', href: searchStyles },
 ];
@@ -43,11 +53,20 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     });
   }
 
-  return searchProductsLoader({
-    query,
-    perPage: PAGE_LIMIT,
-    page,
-  });
+  const [[navBarCategories, categories], searchData] = await Promise.all([
+    fetchCategoriesWithSplitAndHotDealInPlaced(),
+    searchProductsLoader({
+      query,
+      perPage: PAGE_LIMIT,
+      page,
+    }),
+  ]);
+
+  return {
+    ...searchData,
+    categories,
+    navBarCategories,
+  };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -77,7 +96,9 @@ export function ErrorBoundary() {
 }
 
 function Search() {
-  const loaderData = useLoaderData<SearchProductsDataType>();
+  const loaderData = useLoaderData<LoaderData>();
+  const rootData = useRouteLoaderData('root') as { cartCount?: number } | undefined;
+  const cartCount = rootData?.cartCount ?? 0;
   const [state, dispatch] = useReducer(reducer, {
     products: loaderData.products,
     query: loaderData.query,
@@ -138,22 +159,28 @@ function Search() {
   };
 
   return (
-    <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">
-      <PageTitle title={`Search results for "${loaderData.query}" (${state.total})`} />
+    <CatalogLayout
+      categories={loaderData.categories}
+      navBarCategories={loaderData.navBarCategories}
+      cartCount={cartCount}
+    >
+      <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">
+        <PageTitle title={`Search results for "${loaderData.query}" (${state.total})`} />
 
-      <div className="pt-8">
-        <ProductRowsContainer products={state.products} onClickProduct={handleClickProduct} />
-      </div>
+        <div className="pt-8">
+          <ProductRowsContainer products={state.products} onClickProduct={handleClickProduct} />
+        </div>
 
-      <div className="mb-4">
-        <LoadMoreButtonProgressBar
-          loading={loadMoreFetcher.state !== 'idle'}
-          current={state.current}
-          total={state.total}
-          onClickLoadMore={handleLoadMore}
-        />
+        <div className="mb-4">
+          <LoadMoreButtonProgressBar
+            loading={loadMoreFetcher.state !== 'idle'}
+            current={state.current}
+            total={state.total}
+            onClickLoadMore={handleLoadMore}
+          />
+        </div>
       </div>
-    </div>
+    </CatalogLayout>
   );
 }
 
