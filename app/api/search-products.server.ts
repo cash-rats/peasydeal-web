@@ -2,8 +2,7 @@ import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
 import { envs } from '~/utils/env';
-
-import { pickMainImage } from '~/routes/__index/utils';
+import { pickMainImage } from '~/utils/images';
 
 export interface SearchProductResponse {
   products: Product[];

@@ -3,7 +3,7 @@ import httpStatus from 'http-status-codes';
 import { envs } from '~/utils/env';
 import type { Product, ApiErrorResponse } from '~/shared/types';
 
-import { pickMainImage } from '~/routes/__index/utils';
+import { pickMainImage } from '~/utils/images';
 
 interface FetchPromotionProductsParams {
   promoName?: string;

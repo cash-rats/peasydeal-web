@@ -3,7 +3,7 @@ import * as contentful from 'contentful';
 
 import type { Product, ApiErrorResponse, TContentfulPost } from '~/shared/types';
 import type { ActivityBanner } from '~/routes/__index/types';
-import { pickMainImage } from '~/routes/__index/utils';
+import { pickMainImage } from '~/utils/images';
 import { envs } from '~/utils/env';
 
 export interface FetchProductsByCategoryV2Params {

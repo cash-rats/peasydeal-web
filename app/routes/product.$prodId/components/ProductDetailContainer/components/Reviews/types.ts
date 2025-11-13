@@ -1,0 +1,1 @@
+export type StarType = 'no_start' | 'half_star' | 'full_star';

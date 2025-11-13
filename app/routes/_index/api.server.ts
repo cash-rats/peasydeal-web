@@ -1,30 +1,13 @@
 import httpStatus from 'http-status-codes';
 
 import { envs } from '~/utils/env';
+import { pickMainImage } from '~/utils/images';
 import type {
   ApiErrorResponse,
   Product,
   TCategoryPreview,
   TPromotionType,
 } from '~/shared/types';
-
-type PickMainImageParams = {
-  mainImg?: string | null;
-  sharedImgs?: Array<string | Record<string, unknown>>;
-  variationImgs?: Array<string | Record<string, unknown>>;
-};
-
-const pickMainImage = ({ mainImg, sharedImgs, variationImgs }: PickMainImageParams) => {
-  if (mainImg) return mainImg;
-
-  const shared = sharedImgs ?? [];
-  const variation = variationImgs ?? [];
-
-  if (shared.length > 0) return shared[0];
-  if (variation.length > 0) return variation[0];
-
-  return null;
-};
 
 const normalizeV2Data = (apiData: any[]): Product[] => {
   return apiData.map((data: any): Product => {
