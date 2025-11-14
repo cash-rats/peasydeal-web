@@ -1,8 +1,8 @@
 import { forwardRef } from 'react';
 import { Form } from 'react-router';
-import { Button } from '@chakra-ui/react';
 
 import type { ShoppingCartItem } from '~/sessions/types';
+import { Button } from '~/components/ui/button';
 
 interface ProductActionBarProps {
   onClickAddToCart?: () => void;
@@ -10,11 +10,11 @@ interface ProductActionBarProps {
   loading?: boolean;
 };
 
-const ProductActionBar = forwardRef(({
+const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
   onClickAddToCart = () => { },
   sessionStorableCartItem,
   loading = false,
-}: ProductActionBarProps, ref) => {
+}, ref) => {
 
   return (
     <div
@@ -29,16 +29,20 @@ const ProductActionBar = forwardRef(({
     >
       <div>
         <Button
-          colorScheme='pink'
+          type='button'
           variant='outline'
-          width='100%'
-          size="lg"
-          isLoading={loading}
-          loadingText='Adding'
+          className='h-12 w-full rounded-lg border border-[#D53F8C] text-base font-semibold text-[#D53F8C] transition-colors hover:bg-[#FFF5F7] focus-visible:ring-[#D53F8C]'
+          disabled={loading}
+          aria-busy={loading}
           onClick={onClickAddToCart}
-          spinnerPlacement='start'
         >
-          Add To Cart
+          {loading && (
+            <span
+              aria-hidden='true'
+              className='inline-flex h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent'
+            />
+          )}
+          {loading ? 'Adding' : 'Add To Cart'}
         </Button>
       </div>
 
@@ -64,10 +68,7 @@ const ProductActionBar = forwardRef(({
           />
 
           <Button
-            colorScheme='pink'
-            variant={'solid'}
-            width='100%'
-            size="lg"
+            className='h-12 w-full rounded-lg bg-[#D02E7D] text-base text-white font-semibold transition-colors hover:bg-[#B83280] focus-visible:ring-[#D53F8C]'
             type='submit'
             onClick={() => {
               window.rudderanalytics?.track('click_buy_now');
@@ -80,5 +81,7 @@ const ProductActionBar = forwardRef(({
     </div>
   );
 });
+
+ProductActionBar.displayName = 'ProductActionBar';
 
 export default ProductActionBar;

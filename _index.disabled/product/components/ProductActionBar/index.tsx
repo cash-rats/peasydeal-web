@@ -10,11 +10,19 @@ interface ProductActionBarProps {
   loading?: boolean;
 };
 
-const ProductActionBar = forwardRef(({
+declare global {
+  interface Window {
+    rudderanalytics?: {
+      track: (eventName: string, ...args: unknown[]) => void;
+    };
+  }
+}
+
+const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
   onClickAddToCart = () => { },
   sessionStorableCartItem,
   loading = false,
-}: ProductActionBarProps, ref) => {
+}, ref) => {
 
   return (
     <div
