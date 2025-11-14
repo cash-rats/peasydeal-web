@@ -22,7 +22,6 @@ import FiveHundredError from '~/components/FiveHundreError';
 import CategoriesRow from '~/components/CategoriesRow';
 import PromoActivitiesVariant from '~/components/PromoActivitiesVariant';
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
-import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import { getCanonicalDomain, isFromGoogleStoreBot } from '~/utils';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import { fetchLandingPageFeatureProducts } from './api.server';
@@ -155,7 +154,6 @@ export default function LandingPage() {
           <h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">
             Welcome to PeasyDeal - Shop Now and Save Big!
           </h1>
-          <PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(userAgent)} />
 
           <div className="pt-2.5 px-auto flex flex-col justify-center items-center max-w-screen-xl mx-auto">
             <div className="w-full py-0 mx-2 px-2">

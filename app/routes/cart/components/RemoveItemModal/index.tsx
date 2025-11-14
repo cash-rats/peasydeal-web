@@ -1,3 +1,13 @@
+/**
+ * Cart removal modal is temporarily disabled while we investigate
+ * unrelated layout issues (PD-???). Keep a noop export so imports
+ * continue to work without bundler errors.
+ */
+export default function RemoveItemModal() {
+  return null;
+}
+
+/*
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -76,3 +86,4 @@ export default function RemoveItemModal({
     </Modal>
   );
 }
+*/

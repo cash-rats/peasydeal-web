@@ -1,12 +1,15 @@
 import { Link } from 'react-router';
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  ModalCloseButton,
-  ModalHeader,
-} from '@chakra-ui/react'
+  Dialog,
+  DialogTrigger,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '~/components/ui/dialog';
+import { Button } from '~/components/ui/button';
 
 interface ReturnPolicyModalParams {
   isOpen: boolean;
@@ -18,45 +21,65 @@ function ReturnPolicyModal({
   onClose = () => { },
 }: ReturnPolicyModalParams) {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size='xl'
-      isCentered
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
     >
+      <DialogTrigger asChild>
+        <Button variant="outline">Share</Button>
+      </DialogTrigger>
+      <DialogContent className='max-w-lg'>
+        <DialogHeader>
+          <DialogTitle>Return policy</DialogTitle>
+          <DialogDescription>
+            We make returns simple so you can shop with confidence.
+          </DialogDescription>
+        </DialogHeader>
 
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          <ModalCloseButton />
-        </ModalHeader>
-        <ModalBody>
-          <h2 className="font-bold text-lg pb-3 border-b-[1px] border-b-[#E3E8EF]">
-            Return policy
-          </h2>
+        <div className='space-y-6 text-sm text-muted-foreground'>
+          <section className='space-y-2'>
+            <p className='font-semibold text-foreground'>
+              14-day refund window
+            </p>
+            <p>
+              Items that remain in their original condition can be returned
+              within 14 days of delivery for a full refund of the purchase
+              price.
+            </p>
+          </section>
 
-          <div className="px-4 pb-4 pt-2 mt-4">
-            <ul className="list-disc font-poppins space-y-3">
-              <li>
-                Any item(s) in their original condition are eligible for a full refund within 14 days of purchase.
-              </li>
-              <li>
-                The first return for EVERY order is free! For additional returns from the same order, shipping and handling fees may apply.
-              </li>
-            </ul>
+          <section className='space-y-2'>
+            <p className='font-semibold text-foreground'>Free first return</p>
+            <p>
+              We cover the shipping label for the first return on every order.
+              Additional returns on the same order may have shipping or handling
+              fees deducted from the refund.
+            </p>
+          </section>
 
-            <div className="mt-3 flex items-center">
-              <Link
-                to="/return-policy"
-                className="h-[21px] hover:border-b border-b-black"
-              >
-                Read full return policy
-              </Link>
-            </div>
-          </div>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+          <section className='space-y-2'>
+            <p className='font-semibold text-foreground'>Need more details?</p>
+            <p>
+              Review the full policy for packaging tips, refund timelines, and
+              localized instructions.
+            </p>
+          </section>
+        </div>
+
+        <DialogFooter className='flex-col gap-2 sm:flex-row sm:items-center sm:justify-between'>
+          <Link to='/return-policy' onClick={onClose} className='w-full sm:w-auto'>
+            <Button className='w-full'>View full policy</Button>
+          </Link>
+          <DialogClose asChild>
+            <Button variant='ghost' className='w-full sm:w-auto'>
+              Close
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

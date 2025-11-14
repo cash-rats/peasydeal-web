@@ -20,7 +20,7 @@ import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/Peasy
 import { getCanonicalDomain } from '~/utils/seo';
 import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
 import { composErrorResponse } from '~/utils/error';
-import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
+// import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { isFromGoogleStoreBot } from '~/utils';
 
@@ -263,7 +263,7 @@ function ProductDetailPage() {
         onClose={handleOnClose}
       />
 
-      <PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(loaderData.user_agent)} />
+      {/*<PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(loaderData.user_agent)} />*/}
       <Breadcrumbs
         categories={state.categories}
         productTitle={state.productDetail.title}

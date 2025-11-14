@@ -1,49 +1,33 @@
-import type { LinksFunction } from 'react-router';
-import { Outlet, useLoaderData, useRouteLoaderData } from 'react-router';
-import httpStatus from 'http-status-codes';
+import { useState } from 'react';
 
-import type { Category } from '~/shared/types';
-import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
+import SimpleModal from '~/components/SimpleModal';
 
-type LoaderData = {
-  categories: Category[];
-  navBarCategories: Category[];
-};
-
-export const links: LinksFunction = () => [
-  ...CatalogLayoutLinks(),
-];
-
-export const loader = async () => {
-  try {
-    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-
-    return Response.json({
-      categories,
-      navBarCategories,
-    });
-  } catch (error) {
-    console.error(error);
-
-    throw Response.json(error, {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-    });
-  }
-};
+export const links = () => [];
 
 export default function ProductLayout() {
-  const { categories, navBarCategories } = useLoaderData<LoaderData>() || {};
-  const rootData = useRouteLoaderData('root') as { cartCount?: number } | undefined;
-  const cartCount = rootData?.cartCount ?? 0;
+  const [open, setOpen] = useState(false);
 
   return (
-    <CatalogLayout
-      categories={categories}
-      navBarCategories={navBarCategories}
-      cartCount={cartCount}
-    >
-      <Outlet />
-    </CatalogLayout>
+    <div className='flex min-h-screen flex-col items-center justify-center gap-4 p-8'>
+      <p className='text-sm text-slate-500'>
+        Product layout temporarily reduced to a single dialog test.
+      </p>
+      <p className='text-xs text-slate-500'>
+        Modal open state: <span className='font-semibold'>{open ? 'true' : 'false'}</span>
+      </p>
+      <button
+        type='button'
+        onClick={() => setOpen(true)}
+        className='rounded-md border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:bg-slate-50'
+      >
+        Open test dialog
+      </button>
+
+      <SimpleModal open={open} onClose={() => setOpen(false)} title='Pure React modal test'>
+        <p className='text-sm text-slate-600'>
+          This modal uses the handcrafted component in app/components/SimpleModal to eliminate library side-effects.
+        </p>
+      </SimpleModal>
+    </div>
   );
 }
