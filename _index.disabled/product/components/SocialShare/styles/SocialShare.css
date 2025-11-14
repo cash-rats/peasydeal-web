@@ -1,0 +1,21 @@
+.SocialShare__list {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+}
+.SocialShare__list li {
+  cursor: pointer;
+}
+.SocialShare__list li img {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.SocialShare__list li img:hover {
+  transform: translateY(-4px);
+  opacity: 0.8;
+}
+
+/*# sourceMappingURL=SocialShare.css.map */

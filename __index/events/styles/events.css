@@ -1,0 +1,59 @@
+.animated-header {
+  display: inline-block;
+  color: white;
+  font-family: "Poppins", serif;
+  text-shadow: 0.03em 0.03em 0 hsl(230deg, 40%, 50%);
+}
+.animated-header:after {
+  content: attr(data-shadow);
+  position: absolute;
+  top: 0.07em;
+  left: 0.07em;
+  z-index: -1;
+  text-shadow: none;
+  background-image: linear-gradient(45deg, transparent 45%, hsl(48deg, 20%, 90%) 45%, hsl(48deg, 20%, 90%) 55%, transparent 0);
+  background-size: 0.1em 0.1em;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shad-anim 100s linear infinite;
+  width: 100%;
+}
+
+@keyframes shad-anim {
+  0% {
+    background-position: 0 0;
+  }
+  0% {
+    background-position: 100% -100%;
+  }
+}
+.gradient-border {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+.gradient-border::after {
+  position: absolute;
+  content: "";
+  top: -3px;
+  left: -3px;
+  z-index: -1;
+  width: calc(100% + 6px);
+  height: calc(100% + 6px);
+  background: linear-gradient(60deg, hsl(224deg, 85%, 66%), hsl(269deg, 85%, 66%), hsl(314deg, 85%, 66%), hsl(359deg, 85%, 66%), hsl(44deg, 85%, 66%), hsl(89deg, 85%, 66%), hsl(134deg, 85%, 66%), hsl(179deg, 85%, 66%));
+  background-size: 300% 300%;
+  background-position: 0 50%;
+  border-radius: 1.25rem;
+  animation: moveGradient 4s alternate infinite;
+}
+
+@keyframes moveGradient {
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/*# sourceMappingURL=events.css.map */
