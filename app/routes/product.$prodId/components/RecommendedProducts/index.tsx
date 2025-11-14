@@ -12,7 +12,8 @@ import { modToXItems } from '~/utils/products';
 import { ProductPromotionRow } from '~/components/ProductPromotionRow';
 
 import bg from './images/product-sale-section.jpeg';
-export { action } from './action';
+
+const RECOMMENDED_PRODUCTS_ENDPOINT = '/product/components/recommended-products';
 
 export const links: LinksFunction = () => {
   return [
@@ -53,14 +54,14 @@ function RecommendedProducts({
     ) {
       fetcher.submit({
         category
-      }, { method: 'post', action: '/product/components/RecommendedProducts?index' });
+      }, { method: 'post', action: RECOMMENDED_PRODUCTS_ENDPOINT });
     }
   }, [navigation]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetcher.submit({
       category
-    }, { method: 'post', action: '/product/components/RecommendedProducts?index' });
+    }, { method: 'post', action: RECOMMENDED_PRODUCTS_ENDPOINT });
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {

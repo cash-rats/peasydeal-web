@@ -1,14 +1,12 @@
 import type { LinksFunction } from 'react-router';
 
 import PicsCarousel, { links as PicsCarouselLinks } from '~/components/Carousel';
-
-import styles from './styles/ProductDetailSection.css?url';
+import { productRichTextClass } from '../productRichTextClass';
 import type { ProductImg, } from '../../types';
 
 export const links: LinksFunction = () => {
 	return [
 		...PicsCarouselLinks(),
-		{ rel: 'stylesheet', href: styles },
 	];
 }
 
@@ -32,9 +30,9 @@ function ProductDetailSection({
 	variationPics = [],
 }: ProductDetailSectionProps) {
 	return (
-		<div className="product-detail mb-4">
+		<div className="w-full mb-4">
 			{/* Image container */}
-			<div className="product-detail-img-container">
+			<div className="w-full">
 				<PicsCarousel
 					title={title}
 					sharedImages={sharedPics}
@@ -47,7 +45,7 @@ function ProductDetailSection({
 				<div className='hidden md:flex md:flex-col mr-4'>
 					<h3 className='text-3xl mb-4 md:mb-6'>About this product</h3>
 					{/* TODO dangerous render html */}
-					<div className='pd-product-detail'>
+					<div className={productRichTextClass}>
 						<div dangerouslySetInnerHTML={{ __html: description || '' }} />
 					</div>
 				</div>

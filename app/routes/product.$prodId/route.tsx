@@ -29,6 +29,7 @@ import type { LoaderTypeProductDetail, OptionType } from './types';
 import { fetchProductDetail } from './api.server';
 import styles from './styles/ProdDetail.css?url';
 import ProductDetailContainer, { links as ProductDetailContainerLinks } from './components/ProductDetailContainer';
+// import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import RecommendedProducts, { links as RecommendedProductsLinks } from './components/RecommendedProducts';
 import trackWindowScrollTo from './components/RecommendedProducts/hooks/track_window_scroll_to';
 import {
@@ -316,15 +317,15 @@ function ProductDetailPage() {
 					- New trend
 			*/}
       {
-        // state.mainCategory
-        //   ? (
-        //     <RecommendedProducts
-        //       ref={recmmendedProdsRef}
-        //       category={state.mainCategory?.name || ''}
-        //       onClickProduct={handleClickProduct}
-        //     />
-        //   )
-        //   : null
+        state.mainCategory
+          ? (
+            <RecommendedProducts
+              ref={recmmendedProdsRef}
+              category={state.mainCategory?.name || ''}
+              onClickProduct={handleClickProduct}
+            />
+          )
+          : null
       }
     </>
   );

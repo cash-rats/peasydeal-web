@@ -8,6 +8,8 @@ import {
   Box
 } from '@chakra-ui/react';
 
+import { productRichTextClass } from '../productRichTextClass';
+
 interface IProductPolicyProps {
   productDetail: any;
 }
@@ -37,7 +39,7 @@ const ProductPolicy = ({
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4} className='px-6'>
-            <div className='pd-product-detail'>
+            <div className={productRichTextClass}>
               <div className='w-full overflow-scroll'>
                 <div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} />
               </div>

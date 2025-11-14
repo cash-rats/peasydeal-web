@@ -11,14 +11,17 @@ const pickMainImage = ({
   sharedImgs = [],
   variationImgs = [],
 }: PickMainImageParams): ProductImageLike => {
+  const normalizedSharedImages = Array.isArray(sharedImgs) ? sharedImgs : [];
+  const normalizedVariationImages = Array.isArray(variationImgs) ? variationImgs : [];
+
   if (mainImg) return mainImg;
 
-  if (sharedImgs.length > 0) {
-    return sharedImgs[0];
+  if (normalizedSharedImages.length > 0) {
+    return normalizedSharedImages[0];
   }
 
-  if (variationImgs.length > 0) {
-    return variationImgs[0];
+  if (normalizedVariationImages.length > 0) {
+    return normalizedVariationImages[0];
   }
 
   return null;
