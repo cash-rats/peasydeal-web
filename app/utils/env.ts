@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 /**
  * Environment variable schema with validation and default values
+ * @TODO: consolidate NODE_ENV and VERCEL_ENV.
  */
 const envSchema = z.object({
   // Core configuration
