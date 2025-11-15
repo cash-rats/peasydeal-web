@@ -7,6 +7,7 @@ interface SimpleModalProps extends PropsWithChildren {
   overlayOpacity?: number; // 0-100, defaults to 50
   showOverlay?: boolean; // defaults to true
   staggerDelay?: number; // milliseconds, defaults to 150
+  showCloseButton?: boolean; // defaults to true
 }
 
 /**
@@ -21,6 +22,7 @@ export default function SimpleModal({
   overlayOpacity = 50,
   showOverlay = true,
   staggerDelay = 150,
+  showCloseButton = true,
 }: SimpleModalProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showContent, setShowContent] = useState(false);
@@ -101,7 +103,7 @@ export default function SimpleModal({
 
         {children}
 
-        {onClose ? (
+        {onClose && showCloseButton ? (
           <div className="mt-6 flex justify-end">
             <button
               type="button"
