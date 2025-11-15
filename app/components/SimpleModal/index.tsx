@@ -63,12 +63,20 @@ export default function SimpleModal({
     ? `rgba(0, 0, 0, ${overlayOpacity / 100})`
     : 'transparent';
 
+  const contentTransform = showContent
+    ? 'translate(-50%, -50%) scale(1)'
+    : 'translate(-50%, -50%) scale(0.95)';
+
   return (
     <div
       aria-modal="true"
       role="dialog"
-      className="fixed inset-0 z-[1000] flex items-center justify-center p-4 transition-opacity duration-300 w-screen h-screen"
+      className="fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300 w-screen h-screen"
       style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        zIndex: 999,
         backgroundColor: overlayBg,
         opacity: isAnimating ? 1 : 0,
       }}
@@ -77,8 +85,11 @@ export default function SimpleModal({
       <div
         className="w-full max-w-md rounded-2xl bg-white p-6 text-slate-900 shadow-2xl transition-all duration-300"
         style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
           opacity: showContent ? 1 : 0,
-          transform: showContent ? 'scale(1)' : 'scale(0.95)',
+          transform: contentTransform,
         }}
         onClick={(event) => event.stopPropagation()}
       >
