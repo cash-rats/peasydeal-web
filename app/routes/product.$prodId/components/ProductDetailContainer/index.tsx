@@ -189,7 +189,7 @@ function ProductDetailContainer({
               <Tag
                 colorScheme="cyan"
                 variant='solid'
-                className="nowrap mb-2"
+                className="nowrap mb-2 flex items-center space-x-1"
                 size='md'
               >
                 <TagLeftIcon boxSize='16px' as={BsLightningCharge} />
