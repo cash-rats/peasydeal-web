@@ -1,9 +1,12 @@
-import { useEffect, type PropsWithChildren } from 'react';
+import { useEffect, useState, type PropsWithChildren } from 'react';
 
 interface SimpleModalProps extends PropsWithChildren {
   open: boolean;
   onClose?: () => void;
   title?: string;
+  overlayOpacity?: number; // 0-100, defaults to 50
+  showOverlay?: boolean; // defaults to true
+  staggerDelay?: number; // milliseconds, defaults to 150
 }
 
 /**
@@ -15,7 +18,13 @@ export default function SimpleModal({
   onClose,
   title,
   children,
+  overlayOpacity = 50,
+  showOverlay = true,
+  staggerDelay = 150,
 }: SimpleModalProps) {
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showContent, setShowContent] = useState(false);
+
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
@@ -32,17 +41,45 @@ export default function SimpleModal({
     };
   }, [open, onClose]);
 
+  // Handle animation states
+  useEffect(() => {
+    if (open) {
+      setIsAnimating(true);
+      // Delay content appearance for stagger effect
+      const timer = setTimeout(() => {
+        setShowContent(true);
+      }, staggerDelay);
+      return () => clearTimeout(timer);
+    } else {
+      setIsAnimating(false);
+      setShowContent(false);
+    }
+  }, [open, staggerDelay]);
+
   if (!open) return null;
+
+  // Calculate overlay background color based on opacity
+  const overlayBg = showOverlay
+    ? `rgba(0, 0, 0, ${overlayOpacity / 100})`
+    : 'transparent';
 
   return (
     <div
       aria-modal="true"
       role="dialog"
-      className="fixed inset-0 z-[1000] flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-[1000] flex items-center justify-center p-4 transition-opacity duration-300"
+      style={{
+        backgroundColor: overlayBg,
+        opacity: isAnimating ? 1 : 0,
+      }}
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-2xl bg-white p-6 text-slate-900 shadow-2xl"
+        className="w-full max-w-md rounded-2xl bg-white p-6 text-slate-900 shadow-2xl transition-all duration-300"
+        style={{
+          opacity: showContent ? 1 : 0,
+          transform: showContent ? 'scale(1)' : 'scale(0.95)',
+        }}
         onClick={(event) => event.stopPropagation()}
       >
         {title ? (
