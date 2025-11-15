@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import Button from '@mui/material/Button';
+import { Button } from '~/components/ui/button';
 
 import emptyCartSVG from './images/empty_cart.svg';
 
@@ -25,11 +25,7 @@ function EmptyShoppingCartPage() {
 
       <div className="mt-5 text-center">
         <Link to='/'>
-          <Button
-            color='success'
-            variant='contained'
-            size='large'
-          >
+          <Button size="lg" className="rounded-full px-6 py-6 text-base font-semibold text-white">
             Go Shopping!
           </Button>
         </Link>

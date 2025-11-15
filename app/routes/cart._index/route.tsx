@@ -24,30 +24,30 @@ import type { ShoppingCart } from '~/sessions/types';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
-import { useCartState, useUpdateItemQuantity, useApplyPromoCode } from './hooks';
+import { useCartState, useUpdateItemQuantity, useApplyPromoCode } from '~/routes/cart/hooks';
 
-import CartItem, { links as ItemLinks } from './components/Item';
-import EmptyShoppingCart from './components/EmptyShoppingCart';
-import PriceResult from './components/PriceResult';
+import CartItem, { links as ItemLinks } from '~/routes/cart/components/Item';
+import EmptyShoppingCart from '~/routes/cart/components/EmptyShoppingCart';
+import PriceResult from '~/routes/cart/components/PriceResult';
 import {
   fetchPriceInfo,
   convertShoppingCartToPriceQuery,
-} from './cart.server';
-import type { PriceInfo, ActionType } from './types';
-import styles from './styles/cart.css?url';
-import sslCheckout from './images/SSL-Secure-Connection.png';
+} from '~/routes/cart/cart.server';
+import type { PriceInfo, ActionType } from '~/routes/cart/types';
+import styles from '~/routes/cart/styles/cart.css?url';
+import sslCheckout from '~/routes/cart/images/SSL-Secure-Connection.png';
 import {
   applyPromoCode,
   removeCartItemAction,
   updateItemQuantity,
-} from './actions';
+} from '~/routes/cart/actions';
 import {
   syncShoppingCartWithNewProductsInfo,
   extractPriceInfoToStoreInSession,
   sortItemsByAddedTime,
-} from './utils';
+} from '~/routes/cart/utils';
 import { round10 } from '~/utils/preciseRound';
-import { useRemoveItem } from './hooks/useRemoveItem';
+import { useRemoveItem } from '~/routes/cart/hooks/useRemoveItem';
 
 export const links: LinksFunction = () => {
   return [
@@ -83,7 +83,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction, formDat
 // TODOs:
 //   - [ ] handle prod_id is falsey value
 //   - [ ] handle session key not exists
-export const action = async ({ request }: ActionFunctionArgs) => {
+export async function action({ request }: ActionFunctionArgs) {
   const form = await request.formData();
   const formEntries = Object.fromEntries(form.entries());
   const actionType = formEntries['__action'] as ActionType;
@@ -126,12 +126,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   throw new Error(`unrecognized cart action type: ${actionType}`);
 }
 
-type LoaderType = {
-  cart: ShoppingCart | {};
+type LoaderData = {
+  cart: ShoppingCart | Record<string, never>;
   priceInfo: PriceInfo | null;
 };
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export async function loader({ request }: LoaderFunctionArgs) {
   // If cart contains no items, display empty cart page via CatchBoundary
   const cart = await getCart(request);
   if (!cart || Object.keys(cart).length === 0) {
@@ -172,7 +172,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
-};
+}
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -212,7 +212,7 @@ export function ErrorBoundary() {
  * - [x] use useReducer to cleanup useState
  */
 function Cart() {
-  const preloadData = useLoaderData<LoaderType>() || {};
+  const preloadData = useLoaderData<LoaderData>() || {};
   const { state, dispatch } = useCartState({
     cart: preloadData?.cart,
     priceInfo: preloadData?.priceInfo,
@@ -416,9 +416,9 @@ function Cart() {
           </div>
         </div>
       </section>
-
     </>
   );
 }
 
 export default Cart;
+

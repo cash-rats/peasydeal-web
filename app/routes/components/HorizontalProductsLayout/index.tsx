@@ -1,28 +1,21 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { IconButton, Button } from '@chakra-ui/react';
 import { VscChevronLeft, VscChevronRight, VscArrowRight } from 'react-icons/vsc';
 import {
   type LinksFunction,
-  type ActionFunctionArgs,
   useFetcher,
   Link,
 } from 'react-router';
 
 import { composeProductDetailURL } from '~/utils';
 import type { Product } from '~/shared/types';
-import { fetchProductsByCategoryV2 } from '~/api';
-import slickStyles from "slick-carousel/slick/slick.css?url";
-import slickThemeStyles from "slick-carousel/slick/slick-theme.css?url";
 import { RegularCardWithActionButton } from '~/components/ProductCard';
+import { Button } from '~/components/ui/button';
 
 import styles from './styles/HorizontalProductsLayout.css?url';
 
 export const links: LinksFunction = () => {
   return [
-    // ...ProductCardLinks(),
     { rel: 'stylesheet', href: styles },
-    { rel: 'stylesheet', href: slickStyles },
-    { rel: 'stylesheet', href: slickThemeStyles },
   ];
 };
 
@@ -31,21 +24,6 @@ type ActionType = {
 }
 
 const loadingGrids = new Array(12).fill({});
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const form = await request.formData();
-  const formEntries = Object.fromEntries(form.entries());
-  const catName = formEntries['cat_name'] as string || 'hot_deal';
-
-  // Fetch top seller & new trend.
-  const { items: recProds } = await fetchProductsByCategoryV2({
-    category: catName,
-    perpage: 12,
-    random: true,
-  });
-
-  return Response.json({ recProds: recProds });
-}
 
 interface HorizontalProductsLayoutProps {
   catName?: string;
@@ -69,7 +47,7 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
   useEffect(() => {
     fetcher.submit(
       { cat_name: catName },
-      { method: 'post', action: '/components/HorizontalProductsLayout?index' }
+      { action: 'cart/components/horizontal-products' }
     );
   }, []);
 
@@ -112,30 +90,33 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
           " />
           <Link to={seeAllLinkTo}>
             <Button
-              rightIcon={<VscArrowRight />}
-              colorScheme='teal'
               variant='ghost'
               size='lg'
-              className='p-2 md:p-4'
+              className='p-2 md:p-4 inline-flex items-center gap-2 text-primary hover:text-primary/80'
             >
               See all
+              <VscArrowRight />
             </Button>
           </Link>
         </h3>
 
-        <div className='absolute top-[38px] md:top-11 right-2'>
-          <IconButton
+        <div className='absolute top-[38px] md:top-11 right-2 flex gap-2'>
+          <button
+            type="button"
             aria-label='Page Left'
-            icon={<VscChevronLeft />}
+            className="rounded-full border border-slate-200 bg-white p-2 shadow hover:bg-slate-50"
             onClick={() => scroll(false)}
-            className='mr-2 bg-white'
-          />
-          <IconButton
+          >
+            <VscChevronLeft />
+          </button>
+          <button
+            type="button"
             aria-label='Page Right'
-            icon={<VscChevronRight />}
+            className="rounded-full border border-slate-200 bg-white p-2 shadow hover:bg-slate-50"
             onClick={() => scroll(true)}
-            className='bg-white'
-          />
+          >
+            <VscChevronRight />
+          </button>
         </div>
 
         <div

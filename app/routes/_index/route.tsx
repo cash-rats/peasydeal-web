@@ -22,7 +22,7 @@ import FiveHundredError from '~/components/FiveHundreError';
 import CategoriesRow from '~/components/CategoriesRow';
 import PromoActivitiesVariant from '~/components/PromoActivitiesVariant';
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
-import { getCanonicalDomain, isFromGoogleStoreBot } from '~/utils';
+import { getCanonicalDomain } from '~/utils';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import { fetchLandingPageFeatureProducts } from './api.server';
 

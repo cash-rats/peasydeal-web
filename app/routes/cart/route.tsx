@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Outlet } from "react-router";
 import type {
   LinksFunction,
@@ -9,12 +8,6 @@ import { useLoaderData, useRouteLoaderData } from 'react-router';
 
 import httpStatus from 'http-status-codes';
 import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
-import MobileSearchDialog from '~/components/MobileSearchDialog'
-import SearchBar from '~/components/SearchBar';
-import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/components/Header';
-import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import {
@@ -22,27 +15,23 @@ import {
   getCanonicalDomain,
   getCartFBSEO_V2,
 } from '~/utils/seo';
+import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 
-import cartStyles from './styles/cart.css?url';
+import cartStyles from '../styles/cart.css?url';
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: getCartTitleText() },
-    ...getCartFBSEO_V2(),
-    { tagName: 'link', rel: 'canonical', href: `${getCanonicalDomain()}/cart` },
-  ]
-}
+// export const meta: MetaFunction = () => {
+//   return [
+//     { title: getCartTitleText() },
+//     ...getCartFBSEO_V2(),
+//     { tagName: 'link', rel: 'canonical', href: `${getCanonicalDomain()}/cart` },
+//   ]
+// }
 
-export const links: LinksFunction = () => {
-  return [
-    ...CategoriesNavLinks(),
-    ...HeaderLinks(),
-    ...FooterLinks(),
-    ...DropDownSearchBarLinks(),
-    ...HorizontalProductsLayoutLinks(),
-    { rel: 'stylesheet', href: cartStyles },
-  ];
-};
+export const links: LinksFunction = () => [
+  ...CatalogLayoutLinks(),
+  ...HorizontalProductsLayoutLinks(),
+  { rel: 'stylesheet', href: cartStyles },
+];
 
 type LoaderType = {
   categories: Category[];
@@ -72,41 +61,14 @@ function CartLayout() {
   const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
   const rootData = useRouteLoaderData("root") as any;
   const cartCount = rootData?.cartCount || 0;
-  const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
-  const handleOpen = () => setOpenSearchDialog(true);
-  const handleClose = () => setOpenSearchDialog(false);
 
   return (
-    <div>
-      <MobileSearchDialog
-        onBack={handleClose}
-        isOpen={openSearchDialog}
-      />
-
-      <Header
-        categories={categories}
-        numOfItemsInCart={cartCount}
-        mobileSearchBar={
-          <SearchBar
-            placeholder='Search keywords...'
-            onClick={handleOpen}
-            onTouchEnd={handleOpen}
-          />
-        }
-        searchBar={
-          <DropDownSearchBar />
-        }
-        categoriesBar={
-          <CategoriesNav
-            categories={categories}
-            topCategories={navBarCategories}
-          />
-        }
-      />
-
-      <main>
-        <Outlet />
-      </main>
+    <CatalogLayout
+      categories={categories}
+      navBarCategories={navBarCategories}
+      cartCount={cartCount}
+    >
+      <Outlet />
 
       <section className="
 				py-0 px-auto
@@ -134,9 +96,9 @@ function CartLayout() {
           />
         </div>
       </section>
-      <Footer categories={categories} />
-    </div>
+    </CatalogLayout>
   );
 }
 
 export default CartLayout;
+
