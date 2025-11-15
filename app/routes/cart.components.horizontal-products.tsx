@@ -1,7 +1,7 @@
-import { type LoaderFunctionArgs } from 'react-router';
+import { type ActionFunctionArgs } from 'react-router';
 import { fetchProductsByCategoryV2 } from '~/api/products';
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formEntries = Object.fromEntries(form.entries());
   const catName = formEntries['cat_name'] as string || 'hot_deal';

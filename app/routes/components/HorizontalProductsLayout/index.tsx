@@ -45,9 +45,13 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
   }, [containerRef]);
 
   useEffect(() => {
+    // TODO: should use get instead of post
     fetcher.submit(
       { cat_name: catName },
-      { action: 'cart/components/horizontal-products' }
+      {
+        method: 'post',
+        action: '/cart/components/horizontal-products',
+      }
     );
   }, []);
 
