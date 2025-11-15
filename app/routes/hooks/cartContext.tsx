@@ -1,5 +1,4 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
-import { useRouteLoaderData } from 'react-router';
 
 import type { ShoppingCart } from '~/sessions/types';
 import { useLocalCart } from './useLocalCart';
@@ -18,11 +17,9 @@ type CartProviderProps = {
 };
 
 export function CartProvider({ children }: CartProviderProps) {
-  const rootData = useRouteLoaderData('root') as { cartCount?: number } | undefined;
-  const fallbackCount = rootData?.cartCount ?? 0;
   const { cart, setCart, isInitialized } = useLocalCart();
 
-  const cartCount = isInitialized ? Object.keys(cart).length : fallbackCount;
+  const cartCount = isInitialized ? Object.keys(cart).length : 0;
 
   const value = useMemo<CartContextValue>(
     () => ({

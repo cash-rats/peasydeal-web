@@ -151,15 +151,8 @@ function Cart() {
     let cancelled = false;
 
     const hydrateCart = async () => {
-      console.log('~~ storedCart 1');
-
       const storedCart = await loadCartFromClient();
-
-      console.log('~~ storedCart 2');
       if (cancelled) return;
-
-      console.log('~~ storedCart 3', storedCart);
-
 
       if (!storedCart || Object.keys(storedCart).length === 0) {
         dispatch(setCartItems({}));
