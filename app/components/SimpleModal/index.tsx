@@ -1,6 +1,6 @@
 import { useEffect, useState, type PropsWithChildren } from 'react';
 
-interface SimpleModalProps extends PropsWithChildren {
+export interface SimpleModalProps extends PropsWithChildren {
   open: boolean;
   onClose?: () => void;
   title?: string;
