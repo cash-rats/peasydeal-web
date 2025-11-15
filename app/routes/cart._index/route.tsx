@@ -1,7 +1,6 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   redirect,
-  useLoaderData,
   useFetcher,
   useRouteError,
   isRouteErrorResponse,
@@ -10,44 +9,29 @@ import type {
   LinksFunction,
   ShouldRevalidateFunction,
   ActionFunctionArgs,
-  LoaderFunctionArgs
-} from "react-router";
+} from 'react-router';
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
 import { commitSession } from '~/sessions/redis_session.server';
-import { getCart, insertItem } from '~/sessions/shoppingcart.session.server';
-import {
-  setTransactionObject,
-  resetTransactionObject,
-} from '~/sessions/transaction.session.server';
-import type { ShoppingCart } from '~/sessions/types';
+import { insertItem } from '~/sessions/shoppingcart.session.server';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
+import ClientOnly from '~/components/ClientOnly';
 import { useCartState, useUpdateItemQuantity, useApplyPromoCode } from '~/routes/cart/hooks';
 
 import CartItem, { links as ItemLinks } from '~/routes/cart/components/Item';
 import EmptyShoppingCart from '~/routes/cart/components/EmptyShoppingCart';
 import PriceResult from '~/routes/cart/components/PriceResult';
-import {
-  fetchPriceInfo,
-  convertShoppingCartToPriceQuery,
-} from '~/routes/cart/cart.server';
-import type { PriceInfo, ActionType } from '~/routes/cart/types';
+import type { ActionType, CartPriceResponse } from '~/routes/cart/types';
 import styles from '~/routes/cart/styles/cart.css?url';
 import sslCheckout from '~/routes/cart/images/SSL-Secure-Connection.png';
-import {
-  applyPromoCode,
-  removeCartItemAction,
-  updateItemQuantity,
-} from '~/routes/cart/actions';
-import {
-  syncShoppingCartWithNewProductsInfo,
-  extractPriceInfoToStoreInSession,
-  sortItemsByAddedTime,
-} from '~/routes/cart/utils';
+import { sortItemsByAddedTime } from '~/routes/cart/utils';
 import { round10 } from '~/utils/preciseRound';
+import { loadCart as loadCartFromClient } from '~/lib/cartStorage.client';
+import { setCartItems, setPriceInfo } from '~/routes/cart/reducer';
 import { useRemoveItem } from '~/routes/cart/hooks/useRemoveItem';
+import { useCartContext } from '~/routes/hooks';
 
 export const links: LinksFunction = () => {
   return [
@@ -88,90 +72,23 @@ export async function action({ request }: ActionFunctionArgs) {
   const formEntries = Object.fromEntries(form.entries());
   const actionType = formEntries['__action'] as ActionType;
 
-  if (actionType === 'remove_cart_item') {
-    const variationUUID = formEntries['variation_uuid'] as string || '';
-    const promoCode = formEntries['promo_code'] as string || '';
-    return removeCartItemAction(variationUUID, promoCode, request);
+  if (actionType !== 'buy_now') {
+    throw new Error(`unrecognized cart action type: ${actionType}`);
   }
 
-  if (actionType === 'update_item_quantity') {
-    const variationUUID = formEntries['variation_uuid'] as string || '';
-    const quantity = formEntries['quantity'] as string;
-    const promoCode = formEntries['promo_code'] as string || '';
-    return updateItemQuantity(request, variationUUID, quantity, promoCode);
-  }
+  const serializedCartItem = formEntries['cart_item'] as string;
+  const cartItem = JSON.parse(serializedCartItem);
 
-  if (actionType === 'apply_promo_code') {
-    const promoCode = formEntries['promo_code'] as string;
-    return applyPromoCode(request, promoCode);
-  }
-
-  if (actionType === 'buy_now') {
-    const serializedCartItem = formEntries['cart_item'] as string;
-    const cartItem = JSON.parse(serializedCartItem);
-
-    return redirect(
-      '/cart',
-      {
-        headers: {
-          "Set-Cookie": await commitSession(
-            await insertItem(request, cartItem)
-          ),
-        },
-      },
-    );
-  }
-
-  // Unknown action
-  throw new Error(`unrecognized cart action type: ${actionType}`);
-}
-
-type LoaderData = {
-  cart: ShoppingCart | Record<string, never>;
-  priceInfo: PriceInfo | null;
-};
-
-export async function loader({ request }: LoaderFunctionArgs) {
-  // If cart contains no items, display empty cart page via CatchBoundary
-  const cart = await getCart(request);
-  if (!cart || Object.keys(cart).length === 0) {
-    // Reset transaction object if we have an empty cart.
-    throw Response.json(
-      'Shopping cart empty',
-      {
-        status: httpStatus.NOT_FOUND,
-        headers: {
-          'Set-Cookie': await commitSession(
-            await resetTransactionObject(request),
-          ),
-        }
-      });
-  }
-
-  try {
-    const priceInfo = await fetchPriceInfo({
-      products: convertShoppingCartToPriceQuery(cart),
-    });
-
-    const sessionStorablePriceInfo = extractPriceInfoToStoreInSession(priceInfo);
-    const session = await setTransactionObject(request, {
-      promo_code: null, // Reset promo_code everytime user refreshes.
-      price_info: sessionStorablePriceInfo,
-    })
-
-    return Response.json({
-      cart: syncShoppingCartWithNewProductsInfo(cart, priceInfo.products),
-      priceInfo,
-    }, {
+  return redirect(
+    '/cart',
+    {
       headers: {
-        'Set-Cookie': await commitSession(session),
-      }
-    });
-  } catch (err) {
-    throw Response.json(err, {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-    });
-  }
+        'Set-Cookie': await commitSession(
+          await insertItem(request, cartItem),
+        ),
+      },
+    },
+  );
 }
 
 export function ErrorBoundary() {
@@ -212,21 +129,90 @@ export function ErrorBoundary() {
  * - [x] use useReducer to cleanup useState
  */
 function Cart() {
-  const preloadData = useLoaderData<LoaderData>() || {};
   const { state, dispatch } = useCartState({
-    cart: preloadData?.cart,
-    priceInfo: preloadData?.priceInfo,
+    cart: {},
+    priceInfo: null,
   });
 
-  const applyPromoCodeFetcher = useFetcher();
+  const cartPriceFetcher = useFetcher<CartPriceResponse>();
+  const [hydrated, setHydrated] = useState(false);
+  const { setCart } = useCartContext();
 
   // Scroll to top when cart page rendered.
   useEffect(() => {
     if (!window) return;
     window.scrollTo(0, 0);
-  }, [])
+  }, []);
 
-  const { removing, handleRemove, itemRemoveFetcher } = useRemoveItem({ dispatch, promoCode: state.promoCode });
+  // Hydrate cart from IndexedDB and fetch initial price info.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    let cancelled = false;
+
+    const hydrateCart = async () => {
+      console.log('~~ storedCart 1');
+
+      const storedCart = await loadCartFromClient();
+
+      console.log('~~ storedCart 2');
+      if (cancelled) return;
+
+      console.log('~~ storedCart 3', storedCart);
+
+
+      if (!storedCart || Object.keys(storedCart).length === 0) {
+        dispatch(setCartItems({}));
+        dispatch(setPriceInfo(null));
+        setHydrated(true);
+        return;
+      }
+
+      dispatch(setCartItems(storedCart));
+
+      cartPriceFetcher.submit(
+        {
+          cart: JSON.stringify(storedCart),
+          promo_code: '',
+        },
+        {
+          method: 'post',
+          action: '/cart/price',
+        },
+      );
+
+      setHydrated(true);
+    };
+
+    hydrateCart();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dispatch, cartPriceFetcher]);
+
+  // Apply initial price info from /cart/price.
+  useEffect(() => {
+    if (cartPriceFetcher.state !== 'idle') return;
+    if (!cartPriceFetcher.data) return;
+
+    const data = cartPriceFetcher.data as CartPriceResponse;
+    if (!data || !data.priceInfo) return;
+
+    dispatch(setPriceInfo(data.priceInfo));
+  }, [cartPriceFetcher.state, cartPriceFetcher.data, dispatch]);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
+    setCart(state.cartItems);
+  }, [state.cartItems, hydrated, setCart]);
+
+  const { removing, handleRemove, itemRemoveFetcher } = useRemoveItem({
+    dispatch,
+    promoCode: state.promoCode,
+    shoppingCart: state.cartItems,
+  });
   const {
     updatingQuantity,
     updateItemQuantityFetcher,
@@ -236,7 +222,10 @@ function Cart() {
     shoppingCart: state.cartItems,
     promoCode: state.promoCode,
   });
-  const { handleClickApplyPromoCode, applying } = useApplyPromoCode({ dispatch });
+  const { handleClickApplyPromoCode, applying } = useApplyPromoCode({
+    dispatch,
+    shoppingCart: state.cartItems,
+  });
 
   const freeshippingRequiredPrice = useMemo(() => {
     if (!state.priceInfo) return 0;
@@ -248,10 +237,15 @@ function Cart() {
   }, [state.priceInfo]);
 
 
-  if (
-    Object.keys(state.cartItems).length === 0 ||
-    state.priceInfo === null
-  ) {
+  if (!hydrated) {
+    return (
+      <ClientOnly>
+        <LoadingBackdrop open />
+      </ClientOnly>
+    );
+  }
+
+  if (Object.keys(state.cartItems).length === 0) {
     return (
       <EmptyShoppingCart />
     );
@@ -402,7 +396,7 @@ function Cart() {
                       calculating={
                         updateItemQuantityFetcher.state !== 'idle' ||
                         itemRemoveFetcher.state !== 'idle' ||
-                        applyPromoCodeFetcher.state !== 'idle'
+                        cartPriceFetcher.state !== 'idle'
                       }
                     />
                   )
@@ -421,4 +415,3 @@ function Cart() {
 }
 
 export default Cart;
-

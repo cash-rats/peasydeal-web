@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet } from 'react-router';
 import type {
   LinksFunction,
   LoaderFunctionArgs,
@@ -16,6 +16,7 @@ import {
   getCartFBSEO_V2,
 } from '~/utils/seo';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
+import { useCartCount } from '~/routes/hooks';
 
 import cartStyles from '../styles/cart.css?url';
 
@@ -59,8 +60,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 function CartLayout() {
   const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
-  const rootData = useRouteLoaderData("root") as any;
-  const cartCount = rootData?.cartCount || 0;
+  const cartCount = useCartCount();
 
   return (
     <CatalogLayout
@@ -101,4 +101,3 @@ function CartLayout() {
 }
 
 export default CartLayout;
-

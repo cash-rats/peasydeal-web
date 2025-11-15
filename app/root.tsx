@@ -20,13 +20,13 @@ import {
 import { env } from '~/utils/env';
 import { storeDailySession } from '~/services/daily_session.server';
 import { storeSessionIDToSessionStore } from '~/services/daily_session';
-import { getItemCount } from '~/sessions/shoppingcart.session.server';
 
 import useRudderStackScript from './hooks/useRudderStackScript';
 import useGTMScript from './hooks/useGTMScript';
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
+import { CartProvider } from '~/routes/hooks';
 import tailwindStylesheetUrl from './styles/tailwind.css?url';
 import styles from './styles/global.css?url';
 import structuredData from './structured_data';
@@ -58,18 +58,15 @@ export const links: LinksFunction = () => {
 export async function loader({ request }: Route.LoaderArgs) {
   try {
     const gaSessionID = await storeDailySession();
-    const cartCount = await getItemCount(request);
     return {
       env,
       gaSessionID,
-      cartCount,
     };
   } catch (e) {
     console.log('TODO: failed to store session id to redis', e);
     return {
       env,
       gaSessionID: null,
-      cartCount: 0,
     };
   }
 }
@@ -175,9 +172,11 @@ export function ErrorBoundary() {
 export default function App() {
   return (
     <Document>
-      <Layout>
-        <Outlet />
-      </Layout>
+      <CartProvider>
+        <Layout>
+          <Outlet />
+        </Layout>
+      </CartProvider>
     </Document>
   );
 }

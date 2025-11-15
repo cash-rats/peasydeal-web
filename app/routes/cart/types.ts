@@ -1,3 +1,5 @@
+import type { ShoppingCart } from '~/sessions/types';
+
 export type PurchasedProduct = {
   quantity: number,
   variation_uuid: string,
@@ -30,6 +32,11 @@ export type PriceInfo = {
 
   // Extract `applied_events` to enums.
   applied_events: string[];
+};
+
+export type CartPriceResponse = {
+  cart: ShoppingCart;
+  priceInfo: PriceInfo;
 };
 
 

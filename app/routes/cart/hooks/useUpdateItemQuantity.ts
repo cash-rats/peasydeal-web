@@ -1,7 +1,7 @@
 import { useFetcher } from 'react-router';
 import { useEffect, useState, useCallback, type MouseEvent } from 'react';
 
-import type { PriceInfo } from '../types';
+import type { CartPriceResponse } from '../types';
 import { setPriceInfo, updateQuantity } from '../reducer';
 import type { CartAction } from '../reducer';
 
@@ -24,33 +24,40 @@ export const useUpdateItemQuantity = ({ dispatch, shoppingCart, promoCode }: Use
       Number(shoppingCart[variationUUID].quantity) === number
     ) return;
 
+    const nextCart: ShoppingCart = {
+      ...shoppingCart,
+      [variationUUID]: {
+        ...shoppingCart[variationUUID],
+        quantity: number.toString(),
+      },
+    };
+
     dispatch(updateQuantity(variationUUID, number));
     setUpdatingQuantity(true);
 
     fetcher.submit(
       {
-        __action: 'update_item_quantity',
-        variation_uuid: variationUUID,
-        quantity: number.toString(),
+        cart: JSON.stringify(nextCart),
         promo_code: promoCode,
       },
       {
         method: 'post',
-        action: '/cart?index',
+        action: '/cart/price',
       },
     );
   }, [dispatch, shoppingCart, promoCode, fetcher]);
 
   // When user update the quantity, we need to update the cost info calced by backend as well.
   useEffect(() => {
-    if (fetcher.type === 'done') {
-      const priceInfo = fetcher.data as PriceInfo;
-      if (!priceInfo) return;
+    if (fetcher.state !== 'idle') return;
+    if (!fetcher.data) return;
 
-      dispatch(setPriceInfo(priceInfo));
-      setUpdatingQuantity(false);
-    }
-  }, [fetcher.type]);
+    const data = fetcher.data as CartPriceResponse;
+    if (!data || !data.priceInfo) return;
+
+    dispatch(setPriceInfo(data.priceInfo));
+    setUpdatingQuantity(false);
+  }, [fetcher.state, fetcher.data, dispatch]);
 
   return {
     updateItemQuantityFetcher: fetcher,

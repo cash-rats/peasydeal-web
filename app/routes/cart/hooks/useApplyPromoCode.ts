@@ -1,41 +1,46 @@
 import { useFetcher } from 'react-router';
 import { useEffect, useCallback, useState } from 'react';
 
-import { type ApplyPromoCodeActionType } from '../types';
+import type { CartPriceResponse } from '../types';
 import { type CartAction, setPriceInfo, setPromoCode } from '../reducer';
+import type { ShoppingCart } from '~/sessions/types';
 
 interface UseApplyPromoCodeProps {
   dispatch: (action: CartAction) => void;
+  shoppingCart: ShoppingCart;
 }
 
-export const useApplyPromoCode = ({ dispatch }: UseApplyPromoCodeProps) => {
+export const useApplyPromoCode = ({ dispatch, shoppingCart }: UseApplyPromoCodeProps) => {
   const fetcher = useFetcher();
   const [applying, setApplying] = useState(false);
 
   const handleClickApplyPromoCode = useCallback((code: string) => {
     setApplying(true);
+    dispatch(setPromoCode(code));
 
     fetcher.submit(
       {
-        __action: 'apply_promo_code',
+        cart: JSON.stringify(shoppingCart),
         promo_code: code,
       },
       {
         method: 'post',
-        action: '/cart?index',
+        action: '/cart/price',
       },
     );
-  }, [fetcher]);
+  }, [fetcher, dispatch, shoppingCart]);
 
   // Update the resulting price info to display when user applied promo code.
   useEffect(() => {
-    if (fetcher.type === 'done') {
-      const data = fetcher.data as ApplyPromoCodeActionType
-      dispatch(setPromoCode(data.discount_code));
-      dispatch(setPriceInfo(data.price_info))
-      setApplying(false);
-    }
-  }, [fetcher.type]);
+    if (fetcher.state !== 'idle') return;
+    if (!fetcher.data) return;
+
+    const data = fetcher.data as CartPriceResponse;
+    if (!data || !data.priceInfo) return;
+
+    dispatch(setPriceInfo(data.priceInfo));
+    setApplying(false);
+  }, [fetcher.state, fetcher.data, dispatch]);
 
   return { handleClickApplyPromoCode, applying };
 }

@@ -5,7 +5,6 @@ import {
   redirect,
   useFetcher,
   useLoaderData,
-  useRouteLoaderData,
   useRouteError,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
@@ -15,6 +14,7 @@ import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import PageTitle from '~/components/PageTitle';
 import ProductRowsContainer, { links as ProductRowsContainerLinks } from '~/components/ProductRowsContainer';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
+import { useCartCount } from '~/routes/hooks';
 import reducer, { SearchActionType } from './reducer';
 import searchStyles from './styles/Search.css?url';
 import { searchMoreProductsLoader, searchProductsLoader } from './loaders';
@@ -97,8 +97,7 @@ export function ErrorBoundary() {
 
 function Search() {
   const loaderData = useLoaderData<LoaderData>();
-  const rootData = useRouteLoaderData('root') as { cartCount?: number } | undefined;
-  const cartCount = rootData?.cartCount ?? 0;
+  const cartCount = useCartCount();
   const [state, dispatch] = useReducer(reducer, {
     products: loaderData.products,
     query: loaderData.query,

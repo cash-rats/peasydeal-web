@@ -1,4 +1,4 @@
-import { Outlet, useLoaderData, useRouteLoaderData } from 'react-router';
+import { Outlet, useLoaderData } from 'react-router';
 import type { LinksFunction, MetaFunction } from 'react-router';
 import httpStatus from 'http-status-codes';
 
@@ -6,6 +6,7 @@ import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import { getPaymentSuccessTitleText } from '~/utils/seo';
+import { useCartCount } from '~/routes/hooks';
 
 export const links: LinksFunction = () => {
   return [
@@ -36,9 +37,7 @@ export const loader = async () => {
 
 export default function Payment() {
   const { categories, navBarCategories } = useLoaderData<typeof loader>() || {};
-  const rootData = useRouteLoaderData('root') as { cartCount?: number } | undefined;
-  const cartCount = rootData?.cartCount ?? 0;
-
+  const cartCount = useCartCount();
 
   return (
     <CatalogLayout

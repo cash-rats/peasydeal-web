@@ -11,12 +11,13 @@ export type CartState = {
 };
 
 export type CartAction =
-  | { type: 'SET_PRICE_INFO', payload: PriceInfo }
+  | { type: 'SET_PRICE_INFO', payload: PriceInfo | null }
   | { type: 'SET_PROMO_CODE', payload: string }
   | { type: 'REMOVE_CART_ITEM', payload: string }
   | { type: 'UPDATE_ITEM_QUANTITY', payload: { variationUUID: string, quantity: number } }
+  | { type: 'SET_CART_ITEMS', payload: ShoppingCart };
 
-export const setPriceInfo = (priceInfo: PriceInfo): CartAction => ({
+export const setPriceInfo = (priceInfo: PriceInfo | null): CartAction => ({
   type: 'SET_PRICE_INFO',
   payload: priceInfo,
 });
@@ -37,6 +38,11 @@ export const updateQuantity = (variationUUID: string, quantity: number): CartAct
     variationUUID,
     quantity,
   }
+});
+
+export const setCartItems = (cart: ShoppingCart): CartAction => ({
+  type: 'SET_CART_ITEMS',
+  payload: cart,
 });
 
 const cartReducer = produce((draft: CartState, action: CartAction) => {
@@ -82,6 +88,12 @@ const cartReducer = produce((draft: CartState, action: CartAction) => {
       const promoCode = action.payload as string;
 
       draft.promoCode = promoCode;
+      break;
+    }
+    case 'SET_CART_ITEMS': {
+      const cart = action.payload as ShoppingCart;
+
+      draft.cartItems = cart;
       break;
     }
     default:

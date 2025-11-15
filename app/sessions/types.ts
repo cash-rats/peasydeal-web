@@ -33,7 +33,7 @@ export type ShoppingCartItem = {
   specName: string;
   purchaseLimit: string;
   discountReason?: string;
-  added_time?: number;
+  added_time?: string;
 };
 
 // ============================================================================

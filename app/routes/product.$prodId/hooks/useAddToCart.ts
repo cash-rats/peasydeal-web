@@ -2,7 +2,8 @@ import { useFetcher } from 'react-router';
 import { useCallback, useEffect, useState } from 'react';
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
-import type { ShoppingCartItem } from '~/sessions/types';
+import type { ShoppingCart, ShoppingCartItem } from '~/sessions/types';
+import { useCartContext } from '~/routes/hooks';
 
 import { tryPickUserSelectedVariationImage } from '../utils';
 import type { ProductImg } from '../types';
@@ -15,9 +16,10 @@ interface UseAddToCartProps {
 export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAddToCartProps) {
   const addToCartFetcher = useFetcher();
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const { cart, setCart } = useCartContext();
 
-  const addItemToCart = useCallback(() => {
-    const item = {
+  const addItemToCart = useCallback(async () => {
+    const item: ShoppingCartItem = {
       ...sessionStorableCartItem,
       image: tryPickUserSelectedVariationImage(
         sessionStorableCartItem.variationUUID,
@@ -26,6 +28,16 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
 
       added_time: Date.now().toString(),
     };
+
+    console.log('~~ addItemToCart 1', item);
+
+    const nextCart: ShoppingCart = {
+      ...cart,
+      [item.variationUUID]: item,
+    };
+
+    console.log('~~ addItemToCart 2', nextCart);
+    setCart(nextCart);
 
     const gaSessionID = getSessionIDFromSessionStore();
     window.rudderanalytics?.track('click_add_to_cart', {
@@ -47,6 +59,8 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
     sessionStorableCartItem,
     variationImages,
     addToCartFetcher,
+    cart,
+    setCart,
   ]);
 
   useEffect(() => {
@@ -60,7 +74,7 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
 
       // Cart count updates automatically via root loader revalidation
     }
-  }, [ addToCartFetcher.type ]);
+  }, [addToCartFetcher.type]);
 
   return {
     addItemToCart,

@@ -10,9 +10,12 @@ interface PeasyDealLoadingBackdropProps {
  * Lightweight overlay that mimics the previous MUI Backdrop without the dependency.
  */
 export default function PeasyDealLoadingBackdrop({ open = false }: PeasyDealLoadingBackdropProps) {
-  const [visible, setVisible] = useState(open);
+  const isBrowser = typeof window !== 'undefined';
+  const [visible, setVisible] = useState(open && isBrowser);
 
   useEffect(() => {
+    if (!isBrowser) return;
+
     // Render fade-out animation before removing from DOM.
     if (open) {
       setVisible(true);
@@ -20,9 +23,9 @@ export default function PeasyDealLoadingBackdrop({ open = false }: PeasyDealLoad
       const timeout = setTimeout(() => setVisible(false), 200);
       return () => clearTimeout(timeout);
     }
-  }, [open]);
+  }, [open, isBrowser]);
 
-  if (!visible) return null;
+  if (!isBrowser || !visible) return null;
 
   return (
     <div

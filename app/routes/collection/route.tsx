@@ -1,10 +1,11 @@
 import type { LinksFunction } from 'react-router';
-import { Outlet, useLoaderData, useRouteLoaderData } from 'react-router';
+import { Outlet, useLoaderData } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import type { Category } from '~/shared/types';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
+import { useCartCount } from '~/routes/hooks';
 
 type LoaderData = {
   categories: Category[];
@@ -34,8 +35,7 @@ export const loader = async () => {
 
 export default function CollectionLayout() {
   const { categories, navBarCategories } = useLoaderData<LoaderData>() || {};
-  const rootData = useRouteLoaderData('root') as { cartCount?: number } | undefined;
-  const cartCount = rootData?.cartCount ?? 0;
+  const cartCount = useCartCount();
 
   return (
     <CatalogLayout

@@ -203,7 +203,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
-                    modal={false}
                     align="center"
                     sideOffset={12}
                     className="
