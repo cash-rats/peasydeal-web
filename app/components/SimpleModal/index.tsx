@@ -67,7 +67,7 @@ export default function SimpleModal({
     <div
       aria-modal="true"
       role="dialog"
-      className="fixed inset-0 z-[1000] flex items-center justify-center p-4 transition-opacity duration-300"
+      className="fixed inset-0 z-[1000] flex items-center justify-center p-4 transition-opacity duration-300 w-screen h-screen"
       style={{
         backgroundColor: overlayBg,
         opacity: isAnimating ? 1 : 0,
