@@ -13,9 +13,6 @@ import {
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 import FourOhFour from '~/components/FourOhFour';
-import { commitSession } from '~/sessions/redis_session.server';
-import { insertItem } from '~/sessions/shoppingcart.session.server';
-import type { ShoppingCartItem } from '~/sessions/types';
 import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
 import { getCanonicalDomain } from '~/utils/seo';
 import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
@@ -101,8 +98,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 };
 
 type ActionType =
-  | 'to_product_detail'
-  | 'add_item_to_cart';
+  | 'to_product_detail';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
@@ -114,27 +110,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       productName: formObj['productName'] as string,
       productUUID: formObj['productUUID'] as string,
     }));
-  }
-
-  const payload = Object.fromEntries(form.entries());
-  const item = JSON.parse(payload.item as string) as ShoppingCartItem;
-
-  // If item does not have a valid variationUUID, don't add it to shopping cart.
-  // TODO output proper error resposne
-  if (
-    !item ||
-    !item.variationUUID ||
-    typeof item.variationUUID === 'undefined'
-  ) {
-    return data('', { status: httpStatus.BAD_REQUEST });
-  }
-
-  const session = await insertItem(request, item);
-
-  if (formAction === 'add_item_to_cart') {
-    return data('', {
-      headers: { "Set-Cookie": await commitSession(session) }
-    });
   }
 
   // unknown action type.

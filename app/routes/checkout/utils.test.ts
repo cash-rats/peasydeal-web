@@ -5,7 +5,6 @@ import { transformOrderDetail } from './utils';
 const cartItems =
 {
   "32023502782513": {
-    "__action": "buy_now",
     "salePrice": "12.99",
     "retailPrice": "34.99",
     "productUUID": "4637162209329",
@@ -17,7 +16,6 @@ const cartItems =
     "purchaseLimit": "10"
   },
   "43305781100782": {
-    "__action": "buy_now",
     "salePrice": "9.99",
     "retailPrice": "25.99",
     "productUUID": "7846175932654",
@@ -29,7 +27,6 @@ const cartItems =
     "purchaseLimit": "10"
   },
   "42686055645410": {
-    "__action": "add_item_to_cart",
     "salePrice": "10.99",
     "retailPrice": "27.99",
     "productUUID": "7673887391970",
@@ -41,7 +38,6 @@ const cartItems =
     "purchaseLimit": "10"
   },
   "42686055678178": {
-    "__action": "add_item_to_cart",
     "salePrice": "10.99",
     "retailPrice": "27.99",
     "productUUID": "7673887391970",
@@ -53,7 +49,6 @@ const cartItems =
     "purchaseLimit": "10"
   },
   "42686055710946": {
-    "__action": "add_item_to_cart",
     "salePrice": "10.99",
     "retailPrice": "27.99",
     "productUUID": "7673887391970",
