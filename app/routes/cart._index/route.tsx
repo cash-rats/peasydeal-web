@@ -66,29 +66,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction, formDat
 // TODOs:
 //   - [ ] handle prod_id is falsey value
 //   - [ ] handle session key not exists
-export async function action({ request }: ActionFunctionArgs) {
-  const form = await request.formData();
-  const formEntries = Object.fromEntries(form.entries());
-  const actionType = formEntries['__action'] as ActionType;
-
-  if (actionType !== 'buy_now') {
-    throw new Error(`unrecognized cart action type: ${actionType}`);
-  }
-
-  const serializedCartItem = formEntries['cart_item'] as string;
-  const cartItem = JSON.parse(serializedCartItem);
-
-  return redirect(
-    '/cart',
-    {
-      headers: {
-        'Set-Cookie': await commitSession(
-          await insertItem(request, cartItem),
-        ),
-      },
-    },
-  );
-}
+// Note: Buy Now now writes directly to IndexedDB on the client.
 
 export function ErrorBoundary() {
   const error = useRouteError();

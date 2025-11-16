@@ -20,7 +20,6 @@ import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/Peasy
 import { getCanonicalDomain } from '~/utils/seo';
 import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
 import { composErrorResponse } from '~/utils/error';
-// import PromoteSubscriptionModal from '~/components/PromoteSubscriptionModal';
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { isFromGoogleStoreBot } from '~/utils';
 
@@ -103,8 +102,7 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
 
 type ActionType =
   | 'to_product_detail'
-  | 'add_item_to_cart'
-  | 'buy_now';
+  | 'add_item_to_cart';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();

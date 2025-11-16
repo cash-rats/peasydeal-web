@@ -60,10 +60,7 @@
 - `Add To Cart`:
   - Currently triggers a callback that eventually hits server cart logic via actions in `cart._index`.
 - `Buy Now`:
-  - Posts to `/cart?index` with:
-    - `__action = 'buy_now'`.
-    - `cart_item` as JSON (serialized).
-  - The action writes to Redis cart and redirects.
+  - Now handled fully on the client: adds the item to the IndexedDB cart and then navigates to `/cart` without hitting the `/cart` action.
 
 ## Target Data Flow (IndexedDB-Only)
 
@@ -276,4 +273,3 @@
   - If we fully commit to client-side cart + price API, we can eventually remove most of the current cart actions and rely on a small set of API endpoints instead.
 
 This plan keeps the cart entirely in IndexedDB for non-auth users, relies on the server only for price calculation and checkout validation, and avoids any DB schema changes while progressively dismantling the Redis-backed cart. The next step is to pick specific filenames/routes for the new price API and client utilities, then start implementing Phase 1. 
-

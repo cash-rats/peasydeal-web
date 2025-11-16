@@ -1,8 +1,9 @@
-import { forwardRef } from 'react';
-import { Form } from 'react-router';
+import { forwardRef, useCallback } from 'react';
+import { useNavigate } from 'react-router';
 
 import type { ShoppingCartItem } from '~/sessions/types';
 import { Button } from '~/components/ui/button';
+import { useCartContext } from '~/routes/hooks';
 
 interface ProductActionBarProps {
   onClickAddToCart?: () => void;
@@ -15,6 +16,23 @@ const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
   sessionStorableCartItem,
   loading = false,
 }, ref) => {
+  const navigate = useNavigate();
+  const { cart, setCart } = useCartContext();
+
+  const handleBuyNow = useCallback(() => {
+    const item: ShoppingCartItem = {
+      ...sessionStorableCartItem,
+      added_time: sessionStorableCartItem.added_time ?? Date.now().toString(),
+    };
+
+    setCart({
+      ...cart,
+      [item.variationUUID]: item,
+    });
+
+    window.rudderanalytics?.track('click_buy_now');
+    navigate('/cart');
+  }, [cart, navigate, sessionStorableCartItem, setCart]);
 
   return (
     <div
@@ -47,36 +65,13 @@ const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
       </div>
 
       <div className='flex-auto'>
-        <Form
-          method='post'
-          action='/cart?index'
+        <Button
+          className='h-12 w-full rounded-lg bg-[#D02E7D] text-base text-white font-semibold transition-colors hover:bg-[#B83280] focus-visible:ring-[#D53F8C]'
+          type='button'
+          onClick={handleBuyNow}
         >
-          {/*
-            'buy_now' is an action type that '/cart' can handle.
-            Refer to: '__/index/cart/actions.ts'
-          */}
-          <input
-            type='hidden'
-            name="__action"
-            value='buy_now'
-          />
-
-          <input
-            type='hidden'
-            name="cart_item"
-            value={JSON.stringify(sessionStorableCartItem)}
-          />
-
-          <Button
-            className='h-12 w-full rounded-lg bg-[#D02E7D] text-base text-white font-semibold transition-colors hover:bg-[#B83280] focus-visible:ring-[#D53F8C]'
-            type='submit'
-            onClick={() => {
-              window.rudderanalytics?.track('click_buy_now');
-            }}
-          >
-            Buy Now
-          </Button>
-        </Form>
+          Buy Now
+        </Button>
       </div>
     </div>
   );
