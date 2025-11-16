@@ -1,15 +1,15 @@
-import { useRef, useState } from 'react';
-import type { ChangeEvent, MouseEvent, FocusEvent } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
 import type { LinksFunction } from 'react-router';
+import { VscChevronDown } from 'react-icons/vsc';
+
 import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Button,
-} from '@chakra-ui/react'
-import { VscChevronDown } from "react-icons/vsc";
-import useBodyClick from '~/hooks/useBodyClick';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '~/components/ui/dropdown-menu';
+import { Button } from '~/components/ui/button';
 
 import styles from './styles/QuantityDropDown.css?url';
 
@@ -36,117 +36,69 @@ export default function QuantityDropDown({
   disabled = false,
   purchaseLimit = 10,
 }: QuantityDropDownProps) {
-  const dropDownListRef = useRef<HTMLInputElement | null>(null);
-  const [open, setOpen] = useState(false);
-  const numArr = new Array(maxNum).fill(0).map((_, i) => i + 1);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const [menuWidth, setMenuWidth] = useState<number | null>(null);
+  const quantities = useMemo(
+    () => Array.from({ length: maxNum }, (_, index) => index + 1),
+    [maxNum],
+  );
 
-  useBodyClick((evt: MouseEvent<HTMLBodyElement>) => {
-    if (!dropDownListRef || !dropDownListRef.current) return;
+  useEffect(() => {
+    const updateWidth = () => {
+      if (!triggerRef.current) return;
+      setMenuWidth(triggerRef.current.offsetWidth);
+    };
 
-    if (dropDownListRef.current !== evt.target && !dropDownListRef.current.contains(evt.target)) {
-      setOpen(false);
-    }
-  });
+    updateWidth();
+    if (typeof window === 'undefined') return;
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
 
-  // const handleFocus = () => {
-  //   setOpen(true);
-  // }
+  useEffect(() => {
+    if (!triggerRef.current) return;
+    setMenuWidth(triggerRef.current.offsetWidth);
+  }, [value]);
 
-  // const handleOnChange = (evt: ChangeEvent<HTMLInputElement>) => {
-  //   const quantity = Number(evt.target.value);
-  //   if (isNaN(quantity)) return;
-  //   if (quantity === value) return;
-  //   onChange(evt, quantity);
-  // }
-
-  const handleSelection = (evt: ChangeEvent<HTMLSelectElement>, quantity: number) => {
-    if (isNaN(quantity)) return;
+  const handleSelection = (evt: Event, quantity: number) => {
+    if (Number.isNaN(quantity)) return;
     if (quantity === value) return;
-    onClickNumber(evt, quantity);
-  }
 
-  // const handleOnBlur = (evt: FocusEvent<HTMLInputElement>) => {
-  //   const quantity = Number(evt.target.value);
-  //   if (isNaN(quantity)) return;
-  //   if (quantity === value) return;
-  //   onBlur(evt, quantity);
-  // }
-
-  // const handleClickNumber = (evt: MouseEvent<HTMLLIElement>, number: number) => {
-  //   setOpen(false);
-  //   onClickNumber(evt, number);
-
-  //   if (dropDownListRef && dropDownListRef.current) {
-  //     dropDownListRef.current.blur();
-  //   }
-  // }
+    onClickNumber(evt as unknown as MouseEvent<HTMLLIElement>, quantity);
+  };
 
   return (
-    <div ref={dropDownListRef} className="">
-      <Menu
-        isLazy
-      >
-        <MenuButton
-          className="w-full bg-white"
-          as={Button} rightIcon={<VscChevronDown />}
-          transition='all 0.2s'
-          borderRadius='md'
-          borderWidth='1px'
-          _focus={{ boxShadow: 'outline' }}
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild disabled={disabled}>
+        <Button
+          type="button"
+          variant="outline"
+          className="w-full justify-between bg-white"
+          ref={triggerRef}
+          disabled={disabled}
         >
-          { value }
-        </MenuButton>
-        <MenuList>
-          {
-            numArr.map((_, i) => (
-              <MenuItem
-                key={i + 1}
-                onClick={(evt) => {
-                  evt.stopPropagation();
-                  handleSelection(evt, i + 1);
-                }}
-              >
-                {i + 1}
-              </MenuItem>
-            ))
-          }
-        </MenuList>
-      </Menu>
+          <span>{value}</span>
+          <VscChevronDown className="size-4" />
+        </Button>
+      </DropdownMenuTrigger>
 
-      {/* <input
-        type="text"
-        className="QuantityDropDown__text"
-        maxLength={3}
-        onFocus={handleFocus}
-        value={value}
-        onChange={handleOnChange}
-        onBlur={handleOnBlur}
-        disabled={disabled}
-      />
-
-      {
-        open && (
-          <ul className="QuantityDropDown__list">
-            {
-              numArr.map((v) => {
-                return (
-                  <li
-                    key={v}
-                    onMouseUp={(evt) => {
-                      console.log('trigger onMouseUp');
-                    }}
-                    onMouseDown={(evt) => {
-                      handleClickNumber(evt, v)
-                    }}
-                  >
-                    {v}
-                  </li>
-                )
-              })
-            }
-          </ul>
-        )
-      } */}
-    </div>
+      <DropdownMenuContent
+        align="end"
+        className="p-0 bg-white"
+        style={menuWidth ? { width: menuWidth } : undefined}
+      >
+        {
+          quantities.map((quantity) => (
+            <DropdownMenuItem
+              key={quantity}
+              className="cursor-pointer justify-between py-2.5"
+              onSelect={(evt) => handleSelection(evt, quantity)}
+            >
+              {quantity}
+            </DropdownMenuItem>
+          ))
+        }
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

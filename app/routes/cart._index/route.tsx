@@ -154,6 +154,8 @@ function Cart() {
       const storedCart = await loadCartFromClient();
       if (cancelled) return;
 
+      console.log('~ storedCart 1', storedCart);
+
       if (!storedCart || Object.keys(storedCart).length === 0) {
         dispatch(setCartItems({}));
         dispatch(setPriceInfo(null));
@@ -182,7 +184,7 @@ function Cart() {
     return () => {
       cancelled = true;
     };
-  }, [dispatch, cartPriceFetcher]);
+  }, []);
 
   // Apply initial price info from /cart/price.
   useEffect(() => {
