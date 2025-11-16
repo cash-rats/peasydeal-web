@@ -1,19 +1,13 @@
 import { useMemo, useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
-import type { LinksFunction } from 'react-router';
 import { Link } from 'react-router';
-import QuantityDropDown from '~/components/QuantityDropDown';
 import { BsTrash } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
+
 import { SUPER_DEAL_OFF } from '~/shared/constants';
+import QuantityDropDown from '~/components/QuantityDropDown';
 import { round10 } from '~/utils/preciseRound';
 import { composeProductDetailURL } from '~/utils';
-
-import styles from './styles/Item.css?url';
-
-export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: styles }];
-};
 
 type ItemProps = {
   productUUID: string;
@@ -35,7 +29,10 @@ interface CartItemProps {
   onPlus?: (quantity: number, prodID: string) => void;
   onClickQuantity?: (evt: MouseEvent<HTMLLIElement>, number: number) => void;
   onChangeQuantity?: (evt: ChangeEvent<HTMLInputElement>, quantity: number) => void;
-  onBlurQuantity?: (evt: FocusEvent<HTMLInputElement>, number: number) => void;
+  onBlurQuantity?: (
+    evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>,
+    number: number
+  ) => void;
   onClickRemove?: (evt: MouseEvent<HTMLButtonElement>, prodID: string) => void;
 }
 
@@ -83,7 +80,7 @@ function CartItem({
 
   onChangeQuantity = () => { },
   onClickQuantity = () => { },
-  onBlurQuantity = (evt: FocusEvent<HTMLInputElement>, quantity: number) => { },
+  onBlurQuantity = (evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>, quantity: number) => { },
   onClickRemove = (evt: MouseEvent<HTMLButtonElement>, prodID: string) => { },
 }: CartItemProps) {
   const [exceedMaxMsg, setExceedMaxMsg] = useState('');
