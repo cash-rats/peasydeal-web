@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
-import type { LinksFunction } from 'react-router';
 import { VscChevronDown } from 'react-icons/vsc';
 
 import {
@@ -10,12 +9,6 @@ import {
   DropdownMenuTrigger,
 } from '~/components/ui/dropdown-menu';
 import { Button } from '~/components/ui/button';
-
-import styles from './styles/QuantityDropDown.css?url';
-
-export const links: LinksFunction = () => {
-  return [{ href: styles, rel: 'stylesheet' }];
-}
 
 interface QuantityDropDownProps {
   value?: number;
