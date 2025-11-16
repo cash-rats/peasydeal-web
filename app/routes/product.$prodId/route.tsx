@@ -13,7 +13,7 @@ import {
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 import FourOhFour from '~/components/FourOhFour';
-import ItemAddedModal, { links as ItemAddedModalLinks } from '~/components/PeasyDealMessageModal/ItemAddedModal';
+import ItemAddedModal from '~/components/PeasyDealMessageModal/ItemAddedModal';
 import { getCanonicalDomain } from '~/utils/seo';
 import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
 import { composErrorResponse } from '~/utils/error';
@@ -50,7 +50,6 @@ export const links: LinksFunction = () => {
   return [
     ...BreadCrumbLinks(),
     ...ProductDetailContainerLinks(),
-    ...ItemAddedModalLinks(),
     ...RecommendedProductsLinks(),
     { rel: 'stylesheet', href: styles },
   ];

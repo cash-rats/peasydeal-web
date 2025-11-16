@@ -1,15 +1,7 @@
 
-import type { LinksFunction } from 'react-router';
 import { AiFillCheckCircle } from 'react-icons/ai';
 
-import styles from './styles/ItemAddedModal.css?url';
 import GeneralModal from './index';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 interface ItemAddedModalProps {
   open?: boolean;
@@ -19,9 +11,20 @@ interface ItemAddedModalProps {
 const ItemAddedModal = ({ open = false, onClose }: ItemAddedModalProps) => {
   return (
     <GeneralModal open={open} onClose={onClose}>
-      <div className="ItemAddedModal__wrapper">
-        <span><AiFillCheckCircle color='white' fontSize={60} /></span>
-        <p className="ItemAddedModal__message">
+      <div
+        className="
+          flex flex-col items-center justify-center gap-4
+          w-full max-w-sm
+          rounded-lg bg-[#323131] px-6 py-6
+          text-black
+        "
+        role="status"
+        aria-live="polite"
+      >
+        <span className="flex h-16 w-16 items-center justify-center text-white">
+          <AiFillCheckCircle size={60} />
+        </span>
+        <p className="text-center text-lg font-semibold leading-snug">
           Item added to cart
         </p>
       </div>
@@ -30,4 +33,3 @@ const ItemAddedModal = ({ open = false, onClose }: ItemAddedModalProps) => {
 }
 
 export default ItemAddedModal;
-
