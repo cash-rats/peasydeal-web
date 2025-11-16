@@ -20,7 +20,7 @@ import PaymentMethods from '~/components/PaymentMethods';
 import ClientOnly from '~/components/ClientOnly';
 import { useCartState, useUpdateItemQuantity, useApplyPromoCode } from '~/routes/cart/hooks';
 
-import CartItem, { links as ItemLinks } from '~/routes/cart/components/Item';
+import CartItem from '~/routes/cart/components/Item';
 import EmptyShoppingCart from '~/routes/cart/components/EmptyShoppingCart';
 import PriceResult from '~/routes/cart/components/PriceResult';
 import type { ActionType, CartPriceResponse } from '~/routes/cart/types';
@@ -35,7 +35,6 @@ import { useCartContext } from '~/routes/hooks';
 
 export const links: LinksFunction = () => {
   return [
-    ...ItemLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };
