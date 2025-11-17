@@ -1,8 +1,11 @@
 import { PaymentElement } from '@stripe/react-stripe-js';
-import type { StripePaymentElementChangeEvent, StripePaymentElement } from '@stripe/stripe-js';
-import Divider from '@mui/material/Divider';
-import LoadingButton from '@mui/lab/LoadingButton';
-import LockIcon from '@mui/icons-material/Lock';
+import type {
+  StripePaymentElementChangeEvent,
+  StripePaymentElement,
+} from '@stripe/stripe-js';
+import { FiLock } from 'react-icons/fi';
+
+import { Button } from '~/components/ui/button';
 
 interface StripeCheckoutProps {
   disabled?: boolean;
@@ -37,37 +40,35 @@ function StripeCheckout({
           />
 
           <div className="confirm-payment">
-            <LoadingButton
-              disabled={disabled}
-              loading={loading}
-              variant="contained"
+            <Button
               type="submit"
-              fullWidth
+              className="w-full"
+              disabled={disabled || loading}
             >
-              CONFIRM
-            </LoadingButton>
+              {loading ? 'Processing...' : 'CONFIRM'}
+            </Button>
           </div>
 
           <div className="policies-container">
-            <Divider />
+            <div className="my-4 h-px w-full bg-slate-200" />
             <div className="policies">
               <p className="promise">
                 <span>
-                  <LockIcon fontSize='small' color='success' />
+                  <FiLock className="mr-1 inline-block h-4 w-4 text-emerald-600" />
                 </span>
                 We won't store any of your card information.
               </p>
 
               <p className="promise">
                 <span>
-                  <LockIcon fontSize='small' color='success' />
+                  <FiLock className="mr-1 inline-block h-4 w-4 text-emerald-600" />
                 </span>
                 You payment is under SSL protection
               </p>
 
               <p className="promise">
                 <span>
-                  <LockIcon fontSize='small' color='success' />
+                  <FiLock className="mr-1 inline-block h-4 w-4 text-emerald-600" />
                 </span>
                 We use Stripe as our payment system which exceeds the most stringent field standards for security.
               </p>

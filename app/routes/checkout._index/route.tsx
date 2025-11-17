@@ -11,8 +11,6 @@ import {
   redirect,
   useLoaderData,
 } from 'react-router';
-import Alert from '@mui/material/Alert';
-import { Spinner } from '@chakra-ui/react';
 
 import type { PaymentMethod } from '~/shared/types';
 import { useContext } from '~/routes/checkout/route';
@@ -159,7 +157,7 @@ function CheckoutPage() {
   if (!cartItems || !Object.keys(cartItems).length) {
     return (
       <div className="w-full flex items-center justify-center my-4">
-        <Spinner size="lg" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-500 border-t-transparent" />
       </div>
     );
   }
@@ -276,15 +274,15 @@ function CheckoutPage() {
     <div className="checkout-page-container">
       <h1 className="title"> Shipping Information </h1>
       {createOrderErrorAlert ? (
-        <Alert severity="warning">
+        <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
           {createOrderErrorAlert}
-        </Alert>
+        </div>
       ) : null}
 
       {stripeErrorAlert ? (
-        <Alert severity="warning">
+        <div className="mb-4 rounded-md border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900">
           {stripeErrorAlert}
-        </Alert>
+        </div>
       ) : null}
 
       <div className="checkout-content">
@@ -360,4 +358,3 @@ function CheckoutPage() {
 }
 
 export default CheckoutPage;
-

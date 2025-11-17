@@ -1,7 +1,8 @@
 import { Fragment } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import { Link } from 'react-router';
-import { Button } from '@chakra-ui/react'
+
+import { Button } from '~/components/ui/button';
 
 import type { ShoppingCart } from '~/sessions/types';
 import type { PriceInfo } from '~/shared/cart';
@@ -50,7 +51,6 @@ export default function CartSummary({ cart, priceInfo }: CartSummaryProps) {
         <span>Cart Summary</span>
         <Link to="/cart">
           <Button
-            colorScheme='green'
             variant="outline"
             size="sm"
           >

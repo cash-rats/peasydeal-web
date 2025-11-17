@@ -10,14 +10,19 @@ import {
   type ActionFunctionArgs,
   useFetcher,
 } from 'react-router';
-import { TextField } from '@mui/material';
-import Tooltip from '@mui/material/Tooltip';
-import { Button } from '@chakra-ui/react'
-import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import { FiHelpCircle } from 'react-icons/fi';
 import MoonLoader from 'react-spinners/MoonLoader';
 
 import TextDropdownField from '~/components/TextDropdownField';
 import type { Option as DropdownOption } from '~/components/TextDropdownField';
+
+import { Button } from '~/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '~/components/ui/tooltip';
 
 import { fetchAddressOptionsByPostal, } from './api.server';
 import type { Option } from './api.server';
@@ -116,12 +121,16 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
 
                   {
                     loadAddrFetcher.type === 'done' && state.options.length === 0 && (
-                      <Tooltip title="no address suggestions">
-                        <QuestionMarkIcon style={{
-                          fontSize: '1.5rem',
-                          color: '#009378',
-                        }} />
-                      </Tooltip>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <FiHelpCircle className="h-5 w-5 text-emerald-600" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            no address suggestions
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     )
                   }
                 </>
@@ -132,13 +141,15 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
           <div className="flex items-center m-0 py-2 text-sm font-light gap-2">
             <div className="max-w-[13.5rem] ">
               <Button
-                colorScheme='twitter'
-                disabled={!values.postal}
+                type="button"
+                disabled={!values.postal || loadAddrFetcher.state !== 'idle'}
                 onClick={handleSearchAddress}
-                isLoading={loadAddrFetcher.state !== 'idle'}
-                loadingText='Checking...'
               >
-                Address lookup
+                {
+                  loadAddrFetcher.state !== 'idle'
+                    ? 'Checking...'
+                    : 'Address lookup'
+                }
               </Button>
             </div>
             {
@@ -155,72 +166,102 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
 
       {/* Name */}
       <div className="shipping-form-fields fields--2">
-        <TextField
-          required
-          id="firstname"
-          label="firstname"
-          name="firstname"
-          variant="outlined"
-          aria-describedby="firstname"
-          fullWidth
-          value={values.firstname}
-        />
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="firstname"
+            className="text-sm font-medium text-slate-700"
+          >
+            firstname
+          </label>
+          <input
+            required
+            id="firstname"
+            name="firstname"
+            aria-describedby="firstname"
+            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            defaultValue={values.firstname}
+          />
+        </div>
 
-        <TextField
-          required
-          id="lastname"
-          label="lastname"
-          name="lastname"
-          variant="outlined"
-          aria-describedby="lastname"
-          fullWidth
-          value={values.lastname}
-        />
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="lastname"
+            className="text-sm font-medium text-slate-700"
+          >
+            lastname
+          </label>
+          <input
+            required
+            id="lastname"
+            name="lastname"
+            aria-describedby="lastname"
+            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            defaultValue={values.lastname}
+          />
+        </div>
       </div>
 
       {/* Address line */}
       <div className="shipping-form-fields field--1">
-        <TextField
-          autoComplete="off"
-          required
-          id="address1"
-          label="address line 1"
-          name="address1"
-          variant="outlined"
-          aria-describedby="address1"
-          fullWidth
-          value={values.address1}
-        />
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="address1"
+            className="text-sm font-medium text-slate-700"
+          >
+            address line 1
+          </label>
+          <input
+            autoComplete="off"
+            required
+            id="address1"
+            name="address1"
+            aria-describedby="address1"
+            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            defaultValue={values.address1}
+          />
+        </div>
       </div>
 
       {/* Address line 2 (optional) */}
       <div className="shipping-form-fields field--1">
-        <TextField
-          autoComplete="off"
-          id="address2"
-          label="address line 2 (county, country)"
-          name="address2"
-          variant="outlined"
-          aria-describedby="address2"
-          fullWidth
-          value={values.address2}
-        />
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="address2"
+            className="text-sm font-medium text-slate-700"
+          >
+            address line 2 (county, country)
+          </label>
+          <input
+            autoComplete="off"
+            id="address2"
+            name="address2"
+            aria-describedby="address2"
+            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            defaultValue={values.address2}
+          />
+        </div>
       </div>
 
       {/* Postal code & City */}
       <div className="shipping-form-fields fields--1">
         {/* Might need a dropdown list for city selection for GB */}
-        <TextField
-          required
-          autoComplete='off'
-          id="city"
-          label="city"
-          name="city"
-          variant="outlined"
-          aria-describedby="city"
-          fullWidth
-          value={values.city}
-        />
+        <div className="flex flex-col gap-1">
+          <label
+            htmlFor="city"
+            className="text-sm font-medium text-slate-700"
+          >
+            city
+          </label>
+          <input
+            required
+            autoComplete="off"
+            id="city"
+            name="city"
+            aria-describedby="city"
+            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            defaultValue={values.city}
+          />
+        </div>
       </div>
     </>
   );

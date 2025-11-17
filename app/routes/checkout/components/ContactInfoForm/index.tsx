@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import type { LinksFunction } from 'react-router';
-import PhoneInput from 'react-phone-input-2'
+import PhoneInput from 'react-phone-input-2';
 import type { CountryData } from 'react-phone-input-2';
 import reactPhoneInput2Styles from 'react-phone-input-2/lib/material.css?url';
-import Checkbox from '@mui/material/Checkbox';
-import TextField from '@mui/material/TextField';
-import HelpIcon from '@mui/icons-material/Help';
+import { FiHelpCircle } from 'react-icons/fi';
+
+import { Checkbox } from '~/components/ui/checkbox';
+import { Input } from '~/components/ui/input';
 
 import styles from './styles/ContactInfoForm.css?url';
 import type { ContactInfoFormType } from '../../types';
@@ -60,9 +61,9 @@ const ContactInfoForm = ({ values, onChange = () => { } }: ContactInfoFormProps)
     <>
       <div className="contact-name-the-same">
         <Checkbox
-          aria-label='is contact name the same as shipping name?'
-          name='contact_name_same'
-          id='contact_name_same'
+          aria-label="is contact name the same as shipping name?"
+          name="contact_name_same"
+          id="contact_name_same"
           checked={formValues.contact_name_same}
           onChange={handleChange}
         />
@@ -73,15 +74,18 @@ const ContactInfoForm = ({ values, onChange = () => { } }: ContactInfoFormProps)
       {
         !values.contact_name_same && (
           <div className="contact-name">
-            <TextField
+            <label
+              htmlFor="contact_name"
+              className="mb-1 block text-sm font-medium text-slate-700"
+            >
+              contact name
+            </label>
+            <Input
               required
               id="contact_name"
-              label="contact name"
               name="contact_name"
-              placeholder='e.g. jack dorsey'
-              variant="outlined"
+              placeholder="e.g. jack dorsey"
               aria-describedby="shipping contact name"
-              fullWidth
               value={formValues.contact_name}
               onChange={handleChange}
             />
@@ -90,16 +94,19 @@ const ContactInfoForm = ({ values, onChange = () => { } }: ContactInfoFormProps)
       }
 
       <div className="mb-4">
-        <TextField
+        <label
+          htmlFor="email"
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
+          email
+        </label>
+        <Input
           required
-          type='email'
-          id='email'
-          label="email"
-          name='email'
-          placeholder='e.g. elonmusk@gmail.com'
-          variant='outlined'
-          aria-describedby='my-helper-text'
-          fullWidth
+          type="email"
+          id="email"
+          name="email"
+          placeholder="e.g. elonmusk@gmail.com"
+          aria-describedby="my-helper-text"
           value={formValues.email}
           onChange={handleChange}
         />
@@ -121,7 +128,7 @@ const ContactInfoForm = ({ values, onChange = () => { } }: ContactInfoFormProps)
       <div>
         <p className="promise">
           <span>
-            <HelpIcon fontSize='small' color='success' />
+            <FiHelpCircle className="h-4 w-4 text-emerald-500" />
           </span>
           Phone number is for shipping purpose only.
         </p>
