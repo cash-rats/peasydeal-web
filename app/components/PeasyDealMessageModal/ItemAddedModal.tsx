@@ -17,7 +17,8 @@ const ItemAddedModal = ({ open = false, onClose, color }: ItemAddedModalProps) =
     <GeneralModal
       open={open}
       onClose={onClose}
-      showOverlay={false}
+      showOverlay
+      overlayOpacity={50}
     >
       <div
         className="
@@ -52,9 +53,6 @@ const ItemAddedModal = ({ open = false, onClose, color }: ItemAddedModalProps) =
           <h3 className="text-lg font-semibold tracking-tight text-slate-900">
             Item added to your cart
           </h3>
-          <p className="text-sm text-slate-500">
-            You can review your cart now or keep browsing deals.
-          </p>
         </div>
       </div>
     </GeneralModal>

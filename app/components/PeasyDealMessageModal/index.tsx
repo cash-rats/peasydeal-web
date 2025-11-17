@@ -4,16 +4,23 @@ import SimpleModal from '~/components/SimpleModal';
 interface LoadingModalProps {
   open?: boolean;
   showOverlay?: boolean
+  overlayOpacity?: number;
   onClose?: () => void;
   children: ReactNode;
 }
 
-export default function LoadingModal({ open = true, onClose, children, showOverlay = false }: LoadingModalProps) {
+export default function LoadingModal({
+  open = true,
+  onClose,
+  children,
+  showOverlay = false,
+  overlayOpacity = 60,
+}: LoadingModalProps) {
   return (
     <SimpleModal
       open={Boolean(open)}
       onClose={onClose}
-      overlayOpacity={60}
+      overlayOpacity={overlayOpacity}
       showOverlay={showOverlay}
       title={undefined}
     >

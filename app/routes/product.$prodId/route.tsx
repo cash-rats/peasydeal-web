@@ -229,7 +229,6 @@ function ProductDetailPage() {
     <>
       <ItemAddedModal open={openSuccessModal} />
 
-      {/*<PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(loaderData.user_agent)} />*/}
       <Breadcrumbs
         categories={state.categories}
         productTitle={state.productDetail.title}
