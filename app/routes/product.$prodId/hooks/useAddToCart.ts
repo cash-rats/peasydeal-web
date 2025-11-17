@@ -47,7 +47,7 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
       setOpenSuccessModal(true);
       modalTimerRef.current = setTimeout(() => {
         setOpenSuccessModal(false);
-      }, 1000);
+      }, 1800);
     } finally {
       setIsAddingToCart(false);
     }

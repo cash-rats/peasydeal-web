@@ -7,11 +7,16 @@ interface ItemAddedModalProps {
   open?: boolean;
   onClose?: () => void;
   onViewCart?: () => void;
+  color?: string;
 }
 
-const ItemAddedModal = ({ open = false, onClose, onViewCart }: ItemAddedModalProps) => {
+const ItemAddedModal = ({ open = false, onClose, color }: ItemAddedModalProps) => {
   return (
-    <GeneralModal open={open} onClose={onClose} showOverlay>
+    <GeneralModal
+      open={open}
+      onClose={onClose}
+      showOverlay={false}
+    >
       <div
         className="
           flex
@@ -33,6 +38,7 @@ const ItemAddedModal = ({ open = false, onClose, onViewCart }: ItemAddedModalPro
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
           <HiCheckCircle
             size={64}
+            color={color}
             className="text-emerald-500"
           />
         </div>
