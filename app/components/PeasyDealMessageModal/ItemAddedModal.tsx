@@ -11,6 +11,8 @@ interface ItemAddedModalProps {
 }
 
 const ItemAddedModal = ({ open = false, onClose, color }: ItemAddedModalProps) => {
+  const iconColor = color ?? '#10B981';
+
   return (
     <GeneralModal
       open={open}
@@ -24,29 +26,35 @@ const ItemAddedModal = ({ open = false, onClose, color }: ItemAddedModalProps) =
           max-w-sm
           flex-col
           items-center
-          gap-4
-          rounded-xl
-          bg-white
+          gap-5
+          rounded-2xl
+          bg-white/95
           px-6
-          py-7
+          py-6
           text-center
           shadow-2xl
+          ring-1
+          ring-emerald-100
+          backdrop-blur
         "
         role="status"
         aria-live="polite"
       >
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-500 shadow-md shadow-emerald-100">
           <HiCheckCircle
             size={64}
-            color={color}
+            color={iconColor}
             className="text-emerald-500"
           />
         </div>
 
-        <div className="space-y-1">
-          <h3 className="text-lg font-semibold text-slate-900">
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold tracking-tight text-slate-900">
             Item added to your cart
           </h3>
+          <p className="text-sm text-slate-500">
+            You can review your cart now or keep browsing deals.
+          </p>
         </div>
       </div>
     </GeneralModal>
