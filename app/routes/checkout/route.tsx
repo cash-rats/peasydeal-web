@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
-import { Outlet, useLoaderData, useOutletContext, useRouteLoaderData } from 'react-router';
-import type { ShouldRevalidateFunction } from "react-router";
-import type { LoaderFunctionArgs, LinksFunction, MetaFunction } from 'react-router';
+import {
+  Outlet,
+  useLoaderData,
+  useOutletContext,
+  useRouteLoaderData,
+} from 'react-router';
+import type {
+  ShouldRevalidateFunction,
+  LoaderFunctionArgs,
+  LinksFunction,
+  MetaFunction,
+} from 'react-router';
 import { redirect } from 'react-router';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
@@ -11,30 +20,22 @@ import httpStatus from 'http-status-codes';
 
 import { envs } from '~/utils/env';
 import { getCheckoutTitleText } from '~/utils/seo';
-import SearchBar from '~/components/SearchBar';
-import Footer, { links as FooterLinks } from '~/components/Footer';
-import Header, { links as HeaderLinks } from '~/components/Header';
-import MobileSearchDialog from '~/components/MobileSearchDialog'
 import { createPaymentIntent } from '~/services/stripe.server';
 import { getCart } from '~/sessions/shoppingcart.session.server';
 import { getTransactionObject } from '~/sessions/transaction.session.server';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import type { PriceInfo } from '~/shared/cart';
-import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
-import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
+import CatalogLayout, {
+  links as CatalogLayoutLinks,
+} from '~/components/layouts/CatalogLayout';
 
-export const meta: MetaFunction = () => ([
+export const meta: MetaFunction = () => [
   { title: getCheckoutTitleText() },
-]);
+];
 
 export const links: LinksFunction = () => {
-  return [
-    ...FooterLinks(),
-    ...HeaderLinks(),
-    ...CategoriesNavLinks(),
-    ...DropDownSearchBarLinks(),
-  ];
+  return CatalogLayoutLinks();
 };
 
 type LoaderType = {
@@ -68,7 +69,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
     formAction &&
     formAction.includes('/checkout/result/components/Success')
   ) {
-    return false
+    return false;
   }
 
   // Any component that request Header reload  cart item count would potentially trigger redirection
@@ -81,7 +82,7 @@ export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
   }
 
   return true;
-}
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
@@ -93,10 +94,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       !cartItems ||
       Object.keys(cartItems).length === 0
     ) {
-      throw redirect("/cart");
+      throw redirect('/cart');
     }
 
-    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
+    const [navBarCategories, categories] =
+      await fetchCategoriesWithSplitAndHotDealInPlaced();
 
     // TODO this number should be coming from BE instead.
     // https://stackoverflow.com/questions/45453090/stripe-throws-invalid-integer-error
@@ -126,7 +128,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
-}
+};
 
 function CheckoutLayout() {
   const {
@@ -139,14 +141,9 @@ function CheckoutLayout() {
     navBarCategories,
   } = useLoaderData<LoaderType>() || {};
 
-  const rootData = useRouteLoaderData("root") as any;
+  const rootData = useRouteLoaderData('root') as any;
   const cartCount = rootData?.cartCount || 0;
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-  const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
-
-  const handleOpen = () => setOpenSearchDialog(true);
-
-  const handleClose = () => setOpenSearchDialog(false);
 
   const options: StripeElementsOptions = {
     // passing the client secret obtained in step 2
@@ -166,68 +163,47 @@ function CheckoutLayout() {
   }, [payment_intend_id]);
 
   return (
-    <>
-      <MobileSearchDialog
-        onBack={handleClose}
-        isOpen={openSearchDialog}
-      />
-
-      <Header
-        categories={categories}
-        numOfItemsInCart={cartCount}
-        searchBar={<DropDownSearchBar />}
-        mobileSearchBar={
-          <SearchBar
-            placeholder='Search keywords...'
-            onClick={handleOpen}
-          />
-        }
-        categoriesBar={
-          <CategoriesNav
-            categories={categories}
-            topCategories={navBarCategories}
-          />
-        }
-      />
-
-      <main className="min-h-[35rem] flex justify-center">
-        {
-          stripePromise && (
-            <Elements
-              stripe={stripePromise}
-              options={options}
+    <CatalogLayout
+      categories={categories}
+      navBarCategories={navBarCategories}
+      cartCount={cartCount}
+    >
+      {stripePromise && (
+        <div className="min-h-[35rem] flex justify-center">
+          <Elements
+            stripe={stripePromise}
+            options={options}
+          >
+            <PayPalScriptProvider
+              options={{
+                'client-id': envs.PAYPAL_CLIENT_ID,
+                currency: envs.PAYPAL_CURRENCY_CODE,
+                intent: 'capture',
+              }}
             >
-              <PayPalScriptProvider
-                options={{
-                  "client-id": envs.PAYPAL_CLIENT_ID,
-                  "currency": envs.PAYPAL_CURRENCY_CODE,
-                  "intent": "capture",
-                }}
-              >
-                <Outlet context={{
+              <Outlet
+                context={{
                   paymentIntendID: payment_intend_id,
                   priceInfo: price_info,
                   promoCode: promo_code,
-                }} />
-              </PayPalScriptProvider>
-            </Elements>
-          )
-        }
-      </main>
-      <Footer />
-    </>
+                }}
+              />
+            </PayPalScriptProvider>
+          </Elements>
+        </div>
+      )}
+    </CatalogLayout>
   );
-};
+}
 
 type ContextType = {
-  clientSecret: string;
   paymentIntendID: string;
   priceInfo: PriceInfo;
-  promoCode: string;
+  promoCode: string | null | undefined;
 };
 
 export function useContext() {
   return useOutletContext<ContextType>();
 }
 
-export default CheckoutLayout
+export default CheckoutLayout;

@@ -12,29 +12,38 @@ import {
   useLoaderData,
 } from 'react-router';
 import Alert from '@mui/material/Alert';
-import { Spinner } from '@chakra-ui/react'
+import { Spinner } from '@chakra-ui/react';
 
 import type { PaymentMethod } from '~/shared/types';
-import { useContext } from '~/routes/checkout';
+import { useContext } from '~/routes/checkout/route';
 import { getCart } from '~/sessions/shoppingcart.session.server';
 import type { ShoppingCart } from '~/sessions/types';
 
-import { useCreateOrder, useStripeConfirmPayment } from './hooks';
-import styles from './styles/Checkout.css?url';
-import CheckoutForm, { links as CheckoutFormLinks } from './components/CheckoutForm';
-import ShippingDetailForm, { links as ShippingDetailFormLinks } from './components/ShippingDetailForm';
-import type { Option } from './components/ShippingDetailForm/api.server';
-import CartSummary from './components/CartSummary';
-import ContactInfoForm, { links as ContactInfoFormLinks } from './components/ContactInfoForm';
-import reducer, { ActionTypes as ReducerActionTypes, initState } from './reducer';
-import type { StateShape } from './reducer';
+import { useCreateOrder, useStripeConfirmPayment } from '~/routes/checkout/hooks';
+import styles from '~/routes/checkout/styles/Checkout.css?url';
+import CheckoutForm, {
+  links as CheckoutFormLinks,
+} from '~/routes/checkout/components/CheckoutForm';
+import ShippingDetailForm, {
+  links as ShippingDetailFormLinks,
+} from '~/routes/checkout/components/ShippingDetailForm';
+import type { Option } from '~/routes/checkout/components/ShippingDetailForm/api.server';
+import CartSummary from '~/routes/checkout/components/CartSummary';
+import ContactInfoForm, {
+  links as ContactInfoFormLinks,
+} from '~/routes/checkout/components/ContactInfoForm';
+import reducer, {
+  ActionTypes as ReducerActionTypes,
+  initState,
+} from '~/routes/checkout/reducer';
+import type { StateShape } from '~/routes/checkout/reducer';
 import {
   __paypalCreateOrder,
   __paypalCapturePayment,
   __stripeCreateOrder,
   ActionType,
-} from './actions';
-import type { ActionPayload } from './actions';
+} from '~/routes/checkout/actions';
+import type { ActionPayload } from '~/routes/checkout/actions';
 
 export const links: LinksFunction = () => {
   return [
@@ -47,14 +56,14 @@ export const links: LinksFunction = () => {
 
 type LoaderType = {
   cart_items: ShoppingCart;
-}
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const cart = await getCart(request);
 
     if (!cart || Object.keys(cart).length === 0) {
-      throw redirect("/cart");
+      throw redirect('/cart');
     }
 
     return Response.json({ cart_items: cart });
@@ -68,16 +77,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const formObj = Object.fromEntries(form.entries()) as ActionPayload;
 
   if (formObj['action_type'] === ActionType.PaypalCreateOrder) {
-    return __paypalCreateOrder(formObj)
+    return __paypalCreateOrder(formObj);
   }
 
   if (formObj['action_type'] === ActionType.PaypalCapturePayment) {
     const ppID = formObj['paypal_order_id'] as string;
-    const pdID = formObj['order_id'] as string
+    const pdID = formObj['order_id'] as string;
     return __paypalCapturePayment(ppID, pdID);
   }
 
-  return __stripeCreateOrder(formObj)
+  return __stripeCreateOrder(formObj);
 };
 
 /*
@@ -124,10 +133,9 @@ function CheckoutPage() {
       type: ReducerActionTypes.set_disable_paypal_button,
       payload: !(
         !!formRef.current?.checkValidity() &&
-        !isPhoneValueEmpty(
-          reducerState.current.contactInfoForm.phone_value,
-          reducerState.current.contactInfoForm.country_data.countryCode,
-        )
+
+        // `phone` is not native HTML5 input validation, we validate it differently.
+        !reducerState.current.contactInfoForm.phone_error
       ),
     });
   }, [
@@ -148,13 +156,17 @@ function CheckoutPage() {
     }
   }, [orderUUID, isDone, stripeConfirmPayment]);
 
-  if (!cartItems || !Object.keys(cartItems).length) return (
-    <div className='w-full flex items-center justify-center my-4'>
-      <Spinner size='lg' />
-    </div>
-  );
+  if (!cartItems || !Object.keys(cartItems).length) {
+    return (
+      <div className="w-full flex items-center justify-center my-4">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
 
-  const isPhoneValueEmpty = (phone: string, countryCode: string) => !phone || phone === countryCode;
+  const isPhoneValueEmpty = (phone: string, countryCode: string) =>
+    !phone || phone === countryCode;
+
   const validatePhone = (form: HTMLFormElement): boolean => {
     const phoneField = form.querySelector('#phone') as HTMLInputElement;
 
@@ -179,14 +191,14 @@ function CheckoutPage() {
 
     let contactName = contactInfo.contact_name;
     if (contactInfo.contact_name_same) {
-      contactName = `${shippingInfo.firstname} ${shippingInfo.lastname}`
+      contactName = `${shippingInfo.firstname} ${shippingInfo.lastname}`;
     }
-    return contactName
-  }
+    return contactName;
+  };
 
   const retrieveOrderInfoForSubmission = (paymentMethod: PaymentMethod) => {
-    const contactName = assembleContactName()
-    reducerState.current.contactInfoForm.contact_name = contactName
+    const contactName = assembleContactName();
+    reducerState.current.contactInfoForm.contact_name = contactName;
 
     return {
       shipping_form: JSON.stringify(reducerState.current.shippingDetailForm),
@@ -197,9 +209,9 @@ function CheckoutPage() {
       promo_code: promoCode,
       payment_method: paymentMethod,
     };
-  }
+  };
 
-  const handleCreateOrder = async (paymentMethod: PaymentMethod = "stripe") => {
+  const handleCreateOrder = async (paymentMethod: PaymentMethod = 'stripe') => {
     const orderInfo = retrieveOrderInfoForSubmission(paymentMethod);
     dispatch({
       type: ReducerActionTypes.update_contact_info_form,
@@ -212,7 +224,7 @@ function CheckoutPage() {
     clearCreateOrderErrorAlert();
     clearStripeErrorAlert();
 
-    let target = evt.target as HTMLInputElement;
+    const target = evt.target as HTMLInputElement;
 
     const fieldName = target.name;
     let fieldValue: string | boolean = target.value;
@@ -229,7 +241,7 @@ function CheckoutPage() {
         },
       });
     }
-  }
+  };
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
@@ -238,16 +250,16 @@ function CheckoutPage() {
     if (!validatePhone(formRef.current)) {
       formRef.current.reportValidity();
       return;
-    };
+    }
 
     // Submit forms to action, only create a new order if order hasn't been created yet.
     if (!state.orderUUID) {
-      handleCreateOrder('stripe');
+      void handleCreateOrder('stripe');
       return;
     }
 
     stripeConfirmPayment(state.orderUUID);
-  }
+  };
 
   const handleSelectAddress = (option: Option) => {
     dispatch({
@@ -258,34 +270,25 @@ function CheckoutPage() {
         city: option.city,
       },
     });
-  }
+  };
 
   return (
     <div className="checkout-page-container">
       <h1 className="title"> Shipping Information </h1>
-      {
-        createOrderErrorAlert
-          ? (
-            <Alert severity='warning' >
-              {createOrderErrorAlert}
-            </Alert>
-          )
-          : null
-      }
+      {createOrderErrorAlert ? (
+        <Alert severity="warning">
+          {createOrderErrorAlert}
+        </Alert>
+      ) : null}
 
-      {
-        stripeErrorAlert
-          ? (
-            <Alert severity='warning' >
-              {stripeErrorAlert}
-            </Alert>
-          )
-          : null
-      }
+      {stripeErrorAlert ? (
+        <Alert severity="warning">
+          {stripeErrorAlert}
+        </Alert>
+      ) : null}
 
       <div className="checkout-content">
         <div className="left">
-
           {/* You Details  */}
           {/* form-container */}
           <div className="mb-4 md:my-0 mx-auto">
@@ -317,7 +320,7 @@ function CheckoutPage() {
                   />
                 </div>
               </div>
-            </div >
+            </div>
 
             {/* Contact information */}
             <div className="form-container">
@@ -332,8 +335,8 @@ function CheckoutPage() {
                     onChange={(data) => {
                       dispatch({
                         type: ReducerActionTypes.update_contact_info_form,
-                        payload: data
-                      })
+                        payload: data,
+                      });
                     }}
                   />
                 </div>
@@ -357,3 +360,4 @@ function CheckoutPage() {
 }
 
 export default CheckoutPage;
+
