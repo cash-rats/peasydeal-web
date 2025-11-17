@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from 'react-router';
-import { imageLoader, MemoryCache } from 'remix-image/server';
-import type { LoaderConfig } from 'remix-image';
+import { imageLoader, MemoryCache } from '@huangc28/react-router-image/server';
+import type { LoaderConfig } from '@huangc28/react-router-image';
 import httpStatus from 'http-status-codes';
 
 import { envs } from '~/utils/env';

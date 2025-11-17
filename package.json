@@ -1,6 +1,10 @@
 {
   "name": "peasydeal_web",
   "private": true,
+  "workspaces": [
+    "app/*",
+    "packages/*"
+  ],
   "sideEffects": false,
   "scripts": {
     "build": "react-router build",
