@@ -2,8 +2,8 @@
 
 **Date:** 2025-11-11
 **Issue:** SSR "exports is not defined" error with remix-image package
-**Status:** ❌ ATTEMPTED FIX FAILED - Migration to Custom Solution Required
-**Last Updated:** 2025-11-11 12:26 PM
+**Status:** ✅ MIGRATED TO LOCAL react-router-image PACKAGE
+**Last Updated:** 2025-11-17 12:32 PM
 
 ---
 
@@ -22,7 +22,9 @@ at eval (/node_modules/remix-image/build/index.js:3:49)
 
 **Conclusion:** The `remix-image` package has fundamental ESM/CommonJS incompatibility with Vite SSR that **cannot be fixed through configuration**. Migration to an alternative solution is required.
 
-**New Strategy:** Build custom OptimizedImage component while preserving existing 415 lines of Sharp/R2 infrastructure.
+**New Strategy (superseded):** Build custom OptimizedImage component while preserving existing 415 lines of Sharp/R2 infrastructure.
+
+**Final Strategy (implemented):** Replace the unmaintained `remix-image` dependency with a minimal, workspace-local `react-router-image` package designed for React Router 7 and Node 22, while keeping the existing Sharp/R2/CDN loader flow intact.
 
 ---
 
@@ -116,14 +118,21 @@ The project has a catch-22 situation with `remix-image`:
 - Package is unmaintained (last update 2022)
 - Incompatible with modern Vite SSR module handling
 
-### NEW Decision: Migrate to Custom Native Solution ✅
+### NEW Decision (superseded): Migrate to Custom Native Solution
+
+This was the initial mitigation plan but was not ultimately implemented because a better option emerged: forking `remix-image` into a local package tailored to React Router 7 + Node 22.
+
+### Final Decision: Fork remix-image → react-router-image (Workspace Package) ✅
 
 **Why This is Now the Best Choice:**
-1. **Keep Infrastructure** - All 415 lines of Sharp/R2/CDN code stays intact
-2. **Fastest Migration** - Only replace React component (1-1.5 days)
-3. **100% Features** - Blur placeholders, lazy loading, responsive images preserved
-4. **Zero New Dependencies** - Use existing react-intersection-observer
-5. **Full Control** - Can enhance features over time
+1. **Keep Infrastructure** – All 415 lines of Sharp/R2/CDN code and the existing `/remix-image` loader route stay intact.
+2. **Minimal Surface Area** – We only implement the parts actually used:
+   - `imageLoader` (server loader)
+   - `MemoryCache` (in-memory cache)
+   - Types: `LoaderConfig`, `TransformOptions`, `MimeType`, etc.
+3. **No Native SQLite** – We drop disk-based cache (`@next-boost/hybrid-disk-cache` / `better-sqlite3`), avoiding Node 22 native build issues.
+4. **React Router 7-native** – The new package uses the Fetch API (`Request`/`Response`) and integrates directly with React Router loaders.
+5. **Workspace-local** – Implemented under `packages/react-router-image` and consumed as a Yarn/NPM workspace (`react-router-image`), so deployments don’t depend on an external registry.
 
 **Migration Strategy:**
 - Build custom `<OptimizedImage>` component (~200 lines)

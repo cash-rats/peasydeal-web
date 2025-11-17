@@ -1,5 +1,5 @@
 
-import { HiCheckCircle, HiShoppingCart } from 'react-icons/hi2';
+import { HiCheckCircle } from 'react-icons/hi2';
 
 import GeneralModal from './index';
 
@@ -31,7 +31,10 @@ const ItemAddedModal = ({ open = false, onClose, onViewCart }: ItemAddedModalPro
         aria-live="polite"
       >
         <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-500">
-          <HiCheckCircle className="h-10 w-10 text-emerald-500" />
+          <HiCheckCircle
+            size={64}
+            className="text-emerald-500"
+          />
         </div>
 
         <div className="space-y-1">

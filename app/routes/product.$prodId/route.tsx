@@ -181,7 +181,6 @@ function ProductDetailPage() {
     addItemToCart,
     isAddingToCart,
     openSuccessModal,
-    setOpenSuccessModal,
   } = useAddToCart({
     sessionStorableCartItem: state.sessionStorableCartItem,
     variationImages: state.variationImages,
@@ -214,8 +213,6 @@ function ProductDetailPage() {
     }
   }
 
-  const handleOnClose = () => setOpenSuccessModal(false);
-
   const handleChangeVariation = (v: OptionType) => {
     if (!v) return;
     const selectedVariation =
@@ -230,10 +227,7 @@ function ProductDetailPage() {
 
   return (
     <>
-      <ItemAddedModal
-        open={openSuccessModal}
-        onClose={handleOnClose}
-      />
+      <ItemAddedModal open={openSuccessModal} />
 
       {/*<PromoteSubscriptionModal forceDisable={isFromGoogleStoreBot(loaderData.user_agent)} />*/}
       <Breadcrumbs
