@@ -1,5 +1,8 @@
-import { useEffect, useState } from 'react';
-import type { ChangeEvent } from 'react';
+import {
+  type ChangeEvent,
+  useEffect,
+  useState,
+} from 'react';
 import { Link } from 'react-router';
 import { BsBagCheck } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
@@ -7,8 +10,9 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { cn } from '~/lib/utils';
 import ResultRow from './components/ResultRow';
-import type { PriceInfo } from '../../types';
 import { round10 } from '~/utils/preciseRound';
+
+import type { PriceInfo } from '../../types';
 
 type PriceResultProps = {
   priceInfo: PriceInfo;
@@ -122,8 +126,8 @@ export default function PriceResult({
   priceInfo,
   calculating = false,
   appliedPromoCode = '',
-  onChangePromoCode = () => {},
-  onApplyPromoCode = () => {},
+  onChangePromoCode = () => { },
+  onApplyPromoCode = () => { },
 }: PriceResultProps) {
   const [promoCode, setPromoCode] = useState('');
   const [error, setError] = useState('');
