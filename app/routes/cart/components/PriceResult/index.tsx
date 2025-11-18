@@ -9,9 +9,9 @@ import { ImPriceTags } from 'react-icons/im';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { cn } from '~/lib/utils';
-import ResultRow from './components/ResultRow';
 import { round10 } from '~/utils/preciseRound';
 
+import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../types';
 
 type PriceResultProps = {
