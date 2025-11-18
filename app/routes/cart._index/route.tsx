@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
-  redirect,
   useFetcher,
   useRouteError,
   isRouteErrorResponse,
@@ -8,12 +7,9 @@ import {
 import type {
   LinksFunction,
   ShouldRevalidateFunction,
-  ActionFunctionArgs,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
-import { commitSession } from '~/sessions/redis_session.server';
-import { insertItem } from '~/sessions/shoppingcart.session.server';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';

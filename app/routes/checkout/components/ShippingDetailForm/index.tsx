@@ -1,15 +1,6 @@
-/*
-  TODOs
-    - [ ] validation error should be displayed in tooltip.
-    - [ ] Lock lookup button
-*/
 import { useEffect, useReducer } from 'react';
 import type { ChangeEvent } from 'react';
-import {
-  type LinksFunction,
-  type ActionFunctionArgs,
-  useFetcher,
-} from 'react-router';
+import { type LinksFunction, useFetcher } from 'react-router';
 import { FiHelpCircle } from 'react-icons/fi';
 import MoonLoader from 'react-spinners/MoonLoader';
 
@@ -24,8 +15,7 @@ import {
   TooltipTrigger,
 } from '~/components/ui/tooltip';
 
-import { fetchAddressOptionsByPostal, } from './api.server';
-import type { Option } from './api.server';
+import type { Option } from '~/routes/checkout.fetch-address-options-by-postal/types';
 import styles from './styles/ShippingDetailForm.css?url';
 import { inistialState, addressOptionsReducer, AddressOptionsActionTypes } from './reducer';
 import type { ShippingDetailFormType } from '../../types';
@@ -35,19 +25,6 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: styles },
   ];
 };
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const form = await request.formData();
-  const formEntries = Object.fromEntries(form.entries());
-  const postal = formEntries.postal as string;
-  if (!postal) return null;
-  try {
-    const options = await fetchAddressOptionsByPostal({ postal });
-    return Response.json(options);
-  } catch (err) {
-    return Response.json([]);
-  }
-}
 
 interface ShippingDetailFormProps {
   values: ShippingDetailFormType;
@@ -62,18 +39,21 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
   const [state, dispatch] = useReducer(addressOptionsReducer, inistialState);
 
   useEffect(() => {
-    if (loadAddrFetcher.type === 'done') {
+    if (
+      loadAddrFetcher.state === 'idle' &&
+      Array.isArray(loadAddrFetcher.data)
+    ) {
       dispatch({
         type: AddressOptionsActionTypes.update_all_options,
         payload: loadAddrFetcher.data,
       });
     }
-  }, [loadAddrFetcher.type]);
+  }, [loadAddrFetcher.state, loadAddrFetcher.data]);
 
   const loadAddrOptions = (postal: string) => {
     loadAddrFetcher.submit(
       { postal },
-      { method: 'post', action: '/checkout/components/ShippingDetailForm?index' }
+      { method: 'post', action: '/checkout/fetch-address-options-by-postal' }
     );
   };
 
@@ -120,7 +100,9 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
                   }
 
                   {
-                    loadAddrFetcher.type === 'done' && state.options.length === 0 && (
+                    loadAddrFetcher.state === 'idle' &&
+                    Array.isArray(loadAddrFetcher.data) &&
+                    state.options.length === 0 && (
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -153,7 +135,9 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
               </Button>
             </div>
             {
-              loadAddrFetcher.type === 'done' && state.options.length === 0 && (
+              loadAddrFetcher.state === 'idle' &&
+              Array.isArray(loadAddrFetcher.data) &&
+              state.options.length === 0 && (
                 <p className="ml-4">
                   No address found, please input address manually.
                 </p>
