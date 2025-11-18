@@ -19,7 +19,7 @@ import { useCartState, useUpdateItemQuantity, useApplyPromoCode } from '~/routes
 import CartItem from '~/routes/cart/components/Item';
 import EmptyShoppingCart from '~/routes/cart/components/EmptyShoppingCart';
 import PriceResult from '~/routes/cart/components/PriceResult';
-import type { ActionType, CartPriceResponse } from '~/routes/cart/types';
+import type { CartPriceResponse } from '~/routes/cart/types';
 import styles from '~/routes/cart/styles/cart.css?url';
 import sslCheckout from '~/routes/cart/images/SSL-Secure-Connection.png';
 import { sortItemsByAddedTime } from '~/routes/cart/utils';

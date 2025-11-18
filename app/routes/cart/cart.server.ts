@@ -15,7 +15,7 @@ export type FetchPriceInfoParams = {
 };
 
 export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<PriceInfo> => {
-  const resp = await fetch(`${envs.MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`, {
+  const resp = await fetch(`${envs.PEASY_DEAL_ENDPOINT}/v2/accountant/order-amount`, {
     method: 'post',
     body: JSON.stringify(params),
     headers: {

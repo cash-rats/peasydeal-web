@@ -1,32 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { Link } from 'react-router';
 import { BsBagCheck } from 'react-icons/bs';
-import Skeleton from '@mui/material/Skeleton';
-import { Input, Button } from '@chakra-ui/react'
-import {
-  TagLabel,
-  Tag,
-} from '@chakra-ui/react';
 import { ImPriceTags } from 'react-icons/im';
+import { Button } from '~/components/ui/button';
+import { Input } from '~/components/ui/input';
+import { cn } from '~/lib/utils';
 import ResultRow from './components/ResultRow';
-import type { PriceInfo } from '../../cart.server';
+import type { PriceInfo } from '../../types';
 import { round10 } from '~/utils/preciseRound';
-
 
 type PriceResultProps = {
   priceInfo: PriceInfo;
   calculating?: boolean;
-
-  // External component tells `PriceResult` previous  applied promo code,
-  // regardless of success / failure so that component can render proper text.
   appliedPromoCode?: string;
-
   onChangePromoCode?: (code: string) => void;
   onApplyPromoCode?: (code: string) => void;
 };
 
-interface IPromoCodeBox {
+interface PromoCodeBoxProps {
   promoCode: string;
   handleChange: (evt: ChangeEvent<HTMLInputElement>) => void;
   handleApplyPromoCode: () => void;
@@ -37,6 +29,25 @@ interface IPromoCodeBox {
   discountErrorMsgs: string[];
 }
 
+const InlineSkeleton = ({
+  width = 80,
+  height = 20,
+  className,
+}: {
+  width?: number | string;
+  height?: number | string;
+  className?: string;
+}) => (
+  <span
+    aria-hidden
+    className={cn(
+      'inline-flex animate-pulse rounded-full bg-slate-200/70 dark:bg-slate-700',
+      className
+    )}
+    style={{ width, height }}
+  />
+);
+
 const PromoCodeBox = ({
   promoCode,
   handleChange,
@@ -46,24 +57,19 @@ const PromoCodeBox = ({
   appliedPromoCode,
   discountCodeValid,
   discountErrorMsgs,
-}: IPromoCodeBox) => {
+}: PromoCodeBoxProps) => {
   return (
     <>
-      <h2 className='text-lg font-medium mb-2'>
-        <span className="capitalize font-semibold">
-          promo code
-        </span> &nbsp;
-        <span className="font-semibold">
-          (optional)
-        </span>
+      <h2 className="text-lg font-medium mb-2">
+        <span className="capitalize font-semibold">promo code</span> &nbsp;
+        <span className="font-semibold">(optional)</span>
       </h2>
 
-      {/* promo input */}
-      <div className="w-full flex flex-col">
+      <div className="w-full flex flex-col gap-2">
         <Input
-          placeholder='Promo code'
-          size='lg'
+          placeholder="Promo code"
           value={promoCode}
+          className="h-12 text-base font-medium uppercase tracking-wide md:text-lg"
           onChange={handleChange}
           onKeyDown={(evt) => {
             if (evt.key === 'Enter' && promoCode.length > 2) {
@@ -72,70 +78,56 @@ const PromoCodeBox = ({
           }}
         />
 
-        {/* invalid promo code message */}
-        {
-          error && (
-            <div className="mt-[10px] h-10">
-              <p className="text-error-msg-red font-normal text-base">
-                {error}
-              </p>
-            </div>
-          )
-        }
+        {error && (
+          <div className="mt-1 text-error-msg-red font-normal text-base">
+            {error}
+          </div>
+        )}
 
-        <div className="mt-4 ml-auto">
+        <div className="mt-3 flex justify-end">
           <Button
-            colorScheme='twitter'
-            variant='outline'
+            variant="outline"
+            className="px-5 text-sm font-semibold tracking-wide"
+            size="lg"
+            disabled={calculating}
             onClick={handleApplyPromoCode}
-            isLoading={calculating}
-            loadingText='Checking...'
           >
-            Apply promo code
+            {calculating ? 'Checking...' : 'Apply promo code'}
           </Button>
         </div>
 
-        {
-          discountCodeValid && discountErrorMsgs.length === 0 && (
-            <div className="mt-[10px] h-10">
-              <p className="text-[#00af32] font-normal text-base">
-                The promo code <span className="font-semibold">{appliedPromoCode}</span> was successfully applied.
-              </p>
+        {discountCodeValid && discountErrorMsgs.length === 0 && (
+          <div className="mt-2 text-[#00af32] font-normal text-base">
+            The promo code{' '}
+            <span className="font-semibold">{appliedPromoCode}</span> was
+            successfully applied.
+          </div>
+        )}
+
+        {discountErrorMsgs.length > 0 &&
+          discountErrorMsgs.map((msg, idx) => (
+            <div
+              className="mt-2 text-[#D02E7D] font-normal text-base"
+              key={`error-code-msg-${idx}`}
+            >
+              {msg}
             </div>
-          )
-        }
-
-        {
-          discountErrorMsgs.length > 0 && (
-            discountErrorMsgs.map((msg, idx) => (
-              <div className="mt-[10px] h-10" key={`error-code-msg-${idx}`}>
-                <p className="text-[#D02E7D] font-normal text-base">
-                  {msg}
-                </p>
-              </div>
-            ))
-
-          )
-        }
+          ))}
       </div>
     </>
   );
-}
+};
 
-/*
-  - [x] Apply promo code button loading state.
-*/
 export default function PriceResult({
   priceInfo,
   calculating = false,
   appliedPromoCode = '',
-  onChangePromoCode = () => { },
-  onApplyPromoCode = () => { },
+  onChangePromoCode = () => {},
+  onApplyPromoCode = () => {},
 }: PriceResultProps) {
   const [promoCode, setPromoCode] = useState('');
   const [error, setError] = useState('');
 
-  // destructuring priceInfo
   const {
     shipping_fee = 0,
     sub_total = 0,
@@ -151,35 +143,30 @@ export default function PriceResult({
   } = priceInfo || {};
 
   useEffect(() => {
-    if (
-      appliedPromoCode &&
-      !discount_code_valid
-    ) {
-      setError(`Seems like promo code ${appliedPromoCode} is invalid. Let's check and try again`)
+    if (appliedPromoCode && !discount_code_valid) {
+      setError(
+        `Seems like promo code ${appliedPromoCode} is invalid. Let's check and try again`
+      );
       return;
     }
 
     setError('');
-  }, [
-    appliedPromoCode,
-    priceInfo,
-    discount_code_valid
-  ]);
+  }, [appliedPromoCode, discount_code_valid, priceInfo]);
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value || '';
-    const code = value.toUpperCase() || '';
+    const code = value.toUpperCase();
     setPromoCode(code);
     onChangePromoCode(code);
-  }
+  };
 
   const handleApplyPromoCode = () => {
     window.rudderanalytics?.track('click_apply_promo_code', {
       code: promoCode,
     });
+
     if (!promoCode) {
       setError('You have not enter any promo code');
-
       return;
     }
 
@@ -191,7 +178,6 @@ export default function PriceResult({
 
   return (
     <div className="p-4 bg-white">
-      {/* right */}
       <div className="w-full">
         <PromoCodeBox
           promoCode={promoCode}
@@ -201,97 +187,51 @@ export default function PriceResult({
           error={error}
           appliedPromoCode={appliedPromoCode}
           discountErrorMsgs={discountErrorMsgs}
-          discountCodeValid={!!(
-            !error && appliedPromoCode && discount_code_valid
-          )}
+          discountCodeValid={!!(!error && appliedPromoCode && discount_code_valid)}
         />
 
-        <h2 className="
-            text-xl font-bold
-            pt-6 px-0 w-full mb-4
-          "
-        >
-          Summary
-        </h2>
+        <h2 className="text-xl font-bold pt-6 mb-4">Summary</h2>
 
         <div className="py-3">
           <hr className="my-1 h-[1px] w-full bg-slate-50" />
         </div>
+
         <ResultRow
           label="Items (VAT Incl.)"
           value={
-            calculating
-              ? (
-                <Skeleton
-                  variant='text'
-                  width={40}
-                  sx={{ fontSize: '1rem' }}
-                />
-              )
-              : `£ ${taxIncl}`
+            calculating ? (
+              <InlineSkeleton width={45} height={20} />
+            ) : (
+              `£ ${taxIncl}`
+            )
           }
-
         />
 
-        {/* Promo code deal */}
-        {
-          discount_code_valid
-            ? (
-              <ResultRow
-                label="Promo code deal"
-                value={
-                  calculating
-                    ? (
-                      <Skeleton
-                        variant='text'
-                        width={40}
-                        sx={{ fontSize: '1rem' }}
-                      />
-                    ) : (
-                      <div className="result-value text-primary uppercase">
-                        <>
-                          {
-                            discount_type === 'price_off' && (
-                              `extra - £ ${discount_amount} off!`
-                            )
-                          }
-
-                          {
-                            discount_type === 'free_shipping' && (
-                              'free shipping!'
-                            )
-                          }
-
-                          {
-                            discount_type === 'percentage_off' && (
-                              `- £ ${promo_code_discount}`
-                            )
-                          }
-                        </>
-                      </div>
-                    )
-                }
-              />
-            )
-            : null
-        }
+        {discount_code_valid && (
+          <ResultRow
+            label="Promo code deal"
+            value={
+              calculating ? (
+                <InlineSkeleton width={45} height={20} />
+              ) : (
+                <div className="result-value text-primary uppercase">
+                  {discount_type === 'price_off' && `extra - £ ${discount_amount} off!`}
+                  {discount_type === 'free_shipping' && 'free shipping!'}
+                  {discount_type === 'percentage_off' && `- £ ${promo_code_discount}`}
+                </div>
+              )
+            }
+          />
+        )}
 
         <ResultRow
-          label='Shipping Cost'
+          label="Shipping Cost"
           value={
-            calculating
-              ? (
-                <Skeleton
-                  variant='text'
-                  width={40}
-                  sx={{ fontSize: '1rem' }}
-                />
-              )
-              : (
-                <>
-                  <span className=''>£ {origin_shipping_fee}</span>
-                </>
-              )
+            calculating ? (
+              <InlineSkeleton width={45} height={20} />
+            ) : (
+              `£ ${origin_shipping_fee}`
+            )
           }
         />
 
@@ -299,142 +239,90 @@ export default function PriceResult({
           <hr className="my-1 h-[1px] w-full bg-slate-50" />
         </div>
 
-        {/* Promotion Applied  */}
-        {
+        {applied_events.length > 0 && (
+          <>
+            <div className="flex flex-col mb-4">
+              <h4 className="text-base font-bold mb-2 capitalize font-poppins">
+                discount applied!
+              </h4>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {applied_events.map((event, idx) => (
+                  <span
+                    key={`promotion-${idx}`}
+                    className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
+                  >
+                    <ImPriceTags className="text-base" />
+                    {event}
+                  </span>
+                ))}
+              </div>
 
-          applied_events.length === 0
-            ? null
-            : (
-              <>
-                <div className="flex flex-col mb-4">
-                  <h4 className="
-                    text-base font-bold
-                    px-0 mb-2 w-full capitalize
-                    font-poppins
-                  ">
-                    discount applied!
-                  </h4>
-                  <div className='flex gap-2 flex-wrap mb-2'>
-                    {
-                      applied_events.map((event, idx) => (
-                        <Tag
-                          key={`promotion-${idx}`}
-                          variant='outline'
-                          colorScheme='blue'
-                          className='w-fit'
-                          size="md">
-                          <ImPriceTags className='mr-1' />
-                          <TagLabel>{event}</TagLabel>
-                        </Tag>
-                      ))
-                    }
-                  </div>
-                  {
-                    shipping_fee === 0
-                      ? (
-                        <ResultRow
-                          label='Shipping Discount'
-                          value={
-                            calculating
-                              ? (
-                                <Skeleton
-                                  variant='text'
-                                  width={40}
-                                  sx={{ fontSize: '1rem' }}
-                                />
-                              )
-                              : (
-                                <>
-                                  <span className='text-[#D02E7D]'>- £ {origin_shipping_fee}</span>
-                                </>
-                              )
-                          }
-                        />
-                      )
-                      : null
+              {shipping_fee === 0 && (
+                <ResultRow
+                  label="Shipping Discount"
+                  value={
+                    calculating ? (
+                      <InlineSkeleton width={45} height={20} />
+                    ) : (
+                      <span className="text-[#D02E7D]">- £ {origin_shipping_fee}</span>
+                    )
                   }
+                />
+              )}
 
-                  {
-                    promo_code_discount !== 0
-                      ? (
-                        <ResultRow
-                          label='Promo Discount'
-                          value={
-                            calculating
-                              ? (
-                                <Skeleton
-                                  variant='text'
-                                  width={40}
-                                  sx={{ fontSize: '1rem' }}
-                                />
-                              )
-                              : (
-                                <>
-                                  <span className='text-[#D02E7D]'>- £ {promo_code_discount}</span>
-                                </>
-                              )
-                          }
-                        />
-                      )
-                      : null
+              {promo_code_discount !== 0 && (
+                <ResultRow
+                  label="Promo Discount"
+                  value={
+                    calculating ? (
+                      <InlineSkeleton width={45} height={20} />
+                    ) : (
+                      <span className="text-[#D02E7D]">- £ {promo_code_discount}</span>
+                    )
                   }
+                />
+              )}
+            </div>
 
-
-                </div>
-
-                <div className="py-3">
-                  <hr className="my-1 h-[1px] w-full bg-slate-50" />
-                </div>
-              </>
-            )
-        }
-
+            <div className="py-3">
+              <hr className="my-1 h-[1px] w-full bg-slate-50" />
+            </div>
+          </>
+        )}
 
         <div className="mt-[0.7rem]">
           <ResultRow
             label={<strong>Total to pay</strong>}
             value={
               <strong>
-                {
-                  calculating
-                    ? (
-                      <Skeleton
-                        variant='text'
-                        width={100}
-                        sx={{ fontSize: '1.5rem' }}
-                      />
-                    )
-                    : `£ ${total_amount}`
-                }
+                {calculating ? (
+                  <InlineSkeleton width={100} height={30} />
+                ) : (
+                  `£ ${total_amount}`
+                )}
               </strong>
             }
           />
         </div>
 
-        <div className="mt-[30px] flex flex-col justify-center">
-          <Link to="/checkout" >
+        <div className="mt-[30px] flex flex-col justify-center gap-3">
+          <Link to="/checkout">
             <Button
-              size='md'
-              height='48px'
-              width='100%'
-              border='2px'
-              colorScheme='yellow'
-              borderColor='yellow.500'
-              leftIcon={<BsBagCheck fontSize={22} />}
-              className="font-bold font-poppins mb-2"
+              className="w-full border-2 border-yellow-500 bg-yellow-500 text-black font-bold shadow-none"
+              size="lg"
               onClick={() => {
                 window.rudderanalytics?.track('click_continue_checkout');
               }}
             >
+              <BsBagCheck fontSize={22} />
               Continue to checkout
             </Button>
           </Link>
 
           <Link to="/">
             <Button
-              colorScheme='teal'
-              variant='ghost'
-              className='w-full'
+              variant="ghost"
+              className="w-full font-medium"
               onClick={() => {
                 window.rudderanalytics?.track('click_continue_shopping');
               }}
@@ -444,6 +332,6 @@ export default function PriceResult({
           </Link>
         </div>
       </div>
-    </div >
+    </div>
   );
-};
+}

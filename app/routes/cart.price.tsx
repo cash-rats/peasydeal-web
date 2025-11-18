@@ -7,54 +7,35 @@ import {
   buildCartPriceJsonResponse,
 } from '~/routes/cart/cartPrice.server';
 
-type CartPriceRequestBody = {
-  cart: ShoppingCart;
-  promo_code?: string | null;
-};
-
 export const action = async ({ request }: ActionFunctionArgs) => {
-  if (request.method.toUpperCase() !== 'POST') {
-    return new Response('Method Not Allowed', {
-      status: httpStatus.METHOD_NOT_ALLOWED,
-    });
-  }
+  const formData = await request.formData();
+  const rawCart = formData.get('cart');
+  const rawPromoCode = formData.get('promo_code');
 
-  const contentType = request.headers.get('content-type') || '';
-
-  let body: CartPriceRequestBody | null = null;
-
-  try {
-    if (contentType.includes('application/json')) {
-      body = await request.json();
-    } else {
-      const form = await request.formData();
-      const cartPayload = form.get('cart');
-      const promoCode = form.get('promo_code');
-
-      if (typeof cartPayload === 'string') {
-        body = {
-          cart: JSON.parse(cartPayload) as ShoppingCart,
-          promo_code: typeof promoCode === 'string' ? promoCode : null,
-        };
-      }
-    }
-  } catch {
-    return new Response('Invalid cart payload', {
-      status: httpStatus.BAD_REQUEST,
-    });
-  }
-
-  if (!body || !body.cart || typeof body.cart !== 'object') {
+  if (!rawCart || typeof rawCart !== 'string') {
     return new Response('Missing or invalid cart payload', {
       status: httpStatus.BAD_REQUEST,
     });
   }
 
+  let cart: ShoppingCart;
+  try {
+    cart = JSON.parse(rawCart) as ShoppingCart;
+  } catch {
+    return new Response('Failed to parse cart payload', {
+      status: httpStatus.BAD_REQUEST,
+    });
+  }
+
+  const promoCode =
+    rawPromoCode === null || rawPromoCode === undefined
+      ? null
+      : String(rawPromoCode);
+
   try {
     const result = await calculateCartPriceAndSession({
-      request,
-      cart: body.cart,
-      promoCode: body.promo_code ?? null,
+      cart,
+      promoCode,
     });
 
     return buildCartPriceJsonResponse(result);
@@ -66,4 +47,3 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     });
   }
 };
-
