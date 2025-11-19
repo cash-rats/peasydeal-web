@@ -1,11 +1,13 @@
 import {
   type ChangeEvent,
+  type MouseEvent,
   useEffect,
   useState,
 } from 'react';
 import { Link } from 'react-router';
-import { BsBagCheck } from 'react-icons/bs';
+import { BsBagCheck, BsCheckCircleFill, BsExclamationCircleFill } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
+import { HiOutlineTicket } from 'react-icons/hi';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { cn } from '~/lib/utils';
@@ -15,7 +17,7 @@ import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../types';
 
 type PriceResultProps = {
-  priceInfo: PriceInfo;
+  priceInfo: PriceInfo | null;
   calculating?: boolean;
   appliedPromoCode?: string;
   onChangePromoCode?: (code: string) => void;
@@ -32,6 +34,26 @@ interface PromoCodeBoxProps {
   discountCodeValid: boolean;
   discountErrorMsgs: string[];
 }
+
+const defaultPriceInfo: PriceInfo = {
+  sub_total: 0,
+  tax_amount: 0,
+  shipping_fee: 0,
+  origin_shipping_fee: 0,
+  discount_amount: 0,
+  shipping_fee_discount: 0,
+  promo_code_discount: 0,
+  discount_reason: '',
+  total_amount: 0,
+  currency: '',
+  vat_included: false,
+  discount_code_valid: false,
+  products: [],
+  percentage_off_amount: 0,
+  discount_error_msgs: [],
+  discount_type: 'price_off',
+  applied_events: [],
+};
 
 const InlineSkeleton = ({
   width = 80,
@@ -52,6 +74,16 @@ const InlineSkeleton = ({
   />
 );
 
+const LoadingSpinner = ({ className }: { className?: string }) => (
+  <span
+    aria-hidden
+    className={cn(
+      'inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent',
+      className
+    )}
+  />
+);
+
 const PromoCodeBox = ({
   promoCode,
   handleChange,
@@ -64,16 +96,19 @@ const PromoCodeBox = ({
 }: PromoCodeBoxProps) => {
   return (
     <>
-      <h2 className="text-lg font-medium mb-2">
-        <span className="capitalize font-semibold">promo code</span> &nbsp;
-        <span className="font-semibold">(optional)</span>
-      </h2>
+      <div className="flex items-center gap-2 mb-3">
+        <HiOutlineTicket className="text-[#D02E7D] text-xl" />
+        <h2 className="text-lg font-semibold text-slate-800">
+          Promo Code <span className="text-slate-500 font-normal">(optional)</span>
+        </h2>
+      </div>
 
       <div className="w-full flex flex-col gap-2">
         <Input
-          placeholder="Promo code"
+          placeholder="Enter your promo code"
           value={promoCode}
-          className="h-12 text-base font-medium uppercase tracking-wide md:text-lg"
+          className="h-12 text-base font-medium uppercase tracking-wide md:text-lg border-slate-300 focus:border-[#D02E7D] focus:ring-[#D02E7D]/20"
+          disabled={calculating}
           onChange={handleChange}
           onKeyDown={(evt) => {
             if (evt.key === 'Enter' && promoCode.length > 2) {
@@ -83,7 +118,8 @@ const PromoCodeBox = ({
         />
 
         {error && (
-          <div className="mt-1 text-error-msg-red font-normal text-base">
+          <div className="mt-1 flex items-center gap-2 text-error-msg-red font-normal text-base">
+            <BsExclamationCircleFill className="text-sm flex-shrink-0" />
             {error}
           </div>
         )}
@@ -91,29 +127,38 @@ const PromoCodeBox = ({
         <div className="mt-3 flex justify-end">
           <Button
             variant="outline"
-            className="px-5 text-sm font-semibold tracking-wide"
+            className="px-5 text-sm font-semibold tracking-wide border-[#D02E7D] text-[#D02E7D] hover:bg-[#D02E7D]/10"
             size="lg"
             disabled={calculating}
             onClick={handleApplyPromoCode}
           >
-            {calculating ? 'Checking...' : 'Apply promo code'}
+            {calculating ? (
+              <>
+                <LoadingSpinner className="text-[#D02E7D]" />
+                Checking...
+              </>
+            ) : (
+              'Apply promo code'
+            )}
           </Button>
         </div>
 
         {discountCodeValid && discountErrorMsgs.length === 0 && (
-          <div className="mt-2 text-[#00af32] font-normal text-base">
-            The promo code{' '}
-            <span className="font-semibold">{appliedPromoCode}</span> was
-            successfully applied.
+          <div className="mt-2 flex items-center gap-2 text-[#00af32] font-normal text-base bg-green-50 px-3 py-2 rounded-md">
+            <BsCheckCircleFill className="text-sm flex-shrink-0" />
+            <span>
+              Promo code <span className="font-semibold">{appliedPromoCode}</span> applied successfully!
+            </span>
           </div>
         )}
 
         {discountErrorMsgs.length > 0 &&
           discountErrorMsgs.map((msg, idx) => (
             <div
-              className="mt-2 text-[#D02E7D] font-normal text-base"
+              className="mt-2 flex items-center gap-2 text-[#D02E7D] font-normal text-base bg-pink-50 px-3 py-2 rounded-md"
               key={`error-code-msg-${idx}`}
             >
+              <BsExclamationCircleFill className="text-sm flex-shrink-0" />
               {msg}
             </div>
           ))}
@@ -138,13 +183,13 @@ export default function PriceResult({
     tax_amount = 0,
     total_amount = 0,
     discount_amount = 0,
-    discount_type = '',
+    discount_type = 'price_off',
     discount_code_valid = false,
     applied_events = [],
     origin_shipping_fee = 0,
     promo_code_discount = 0,
     discount_error_msgs: discountErrorMsgs = [],
-  } = priceInfo || {};
+  } = priceInfo ?? defaultPriceInfo;
 
   useEffect(() => {
     if (appliedPromoCode && !discount_code_valid) {
@@ -179,6 +224,25 @@ export default function PriceResult({
   };
 
   const taxIncl = round10(sub_total + tax_amount + promo_code_discount, -2);
+  const handleCheckoutClick = (evt: MouseEvent<HTMLAnchorElement>) => {
+    if (calculating) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      return;
+    }
+
+    window.rudderanalytics?.track('click_continue_checkout');
+  };
+
+  const handleContinueShoppingClick = (evt: MouseEvent<HTMLAnchorElement>) => {
+    if (calculating) {
+      evt.preventDefault();
+      evt.stopPropagation();
+      return;
+    }
+
+    window.rudderanalytics?.track('click_continue_shopping');
+  };
 
   return (
     <div className="p-4 bg-white">
@@ -194,10 +258,15 @@ export default function PriceResult({
           discountCodeValid={!!(!error && appliedPromoCode && discount_code_valid)}
         />
 
-        <h2 className="text-xl font-bold pt-6 mb-4">Summary</h2>
+        <div className="pt-6 mb-4">
+          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+            Summary
+          </h2>
+          <div className="mt-2 h-[2px] w-12 bg-[#D02E7D] rounded-full" />
+        </div>
 
-        <div className="py-3">
-          <hr className="my-1 h-[1px] w-full bg-slate-50" />
+        <div className="py-2">
+          <hr className="h-[1px] w-full bg-slate-200" />
         </div>
 
         <ResultRow
@@ -239,23 +308,28 @@ export default function PriceResult({
           }
         />
 
-        <div className="py-3">
-          <hr className="my-1 h-[1px] w-full bg-slate-50" />
+        <div className="py-2">
+          <hr className="h-[1px] w-full bg-slate-200" />
         </div>
 
         {applied_events.length > 0 && (
           <>
             <div className="flex flex-col mb-4">
-              <h4 className="text-base font-bold mb-2 capitalize font-poppins">
-                discount applied!
-              </h4>
-              <div className="flex flex-wrap gap-2 mb-2">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#D02E7D]/10">
+                  <ImPriceTags className="text-sm text-[#D02E7D]" />
+                </div>
+                <h4 className="text-base font-bold text-slate-800 font-poppins">
+                  Discount Applied!
+                </h4>
+              </div>
+              <div className="flex flex-wrap gap-2 mb-3">
                 {applied_events.map((event, idx) => (
                   <span
                     key={`promotion-${idx}`}
-                    className="inline-flex items-center gap-1 rounded-full border border-slate-200 px-3 py-1 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-200"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-[#D02E7D]/30 bg-[#D02E7D]/5 px-3 py-1.5 text-sm font-semibold text-[#D02E7D]"
                   >
-                    <ImPriceTags className="text-base" />
+                    <ImPriceTags className="text-xs" />
                     {event}
                   </span>
                 ))}
@@ -288,50 +362,65 @@ export default function PriceResult({
               )}
             </div>
 
-            <div className="py-3">
-              <hr className="my-1 h-[1px] w-full bg-slate-50" />
+            <div className="py-2">
+              <hr className="h-[1px] w-full bg-slate-200" />
             </div>
           </>
         )}
 
-        <div className="mt-[0.7rem]">
+        <div className="mt-3 bg-slate-50 rounded-lg p-4 border border-slate-100">
           <ResultRow
-            label={<strong>Total to pay</strong>}
+            label={<span className="text-lg font-bold text-slate-800">Total to pay</span>}
             value={
-              <strong>
+              <span className="text-xl font-bold text-[#D02E7D]">
                 {calculating ? (
                   <InlineSkeleton width={100} height={30} />
                 ) : (
                   `£ ${total_amount}`
                 )}
-              </strong>
+              </span>
             }
           />
         </div>
 
         <div className="mt-[30px] flex flex-col justify-center gap-3">
-          <Link to="/checkout">
+          <Link
+            to="/checkout"
+            aria-disabled={calculating}
+            tabIndex={calculating ? -1 : undefined}
+            onClick={handleCheckoutClick}
+          >
             <Button
-              className="w-full border-2 border-yellow-500 bg-yellow-500 text-black font-bold shadow-none"
+              className="w-full font-bold text-lg shadow-sm bg-amber-400 text-slate-900 border border-amber-300 hover:bg-amber-300 hover:border-amber-200"
               size="lg"
-              onClick={() => {
-                window.rudderanalytics?.track('click_continue_checkout');
-              }}
+              disabled={calculating}
             >
-              <BsBagCheck fontSize={22} />
-              Continue to checkout
+              {calculating ? (
+                <>
+                  <LoadingSpinner className="text-slate-900" />
+                  Calculating...
+                </>
+              ) : (
+                <>
+                  <BsBagCheck fontSize={22} />
+                  Continue to checkout
+                </>
+              )}
             </Button>
           </Link>
 
-          <Link to="/">
+          <Link
+            to="/"
+            aria-disabled={calculating}
+            tabIndex={calculating ? -1 : undefined}
+            onClick={handleContinueShoppingClick}
+          >
             <Button
-              variant="ghost"
-              className="w-full font-medium"
-              onClick={() => {
-                window.rudderanalytics?.track('click_continue_shopping');
-              }}
+              className="w-full text-lg font-semibold border-[#D02E7D] text-white bg-[#D02E7D] hover:bg-[#B8256A] hover:border-[#B8256A] transition-colors"
+              size="lg"
+              disabled={calculating}
             >
-              Continue shopping
+              {calculating ? 'Calculating...' : 'Continue shopping'}
             </Button>
           </Link>
         </div>

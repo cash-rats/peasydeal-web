@@ -180,7 +180,6 @@ function Cart() {
     shoppingCart: state.cartItems,
   });
   const {
-    updatingQuantity,
     updateItemQuantityFetcher,
     handleOnClickQuantity,
   } = useUpdateItemQuantity({
@@ -192,6 +191,14 @@ function Cart() {
     dispatch,
     shoppingCart: state.cartItems,
   });
+
+  const isPriceCalculating = (
+    updateItemQuantityFetcher.state !== 'idle' ||
+    itemRemoveFetcher.state !== 'idle' ||
+    cartPriceFetcher.state !== 'idle' ||
+    applying ||
+    removing
+  );
 
   const freeshippingRequiredPrice = useMemo(() => {
     if (!state.priceInfo) return 0;
@@ -219,7 +226,7 @@ function Cart() {
 
   return (
     <>
-      <LoadingBackdrop open={removing || updatingQuantity || applying} />
+      <LoadingBackdrop open={isPriceCalculating} />
 
       <section className="
 				py-0 px-auto
@@ -317,15 +324,6 @@ function Cart() {
                     .map((item) => {
                       const variationUUID = item.variationUUID;
 
-                      const isCalculating = (
-                        updateItemQuantityFetcher.state !== 'idle' &&
-                        updateItemQuantityFetcher.formData?.get('variation_uuid') === variationUUID
-
-                      ) || (
-                          itemRemoveFetcher.state !== 'idle' &&
-                          itemRemoveFetcher.formData?.get('variation_uuid') === variationUUID
-                        );
-
                       return (
                         <CartItem
                           key={variationUUID}
@@ -342,7 +340,7 @@ function Cart() {
                             tagComboTags: item.tagComboTags,
                             discountReason: item.discountReason,
                           }}
-                          calculating={isCalculating}
+                          calculating={isPriceCalculating}
                           onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
                           onClickRemove={handleRemove}
                         />
@@ -353,20 +351,12 @@ function Cart() {
               </div>
 
               <div className='flex flex-col'>
-                {
-                  state.priceInfo && (
-                    <PriceResult
-                      onApplyPromoCode={handleClickApplyPromoCode}
-                      appliedPromoCode={state.promoCode}
-                      priceInfo={state.priceInfo}
-                      calculating={
-                        updateItemQuantityFetcher.state !== 'idle' ||
-                        itemRemoveFetcher.state !== 'idle' ||
-                        cartPriceFetcher.state !== 'idle'
-                      }
-                    />
-                  )
-                }
+                <PriceResult
+                  onApplyPromoCode={handleClickApplyPromoCode}
+                  appliedPromoCode={state.promoCode}
+                  priceInfo={state.priceInfo}
+                  calculating={isPriceCalculating}
+                />
                 <div className='bg-white p-4 mt-4 gap-4'>
                   <h3 className='text-center font-bold'>100% Secure Payment with</h3>
                   <PaymentMethods />
