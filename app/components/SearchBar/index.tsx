@@ -8,7 +8,7 @@ import type {
   TouchEvent,
 } from 'react';
 import { forwardRef, useRef, useState } from 'react';
-import ClearIcon from '@mui/icons-material/Clear';
+import { X } from 'lucide-react';
 import clsx from 'clsx';
 import type { LinksFunction } from 'react-router';
 
@@ -127,12 +127,14 @@ function SearchBar({
           <>
             {
               !isStringEmpty(content) && (
-                <span
-                  className="cursor-pointer p-[10px]"
+                <button
+                  type="button"
+                  aria-label="Clear search"
+                  className="flex items-center justify-center p-[10px] text-muted-foreground hover:text-foreground"
                   onClick={handleClear}
                 >
-                  <ClearIcon color='action' />
-                </span>
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
               )
             }
 
