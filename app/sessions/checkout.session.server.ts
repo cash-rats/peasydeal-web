@@ -1,6 +1,7 @@
 import type { Session } from 'react-router';
 
 import type { PriceInfo } from '~/shared/cart';
+import type { ShoppingCart } from '~/sessions/types';
 import { commitSession, destroySession, getSession } from './sessions';
 
 const CHECKOUT_SESSION_KEY = 'checkout:data';
@@ -8,6 +9,7 @@ const CHECKOUT_SESSION_KEY = 'checkout:data';
 export type CheckoutSessionData = {
   priceInfo: PriceInfo;
   promoCode: string | null;
+  cart: ShoppingCart;
 };
 
 export const getCheckoutSession = async (request: Request) => {

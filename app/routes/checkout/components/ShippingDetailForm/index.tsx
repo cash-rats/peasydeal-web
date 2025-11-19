@@ -58,7 +58,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
   };
 
   // Deprecate this method in favor of lookup address button.
-  const handleChangePostal = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChangePostal = (evt: ChangeEvent<HTMLInputElement>) => {
     dispatch({
       type: AddressOptionsActionTypes.on_change_postal,
       payload: evt.target.value,
@@ -82,45 +82,40 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             id="postalcode"
             label="postcode"
             name="postal"
-            variant="outlined"
-            aria-describedby="postalcode"
-            fullWidth
             value={values.postal}
             onSelect={handleSelectOption}
             onChange={handleChangePostal}
             preventSelectChangeValue
             disabled={loadAddrFetcher.state !== 'idle'}
-            InputProps={{
-              endAdornment: (
-                <>
-                  {
-                    loadAddrFetcher.state !== 'idle' && (
-                      <MoonLoader size={20} cssOverride={{ color: '#009378', backgroundColor: 'transparent' }} />
-                    )
-                  }
+            endAdornment={(
+              <>
+                {
+                  loadAddrFetcher.state !== 'idle' && (
+                    <MoonLoader size={20} cssOverride={{ color: '#009378', backgroundColor: 'transparent' }} />
+                  )
+                }
 
-                  {
-                    loadAddrFetcher.state === 'idle' &&
-                    Array.isArray(loadAddrFetcher.data) &&
-                    state.options.length === 0 && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <FiHelpCircle className="h-5 w-5 text-emerald-600" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            no address suggestions
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )
-                  }
-                </>
-              ),
-            }}
+                {
+                  loadAddrFetcher.state === 'idle' &&
+                  Array.isArray(loadAddrFetcher.data) &&
+                  state.options.length === 0 && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <FiHelpCircle className="h-5 w-5 text-emerald-600" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          no address suggestions
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )
+                }
+              </>
+            )}
           />
 
-          <div className="flex items-center m-0 py-2 text-sm font-light gap-2">
+          <div className="flex items-center m-0 py-2 text-sm text-white font-light gap-2">
             <div className="max-w-[13.5rem] ">
               <Button
                 type="button"

@@ -51,6 +51,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     setCheckoutSessionData(session, {
       priceInfo: result.priceInfo,
       promoCode,
+      cart: result.cart,
     });
 
     return redirect('/checkout', {

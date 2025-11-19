@@ -44,8 +44,7 @@ export const Basic = Template.bind({
   required: true,
   label: "address line 1",
   name: "address1",
-  variant: "outlined",
-  'aria-describedby': "address1",
-  fullWidth: true,
   value: "some taiwanese address",
+  "aria-describedby": "address1",
+  className: "w-full",
 });

@@ -1,7 +1,8 @@
-import type { ChangeEvent, MouseEvent } from 'react';
+import type { ChangeEvent, MouseEvent, ReactNode, InputHTMLAttributes } from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { TextField } from '@mui/material';
-import type { TextFieldProps } from '@mui/material';
+
+import { Input } from '~/components/ui/input';
+import { cn } from '~/lib/utils';
 
 export type Option<T> = {
   value: T;
@@ -12,16 +13,24 @@ type TextDropdownFieldProps<T> = {
   defaultOption?: Option<T> | null;
   options?: Option<T>[],
   preventSelectChangeValue?: boolean,
+  label?: string;
+  endAdornment?: ReactNode;
+  inputClassName?: string;
+  value?: string;
 
-  onChange?: (v: ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange?: (v: ChangeEvent<HTMLInputElement>) => void;
   onSelect?: (v: Option<T>) => void;
-} & TextFieldProps;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'defaultValue'>;
 
 // - [ ] enable dropdown when onfocus and options is not empty.
 export default function TextDropdownField<T>({
   options = [],
   defaultOption = null,
   preventSelectChangeValue = false,
+  label,
+  endAdornment,
+  inputClassName,
+  value: externalValue,
   onChange = () => { },
   onSelect = () => { },
   ...props
@@ -34,6 +43,11 @@ export default function TextDropdownField<T>({
     if (!defaultOption) return;
     setValue(defaultOption.label);
   }, [defaultOption]);
+
+  useEffect(() => {
+    if (externalValue === undefined) return;
+    setValue(externalValue);
+  }, [externalValue]);
 
   useEffect(() => {
     if (options.length <= 0) return;
@@ -65,14 +79,30 @@ export default function TextDropdownField<T>({
 
   return (
     <div className="relative">
-      <TextField
-        {...props}
-        inputRef={fieldRef}
-        value={value}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        onChange={handleChange}
-      />
+      {label && (
+        <label
+          htmlFor={props.id}
+          className="mb-1 block text-sm font-medium text-slate-700"
+        >
+          {label}
+        </label>
+      )}
+      <div className="relative">
+        <Input
+          {...props}
+          ref={fieldRef}
+          value={value}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onChange={handleChange}
+          className={cn('pr-10', inputClassName, props.className)}
+        />
+        {endAdornment && (
+          <div className="absolute inset-y-0 right-3 flex items-center">
+            {endAdornment}
+          </div>
+        )}
+      </div>
 
       {
         open && (
@@ -93,9 +123,6 @@ export default function TextDropdownField<T>({
                 font-normal hover:bg-gray-hover-bg-2
                 "
                     key={index}
-                    onMouseUp={(evt) => {
-                      console.log('trigger onMouseUp');
-                    }}
                     onMouseDown={(evt) => {
                       handleSelect(evt, option);
                     }}
