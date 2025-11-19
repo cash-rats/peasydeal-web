@@ -22,6 +22,7 @@ type PriceResultProps = {
   appliedPromoCode?: string;
   onChangePromoCode?: (code: string) => void;
   onApplyPromoCode?: (code: string) => void;
+  onCheckout?: () => void;
 };
 
 interface PromoCodeBoxProps {
@@ -173,6 +174,7 @@ export default function PriceResult({
   appliedPromoCode = '',
   onChangePromoCode = () => { },
   onApplyPromoCode = () => { },
+  onCheckout = () => { },
 }: PriceResultProps) {
   const [promoCode, setPromoCode] = useState('');
   const [error, setError] = useState('');
@@ -224,14 +226,13 @@ export default function PriceResult({
   };
 
   const taxIncl = round10(sub_total + tax_amount + promo_code_discount, -2);
-  const handleCheckoutClick = (evt: MouseEvent<HTMLAnchorElement>) => {
+  const handleCheckoutClick = () => {
     if (calculating) {
-      evt.preventDefault();
-      evt.stopPropagation();
       return;
     }
 
     window.rudderanalytics?.track('click_continue_checkout');
+    onCheckout?.();
   };
 
   const handleContinueShoppingClick = (evt: MouseEvent<HTMLAnchorElement>) => {
@@ -384,30 +385,24 @@ export default function PriceResult({
         </div>
 
         <div className="mt-[30px] flex flex-col justify-center gap-3">
-          <Link
-            to="/checkout"
-            aria-disabled={calculating}
-            tabIndex={calculating ? -1 : undefined}
+          <Button
+            className="w-full font-bold text-lg shadow-sm bg-amber-400 text-slate-900 border border-amber-300 hover:bg-amber-300 hover:border-amber-200"
+            size="lg"
+            disabled={calculating}
             onClick={handleCheckoutClick}
           >
-            <Button
-              className="w-full font-bold text-lg shadow-sm bg-amber-400 text-slate-900 border border-amber-300 hover:bg-amber-300 hover:border-amber-200"
-              size="lg"
-              disabled={calculating}
-            >
-              {calculating ? (
-                <>
-                  <LoadingSpinner className="text-slate-900" />
-                  Calculating...
-                </>
-              ) : (
-                <>
-                  <BsBagCheck fontSize={22} />
-                  Continue to checkout
-                </>
-              )}
-            </Button>
-          </Link>
+            {calculating ? (
+              <>
+                <LoadingSpinner className="text-slate-900" />
+                Calculating...
+              </>
+            ) : (
+              <>
+                <BsBagCheck fontSize={22} />
+                Continue to checkout
+              </>
+            )}
+          </Button>
 
           <Link
             to="/"

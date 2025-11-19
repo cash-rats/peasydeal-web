@@ -1,6 +1,8 @@
 import httpStatus from 'http-status-codes';
 import type { PriceInfo } from './types';
 
+export type { PriceInfo } from './types';
+
 import { envs } from '~/utils/env';
 import type { ShoppingCart, ShoppingCartItem } from '~/sessions/types';
 

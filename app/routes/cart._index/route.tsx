@@ -108,6 +108,7 @@ function Cart() {
   });
 
   const cartPriceFetcher = useFetcher<CartPriceResponse>();
+  const checkoutFetcher = useFetcher();
   const [hydrated, setHydrated] = useState(false);
   const { setCart } = useCartContext();
 
@@ -196,9 +197,25 @@ function Cart() {
     updateItemQuantityFetcher.state !== 'idle' ||
     itemRemoveFetcher.state !== 'idle' ||
     cartPriceFetcher.state !== 'idle' ||
+    checkoutFetcher.state !== 'idle' ||
     applying ||
     removing
   );
+
+  const handleCheckout = () => {
+    if (isPriceCalculating) return;
+
+    checkoutFetcher.submit(
+      {
+        cart: JSON.stringify(state.cartItems),
+        promo_code: state.promoCode || '',
+      },
+      {
+        method: 'post',
+        action: '/cart/checkout',
+      },
+    );
+  };
 
   const freeshippingRequiredPrice = useMemo(() => {
     if (!state.priceInfo) return 0;
@@ -356,6 +373,7 @@ function Cart() {
                   appliedPromoCode={state.promoCode}
                   priceInfo={state.priceInfo}
                   calculating={isPriceCalculating}
+                  onCheckout={handleCheckout}
                 />
                 <div className='bg-white p-4 mt-4 gap-4'>
                   <h3 className='text-center font-bold'>100% Secure Payment with</h3>
