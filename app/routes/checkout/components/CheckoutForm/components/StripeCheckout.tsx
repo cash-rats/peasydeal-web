@@ -39,19 +39,19 @@ function StripeCheckout({
             onReady={onReady}
           />
 
-          <div className="confirm-payment">
+          <div className="mt-5">
             <Button
               type="submit"
-              className="w-full"
+              className="w-full text-white"
               disabled={disabled || loading}
             >
               {loading ? 'Processing...' : 'CONFIRM'}
             </Button>
           </div>
 
-          <div className="policies-container">
+          <div className="mt-8">
             <div className="my-4 h-px w-full bg-slate-200" />
-            <div className="policies">
+            <div className="pt-8">
               <p className="promise">
                 <span>
                   <FiLock className="mr-1 inline-block h-4 w-4 text-emerald-600" />

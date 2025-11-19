@@ -83,15 +83,16 @@ const ContactInfoForm = ({ values, onChange = () => { } }: ContactInfoFormProps)
             <Input
               required
               id="contact_name"
-              name="contact_name"
-              placeholder="e.g. jack dorsey"
-              aria-describedby="shipping contact name"
-              value={formValues.contact_name}
-              onChange={handleChange}
-            />
-          </div>
-        )
-      }
+            name="contact_name"
+            placeholder="e.g. jack dorsey"
+            aria-describedby="shipping contact name"
+            value={formValues.contact_name}
+            onChange={handleChange}
+            className="h-auto bg-white py-3 text-sm"
+          />
+        </div>
+      )
+    }
 
       <div className="mb-4">
         <label
@@ -109,6 +110,7 @@ const ContactInfoForm = ({ values, onChange = () => { } }: ContactInfoFormProps)
           aria-describedby="my-helper-text"
           value={formValues.email}
           onChange={handleChange}
+          className="h-auto bg-white py-3 text-sm"
         />
       </div>
 

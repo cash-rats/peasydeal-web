@@ -83,6 +83,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             label="postcode"
             name="postal"
             value={values.postal}
+            inputClassName="h-auto bg-white py-3 text-sm"
             onSelect={handleSelectOption}
             onChange={handleChangePostal}
             preventSelectChangeValue
@@ -157,7 +158,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             id="firstname"
             name="firstname"
             aria-describedby="firstname"
-            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             defaultValue={values.firstname}
           />
         </div>
@@ -174,7 +175,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             id="lastname"
             name="lastname"
             aria-describedby="lastname"
-            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             defaultValue={values.lastname}
           />
         </div>
@@ -195,7 +196,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             id="address1"
             name="address1"
             aria-describedby="address1"
-            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             defaultValue={values.address1}
           />
         </div>
@@ -215,7 +216,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             id="address2"
             name="address2"
             aria-describedby="address2"
-            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             defaultValue={values.address2}
           />
         </div>
@@ -237,7 +238,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             id="city"
             name="city"
             aria-describedby="city"
-            className="block w-full rounded-md border border-input bg-white px-3 py-2 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             defaultValue={values.city}
           />
         </div>
