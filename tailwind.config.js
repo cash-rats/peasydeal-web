@@ -124,11 +124,11 @@ module.exports = {
   		},
   		boxShadow: {
   			dropdown: '0 0 3px 0 rgb(73 143 226 / 50%)',
-  			'searchbar-focus': '0 0 0 4px #cce9e4;',
-  			searchbox: 'rgb(0 0 0 / 12%) 1px 2px 8px 1px;',
-  			button: '0 2px 5px 0 rgb(0 0 0 / 50%);',
-  			'button-hover': '0 2px 10px 0 rgb(0 0 0 / 50%);',
-  			'price-panel': 'rgb(0 0 0 / 20%) 0px 0px 4px 1px, rgb(0 0 0 / 14%) 0px 0px 1px 0px, rgb(0 0 0 / 12%) 0px 2px 1px -1px;'
+  			'searchbar-focus': '0 0 0 4px #cce9e4',
+  			searchbox: 'rgb(0 0 0 / 12%) 1px 2px 8px 1px',
+  			button: '0 2px 5px 0 rgb(0 0 0 / 50%)',
+  			'button-hover': '0 2px 10px 0 rgb(0 0 0 / 50%)',
+  			'price-panel': 'rgb(0 0 0 / 20%) 0px 0px 4px 1px, rgb(0 0 0 / 14%) 0px 0px 1px 0px, rgb(0 0 0 / 12%) 0px 2px 1px -1px'
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
