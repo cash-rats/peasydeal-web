@@ -1,8 +1,15 @@
 import type { MouseEvent } from 'react';
 import { useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from 'react-router';
-import { redirect, useRouteError, isRouteErrorResponse } from 'react-router';
-import { Form, useLoaderData, useFetcher, useRouteLoaderData } from 'react-router';
+import {
+  redirect,
+  useRouteError,
+  isRouteErrorResponse,
+  Form,
+  useLoaderData,
+  useFetcher,
+  useRouteLoaderData,
+} from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import Header, { links as HeaderLinks } from '~/components/Header';
@@ -14,13 +21,13 @@ import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 
-import TrackingOrderInfo, { links as TrckingOrderInfoLinks } from './components/TrackingOrderInfo';
-import TrackingSearchBar from './components/TrackingSearchBar';
-import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from './components/TrackingOrderErrorPage';
-import TrackingOrderInitPage, { links as TrackingOrderInitPageLinks } from './components/TrackingOrderInitPage';
-import { trackOrder } from './api.server';
-import { normalizeTrackingOrder } from './utils';
-import type { TrackOrder } from './types';
+import TrackingOrderInfo, { links as TrckingOrderInfoLinks } from '~/routes/tracking/components/TrackingOrderInfo';
+import TrackingSearchBar from '~/routes/tracking/components/TrackingSearchBar';
+import TrackingOrderErrorPage, { links as TrackingOrderErrorPageLinks } from '~/routes/tracking/components/TrackingOrderErrorPage';
+import TrackingOrderInitPage, { links as TrackingOrderInitPageLinks } from '~/routes/tracking/components/TrackingOrderInitPage';
+import { trackOrder } from '~/routes/tracking/api.server';
+import { normalizeTrackingOrder } from '~/routes/tracking/utils';
+import type { TrackOrder } from '~/routes/tracking/types';
 import MobileSearchDialog from '~/components/MobileSearchDialog';
 
 type LoaderDataType = {
@@ -134,7 +141,7 @@ export function ErrorBoundary() {
       { query: newOrderNum },
       {
         method: 'post',
-        action: '/tracking?index',
+        action: '/tracking',
       },
     );
   }
@@ -143,7 +150,7 @@ export function ErrorBoundary() {
       { query: '' },
       {
         method: 'post',
-        action: '/tracking?index',
+        action: '/tracking',
       },
     );
   }
@@ -228,7 +235,7 @@ function TrackingOrder() {
       { query: newOrderNum },
       {
         method: 'post',
-        action: '/tracking?index',
+        action: '/tracking',
       },
     );
   }
@@ -238,7 +245,7 @@ function TrackingOrder() {
       { query: '' },
       {
         method: 'post',
-        action: '/tracking?index',
+        action: '/tracking',
       },
     );
   }
@@ -298,4 +305,3 @@ function TrackingOrder() {
 }
 
 export default TrackingOrder;
-
