@@ -1,4 +1,3 @@
-
 async function retrieveDataToUint8Array(asyncIterable: AsyncIterable<Uint8Array>) {
   const dataArray = [];
 

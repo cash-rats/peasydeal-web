@@ -17,7 +17,7 @@ import { RxCross1 } from 'react-icons/rx';
 
 import { envs } from '~/utils/env';
 
-import type { FormError } from '../types';
+import type { FormError } from '~/routes/api.product.review/type';
 import { maskName } from '../../../../../utils';
 import type { TrackOrderProduct } from '../../../../../types';
 

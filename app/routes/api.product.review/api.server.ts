@@ -25,8 +25,8 @@ const submitReview = async (params: SubmitReviewParams) => {
       rating: params.rating,
       links: params.image_links,
     }),
-    headers: { 'Content-Type': "application/json" },
-  })
+    headers: { 'Content-Type': 'application/json' },
+  });
 
   const respJSON = await resp.json();
 

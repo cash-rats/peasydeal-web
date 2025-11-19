@@ -1,7 +1,7 @@
 import type { ImmerReducer } from 'use-immer';
 import type { ImageListType } from 'react-images-uploading';
 
-import type { FormError } from './types';
+import type { FormError } from '~/routes/api.product.review/type';
 import type { LoadingState } from './types';
 
 interface StateShape {

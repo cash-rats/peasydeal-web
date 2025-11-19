@@ -1,12 +1,12 @@
 import { parseFormData } from '@remix-run/form-data-parser';
-import { data } from 'react-router';
+import { data, type ActionFunctionArgs } from 'react-router';
 
 import { composErrorResponse } from '~/utils/error';
+import { maskName } from '~/routes/tracking/utils';
 
-import type { FormError } from './types';
+import type { FormError } from './type';
 import { uploadHandler } from './storage.server';
 import { submitReview } from './api.server';
-import { maskName } from '../../../../utils'; // TODO: fix import path
 
 const validateReview = (review: string) => {
   if (review.length === 0) {
@@ -25,7 +25,7 @@ const validateName = (name: string) => {
   }
 
   return '';
-}
+};
 
 type ValidateFormParams = {
   review: string;
@@ -36,32 +36,23 @@ const validateForm = ({ review, name }: ValidateFormParams) => {
   const formError: FormError = {
     review: validateReview(review),
     name: validateName(name),
-  }
+  };
   return formError;
-}
+};
 
-// 1. Upload review images
-//     - allow only jpeg & png image upload
-// 2. Submit review info
-const reviewProduct = async (request: Request) => {
+const handleReviewSubmission = async (request: Request) => {
   try {
-    // upload files to gcs.
-    const formData = await parseFormData(
-      request,
-      uploadHandler,
-    );
+    const formData = await parseFormData(request, uploadHandler);
 
-    // submit reviews to server.
     const imgs = formData.getAll('images') as string[];
-    const name = formData.get('name') as string || '';
-    const review = formData.get('review') as string || '';
-    const rating = formData.get('rating') as string || '0';
+    const name = (formData.get('name') as string) || '';
+    const review = (formData.get('review') as string) || '';
+    const rating = (formData.get('rating') as string) || '0';
     const prodUUID = formData.get('product_uuid') as string;
     const orderUUID = formData.get('order_uuid') as string;
 
-    // validate form data
     const formError = validateForm({ review, name });
-    if (Object.values(formError).some(e => !!e)) {
+    if (Object.values(formError).some((err) => !!err)) {
       return data(composErrorResponse(formError, 'validation_error'));
     }
 
@@ -81,4 +72,12 @@ const reviewProduct = async (request: Request) => {
   }
 };
 
-export { reviewProduct, validateForm };
+export const action = async ({ request }: ActionFunctionArgs) => {
+  if (request.method !== 'POST') {
+    return data(composErrorResponse('Method Not Allowed'));
+  }
+
+  return handleReviewSubmission(request);
+};
+
+export { validateForm };

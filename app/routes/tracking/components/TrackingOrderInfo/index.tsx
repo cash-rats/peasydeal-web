@@ -76,7 +76,7 @@ function TrackingOrderIndex({
         },
         {
           method: 'post',
-          action: '/tracking/order-info',
+          action: '/api/tracking/order-info',
         },
       );
     }, [state.orderInfo]

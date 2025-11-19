@@ -1,23 +1,15 @@
 import { useEffect, useCallback } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-} from '@chakra-ui/react';
 import { useImmerReducer } from 'use-immer';
 import styles from '@smastrom/react-rating/style.css?url';
-import type { LinksFunction, ActionFunctionArgs } from 'react-router';
+import type { LinksFunction } from 'react-router';
 import type { ImageListType } from 'react-images-uploading';
 import { useFetcher } from 'react-router';
+import SimpleModal from '~/components/SimpleModal';
 
-import type { FormError } from './types';
+import type { FormError } from '~/routes/api.product.review/type';
 import ReviewForm from './components/ReviewForm';
 import ReviewSuccess, { links as ReviewSuccessStyles } from './components/ReviewSuccess';
-import { reviewProduct } from './actions';
 import reducer, {
   updateName,
   updateRating,
@@ -45,11 +37,6 @@ interface ReviewModalParams {
 
   onClose: (loadingState: LoadingState) => void;
 }
-
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  return reviewProduct(request);
-};
 
 /**
  * Product review modal. This modal should contain:
@@ -95,7 +82,6 @@ function ReviewModal({
     dispatch(updateReview(elm.target.value))
   const handleChangeImage = (
     imageList: ImageListType,
-    addUpdateIndex: number[] | undefined,
   ) => {
     dispatch(updateImages(imageList));
   }
@@ -123,7 +109,7 @@ function ReviewModal({
 
     reviewFetcher.submit(formData, {
       method: 'post',
-      action: '/tracking/components/TrackingOrderInfo/components/ReviewModal?index',
+      action: '/api/product/review',
       encType: 'multipart/form-data',
     });
   };
@@ -156,67 +142,61 @@ function ReviewModal({
   }, [reviewFetcher.type]);
 
   return (
-    <Modal
-      isOpen={isOpen}
+    <SimpleModal
+      open={isOpen}
       onClose={handleClose}
       size='xl'
-      isCentered
+      showCloseButton={false}
+      header={
+        <p className="font-poppins font-bold text-lg capitalize">
+          {
+            state.loadingState === 'init' ||
+              state.loadingState === 'failed'
+              ? 'leave a review'
+              : null
+          }
+        </p>
+      }
     >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          <ModalCloseButton />
-          <p className="font-poppins font-bold text-lg capitalize">
-            {
-              state.loadingState === 'init' ||
-                state.loadingState === 'failed'
-                ? 'leave a review'
-                : null
-            }
-          </p>
-        </ModalHeader>
-        {
-          reviewProduct
-            ? (
-              <ModalBody>
-                <div className="pb-4">
-                  {
-                    state.loadingState === 'init' ||
-                      state.loadingState === 'failed' ||
-                      state.loadingState === 'loading'
-                      ? (
-                        <ReviewForm
-                          error={state.error}
-                          formError={state.formError}
-                          rating={state.rating}
-                          reviewProduct={reviewProduct}
-                          images={state.images}
-                          name={state.name}
-                          isLoading={state.loadingState === 'loading'}
+      {
+        reviewProduct
+          ? (
+            <div className="pb-4">
+              {
+                state.loadingState === 'init' ||
+                  state.loadingState === 'failed' ||
+                  state.loadingState === 'loading'
+                  ? (
+                    <ReviewForm
+                      error={state.error}
+                      formError={state.formError}
+                      rating={state.rating}
+                      reviewProduct={reviewProduct}
+                      images={state.images}
+                      name={state.name}
+                      isLoading={state.loadingState === 'loading'}
 
-                          onClose={handleClose}
-                          onChangeName={handleChangeName}
-                          onChangeRating={handleChangeRating}
-                          onChangeReview={handleChangeReview}
-                          onChangeImage={handleChangeImage}
-                          onSubmit={handleSubmit}
-                        />
-                      )
-                      : null
-                  }
+                      onClose={handleClose}
+                      onChangeName={handleChangeName}
+                      onChangeRating={handleChangeRating}
+                      onChangeReview={handleChangeReview}
+                      onChangeImage={handleChangeImage}
+                      onSubmit={handleSubmit}
+                    />
+                  )
+                  : null
+              }
 
-                  {
-                    state.loadingState === 'done'
-                      ? <ReviewSuccess onClose={handleClose} />
-                      : null
-                  }
-                </div>
-              </ModalBody>
-            )
-            : null
-        }
-      </ModalContent>
-    </Modal>
+              {
+                state.loadingState === 'done'
+                  ? <ReviewSuccess onClose={handleClose} />
+                  : null
+              }
+            </div>
+          )
+          : null
+      }
+    </SimpleModal>
   );
 }
 
