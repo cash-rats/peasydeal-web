@@ -1,17 +1,17 @@
 import { useLoaderData } from "react-router";
 import type { LinksFunction, MetaFunction } from 'react-router';
 import httpStatus from 'http-status-codes';
-import { getStaticProps } from "./api";
-import BlogLayout from "./components/BlogLayout";
-import gradientBg from './images/gradient-bg.jpg';
-import blogOGImage from './images/peasydeal-blog-ogimage.jpg';
+import { getStaticProps } from '~/routes/blog/api';
+import BlogLayout from '~/routes/blog/components/BlogLayout';
+import gradientBg from '~/routes/blog/images/gradient-bg.jpg';
+import blogOGImage from '~/routes/blog/images/peasydeal-blog-ogimage.jpg';
 import {
   getBlogTitleText,
   getCanonicalDomain,
   getBlogFBSEO_V2,
 } from '~/utils/seo';
 
-import styles from './styles/blog.css?url';
+import styles from '~/routes/blog/styles/blog.css?url';
 
 export const links: LinksFunction = () => {
   return [
