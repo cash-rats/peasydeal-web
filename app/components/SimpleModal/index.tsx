@@ -162,6 +162,7 @@ export default function SimpleModal({
       role="dialog"
       className="fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300 w-screen h-screen"
       style={{
+        // overflowY: 'scroll',
         position: 'fixed',
         top: 0,
         left: 0,
@@ -178,18 +179,18 @@ export default function SimpleModal({
       <div
         ref={contentRef}
         className={[
-          'w-full rounded-2xl bg-white p-6 text-slate-900 shadow-2xl transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary relative',
+          `w-full rounded-2xl bg-white p-6
+          text-slate-900 shadow-2xl transition-all
+          duration-300 focus:outline-none focus-visible:ring-2
+          focus-visible:ring-primary relative`,
           sizeClassMap[size],
           contentClassName,
         ]
           .filter(Boolean)
           .join(' ')}
         style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
+          position: 'fixed',
           opacity: showContent ? 1 : 0,
-          transform: contentTransform,
         }}
         tabIndex={-1}
         onKeyDown={handleKeyDown}

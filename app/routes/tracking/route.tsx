@@ -181,13 +181,6 @@ export function ErrorBoundary() {
               onTouchEnd={handleOpen}
             />
           }
-          searchBar={
-            <SearchBar
-              onSearch={handleOnSearch}
-              onClear={handleOnClear}
-              placeholder='Search by order id'
-            />
-          }
         />
 
         <Form action='/tracking'>
@@ -272,13 +265,6 @@ function TrackingOrder() {
             placeholder='Search keywords...'
             onClick={handleOpen}
             onTouchEnd={handleOpen}
-          />
-        }
-        searchBar={
-          <SearchBar
-            onSearch={handleOnSearch}
-            onClear={handleOnClear}
-            placeholder='Search by order id'
           />
         }
       />

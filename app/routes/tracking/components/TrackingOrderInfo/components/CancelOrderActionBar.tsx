@@ -1,10 +1,7 @@
 import { useState } from 'react';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import clsx from 'clsx';
-import {
-  Dialog,
-  DialogContent,
-} from '~/components/ui/dialog';
+import SimpleModal from '~/components/SimpleModal';
 import { Button } from '~/components/ui/button';
 
 export interface CancelReason {
@@ -51,12 +48,14 @@ export default function CancelOrderActionBar({
   const handleConfirm = () => onConfirm(selected);
 
   return (
-    <div className="mt-4 overflow-y-scroll">
-      <Dialog
+    <div className="mt-4">
+      <SimpleModal
         open={openCancelModal}
-        onOpenChange={(isOpen) => (isOpen ? onOpen() : onClose())}
+        showCloseButton={false}
+        onClose={onClose}
+        closeOnOverlayClick
+        contentClassName="max-w-xl !p-0 shadow-lg"
       >
-        <DialogContent className="max-w-xl p-0 shadow-lg">
           <div className="p-4">
             <h2 className="font-poppins font-bold text-lg">
               Please tell us the reason for canceling? (Optional)
@@ -123,8 +122,7 @@ export default function CancelOrderActionBar({
               </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+      </SimpleModal>
 
       <div
         className="flex flex-row items-center justify-end"
