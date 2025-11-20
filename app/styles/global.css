@@ -81,6 +81,10 @@ body {
   background-color: #f6f6f6 !important;
 }
 
+[data-scroll-locked][data-scroll-locked] {
+  overflow: scroll !important;
+}
+
 /* Prevent Radix/react-remove-scroll from shifting the viewport when we already force scrollbars */
 body[data-scroll-locked] {
   margin-right: 0 !important;

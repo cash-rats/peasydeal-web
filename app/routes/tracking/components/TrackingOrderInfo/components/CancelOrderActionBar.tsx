@@ -1,18 +1,11 @@
 import { useState } from 'react';
-import {
-  Button,
-  Stack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalBody,
-  List,
-  ListItem,
-  ListIcon,
-  Textarea,
-} from '@chakra-ui/react';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import clsx from 'clsx';
+import {
+  Dialog,
+  DialogContent,
+} from '~/components/ui/dialog';
+import { Button } from '~/components/ui/button';
 
 export interface CancelReason {
   id?: number;
@@ -58,25 +51,22 @@ export default function CancelOrderActionBar({
   const handleConfirm = () => onConfirm(selected);
 
   return (
-    <div className="mt-4">
-      <Modal
-        onClose={onClose}
-        isOpen={openCancelModal}
-        size='xl'
-        isCentered
+    <div className="mt-4 overflow-y-scroll">
+      <Dialog
+        open={openCancelModal}
+        onOpenChange={(isOpen) => (isOpen ? onOpen() : onClose())}
       >
-        <ModalOverlay />
-        <ModalContent className="py-2">
-          <ModalBody className="pb-4">
+        <DialogContent className="max-w-xl p-0 shadow-lg">
+          <div className="p-4">
             <h2 className="font-poppins font-bold text-lg">
               Please tell us the reason for canceling? (Optional)
             </h2>
 
-            <List className="mt-4" spacing={1.5}>
+            <ul className="mt-4 space-y-1.5">
               {
                 cancelReasons.map((reason) => {
                   return (
-                    <ListItem
+                    <li
                       key={`cancel_reason_${reason.id}`}
                       onClick={() => setSelected(reason)}
                       className={clsx(
@@ -91,25 +81,25 @@ export default function CancelOrderActionBar({
                         {
                           "bg-gray-100 border-[#39CCCC] border py-[2px] px-[5px] rounded-md": selected?.id === reason.id,
                         }
-                      )}>
-                      <ListIcon
-                        className='text-[#4980c8]'
-                        as={AiOutlineExclamationCircle}
-                      />
+                      )}
+                    >
+                      <AiOutlineExclamationCircle className='text-[#4980c8] mr-2 text-lg' />
                       {reason.reason}
-                    </ListItem>
+                    </li>
                   )
                 })
               }
-            </List>
+            </ul>
 
             {
               selected?.id === cancelReasons.length - 1 && (
                 <div className="mt-4">
-                  <Textarea
+                  <textarea
+                    className="w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                     placeholder='Please tell us the reason for canceling'
-                    resize='none'
-                  />
+                    rows={4}
+                    maxLength={150}
+                  ></textarea>
 
                   <div className="flex justify-end mt-[2px]">
                     <small className="font-poppins text-sm">
@@ -121,37 +111,30 @@ export default function CancelOrderActionBar({
             }
 
             {/* Actions, Confirm Cancel */}
-            <Stack
-              className="mt-4"
-              direction='row'
-              alignItems='center'
-              justifyContent='end'
+            <div
+              className="mt-4 flex flex-row items-center justify-end"
             >
               <Button
-                colorScheme='gray'
+                variant='secondary'
                 onClick={handleConfirm}
-                isLoading={isLoading}
+                disabled={isLoading}
               >
                 Confirm
               </Button>
-            </Stack>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
-      <Stack
-        direction='row'
-        alignItems='center'
-        justify='right'
+      <div
+        className="flex flex-row items-center justify-end"
       >
         <Button
-          colorScheme='blue'
-          size='md'
           onClick={onOpen}
         >
           Cancel Order
         </Button>
-      </Stack>
+      </div>
     </div>
 
   );
