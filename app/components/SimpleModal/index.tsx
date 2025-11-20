@@ -162,8 +162,6 @@ export default function SimpleModal({
       role="dialog"
       className="fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300 w-screen h-screen"
       style={{
-        // overflowY: 'scroll',
-        position: 'fixed',
         top: 0,
         left: 0,
         zIndex: 999,
