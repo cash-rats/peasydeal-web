@@ -26,8 +26,6 @@ export const calculateCartPriceAndSession = async ({
     discount_code: promoCode ?? undefined,
   });
 
-  console.log('~~** priceInfo', priceInfo);
-
   return {
     cart: syncShoppingCartWithNewProductsInfo(cart, priceInfo.products),
     priceInfo,

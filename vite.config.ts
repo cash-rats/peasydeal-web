@@ -7,11 +7,6 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
   ],
-  resolve: {
-    alias: {
-      'react-select': 'react-select/dist/react-select.esm.js',
-    },
-  },
   build: {
     sourcemap: false
   },
