@@ -1,3 +1,7 @@
+// Vercel's npm sometimes omits Rollup's optional native bindings; forcing
+// the JavaScript fallback keeps builds stable across environments.
+process.env.ROLLUP_SKIP_NODEJS_NATIVE = process.env.ROLLUP_SKIP_NODEJS_NATIVE ?? '1';
+
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
