@@ -1,5 +1,5 @@
 import sharp from 'sharp';
-import type { TransformOptions } from 'react-router-image';
+import type { TransformOptions } from '~/lib/react-router-image';
 
 import { uploadToR2 } from './r2';
 import { MimeType, fileExtensionResolver } from './mimes';

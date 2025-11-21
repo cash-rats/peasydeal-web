@@ -24,7 +24,7 @@ at eval (/node_modules/remix-image/build/index.js:3:49)
 
 **New Strategy (superseded):** Build custom OptimizedImage component while preserving existing 415 lines of Sharp/R2 infrastructure.
 
-**Final Strategy (implemented):** Replace the unmaintained `remix-image` dependency with a minimal, workspace-local `react-router-image` package designed for React Router 7 and Node 22, while keeping the existing Sharp/R2/CDN loader flow intact.
+**Final Strategy (implemented):** Replace the unmaintained `remix-image` dependency with a minimal, vendored `react-router-image` module (now under `app/lib/react-router-image`) designed for React Router 7 and Node 22, while keeping the existing Sharp/R2/CDN loader flow intact.
 
 ---
 
@@ -122,7 +122,7 @@ The project has a catch-22 situation with `remix-image`:
 
 This was the initial mitigation plan but was not ultimately implemented because a better option emerged: forking `remix-image` into a local package tailored to React Router 7 + Node 22.
 
-### Final Decision: Fork remix-image → react-router-image (Workspace Package) ✅
+### Final Decision: Fork remix-image → Vendored react-router-image Module ✅
 
 **Why This is Now the Best Choice:**
 1. **Keep Infrastructure** – All 415 lines of Sharp/R2/CDN code and the existing `/remix-image` loader route stay intact.
@@ -132,7 +132,7 @@ This was the initial mitigation plan but was not ultimately implemented because 
    - Types: `LoaderConfig`, `TransformOptions`, `MimeType`, etc.
 3. **No Native SQLite** – We drop disk-based cache (`@next-boost/hybrid-disk-cache` / `better-sqlite3`), avoiding Node 22 native build issues.
 4. **React Router 7-native** – The new package uses the Fetch API (`Request`/`Response`) and integrates directly with React Router loaders.
-5. **Workspace-local** – Implemented under `packages/react-router-image` and consumed as a Yarn/NPM workspace (`react-router-image`), so deployments don’t depend on an external registry.
+5. **Repo-local** – Implemented under `app/lib/react-router-image` and imported via local aliases, so deployments don’t depend on building a workspace package.
 
 **Migration Strategy:**
 - Build custom `<OptimizedImage>` component (~200 lines)

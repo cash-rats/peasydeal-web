@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from 'react-router';
-import { imageLoader, MemoryCache } from 'react-router-image/server';
-import type { LoaderConfig } from 'react-router-image';
+import { imageLoader, MemoryCache } from '~/lib/react-router-image/server';
+import type { LoaderConfig } from '~/lib/react-router-image';
 import httpStatus from 'http-status-codes';
 
 import { envs } from '~/utils/env';

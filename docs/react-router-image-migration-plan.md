@@ -1,5 +1,7 @@
 # React Router Image Migration Plan (Node 22 + React Router 7)
 
+> **Update:** The fork described here now lives directly under `app/lib/react-router-image` instead of `packages/react-router-image` to simplify Vercel builds. The historical plan below is retained for context.
+
 This document describes how to replace the unmaintained `remix-image` dependency with a self-maintained fork under `packages/react-router-image`, tailored specifically for:
 
 - Node `>= 22.x` (no `better-sqlite3` / `@next-boost/hybrid-disk-cache`).
@@ -408,4 +410,3 @@ Once the core path is stable:
 - Tighten types around `MimeType` so that app-level enums and library-level enums are unified.
 
 This phased plan keeps the focus tightly on the **current `remix-image` route use case**, while modernizing the underlying library for **Node 22** and **React Router 7** and avoiding unnecessary maintenance surface.
-
