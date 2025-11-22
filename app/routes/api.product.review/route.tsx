@@ -2,7 +2,7 @@ import { parseFormData } from '@remix-run/form-data-parser';
 import { data, type ActionFunctionArgs } from 'react-router';
 
 import { composErrorResponse } from '~/utils/error';
-import { maskName } from '~/routes/tracking/utils';
+import { maskName } from '~/utils/mask';
 
 import type { FormError } from './type';
 import { uploadHandler } from './storage.server';

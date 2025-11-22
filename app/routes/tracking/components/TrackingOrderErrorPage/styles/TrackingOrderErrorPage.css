@@ -1,0 +1,32 @@
+.problematic-page {
+  max-height: 520px;
+  max-width: 1180px;
+  padding: 2rem 1rem 3rem 2rem;
+  margin: 0 auto;
+}
+@media (min-width: 599px) {
+  .problematic-page {
+    min-height: 520px;
+    margin: 0 auto;
+  }
+}
+.problematic-page .error-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-top: 2rem;
+  margin-bottom: 2.25rem;
+}
+.problematic-page .error-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  padding-top: 3rem;
+}
+.problematic-page .error-content img {
+  width: 10rem;
+  height: 10rem;
+}
+
+/*# sourceMappingURL=TrackingOrderErrorPage.css.map */
