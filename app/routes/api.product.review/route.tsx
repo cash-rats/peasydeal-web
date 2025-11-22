@@ -1,3 +1,4 @@
+import { parseFormData } from '@remix-run/form-data-parser';
 import { data, type ActionFunctionArgs } from 'react-router';
 
 import { composErrorResponse } from '~/utils/error';
@@ -39,16 +40,9 @@ const validateForm = ({ review, name }: ValidateFormParams) => {
   return formError;
 };
 
-type ParseFormDataFn = typeof import('@remix-run/form-data-parser')['parseFormData'];
-
-const parseMultipartFormData = async (request: Parameters<ParseFormDataFn>[0], handler: Parameters<ParseFormDataFn>[1]) => {
-  const { parseFormData } = await import('@remix-run/form-data-parser');
-  return parseFormData(request, handler);
-};
-
 const handleReviewSubmission = async (request: Request) => {
   try {
-    const formData = await parseMultipartFormData(request, uploadHandler);
+    const formData = await parseFormData(request, uploadHandler);
 
     const imgs = formData.getAll('images') as string[];
     const name = (formData.get('name') as string) || '';
