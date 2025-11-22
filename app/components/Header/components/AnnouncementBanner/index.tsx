@@ -1,5 +1,5 @@
-import IconButton from '@mui/material/IconButton';
 import { AiOutlineClose } from 'react-icons/ai';
+import { Button } from '~/components/ui/button';
 
 interface AnnouncementBannerProps {
   open?: boolean;
@@ -31,9 +31,16 @@ function AnnouncementBanner({ open = true, onClose = () => {}, hideCloseButton =
           {
             hideCloseButton ? null : (
               <div className="absolute right-1">
-                <IconButton onClick={handleClose}>
-                  <AiOutlineClose fontSize={20} color='#fff' />
-                </IconButton>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Close announcement banner"
+                  className="text-white hover:bg-white/10"
+                  onClick={handleClose}
+                >
+                  <AiOutlineClose className="h-5 w-5" aria-hidden />
+                </Button>
               </div>
             )
           }
