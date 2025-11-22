@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FaShippingFast } from 'react-icons/fa';
-import parseISO from 'date-fns/parseISO';
-import format from 'date-fns/format';
-import add from 'date-fns/add';
+import parseISO from 'date-fns/parseISO/index.js';
+import format from 'date-fns/format/index.js';
+import add from 'date-fns/add/index.js';
 import type { LinksFunction } from 'react-router';
 import { useFetcher, useRevalidator } from 'react-router';
 import { useImmerReducer } from 'use-immer';
