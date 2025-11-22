@@ -1,93 +1,8 @@
-import type { ReactNode, CSSProperties, MouseEvent } from 'react';
-import LoadingButton from '@mui/lab/LoadingButton';
-import type { LoadingButtonProps } from '@mui/lab/LoadingButton';
-import { styled } from '@mui/material/styles';
-import MoonLoader from 'react-spinners/MoonLoader';
+import type { ReactNode } from 'react';
+import { Loader2 } from 'lucide-react';
 
-const BasicRoundButton = styled(LoadingButton)({
-  padding: '0.875rem 2rem',
-  borderRadius: '24px',
-  textTransform: 'none',
-  lineHeight: '1rem',
-});
-
-const AddToCartButton = styled(BasicRoundButton)({
-  color: 'white',
-  fontSize: '1.1rem',
-  fontWeight: '700',
-  border: 'solid 1px #009378',
-  backgroundColor: '#009378',
-  boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
-  '&:hover': {
-    backgroundColor: 'rgba(0, 147, 120, 0.8)',
-    border: 'solid 1px #009378',
-  },
-}) as typeof LoadingButton;
-
-const BuyNowButton = styled(BasicRoundButton)({
-  color: 'white',
-  fontSize: '1.1rem',
-  fontWeight: '700',
-  border: 'solid 1px #D32D7D',
-  backgroundColor: '#D32D7D',
-  boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
-  '&:hover': {
-    backgroundColor: 'rgba(207, 112, 53, 0.8)',
-    border: 'solid 1px #D32D7D',
-  },
-}) as typeof LoadingButton;
-
-const ViewButton = styled(BasicRoundButton)({
-  backgroundColor: '#D32D7D',
-  border: 'solid 1px #D32D7D',
-  color: 'white',
-  fontSize: '1.2rem',
-  fontWeight: '700',
-  '&:hover': {
-    backgroundColor: 'rgba(211, 45, 125, 0.8)',
-    border: 'solid 1px rgba(211, 45, 125, 0.8)',
-  },
-}) as typeof LoadingButton;
-
-const GreenButton = styled(BasicRoundButton)({
-  backgroundColor: '#50B04C',
-  border: 'solid 1px #50B04C',
-  color: 'white',
-  fontSize: '1.2rem',
-  fontWeight: '700',
-  boxSizing: 'border-box',
-  boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
-  '&:hover': {
-    backgroundColor: '#00c441',
-    border: 'solid 1px #00c441',
-  },
-}) as typeof LoadingButton;
-
-const CheckoutButton = styled(BasicRoundButton)({
-  backgroundColor: '#ffa33a',
-  borderColor: '#c60',
-  color: 'black',
-  boxShadow: '0px 1px 5px 0px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 3px 1px -2px rgb(0 0 0 / 12%)',
-  fontSize: '1rem',
-  fontWeight: '500',
-  '&:hover': {
-    backgroundColor: '#F39834',
-    color: '#222',
-    borderColor: '#c60',
-  },
-}) as typeof LoadingButton;
-
-const BlackContainedButton = styled(BasicRoundButton)({
-  backgroundColor: '#101010',
-  color: 'white',
-  fontSize: '1rem',
-  textTransform: 'uppercase',
-  '&:hover': {
-    backgroundColor: 'white',
-    color: '#101010',
-    borderColor: '#101010',
-  },
-}) as typeof LoadingButton;
+import { Button, type ButtonProps } from '~/components/ui/button';
+import { cn } from '~/lib/utils';
 
 type ColorScheme =
   | 'buynow'
@@ -97,66 +12,50 @@ type ColorScheme =
   | 'blackcontained'
   | 'green';
 
-interface RoundButtonProps extends LoadingButtonProps {
-  children?: ReactNode;
-  style?: CSSProperties;
+interface RoundButtonProps extends ButtonProps {
   colorScheme?: ColorScheme;
-  onClick?: (evt: MouseEvent<HTMLButtonElement>) => void;
   loading?: boolean;
   leftIcon?: ReactNode;
 }
 
-type ColorSchemeButtonMap = {
-  [key in ColorScheme]: typeof LoadingButton;
-};
+const baseClasses =
+  'w-full rounded-full px-6 py-3 text-base font-semibold shadow transition-colors disabled:opacity-70';
 
-const colorSchemeButton: ColorSchemeButtonMap = {
-  'addtocart': AddToCartButton,
-  'buynow': BuyNowButton,
-  'cerise': ViewButton,
-  'checkout': CheckoutButton,
-  'blackcontained': BlackContainedButton,
-  'green': GreenButton,
+const schemeClasses: Record<ColorScheme, string> = {
+  addtocart: 'bg-[#009378] text-white hover:bg-[#018268]',
+  buynow: 'bg-[#D32D7D] text-white hover:bg-[#b32065]',
+  cerise: 'bg-[#D32D7D] text-white hover:bg-[#b32065]',
+  checkout: 'bg-[#ffa33a] text-[#1a1a1a] hover:bg-[#f19028]',
+  blackcontained: 'bg-[#101010] text-white hover:bg-white hover:text-[#101010] border border-[#101010]',
+  green: 'bg-[#50B04C] text-white hover:bg-[#00c441]',
 };
 
 function RoundButton({
-  size,
-  style,
   colorScheme = 'addtocart',
-  onClick = () => { },
   loading = false,
-  children,
   leftIcon,
-  type,
-  ...args
+  className,
+  children,
+  ...props
 }: RoundButtonProps) {
-  const CustomButton = colorSchemeButton[colorScheme];
   return (
-    <CustomButton
-      type={type}
-      style={style}
-      size={size}
-      fullWidth
-      variant='outlined'
-      onClick={onClick}
-      loading={loading}
-      loadingIndicator={
-        <MoonLoader
-          color='#fff'
-          size={20}
-          speedMultiplier={0.6}
-        />
-      }
-      {...args}
+    <Button
+      className={cn(baseClasses, schemeClasses[colorScheme], className)}
+      disabled={loading || props.disabled}
+      {...props}
     >
-      <div className="flex items-center gap-[0.45rem]">
-        {leftIcon && (<span>{leftIcon}</span>)}
-        {children}
+      <div className="flex items-center gap-2">
+        {loading ? (
+          <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+        ) : (
+          leftIcon && <span>{leftIcon}</span>
+        )}
+        <span className="uppercase tracking-wide">{children}</span>
       </div>
-    </CustomButton>
+    </Button>
   );
-};
+}
 
 RoundButton.displayName = 'RoundButton';
 
-export default RoundButton
+export default RoundButton;
