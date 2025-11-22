@@ -3,6 +3,8 @@ import type { LinksFunction, MetaFunction } from 'react-router';
 import {
   Links,
   Meta,
+  Outlet,
+  Scripts,
   ScrollRestoration,
   isRouteErrorResponse,
   useRouteError,
@@ -30,6 +32,7 @@ function Document({ children }: DocumentProps) {
       <body>
         {children}
         <ScrollRestoration />
+        <Scripts />
       </body>
     </html>
   );
