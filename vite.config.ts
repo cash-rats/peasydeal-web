@@ -11,12 +11,8 @@ export default defineConfig({
     reactRouter(),
     tsconfigPaths(),
   ],
-  build: {
-    sourcemap: true
-  },
-  css: {
-    devSourcemap: false
-  },
+  build: { sourcemap: false },
+  css: { devSourcemap: false },
   server: {
     port: 5173,
   },
