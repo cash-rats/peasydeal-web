@@ -5,6 +5,10 @@ process.env.ROLLUP_SKIP_NODEJS_NATIVE = process.env.ROLLUP_SKIP_NODEJS_NATIVE ??
 import { reactRouter } from "@react-router/dev/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [
@@ -20,11 +24,20 @@ export default defineConfig({
   server: {
     port: 5173,
   },
+  resolve: {
+    alias: [
+      { find: /^@mui\/utils\/deepmerge$/, replacement: path.resolve(__dirname, 'app/lib/muiDeepmerge.ts') },
+      { find: /^@mui\/system\/createTheme$/, replacement: path.resolve(__dirname, 'app/lib/muiSystemCreateTheme.ts') },
+      { find: /^@mui\/system\/styleFunctionSx$/, replacement: path.resolve(__dirname, 'app/lib/muiStyleFunctionSx.ts') },
+      { find: /^@mui\/system\/createStyled$/, replacement: path.resolve(__dirname, 'app/lib/muiCreateStyled.ts') },
+    ],
+  },
   optimizeDeps: {
     include: [
       '@emotion/react',
       '@emotion/styled',
       '@mui/material',
+      '@mui/utils',
       '@algolia/autocomplete-core',
       '@algolia/autocomplete-js',
       '@algolia/autocomplete-plugin-query-suggestions',
@@ -44,6 +57,7 @@ export default defineConfig({
       '@emotion/sheet',
       '@emotion/utils',
       '@mui/material',
+      '@mui/utils',
       '@chakra-ui/react',
       '@algolia/autocomplete-js',
       '@algolia/autocomplete-core',
