@@ -1,6 +1,7 @@
 {
   "name": "peasydeal_web",
   "private": true,
+  "type": "module",
   "workspaces": [
     "app/*",
     "packages/*"

@@ -12,7 +12,7 @@ export default defineConfig({
     tsconfigPaths(),
   ],
   build: {
-    sourcemap: false
+    sourcemap: true
   },
   css: {
     devSourcemap: false

@@ -4,5 +4,5 @@ import type { Config } from '@react-router/dev/config';
 export default {
   ssr: true,
   presets: [vercelPreset()],
-  // serverModuleFormat: 'cjs',
+  serverModuleFormat: 'cjs',
 } satisfies Config;
