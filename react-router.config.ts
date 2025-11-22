@@ -4,6 +4,7 @@ import type { Config } from '@react-router/dev/config';
 export default {
   ssr: true,
   presets: [vercelPreset()],
+  serverModuleFormat: 'cjs',
   serverDependenciesToBundle: [
     'yet-another-react-lightbox',
     'yet-another-react-lightbox/plugins/thumbnails'
