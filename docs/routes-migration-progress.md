@@ -4,7 +4,7 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 
 ## Checklist
 - [x] `$.tsx`
-- [ ] `_index`
+- [x] `_index`
 - [ ] `api.product.review`
 - [ ] `api.tracking.order-info`
 - [ ] `blog`
@@ -37,3 +37,11 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [ ] `subscribe`
 - [ ] `tracking`
 - [ ] `unsubscribe`
+
+## Findings
+- Core dependencies blocking ESM migration for `app/routes/$.tsx` live inside `Header` and `Footer`:
+  - `app/components/Header/components/AnnouncementBanner/index.tsx` uses `@mui/material/IconButton`.
+  - `app/components/Footer/components/ProductsSection/index.tsx` uses `@mui/material/Button`.
+  - `app/components/Footer/components/FooterContent/index.tsx` uses `@mui/material/TextField` and `@mui/icons-material/Email`.
+  - `app/components/Footer/components/EmailSubscribe/index.tsx` renders `EmailSubscribeModal`, which in turn depends on `@chakra-ui/react`.
+  - The Chakra modal itself is defined in `app/components/EmailSubscribeModal/index.tsx`.
