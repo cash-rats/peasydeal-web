@@ -1,4 +1,5 @@
 import httpStatus from 'http-status-codes';
+import { data } from 'react-router';
 
 import { getCategoryProducts, addCategoryProducts } from '~/sessions/productlist.session';
 import { commitSession } from '~/sessions/redis_session.server';
@@ -40,7 +41,7 @@ export const loadProducts = async ({ request, perpage, promoName }: LoadProducts
         page: 1,
       });
 
-      return Response.json<LoadProductsDataType>({
+      return data<LoadProductsDataType>({
         ...response,
         products: items,
         total,
@@ -58,7 +59,7 @@ export const loadProducts = async ({ request, perpage, promoName }: LoadProducts
 
     const session = await addCategoryProducts(request, [], promoName, 1);
 
-    return Response.json<LoadProductsDataType>(
+    return data<LoadProductsDataType>(
       {
         ...response,
         products,
@@ -99,7 +100,7 @@ export const loadMoreProducts = async ({ request, promoName, page, perpage }: Lo
 
     const session = await addCategoryProducts(request, [], promoName, page);
 
-    return Response.json<LoadMoreDataType>(
+    return data<LoadMoreDataType>(
       {
         products,
         total,

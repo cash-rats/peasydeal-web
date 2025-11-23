@@ -12,7 +12,7 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [ ] `cart`
 - [ ] `cart._index`
 - [ ] `cart.checkout.tsx`
-- [ ] `cart.components.horizontal-products.tsx`
+- [x] `cart.components.horizontal-products.tsx`
 - [ ] `cart.price.tsx`
 - [ ] `checkout`
 - [ ] `checkout._index`
