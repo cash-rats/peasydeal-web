@@ -32,7 +32,7 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [ ] `promotion`
 - [ ] `promotion.$promotion`
 - [x] `remix-image`
-- [ ] `search`
+- [x] `search`
 - [ ] `styles`
 - [ ] `subscribe`
 - [ ] `tracking`
