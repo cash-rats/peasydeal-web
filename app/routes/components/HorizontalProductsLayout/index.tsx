@@ -1,23 +1,13 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { VscChevronLeft, VscChevronRight, VscArrowRight } from 'react-icons/vsc';
-import {
-  type LinksFunction,
-  useFetcher,
-  Link,
-} from 'react-router';
+import { type LinksFunction, useFetcher, Link } from 'react-router';
 
 import { composeProductDetailURL } from '~/utils';
 import type { Product } from '~/shared/types';
 import { RegularCardWithActionButton } from '~/components/ProductCard';
 import { Button } from '~/components/ui/button';
 
-import styles from './styles/HorizontalProductsLayout.css?url';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
+export const links: LinksFunction = () => [];
 
 type ActionType = {
   recProds: Product[];
