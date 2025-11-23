@@ -31,7 +31,7 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [ ] `product.components.recommended-products.ts`
 - [ ] `promotion`
 - [ ] `promotion.$promotion`
-- [ ] `remix-image`
+- [x] `remix-image`
 - [ ] `search`
 - [ ] `styles`
 - [ ] `subscribe`
