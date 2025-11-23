@@ -26,8 +26,8 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [ ] `hooks`
 - [ ] `payment`
 - [ ] `payment.tsx`
-- [ ] `product`
-- [ ] `product.$prodId`
+- [x] `product`
+- [x] `product.$prodId`
 - [ ] `product.components.recommended-products.ts`
 - [ ] `promotion`
 - [ ] `promotion.$promotion`
