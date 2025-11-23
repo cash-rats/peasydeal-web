@@ -147,14 +147,13 @@ function Search() {
 
   const handleLoadMore = () => {
     const nextPage = currPageRef.current + 1;
-    loadMoreFetcher.submit(
-      {
-        action_type: 'search_more',
-        query: loaderData.query,
-        page: nextPage.toString(),
-      },
-      { action: '/search?index' },
-    );
+    const params = new URLSearchParams({
+      action_type: 'search_more',
+      query: loaderData.query,
+      page: nextPage.toString(),
+    });
+
+    loadMoreFetcher.load(`/search?${params.toString()}`);
   };
 
   return (

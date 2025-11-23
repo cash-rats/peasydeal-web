@@ -177,14 +177,13 @@ function Collection() {
     const categoryName = getCategoryFromWindowPath(window);
     const nextPage = currPage.current + 1;
 
-    loadmoreFetcher.submit(
-      {
-        action_type: 'loadmore',
-        page: nextPage.toString(),
-        per_page: PAGE_LIMIT.toString(),
-      },
-      { action: `/collection/${decodeURI(categoryName)}?index` }
-    );
+    const params = new URLSearchParams({
+      action_type: 'loadmore',
+      page: nextPage.toString(),
+      per_page: PAGE_LIMIT.toString(),
+    });
+
+    loadmoreFetcher.load(`/collection/${decodeURI(categoryName)}?${params.toString()}`);
   };
 
   const parentCategories = category?.parents ?? [];
