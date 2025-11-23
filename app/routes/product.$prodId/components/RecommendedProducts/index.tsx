@@ -13,7 +13,7 @@ import { ProductPromotionRow } from '~/components/ProductPromotionRow';
 
 import bg from './images/product-sale-section.jpeg';
 
-const RECOMMENDED_PRODUCTS_ENDPOINT = '/product/components/recommended-products';
+const RECOMMENDED_PRODUCTS_ENDPOINT = '/api/products/recommendations';
 
 export const links: LinksFunction = () => {
   return [
