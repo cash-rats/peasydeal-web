@@ -6,7 +6,7 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [x] `$.tsx`
 - [x] `_index`
 - [x] `api.product.review`
-- [ ] `api.tracking.order-info`
+- [x] `api.tracking.order-info`
 - [ ] `blog`
 - [ ] `blog._index`
 - [ ] `cart`
