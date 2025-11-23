@@ -17,8 +17,8 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [ ] `checkout`
 - [ ] `checkout._index`
 - [ ] `checkout.fetch-address-options-by-postal`
-- [ ] `collection`
-- [ ] `collection.$collection`
+- [x] `collection`
+- [x] `collection.$collection`
 - [ ] `components`
 - [ ] `confirm-subscription`
 - [ ] `confirm-subscription.tsx`
