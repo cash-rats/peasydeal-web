@@ -139,7 +139,7 @@ function Cart() {
         },
         {
           method: 'post',
-          action: '/cart/price',
+          action: '/api/cart/price',
         },
       );
 

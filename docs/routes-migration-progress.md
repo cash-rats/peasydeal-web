@@ -11,9 +11,9 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [ ] `blog._index`
 - [x] `cart`
 - [x] `cart._index`
-- [ ] `cart.checkout.tsx`
+- [x] `cart.checkout.tsx`
 - [x] `cart.components.horizontal-products.tsx`
-- [ ] `cart.price.tsx`
+- [x] `cart.price.tsx`
 - [ ] `checkout`
 - [ ] `checkout._index`
 - [ ] `checkout.fetch-address-options-by-postal`
