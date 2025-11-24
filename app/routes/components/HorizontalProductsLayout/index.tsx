@@ -26,11 +26,15 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scroll = useCallback((toRight: boolean) => {
-    if (!window || !containerRef.current || !containerRef.current) return;
-    const offset = containerRef.current.clientWidth - 100;
+    const container = containerRef.current;
+    if (!container) return;
+    const offset = container.clientWidth - 100;
 
-    containerRef!.current.scrollLeft += (toRight ? offset : -offset);
-  }, [containerRef]);
+    container.scrollBy({
+      left: toRight ? offset : -offset,
+      behavior: 'smooth',
+    });
+  }, []);
 
   useEffect(() => {
     // TODO: should use get instead of post
