@@ -3,7 +3,7 @@ import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from 'react-rout
 import { useLoaderData } from 'react-router';
 
 import httpStatus from 'http-status-codes';
-import HorizontalProductsLayout, { links as HorizontalProductsLayoutLinks } from '~/routes/components/HorizontalProductsLayout';
+import HorizontalProductsLayout from '~/routes/components/HorizontalProductsLayout';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import {
@@ -24,7 +24,6 @@ import { useCartCount } from '~/routes/hooks';
 
 export const links: LinksFunction = () => [
   ...CatalogLayoutLinks(),
-  ...HorizontalProductsLayoutLinks(),
 ];
 
 type LoaderType = {

@@ -1,13 +1,11 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { VscChevronLeft, VscChevronRight, VscArrowRight } from 'react-icons/vsc';
-import { type LinksFunction, useFetcher, Link } from 'react-router';
+import { useFetcher, Link } from 'react-router';
 
 import { composeProductDetailURL } from '~/utils';
 import type { Product } from '~/shared/types';
 import { RegularCardWithActionButton } from '~/components/ProductCard';
 import { Button } from '~/components/ui/button';
-
-export const links: LinksFunction = () => [];
 
 type ActionType = {
   recProds: Product[];
@@ -115,16 +113,16 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
 
         <div
           ref={containerRef}
-          className="flex overflow-x-scroll pt-5 pb-10 hide-scroll-bar"
-          style={{
-            scrollBehavior: 'smooth',
-          }}
+          className="flex overflow-x-scroll pt-5 pb-10 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           <div className="flex flex-nowrap">
             {
               recProds?.map((prod: Product, index: number) => {
                 return (
-                  <div className="inline-block px-3 min-w-[250px]" key={`${prod.productUUID}_${index}`}>
+                  <div
+                    className="inline-block px-3 min-w-[320px] sm:min-w-[340px] md:min-w-[360px]"
+                    key={`${prod.productUUID}_${index}`}
+                  >
                     <RegularCardWithActionButton
                       key={`horzontal-prod-${index}`}
                       product={prod}
