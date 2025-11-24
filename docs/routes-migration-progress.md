@@ -9,8 +9,8 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [x] `api.tracking.order-info`
 - [ ] `blog`
 - [ ] `blog._index`
-- [ ] `cart`
-- [ ] `cart._index`
+- [x] `cart`
+- [x] `cart._index`
 - [ ] `cart.checkout.tsx`
 - [x] `cart.components.horizontal-products.tsx`
 - [ ] `cart.price.tsx`
