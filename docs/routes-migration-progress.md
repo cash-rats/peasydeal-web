@@ -10,7 +10,7 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [ ] `blog`
 - [ ] `blog._index`
 - [x] `cart`
-- [x] `cart._index`
+- [ ] `cart._index`
 - [x] `cart.checkout.tsx`
 - [x] `cart.components.horizontal-products.tsx`
 - [x] `cart.price.tsx`
@@ -33,7 +33,7 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [x] `promotion.$promotion`
 - [x] `remix-image`
 - [x] `search`
-- [ ] `styles`
+- [x] `styles`
 - [ ] `subscribe`
 - [ ] `tracking`
 - [ ] `unsubscribe`

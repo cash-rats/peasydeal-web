@@ -1,0 +1,128 @@
+.cart-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+}
+@media (min-width: 768px) {
+  .cart-item {
+    flex-direction: row;
+  }
+}
+.cart-item .top {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .cart-item .top {
+    justify-content: flex-start;
+    gap: 2.25rem;
+  }
+}
+.cart-item .top .product-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cart-item .top .product-image img {
+  height: 120px;
+  width: 120px;
+}
+.cart-item .top .product-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 330px;
+  height: 100%;
+}
+.cart-item .top .product-description .product-title {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+}
+.cart-item .top .product-description .product-description-text {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: rgb(130, 129, 131);
+  width: 100%;
+  margin: 5px 20px 5px 0;
+  line-height: 1.4em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+}
+.cart-item .top .product-description .product-price-mobile {
+  display: flex;
+  align-items: baseline;
+  color: #D02E7D;
+  font-size: 18px;
+  font-weight: bold;
+}
+@media (min-width: 768px) {
+  .cart-item .top .product-description .product-price-mobile {
+    display: none;
+  }
+}
+@media (min-width: 768px) {
+  .cart-item .top {
+    width: 57%;
+    flex-direction: row;
+  }
+}
+.cart-item .bottom {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+.cart-item .bottom .product-price {
+  width: 70px;
+  font-weight: 700;
+  display: none;
+}
+@media (min-width: 768px) {
+  .cart-item .bottom .product-price {
+    display: block;
+  }
+}
+.cart-item .bottom .product-total {
+  display: none;
+}
+@media (min-width: 768px) {
+  .cart-item .bottom {
+    width: 43%;
+  }
+  .cart-item .bottom .product-price {
+    width: 28%;
+  }
+  .cart-item .bottom .product-total {
+    display: flex;
+    width: 40%;
+    font-weight: 700;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.CartItem__retail-price {
+  color: #888;
+  font-size: 1rem;
+  margin-left: 0.7rem;
+  text-decoration: line-through;
+}
+
+.CartItem__sale-price {
+  font-size: 1.25rem;
+}
+
+.CartItem__quantity-text {
+  margin-right: 10px;
+  font-weight: 500;
+}
+@media (min-width: 768px) {
+  .CartItem__quantity-text {
+    display: none;
+  }
+}

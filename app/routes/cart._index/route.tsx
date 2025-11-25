@@ -20,6 +20,8 @@ import CartItem from '~/routes/cart/components/Item';
 import EmptyShoppingCart from '~/routes/cart/components/EmptyShoppingCart';
 import PriceResult from '~/routes/cart/components/PriceResult';
 import type { CartPriceResponse } from '~/routes/cart/types';
+import itemStyles from '~/routes/cart/components/Item/styles/Item.css?url';
+import styles from '~/routes/cart/styles/cart.css?url';
 import sslCheckout from '~/routes/cart/images/SSL-Secure-Connection.png';
 import { sortItemsByAddedTime } from '~/routes/cart/utils';
 import { round10 } from '~/utils/preciseRound';
@@ -28,7 +30,12 @@ import { setCartItems, setPriceInfo } from '~/routes/cart/reducer';
 import { useRemoveItem } from '~/routes/cart/hooks/useRemoveItem';
 import { useCartContext } from '~/routes/hooks';
 
-export const links: LinksFunction = () => [];
+export const links: LinksFunction = () => {
+  return [
+    { rel: 'stylesheet', href: styles },
+    { rel: 'stylesheet', href: itemStyles },
+  ];
+};
 
 const FREE_SHIPPING = 19.99;
 

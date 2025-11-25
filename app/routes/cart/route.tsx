@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router';
 import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { Outlet } from 'react-router';
 import { useLoaderData } from 'react-router';
 
 import httpStatus from 'http-status-codes';
@@ -13,6 +13,9 @@ import {
 } from '~/utils/seo';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import { useCartCount } from '~/routes/hooks';
+import { links as cartIndexLinks } from '../cart._index/route';
+
+import cartStyles from '../styles/cart.css?url';
 
 // export const meta: MetaFunction = () => {
 //   return [
@@ -24,6 +27,8 @@ import { useCartCount } from '~/routes/hooks';
 
 export const links: LinksFunction = () => [
   ...CatalogLayoutLinks(),
+  ...cartIndexLinks?.() ?? [],
+  { rel: 'stylesheet', href: cartStyles },
 ];
 
 type LoaderType = {
@@ -60,9 +65,10 @@ function CartLayout() {
       navBarCategories={navBarCategories}
       cartCount={cartCount}
     >
-      <Outlet />
+      <div className="Cart__wrapper pt-[110px] md:pt-[160px]">
+        <Outlet />
 
-      <section className="
+        <section className="
 				py-0 px-auto
 				flex flex-col
 				justify-center items-center
@@ -70,24 +76,25 @@ function CartLayout() {
 				bg-white
         mt-4
 			">
-        <div className="w-full py-2.5 max-w-screen-xl mx-auto">
-          {/* Recommended products - top items */}
-          {/* @TODO catID should not be hardcoded here */}
-          <HorizontalProductsLayout
-            catName='hot_deal'
-            title='top items'
-            seeAllLinkTo='/promotion/hot_deal'
-          />
+          <div className="w-full py-2.5 max-w-screen-xl mx-auto">
+            {/* Recommended products - top items */}
+            {/* @TODO catID should not be hardcoded here */}
+            <HorizontalProductsLayout
+              catName='hot_deal'
+              title='top items'
+              seeAllLinkTo='/promotion/hot_deal'
+            />
 
-          {/* Recommended products - new trend */}
-          {/* @TODO catID should not be hardcoded here */}
-          <HorizontalProductsLayout
-            catName='new_trend'
-            title='new trend'
-            seeAllLinkTo='/promotion/new_trend'
-          />
-        </div>
-      </section>
+            {/* Recommended products - new trend */}
+            {/* @TODO catID should not be hardcoded here */}
+            <HorizontalProductsLayout
+              catName='new_trend'
+              title='new trend'
+              seeAllLinkTo='/promotion/new_trend'
+            />
+          </div>
+        </section>
+      </div>
     </CatalogLayout>
   );
 }

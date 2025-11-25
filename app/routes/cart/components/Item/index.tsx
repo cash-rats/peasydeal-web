@@ -1,13 +1,20 @@
 import { useMemo, useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
+import type { LinksFunction } from 'react-router';
 import { Link } from 'react-router';
 import { BsTrash } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
 
-import { SUPER_DEAL_OFF } from '~/shared/constants';
 import QuantityDropDown from '~/components/QuantityDropDown';
+import { SUPER_DEAL_OFF } from '~/shared/constants';
 import { round10 } from '~/utils/preciseRound';
 import { composeProductDetailURL } from '~/utils';
+
+import styles from './styles/Item.css?url';
+
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: styles },
+];
 
 type ItemProps = {
   productUUID: string;
@@ -117,13 +124,13 @@ function CartItem({
 			bg-white
 			md:grid grid-cols-12 gap-4
 			relative
-		">
+		cart-item">
 
       {/* Item image */}
-      <div className="flex items-center col-span-6">
+      <div className="flex items-center col-span-6 top">
         <div className="grid grid-cols-12">
           <div className="col-span-12 flex flex-row items-center justify-start">
-            <div className="flex aspect-square max-w-[120px] mr-4 overflow-hidden">
+            <div className="flex aspect-square max-w-[120px] mr-4 overflow-hidden product-image">
               <Link to={composeProductDetailURL({ productName: item.title, productUUID: item.productUUID })}>
                 <img
                   className='my-auto slef-center'
@@ -133,14 +140,14 @@ function CartItem({
               </Link>
             </div>
 
-            <div className="flex flex-col">
-              <p className="text-lg font-medium mb-2">
+            <div className="flex flex-col product-description">
+              <p className="text-lg font-medium mb-2 product-title">
                 <Link to={composeProductDetailURL({ productName: item.title, productUUID: item.productUUID })}>
                   {item.title}
                 </Link>
               </p>
 
-              <p className="text-sm">
+              <p className="text-sm product-description-text">
                 Variation: {item.description}
               </p>
 
@@ -158,7 +165,7 @@ function CartItem({
               }
 
 
-              <div className="items-center flex flex-row md:hidden my-4">
+              <div className="items-center flex flex-row md:hidden my-4 product-price-mobile">
                 <span className='text-lg font-poppins font-bold mr-2'>£{item.salePrice} </span>
                 <div className="relative w-fit">
                   <span className='flex flex-col w-fit'>
@@ -181,14 +188,14 @@ function CartItem({
       </div>
 
 
-      <div className="col-span-2 text-right self-center hidden md:flex flex-row md:flex-col">
-        <div className="relative w-fit ml-auto">
+      <div className="col-span-2 text-right self-center hidden md:flex flex-row md:flex-col bottom">
+        <div className="relative w-fit ml-auto product-price">
           <span className='flex flex-col w-fit'>
-            <span>£{item.retailPrice}</span>
+            <span className='CartItem__retail-price'>£{item.retailPrice}</span>
             <div className="block h-[1px] w-full bg-black absolute top-[10px]"></div>
           </span>
         </div>
-        <span className='text-lg font-poppins font-medium text-[#D02E7D]'>£{item.salePrice}</span>
+        <span className='text-lg font-poppins font-medium text-[#D02E7D] CartItem__sale-price'>£{item.salePrice}</span>
         {
           isSuperDeal ? (
             <div className='w-fit text-sm font-slate-500'>
@@ -220,7 +227,7 @@ function CartItem({
 				border-t
 			">
         <div className="flex flex-col flex-auto">
-          <span className="flex md:hidden font-medium mb-2">Quantity</span>
+          <span className="flex md:hidden font-medium mb-2 CartItem__quantity-text">Quantity</span>
           <QuantityDropDown
             value={item.quantity}
             onClickNumber={onClickQuantity}
@@ -246,7 +253,9 @@ function CartItem({
       </div>
 
       <div className="hidden md:block col-span-2 text-right self-center text-lg">
-        <SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+        <div className="product-total">
+          <SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+        </div>
       </div>
       <div className="
 				absolute
