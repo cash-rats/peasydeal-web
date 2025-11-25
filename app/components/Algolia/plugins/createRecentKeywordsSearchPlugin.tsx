@@ -1,6 +1,6 @@
 import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
 export const PluginKey = 'products-recent-search';
 

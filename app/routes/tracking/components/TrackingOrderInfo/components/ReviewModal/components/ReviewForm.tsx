@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
 import { Alert, AlertIcon } from '@chakra-ui/react';
-import Image, { MimeType } from 'remix-image';
+import { OptimizedImage as Image } from '~/components/OptimizedImage';
 import { Rating, StickerStar } from '@smastrom/react-rating';
 import { BiInfoCircle } from 'react-icons/bi';
 import {
@@ -15,10 +15,10 @@ import type { ImageListType } from 'react-images-uploading';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { RxCross1 } from 'react-icons/rx';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
-import type { FormError } from '../types';
-import { maskName } from '../../../../../utils';
+import type { FormError } from '~/routes/api.product.review/type';
+import { maskName } from '~/utils/mask';
 import type { TrackOrderProduct } from '../../../../../types';
 
 const MaxImageNumber = 2;
@@ -95,10 +95,9 @@ function ReviewForm({
             className="rounded-sm aspect-square"
             placeholderAspectRatio={1}
             options={{
-              contentType: MimeType.WEBP,
+              contentType: 'image/webp',
               fit: 'contain',
             }}
-            loaderUrl='/remix-image'
             responsive={[
               {
                 size: {

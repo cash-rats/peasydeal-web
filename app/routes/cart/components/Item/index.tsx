@@ -1,29 +1,20 @@
 import { useMemo, useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
-import type { LinksFunction } from '@remix-run/node';
-import { Link } from '@remix-run/react';
-import QuantityDropDown, { links as QuantityDropDownLinks } from '~/components/QuantityDropDown';
+import type { LinksFunction } from 'react-router';
+import { Link } from 'react-router';
 import { BsTrash } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
-import IconButton from '@mui/material/IconButton';
-import Skeleton from '@mui/material/Skeleton';
+
+import QuantityDropDown from '~/components/QuantityDropDown';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 import { round10 } from '~/utils/preciseRound';
-import {
-  TagLabel,
-  Tag,
-} from '@chakra-ui/react';
-
 import { composeProductDetailURL } from '~/utils';
 
-import styles from './styles/Item.css';
+import styles from './styles/Item.css?url';
 
-export const links: LinksFunction = () => {
-  return [
-    ...QuantityDropDownLinks(),
-    { rel: 'stylesheet', href: styles },
-  ];
-};
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: styles },
+];
 
 type ItemProps = {
   productUUID: string;
@@ -45,11 +36,21 @@ interface CartItemProps {
   onPlus?: (quantity: number, prodID: string) => void;
   onClickQuantity?: (evt: MouseEvent<HTMLLIElement>, number: number) => void;
   onChangeQuantity?: (evt: ChangeEvent<HTMLInputElement>, quantity: number) => void;
-  onBlurQuantity?: (evt: FocusEvent<HTMLInputElement>, number: number) => void;
+  onBlurQuantity?: (
+    evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>,
+    number: number
+  ) => void;
   onClickRemove?: (evt: MouseEvent<HTMLButtonElement>, prodID: string) => void;
 }
 
 interface ISubTotalPriceTagProps { quantity: number, salePrice: number, calculating: boolean };
+
+const SkeletonBlock = ({ width, height }: { width: number; height: number }) => (
+  <div
+    className="animate-pulse rounded bg-slate-200"
+    style={{ width, height }}
+  />
+);
 
 const SubTotalPriceTag = ({ quantity, salePrice, calculating }: ISubTotalPriceTagProps) => {
   return (
@@ -59,7 +60,7 @@ const SubTotalPriceTag = ({ quantity, salePrice, calculating }: ISubTotalPriceTa
           ? (
             <div className='flex items-center'>
               <span className='ml-auto'>£ </span>
-              <Skeleton width={40} height={35} />
+              <SkeletonBlock width={40} height={35} />
             </div>
           )
           : `£${(quantity * salePrice).toFixed(2)}`
@@ -86,7 +87,7 @@ function CartItem({
 
   onChangeQuantity = () => { },
   onClickQuantity = () => { },
-  onBlurQuantity = (evt: FocusEvent<HTMLInputElement>, quantity: number) => { },
+  onBlurQuantity = (evt: FocusEvent<HTMLInputElement> | MouseEvent<HTMLLIElement>, quantity: number) => { },
   onClickRemove = (evt: MouseEvent<HTMLButtonElement>, prodID: string) => { },
 }: CartItemProps) {
   const [exceedMaxMsg, setExceedMaxMsg] = useState('');
@@ -123,13 +124,13 @@ function CartItem({
 			bg-white
 			md:grid grid-cols-12 gap-4
 			relative
-		">
+		cart-item">
 
       {/* Item image */}
-      <div className="flex items-center col-span-6">
+      <div className="flex items-center col-span-6 top">
         <div className="grid grid-cols-12">
           <div className="col-span-12 flex flex-row items-center justify-start">
-            <div className="flex aspect-square max-w-[120px] mr-4 overflow-hidden">
+            <div className="flex aspect-square max-w-[120px] mr-4 overflow-hidden product-image">
               <Link to={composeProductDetailURL({ productName: item.title, productUUID: item.productUUID })}>
                 <img
                   className='my-auto slef-center'
@@ -139,14 +140,14 @@ function CartItem({
               </Link>
             </div>
 
-            <div className="flex flex-col">
-              <p className="text-lg font-medium mb-2">
+            <div className="flex flex-col product-description">
+              <p className="text-lg font-medium mb-2 product-title">
                 <Link to={composeProductDetailURL({ productName: item.title, productUUID: item.productUUID })}>
                   {item.title}
                 </Link>
               </p>
 
-              <p className="text-sm">
+              <p className="text-sm product-description-text">
                 Variation: {item.description}
               </p>
 
@@ -154,22 +155,17 @@ function CartItem({
                 item.discountReason
                   ? (
                     <div className="mt-2 hidden md:flex">
-                      <Tag
-                        variant='outline'
-                        colorScheme='blue'
-                        className='flex items-center w-fit mb-2'
-                        size="md"
-                      >
-                        <ImPriceTags className='mr-1' />
-                        <TagLabel>{item.discountReason}</TagLabel>
-                      </Tag>
+                      <span className='flex items-center w-fit mb-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700'>
+                        <ImPriceTags className='mr-1 text-blue-500' />
+                        <span>{item.discountReason}</span>
+                      </span>
                     </div>
                   )
                   : null
               }
 
 
-              <div className="items-center flex flex-row md:hidden my-4">
+              <div className="items-center flex flex-row md:hidden my-4 product-price-mobile">
                 <span className='text-lg font-poppins font-bold mr-2'>£{item.salePrice} </span>
                 <div className="relative w-fit">
                   <span className='flex flex-col w-fit'>
@@ -192,14 +188,14 @@ function CartItem({
       </div>
 
 
-      <div className="col-span-2 text-right self-center hidden md:flex flex-row md:flex-col">
-        <div className="relative w-fit ml-auto">
+      <div className="col-span-2 text-right self-center hidden md:flex flex-row md:flex-col bottom">
+        <div className="relative w-fit ml-auto product-price">
           <span className='flex flex-col w-fit'>
-            <span>£{item.retailPrice}</span>
+            <span className='CartItem__retail-price'>£{item.retailPrice}</span>
             <div className="block h-[1px] w-full bg-black absolute top-[10px]"></div>
           </span>
         </div>
-        <span className='text-lg font-poppins font-medium text-[#D02E7D]'>£{item.salePrice}</span>
+        <span className='text-lg font-poppins font-medium text-[#D02E7D] CartItem__sale-price'>£{item.salePrice}</span>
         {
           isSuperDeal ? (
             <div className='w-fit text-sm font-slate-500'>
@@ -213,15 +209,10 @@ function CartItem({
         item.discountReason
           ? (
             <div className="border-t-[#efefef] border-t md:hidden mt-4 pt-4 pb-1">
-              <Tag
-                variant='outline'
-                colorScheme='blue'
-                className='flex items-center w-fit mb-2'
-                size="md"
-              >
-                <ImPriceTags className='mr-1' />
-                <TagLabel>{item.discountReason}</TagLabel>
-              </Tag>
+              <span className='flex items-center w-fit mb-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700'>
+                <ImPriceTags className='mr-1 text-blue-500' />
+                <span>{item.discountReason}</span>
+              </span>
             </div>
           )
           : null
@@ -236,7 +227,7 @@ function CartItem({
 				border-t
 			">
         <div className="flex flex-col flex-auto">
-          <span className="flex md:hidden font-medium mb-2">Quantity</span>
+          <span className="flex md:hidden font-medium mb-2 CartItem__quantity-text">Quantity</span>
           <QuantityDropDown
             value={item.quantity}
             onClickNumber={onClickQuantity}
@@ -262,16 +253,22 @@ function CartItem({
       </div>
 
       <div className="hidden md:block col-span-2 text-right self-center text-lg">
-        <SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+        <div className="product-total">
+          <SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+        </div>
       </div>
       <div className="
 				absolute
 				bottom-[-38px] right-1 md:bottom-2 md:right-2
 			">
-        <IconButton className="flex items-center" onClick={(evt) => onClickRemove(evt, item.variationUUID)}>
-          <BsTrash fontSize={18} />
+        <button
+          type="button"
+          className="flex items-center rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+          onClick={(evt) => onClickRemove(evt, item.variationUUID)}
+        >
+          <BsTrash fontSize={18} className='text-slate-500' />
           <span className='ml-2 text-sm'>Delete</span>
-        </IconButton>
+        </button>
       </div>
     </div>
   );

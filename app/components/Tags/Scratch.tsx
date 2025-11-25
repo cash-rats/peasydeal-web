@@ -1,8 +1,8 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import type { ReactNode } from 'react';
 
 import scratchPNG from './assets/scratch.png';
-import styles from './styles/Scratch.css';
+import styles from './styles/Scratch.css?url';
 
 export const links: LinksFunction = () => {
   return [

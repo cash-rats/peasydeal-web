@@ -1,8 +1,12 @@
 import stream from 'stream';
 import type { Bucket } from '@google-cloud/storage';
-import path from 'path';
+import { fileURLToPath } from 'url';
+import { resolve, dirname } from 'path';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 interface IStreamFileUpload {
   (
@@ -11,7 +15,7 @@ interface IStreamFileUpload {
   ): Promise<boolean | any>
 }
 
-const getGCSKeyPath = () => path.resolve(__dirname, '../', envs.GCS_KEY_NAME);
+const getGCSKeyPath = () => resolve(__dirname, '../', envs.GCS_KEY_NAME);
 
 const streamFileUpload: IStreamFileUpload = (bucket, { filename, buffer }) => {
   const passthroughStream = new stream.PassThrough();

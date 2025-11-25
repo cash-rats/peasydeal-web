@@ -1,4 +1,4 @@
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { RxCounterClockwiseClock as RecentSearch } from 'react-icons/rx';
 import type { MouseEvent, KeyboardEvent, BaseSyntheticEvent } from 'react';
 import type { AutocompleteApi, InternalAutocompleteSource } from '@algolia/autocomplete-core';
@@ -12,7 +12,7 @@ interface RecentSearchHitsParams {
   autocomplete: AutocompleteApi<RecentSearchHit, BaseSyntheticEvent, MouseEvent, KeyboardEvent>;
 };
 
-function RecentSearchHits({ items, autocomplete }: RecentSearchHitsParams) {
+export function RecentSearchHits({ items, autocomplete }: RecentSearchHitsParams) {
   return (
     <section className="aa-Source">
       {/* Recent searchs header */}

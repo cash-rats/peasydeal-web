@@ -1,13 +1,13 @@
 
-import { Button } from '@chakra-ui/react';
-import { Link } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
+import { Link } from 'react-router';
+import type { LinksFunction } from 'react-router';
 import { VscFlame, VscArrowRight } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
 import AnnouncementBanner from "../AnnouncementBanner";
-import styles from './styles/MegaMenuContent.css';
+import styles from './styles/MegaMenuContent.css?url';
+import { Button } from '~/components/ui/button';
 
 export const links: LinksFunction = () => {
   return [
@@ -118,45 +118,45 @@ const MegaMenuContent = ({
         <div>
           <Link to={`/promotion/super_deal`}>
             <Button
-              rightIcon={<VscArrowRight className='flex md:hidden xl:flex' />}
-              colorScheme='pink'
               variant='outline'
               size='lg'
-              width='100%'
               onClick={onClose}
-              className="text-base md:text-md xl:text-lg"
+              className="text-base md:text-md xl:text-lg w-full justify-between border-pink-500 text-pink-600 hover:text-pink-700"
             >
-              SUPER DEAL <span className="ml-1 text-[#fc1d7a]">EXTRA 10% OFF</span>
+              <span>
+                SUPER DEAL <span className="ml-1 text-[#fc1d7a]">EXTRA 10% OFF</span>
+              </span>
+              <VscArrowRight className='flex md:hidden xl:flex' />
             </Button>
           </Link>
         </div>
         <div>
           <Link to={`/promotion/deal_under_15`}>
             <Button
-              rightIcon={<VscArrowRight className='flex md:hidden xl:flex' />}
-              colorScheme='pink'
+              onClick={onClose}
               variant='outline'
               size='lg'
-              width='100%'
-              onClick={onClose}
-              className="text-base md:text-md xl:text-lg"
+              className="text-base md:text-md xl:text-lg w-full justify-between border-pink-500 text-pink-600 hover:text-pink-700"
             >
-              Deal from <span className="ml-1 text-[#fc1d7a]">£0.99 - £15</span>
+              <span>
+                Deal from <span className="ml-1 text-[#fc1d7a]">£0.99 - £15</span>
+              </span>
+              <VscArrowRight className='flex md:hidden xl:flex' />
             </Button>
           </Link>
         </div>
         <div>
           <Link to={`/promotion/weekly_deals`}>
             <Button
-              rightIcon={<VscArrowRight className='flex md:hidden xl:flex' />}
-              colorScheme='pink'
+              onClick={onClose}
               variant='outline'
               size='lg'
-              width='100%'
-              onClick={onClose}
-              className="text-base md:text-md xl:text-lg"
+              className="text-base md:text-md xl:text-lg w-full justify-between border-pink-500 text-pink-600 hover:text-pink-700"
             >
-              Weekly <span className="ml-1 text-[#fc1d7a]">Best Seller</span>
+              <span>
+                Weekly <span className="ml-1 text-[#fc1d7a]">Best Seller</span>
+              </span>
+              <VscArrowRight className='flex md:hidden xl:flex' />
             </Button>
           </Link>
         </div>

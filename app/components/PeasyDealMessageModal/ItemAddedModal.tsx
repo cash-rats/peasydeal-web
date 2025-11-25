@@ -1,33 +1,62 @@
 
-import type { LinksFunction } from '@remix-run/node';
-import { AiFillCheckCircle } from 'react-icons/ai';
+import { HiCheckCircle } from 'react-icons/hi2';
 
-import styles from './styles/ItemAddedModal.css';
 import GeneralModal from './index';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 interface ItemAddedModalProps {
   open?: boolean;
   onClose?: () => void;
+  onViewCart?: () => void;
+  color?: string;
 }
 
-const ItemAddedModal = ({ open = false, onClose }: ItemAddedModalProps) => {
+const ItemAddedModal = ({ open = false, onClose, color }: ItemAddedModalProps) => {
+  const iconColor = color ?? '#10B981';
+
   return (
-    <GeneralModal open={open} onClose={onClose}>
-      <div className="ItemAddedModal__wrapper">
-        <span><AiFillCheckCircle color='white' fontSize={60} /></span>
-        <p className="ItemAddedModal__message">
-          Item added to cart
-        </p>
+    <GeneralModal
+      open={open}
+      onClose={onClose}
+      showOverlay
+      overlayOpacity={50}
+    >
+      <div
+        className="
+          flex
+          w-full
+          max-w-sm
+          flex-col
+          items-center
+          gap-5
+          rounded-2xl
+          bg-white/95
+          px-6
+          py-6
+          text-center
+          shadow-2xl
+          ring-1
+          ring-emerald-100
+          backdrop-blur
+        "
+        role="status"
+        aria-live="polite"
+      >
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-500 shadow-md shadow-emerald-100">
+          <HiCheckCircle
+            size={64}
+            color={iconColor}
+            className="text-emerald-500"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <h3 className="text-lg font-semibold tracking-tight text-slate-900">
+            Item added to your cart
+          </h3>
+        </div>
       </div>
     </GeneralModal>
   );
 }
 
 export default ItemAddedModal;
-

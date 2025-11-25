@@ -1,8 +1,6 @@
-import type { V2_ServerRuntimeMetaDescriptor } from '@remix-run/server-runtime';
-
-import getEnvSource from '~/utils/get_env_source';
+import type { MetaDescriptor } from 'react-router';
+import { env } from './env';
 import { getLogoURL } from '~/utils';
-// import { round10 } from '~/utils/preciseRound';
 
 interface FBSEO {
   'og:url': string;
@@ -13,9 +11,8 @@ interface FBSEO {
   'og:locale': string;
 }
 
-
 // ------------------ SEO ------------------
-export const getCanonicalDomain = (): string => getEnvSource()?.DOMAIN || 'https://www.peasydeal.com';
+export const getCanonicalDomain = (): string => env.DOMAIN || 'https://www.peasydeal.com';
 
 // 404 page
 // Object indicates the "thing" that is not found.
@@ -106,7 +103,7 @@ export const getRootFBSEO = (): FBSEO => ({
   'og:locale': 'en_GB',
 });
 
-export const getRootFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => {
+export const getRootFBSEO_V2 = (): MetaDescriptor[] => {
   return [
     {
       tagName: 'meta',
@@ -171,7 +168,7 @@ export const getProdDetailOgSEO = ({
   desc: string,
   image: string,
   url: string
-}): V2_ServerRuntimeMetaDescriptor[] => getRootFBSEO_V2()
+}): MetaDescriptor[] => getRootFBSEO_V2()
   .map(tag => {
     if (!('property' in tag)) {
       return tag
@@ -201,7 +198,7 @@ export const getCartFBSEO = (): FBSEO => ({
   'og:title': getCartTitleText(),
 });
 
-export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => (
+export const getCartFBSEO_V2 = (): MetaDescriptor[] => (
   getRootFBSEO_V2().map((tag) => {
     if ('property' in tag && tag.property === 'og:title') {
       tag.content = getCartTitleText()
@@ -211,7 +208,7 @@ export const getCartFBSEO_V2 = (): V2_ServerRuntimeMetaDescriptor[] => (
   })
 );
 
-export const getBlogFBSEO_V2 = (blogOGImage?: string): V2_ServerRuntimeMetaDescriptor[] => {
+export const getBlogFBSEO_V2 = (blogOGImage?: string): MetaDescriptor[] => {
   return getRootFBSEO_V2()
     .map(tag => {
       if (!('property' in tag)) return tag;
@@ -232,7 +229,7 @@ export const getBlogFBSEO_V2 = (blogOGImage?: string): V2_ServerRuntimeMetaDescr
     });
 };
 
-export const getTrackingFBSEO = (): V2_ServerRuntimeMetaDescriptor[] => (
+export const getTrackingFBSEO = (): MetaDescriptor[] => (
   getRootFBSEO_V2()
     .map(tag => {
       if ('property' in tag && tag.property === 'og:title') {

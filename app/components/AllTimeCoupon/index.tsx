@@ -1,7 +1,7 @@
-import { Link } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
+import { Link } from 'react-router';
+import type { LinksFunction } from 'react-router';
 
-import styles from './styles/allTimeCoupon.css';
+import styles from './styles/allTimeCoupon.css?url';
 
 export const links: LinksFunction = () => {
   return [

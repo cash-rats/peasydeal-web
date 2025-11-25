@@ -1,6 +1,0 @@
-{
-  "name": "bread_scrumbs",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./Breadcrumbs.tsx"
-}

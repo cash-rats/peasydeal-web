@@ -1,10 +1,4 @@
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table';
 
 type TrackInfo = {
   trackingNumber: string;
@@ -22,32 +16,24 @@ function TrackingTable({ trackings }: TrackingTableProps) {
       <h1 className="font-medium mb-2">
         Shipment trackings:
       </h1>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="shippment tracking table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Tracking Number</TableCell>
-              <TableCell align="left">Carrier</TableCell>
-              <TableCell align="left">Tracking Link</TableCell>
+      <Table aria-label="shipment tracking table">
+        <TableHeader>
+          <TableRow>
+            <TableHead>Tracking Number</TableHead>
+            <TableHead>Carrier</TableHead>
+            <TableHead>Tracking Link</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {trackings.map((row) => (
+            <TableRow key={row.trackingNumber}>
+              <TableCell className="font-semibold">{row.trackingNumber}</TableCell>
+              <TableCell>{row.carrier}</TableCell>
+              <TableCell className="break-all text-muted-foreground">{row.trackingLink}</TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {trackings.map((row, index) => (
-              <TableRow
-                key={row.trackingNumber}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.trackingNumber}
-                </TableCell>
-                <TableCell align="left">{row.carrier}</TableCell>
-                <TableCell align="left">{row.trackingLink}</TableCell>
-              </TableRow>
-            ))
-            }
-          </TableBody>
-        </Table>
-      </TableContainer>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

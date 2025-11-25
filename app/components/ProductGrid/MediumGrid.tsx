@@ -1,8 +1,6 @@
-import type { LinksFunction } from '@remix-run/node';
-import { Link, Form } from '@remix-run/react';
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import type { ScrollPosition } from 'react-lazy-load-image-component';
-
+import type { LinksFunction } from 'react-router';
+import { Link, Form } from 'react-router';
+import { LazyImage } from '~/components/LazyImage';
 import RoundButton from '~/components/RoundButton';
 import { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
 import { links as ScratchLinks } from '~/components/Tags/Scratch';
@@ -15,7 +13,7 @@ import { composeProductDetailURL } from '~/utils';
 import { normalizeTagsListToMap } from './utils';
 import type { TagsCombo } from './types';
 import { TagComboMap } from './types';
-import styles from "./styles/MediumGrid.css";
+import styles from "./styles/MediumGrid.css?url";
 
 export const links: LinksFunction = () => {
 	return [
@@ -35,7 +33,6 @@ interface MediumGridProps {
 	onClickProduct?: (title: string, productID: string) => void;
 	tagCombo?: TagsCombo | null;
 	discount?: number;
-	scrollPosition?: ScrollPosition;
 };
 
 
@@ -56,7 +53,6 @@ export default function MediumGrid({
 	onClickProduct = () => { },
 	tagCombo = 'none',
 	discount = 0,
-	scrollPosition,
 }: MediumGridProps) {
 	// retrieve tags name in the provided combo. If given grid does not have
 	// any `tagCombo`, we initialize `tagNames` to empty array.
@@ -90,18 +86,11 @@ export default function MediumGrid({
 				className="image-container bg-contain bg-center bg-no-repeat"
 				style={{ backgroundImage: `url('${image}')` }}
 			>
-				<LazyLoadImage
-					placeholder={
-						<img
-							src="/images/placeholder.svg"
-							alt={title}
-							className="medium-grid-image"
-						/>
-					}
-					alt={title}
-					className="medium-grid-image  opacity-0"
+				<LazyImage
 					src={image}
-					scrollPosition={scrollPosition}
+					alt={title}
+					className="medium-grid-image"
+					placeholder="/images/placeholder.svg"
 				/>
 			</div>
 

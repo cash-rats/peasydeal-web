@@ -1,49 +1,17 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import type { LinksFunction, ActionFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useFetcher, Link } from '@remix-run/react';
-
-import { IconButton, Button } from '@chakra-ui/react';
 import { VscChevronLeft, VscChevronRight, VscArrowRight } from 'react-icons/vsc';
+import { useFetcher, Link } from 'react-router';
 
 import { composeProductDetailURL } from '~/utils';
 import type { Product } from '~/shared/types';
-import { fetchProductsByCategoryV2 } from '~/api';
-import slickStyles from "slick-carousel/slick/slick.css";
-import slickThemeStyles from "slick-carousel/slick/slick-theme.css";
-import { RegularCardWithActionButton, links as ProductCardLinks } from '~/components/ProductCard';
-
-import styles from './styles/HorizontalProductsLayout.css';
-
-export const links: LinksFunction = () => {
-  return [
-    ...ProductCardLinks(),
-    { rel: 'stylesheet', href: styles },
-    { rel: 'stylesheet', href: slickStyles },
-    { rel: 'stylesheet', href: slickThemeStyles },
-  ];
-};
+import { RegularCardWithActionButton } from '~/components/ProductCard';
+import { Button } from '~/components/ui/button';
 
 type ActionType = {
   recProds: Product[];
 }
 
 const loadingGrids = new Array(12).fill({});
-
-export const action: ActionFunction = async ({ request }) => {
-  const form = await request.formData();
-  const formEntries = Object.fromEntries(form.entries());
-  const catName = formEntries['cat_name'] as string || 'hot_deal';
-
-  // Fetch top seller & new trend.
-  const { items: recProds } = await fetchProductsByCategoryV2({
-    category: catName,
-    perpage: 12,
-    random: true,
-  });
-
-  return json<ActionType>({ recProds: recProds });
-}
 
 interface HorizontalProductsLayoutProps {
   catName?: string;
@@ -58,25 +26,33 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scroll = useCallback((toRight: boolean) => {
-    if (!window || !containerRef.current || !containerRef.current) return;
-    const offset = containerRef.current.clientWidth - 100;
+    const container = containerRef.current;
+    if (!container) return;
+    const offset = container.clientWidth - 100;
 
-    containerRef!.current.scrollLeft += (toRight ? offset : -offset);
-  }, [containerRef]);
+    container.scrollBy({
+      left: toRight ? offset : -offset,
+      behavior: 'smooth',
+    });
+  }, []);
 
   useEffect(() => {
+    // TODO: should use get instead of post
     fetcher.submit(
       { cat_name: catName },
-      { method: 'post', action: '/components/HorizontalProductsLayout?index' }
+      {
+        method: 'post',
+        action: '/api/products/horizontal',
+      },
     );
   }, []);
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
+    if (fetcher.state === 'idle' && fetcher.data) {
       const data = fetcher.data as ActionType;
       setRecProds(data.recProds);
     }
-  }, [fetcher.type]);
+  }, [fetcher.state, fetcher.data]);
 
 
   const handleClickGrid = (title: string, prodUUID: string) => {
@@ -110,44 +86,47 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
           " />
           <Link to={seeAllLinkTo}>
             <Button
-              rightIcon={<VscArrowRight />}
-              colorScheme='teal'
               variant='ghost'
               size='lg'
-              className='p-2 md:p-4'
+              className='p-2 md:p-4 inline-flex items-center gap-2 text-primary hover:text-primary/80'
             >
               See all
+              <VscArrowRight />
             </Button>
           </Link>
         </h3>
 
-        <div className='absolute top-[38px] md:top-11 right-2'>
-          <IconButton
+        <div className='absolute top-[38px] md:top-11 right-2 flex gap-2'>
+          <button
+            type="button"
             aria-label='Page Left'
-            icon={<VscChevronLeft />}
+            className="rounded-full border border-slate-200 bg-white p-2 shadow hover:bg-slate-50"
             onClick={() => scroll(false)}
-            className='mr-2 bg-white'
-          />
-          <IconButton
+          >
+            <VscChevronLeft />
+          </button>
+          <button
+            type="button"
             aria-label='Page Right'
-            icon={<VscChevronRight />}
+            className="rounded-full border border-slate-200 bg-white p-2 shadow hover:bg-slate-50"
             onClick={() => scroll(true)}
-            className='bg-white'
-          />
+          >
+            <VscChevronRight />
+          </button>
         </div>
 
         <div
           ref={containerRef}
-          className="flex overflow-x-scroll pt-5 pb-10 hide-scroll-bar"
-          style={{
-            scrollBehavior: 'smooth',
-          }}
+          className="flex overflow-x-scroll pt-5 pb-10 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           <div className="flex flex-nowrap">
             {
               recProds?.map((prod: Product, index: number) => {
                 return (
-                  <div className="inline-block px-3 min-w-[250px]" key={`${prod.productUUID}_${index}`}>
+                  <div
+                    className="inline-block px-3 min-w-[320px] sm:min-w-[340px] md:min-w-[360px]"
+                    key={`${prod.productUUID}_${index}`}
+                  >
                     <RegularCardWithActionButton
                       key={`horzontal-prod-${index}`}
                       product={prod}

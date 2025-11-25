@@ -1,22 +1,3 @@
-.mega-menu-wrapper > div {
-  z-index: 10;
-}
-@media screen and (min-width: 768px) {
-  .mega-menu-wrapper > div {
-    transform: translate(0px, 57px) !important;
-  }
-}
-@media screen and (min-width: 1024px) {
-  .mega-menu-wrapper > div {
-    transform: translate(0px, 57px) !important;
-  }
-}
-@media screen and (min-width: 1280px) {
-  .mega-menu-wrapper > div {
-    transform: translate(0px, 57px) !important;
-  }
-}
-
 .megamenu-overlay {
   position: fixed;
   top: 0;
@@ -24,7 +5,7 @@
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.5);
-  z-index: -1;
+  z-index: 40;
   animation: fadeIn 0.5s ease-in-out forwards;
 }
 

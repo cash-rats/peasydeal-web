@@ -1,7 +1,7 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import IconPromotion from './images/icon-promotion.svg';
 import IconPriceTag from './images/icon-price-tag.svg';
-import styles from './styles/promotion-title.css';
+import styles from './styles/promotion-title.css?url';
 
 export const links: LinksFunction = () => {
   return [

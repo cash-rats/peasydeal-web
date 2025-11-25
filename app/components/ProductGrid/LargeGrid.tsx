@@ -1,7 +1,5 @@
-import { Link, Form } from '@remix-run/react';
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import type { ScrollPosition } from "react-lazy-load-image-component";
-
+import { Link, Form } from 'react-router';
+import { LazyImage } from '~/components/LazyImage';
 import RoundButton from '~/components/RoundButton';
 import { links as TiltRibbonLinks } from '~/components/Tags/TiltRibbon';
 import { links as ScratchLinks } from '~/components/Tags/Scratch';
@@ -9,7 +7,7 @@ import { links as SunShineLinks } from '~/components/Tags/SunShine';
 import { links as PennantLeftLinks } from '~/components/Tags/Pennant';
 import { composeProductDetailURL } from '~/utils';
 
-import styles from "./styles/LargeGrid.css";
+import styles from "./styles/LargeGrid.css?url";
 import type { TagsCombo } from './types';
 
 export function links() {
@@ -30,7 +28,6 @@ interface LargeGridProps {
 	onClickProduct?: (title: string, productID: string) => void;
 	tagCombo?: TagsCombo;
 	discount?: number;
-	scrollPosition?: ScrollPosition;
 }
 
 function LargeGrid({
@@ -41,7 +38,6 @@ function LargeGrid({
 	onClickProduct = () => { },
 	tagCombo = 'none',
 	discount = 0,
-	scrollPosition,
 }: LargeGridProps) {
 	// const tagNames = TagComboMap[tagCombo];
 	// const shouldRenderTags = normalizeTagsListToMap(tagNames);
@@ -71,18 +67,11 @@ function LargeGrid({
 				className="image-container bg-contain bg-center bg-no-repeat"
 				style={{ backgroundImage: `url('${image}')` }}
 			>
-				<LazyLoadImage
+				<LazyImage
 					src={image}
-					className='large-grid-image opacity-0'
 					alt={title}
-					scrollPosition={scrollPosition}
-					placeholder={
-						<img
-							alt={title}
-							src="/images/placeholder.svg"
-							className='large-grid-image'
-						/>
-					}
+					className='large-grid-image'
+					placeholder="/images/placeholder.svg"
 				/>
 			</div>
 

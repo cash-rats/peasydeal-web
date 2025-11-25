@@ -1,7 +1,7 @@
 import type { MouseEvent, KeyboardEvent, BaseSyntheticEvent } from 'react';
 import type { AutocompleteApi, InternalAutocompleteSource } from '@algolia/autocomplete-core';
 import { IoIosReturnLeft as Return } from 'react-icons/io'
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 
 import type { AlgoliaIndexItem } from '~/components/Algolia/types';
 
@@ -14,7 +14,7 @@ interface ProductHitParams {
   autocomplete: AutocompleteApi<AlgoliaIndexItem, BaseSyntheticEvent, MouseEvent, KeyboardEvent>;
 }
 
-function ProductHit({
+export function ProductHits({
   items,
   autocomplete,
   source,
@@ -81,5 +81,3 @@ function ProductHit({
     </section>
   );
 }
-
-export default ProductHit;

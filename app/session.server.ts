@@ -1,16 +1,15 @@
-import { createCookieSessionStorage, redirect } from "@remix-run/node";
-import invariant from "tiny-invariant";
+import { createCookieSessionStorage, redirect } from "react-router";
+import { env } from "~/utils/env";
 
-invariant(process.env.SESSION_SECRET, "SESSION_SECRET must be set");
-
+// SESSION_SECRET is validated via env.ts schema
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
     name: "__session",
     httpOnly: true,
     path: "/",
     sameSite: "lax",
-    secrets: [process.env.SESSION_SECRET],
-    secure: process.env.NODE_ENV === "production",
+    secrets: [env.SESSION_SECRET],
+    secure: env.NODE_ENV === "production",
   },
 });
 

@@ -1,9 +1,8 @@
 import type { ChangeEvent } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
-import IconButton from '@mui/material/IconButton';
 
-import styles from './styles/QuantityPicker.css';
+import styles from './styles/QuantityPicker.css?url';
 
 export const links: LinksFunction = () => {
   return [
@@ -41,9 +40,14 @@ export default function QuantityPicker({
   return (
     <div className="QuantityPicker__wrapper">
       <div className="QuantityPicker__icon-wrapper">
-        <IconButton onClick={handleDecrease} disableTouchRipple>
+        <button
+          type="button"
+          className="QuantityPicker__icon-button"
+          onClick={handleDecrease}
+          aria-label="Decrease quantity"
+        >
           <AiOutlineMinus fontSize={16} />
-        </IconButton>
+        </button>
       </div>
 
       <input
@@ -54,9 +58,14 @@ export default function QuantityPicker({
       />
 
       <div className="QuantityPicker__icon-wrapper">
-        <IconButton onClick={handleIncrease} disableTouchRipple>
+        <button
+          type="button"
+          className="QuantityPicker__icon-button"
+          onClick={handleIncrease}
+          aria-label="Increase quantity"
+        >
           <AiOutlinePlus fontSize={16} />
-        </IconButton>
+        </button>
       </div>
     </div>
   )

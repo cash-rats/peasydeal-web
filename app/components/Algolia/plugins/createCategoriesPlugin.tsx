@@ -1,6 +1,6 @@
-import { getAlgoliaFacets } from '@algolia/autocomplete-js';
+import { getAlgoliaFacets } from '@algolia/autocomplete-preset-algolia';
 import type { AutocompletePlugin } from '@algolia/autocomplete-js';
-import type { SearchClient } from 'algoliasearch/lite';
+import type { SearchClient } from '@algolia/autocomplete-preset-algolia';
 
 import type { CategoryRecord } from '../types';
 
@@ -11,6 +11,7 @@ type CreateCategoriesPluginProps = {
 export function createCategoriesPlugin({
   searchClient,
 }: CreateCategoriesPluginProps): AutocompletePlugin<CategoryRecord, undefined> {
+
   return {
     getSources({ query }) {
       return [
@@ -23,13 +24,19 @@ export function createCategoriesPlugin({
                 {
                   indexName: 'staging_products',
                   facet: 'categories',
+                  type: 'facet',
                   params: {
-                    facetQuery: query,
-                    maxFacetHits: query ? 3 : 6,
+                    query,
+                    maxValuesPerFacet: query ? 3 : 6,
                   },
                 },
               ],
             });
+          },
+          templates: {
+            item({ item }) {
+              return item.label;
+            },
           },
         },
       ];

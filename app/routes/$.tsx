@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import type { LinksFunction, LoaderFunction } from '@remix-run/node';
-import { json, redirect } from '@remix-run/node';
+import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
+import { data, redirect } from 'react-router';
 import httpStatus from 'http-status-codes';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, useRouteLoaderData } from 'react-router';
 
 import SearchBar from '~/components/SearchBar';
 import FourOhFour from '~/components/FourOhFour';
-import Header, { links as HeaderLinks } from '~/routes/components/Header';
+import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
@@ -31,7 +31,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const loader: LoaderFunction = async ({ request }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     // We need to do a gaurd clause check to redirect possible old category url `/desks`
     // to new category url `/collection/desks`. If `desks` can not be found fallback
@@ -47,14 +47,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 
     const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
 
-    return json<LoaderType>({
+    return data<LoaderType>({
       categories,
       navBarCategories,
     });
   } catch (e) {
     console.error(e);
 
-    throw json(e, {
+    throw data(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
@@ -62,6 +62,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 function GlobalSplatFourOhFour() {
   const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
+  const rootData = useRouteLoaderData("root") as any;
+  const cartCount = rootData?.cartCount || 0;
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 
   const handleOpen = () => setOpenSearchDialog(true);
@@ -78,6 +80,7 @@ function GlobalSplatFourOhFour() {
 
       <Header
         categories={categories}
+        numOfItemsInCart={cartCount}
 
         mobileSearchBar={
           <SearchBar

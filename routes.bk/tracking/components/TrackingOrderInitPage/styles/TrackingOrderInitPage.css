@@ -1,0 +1,14 @@
+.initial-page {
+  min-height: 28rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.error-text {
+  margin: 0px 0px 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+/*# sourceMappingURL=TrackingOrderInitPage.css.map */

@@ -1,18 +1,9 @@
-import type { Session } from '@remix-run/node';
+import type { Session } from 'react-router';
 
-import type { Product } from '~/shared/types';
-import { getSession } from '~/sessions/redis_session';
+import { getSession } from '~/sessions/redis_session.server';
+import type { ProductListInfo, CategoryProducts } from './types';
 
 export const ProductListKey = 'product_list';
-
-export type ProductListInfo = {
-  page: number;
-  products: Product[];
-};
-
-export type CategoryProducts = {
-  [key: string]: ProductListInfo;
-};
 
 const getCookieSession = async (request: Request): Promise<Session> => {
   return await getSession(request.headers.get("Cookie"));

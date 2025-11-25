@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import type { MouseEvent } from 'react';
 import type { ReactNode } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 
-import styles from './styles/LoadMore.css';
+import styles from './styles/LoadMore.css?url';
 
 export const links: LinksFunction = () => {
 	return [

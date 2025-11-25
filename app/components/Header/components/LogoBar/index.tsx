@@ -1,23 +1,15 @@
-import { useRef, memo } from 'react';
-import { Link, } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
+import { memo, useId, useState } from 'react';
+import { Link } from 'react-router';
+import type { LinksFunction } from 'react-router';
 import { FiMenu } from 'react-icons/fi';
-import {
-  IconButton,
-  Drawer,
-  DrawerBody,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  useDisclosure,
-  Box,
-} from '@chakra-ui/react';
 
 import type { Category } from '~/shared/types';
 
 import PeasyDeal from './images/peasydeal_logo.svg';
 import type { IMegaMenuContent} from '../MegaMenuContent';
 import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
+import { Button } from '~/components/ui/button';
+import { Sheet, SheetContent } from '~/components/ui/sheet';
 
 interface LogoBarProps {
   categories?: Category[];
@@ -46,38 +38,45 @@ const MegaMemo = memo(({
 MegaMemo.displayName = 'MegaMenuContent';
 
 function LogoBar({ categories = [] }: LogoBarProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const btnRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const mobileSheetId = useId();
 
   return (
     <div className="flex items-center mr-4 my-auto relative">
       <div className="">
         <div className="block md:hidden">
-          <IconButton
-            aria-label='Open Category Menu'
-            icon={<FiMenu className="text-[34px] pr-1 md:p-[inherit] md:text-2xl" color='#e6007e' />}
-            onClick={onOpen}
-            bg="white"
-          />
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <Button
+              aria-label='Open Category Menu'
+              aria-haspopup='dialog'
+              aria-controls={mobileSheetId}
+              variant='ghost'
+              size='icon'
+              onClick={() => setIsOpen(true)}
+              className='h-11 w-11 rounded-full bg-white shadow-sm md:hidden'
+            >
+              <FiMenu className="text-[28px] text-[#e6007e]" />
+            </Button>
 
-          <Drawer
-            isOpen={isOpen}
-            onClose={onClose}
-            finalFocusRef={btnRef}
-            placement="left"
-          >
-            <DrawerOverlay />
-            <DrawerContent>
-              <DrawerCloseButton />
-              <DrawerBody className='py-6 px-0'>
+            <SheetContent
+              id={mobileSheetId}
+              side="left"
+              className="w-[85vw] max-w-sm border-r border-border p-0"
+            >
+              <div className="border-b border-border px-4 py-3">
+                <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                  Browse categories
+                </p>
+              </div>
+              <div className="h-full overflow-y-auto px-2 py-4">
                 <MegaMemo
                   categories={categories}
-                  onClose={onClose}
-                  ItemNode={Box}
+                  onClose={() => setIsOpen(false)}
+                  ItemNode="div"
                 />
-              </DrawerBody>
-            </DrawerContent>
-          </Drawer>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
 

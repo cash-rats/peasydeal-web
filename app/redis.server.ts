@@ -1,29 +1,17 @@
-import type { RedisOptions, Redis } from 'ioredis';
-import IORedis from 'ioredis';
+import IORedis, { type Redis, } from 'ioredis';
+import { env } from '~/utils/env';
 
 let ioredis: Redis;
-let options: RedisOptions = {
-  port: Number(process.env.REDIS_PORT),
-  host: process.env.REDIS_HOST,
-}
 declare global {
-  var __redis__: Redis;
+  var __redis__: Redis | undefined;
 }
 
-if (process.env.NODE_ENV === 'production') {
-  ioredis = new IORedis(options);
-} else {
-  if (process.env.NODE_ENV === 'test') {
-    options = {
-      port: 6379,
-      host: '127.0.0.1',
-    }
-  }
-
-  if (!global.__redis__) {
-    global.__redis__ = new IORedis(options);
-  }
-  ioredis = global.__redis__;
+// Initialize Redis instance with singleton pattern
+if (!global.__redis__) {
+  const dsn = `rediss://${env.REDIS_USER}:${env.REDIS_PASSWORD}@${env.REDIS_HOST}:${env.REDIS_PORT}`;
+  global.__redis__ = new IORedis(dsn);
 }
+
+ioredis = global.__redis__;
 
 export { ioredis };

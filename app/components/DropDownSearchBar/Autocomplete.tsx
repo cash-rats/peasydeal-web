@@ -1,7 +1,7 @@
 import type { AutocompleteOptions } from '@algolia/autocomplete-shared';
 import { MdClear as ClearIcon } from 'react-icons/md';
 import { BiSearch as SearchIcon } from 'react-icons/bi';
-import { Form } from '@remix-run/react';
+import { Form } from 'react-router';
 
 import type { AlgoliaIndexItem } from '~/components/Algolia/types';
 import {

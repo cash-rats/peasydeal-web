@@ -1,20 +1,5 @@
 import type { TrackOrder } from './types';
-
-/*
-Name masking:
-  Huang Chi Han ---> H***** C** H**
-*/
-const maskName = (name: string) => {
-  const segments = name.split(" ");
-  const maskedSegments = segments.map(segment => {
-    const firstChar = segment.charAt(0);
-    const restOfChars = segment.slice(1);
-    const maskedChars = restOfChars.replace(/./g, "*");
-    return firstChar + maskedChars;
-  });
-
-  return maskedSegments.join(" ");
-}
+import { maskName } from '~/utils/mask';
 
 /*
 Address masking:

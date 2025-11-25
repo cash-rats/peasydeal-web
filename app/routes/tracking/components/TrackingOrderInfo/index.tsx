@@ -1,22 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { FaShippingFast } from 'react-icons/fa';
-import parseISO from 'date-fns/parseISO';
-import format from 'date-fns/format';
-import add from 'date-fns/add';
-import type { ActionFunction, LinksFunction } from '@remix-run/node';
-import { json } from '@remix-run/node';
-import { useFetcher, useRevalidator } from '@remix-run/react';
+import parseISO from 'date-fns/parseISO/index.js';
+import format from 'date-fns/format/index.js';
+import add from 'date-fns/add/index.js';
+import type { LinksFunction } from 'react-router';
+import { useFetcher, useRevalidator } from 'react-router';
 import { useImmerReducer } from 'use-immer';
 import { FcInfo } from 'react-icons/fc';
 import { BiErrorCircle } from 'react-icons/bi';
-import { Button, useDisclosure } from '@chakra-ui/react';
+import { Button } from '~/components/ui/button';
 
 import PriceInfo from './components/PriceInfo';
 import DeliveryInfo from './components/DeliveryInfo';
 import CancelOrderActionBar from './components/CancelOrderActionBar';
 import type { CancelReason } from './components/CancelOrderActionBar';
 import ReviewModal, { links as ReviewModalLinks } from './components/ReviewModal';
-import { cancelOrder } from './api.server';
 import reducer, {
   TrackingActionTypes,
   reviewOnProduct,
@@ -46,23 +44,6 @@ export const links: LinksFunction = () => {
   return [...ReviewModalLinks()];
 };
 
-export const action: ActionFunction = async ({ request }) => {
-  const form = await request.formData();
-  const formEntries = Object.fromEntries(form.entries());
-
-
-  try {
-    await cancelOrder({
-      orderUUID: formEntries['order_uuid'] as string,
-      cancelReason: formEntries['cancel_reason'] as string,
-    });
-
-    return null
-  } catch (err) {
-    return json(err);
-  }
-};
-
 interface TrackingOrderIndexProps {
   orderInfo: TrackOrder;
 }
@@ -79,7 +60,7 @@ function TrackingOrderIndex({
   const fetcher = useFetcher();
   const revalidator = useRevalidator();
   const [openCancelModal, setOpenCancelModal] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isReviewOpen, setReviewOpen] = useState(false);
 
   const handleConfirm = useCallback(
     (reason: CancelReason | null) => {
@@ -95,53 +76,54 @@ function TrackingOrderIndex({
         },
         {
           method: 'post',
-          action: '/tracking/components/TrackingOrderInfo?index',
+          action: '/api/tracking/order-info',
         },
       );
     }, [state.orderInfo]
   );
 
   const handleClose = (status: string) => {
-    if (onClose) {
-      dispatch(reset());
-      onClose();
-      if (status === 'done') {
-        revalidator.revalidate();
-      }
+    dispatch(reset());
+    setReviewOpen(false);
+    if (status === 'done') {
+      revalidator.revalidate();
     }
   };
 
+  const handleOpenReview = () => setReviewOpen(true);
+
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
-      const errMsg = fetcher.data
+    if (fetcher.state !== 'idle') return;
+    if (typeof fetcher.data === 'undefined') return;
 
-      if (errMsg !== null) {
-        dispatch({
-          type: TrackingActionTypes.set_error,
-          payload: errMsg,
-        });
+    const errMsg = fetcher.data;
 
-        return;
-      }
-
-      // Close modal
-      setOpenCancelModal(false);
-
-      // Update `order_status` to be cancelled.
+    if (errMsg !== null) {
       dispatch({
-        type: TrackingActionTypes.update_order_status,
-        payload: OrderStatus.Cancelled,
+        type: TrackingActionTypes.set_error,
+        payload: errMsg,
       });
 
-      // Scroll to top so that user can know the updated order status.
-      if (window) {
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-        }, 100);
-      }
+      return;
     }
-  }, [fetcher.type]);
+
+    // Close modal
+    setOpenCancelModal(false);
+
+    // Update `order_status` to be cancelled.
+    dispatch({
+      type: TrackingActionTypes.update_order_status,
+      payload: OrderStatus.Cancelled,
+    });
+
+    // Scroll to top so that user can know the updated order status.
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
+    }
+  }, [fetcher.state, fetcher.data]);
 
   useEffect(
     () => {
@@ -157,7 +139,7 @@ function TrackingOrderIndex({
     <div className="max-w-[1180px] my-0 mx-auto pt-4 pr-1 pb-12 pl-4">
       {
         <ReviewModal
-          isOpen={isOpen}
+          isOpen={isReviewOpen}
           onClose={handleClose}
           orderUUID={state.orderInfo.order_uuid}
           reviewProduct={state.reviewProduct}
@@ -321,12 +303,11 @@ function TrackingOrderIndex({
                           ? (
                             <div className="mt-1 mb-1">
                               <Button
-                                colorScheme="twitter"
-                                size="sm"
-                                variant='link'
+                                variant='ghost'
+                                className='h-auto p-0 text-sm font-semibold text-[#1DA1F2] hover:text-[#0d8ddb]'
                                 onClick={() => {
-                                  dispatch(reviewOnProduct(product))
-                                  onOpen()
+                                  dispatch(reviewOnProduct(product));
+                                  handleOpenReview();
                                 }}
                               >
                                 Review

@@ -1,4 +1,4 @@
-import { RemixBrowser } from "@remix-run/react";
+import { RemixBrowser } from "react-router";
 import { MemoryRouter } from 'react-router-dom';
 import React from "react";
 

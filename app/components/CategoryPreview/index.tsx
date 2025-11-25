@@ -1,22 +1,19 @@
 // create a react component called CategoryPreview
 
 import type { TCategoryPreview } from "~/shared/types";
-import { Button } from '@chakra-ui/react';
-import type { ScrollPosition } from 'react-lazy-load-image-component';
-import { Link } from '@remix-run/react';
+import { Link } from 'react-router';
 import { VscArrowRight } from "react-icons/vsc";
 import { ProductRow } from "~/components/ProductRow";
+import { Button } from '~/components/ui/button';
 
 type ICategoryPreview = {
   category: TCategoryPreview;
   onClickProduct?: (title: string, prodID: string) => void;
-  scrollPosition?: ScrollPosition;
 }
 
 export const CategoryPreview = ({
   category,
   onClickProduct = () => { },
-  scrollPosition,
 }: ICategoryPreview) => {
   const {
     label,
@@ -39,25 +36,26 @@ export const CategoryPreview = ({
         ">
           <span>{label}</span>
           <div className="block w-[1px] h-[25px] bg-[#757575] mr-1 ml-6" />
-          <Link to={
-            type === 'promotion'
-              ? `/promotion/${name}`
-              : `/collection/${name}`
-          }>
-            <Button
-              rightIcon={<VscArrowRight />}
-              colorScheme='teal'
-              variant='ghost'
-              size='lg'
-              onClick={() => {
-                window.rudderanalytics?.track(`click_preview_top_see_all`, {
-                  category: name,
-                });
-              }}
-            >
-              See all
-            </Button>
-          </Link>
+          <Button
+            asChild
+            variant='ghost'
+            size='lg'
+            className='text-teal-600 hover:text-teal-700 px-2 font-medium'
+            onClick={() => {
+              window.rudderanalytics?.track(`click_preview_top_see_all`, {
+                category: name,
+              });
+            }}
+          >
+            <Link to={
+              type === 'promotion'
+                ? `/promotion/${name}`
+                : `/collection/${name}`
+            } className="flex items-center gap-2">
+              <span>See all</span>
+              <VscArrowRight className="h-5 w-5" aria-hidden />
+            </Link>
+          </Button>
         </h3>
         <h4 className="
           font-poppins font-normal
@@ -70,30 +68,30 @@ export const CategoryPreview = ({
 
       <ProductRow
         products={items}
-        scrollPosition={scrollPosition}
         onClickProduct={onClickProduct}
       />
 
       <div className="flex justify-center w-full mt-8 mb-10">
-        <Link to={
-          type === 'promotion'
-            ? `/promotion/${name}`
-            : `/collection/${name}`
-        }>
-          <Button
-            rightIcon={<VscArrowRight />}
-            colorScheme='pink'
-            variant='outline'
-            size='lg'
-            onClick={() => {
-              window.rudderanalytics?.track(`click_preview_bottom_see_all`, {
-                category: name,
-              });
-            }}
-          >
-            See all in {label}
-          </Button>
-        </Link>
+        <Button
+          asChild
+          variant='outline'
+          size='lg'
+          className='border-pink-400 text-pink-600 hover:bg-pink-50'
+          onClick={() => {
+            window.rudderanalytics?.track(`click_preview_bottom_see_all`, {
+              category: name,
+            });
+          }}
+        >
+          <Link to={
+            type === 'promotion'
+              ? `/promotion/${name}`
+              : `/collection/${name}`
+          } className="flex items-center gap-2">
+            <span>See all in {label}</span>
+            <VscArrowRight className="h-5 w-5" aria-hidden />
+          </Link>
+        </Button>
       </div>
     </div>
   );

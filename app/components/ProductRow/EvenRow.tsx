@@ -1,10 +1,8 @@
-import type { LinksFunction } from '@remix-run/node';
-import type { ScrollPosition } from 'react-lazy-load-image-component'
-
+import type { LinksFunction } from 'react-router';
 import MediumGridSkeleton, { links as MediumGridSkeletonLinks } from "~/components/ProductGrid/MediumGridSkeleton";
 import type { Product } from "~/shared/types";
 
-import styles from './styles/EventRow.css';
+import styles from './styles/EventRow.css?url';
 import type { TagsCombo } from '../ProductGrid/types';
 import { MediumGrid } from "../ProductGrid";
 
@@ -22,14 +20,12 @@ interface EvenRowProps {
 	onClickProduct?: (title: string, productID: string) => void;
 
 	loading?: boolean;
-	scrollPosition?: ScrollPosition;
 }
 
 export default function EvenRow({
 	loading = false,
 	products = [],
 	onClickProduct = () => { },
-	scrollPosition,
 }: EvenRowProps) {
 
 	return (
@@ -58,7 +54,6 @@ export default function EvenRow({
 								description={product.shortDescription}
 								tagCombo={product.tabComboType as TagsCombo | null}
 								discount={product.discount}
-								scrollPosition={scrollPosition}
 							/>
 						)
 						)

@@ -1,8 +1,8 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import type { CarouselImage } from './types';
 import CarouselMinimal from './CarouselMinimal';
-import styles from './styles/Carousel.css';
+import styles from './styles/Carousel.css?url';
 
 export const links: LinksFunction = () => {
 	return [

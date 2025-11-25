@@ -1,8 +1,10 @@
 import httpStatus from 'http-status-codes';
 import type { PriceInfo } from './types';
 
-import { envs } from '~/utils/get_env_source';
-import type { ShoppingCart, ShoppingCartItem } from '~/sessions/shoppingcart.session';
+export type { PriceInfo } from './types';
+
+import { envs } from '~/utils/env';
+import type { ShoppingCart, ShoppingCartItem } from '~/sessions/types';
 
 export type PriceQuery = {
   variation_uuid: string;
@@ -15,9 +17,7 @@ export type FetchPriceInfoParams = {
 };
 
 export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<PriceInfo> => {
-  console.time(`order-amount ${`${envs.MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`}`)
-
-  const resp = await fetch(`${envs.MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`, {
+  const resp = await fetch(`${envs.PEASY_DEAL_ENDPOINT}/v2/accountant/order-amount`, {
     method: 'post',
     body: JSON.stringify(params),
     headers: {

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import useNprogress, { links as nprogressStyles } from '~/hooks/useNprogress';
 

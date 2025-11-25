@@ -1,7 +1,17 @@
-import algoliasearch from 'algoliasearch';
+import { liteClient as algoliasearch } from 'algoliasearch/lite';
+import invariant from 'tiny-invariant';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 
-const searchClient = algoliasearch(envs.ALGOLIA_APP_ID, envs.ALGOLIA_APP_WRITE_KEY);
+let searchClient: ReturnType<typeof algoliasearch> | null = null;
 
-export default searchClient
+export function getSearchClient() {
+  if (!searchClient) {
+    invariant(envs.ALGOLIA_APP_ID, `ALGOLIA_APP_ID can not be empty ${envs.ALGOLIA_APP_ID}`);
+    invariant(envs.ALGOLIA_APP_WRITE_KEY, `ALGOLIA_APP_WRITE_KEY can not be empty ${envs.ALGOLIA_APP_WRITE_KEY}`);
+
+    searchClient = algoliasearch(envs.ALGOLIA_APP_ID, envs.ALGOLIA_APP_WRITE_KEY);
+  }
+
+  return searchClient;
+}

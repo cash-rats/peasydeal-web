@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
-import type { LinksFunction } from '@remix-run/node';
-import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/dist/theme.min.css';
-import { useSubmit } from '@remix-run/react';
+import type { LinksFunction } from 'react-router';
+import autocompleteThemeClassicStyles from '@algolia/autocomplete-theme-classic/dist/theme.min.css?url';
+import { useSubmit } from 'react-router';
 import type { OnSubmitParams } from '@algolia/autocomplete-core';
 
-import { searchClient } from '~/components/Algolia';
+import { getSearchClient } from '~/components/Algolia';
 import {
   createProductsSuggestionsPlugin,
   createCategoriesPlugin,
@@ -13,7 +13,7 @@ import {
 import type { AutocompleteItem } from '~/components/Algolia/types';
 
 import Autocomplete from './Autocomplete';
-import DropDownSearchBarStyles from './styles/DropDownSearchBar.css';
+import DropDownSearchBarStyles from './styles/DropDownSearchBar.css?url';
 
 export const links: LinksFunction = () => {
   return [
@@ -31,13 +31,13 @@ function DropDownSearchBar() {
 
   const productsSuggestionsPlugin = useMemo(() => {
     return createProductsSuggestionsPlugin({
-      searchClient,
+      searchClient: getSearchClient(),
       recentSearchPlugin,
     });
   }, [recentSearchPlugin]);
 
   const categoriesPlugin = useMemo(() => {
-    return createCategoriesPlugin({ searchClient })
+    return createCategoriesPlugin({ searchClient: getSearchClient() })
   }, []);
 
   const handleSubmit = ({ state }: OnSubmitParams<AutocompleteItem>) => {

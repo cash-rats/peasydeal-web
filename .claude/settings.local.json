@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(node --input-type=module -e:*)",
+      "Bash(node -e:*)",
+      "Bash(npm view:*)",
+      "WebSearch",
+      "WebFetch(domain:www.algolia.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:aibolik.com)",
+      "Bash(find:*)",
+      "WebFetch(domain:stackoverflow.com)",
+      "WebFetch(domain:remix.run)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:v2.remix.run)",
+      "Bash(npm run typecheck:*)",
+      "WebFetch(domain:www.npmjs.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

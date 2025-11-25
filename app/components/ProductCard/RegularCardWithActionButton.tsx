@@ -2,37 +2,28 @@
  * This component render the modulared products
  * into a product grid
  */
-import { Skeleton, SkeletonText } from '@chakra-ui/react'
 import { useState, useMemo } from 'react';
-import { Link } from '@remix-run/react';
-import type { LinksFunction } from '@remix-run/node';
-import { LazyLoadComponent } from "react-lazy-load-image-component";
-import Image, { MimeType } from "remix-image"
-import { Tag, TagLeftIcon } from '@chakra-ui/react';
+import { Link } from 'react-router';
+import { OptimizedImage as Image } from '~/components/OptimizedImage';
+import { LazyWrapper } from '~/components/LazyWrapper';
 import { composeProductDetailURL } from '~/utils';
 import { round10 } from '~/utils/preciseRound';
 import {
+  type IProductCard,
+  type ITag,
   capitalizeWords,
   getColorByTag,
   getLeftIconByTag,
   showPriceOffThreshhold,
 } from './utils';
 
-import type {
-  IProductCard,
-  ITag,
-} from './utils';
 
-import { envs } from '~/utils/get_env_source';
+import { envs } from '~/utils/env';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 
-import { Button } from '@chakra-ui/react'
-import llimageStyle from 'react-lazy-load-image-component/src/effects/blur.css';
+import { Button } from '~/components/ui/button';
+import { cn } from '~/lib/utils';
 import extra10 from '~/images/extra10.png';
-
-export const links: LinksFunction = () => {
-  return [{ rel: 'stylesheet', href: llimageStyle }];
-}
 
 const splitNumber = (n: number): [number, number] => {
   if (!n) return [0, 0];
@@ -66,14 +57,43 @@ const getPriceRow = (salePrice: number, previousRetailPrice: Array<number>) => {
   )
 }
 
+const TAG_COLOR_MAP: Record<string, string> = {
+  linkedin: 'bg-[#0A66C2]/10 text-[#0A66C2]',
+  pink: 'bg-pink-100 text-pink-700',
+  cyan: 'bg-cyan-100 text-cyan-700',
+  red: 'bg-red-100 text-red-700',
+};
+
+const getTagClassName = (color: string) => TAG_COLOR_MAP[color] || '';
+
+const TagBadge = ({ tag }: { tag: ITag }) => {
+  const Icon = tag.icon;
+  const className = getTagClassName(tag.color);
+  const needsInline = !className;
+
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold',
+        needsInline ? 'text-white' : className,
+      )}
+      style={needsInline ? { backgroundColor: tag.color || '#2D91FF' } : undefined}
+    >
+      <Icon className="h-3 w-3" aria-hidden />
+      <span>{tag.name}</span>
+    </span>
+  );
+};
+
 function ProductCardSkeleton() {
   return (
-    <div className='flex border-lg'>
-      <Skeleton
-        className='w-full'
-        height={[183, 183, 253]}
-      />
-      <SkeletonText mt='4' noOfLines={3} spacing='4' skeletonHeight='2' />
+    <div className='flex w-full flex-col border-lg animate-pulse'>
+      <div className='h-[183px] md:h-[253px] w-full rounded-lg bg-slate-200' />
+      <div className='mt-4 space-y-3'>
+        <div className='h-4 w-3/4 rounded bg-slate-200' />
+        <div className='h-4 w-1/2 rounded bg-slate-200' />
+        <div className='h-4 w-1/3 rounded bg-slate-200' />
+      </div>
     </div>
   )
 }
@@ -81,7 +101,7 @@ function ProductCardSkeleton() {
 export default function ProductCard({
   loading = false,
   product,
-  scrollPosition,
+  onClickProduct = () => { },
   displayActionButton = true,
   noPadding = false,
 
@@ -184,10 +204,7 @@ export default function ProductCard({
         }
 
         <div className={`${loaded ? 'h-full' : 'h-[183px] md:h-[253px]'}`} >
-          <LazyLoadComponent
-            threshold={500}
-            scrollPosition={scrollPosition}
-          >
+          <LazyWrapper threshold={500}>
             <Image
               blurDataURL={`${envs.DOMAIN}/images/${loaded
                 ? 'placeholder_transparent.png'
@@ -199,14 +216,14 @@ export default function ProductCard({
                 setLoaded(true);
               }}
               options={{
-                contentType: MimeType.WEBP,
+                contentType: 'image/webp',
                 fit: 'contain',
               }}
               className="
                 aspect-square
                 min-w-0 min-h-0
               "
-              loaderUrl='/remix-image'
+              responsive={[{ size: { width: 274, height: 274 } }]}
               src={mainPic}
               responsive={[
                 {
@@ -217,7 +234,7 @@ export default function ProductCard({
                 },
               ]}
             />
-          </LazyLoadComponent>
+          </LazyWrapper>
         </div>
 
         {/* TITLES */}
@@ -239,16 +256,10 @@ export default function ProductCard({
                 if (!tag) return null;
 
                 return (
-                  <Tag
-                    colorScheme={tag.color}
-                    variant='solid'
-                    className="nowrap"
+                  <TagBadge
                     key={`tag_${tag.name}_${tag.color}`}
-                    variant='subtle'
-                  >
-                    <TagLeftIcon boxSize='12px' as={tag.icon} />
-                    <span>{tag.name}</span>
-                  </Tag>
+                    tag={tag}
+                  />
                 );
               })
               .filter(c => c !== null)
@@ -266,10 +277,8 @@ export default function ProductCard({
           displayActionButton && (
             <div className='hidden md:flex'>
               <Button
-                colorScheme='pink'
-                variant={'solid'}
-                width='100%'
-                size="sm"
+                className='w-full bg-pink-600 hover:bg-pink-700 text-white'
+                size='sm'
                 onClick={() => onClickProduct(title, productUUID)}>
                 {variations && variations.length > 1 ? 'See Options' : 'Add to Cart'}
               </Button>

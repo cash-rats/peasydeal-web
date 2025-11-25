@@ -1,10 +1,10 @@
 import { forwardRef } from 'react';
 import type { ForwardedRef } from 'react';
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 
 import type { Category } from '~/shared/types';
 
-import styles from './styles/SeasonalColumnLayout.css';
+import styles from './styles/SeasonalColumnLayout.css?url';
 import ActivityGrid, { links as ActivityGridLinks } from './components/SeasonalGrid/SeasonalGrid';
 
 export const links: LinksFunction = () => {

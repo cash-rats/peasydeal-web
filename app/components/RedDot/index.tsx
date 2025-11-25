@@ -1,6 +1,6 @@
-import type { LinksFunction } from '@remix-run/node';
+import type { LinksFunction } from 'react-router';
 import type { CSSProperties } from 'react';
-import styles from './styles/RedDot.css';
+import styles from './styles/RedDot.css?url';
 
 export const links: LinksFunction = () => {
 	return [

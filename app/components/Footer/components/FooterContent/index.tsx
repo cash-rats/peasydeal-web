@@ -1,10 +1,11 @@
-import type { LinksFunction } from '@remix-run/node';
-import { Link } from '@remix-run/react';
-import { TextField, } from '@mui/material';
-import EmailIcon from '@mui/icons-material/Email';
+import type { LinksFunction } from 'react-router';
+import { Link } from 'react-router';
+import { Mail } from 'lucide-react';
 import { AiOutlineArrowRight } from 'react-icons/ai';
 
-import styles from './styles/FooterContent.css';
+import { Input } from '~/components/ui/input';
+
+import styles from './styles/FooterContent.css?url';
 
 export const links: LinksFunction = () => {
   return [
@@ -81,27 +82,22 @@ export function SubscribeContent() {
       <p className="py-2 font-medium text-base">
         Enter your email below to be the first to know about new collections and product launches.
       </p>
-      <TextField
-        fullWidth
-        placeholder='Enter your email'
-        variant='outlined'
-        size='small'
-        InputProps={{
-          startAdornment: (
-            <span style={{ paddingRight: '4px' }}>
-              <EmailIcon
-                color='action'
-                fontSize='small'
-              />
-            </span>
-          ),
-          endAdornment: (
-            <span style={{ paddingRight: '4px', cursor: 'pointer' }}>
-              <AiOutlineArrowRight />
-            </span>
-          )
-        }}
-      />
+      <div className="relative mt-2">
+        <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
+        <Input
+          type="email"
+          name="footer-email"
+          placeholder="Enter your email"
+          className="w-full border border-border bg-white pl-9 pr-12 text-sm text-foreground placeholder:text-muted-foreground"
+        />
+        <button
+          type="button"
+          aria-label="Submit email"
+          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-primary p-1 text-white hover:bg-primary/80"
+        >
+          <AiOutlineArrowRight />
+        </button>
+      </div>
     </div>
 
   )

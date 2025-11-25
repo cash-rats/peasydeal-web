@@ -1,14 +1,8 @@
 import { useCallback, useRef } from 'react';
-import { Link } from '@remix-run/react';
-import { IconButton } from '@chakra-ui/react';
-import { useOutletContext } from "@remix-run/react";
-import { VscFlame, VscArrowRight, VscArrowLeft } from 'react-icons/vsc';
-import { IoBody, IoSparklesOutline, IoPricetagsOutline } from 'react-icons/io5';
-import { MdOutlinePets, MdOutlineSmartToy } from 'react-icons/md';
-import { TbToolsKitchen2 } from 'react-icons/tb';
-import { RiShirtFill } from 'react-icons/ri';
-import { GiPearlNecklace, GiFlowerPot, GiLipstick } from 'react-icons/gi';
-import { FcRating, FcSmartphoneTablet, FcHome, FcAutomotive } from 'react-icons/fc';
+import { Link } from 'react-router';
+import { useOutletContext } from "react-router";
+import { VscArrowRight, VscArrowLeft } from 'react-icons/vsc';
+import { Button } from '~/components/ui/button';
 
 import imgHotDeal from './images/hot_deal.png';
 import imgApparel from './images/apparel.png';
@@ -107,19 +101,27 @@ const CategoriesRow = ({ defatulCategories }: { defatulCategories?: any}) => {
           Shop by category
         </h3>
 
-        <div className='absolute top-8 md:top-11 right-2'>
-          <IconButton
+        <div className='absolute top-8 md:top-11 right-2 flex'>
+          <Button
+            type='button'
+            variant='secondary'
+            size='icon'
             aria-label='Page Left'
-            icon={<VscArrowLeft />}
             onClick={() => scroll(false)}
-            className='mr-2 bg-white'
-          />
-          <IconButton
+            className='mr-2 bg-white text-gray-700 shadow hover:bg-slate-100'
+          >
+            <VscArrowLeft className='h-5 w-5' aria-hidden />
+          </Button>
+          <Button
+            type='button'
+            variant='secondary'
+            size='icon'
             aria-label='Page Right'
-            icon={<VscArrowRight />}
             onClick={() => scroll(true)}
-            className='bg-white'
-          />
+            className='bg-white text-gray-700 shadow hover:bg-slate-100'
+          >
+            <VscArrowRight className='h-5 w-5' aria-hidden />
+          </Button>
         </div>
 
         <div

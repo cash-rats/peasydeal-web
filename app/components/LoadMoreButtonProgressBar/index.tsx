@@ -1,5 +1,4 @@
 import LoadMoreButton from '~/components/LoadMoreButton';
-import { Progress } from '@chakra-ui/react';
 
 interface ILoadMoreButtonProgressBars {
   current: number;
@@ -14,6 +13,7 @@ function LoadMoreButtonProgressBar({
   onClickLoadMore = () => { },
   loading = false,
 }: ILoadMoreButtonProgressBars) {
+  const percent = total ? Math.floor((current / total) * 100) : 0;
   return (
     <div className="
       p-4 w-[300px]
@@ -24,12 +24,18 @@ function LoadMoreButtonProgressBar({
         Showing {current} of {total}
       </p>
 
-      <Progress
-        className="w-full"
-        size='sm'
-        value={Math.floor((current / total) * 100)}
-        colorScheme='pink'
-      />
+      <div
+        className="h-2 w-full rounded-full bg-slate-200"
+        role="progressbar"
+        aria-valuenow={percent}
+        aria-valuemin={0}
+        aria-valuemax={100}
+      >
+        <div
+          className="h-full rounded-full bg-emerald-500 transition-all"
+          style={{ width: `${Math.min(100, percent)}%` }}
+        />
+      </div>
       {
         current < total
           ? (

@@ -1,4 +1,4 @@
-import { resolveCategoryName } from '../routes/__index/api/resolve_category_name.server';
+import { resolveCategoryName } from './resolve-category-name.server';
 
 const checkIsPossibleCategory = async (url: URL): Promise<[boolean, string]> => {
   try {

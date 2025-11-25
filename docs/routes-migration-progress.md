@@ -1,0 +1,47 @@
+# Routes Migration Progress
+
+Track movement of routes from `routes.bk/` back into `app/routes/`. Update each entry once its corresponding route is copied and verified on Vercel.
+
+## Checklist
+- [x] `$.tsx`
+- [x] `_index`
+- [x] `api.product.review`
+- [x] `api.tracking.order-info`
+- [ ] `blog`
+- [ ] `blog._index`
+- [x] `cart`
+- [ ] `cart._index`
+- [x] `cart.checkout.tsx`
+- [x] `cart.components.horizontal-products.tsx`
+- [x] `cart.price.tsx`
+- [ ] `checkout`
+- [ ] `checkout._index`
+- [ ] `checkout.fetch-address-options-by-postal`
+- [x] `collection`
+- [x] `collection.$collection`
+- [x] `components`
+- [ ] `confirm-subscription`
+- [ ] `confirm-subscription.tsx`
+- [ ] `healthcheck.tsx`
+- [ ] `hooks`
+- [ ] `payment`
+- [ ] `payment.tsx`
+- [x] `product`
+- [x] `product.$prodId`
+- [x] `product.components.recommended-products.ts`
+- [x] `promotion`
+- [x] `promotion.$promotion`
+- [x] `remix-image`
+- [x] `search`
+- [x] `styles`
+- [ ] `subscribe`
+- [ ] `tracking`
+- [ ] `unsubscribe`
+
+## Findings
+- Core dependencies blocking ESM migration for `app/routes/$.tsx` live inside `Header` and `Footer`:
+  - `app/components/Header/components/AnnouncementBanner/index.tsx` uses `@mui/material/IconButton`.
+  - `app/components/Footer/components/ProductsSection/index.tsx` uses `@mui/material/Button`.
+  - `app/components/Footer/components/FooterContent/index.tsx` uses `@mui/material/TextField` and `@mui/icons-material/Email`.
+  - `app/components/Footer/components/EmailSubscribe/index.tsx` renders `EmailSubscribeModal`, which in turn depends on `@chakra-ui/react`.
+  - The Chakra modal itself is defined in `app/components/EmailSubscribeModal/index.tsx`.
