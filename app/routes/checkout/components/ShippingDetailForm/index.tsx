@@ -46,6 +46,10 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
     onSelectAddress({ ...option.value });
   };
 
+  const handleInputChange = () => {
+    // form onChange handler handles state updates
+  };
+
   return (
     <>
       <div className="grid grid-cols-2 gap-5 mb-3">
@@ -54,7 +58,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             options={options}
             required
             id="postalcode"
-            label="postcode"
+            label="Postcode"
             name="postal"
             value={values.postal}
             inputClassName="h-auto bg-white py-3 text-sm"
@@ -123,7 +127,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="firstname"
             className="text-sm font-medium text-slate-700"
           >
-            firstname
+            Firstname
           </label>
           <input
             required
@@ -131,7 +135,8 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             name="firstname"
             aria-describedby="firstname"
             className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            defaultValue={values.firstname}
+            value={values.firstname}
+            onChange={handleInputChange}
           />
         </div>
 
@@ -140,7 +145,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="lastname"
             className="text-sm font-medium text-slate-700"
           >
-            lastname
+            Lastname
           </label>
           <input
             required
@@ -148,7 +153,8 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             name="lastname"
             aria-describedby="lastname"
             className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            defaultValue={values.lastname}
+            value={values.lastname}
+            onChange={handleInputChange}
           />
         </div>
       </div>
@@ -160,7 +166,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="address1"
             className="text-sm font-medium text-slate-700"
           >
-            address line 1
+            Address line 1
           </label>
           <input
             autoComplete="off"
@@ -169,7 +175,8 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             name="address1"
             aria-describedby="address1"
             className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            defaultValue={values.address1}
+            value={values.address1}
+            onChange={handleInputChange}
           />
         </div>
       </div>
@@ -181,7 +188,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="address2"
             className="text-sm font-medium text-slate-700"
           >
-            address line 2 (county, country)
+            Address line 2 (County, Country)
           </label>
           <input
             autoComplete="off"
@@ -189,7 +196,8 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             name="address2"
             aria-describedby="address2"
             className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            defaultValue={values.address2}
+            value={values.address2}
+            onChange={handleInputChange}
           />
         </div>
       </div>
@@ -202,7 +210,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="city"
             className="text-sm font-medium text-slate-700"
           >
-            city
+            City
           </label>
           <input
             required
@@ -211,7 +219,8 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             name="city"
             aria-describedby="city"
             className="block w-full rounded-md border border-input bg-white px-3 py-3 text-sm shadow-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-            defaultValue={values.city}
+            value={values.city}
+            onChange={handleInputChange}
           />
         </div>
       </div>
