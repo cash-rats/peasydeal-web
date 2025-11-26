@@ -248,6 +248,7 @@ function CheckoutPage() {
         address1: option.line1,
         address2: option.line2,
         city: option.city,
+        postal: option.postal,
       },
     });
   };

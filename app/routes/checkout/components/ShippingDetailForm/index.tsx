@@ -43,6 +43,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
   }
 
   const handleSelectOption = (option: DropdownOption<Option>) => {
+    setPostal(option.value.postal);
     onSelectAddress({ ...option.value });
   };
 

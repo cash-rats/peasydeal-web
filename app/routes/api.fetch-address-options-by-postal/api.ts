@@ -12,6 +12,7 @@ const transformDataToAddressOption = (data: any[]): AddressOption[] => {
       city: item.city,
       county: item.county,
       country: item.country,
+      postal: (item.postcode ?? '').toUpperCase(),
     };
   });
 };

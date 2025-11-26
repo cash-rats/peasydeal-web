@@ -23,6 +23,7 @@ const buildAddressLabel = (option: Option) => (
     option.line2,
     option.city,
     option.county,
+    option.postal,
   ].filter(Boolean).join(', ')
 );
 
