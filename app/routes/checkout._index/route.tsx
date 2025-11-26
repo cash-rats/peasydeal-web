@@ -22,10 +22,8 @@ import styles from '~/routes/checkout/styles/Checkout.css?url';
 import CheckoutForm, {
   links as CheckoutFormLinks,
 } from '~/routes/checkout/components/CheckoutForm';
-import ShippingDetailForm, {
-  links as ShippingDetailFormLinks,
-} from '~/routes/checkout/components/ShippingDetailForm';
-import type { Option } from '~/routes/checkout/components/ShippingDetailForm/api.server';
+import ShippingDetailForm  from '~/routes/checkout/components/ShippingDetailForm';
+import type { AddressOption as Option } from '~/routes/api.fetch-address-options-by-postal/types';
 import CartSummary from '~/routes/checkout/components/CartSummary';
 import ContactInfoForm, {
   links as ContactInfoFormLinks,
@@ -46,7 +44,6 @@ import { getCheckoutSession } from '~/sessions/checkout.session.server';
 
 export const links: LinksFunction = () => {
   return [
-    ...ShippingDetailFormLinks(),
     ...CheckoutFormLinks(),
     ...ContactInfoFormLinks(),
     { rel: 'stylesheet', href: styles },

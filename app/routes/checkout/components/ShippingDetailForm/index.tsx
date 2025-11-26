@@ -1,5 +1,4 @@
 import type { ChangeEvent } from 'react';
-import { type LinksFunction } from 'react-router';
 import { FiHelpCircle } from 'react-icons/fi';
 import MoonLoader from 'react-spinners/MoonLoader';
 
@@ -16,14 +15,7 @@ import {
 
 import type { AddressOption as Option } from '~/routes/api.fetch-address-options-by-postal/types';
 import { useAddressLookup } from '~/routes/checkout/hooks';
-import styles from './styles/ShippingDetailForm.css?url';
 import type { ShippingDetailFormType } from '../../types';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 interface ShippingDetailFormProps {
   values: ShippingDetailFormType;
@@ -56,7 +48,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
 
   return (
     <>
-      <div className="shipping-form-fields field--2">
+      <div className="grid grid-cols-2 gap-5 mb-3">
         <div>
           <TextDropdownField<Option>
             options={options}
@@ -125,7 +117,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
       </div>
 
       {/* Name */}
-      <div className="shipping-form-fields fields--2">
+      <div className="grid grid-cols-2 gap-5 mb-3">
         <div className="flex flex-col gap-1">
           <label
             htmlFor="firstname"
@@ -162,7 +154,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
       </div>
 
       {/* Address line */}
-      <div className="shipping-form-fields field--1">
+      <div className="grid grid-cols-1 gap-5 mb-3">
         <div className="flex flex-col gap-1">
           <label
             htmlFor="address1"
@@ -183,7 +175,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
       </div>
 
       {/* Address line 2 (optional) */}
-      <div className="shipping-form-fields field--1">
+      <div className="grid grid-cols-1 gap-5 mb-3">
         <div className="flex flex-col gap-1">
           <label
             htmlFor="address2"
@@ -203,7 +195,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
       </div>
 
       {/* Postal code & City */}
-      <div className="shipping-form-fields fields--1">
+      <div className="grid grid-cols-1 gap-5 mb-3">
         {/* Might need a dropdown list for city selection for GB */}
         <div className="flex flex-col gap-1">
           <label
