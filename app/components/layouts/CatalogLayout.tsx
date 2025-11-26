@@ -46,7 +46,7 @@ export default function CatalogLayout({
         searchBar={<DropDownSearchBar />}
       />
 
-      <main className="bg-white min-h-[35rem]">{children}</main>
+      <main className="min-h-[35rem]">{children}</main>
 
       <Footer categories={categories} />
     </div>
