@@ -140,11 +140,17 @@ function CheckoutPage() {
   const loading = createOrderFetcher.state !== 'idle';
 
   const validatePhone = (form: HTMLFormElement) => {
-    form.setCustomValidity('');
+    const phoneInput = form.querySelector<HTMLInputElement>('#phone');
+    if (!phoneInput) {
+      return true;
+    }
 
-    const phoneInput = form.querySelector('#phone') as HTMLInputElement;
-    const phone = phoneInput.value;
-    const phoneIsNum = /^[0-9\+]+$/.test(phone);
+    phoneInput.setCustomValidity('');
+
+    const rawPhone = phoneInput.value;
+    const phone = rawPhone.replace(/\s+/g, '');
+
+    const phoneIsNum = /^\+?[0-9]+$/.test(phone);
 
     if (!phoneIsNum) {
       phoneInput.setCustomValidity('Phone must contain only numbers');
@@ -182,12 +188,12 @@ function CheckoutPage() {
     reducerState.current.contactInfoForm.contact_name = contactName;
 
     return {
-      shipping_form: JSON.stringify(reducerState.current.shippingDetailForm),
-      contact_info_form: JSON.stringify(reducerState.current.contactInfoForm),
-      price_info: JSON.stringify(priceInfo),
-      cart_items: JSON.stringify(cartItems),
+      shipping_form: reducerState.current.shippingDetailForm,
+      contact_info_form: reducerState.current.contactInfoForm,
+      price_info: priceInfo,
+      cart_items: cartItems,
       payment_secret: paymentIntendID,
-      promo_code: promoCode,
+      promo_code: promoCode ?? null,
       payment_method: paymentMethod,
     };
   };
@@ -327,9 +333,7 @@ function CheckoutPage() {
             </div>
 
             {
-              <CheckoutForm
-                loading={loading || isPaying}
-              />
+              <CheckoutForm loading={loading || isPaying} />
             }
           </createOrderFetcher.Form>
         </div>

@@ -83,6 +83,13 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
     promo_code,
   } = formObj
 
+  let parsedPromoCode: string | null = null;
+  try {
+    parsedPromoCode = promo_code ? JSON.parse(promo_code) : null;
+  } catch (err) {
+    parsedPromoCode = null;
+  }
+
   const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
   const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
   const priceInfoObj: PriceInfo = JSON.parse(priceInfo);
@@ -104,7 +111,7 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
 
     products: trfItemsObj,
     price_info: priceInfoObj,
-    promo_code: JSON.parse(promo_code),
+    promo_code: parsedPromoCode,
   });
 
 
