@@ -1,4 +1,4 @@
-import type { AddressOption as Option } from '../../api.server';
+import type { AddressOption as Option } from '~/routes/api.fetch-address-options-by-postal/types';
 
 export type AddressOptions = {
   label: string;
@@ -16,6 +16,15 @@ export const inistialState: StateShape = {
   selectedOption: null,
   postal: '',
 };
+
+const buildAddressLabel = (option: Option) => (
+  [
+    option.line1,
+    option.line2,
+    option.city,
+    option.county,
+  ].filter(Boolean).join(', ')
+);
 
 export enum AddressOptionsActionTypes {
   update_all_options = 'update_all_options',
@@ -37,7 +46,7 @@ export const addressOptionsReducer = (state: StateShape, action: AddressOptionsA
       return {
         ...state,
         options: payload.map((option) => ({
-          label: `${option.line1}, ${option.line2}, ${option.city}`,
+          label: buildAddressLabel(option),
           value: option,
         })),
       };
@@ -48,7 +57,7 @@ export const addressOptionsReducer = (state: StateShape, action: AddressOptionsA
       return {
         ...state,
         selectedOption: {
-          label: `${payload.line1}, ${payload.line2}, ${payload.city}`,
+          label: buildAddressLabel(payload),
           value: payload,
         },
       };

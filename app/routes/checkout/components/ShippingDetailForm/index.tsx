@@ -14,7 +14,7 @@ import {
   TooltipTrigger,
 } from '~/components/ui/tooltip';
 
-import type { AddressOption as Option } from '~/routes/checkout/api.server';
+import type { AddressOption as Option } from '~/routes/api.fetch-address-options-by-postal/types';
 import { useAddressLookup } from '~/routes/checkout/hooks';
 import styles from './styles/ShippingDetailForm.css?url';
 import type { ShippingDetailFormType } from '../../types';

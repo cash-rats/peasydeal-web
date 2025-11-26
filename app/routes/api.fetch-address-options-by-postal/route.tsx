@@ -1,5 +1,5 @@
 import { ActionFunctionArgs } from 'react-router';
-import { fetchAddressOptionsByPostal, } from '~/routes/checkout/api.server';
+import { fetchAddressOptionsByPostal } from './api';
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();

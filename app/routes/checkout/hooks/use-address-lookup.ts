@@ -1,16 +1,15 @@
 import { useEffect, useReducer } from 'react';
 import { useFetcher } from 'react-router';
 
-import type { AddressOption } from '../api.server';
+import type { AddressOption } from '~/routes/api.fetch-address-options-by-postal/types';
 import {
   addressOptionsReducer,
   AddressOptionsActionTypes,
   inistialState,
 } from '../components/ShippingDetailForm/reducer';
 
-const DEFAULT_ACTION = '/checkout/fetch-address-options-by-postal';
 
-export function useAddressLookup(action: string = DEFAULT_ACTION) {
+export function useAddressLookup() {
   const fetcher = useFetcher<AddressOption[]>();
   const [state, dispatch] = useReducer(addressOptionsReducer, inistialState);
 
@@ -37,7 +36,10 @@ export function useAddressLookup(action: string = DEFAULT_ACTION) {
 
     fetcher.submit(
       { postal: nextPostal },
-      { method: 'post', action },
+      {
+        method: 'post',
+        action: '/api/fetch-address-options-by-postal',
+      },
     );
   };
 

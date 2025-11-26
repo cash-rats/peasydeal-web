@@ -4,44 +4,6 @@ import type { ApiErrorResponse } from '~/shared/types';
 import { envs } from '~/utils/env';
 import type { PriceInfo } from '~/shared/cart';
 
-export type AddressParts = 'line1' | 'line2' | 'city' | 'county' | 'country';
-
-export type AddressOption = {
-  [key in AddressParts]: string;
-}
-
-const transformDataToAddressOption = (data: any[]): AddressOption[] => {
-  return data.map((item) => {
-    return {
-      line1: item.line1,
-      line2: item.line2,
-      city: item.city,
-      county: item.county,
-      country: item.country,
-    };
-  });
-};
-
-export const fetchAddressOptionsByPostal = async ({ postal }: { postal: string }): Promise<AddressOption[]> => {
-  const resp = await fetch(`${envs.MYFB_ENDPOINT}/data-server/ec/value/getaddress`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: new URLSearchParams({
-      'postcode': postal
-    }),
-  });
-
-  const respJSON = await resp.json();
-
-  if (resp.status !== httpStatus.OK) {
-    throw new Error(respJSON);
-  }
-
-  return transformDataToAddressOption(respJSON.data);
-};
-
 type CreateOrderParams = {
   email: string;
   firstname: string;
