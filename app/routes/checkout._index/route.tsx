@@ -242,11 +242,18 @@ function CheckoutPage() {
   };
 
   const handleSelectAddress = (option: Option) => {
+    const addressLine2 = [
+      option.line2,
+      option.line3,
+      option.county,
+      option.country,
+    ].filter(Boolean).join(', ');
+
     dispatch({
       type: ReducerActionTypes.update_shipping_detail_form,
       payload: {
         address1: option.line1,
-        address2: option.line2,
+        address2: addressLine2,
         city: option.city,
         postal: option.postal,
       },

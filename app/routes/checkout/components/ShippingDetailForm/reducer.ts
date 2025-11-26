@@ -21,6 +21,7 @@ const buildAddressLabel = (option: Option) => (
   [
     option.line1,
     option.line2,
+    option.line3,
     option.city,
     option.county,
     option.postal,
