@@ -128,7 +128,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="firstname"
             className="text-sm font-medium text-slate-700"
           >
-            Firstname
+            First Name
           </label>
           <input
             required
@@ -146,7 +146,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="lastname"
             className="text-sm font-medium text-slate-700"
           >
-            Lastname
+            Last Name
           </label>
           <input
             required
@@ -167,7 +167,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="address1"
             className="text-sm font-medium text-slate-700"
           >
-            Address line 1
+            Address Line 1
           </label>
           <input
             autoComplete="off"
@@ -189,7 +189,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
             htmlFor="address2"
             className="text-sm font-medium text-slate-700"
           >
-            Address line 2 (County, Country)
+            Address Line 2 (County, Country)
           </label>
           <input
             autoComplete="off"
