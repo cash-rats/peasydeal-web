@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
-import parseISO from 'date-fns/parseISO';
+import parseISO from 'date-fns/parseISO/index.js';
 
 import OrderAnnotation from './components/OrderAnnotation';
 import OrderDetail from './components/OrderDetail';

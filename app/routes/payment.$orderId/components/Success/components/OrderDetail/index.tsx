@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import format from 'date-fns/format';
+import format from 'date-fns/format/index.js';
 import { round10 } from '~/utils/preciseRound';
 
 import { Separator } from '~/components/ui/separator';
