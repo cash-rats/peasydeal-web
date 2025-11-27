@@ -60,9 +60,7 @@ function PaymentResultLoader({ clientSecret, orderId }: PaymentResultLoaderProps
     }
 
     return (
-      <div className="pt-8">
-        <LoadingSkeleton />
-      </div>
+      <LoadingSkeleton />
     )
   }
 

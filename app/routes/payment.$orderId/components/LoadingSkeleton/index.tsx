@@ -2,6 +2,8 @@ import { Skeleton } from '~/components/ui/skeleton';
 
 export default function LoadingSkeleton() {
   return (
+    <div className="pt-8">
+
     <div className="aspect-[3/4] w-[600px]">
       <div className="flex flex-col items-center">
         <div className="text-center">
@@ -40,6 +42,7 @@ export default function LoadingSkeleton() {
           ))
         }
       </div>
+    </div>
     </div>
   );
 }
