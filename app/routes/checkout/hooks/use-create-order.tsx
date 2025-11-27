@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useFetcher } from 'react-router';
-import type { ApiErrorResponse } from '~/shared/types';
-import type { ActionPayload } from '../actions';
+import type { ApiErrorResponse, PaymentMethod } from '~/shared/types';
 
 // This hook creates a new PeasyDeal order.
-type CreateOrderProps = ActionPayload;
+type CreateOrderProps = {
+  shipping_form: string;
+  contact_info_form: string;
+  price_info: string;
+  cart_items: string;
+  payment_secret: string;
+  promo_code: string;
+  payment_method: PaymentMethod;
+};
 
 export const useCreateOrder = () => {
   const createOrderFetcher = useFetcher();

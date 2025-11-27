@@ -114,8 +114,17 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
     promo_code: parsedPromoCode,
   });
 
-
-  const respJSON = await resp.json();
+  const bodyText = await resp.text();
+  let respJSON: any;
+  try {
+    respJSON = JSON.parse(bodyText);
+  } catch (err) {
+    respJSON = {
+      error: 'invalid_json_response',
+      message: 'Failed to parse create order response as JSON',
+      raw: bodyText,
+    };
+  }
   // TODO: Refactor error handling after upgrading to newest remix version
   // throw new Response(JSON.stringify(respJSON), { status: resp.status });
   // return Response.json(respJSON, resp.status);

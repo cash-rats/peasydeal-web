@@ -183,15 +183,15 @@ function CheckoutPage() {
     return contactName;
   };
 
-  const retrieveOrderInfoForSubmission = (paymentMethod: PaymentMethod) => {
+  const composeOrderInfoForSubmission = (paymentMethod: PaymentMethod) => {
     const contactName = assembleContactName();
     reducerState.current.contactInfoForm.contact_name = contactName;
 
     return {
-      shipping_form: reducerState.current.shippingDetailForm,
-      contact_info_form: reducerState.current.contactInfoForm,
-      price_info: priceInfo,
-      cart_items: cartItems,
+      shipping_form: JSON.stringify(reducerState.current.shippingDetailForm),
+      contact_info_form: JSON.stringify(reducerState.current.contactInfoForm),
+      price_info: JSON.stringify(priceInfo),
+      cart_items: JSON.stringify(cartItems),
       payment_secret: paymentIntendID,
       promo_code: promoCode ?? null,
       payment_method: paymentMethod,
@@ -199,7 +199,7 @@ function CheckoutPage() {
   };
 
   const handleCreateOrder = async (paymentMethod: PaymentMethod = 'stripe') => {
-    const orderInfo = retrieveOrderInfoForSubmission(paymentMethod);
+    const orderInfo = composeOrderInfoForSubmission(paymentMethod);
     dispatch({
       type: ReducerActionTypes.update_contact_info_form,
       payload: reducerState.current.contactInfoForm,
