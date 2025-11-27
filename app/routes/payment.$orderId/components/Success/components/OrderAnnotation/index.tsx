@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-import { CheckCheck } from 'lucide-react';
+import { FaRegCheckCircle } from "react-icons/fa";
 
 import { Button } from '~/components/ui/button';
 
@@ -19,9 +19,9 @@ function Text({ children }: { children: ReactNode }) {
 
 function OrderAnnotation({ email, orderUUID }: OrderAnnotationProps) {
   return (
-    <div className="flex flex-col">
-      <div className="text-center">
-        <CheckCheck className="h-[120px] w-[120px] text-emerald-500" />
+    <div className="flex flex-col pt-4">
+      <div className="flex justify-center">
+        <FaRegCheckCircle className="h-[120px] w-[120px] text-emerald-500" />
       </div>
 
       <h1 className="text-center font-semibold text-3xl mt-4 font-poppins">
