@@ -1,49 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useFetcher } from 'react-router';
-import type { ActionFunctionArgs } from 'react-router';
 import parseISO from 'date-fns/parseISO';
-
-import { clearCart } from '~/sessions/shoppingcart.session.server';
-import { commitSession } from '~/sessions/redis_session.server';
-import { sessionResetTransactionObject } from '~/sessions/transaction.session.server';
 
 import OrderAnnotation from './components/OrderAnnotation';
 import OrderDetail from './components/OrderDetail';
 import ProductSummary from './components/ProductSummary';
 import OrderInformation from './components/OrderInformation';
 import type { SuccessOrderDetail } from './types';
-import { fetchOrder } from './api.server';
 import LoadingSkeleton from '../LoadingSkeleton';
 
 /*
   Load order information by stripe `client_secret` and it's relative items.
-
-  TODOs:
-   - [ ] Remove items from shopping cart once payment success.
 */
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const url = new URL(request.url);
-  const orderUUID = url.searchParams.get('order_uuid');
-
-  if (!orderUUID) {
-    throw Error('no order id presented in query params');
-  }
-
-  return Response.json(
-    await fetchOrder(orderUUID),
-    {
-      headers: {
-        // Clear TransactionObject & shopping cart once payment success.
-        'Set-Cookie': await commitSession(
-          await sessionResetTransactionObject(
-            await clearCart(request),
-          )
-        ),
-      }
-    }
-  );
-}
-
 function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: string }) {
   const orderFetcher = useFetcher();
   const [orderDetail, setOrderDetail] = useState<SuccessOrderDetail | null>(null);
@@ -55,13 +23,13 @@ function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: s
       {},
       {
         method: 'post',
-        action: `/payment/components/Success?index&order_uuid=${orderId}`
+        action: `/payment?index&order_uuid=${orderId}`
       });
 
   }, [orderId]);
 
   useEffect(() => {
-    if (orderFetcher.type === 'done') {
+    if (orderFetcher.state === 'idle' && orderFetcher.data) {
       setOrderDetail(orderFetcher.data as SuccessOrderDetail);
 
       // Cart count updates automatically via root loader revalidation
@@ -75,13 +43,13 @@ function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: s
         currency: "GBP",
       });
     }
-  }, [orderFetcher]);
+  }, [orderFetcher.data, orderFetcher.state, orderId, paymentMethod]);
 
   return (
     <div className="w-screen bg-[#f6f6f6] px-[10px] pb-14">
       <div className="max-w-[650px] my-0 mx-auto flex flex-col justify-center items-center">
         {
-          orderDetail && orderFetcher.type === 'done' ? (
+          orderDetail && orderFetcher.state === 'idle' ? (
             <>
               <OrderAnnotation
                 email={orderDetail.email}
