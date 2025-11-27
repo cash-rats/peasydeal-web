@@ -1,6 +1,6 @@
 import { FaCheck } from 'react-icons/fa';
 import type { LinksFunction } from 'react-router';
-import { Button, Stack } from '@chakra-ui/react';
+import { Button } from '~/components/ui/button';
 
 import styles from './styles/check.css?url';
 
@@ -37,19 +37,13 @@ function ReviewSuccess({ onClose }: ReviewSuccessParams) {
       </p>
 
       {/* close button */}
-      <Stack
-        className="mt-5"
-        direction='row'
-        align='center'
+      <Button
+        type="button"
+        onClick={onClose}
+        className="mt-5 bg-pink-500 text-white hover:bg-pink-600"
       >
-        <Button
-          colorScheme='pink'
-          className="captialize"
-          onClick={onClose}
-        >
-          Continue shopping!
-        </Button >
-      </Stack>
+        Continue shopping!
+      </Button>
     </div>
   )
 }

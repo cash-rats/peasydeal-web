@@ -1,19 +1,17 @@
 import { useState } from 'react';
 import type { ChangeEvent, MouseEvent } from 'react';
-import { Alert, AlertIcon } from '@chakra-ui/react';
+import { AlertCircle } from 'lucide-react';
 import { OptimizedImage as Image } from '~/components/OptimizedImage';
 import { Rating, StickerStar } from '@smastrom/react-rating';
 import { BiInfoCircle } from 'react-icons/bi';
-import {
-  Input,
-  Textarea,
-  IconButton,
-  Button,
-} from '@chakra-ui/react';
 import ImageUploading from 'react-images-uploading';
 import type { ImageListType } from 'react-images-uploading';
 import { BsFillPlusCircleFill } from 'react-icons/bs';
 import { RxCross1 } from 'react-icons/rx';
+import { Alert, AlertDescription } from '~/components/ui/alert';
+import { Input } from '~/components/ui/input';
+import { Button } from '~/components/ui/button';
+import { Spinner } from '~/components/ui/spinner';
 
 import { envs } from '~/utils/env';
 
@@ -71,11 +69,11 @@ function ReviewForm({
     <div className="flex flex-col mt-2 gap-3">
       {
         error && (
-          <Alert status='error' >
-            <AlertIcon />
-            <p className='font-normal text-base font-poppins'>
+          <Alert variant='destructive' className='items-start gap-2'>
+            <AlertCircle className='h-4 w-4 mt-[2px]' />
+            <AlertDescription className='font-normal text-base font-poppins'>
               {error}
-            </p>
+            </AlertDescription>
           </Alert>
         )
       }
@@ -150,9 +148,9 @@ function ReviewForm({
         <Input
           placeholder='What is your name?'
           name="name"
-          size="sm"
           value={name}
           onChange={handleChangeName}
+          className='h-10'
         />
 
         {
@@ -203,10 +201,9 @@ function ReviewForm({
           </span>
         </span>
 
-        <Textarea
-          className="h-[150px] font-normal"
+        <textarea
+          className="h-[150px] font-normal w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           id="review"
-          resize='none'
           placeholder="Share your experience here"
           onChange={onChangeReview}
         />
@@ -242,6 +239,7 @@ function ReviewForm({
               <div className="flex flex-col">
                 {/* click or drop area */}
                 <button
+                  type="button"
                   className="w-full p-3 bg-[#f6f6f6]"
                   onClick={onImageUpload}
                 >
@@ -270,14 +268,16 @@ function ReviewForm({
                       className="relative"
                       key={idx}
                     >
-                      <IconButton
-                        className="absolute rounded-[50%] right-[-13px] top-[-8px]"
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="icon"
+                        className="absolute right-[-13px] top-[-8px] h-5 w-5 rounded-full p-0"
                         aria-label={`remove-review-img-${idx}`}
-                        icon={<RxCross1 />}
-                        fontSize='14px'
-                        size={'xs'}
                         onClick={() => onImageRemove(idx)}
-                      />
+                      >
+                        <RxCross1 className="h-3 w-3" />
+                      </Button>
                       <img
                         alt={`review-${idx}`}
                         width={85}
@@ -295,17 +295,26 @@ function ReviewForm({
 
       {/* action buttons */}
       <div className="flex flex-row justify-end items-center gap-3">
-        <Button onClick={onClose} className="capitalize">
+        <Button type="button" variant="outline" onClick={onClose} className="capitalize">
           cancel
         </Button>
 
         <Button
-          isLoading={isLoading}
-          colorScheme='green'
+          type="button"
           onClick={onSubmit}
-          className="capitalize"
+          disabled={isLoading}
+          className="capitalize bg-emerald-500 text-white hover:bg-emerald-600 disabled:opacity-70"
         >
-          submit
+          {
+            isLoading
+              ? (
+                <span className="flex items-center gap-2">
+                  <Spinner className="text-white" />
+                  Submitting...
+                </span>
+              )
+              : 'submit'
+          }
         </Button>
       </div>
     </div>
