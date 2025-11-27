@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useStripe } from '@stripe/react-stripe-js';
 import type { PaymentIntent } from '@stripe/stripe-js';
 
-import LoadingSkeleton from '../LoadingSkeleton';
-import Success from '../Success';
-import Failed from '../Failed';
+import LoadingSkeleton from '~/routes/payment.$orderId/components/LoadingSkeleton';
+import Success from '~/routes/payment.$orderId/components/Success';
+import Failed from '~/routes/payment.$orderId/components/Failed';
 
 /*
   TODOs
@@ -67,9 +67,7 @@ function PaymentResultLoader({ clientSecret, orderId }: PaymentResultLoaderProps
   }
 
   return (
-    <div>
-      {renderResult(stripePaymentStatus)}
-    </div>
+    <> {renderResult(stripePaymentStatus)} </>
   );
 }
 

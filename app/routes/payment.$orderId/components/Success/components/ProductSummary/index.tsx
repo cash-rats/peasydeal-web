@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 
 import { Separator } from '~/components/ui/separator';
 
-import type { OrderItem } from '../../types';
+import type { OrderItem } from '~/routes/payment/types';
 
 interface ProductSummaryProps {
   products: OrderItem[];

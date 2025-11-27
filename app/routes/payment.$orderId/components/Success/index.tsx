@@ -6,7 +6,7 @@ import OrderAnnotation from './components/OrderAnnotation';
 import OrderDetail from './components/OrderDetail';
 import ProductSummary from './components/ProductSummary';
 import OrderInformation from './components/OrderInformation';
-import type { SuccessOrderDetail } from './types';
+import type { SuccessOrderDetail } from '~/routes/payment/types';
 import LoadingSkeleton from '../LoadingSkeleton';
 
 /*
@@ -18,7 +18,6 @@ function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: s
 
   useEffect(() => {
     if (!orderId) return;
-    // Retrieve order information via loader.
     orderFetcher.submit(
       {},
       {
@@ -31,8 +30,6 @@ function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: s
   useEffect(() => {
     if (orderFetcher.state === 'idle' && orderFetcher.data) {
       setOrderDetail(orderFetcher.data as SuccessOrderDetail);
-
-      // Cart count updates automatically via root loader revalidation
 
       // Track conversion event
       if (typeof document === 'undefined') return;

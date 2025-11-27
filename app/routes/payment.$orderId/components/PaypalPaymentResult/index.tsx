@@ -1,4 +1,4 @@
-import Success from '../Success';
+import Success from '~/routes/payment.$orderId/components/Success';
 
 interface PaypalPaymentResultProps {
   orderID: string;

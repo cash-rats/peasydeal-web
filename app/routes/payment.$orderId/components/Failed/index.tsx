@@ -1,8 +1,8 @@
 import type { PaymentIntent } from '@stripe/stripe-js';
 import { Link } from 'react-router';
+import { TriangleAlert } from 'lucide-react';
 
 import { Button } from '~/components/ui/button';
-import { TriangleAlert } from 'lucide-react';
 
 interface FailedProps {
   reason?: string;

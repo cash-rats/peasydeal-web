@@ -13,6 +13,7 @@ import {
   clearCheckoutSessionData,
   commitCheckoutSession,
 } from '~/sessions/checkout.session.server';
+import { sessionResetTransactionObject } from '~/sessions/transaction.session.server';
 
 type LoaderData = {
   categories: Category[];
@@ -56,12 +57,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const session = await getCookieSession(request);
   clearCheckoutSessionData(session);
+  const resetSession = await sessionResetTransactionObject(session);
 
   return Response.json(
     await fetchOrder(orderUUID),
     {
       headers: {
-        'Set-Cookie': await commitCheckoutSession(session),
+        'Set-Cookie': await commitCheckoutSession(resetSession),
       }
     }
   );

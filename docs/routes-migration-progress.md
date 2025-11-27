@@ -40,11 +40,11 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 
 ## Findings
 - Payment routes migrated but still rely on MUI components; rewrite each to shadcn/radix:
-  - [x] `app/routes/payment/components/Failed/index.tsx` (swapped to shadcn Button + lucide icon)
-  - [x] `app/routes/payment/components/LoadingSkeleton/index.tsx` (swapped to shadcn Skeleton)
-  - [x] `app/routes/payment/components/Success/components/OrderAnnotation/index.tsx` (swapped to shadcn Button + lucide icon)
-  - [x] `app/routes/payment/components/Success/components/OrderDetail/index.tsx` (swapped to shadcn Separator)
-  - [x] `app/routes/payment/components/Success/components/ProductSummary/index.tsx` (swapped to shadcn Separator)
+  - [x] `app/routes/payment.$orderId/components/Failed/index.tsx` (swapped to shadcn Button + lucide icon)
+  - [x] `app/routes/payment.$orderId/components/LoadingSkeleton/index.tsx` (swapped to shadcn Skeleton)
+  - [x] `app/routes/payment.$orderId/components/Success/components/OrderAnnotation/index.tsx` (swapped to shadcn Button + lucide icon)
+  - [x] `app/routes/payment.$orderId/components/Success/components/OrderDetail/index.tsx` (swapped to shadcn Separator)
+  - [x] `app/routes/payment.$orderId/components/Success/components/ProductSummary/index.tsx` (swapped to shadcn Separator)
 - Core dependencies blocking ESM migration for `app/routes/$.tsx` live inside `Header` and `Footer`:
   - `app/components/Header/components/AnnouncementBanner/index.tsx` uses `@mui/material/IconButton`.
   - `app/components/Footer/components/ProductsSection/index.tsx` uses `@mui/material/Button`.

@@ -3,8 +3,8 @@ import { useLoaderData, redirect } from 'react-router';
 
 import type { PaymentMethod } from '~/shared/types';
 import { PaymentMethod as PaymentMethodEnum } from '~/shared/enums';
-import StripePaymentResult from '~/routes/payment/components/StripePaymentResult';
-import PaypalPaymentResult from '~/routes/payment/components/PaypalPaymentResult';
+import StripePaymentResult from './components/StripePaymentResult';
+import PaypalPaymentResult from './components/PaypalPaymentResult';
 
 type LoaderData = {
   paymentMethod: PaymentMethodEnum;
