@@ -1,12 +1,13 @@
 import { Outlet, useLoaderData } from 'react-router';
 import type { ActionFunctionArgs, LinksFunction, MetaFunction } from 'react-router';
+import { useEffect } from 'react';
 import httpStatus from 'http-status-codes';
 
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import { getPaymentSuccessTitleText } from '~/utils/seo';
-import { useCartCount } from '~/routes/hooks';
+import { useCartCount, useCartContext } from '~/routes/hooks';
 import { fetchOrder } from '~/routes/payment/api.server';
 import { getCookieSession } from '~/sessions/session_utils.server';
 import {
@@ -55,15 +56,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     throw Error('no order id presented in query params');
   }
 
-  const session = await getCookieSession(request);
-  clearCheckoutSessionData(session);
-  const resetSession = await sessionResetTransactionObject(session);
+  let session = await getCookieSession(request);
+  session = await sessionResetTransactionObject(clearCheckoutSessionData(session));
 
   return Response.json(
     await fetchOrder(orderUUID),
     {
       headers: {
-        'Set-Cookie': await commitCheckoutSession(resetSession),
+        'Set-Cookie': await commitCheckoutSession(session),
       }
     }
   );
@@ -72,6 +72,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function Payment() {
   const { categories, navBarCategories } = useLoaderData<LoaderData>() || {};
   const cartCount = useCartCount();
+  const { clearCart, isInitialized } = useCartContext();
+
+  useEffect(() => {
+    if (!isInitialized) return;
+    clearCart()
+      .catch((error) => {
+        console.error('Failed to clear cart on payment route', error)
+      });
+  }, [clearCart, isInitialized]);
 
   return (
     <CatalogLayout
