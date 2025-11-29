@@ -42,7 +42,7 @@ export const useUpdateItemQuantity = ({ dispatch, shoppingCart, promoCode }: Use
       },
       {
         method: 'post',
-        action: '/cart/price',
+        action: '/api/cart/price',
       },
     );
   }, [dispatch, shoppingCart, promoCode, fetcher]);

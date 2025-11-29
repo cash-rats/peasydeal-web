@@ -44,7 +44,7 @@ export const useRemoveItem = ({ dispatch, promoCode, shoppingCart }: UseRemoveIt
       },
       {
         method: 'post',
-        action: '/cart/price',
+        action: '/api/cart/price',
       },
     );
   }
