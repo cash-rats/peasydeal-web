@@ -135,12 +135,12 @@ function ProductDetailContainer({
       {/* Desktop Display - product detail exhibit */}
       <div className='col-span-5 xl:col-span-6'>
         <ProductDetailSection
+          mainPicUrl={productDetail.main_pic_url}
           sharedPics={sharedImages}
           variationPics={variationImages}
           selectedVariationUUID={variation?.uuid}
           title={productDetail.title}
           description={productDetail.description}
-          mainPicUrl={productDetail.main_pic_url}
         />
 
         {/* Reviews */}

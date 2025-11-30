@@ -29,8 +29,6 @@ function PicsCarousel({
   selectedVariationUUID = '',
   title = ''
 }: PicsCarouselProps) {
-  const images = sharedImages.concat(variationImages);
-
   return (
     <>
       {/* Mobile view slider */}
@@ -38,7 +36,7 @@ function PicsCarousel({
         <div className="carousel-minimal" >
           <CarouselMinimal
             data={
-              images.map((image: CarouselImage) => {
+              sharedImages.map((image: CarouselImage) => {
                 return {
                   title: `${title}-${image.url}`,
                   ...image,
