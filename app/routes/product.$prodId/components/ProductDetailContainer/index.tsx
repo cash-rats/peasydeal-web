@@ -140,6 +140,7 @@ function ProductDetailContainer({
           selectedVariationUUID={variation?.uuid}
           title={productDetail.title}
           description={productDetail.description}
+          mainPicUrl={productDetail.main_pic_url}
         />
 
         {/* Reviews */}

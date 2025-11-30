@@ -1,5 +1,5 @@
 import { produce, type Draft } from 'immer';
-import  { type ShoppingCartItem } from '~/sessions/types';
+import { type ShoppingCartItem } from '~/sessions/types';
 
 import {
   normalizeToSessionStorableCartItem,
@@ -20,6 +20,7 @@ type ProductState = {
   variationImages: ProductImg[];
   quantity: number;
   categories: Category[];
+  mainPicUrl: string | undefined;
   mainCategory: Category | null;
   sessionStorableCartItem: ShoppingCartItem;
   tags: string[];
@@ -65,6 +66,7 @@ const reducer = produce((draft: Draft<ProductState>, action: ProductAction) => {
       // product images.
       draft.productDetail = product;
       draft.categories = product.categories;
+      draft.mainPicUrl = product.main_pic_url;
       draft.mainCategory = product.categories[0];
       draft.sharedImages = [];
       draft.variationImages = [];

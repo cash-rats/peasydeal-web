@@ -49,6 +49,7 @@ export interface ProductDetail {
 export type LoaderTypeProductDetail = {
   product: ProductDetail;
   canonical_url: string;
+  main_pic_url: string;
   meta_image: string;
   user_agent: string;
 };
