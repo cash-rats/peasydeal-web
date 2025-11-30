@@ -271,7 +271,6 @@ function ProductDetailContainer({
                             <button
                               key={v.uuid}
                               onClick={() => {
-                                setHoveredVariationUUID(null);
                                 onChangeVariation && onChangeVariation({ value: v.uuid, label: v.spec_name });
                               }}
                               onMouseEnter={() => setHoveredVariationUUID(v.uuid)}
