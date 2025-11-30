@@ -22,6 +22,7 @@ interface ProductDetailSectionProps {
   sharedPics: ProductImg[];
   variationPics: ProductImg[];
   mainPicUrl?: string;
+  previewImage?: ProductImg | null;
 }
 
 function ProductDetailSection({
@@ -29,7 +30,6 @@ function ProductDetailSection({
   description = '',
   selectedVariationUUID = '',
   sharedPics = [],
-  variationPics = [],
   mainPicUrl,
 }: ProductDetailSectionProps) {
   const combinedImages: CarouselImage[] = [];

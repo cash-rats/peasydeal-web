@@ -37,6 +37,7 @@ interface CarouselProps {
   thumbnails: boolean;
 
   style?: CSSProperties;
+  previewImage?: CarouselMinimalImage;
 
 };
 
@@ -55,6 +56,7 @@ function Carousel({
   slideBackgroundColor,
   slideImageFit,
   thumbnails = true,
+  previewImage,
 
 }: CarouselProps) {
 
@@ -217,6 +219,25 @@ function Carousel({
                   </div>
                 );
               })}
+              {
+                previewImage
+                  ? (
+                    <div
+                      className="
+                        absolute inset-0 z-10
+                        flex items-center justify-center
+                        pointer-events-none
+                      "
+                    >
+                      <img
+                        alt="Preview image"
+                        src={previewImage.url}
+                        className="object-contain w-full h-full"
+                      />
+                    </div>
+                  )
+                  : null
+              }
 
               <button
                 aria-label="prev slide"

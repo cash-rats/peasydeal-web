@@ -17,18 +17,7 @@ interface PicsCarouselProps {
   title?: string;
 };
 
-/*
- * TODOs:
- * 	- [x] hover thumbnail display border.
- * 	- [x] clicks on thumbnail should display that image.
- *  - [x] display variation_images before shared_images.
- */
-function PicsCarousel({
-  sharedImages,
-  variationImages,
-  selectedVariationUUID = '',
-  title = ''
-}: PicsCarouselProps) {
+function PicsCarousel({ sharedImages, title = '' }: PicsCarouselProps) {
   return (
     <>
       {/* Mobile view slider */}

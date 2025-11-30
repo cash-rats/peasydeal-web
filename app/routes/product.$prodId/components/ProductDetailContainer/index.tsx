@@ -77,6 +77,7 @@ function ProductDetailContainer({
   addToCart,
 }: ProductDetailContainerParams) {
   const [openOpenReturnPolicy, setOpenReturnPolicy] = useState(false);
+  const [hoveredVariationUUID, setHoveredVariationUUID] = useState<string | null>(null);
   const productTopRef = useRef<HTMLDivElement>(null);
   const productContentWrapperRef = useRef<HTMLDivElement>(null);
   const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
@@ -85,6 +86,11 @@ function ProductDetailContainer({
   useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 
   const handleOpenModal = () => setOpenReturnPolicy(true);
+
+  const hoveredVariationImage = useMemo(
+    () => variationImages.find((image) => image.variation_uuid === hoveredVariationUUID),
+    [variationImages, hoveredVariationUUID],
+  );
 
   const hasSuperDeal = useMemo(function () {
     let _hasSuperDeal = false;
@@ -141,6 +147,7 @@ function ProductDetailContainer({
           selectedVariationUUID={variation?.uuid}
           title={productDetail.title}
           description={productDetail.description}
+          previewImage={hoveredVariationImage}
         />
 
         {/* Reviews */}
@@ -263,7 +270,12 @@ function ProductDetailContainer({
                           return (
                             <button
                               key={v.uuid}
-                              onClick={() => onChangeVariation && onChangeVariation({ value: v.uuid, label: v.spec_name })}
+                              onClick={() => {
+                                setHoveredVariationUUID(null);
+                                onChangeVariation && onChangeVariation({ value: v.uuid, label: v.spec_name });
+                              }}
+                              onMouseEnter={() => setHoveredVariationUUID(v.uuid)}
+                              onMouseLeave={() => setHoveredVariationUUID(null)}
                               className={`
                                 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 border
                                 ${isSelected
