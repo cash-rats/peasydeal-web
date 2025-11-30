@@ -35,9 +35,9 @@ interface CarouselProps {
   slideBackgroundColor: string;
   slideImageFit?: Property.ObjectFit;
   thumbnails: boolean;
-  thumbnailWidth: string;
+
   style?: CSSProperties;
-  selectedVariationUUID?: string;
+
 };
 
 
@@ -55,31 +55,12 @@ function Carousel({
   slideBackgroundColor,
   slideImageFit,
   thumbnails = true,
-  selectedVariationUUID = '',
-  thumbnailWidth,
+
 }: CarouselProps) {
-  // A map that stores variation uuid and it's corresponding
-  // image thumbnail position index.
-  //
-  // When user changes variation on product detail page, thumbnail
-  // slides would scroll to that position accordingly.
-  const variationImgPosIndexMap: Map<string, number> = useMemo(
-    () => {
-      return data.reduce((m, { variation_uuid }, idx) => {
-        if (variation_uuid) {
-          m.set(variation_uuid, idx)
-        }
-        return m
-      }, new Map())
-    },
-    [data]);
 
   //Initialize States
   const [openLightBox, setOpenLightBox] = useState(false);
-  const [slide, setSlide] = useState(
-    variationImgPosIndexMap
-      .get(selectedVariationUUID) || 0
-  );
+  const [slide, setSlide] = useState(0);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState(false);
   const [change, setChange] = useState(false);
@@ -100,19 +81,6 @@ function Carousel({
     else if (slide + n < 0) setSlide(data.length - 1);
     else setSlide(slide + n);
   };
-
-  useEffect(() => {
-    const slideIdx = variationImgPosIndexMap
-      .get(selectedVariationUUID);
-
-    // If selected variation does not have a matching
-    // variation image, image stays at where it is.
-    if (!slideIdx) return;
-
-    setSlide(slideIdx);
-    setChange(!change);
-  }, [selectedVariationUUID]);
-
 
   //Start the automatic change of slide
   useEffect(() => {
