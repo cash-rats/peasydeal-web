@@ -106,6 +106,7 @@ const Carousel: FC<CarouselProps> = ({
   }, [isPaused, change]);
 
   const thumbnailRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const thumbnailContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (thumbnails && thumbnailRefs.current[slide]) {
@@ -116,6 +117,17 @@ const Carousel: FC<CarouselProps> = ({
       });
     }
   }, [slide, thumbnails]);
+
+  const scrollThumbnails = (direction: number) => {
+    const container = thumbnailContainerRef.current;
+    if (!container) return;
+
+    const scrollAmount = container.clientWidth * 0.8;
+    container.scrollBy({
+      left: direction * scrollAmount,
+      behavior: 'smooth',
+    });
+  };
 
 
   return (
@@ -322,62 +334,81 @@ const Carousel: FC<CarouselProps> = ({
           <small className='font-bold'>{`${slide < 0 ? 1 : slide + 1}/${data.length || 0}`}</small>
         </div>
 
-        <div
-          className="thumbnails flex"
-          id="thumbnail-div"
-          style={{ maxWidth: width }}
-        >
-          {
-            data
-              .map((item: CarouselMinimalImage, index: number) => {
-                return (
-                  <Fragment key={index}>
-                    <div
-                      ref={(el) => (thumbnailRefs.current[index] = el)}
-                      onClick={(e) => {
-                        setSlide(index);
-                        setChange(!change);
-                      }}
-                    >
-                      <Image
-                        blurDataURL={`${envs.DOMAIN}/images/${loaded
-                          ? 'placeholder_transparent.png'
-                          : 'placeholder.svg'
-                          }`}
-                        placeholder={loaded ? 'empty' : 'blur'}
-                        placeholderAspectRatio={1}
-                        onLoadingComplete={() => {
-                          setLoaded(true)
+        <div className="flex items-center gap-2" style={{ maxWidth: width }}>
+          <button
+            aria-label="scroll thumbnails left"
+            className="bg-white p-2 rounded-full border border-slate-200 shadow-sm hover:bg-slate-50"
+            onClick={() => scrollThumbnails(-1)}
+          >
+            <BiChevronLeft size={20} />
+          </button>
+
+          <div
+            ref={thumbnailContainerRef}
+            className="thumbnails flex overflow-x-auto"
+            id="thumbnail-div"
+            style={{ maxWidth: width }}
+          >
+            {
+              data
+                .map((item: CarouselMinimalImage, index: number) => {
+                  return (
+                    <Fragment key={index}>
+                      <div
+                        ref={(el) => (thumbnailRefs.current[index] = el)}
+                        onClick={(e) => {
+                          setSlide(index);
+                          setChange(!change);
                         }}
-                        options={{
-                          contentType: 'image/webp',
-                          fit: 'contain',
-                        }}
-                        className={`
-                          mx-2 rounded-lg bg-slate-100
-                          p-[2px] min-w-[100px]
-                          w-auto h-[100px] aspect-sqare
-                          ${slide === index
-                            ? 'border-[3px] border-solid border-[#D02E7D]'
-                            : 'border-0'
-                          }
-                        `}
-                        alt={item.title}
-                        src={item.url}
-                        responsive={[
-                          {
-                            size: {
-                              width: 100,
-                              height: 100,
+                      >
+                        <Image
+                          blurDataURL={`${envs.DOMAIN}/images/${loaded
+                            ? 'placeholder_transparent.png'
+                            : 'placeholder.svg'
+                            }`}
+                          placeholder={loaded ? 'empty' : 'blur'}
+                          placeholderAspectRatio={1}
+                          onLoadingComplete={() => {
+                            setLoaded(true)
+                          }}
+                          options={{
+                            contentType: 'image/webp',
+                            fit: 'contain',
+                          }}
+                          className={`
+                            mx-2 rounded-lg bg-slate-100
+                            p-[2px] min-w-[100px]
+                            w-auto h-[100px] aspect-sqare
+                            ${slide === index
+                              ? 'border-[3px] border-solid border-[#D02E7D]'
+                              : 'border-0'
+                            }
+                          `}
+                          alt={item.title}
+                          src={item.url}
+                          responsive={[
+                            {
+                              size: {
+                                width: 100,
+                                height: 100,
+                              },
                             },
-                          },
-                        ]}
-                      />
-                    </div>
-                  </Fragment>
-                );
-              })
-          }
+                          ]}
+                        />
+                      </div>
+                    </Fragment>
+                  );
+                })
+            }
+          </div>
+
+          <button
+            aria-label="scroll thumbnails right"
+            className="bg-white p-2 rounded-full border border-slate-200 shadow-sm hover:bg-slate-50"
+            onClick={() => scrollThumbnails(1)}
+          >
+            <BiChevronRight size={20} />
+          </button>
         </div>
       </div>
     </>
