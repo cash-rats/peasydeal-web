@@ -31,6 +31,7 @@ function ProductDetailSection({
   selectedVariationUUID = '',
   sharedPics = [],
   mainPicUrl,
+  previewImage = null,
 }: ProductDetailSectionProps) {
   const combinedImages: CarouselImage[] = [];
 
@@ -52,6 +53,7 @@ function ProductDetailSection({
           sharedImages={combinedImages}
           variationImages={[]}
           selectedVariationUUID={selectedVariationUUID}
+          previewImage={previewImage || undefined}
         />
       </div>
 

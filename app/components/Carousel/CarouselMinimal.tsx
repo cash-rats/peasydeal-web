@@ -1,6 +1,6 @@
 
 import type { Property } from 'csstype';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, FC } from 'react';
 import {
   Fragment,
   useEffect,
@@ -16,13 +16,13 @@ import { useSwipe } from '~/hooks/useSwipe';
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { envs } from '~/utils/env';
-interface CarouselMinimalImage {
+export interface CarouselMinimalImage {
   title: string;
   url: string;
   variation_uuid: string;
 }
 
-interface CarouselProps {
+export interface CarouselProps {
   data: CarouselMinimalImage[];
   time: number;
   width?: string;
@@ -42,7 +42,7 @@ interface CarouselProps {
 };
 
 
-function Carousel({
+const Carousel: FC<CarouselProps> = ({
   data = [],
   time,
   width,
@@ -58,7 +58,7 @@ function Carousel({
   thumbnails = true,
   previewImage,
 
-}: CarouselProps) {
+}) => {
 
   //Initialize States
   const [openLightBox, setOpenLightBox] = useState(false);
@@ -383,6 +383,6 @@ function Carousel({
     </>
   );
 
-}
+};
 
 export default Carousel;

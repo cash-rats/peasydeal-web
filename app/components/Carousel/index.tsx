@@ -15,9 +15,14 @@ interface PicsCarouselProps {
   variationImages: CarouselImage[];
   selectedVariationUUID?: string;
   title?: string;
+  previewImage?: CarouselImage;
 };
 
-function PicsCarousel({ sharedImages, title = '' }: PicsCarouselProps) {
+function PicsCarousel({
+  sharedImages,
+  title = '',
+  previewImage,
+}: PicsCarouselProps) {
   return (
     <>
       {/* Mobile view slider */}
@@ -31,6 +36,14 @@ function PicsCarousel({ sharedImages, title = '' }: PicsCarouselProps) {
                   ...image,
                 }
               })
+            }
+            previewImage={
+              previewImage
+                ? {
+                  title: `${title}-${previewImage.url}`,
+                  ...previewImage,
+                }
+                : undefined
             }
             time={2000}
             width="850px"
