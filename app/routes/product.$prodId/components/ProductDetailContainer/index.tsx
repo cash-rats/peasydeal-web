@@ -2,7 +2,7 @@ import { useRef, useMemo, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LinksFunction } from 'react-router';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
-import Select from 'react-select';
+
 import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
 import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { BsLightningCharge, BsChevronRight } from 'react-icons/bs';
@@ -257,23 +257,28 @@ function ProductDetailContainer({
                 productDetail?.variations.length > 1
                   ? (
                     <>
-                      <Select
-                        inputId='variation_id'
-                        instanceId='variation_id'
-                        placeholder='select variation'
-                        value={{
-                          value: variation?.uuid,
-                          label: variation?.spec_name,
-                        }}
-                        onChange={onChangeVariation}
-                        options={
-                          productDetail.variations.map(
-                            (variation) => ({ value: variation.uuid, label: variation.spec_name })
-                          )
-                        }
-                      />
+                      <div className="flex flex-wrap gap-2">
+                        {productDetail.variations.map((v) => {
+                          const isSelected = variation?.uuid === v.uuid;
+                          return (
+                            <button
+                              key={v.uuid}
+                              onClick={() => onChangeVariation && onChangeVariation({ value: v.uuid, label: v.spec_name })}
+                              className={`
+                                px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 border
+                                ${isSelected
+                                  ? 'bg-[#D02E7D] text-white border-[#D02E7D] hover:bg-[#b02569]'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:border-[#D02E7D] hover:text-[#D02E7D]'
+                                }
+                              `}
+                            >
+                              {v.spec_name}
+                            </button>
+                          );
+                        })}
+                      </div>
 
-                      {variationErr && <p className="error">{variationErr}</p>}
+                      {variationErr && <p className="error mt-2 text-red-500">{variationErr}</p>}
                     </>
                   )
                   : null
