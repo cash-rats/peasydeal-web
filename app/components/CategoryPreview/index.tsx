@@ -1,8 +1,8 @@
 // create a react component called CategoryPreview
-
-import type { TCategoryPreview } from "~/shared/types";
 import { Link } from 'react-router';
 import { VscArrowRight } from "react-icons/vsc";
+
+import type { TCategoryPreview } from "~/shared/types";
 import { ProductRow } from "~/components/ProductRow";
 import { Button } from '~/components/ui/button';
 
@@ -24,7 +24,7 @@ export const CategoryPreview = ({
   } = category;
 
   return (
-    <div>
+    <>
       <div className="flex flex-col">
         <h3 className="
           font-poppins font-semibold
@@ -93,6 +93,6 @@ export const CategoryPreview = ({
           </Link>
         </Button>
       </div>
-    </div>
+    </>
   );
 }

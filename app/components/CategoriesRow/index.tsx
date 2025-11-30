@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react';
 import { Link } from 'react-router';
-import { useOutletContext } from "react-router";
 import { VscArrowRight, VscArrowLeft } from 'react-icons/vsc';
 import { Button } from '~/components/ui/button';
 
@@ -25,14 +24,6 @@ import imgToy from './images/toy.png';
 
 import type { Category } from '~/shared/types';
 
-type ContextType = {
-  categories: Category[];
-};
-
-export function useContext() {
-  return useOutletContext<ContextType>();
-}
-
 const imageMapper = (name: string) => {
   switch (name) {
     case 'hot_deal':
@@ -40,7 +31,7 @@ const imageMapper = (name: string) => {
     case 'apparel-and-accessories':
       return <img src={imgApparel} className='w-[75%] ml-auto' alt="apparel-and-accessories" />;
     case 'health-and-beauty':
-        return <img src={imgBeauty} className='w-[75%] ml-auto' alt="health-and-beauty" />;
+      return <img src={imgBeauty} className='w-[75%] ml-auto' alt="health-and-beauty" />;
     case 'business-and-industrial':
       return <img src={imgBusiness} className='w-[75%] ml-auto' alt="business-and-industrial" />;
     case 'cameras-and-optics':
@@ -76,8 +67,11 @@ const imageMapper = (name: string) => {
   }
 }
 
-const CategoriesRow = ({ defatulCategories }: { defatulCategories?: any}) => {
-  const { categories } = useOutletContext<ContextType>() || defatulCategories || {};
+type CategoriesRowParams = {
+  categories?: Category[]
+}
+
+const CategoriesRow = ({ categories = [] }: CategoriesRowParams) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const scroll = useCallback((toRight: boolean) => {
@@ -151,7 +145,7 @@ const CategoriesRow = ({ defatulCategories }: { defatulCategories?: any}) => {
                           cursor-pointer
                           flex flex-col items-start
                           px-4 pt-4
-                          font-poppins font-medium
+                          font-poppins
                           md:text-lg
                           text-base
                           leading-5

@@ -3,14 +3,14 @@ import {
   isRouteErrorResponse,
   useLoaderData,
   useRouteError,
+  useRouteLoaderData,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 
 import type { Category, TCategoryPreview, TPromotionType } from '~/shared/types';
 import CatalogLayout, { links as catalogLayoutLinks } from '~/components/layouts/CatalogLayout';
-import { useCartCount } from '~/routes/hooks';
 import PromoActivities from '~/components/PromoActivities/PromoActivities';
-import PromoCarousell, { links as PromoCarouselLink } from '~/components/PromoCarousell';
+import { links as PromoCarouselLink } from '~/components/PromoCarousell';
 import { CategoryPreview } from '~/components/CategoryPreview';
 import FiveHundredError from '~/components/FiveHundreError';
 import CategoriesRow from '~/components/CategoriesRow';
@@ -105,9 +105,9 @@ export default function LandingPage() {
     categoryPreviews = [],
     promotionPreviews = [],
     promotions = [],
-    userAgent = '',
   } = useLoaderData<LoaderData>() || {};
-  const cartCount = useCartCount();
+  const rootData = useRouteLoaderData('root') as { cartCount?: number } | undefined;
+  const cartCount = rootData?.cartCount ?? 0;
 
   const handleClickProduct = (productUUID: string) => {
     console.log('[ga] user clicks on:', productUUID);
@@ -130,9 +130,11 @@ export default function LandingPage() {
           </div>
         </div>
 
+        {/*
         <div className="w-full py-2.5 max-w-screen-xl mx-auto">
           <PromoCarousell />
         </div>
+        */}
 
         <div className="py-0 px-auto flex flex-col justify-center items-center mx-0">
           <div className="w-full bg-[#F1F1F1]">
@@ -154,7 +156,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {index === 0 ? <CategoriesRow /> : null}
+              {index === 0 ? <CategoriesRow categories={categories} /> : null}
 
               {index === 1 ? (
                 <div className="py-0 px-auto flex flex-col justify-center items-center bg-slate-50">
