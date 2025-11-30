@@ -1,4 +1,4 @@
-import { IconButton } from '@chakra-ui/react';
+
 import type { Property } from 'csstype';
 import type { CSSProperties } from 'react';
 import {
@@ -218,7 +218,7 @@ function Carousel({
                 );
               })}
 
-              <IconButton
+              <button
                 aria-label="prev slide"
                 className="
                   absolute top-1/2 left-0
@@ -228,16 +228,17 @@ function Carousel({
                   rounded-full
                   border-[1px]
                   border-slate-200
+                  flex items-center justify-center
                 "
-                bg="white"
                 onClick={(e) => {
                   addSlide(-1);
                   setChange(!change);
                 }}
-                icon={<BiChevronLeft />}
-              />
+              >
+                <BiChevronLeft size={24} />
+              </button>
 
-              <IconButton
+              <button
                 aria-label="next slide"
                 className="
                   absolute top-1/2 right-0
@@ -247,14 +248,15 @@ function Carousel({
                   rounded-full
                   border-[1px]
                   border-slate-200
+                  flex items-center justify-center
                 "
-                bg="white"
                 onClick={(e) => {
                   addSlide(1);
                   setChange(!change);
                 }}
-                icon={<BiChevronRight />}
-              />
+              >
+                <BiChevronRight size={24} />
+              </button>
               {dots && (
                 <div className="dots">
                   {data.map((item: any, index: number) => {
@@ -272,7 +274,7 @@ function Carousel({
                 </div>
               )}
 
-              <IconButton
+              <button
                 aria-label="zoom photo"
                 className="
                   absolute bottom-[10px] right-[10px]
@@ -283,13 +285,14 @@ function Carousel({
                   border-[1px]
                   border-slate-200
                   z-5
+                  flex items-center justify-center
                 "
-                bg="white"
                 onClick={(e) => {
                   setOpenLightBox(true);
                 }}
-                icon={<VscZoomIn />}
-              />
+              >
+                <VscZoomIn size={24} />
+              </button>
             </div>
           </div>
         </div>

@@ -56,11 +56,9 @@ function PicsCarousel({
             slideBackgroundColor="white"
             slideImageFit="cover"
             thumbnails={true}
-            thumbnailWidth="100px"
             style={{
               textAlign: "center",
             }}
-            selectedVariationUUID={selectedVariationUUID}
           />
         </div>
       </div>
