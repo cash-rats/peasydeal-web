@@ -1,18 +1,18 @@
-import {
-  useEffect,
-  useState,
-  useMemo,
-  Fragment,
-} from "react";
-import type { CSSProperties } from 'react';
+import { IconButton } from '@chakra-ui/react';
 import type { Property } from 'csstype';
-import { useSwipe } from '~/hooks/useSwipe';
-import { IconButton } from '@chakra-ui/react'
-import { BiChevronRight, BiChevronLeft } from 'react-icons/bi';
+import type { CSSProperties } from 'react';
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { VscZoomIn } from "react-icons/vsc";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import { OptimizedImage as Image } from '~/components/OptimizedImage';
+import { useSwipe } from '~/hooks/useSwipe';
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { envs } from '~/utils/env';
@@ -103,54 +103,17 @@ function Carousel({
     }
   }, [isPaused, change]);
 
-  function scrollTo(el) {
-    if (!el) return;
+  const thumbnailRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-    const elLeft = el.offsetLeft + el.offsetWidth;
-    const elParentLeft = el.parentNode.offsetLeft + el.parentNode.offsetWidth;
-
-    // check if element not in view
-    if (elLeft >= elParentLeft + el.parentNode.scrollLeft) {
-      el.parentNode.scroll({ left: elLeft - elParentLeft, behavior: "smooth" });
-    } else if (elLeft <= el.parentNode.offsetLeft + el.parentNode.scrollLeft) {
-      el.parentNode.scroll({
-        left: el.offsetLeft - el.parentNode.offsetLeft,
+  useEffect(() => {
+    if (thumbnails && thumbnailRefs.current[slide]) {
+      thumbnailRefs.current[slide]?.scrollIntoView({
         behavior: "smooth",
+        block: "nearest",
+        inline: "center",
       });
     }
-  }
-
-  //Listens to slide state changes
-  useEffect(() => {
-    const slides = document.getElementsByClassName("carousel-item");
-    const dots = document.getElementsByClassName("dot");
-
-    const slideIndex = slide;
-    let i;
-    for (i = 0; i < data.length; i++) {
-      slides[i].style.display = "none";
-    }
-    for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-    }
-    //If thumbnails are enabled
-    if (thumbnails) {
-      const thumbnailsArray = document.getElementsByClassName("thumbnail");
-      for (i = 0; i < thumbnailsArray.length; i++) {
-        thumbnailsArray[i].className = thumbnailsArray[i].className.replace(
-          " active-thumbnail",
-          ""
-        );
-      }
-      if (thumbnailsArray[slideIndex] !== undefined)
-        thumbnailsArray[slideIndex].className += " active-thumbnail";
-      scrollTo(document.getElementById(`thumbnail-${slideIndex}`));
-    }
-
-    if (slides[slideIndex] !== undefined)
-      slides[slideIndex].style.display = "block";
-    if (dots[slideIndex] !== undefined) dots[slideIndex].className += " active";
-  }, [slide, isPaused]);
+  }, [slide, thumbnails]);
 
 
   return (
@@ -209,6 +172,7 @@ function Carousel({
                     style={{
                       maxWidth: width ? width : "600px",
                       maxHeight: height ? height : "400px",
+                      display: index === slide ? "block" : "none",
                     }}
                     onMouseDown={(e) => {
                       automatic && setIsPaused(true);
@@ -229,7 +193,7 @@ function Carousel({
                   >
                     <img
                       src={item.url}
-                      alt={item.caption}
+                      alt={item.title}
                       className="carousel-image"
                       onClick={(e) => {
                         setOpenLightBox(true);
@@ -296,7 +260,7 @@ function Carousel({
                   {data.map((item: any, index: number) => {
                     return (
                       <span
-                        className="dot"
+                        className={`dot ${index === slide ? "active" : ""}`}
                         key={index}
                         onClick={(e) => {
                           setSlide(index);
@@ -345,7 +309,7 @@ function Carousel({
                 return (
                   <Fragment key={index}>
                     <div
-                      id={`thumbnail-${index}`}
+                      ref={(el) => (thumbnailRefs.current[index] = el)}
                       onClick={(e) => {
                         setSlide(index);
                         setChange(!change);
