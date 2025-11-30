@@ -51,7 +51,6 @@ function ProductDetailSection({
         <PicsCarousel
           title={title}
           sharedImages={combinedImages}
-          variationImages={[]}
           selectedVariationUUID={selectedVariationUUID}
           previewImage={previewImage || undefined}
         />

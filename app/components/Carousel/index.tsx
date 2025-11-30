@@ -12,7 +12,6 @@ export const links: LinksFunction = () => {
 
 interface PicsCarouselProps {
   sharedImages: CarouselImage[];
-  variationImages: CarouselImage[];
   selectedVariationUUID?: string;
   title?: string;
   previewImage?: CarouselImage;
