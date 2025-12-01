@@ -8,7 +8,7 @@ import {
 import {
   Link,
 } from 'react-router';
-import { VscFlame, VscChevronRight, VscArrowRight } from "react-icons/vsc";
+import { VscFlame, VscChevronRight, VscArrowRight, VscChevronLeft } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
@@ -32,7 +32,10 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const navRef = useRef<HTMLDivElement | null>(null);
+  const navScrollRef = useRef<HTMLDivElement | null>(null);
   const [navBounds, setNavBounds] = useState<{ bottom: number } | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   useEffect(() => {
     const updateBounds = () => {
@@ -49,6 +52,32 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
       window.removeEventListener('scroll', updateBounds, true);
     };
   }, []);
+
+  const updateScrollState = useCallback(() => {
+    const el = navScrollRef.current;
+    if (!el) return;
+
+    const maxScrollLeft = el.scrollWidth - el.clientWidth;
+    setCanScrollLeft(el.scrollLeft > 8);
+    setCanScrollRight(el.scrollLeft < maxScrollLeft - 8);
+  }, []);
+
+  useEffect(() => {
+    updateScrollState();
+    const el = navScrollRef.current;
+    if (!el) return;
+
+    el.addEventListener('scroll', updateScrollState);
+    window.addEventListener('resize', updateScrollState);
+    return () => {
+      el.removeEventListener('scroll', updateScrollState);
+      window.removeEventListener('resize', updateScrollState);
+    };
+  }, [updateScrollState]);
+
+  useEffect(() => {
+    updateScrollState();
+  }, [categories, topCategories, updateScrollState]);
 
   useEffect(() => {
     if (activeMenuName !== ALL_CATEGORIES) {
@@ -133,6 +162,14 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
 
   const setClose = () => closeMenu();
 
+  const scrollNav = (direction: 'left' | 'right') => {
+    const el = navScrollRef.current;
+    if (!el) return;
+    const distance = Math.max(el.clientWidth * 0.6, 200);
+    const delta = direction === 'left' ? -distance : distance;
+    el.scrollBy({ left: delta, behavior: 'smooth' });
+  };
+
   const showMegaMenuPanel = !!(activeMenuName && activeMenuName !== ALL_CATEGORIES);
   const activeRailCategory = activeRail
     ? topCategories.find(({ name }) => name === activeRail)
@@ -161,7 +198,28 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
       ref={navRef}
     >
       <div className="flex relative items-center flex-auto w-full">
-        <nav className="flex-auto relative overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {canScrollLeft && (
+          <button
+            type="button"
+            aria-label="Scroll categories left"
+            className="
+              absolute left-0 top-0 bottom-0
+              z-10
+              flex items-center
+              bg-gradient-to-r from-white via-white/80 to-transparent
+              px-2
+              text-gray-600
+            "
+            onClick={() => scrollNav('left')}
+          >
+            <VscChevronLeft className="text-xl" />
+          </button>
+        )}
+
+        <nav
+          ref={navScrollRef}
+          className="flex-auto relative overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        >
           <ul id="mega-nav-bar" className={`
             relative
             flex flex-auto
@@ -235,6 +293,24 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
             }
           </ul>
         </nav>
+
+        {canScrollRight && (
+          <button
+            type="button"
+            aria-label="Scroll categories right"
+            className="
+              absolute right-0 top-0 bottom-0
+              z-10
+              flex items-center
+              bg-gradient-to-l from-white via-white/80 to-transparent
+              px-2
+              text-gray-600
+            "
+            onClick={() => scrollNav('right')}
+          >
+            <VscChevronRight className="text-xl" />
+          </button>
+        )}
       </div>
 
       {showMegaMenuPanel && currentCategory && (
