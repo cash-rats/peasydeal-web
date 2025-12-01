@@ -3,7 +3,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
 import {
   Link,
@@ -21,37 +20,15 @@ interface CategoriesNavProps {
 };
 
 export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
-  console.log('~ CategoriesNav 1', categories);
-  console.log('~ CategoriesNav 2', topCategories);
-
   const ALL_CATEGORIES = 'ALL';
   const [activeMenuName, setActiveMenuName] = useState<string | null>(null);
   const [activeRail, setActiveRail] = useState<string | null>(null);
 
-  const [isOpen, setIsOpen] = useState(false);
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const navRef = useRef<HTMLDivElement | null>(null);
   const navScrollRef = useRef<HTMLDivElement | null>(null);
-  const [navBounds, setNavBounds] = useState<{ bottom: number } | null>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
-
-  useEffect(() => {
-    const updateBounds = () => {
-      if (!navRef.current) return;
-      const rect = navRef.current.getBoundingClientRect();
-      setNavBounds({ bottom: rect.bottom });
-    };
-
-    updateBounds();
-    window.addEventListener('resize', updateBounds);
-    window.addEventListener('scroll', updateBounds, true);
-    return () => {
-      window.removeEventListener('resize', updateBounds);
-      window.removeEventListener('scroll', updateBounds, true);
-    };
-  }, []);
 
   const updateScrollState = useCallback(() => {
     const el = navScrollRef.current;
@@ -79,12 +56,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     updateScrollState();
   }, [categories, topCategories, updateScrollState]);
 
-  useEffect(() => {
-    if (activeMenuName !== ALL_CATEGORIES) {
-      setIsOpen(false);
-    }
-  }, [activeMenuName]);
-
   const clearHoverTimeouts = () => {
     if (openTimeoutRef.current) {
       clearTimeout(openTimeoutRef.current);
@@ -109,17 +80,11 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
   const openMenuFor = (name: string) => {
     clearHoverTimeouts();
     setMenuDisplayed(true, name);
-    if (name === ALL_CATEGORIES) {
-      setIsOpen(true);
-    }
   };
 
   const closeMenuFor = (name: string) => {
     clearHoverTimeouts();
     setMenuDisplayed(false, name);
-    if (name === ALL_CATEGORIES) {
-      setIsOpen(false);
-    }
   };
 
   const setDelayedOpenFor = (name: string) => {
@@ -144,24 +109,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     closeTimeoutRef.current = setTimeout(() => closeMenuFor(name), 150);
   };
 
-  const openMenu = () => {
-    openMenuFor(ALL_CATEGORIES);
-  };
-
-  const closeMenu = () => {
-    closeMenuFor(ALL_CATEGORIES);
-  };
-
-  const setDelayedOpen = () => {
-    setDelayedOpenFor(ALL_CATEGORIES);
-  };
-
-  const setDelayedClose = () => {
-    setDelayedCloseFor(ALL_CATEGORIES);
-  };
-
-  const setClose = () => closeMenu();
-
   const scrollNav = (direction: 'left' | 'right') => {
     const el = navScrollRef.current;
     if (!el) return;
@@ -180,12 +127,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     categories.find(({ name }) => name === activeMenuName) ||
     null;
 
-  const MegaMenuListItem = ({ className, children }: { className?: string; children: ReactNode }) => (
-    <div className={cn('flex items-center rounded px-2 py-1 text-base hover:bg-gray-100', className)}>
-      {children}
-    </div>
-  );
-
   return (
     <div
       className={`
@@ -195,7 +136,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
         mx-1 md:mx-4 my-auto
         relative
       `}
-      ref={navRef}
     >
       <div className="flex relative items-center flex-auto w-full">
         {canScrollLeft && (
@@ -240,7 +180,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   <li
                     key={`${index}_menu_link`}
                     className={`
-                      flex-none
                       cursor-pointer
                       flex-auto
                       self-center
@@ -335,7 +274,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
         >
           <div className="flex w-full">
             <div className="w-60 bg-white border-r border-gray-200 py-2">
-              {topCategories.map((cat) => {
+              {categories.map((cat) => {
                 if (cat.count === 0) return null;
                 const isActive = cat.name === activeRail;
 
