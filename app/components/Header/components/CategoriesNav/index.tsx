@@ -13,7 +13,7 @@ import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
-import MegaMenu, { links as MegaMenuLink } from './MegaMenu';
+import MegaMenu from './MegaMenu';
 import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
 import {
   DropdownMenu,
@@ -26,7 +26,6 @@ import { cn } from '~/lib/utils';
 export const links: LinksFunction = () => {
   return [
     ...MegaMenuContentLink(),
-    ...MegaMenuLink(),
   ];
 }
 
@@ -42,6 +41,24 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
   const [isOpen, setIsOpen] = useState(false);
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const navRef = useRef<HTMLDivElement | null>(null);
+  const [navBounds, setNavBounds] = useState<{ bottom: number } | null>(null);
+
+  useEffect(() => {
+    const updateBounds = () => {
+      if (!navRef.current) return;
+      const rect = navRef.current.getBoundingClientRect();
+      setNavBounds({ bottom: rect.bottom });
+    };
+
+    updateBounds();
+    window.addEventListener('resize', updateBounds);
+    window.addEventListener('scroll', updateBounds, true);
+    return () => {
+      window.removeEventListener('resize', updateBounds);
+      window.removeEventListener('scroll', updateBounds, true);
+    };
+  }, []);
 
   useEffect(() => {
     if (activeMenuName !== ALL_CATEGORIES) {
@@ -94,7 +111,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     closeTimeoutRef.current = setTimeout(closeMenu, 150);
   };
 
-  const setOpen = () => openMenu();
   const setClose = () => closeMenu();
 
   const setMenuDisplayed = useCallback((_show: boolean, name: string) => {
@@ -116,6 +132,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
         mx-1 md:mx-4 my-auto
         relative
       `}
+      ref={navRef}
     >
       <div className="flex relative items-center flex-auto w-full">
         <nav className="flex-auto relative">
@@ -167,6 +184,8 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   <li key={`${index}_menu_link`} className="CategoriesNav__item fromLeft self-center">
                     <MegaMenu
                       category={category}
+                      navBounds={navBounds}
+                      topCategories={topCategories}
                       setMenuDisplayed={setMenuDisplayed}
                       activeMenuName={activeMenuName}
                     />
@@ -203,15 +222,29 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
-                    align="center"
-                    sideOffset={12}
+                    align="start"
+                    side="bottom"
+                    sideOffset={0}
+                    avoidCollisions={false}
                     className="
                       mega-menu-content
-                      flex w-[100vw] max-w-screen-xl border-none bg-white
+                      fixed
+                      left-0
+                      top-0
+                      flex
+                      border-none bg-white
                       shadow-[2px_4px_16px_rgb(0,0,0,0.08)]
                       pt-4 pb-8 xl:py-8 px-4
                       z-[9999]
+                      rounded-b-xl
                     "
+                    style={{
+                      width: '100vw',
+                      minWidth: '100vw',
+                      left: 0,
+                      top: navBounds?.bottom ?? 0,
+                      transform: 'none',
+                    }}
                     onMouseEnter={openMenu}
                     onMouseLeave={setDelayedClose}
                   >

@@ -1,26 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
-import type { LinksFunction } from 'react-router';
+import { VscArrowRight, VscChevronRight } from "react-icons/vsc";
 
-import { VscArrowRight } from "react-icons/vsc";
 import type { Category } from '~/shared/types';
 
-import styles from './styles/MegaMenu.css?url';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from '~/components/ui/dropdown-menu';
 import { Button } from '~/components/ui/button';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-}
+import { cn } from '~/lib/utils';
 
 interface IMegaMenu {
   category: Category;
+  topCategories: Category[];
+  navBounds?: { bottom: number } | null;
   setMenuDisplayed: (show: boolean, name: string) => void;
   activeMenuName: string | null;
 }
@@ -28,14 +23,23 @@ interface IMegaMenu {
 let delayOpenID: undefined | ReturnType<typeof setTimeout> = undefined;
 let delayCloseID: undefined | ReturnType<typeof setTimeout> = undefined;
 
-const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => {
+const MegaMenu = ({ category, topCategories = [], navBounds, setMenuDisplayed, activeMenuName }: IMegaMenu) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [activeRail, setActiveRail] = useState(category.name);
 
   useEffect(() => {
     if (activeMenuName !== category.name) {
       setIsOpen(false);
     }
-  }, [activeMenuName, category]);
+  }, [activeMenuName, category.name]);
+
+  useEffect(() => {
+    setActiveRail(category.name);
+  }, [category.name]);
+
+  const currentCategory = useMemo(() => {
+    return topCategories.find(({ name }) => name === activeRail) || category;
+  }, [activeRail, topCategories, category]);
 
   const setOpen = () => {
     if (delayCloseID) {
@@ -43,13 +47,14 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
       delayCloseID = undefined;
     }
     setMenuDisplayed(true, category.name);
+    setActiveRail(category.name);
     setIsOpen(true);
   }
 
   /**
    * Invoke `setOpen` after user intended to open
-   * menu panel. After cursuor is on top of the item
-   * for 300 milli-seconds we can confirm that the user
+   * menu panel. After cursor is on top of the item
+   * for 300 milliseconds we can confirm that the user
    * has the intention to open the panel.
    */
   const setDelayOpen = () => {
@@ -120,105 +125,114 @@ const MegaMenu = ({ category, setMenuDisplayed, activeMenuName }: IMegaMenu) => 
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          align="center"
-          sideOffset={12}
+          align="start"
+          side="bottom"
+          sideOffset={0}
+          avoidCollisions={false}
           onMouseEnter={setOpen}
           onMouseLeave={setDelayClose}
-          className='
+          className="
             mega-menu-content
+            fixed
+            left-0
+            top-0
             flex
-            w-[100vw]
-            max-w-screen-xl
+            border border-gray-100
             bg-white
-            pt-4 pb-8 xl:py-8 px-4
-            shadow-[2px_4px_16px_rgb(0,0,0,8%)]
-            overflow-scroll
-            md:max-h-[calc(100vh-8rem)] lg:max-h-auto
+            p-0
+            shadow-[0_14px_40px_rgba(0,0,0,0.08)]
+            overflow-hidden
+            md:max-h-[calc(100vh-8rem)]
             z-[9999]
-          '
+            rounded-b-xl
+          "
+          style={{
+            width: '100vw',
+            minWidth: '100vw',
+            left: 0,
+            top: navBounds?.bottom ?? 0,
+            transform: 'none',
+          }}
         >
-          <div className="flex flex-col px-3 w-full">
-            <div className="
-              grid
-              w-full
-              grid-cols-1 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4
-            ">
-              <div className="flex items-center p-0 w-full col-span-1 md:col-span-3 lg:col-span-3 xl:col-span-4">
-                <Link
-                  // prefetch='intent'
-                  to={`/collection/${category.name}`}
-                  className="w-full self-center"
-                  onClick={setClose}
-                >
-                  <Button
-                    variant='link'
-                    size="lg"
-                    className="text-pink-600 hover:text-pink-700"
-                  >
-                    <span className="ml-2 text-lg">
-                      Shop all {category.shortName || category.title} ({category.count})
-                    </span>
-                    <VscArrowRight className="ml-2" />
-                  </Button>
-                </Link>
-              </div>
-              <div className="pt-3 col-span-1 md:col-span-3 lg:col-span-3 xl:col-span-4">
-                <hr className="my-1 h-[1px] w-full bg-slate-50" />
-              </div>
-              {
-                category.children.length > 0 && category.children.map((child, index) => {
-                  if (child.count === 0) return null;
-                  return (
-                    <div
-                      key={index}
-                      className="flex flex-start flex-col mt-4 xl:mt-8 pr-10"
-                    >
-                      <Link
-                        // prefetch='intent'
-                        to={`/collection/${child.name}`}
-                        className="w-full self-center"
-                        onClick={setClose}
-                      >
-                        <div className="flex items-center p-0">
-                          <Button variant='link' size="lg" className="text-pink-600 hover:text-pink-700">
-                            <span className="ml-2 text-lg whitespace-normal text-left">
-                              {child.label} ({child.count})
-                            </span>
-                          </Button>
-                        </div>
-                      </Link>
-                      <div className="py-0 xl:py-1">
-                        <hr className="my-1 h-[1px] w-full bg-slate-50" />
-                      </div>
-                      {
-                        child.children.length > 0 && child.children.map((subChild, _index) => {
-                          if (subChild.count === 0) return null;
+          <div className="flex w-full">
+            <div className="w-60 bg-white border-r border-gray-200 py-2">
+              {topCategories.map((cat) => {
+                if (cat.count === 0) return null;
+                const isActive = cat.name === activeRail;
 
-                          return (
-                            <div
-                              key={_index}
-                              className="flex flex-start py-0 xl:py-1"
-                            >
+                return (
+                  <button
+                    key={cat.name}
+                    type="button"
+                    aria-label={cat.title}
+                    className={cn(
+                      "flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-gray-800 transition hover:bg-gray-50 border-b border-gray-100 last:border-b-0",
+                      isActive && "bg-gray-100"
+                    )}
+                    onMouseEnter={() => setActiveRail(cat.name)}
+                    onFocus={() => setActiveRail(cat.name)}
+                    onClick={() => setActiveRail(cat.name)}
+                  >
+                    <span className="truncate">{cat.shortName || cat.title}</span>
+                    <VscChevronRight className="text-gray-500" />
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex-1 flex flex-col">
+              <div className="flex-1 overflow-y-auto px-8 py-8">
+                <div className="
+                  grid
+                  w-full
+                  gap-x-10 gap-y-8
+                  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+                ">
+                  {currentCategory.children
+                    .filter((child) => child.count > 0)
+                    .map((child) => (
+                      <div
+                        key={child.name}
+                        className="flex flex-col gap-3 min-w-0"
+                      >
+                        <Link
+                          to={`/collection/${child.name}`}
+                          className="text-[15px] font-semibold text-gray-900 hover:text-gray-700"
+                          onClick={setClose}
+                        >
+                          {child.label} ({child.count})
+                        </Link>
+                        <div className="space-y-2">
+                          {child.children
+                            .filter((subChild) => subChild.count > 0)
+                            .map((subChild) => (
                               <Link
-                                // prefetch='intent'
+                                key={subChild.name}
                                 to={`/collection/${subChild.name}`}
-                                className="w-full self-center"
+                                className="block text-[13px] text-gray-700 hover:text-gray-900 leading-[18px]"
                                 onClick={setClose}
                               >
-                                <div className="flex items-center p-0">
-                                  <Button variant='link' className="text-[#1a202c] hover:text-[#0f172a]">
-                                    <span className="ml-2 text-base font-normal text-[#1a202c]">{subChild.label} ({subChild.count})</span>
-                                  </Button>
-                                </div>
+                                {subChild.label} ({subChild.count})
                               </Link>
-                            </div>
-                          );
-                        })
-                      }
-                    </div>
-                  )
-                })
-              }
+                            ))
+                          }
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+
+              <Link
+                to={`/collection/${currentCategory.name}`}
+                className="flex items-center justify-between border-t border-gray-200 px-8 py-5 text-sm font-semibold text-gray-800 hover:text-gray-900"
+                onClick={setClose}
+              >
+                <span>
+                  Shop all {currentCategory.shortName || currentCategory.title} ({currentCategory.count})
+                </span>
+                <VscArrowRight className="ml-2" />
+              </Link>
             </div>
           </div>
         </DropdownMenuContent>
