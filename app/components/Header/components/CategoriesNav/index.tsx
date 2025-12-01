@@ -161,7 +161,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
       ref={navRef}
     >
       <div className="flex relative items-center flex-auto w-full">
-        <nav className="flex-auto relative">
+        <nav className="flex-auto relative overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
           <ul id="mega-nav-bar" className={`
             relative
             flex flex-auto
@@ -182,6 +182,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   <li
                     key={`${index}_menu_link`}
                     className={`
+                      flex-none
                       cursor-pointer
                       flex-auto
                       self-center
@@ -211,6 +212,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   <li
                     key={`${index}_menu_link`}
                     className="
+                      flex-none
                       self-center
                       bg-gradient-to-r from-[#D02E7D] to-[#D02E7D]
                       bg-no-repeat bg-[length:0%_1px] hover:bg-[length:100%_2px]
