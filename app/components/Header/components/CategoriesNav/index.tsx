@@ -130,6 +130,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
       <div className="flex relative items-center flex-auto w-full">
         <nav className="flex-auto relative">
           <ul id="mega-nav-bar" className={`
+            relative
             flex flex-auto
             list-none
             space-x-1
@@ -196,8 +197,10 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
               })
             }
 
-            <li className="self-center ">
-              <div className="mega-menu-wrapper">
+
+            {/*
+            <li className="self-center">
+              <div className="">
                 <DropdownMenu open={isOpen} onOpenChange={(open) => (open ? openMenu() : closeMenu())}>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -229,7 +232,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     sideOffset={0}
                     avoidCollisions={false}
                     className="
-                      mega-menu-content
                       fixed
                       left-0
                       top-0
@@ -260,9 +262,15 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
               </div>
             </li>
 
+
+
+            */}
+
           </ul>
         </nav>
       </div>
+
+      <div className="border-1"> hello world </div>
     </div>
   );
 }

@@ -4,11 +4,6 @@ import { VscArrowRight, VscChevronRight } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-} from '~/components/ui/dropdown-menu';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
@@ -93,49 +88,37 @@ const MegaMenu = ({ category, topCategories = [], navBounds, setMenuDisplayed, a
   }
 
   return (
-    <div className='mega-menu-wrapper'>
-      <DropdownMenu
-        modal={false}
-        open={isOpen}
-        onOpenChange={(open) => (open ? setOpen() : setClose())}
+    <div>
+      <Button
+        variant="ghost"
+        aria-label={category.name}
+        className="
+          text-sm lg:text-base
+          px-0 lg:px-2
+          py-2 md:py-4
+          flex flex-col
+          items-center relative
+          w-full
+        "
+        onTouchEnd={e => {
+          e.preventDefault();
+          isOpen ? setClose() : setOpen();
+        }}
+        onMouseEnter={setDelayOpen}
+        onMouseLeave={setDelayClose}
       >
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            aria-label={category.name}
-            className="
-              text-sm lg:text-base
-              px-0 lg:px-2
-              py-2 md:py-4
-              flex flex-col
-              items-center relative
-              w-full
-            "
-            onTouchEnd={e => {
-              e.preventDefault();
-              isOpen ? setClose() : setOpen();
-            }}
-            onMouseEnter={setDelayOpen}
-            onMouseLeave={setDelayClose}
-          >
-            <div className="flex items-center">
-              <span>{category.shortName || category.title}</span>
-            </div>
-          </Button>
-        </DropdownMenuTrigger>
+        <div className="flex items-center">
+          <span>{category.shortName || category.title}</span>
+        </div>
+      </Button>
 
-        <DropdownMenuContent
-          align="start"
-          side="bottom"
-          sideOffset={0}
-          avoidCollisions={false}
+      {isOpen && (
+        <div
           onMouseEnter={setOpen}
           onMouseLeave={setDelayClose}
           className="
-            mega-menu-content
-            fixed
+            absolute
             left-0
-            top-0
             flex
             border border-gray-100
             bg-white
@@ -151,7 +134,6 @@ const MegaMenu = ({ category, topCategories = [], navBounds, setMenuDisplayed, a
             minWidth: '100vw',
             left: 0,
             top: navBounds?.bottom ?? 0,
-            transform: 'none',
           }}
         >
           <div className="flex w-full">
@@ -235,8 +217,8 @@ const MegaMenu = ({ category, topCategories = [], navBounds, setMenuDisplayed, a
               </Link>
             </div>
           </div>
-        </DropdownMenuContent>
-      </DropdownMenu>
+        </div>
+      )}
     </div>
   )
 }
