@@ -20,7 +20,6 @@ interface CategoriesNavProps {
 };
 
 export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
-  const ALL_CATEGORIES = 'ALL';
   const [activeMenuName, setActiveMenuName] = useState<string | null>(null);
   const [activeRail, setActiveRail] = useState<string | null>(null);
 
@@ -117,7 +116,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     el.scrollBy({ left: delta, behavior: 'smooth' });
   };
 
-  const showMegaMenuPanel = !!(activeMenuName && activeMenuName !== ALL_CATEGORIES);
+  const showMegaMenuPanel = !!activeMenuName;
   const activeRailCategory = activeRail
     ? (
       topCategories.find(({ name }) => name === activeRail) ||
@@ -320,7 +319,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                         <Link
                           to={`/collection/${child.name}`}
                           className="text-[15px] font-semibold text-gray-900 hover:text-gray-700"
-                          onClick={() => closeMenuFor(activeMenuName || ALL_CATEGORIES)}
+                          onClick={() => closeMenuFor(activeMenuName || '')}
                         >
                           {child.label} ({child.count})
                         </Link>
@@ -332,7 +331,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                                 key={subChild.name}
                                 to={`/collection/${subChild.name}`}
                                 className="block text-[13px] text-gray-700 hover:text-gray-900 leading-[18px]"
-                                onClick={() => closeMenuFor(activeMenuName || ALL_CATEGORIES)}
+                                onClick={() => closeMenuFor(activeMenuName || '')}
                               >
                                 {subChild.label} ({subChild.count})
                               </Link>
@@ -348,7 +347,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
               <Link
                 to={`/collection/${currentCategory.name}`}
                 className="flex items-center justify-between border-t border-gray-200 px-8 py-5 text-sm font-semibold text-gray-800 hover:text-gray-900"
-                onClick={() => closeMenuFor(activeMenuName || ALL_CATEGORIES)}
+                onClick={() => closeMenuFor(activeMenuName || '')}
               >
                 <span>
                   Shop all {currentCategory.shortName || currentCategory.title} ({currentCategory.count})
