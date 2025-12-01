@@ -8,18 +8,11 @@ import {
 import {
   Link,
 } from 'react-router';
-import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
+import { VscFlame, VscChevronRight, VscArrowRight } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
 import MegaMenu from './MegaMenu';
-import MegaMenuContent from '../MegaMenuContent';
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-} from '~/components/ui/dropdown-menu';
-import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
 
 interface CategoriesNavProps {
@@ -30,6 +23,7 @@ interface CategoriesNavProps {
 export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
   const ALL_CATEGORIES = 'ALL';
   const [activeMenuName, setActiveMenuName] = useState<string | null>(null);
+  const [activeRail, setActiveRail] = useState<string | null>(null);
 
   const [isOpen, setIsOpen] = useState(false);
   const openTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -70,19 +64,33 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     }
   };
 
-  const openMenu = () => {
+  const setMenuDisplayed = useCallback((show: boolean, name: string) => {
+    if (show) {
+      setActiveMenuName(name);
+      setActiveRail(name);
+      return;
+    }
+    setActiveMenuName((prev) => (prev === name ? null : prev));
+    setActiveRail((prev) => (prev === name ? null : prev));
+  }, []);
+
+  const openMenuFor = (name: string) => {
     clearHoverTimeouts();
-    setMenuDisplayed(true, ALL_CATEGORIES);
-    setIsOpen(true);
+    setMenuDisplayed(true, name);
+    if (name === ALL_CATEGORIES) {
+      setIsOpen(true);
+    }
   };
 
-  const closeMenu = () => {
+  const closeMenuFor = (name: string) => {
     clearHoverTimeouts();
-    setMenuDisplayed(false, ALL_CATEGORIES);
-    setIsOpen(false);
+    setMenuDisplayed(false, name);
+    if (name === ALL_CATEGORIES) {
+      setIsOpen(false);
+    }
   };
 
-  const setDelayedOpen = () => {
+  const setDelayedOpenFor = (name: string) => {
     if (openTimeoutRef.current) {
       clearTimeout(openTimeoutRef.current);
     }
@@ -90,10 +98,10 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
       clearTimeout(closeTimeoutRef.current);
       closeTimeoutRef.current = null;
     }
-    openTimeoutRef.current = setTimeout(openMenu, 200);
+    openTimeoutRef.current = setTimeout(() => openMenuFor(name), 300);
   };
 
-  const setDelayedClose = () => {
+  const setDelayedCloseFor = (name: string) => {
     if (openTimeoutRef.current) {
       clearTimeout(openTimeoutRef.current);
       openTimeoutRef.current = null;
@@ -101,14 +109,36 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
     }
-    closeTimeoutRef.current = setTimeout(closeMenu, 150);
+    closeTimeoutRef.current = setTimeout(() => closeMenuFor(name), 150);
+  };
+
+  const openMenu = () => {
+    openMenuFor(ALL_CATEGORIES);
+  };
+
+  const closeMenu = () => {
+    closeMenuFor(ALL_CATEGORIES);
+  };
+
+  const setDelayedOpen = () => {
+    setDelayedOpenFor(ALL_CATEGORIES);
+  };
+
+  const setDelayedClose = () => {
+    setDelayedCloseFor(ALL_CATEGORIES);
   };
 
   const setClose = () => closeMenu();
 
-  const setMenuDisplayed = useCallback((_show: boolean, name: string) => {
-    setActiveMenuName(name);
-  }, []);
+  const showMegaMenuPanel = !!(activeMenuName && activeMenuName !== ALL_CATEGORIES);
+  const activeRailCategory = activeRail
+    ? topCategories.find(({ name }) => name === activeRail)
+    : null;
+  const currentCategory =
+    activeRailCategory ||
+    topCategories.find(({ name }) => name === activeMenuName) ||
+    categories.find(({ name }) => name === activeMenuName) ||
+    null;
 
   const MegaMenuListItem = ({ className, children }: { className?: string; children: ReactNode }) => (
     <div className={cn('flex items-center rounded px-2 py-1 text-base hover:bg-gray-100', className)}>
@@ -187,10 +217,11 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                   >
                     <MegaMenu
                       category={category}
-                      navBounds={navBounds}
-                      topCategories={topCategories}
-                      setMenuDisplayed={setMenuDisplayed}
                       activeMenuName={activeMenuName}
+                      onOpen={openMenuFor}
+                      onClose={closeMenuFor}
+                      onDelayedOpen={setDelayedOpenFor}
+                      onDelayedClose={setDelayedCloseFor}
                     />
                   </li>
                 );
@@ -270,7 +301,109 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
         </nav>
       </div>
 
-      <div className="border-1"> hello world </div>
+      {showMegaMenuPanel && currentCategory && (
+        <div
+          className="
+            absolute
+            left-0
+            top-full
+            w-screen
+            flex
+            border border-gray-100
+            bg-white
+            p-0
+            shadow-[0_14px_40px_rgba(0,0,0,0.08)]
+            overflow-hidden
+            md:max-h-[calc(100vh-8rem)]
+            z-[9999]
+            rounded-b-xl
+          "
+          onMouseEnter={() => activeMenuName && openMenuFor(activeMenuName)}
+          onMouseLeave={() => activeMenuName && setDelayedCloseFor(activeMenuName)}
+        >
+          <div className="flex w-full">
+            <div className="w-60 bg-white border-r border-gray-200 py-2">
+              {topCategories.map((cat) => {
+                if (cat.count === 0) return null;
+                const isActive = cat.name === activeRail;
+
+                return (
+                  <button
+                    key={cat.name}
+                    type="button"
+                    aria-label={cat.title}
+                    className={cn(
+                      "flex w-full items-center justify-between px-4 py-3 text-left text-sm font-medium text-gray-800 transition hover:bg-gray-50 border-b border-gray-100 last:border-b-0",
+                      isActive && "bg-gray-100"
+                    )}
+                    onMouseEnter={() => setActiveRail(cat.name)}
+                    onFocus={() => setActiveRail(cat.name)}
+                    onClick={() => setActiveRail(cat.name)}
+                  >
+                    <span className="truncate">{cat.shortName || cat.title}</span>
+                    <VscChevronRight className="text-gray-500" />
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="flex-1 flex flex-col">
+              <div className="flex-1 overflow-y-auto px-8 py-8">
+                <div className="
+                  grid
+                  w-full
+                  gap-x-10 gap-y-8
+                  grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4
+                ">
+                  {currentCategory.children
+                    .filter((child) => child.count > 0)
+                    .map((child) => (
+                      <div
+                        key={child.name}
+                        className="flex flex-col gap-3 min-w-0"
+                      >
+                        <Link
+                          to={`/collection/${child.name}`}
+                          className="text-[15px] font-semibold text-gray-900 hover:text-gray-700"
+                          onClick={() => closeMenuFor(activeMenuName || ALL_CATEGORIES)}
+                        >
+                          {child.label} ({child.count})
+                        </Link>
+                        <div className="space-y-2">
+                          {child.children
+                            .filter((subChild) => subChild.count > 0)
+                            .map((subChild) => (
+                              <Link
+                                key={subChild.name}
+                                to={`/collection/${subChild.name}`}
+                                className="block text-[13px] text-gray-700 hover:text-gray-900 leading-[18px]"
+                                onClick={() => closeMenuFor(activeMenuName || ALL_CATEGORIES)}
+                              >
+                                {subChild.label} ({subChild.count})
+                              </Link>
+                            ))
+                          }
+                        </div>
+                      </div>
+                    ))
+                  }
+                </div>
+              </div>
+
+              <Link
+                to={`/collection/${currentCategory.name}`}
+                className="flex items-center justify-between border-t border-gray-200 px-8 py-5 text-sm font-semibold text-gray-800 hover:text-gray-900"
+                onClick={() => closeMenuFor(activeMenuName || ALL_CATEGORIES)}
+              >
+                <span>
+                  Shop all {currentCategory.shortName || currentCategory.title} ({currentCategory.count})
+                </span>
+                <VscArrowRight className="ml-2" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
