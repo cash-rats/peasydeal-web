@@ -1,19 +1,11 @@
 
 import { Link } from 'react-router';
-import type { LinksFunction } from 'react-router';
 import { VscFlame, VscArrowRight } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
 import AnnouncementBanner from "../AnnouncementBanner";
-import styles from './styles/MegaMenuContent.css?url';
 import { Button } from '~/components/ui/button';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-}
 
 const iconMapper = (name: string) => {
   switch (name) {

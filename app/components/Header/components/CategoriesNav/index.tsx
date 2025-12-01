@@ -6,7 +6,6 @@ import {
   type ReactNode,
 } from "react";
 import {
-  type LinksFunction,
   Link,
 } from 'react-router';
 import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
@@ -14,7 +13,7 @@ import { VscFlame, VscChevronDown, VscChevronUp } from "react-icons/vsc";
 import type { Category } from '~/shared/types';
 
 import MegaMenu from './MegaMenu';
-import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
+import MegaMenuContent from '../MegaMenuContent';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -22,12 +21,6 @@ import {
 } from '~/components/ui/dropdown-menu';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
-
-export const links: LinksFunction = () => {
-  return [
-    ...MegaMenuContentLink(),
-  ];
-}
 
 interface CategoriesNavProps {
   categories?: Array<Category>,
@@ -181,7 +174,16 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     </Link>
                   </li>
                 ) : (
-                  <li key={`${index}_menu_link`} className="CategoriesNav__item fromLeft self-center">
+                  <li
+                    key={`${index}_menu_link`}
+                    className="
+                      self-center
+                      bg-gradient-to-r from-[#D02E7D] to-[#D02E7D]
+                      bg-no-repeat bg-[length:0%_1px] hover:bg-[length:100%_2px]
+                      bg-[position:0_calc(100%-0px)]
+                      transition-[background-size] duration-200
+                    "
+                  >
                     <MegaMenu
                       category={category}
                       navBounds={navBounds}
