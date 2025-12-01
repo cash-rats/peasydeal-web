@@ -21,6 +21,9 @@ interface CategoriesNavProps {
 };
 
 export default function CategoriesNav({ categories = [], topCategories = [] }: CategoriesNavProps) {
+  console.log('~ CategoriesNav 1', categories);
+  console.log('~ CategoriesNav 2', topCategories);
+
   const ALL_CATEGORIES = 'ALL';
   const [activeMenuName, setActiveMenuName] = useState<string | null>(null);
   const [activeRail, setActiveRail] = useState<string | null>(null);
@@ -170,7 +173,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
             justify-between
             p-0 m-0`}>
             {
-              topCategories.map((category, index) => {
+              categories.map((category, index) => {
                 const categoryUrl = category.type === 'promotion'
                   ? `/promotion/${category.name}`
                   : `/collection/${category.name}`;
@@ -215,6 +218,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                       transition-[background-size] duration-200
                     "
                   >
+                    {/* Category item list */}
                     <MegaMenu
                       category={category}
                       activeMenuName={activeMenuName}
@@ -227,76 +231,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                 );
               })
             }
-
-
-            {/*
-            <li className="self-center">
-              <div className="">
-                <DropdownMenu open={isOpen} onOpenChange={(open) => (open ? openMenu() : closeMenu())}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      aria-label="ALL"
-                      className="
-                        text-sm lg:text-base
-                        px-0 lg:px-2
-                        py-2 md:py-4
-                        flex flex-col
-                        items-center relative
-                      "
-                      onMouseEnter={setDelayedOpen}
-                      onMouseLeave={setDelayedClose}
-                      onTouchEnd={e => {
-                        e.preventDefault();
-                        isOpen ? closeMenu() : openMenu();
-                      }}
-                    >
-                      <div className="flex items-center">
-                        <span className="mr-1">ALL</span>
-                        {isOpen ? <VscChevronUp className="text-lg" /> : <VscChevronDown className="text-lg" />}
-                      </div>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    side="bottom"
-                    sideOffset={0}
-                    avoidCollisions={false}
-                    className="
-                      fixed
-                      left-0
-                      top-0
-                      flex
-                      border-none bg-white
-                      shadow-[2px_4px_16px_rgb(0,0,0,0.08)]
-                      pt-4 pb-8 xl:py-8 px-4
-                      z-[9999]
-                      rounded-b-xl
-                    "
-                    style={{
-                      width: '100vw',
-                      minWidth: '100vw',
-                      left: 0,
-                      top: navBounds?.bottom ?? 0,
-                      transform: 'none',
-                    }}
-                    onMouseEnter={openMenu}
-                    onMouseLeave={setDelayedClose}
-                  >
-                    <MegaMenuContent
-                      categories={categories}
-                      onClose={setClose}
-                      ItemNode={MegaMenuListItem}
-                    />
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </li>
-
-
-
-            */}
-
           </ul>
         </nav>
       </div>
@@ -307,7 +241,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
             absolute
             left-0
             top-full
-            w-screen
+            w-full
             flex
             border border-gray-100
             bg-white
