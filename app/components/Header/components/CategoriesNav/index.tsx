@@ -10,9 +10,9 @@ import {
 import { VscFlame, VscChevronRight, VscArrowRight, VscChevronLeft } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
+import { cn } from '~/lib/utils';
 
 import MegaMenu from './MegaMenu';
-import { cn } from '~/lib/utils';
 
 interface CategoriesNavProps {
   categories?: Array<Category>,
@@ -119,8 +119,12 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
 
   const showMegaMenuPanel = !!(activeMenuName && activeMenuName !== ALL_CATEGORIES);
   const activeRailCategory = activeRail
-    ? topCategories.find(({ name }) => name === activeRail)
+    ? (
+      topCategories.find(({ name }) => name === activeRail) ||
+      categories.find(({ name }) => name === activeRail)
+    )
     : null;
+
   const currentCategory =
     activeRailCategory ||
     topCategories.find(({ name }) => name === activeMenuName) ||
