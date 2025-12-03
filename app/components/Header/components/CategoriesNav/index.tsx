@@ -3,6 +3,7 @@ import {
   useEffect,
   useRef,
   useState,
+  type WheelEvent,
 } from "react";
 import {
   Link,
@@ -116,6 +117,25 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     el.scrollBy({ left: delta, behavior: 'smooth' });
   };
 
+  const handleWheelScroll = useCallback((event: WheelEvent<HTMLDivElement>) => {
+    const el = navScrollRef.current;
+    if (!el) return;
+
+    const primaryDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY)
+      ? event.deltaX
+      : event.deltaY;
+
+    if (primaryDelta === 0) return;
+
+    const maxScrollLeft = el.scrollWidth - el.clientWidth;
+    const canScroll = (primaryDelta < 0 && el.scrollLeft > 0) || (primaryDelta > 0 && el.scrollLeft < maxScrollLeft);
+
+    if (!canScroll) return;
+
+    event.preventDefault();
+    el.scrollBy({ left: primaryDelta, behavior: 'auto' });
+  }, []);
+
   const showMegaMenuPanel = !!activeMenuName;
   const activeRailCategory = activeRail
     ? (
@@ -149,18 +169,20 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
               absolute left-0 top-0 bottom-0
               z-10
               flex items-center
-              bg-gradient-to-r from-white via-white/80 to-transparent
-              px-2
-              text-gray-600
+              bg-gradient-to-r from-white via-white/85 to-transparent
+              pl-2 pr-3
             "
             onClick={() => scrollNav('left')}
           >
-            <VscChevronLeft className="text-xl" />
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md ring-1 ring-gray-200 text-gray-700 hover:text-gray-900 transition">
+              <VscChevronLeft className="text-2xl" />
+            </span>
           </button>
         )}
 
         <nav
           ref={navScrollRef}
+          onWheel={handleWheelScroll}
           className="flex-auto relative overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           <ul id="mega-nav-bar" className={`
@@ -244,13 +266,14 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
               absolute right-0 top-0 bottom-0
               z-10
               flex items-center
-              bg-gradient-to-l from-white via-white/80 to-transparent
-              px-2
-              text-gray-600
+              bg-gradient-to-l from-white via-white/85 to-transparent
+              pl-3 pr-2
             "
             onClick={() => scrollNav('right')}
           >
-            <VscChevronRight className="text-xl" />
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md ring-1 ring-gray-200 text-gray-700 hover:text-gray-900 transition">
+              <VscChevronRight className="text-2xl" />
+            </span>
           </button>
         )}
       </div>
