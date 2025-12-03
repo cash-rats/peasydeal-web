@@ -130,10 +130,17 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     const maxScrollLeft = el.scrollWidth - el.clientWidth;
     const canScroll = (primaryDelta < 0 && el.scrollLeft > 0) || (primaryDelta > 0 && el.scrollLeft < maxScrollLeft);
 
+    event.preventDefault();
+    event.stopPropagation();
+
     if (!canScroll) return;
 
-    event.preventDefault();
-    el.scrollBy({ left: primaryDelta, behavior: 'auto' });
+    const nextScroll = Math.min(Math.max(el.scrollLeft + primaryDelta, 0), maxScrollLeft);
+    const delta = nextScroll - el.scrollLeft;
+
+    if (delta !== 0) {
+      el.scrollBy({ left: delta, behavior: 'auto' });
+    }
   }, []);
 
   const showMegaMenuPanel = !!activeMenuName;
@@ -183,7 +190,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
         <nav
           ref={navScrollRef}
           onWheel={handleWheelScroll}
-          className="flex-auto relative overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          className="flex-auto relative overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden overscroll-contain"
         >
           <ul id="mega-nav-bar" className={`
             relative
