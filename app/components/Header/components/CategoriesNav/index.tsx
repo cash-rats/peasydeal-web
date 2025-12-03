@@ -345,7 +345,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                       >
                         <Link
                           to={`/collection/${child.name}`}
-                          className="text-[15px] font-semibold text-gray-900 hover:text-gray-700"
+                          className="text-base md:text-[17px] font-semibold text-gray-900 hover:text-gray-700"
                           onClick={() => closeMenuFor(activeMenuName || '')}
                         >
                           {child.label} ({child.count})
@@ -357,7 +357,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                               <Link
                                 key={subChild.name}
                                 to={`/collection/${subChild.name}`}
-                                className="block text-[13px] text-gray-700 hover:text-gray-900 leading-[18px] rounded-full px-2 py-1 transition hover:bg-gray-100"
+                                className="block text-sm md:text-[15px] text-gray-700 hover:text-gray-900 leading-[18px] rounded-full px-2.5 py-1 transition hover:bg-gray-100"
                                 onClick={() => closeMenuFor(activeMenuName || '')}
                               >
                                 {subChild.label} ({subChild.count})
