@@ -29,7 +29,7 @@ const MegaMenu = ({
         aria-label={category.name}
         className={cn(
           "text-sm lg:text-base",
-          "py-2 md:py-3 lg:py-4 px-3 md:px-4",
+          "py-2 md:py-3 lg:py-4 px-2 md:px-2.5",
           "flex flex-col items-center relative w-full",
           "rounded-full bg-transparent text-gray-800",
           "hover:bg-gray-100 hover:text-gray-900 hover:ring-1 hover:ring-gray-200 hover:shadow-sm transition",

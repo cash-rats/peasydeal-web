@@ -197,10 +197,10 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
             flex flex-auto
             list-none
             space-x-1
-            md:space-x-2
-            xl:space-x-4
+            md:space-x-1.5
+            xl:space-x-2
             align-center
-            justify-between
+            justify-start
             p-0 m-0`}>
             {
               categories.map((category, index) => {
@@ -243,7 +243,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     className="
                       flex-none
                       self-center
-                      px-1
+                      px-0.5
                     "
                   >
                     {/* Category item list */}
