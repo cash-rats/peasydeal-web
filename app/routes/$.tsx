@@ -8,7 +8,7 @@ import SearchBar from '~/components/SearchBar';
 import FourOhFour from '~/components/FourOhFour';
 import Header, { links as HeaderLinks } from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
-import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
+import CategoriesNav from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import type { Category } from '~/shared/types';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
@@ -26,7 +26,6 @@ export const links: LinksFunction = () => {
   return [
     ...HeaderLinks(),
     ...FooterLinks(),
-    ...CategoriesNavLinks(),
     ...DropDownSearchBarLinks(),
   ];
 };

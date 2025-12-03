@@ -221,13 +221,12 @@ export default function ProductCard({
                 aspect-square
                 min-w-0 min-h-0
               "
-              responsive={[{ size: { width: 274, height: 274 } }]}
               src={mainPic}
               responsive={[
                 {
                   size: {
-                    width: 263,
-                    height: 263,
+                    width: 274,
+                    height: 274,
                   },
                 },
               ]}

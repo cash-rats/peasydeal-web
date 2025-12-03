@@ -17,7 +17,7 @@ import Footer, { links as FooterLinks } from '~/components/Footer';
 import { composErrorResponse } from '~/utils/error';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
-import CategoriesNav, { links as CategoriesNavLinks } from '~/components/Header/components/CategoriesNav';
+import CategoriesNav from '~/components/Header/components/CategoriesNav';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 
@@ -63,7 +63,6 @@ export const links: LinksFunction = () => {
     ...TrackingOrderErrorPageLinks(),
     ...TrackingOrderInitPageLinks(),
     ...SearchBarLinks(),
-    ...CategoriesNavLinks(),
     ...TrckingOrderInfoLinks(),
   ];
 };
