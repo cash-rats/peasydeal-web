@@ -8,6 +8,7 @@ type CartContextValue = {
   setCart: (nextCart: ShoppingCart) => void;
   cartCount: number;
   isInitialized: boolean;
+  clearCart: () => Promise<void>;
 };
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
@@ -17,7 +18,7 @@ type CartProviderProps = {
 };
 
 export function CartProvider({ children }: CartProviderProps) {
-  const { cart, setCart, isInitialized } = useLocalCart();
+  const { cart, setCart, isInitialized, clearCart } = useLocalCart();
 
   const cartCount = isInitialized ? Object.keys(cart).length : 0;
 
@@ -27,8 +28,9 @@ export function CartProvider({ children }: CartProviderProps) {
       setCart,
       cartCount,
       isInitialized,
+      clearCart,
     }),
-    [cart, setCart, cartCount, isInitialized],
+    [cart, setCart, cartCount, isInitialized, clearCart],
   );
 
   return (
@@ -47,4 +49,3 @@ export function useCartContext(): CartContextValue {
 
   return context;
 }
-

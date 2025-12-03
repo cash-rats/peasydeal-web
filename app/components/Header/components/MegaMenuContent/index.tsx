@@ -1,52 +1,16 @@
 
 import { Link } from 'react-router';
-import type { LinksFunction } from 'react-router';
 import { VscFlame, VscArrowRight } from "react-icons/vsc";
 
 import type { Category } from '~/shared/types';
 
 import AnnouncementBanner from "../AnnouncementBanner";
-import styles from './styles/MegaMenuContent.css?url';
 import { Button } from '~/components/ui/button';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-}
 
 const iconMapper = (name: string) => {
   switch (name) {
     case 'hot_deal':
       return <VscFlame className='text-[20px] text-[#e90064] relative' />;
-    // case 'new_trend':
-    //   return <IoSparklesOutline className='text-[20px] text-[#FF8B13]' />;
-    // case 'super_deal':
-    //   return <IoPricetagsOutline className='text-[20px] text-[#EB455F]' />;
-    // case 'pet':
-    //   return <MdOutlinePets className='text-[20px] text-[#BAD7E9] relative' />;
-    // case 'kitchen_kitchenware':
-    //   return <TbToolsKitchen2 className='text-[20px] text-[#10A19D] relative' />;
-    // case 'clothes_shoes':
-    //   return <RiShirtFill className='text-[20px] text-[#FF8787] relative' />;
-    // case 'garden':
-    //   return <GiFlowerPot className='text-[20px] text-[#8BDB81] relative' />;
-    // case 'electronics':
-    //   return <FcSmartphoneTablet className='text-[20px] relative' />;
-    // case 'toy':
-    //   return <MdOutlineSmartToy className='text-[20px] text-[#FFE162] relative' />;
-    // case 'beauty_personal_care':
-    //   return <GiLipstick className='text-[20px] text-[#FFA6D5] relative' />;
-    // case 'home_appliances':
-    //   return <FcHome className='text-[20px] relative' />;
-    // case 'health_medical':
-    //   return <IoBody className='text-[20px] text-[#39A388] relative' />;
-    // case 'car_accessories':
-    //   return <FcAutomotive className='text-[20px] relative' />;
-    // case 'cloths_accessories':
-    //   return <GiPearlNecklace className='text-[20px] text-[#FF8474] relative' />;
-    // case 'top_product':
-    //   return <FcRating className='text-[20px] relative' />;
     default:
       return null;
   }

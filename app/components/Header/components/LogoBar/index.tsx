@@ -1,24 +1,17 @@
 import { memo, useId, useState } from 'react';
 import { Link } from 'react-router';
-import type { LinksFunction } from 'react-router';
 import { FiMenu } from 'react-icons/fi';
 
 import type { Category } from '~/shared/types';
 
 import PeasyDeal from './images/peasydeal_logo.svg';
 import type { IMegaMenuContent} from '../MegaMenuContent';
-import MegaMenuContent, { links as MegaMenuContentLink } from '../MegaMenuContent';
+import MegaMenuContent from '../MegaMenuContent';
 import { Button } from '~/components/ui/button';
 import { Sheet, SheetContent } from '~/components/ui/sheet';
 
 interface LogoBarProps {
   categories?: Category[];
-}
-
-export const links: LinksFunction = () => {
-  return [
-    ...MegaMenuContentLink(),
-  ];
 }
 
 const MegaMemo = memo(({

@@ -1,27 +1,33 @@
-import type { LinksFunction } from 'react-router';
 import type { CSSProperties } from 'react';
-import styles from './styles/RedDot.css?url';
-
-export const links: LinksFunction = () => {
-	return [
-		{ rel: 'stylesheet', href: styles },
-	];
-};
 
 interface RedDotProps {
-	value: number;
-	dotStyle?: CSSProperties;
-	indicatorStyle?: CSSProperties;
+  value: number;
+  dotStyle?: CSSProperties;
+  indicatorStyle?: CSSProperties;
 }
 
 function RedDot({ value, dotStyle = {}, indicatorStyle = {} }: RedDotProps) {
-	return (
-		<div style={dotStyle} className="red-dot">
-			<div style={indicatorStyle} className="indicator">
-				{value}
-			</div>
-		</div>
-	);
+  return (
+    <div
+      style={dotStyle}
+      className="
+				font-bold min-w-[1.25rem] min-h-[1.25rem]
+				cursor-pointer text-white bg-[red]
+				border-2 border-white rounded-xl z-[1]
+			"
+    >
+      <div
+        style={indicatorStyle}
+        className="
+					flex px-[0.375rem]
+					items-center justify-center
+					text-white font-sans text-[0.7rem]
+				"
+      >
+        {value}
+      </div>
+    </div>
+  );
 };
 
 export default RedDot;

@@ -1,16 +1,13 @@
-import type { LinksFunction } from 'react-router';
 import { Link } from 'react-router';
 import { FiShoppingCart } from 'react-icons/fi';
 import { RiTruckLine, RiSearchLine } from 'react-icons/ri';
 import { IoPricetagsOutline } from "react-icons/io5"
 
-import RedDot, { links as RedDotLinks } from '~/components/RedDot';
+import type { LinksFunction } from 'react-router';
 
-export const links: LinksFunction = () => {
-	return [
-		...RedDotLinks(),
-	];
-};
+import RedDot from '~/components/RedDot';
+
+export const links: LinksFunction = () => [];
 
 interface NavBarProps {
 	/*

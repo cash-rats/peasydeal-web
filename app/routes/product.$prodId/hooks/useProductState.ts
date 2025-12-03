@@ -21,6 +21,7 @@ export function useProductState(product: ProductDetail) {
     productDetail: product,
     categories: product?.categories,
     mainCategory,
+    mainPicUrl: product.main_pic_url,
     sharedImages: product.shared_images,
     variationImages: product.variation_images,
     quantity: 1,

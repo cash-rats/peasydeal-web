@@ -1,28 +1,28 @@
-import {
-  useEffect,
-  useState,
-  useMemo,
-  Fragment,
-} from "react";
-import type { CSSProperties } from 'react';
+
 import type { Property } from 'csstype';
-import { useSwipe } from '~/hooks/useSwipe';
-import { IconButton } from '@chakra-ui/react'
-import { BiChevronRight, BiChevronLeft } from 'react-icons/bi';
+import type { CSSProperties, FC } from 'react';
+import {
+  Fragment,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { VscZoomIn } from "react-icons/vsc";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import { OptimizedImage as Image } from '~/components/OptimizedImage';
+import { useSwipe } from '~/hooks/useSwipe';
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import { envs } from '~/utils/env';
-interface CarouselMinimalImage {
+export interface CarouselMinimalImage {
   title: string;
   url: string;
   variation_uuid: string;
 }
 
-interface CarouselProps {
+export interface CarouselProps {
   data: CarouselMinimalImage[];
   time: number;
   width?: string;
@@ -35,13 +35,14 @@ interface CarouselProps {
   slideBackgroundColor: string;
   slideImageFit?: Property.ObjectFit;
   thumbnails: boolean;
-  thumbnailWidth: string;
+
   style?: CSSProperties;
-  selectedVariationUUID?: string;
+  previewImage?: CarouselMinimalImage;
+
 };
 
 
-function Carousel({
+const Carousel: FC<CarouselProps> = ({
   data = [],
   time,
   width,
@@ -55,31 +56,13 @@ function Carousel({
   slideBackgroundColor,
   slideImageFit,
   thumbnails = true,
-  selectedVariationUUID = '',
-  thumbnailWidth,
-}: CarouselProps) {
-  // A map that stores variation uuid and it's corresponding
-  // image thumbnail position index.
-  //
-  // When user changes variation on product detail page, thumbnail
-  // slides would scroll to that position accordingly.
-  const variationImgPosIndexMap: Map<string, number> = useMemo(
-    () => {
-      return data.reduce((m, { variation_uuid }, idx) => {
-        if (variation_uuid) {
-          m.set(variation_uuid, idx)
-        }
-        return m
-      }, new Map())
-    },
-    [data]);
+  previewImage,
+
+}) => {
 
   //Initialize States
   const [openLightBox, setOpenLightBox] = useState(false);
-  const [slide, setSlide] = useState(
-    variationImgPosIndexMap
-      .get(selectedVariationUUID) || 0
-  );
+  const [slide, setSlide] = useState(0);
   const [loaded, setLoaded] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState(false);
   const [change, setChange] = useState(false);
@@ -100,19 +83,6 @@ function Carousel({
     else if (slide + n < 0) setSlide(data.length - 1);
     else setSlide(slide + n);
   };
-
-  useEffect(() => {
-    const slideIdx = variationImgPosIndexMap
-      .get(selectedVariationUUID);
-
-    // If selected variation does not have a matching
-    // variation image, image stays at where it is.
-    if (!slideIdx) return;
-
-    setSlide(slideIdx);
-    setChange(!change);
-  }, [selectedVariationUUID]);
-
 
   //Start the automatic change of slide
   useEffect(() => {
@@ -135,54 +105,29 @@ function Carousel({
     }
   }, [isPaused, change]);
 
-  function scrollTo(el) {
-    if (!el) return;
+  const thumbnailRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const thumbnailContainerRef = useRef<HTMLDivElement | null>(null);
 
-    const elLeft = el.offsetLeft + el.offsetWidth;
-    const elParentLeft = el.parentNode.offsetLeft + el.parentNode.offsetWidth;
-
-    // check if element not in view
-    if (elLeft >= elParentLeft + el.parentNode.scrollLeft) {
-      el.parentNode.scroll({ left: elLeft - elParentLeft, behavior: "smooth" });
-    } else if (elLeft <= el.parentNode.offsetLeft + el.parentNode.scrollLeft) {
-      el.parentNode.scroll({
-        left: el.offsetLeft - el.parentNode.offsetLeft,
+  useEffect(() => {
+    if (thumbnails && thumbnailRefs.current[slide]) {
+      thumbnailRefs.current[slide]?.scrollIntoView({
         behavior: "smooth",
+        block: "nearest",
+        inline: "center",
       });
     }
-  }
+  }, [slide, thumbnails]);
 
-  //Listens to slide state changes
-  useEffect(() => {
-    const slides = document.getElementsByClassName("carousel-item");
-    const dots = document.getElementsByClassName("dot");
+  const scrollThumbnails = (direction: number) => {
+    const container = thumbnailContainerRef.current;
+    if (!container) return;
 
-    const slideIndex = slide;
-    let i;
-    for (i = 0; i < data.length; i++) {
-      slides[i].style.display = "none";
-    }
-    for (i = 0; i < dots.length; i++) {
-      dots[i].className = dots[i].className.replace(" active", "");
-    }
-    //If thumbnails are enabled
-    if (thumbnails) {
-      const thumbnailsArray = document.getElementsByClassName("thumbnail");
-      for (i = 0; i < thumbnailsArray.length; i++) {
-        thumbnailsArray[i].className = thumbnailsArray[i].className.replace(
-          " active-thumbnail",
-          ""
-        );
-      }
-      if (thumbnailsArray[slideIndex] !== undefined)
-        thumbnailsArray[slideIndex].className += " active-thumbnail";
-      scrollTo(document.getElementById(`thumbnail-${slideIndex}`));
-    }
-
-    if (slides[slideIndex] !== undefined)
-      slides[slideIndex].style.display = "block";
-    if (dots[slideIndex] !== undefined) dots[slideIndex].className += " active";
-  }, [slide, isPaused]);
+    const scrollAmount = container.clientWidth * 0.8;
+    container.scrollBy({
+      left: direction * scrollAmount,
+      behavior: 'smooth',
+    });
+  };
 
 
   return (
@@ -241,6 +186,7 @@ function Carousel({
                     style={{
                       maxWidth: width ? width : "600px",
                       maxHeight: height ? height : "400px",
+                      display: index === slide ? "block" : "none",
                     }}
                     onMouseDown={(e) => {
                       automatic && setIsPaused(true);
@@ -261,7 +207,7 @@ function Carousel({
                   >
                     <img
                       src={item.url}
-                      alt={item.caption}
+                      alt={item.title}
                       className="carousel-image"
                       onClick={(e) => {
                         setOpenLightBox(true);
@@ -285,8 +231,27 @@ function Carousel({
                   </div>
                 );
               })}
+              {
+                previewImage
+                  ? (
+                    <div
+                      className="
+                        absolute inset-0 z-10
+                        flex items-center justify-center
+                        pointer-events-none
+                      "
+                    >
+                      <img
+                        alt="Preview image"
+                        src={previewImage.url}
+                        className="object-contain w-full h-full"
+                      />
+                    </div>
+                  )
+                  : null
+              }
 
-              <IconButton
+              <button
                 aria-label="prev slide"
                 className="
                   absolute top-1/2 left-0
@@ -296,16 +261,17 @@ function Carousel({
                   rounded-full
                   border-[1px]
                   border-slate-200
+                  flex items-center justify-center
                 "
-                bg="white"
                 onClick={(e) => {
                   addSlide(-1);
                   setChange(!change);
                 }}
-                icon={<BiChevronLeft />}
-              />
+              >
+                <BiChevronLeft size={24} />
+              </button>
 
-              <IconButton
+              <button
                 aria-label="next slide"
                 className="
                   absolute top-1/2 right-0
@@ -315,20 +281,21 @@ function Carousel({
                   rounded-full
                   border-[1px]
                   border-slate-200
+                  flex items-center justify-center
                 "
-                bg="white"
                 onClick={(e) => {
                   addSlide(1);
                   setChange(!change);
                 }}
-                icon={<BiChevronRight />}
-              />
+              >
+                <BiChevronRight size={24} />
+              </button>
               {dots && (
                 <div className="dots">
                   {data.map((item: any, index: number) => {
                     return (
                       <span
-                        className="dot"
+                        className={`dot ${index === slide ? "active" : ""}`}
                         key={index}
                         onClick={(e) => {
                           setSlide(index);
@@ -340,7 +307,7 @@ function Carousel({
                 </div>
               )}
 
-              <IconButton
+              <button
                 aria-label="zoom photo"
                 className="
                   absolute bottom-[10px] right-[10px]
@@ -351,13 +318,14 @@ function Carousel({
                   border-[1px]
                   border-slate-200
                   z-5
+                  flex items-center justify-center
                 "
-                bg="white"
                 onClick={(e) => {
                   setOpenLightBox(true);
                 }}
-                icon={<VscZoomIn />}
-              />
+              >
+                <VscZoomIn size={24} />
+              </button>
             </div>
           </div>
         </div>
@@ -366,67 +334,86 @@ function Carousel({
           <small className='font-bold'>{`${slide < 0 ? 1 : slide + 1}/${data.length || 0}`}</small>
         </div>
 
-        <div
-          className="thumbnails flex"
-          id="thumbnail-div"
-          style={{ maxWidth: width }}
-        >
-          {
-            data
-              .map((item: CarouselMinimalImage, index: number) => {
-                return (
-                  <Fragment key={index}>
-                    <div
-                      id={`thumbnail-${index}`}
-                      onClick={(e) => {
-                        setSlide(index);
-                        setChange(!change);
-                      }}
-                    >
-                      <Image
-                        blurDataURL={`${envs.DOMAIN}/images/${loaded
-                          ? 'placeholder_transparent.png'
-                          : 'placeholder.svg'
-                          }`}
-                        placeholder={loaded ? 'empty' : 'blur'}
-                        placeholderAspectRatio={1}
-                        onLoadingComplete={() => {
-                          setLoaded(true)
+        <div className="flex items-center gap-2" style={{ maxWidth: width }}>
+          <button
+            aria-label="scroll thumbnails left"
+            className="bg-white p-2 rounded-full border border-slate-200 shadow-sm hover:bg-slate-50"
+            onClick={() => scrollThumbnails(-1)}
+          >
+            <BiChevronLeft size={20} />
+          </button>
+
+          <div
+            ref={thumbnailContainerRef}
+            className="thumbnails flex overflow-x-auto"
+            id="thumbnail-div"
+            style={{ maxWidth: width }}
+          >
+            {
+              data
+                .map((item: CarouselMinimalImage, index: number) => {
+                  return (
+                    <Fragment key={index}>
+                      <div
+                        ref={(el) => (thumbnailRefs.current[index] = el)}
+                        onClick={(e) => {
+                          setSlide(index);
+                          setChange(!change);
                         }}
-                        options={{
-                          contentType: 'image/webp',
-                          fit: 'contain',
-                        }}
-                        className={`
-                          mx-2 rounded-lg bg-slate-100
-                          p-[2px] min-w-[100px]
-                          w-auto h-[100px] aspect-sqare
-                          ${slide === index
-                            ? 'border-[3px] border-solid border-[#D02E7D]'
-                            : 'border-0'
-                          }
-                        `}
-                        alt={item.title}
-                        src={item.url}
-                        responsive={[
-                          {
-                            size: {
-                              width: 100,
-                              height: 100,
+                      >
+                        <Image
+                          blurDataURL={`${envs.DOMAIN}/images/${loaded
+                            ? 'placeholder_transparent.png'
+                            : 'placeholder.svg'
+                            }`}
+                          placeholder={loaded ? 'empty' : 'blur'}
+                          placeholderAspectRatio={1}
+                          onLoadingComplete={() => {
+                            setLoaded(true)
+                          }}
+                          options={{
+                            contentType: 'image/webp',
+                            fit: 'contain',
+                          }}
+                          className={`
+                            mx-2 rounded-lg bg-slate-100
+                            p-[2px] min-w-[100px]
+                            w-auto h-[100px] aspect-sqare
+                            ${slide === index
+                              ? 'border-[3px] border-solid border-[#D02E7D]'
+                              : 'border-0'
+                            }
+                          `}
+                          alt={item.title}
+                          src={item.url}
+                          responsive={[
+                            {
+                              size: {
+                                width: 100,
+                                height: 100,
+                              },
                             },
-                          },
-                        ]}
-                      />
-                    </div>
-                  </Fragment>
-                );
-              })
-          }
+                          ]}
+                        />
+                      </div>
+                    </Fragment>
+                  );
+                })
+            }
+          </div>
+
+          <button
+            aria-label="scroll thumbnails right"
+            className="bg-white p-2 rounded-full border border-slate-200 shadow-sm hover:bg-slate-50"
+            onClick={() => scrollThumbnails(1)}
+          >
+            <BiChevronRight size={20} />
+          </button>
         </div>
       </div>
     </>
   );
 
-}
+};
 
 export default Carousel;

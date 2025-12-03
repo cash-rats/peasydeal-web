@@ -27,10 +27,12 @@ export const setCheckoutSessionData = (
   data: CheckoutSessionData,
 ) => {
   session.set(CHECKOUT_SESSION_KEY, data);
+  return session;
 };
 
 export const clearCheckoutSessionData = (session: Session) => {
   session.set(CHECKOUT_SESSION_KEY, null);
+  return session;
 };
 
 export const commitCheckoutSession = (session: Session) => commitSession(session);

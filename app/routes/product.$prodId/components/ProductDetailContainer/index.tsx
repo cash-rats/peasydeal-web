@@ -2,7 +2,7 @@ import { useRef, useMemo, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import type { LinksFunction } from 'react-router';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
-import Select from 'react-select';
+
 import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
 import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { BsLightningCharge, BsChevronRight } from 'react-icons/bs';
@@ -77,6 +77,7 @@ function ProductDetailContainer({
   addToCart,
 }: ProductDetailContainerParams) {
   const [openOpenReturnPolicy, setOpenReturnPolicy] = useState(false);
+  const [hoveredVariationUUID, setHoveredVariationUUID] = useState<string | null>(null);
   const productTopRef = useRef<HTMLDivElement>(null);
   const productContentWrapperRef = useRef<HTMLDivElement>(null);
   const mobileUserActionBarRef = useRef<HTMLDivElement>(null);
@@ -85,6 +86,11 @@ function ProductDetailContainer({
   useStickyActionBar(mobileUserActionBarRef, productContentWrapperRef);
 
   const handleOpenModal = () => setOpenReturnPolicy(true);
+
+  const hoveredVariationImage = useMemo(
+    () => variationImages.find((image) => image.variation_uuid === hoveredVariationUUID),
+    [variationImages, hoveredVariationUUID],
+  );
 
   const hasSuperDeal = useMemo(function () {
     let _hasSuperDeal = false;
@@ -135,11 +141,13 @@ function ProductDetailContainer({
       {/* Desktop Display - product detail exhibit */}
       <div className='col-span-5 xl:col-span-6'>
         <ProductDetailSection
+          mainPicUrl={productDetail.main_pic_url}
           sharedPics={sharedImages}
           variationPics={variationImages}
           selectedVariationUUID={variation?.uuid}
           title={productDetail.title}
           description={productDetail.description}
+          previewImage={hoveredVariationImage}
         />
 
         {/* Reviews */}
@@ -256,23 +264,32 @@ function ProductDetailContainer({
                 productDetail?.variations.length > 1
                   ? (
                     <>
-                      <Select
-                        inputId='variation_id'
-                        instanceId='variation_id'
-                        placeholder='select variation'
-                        value={{
-                          value: variation?.uuid,
-                          label: variation?.spec_name,
-                        }}
-                        onChange={onChangeVariation}
-                        options={
-                          productDetail.variations.map(
-                            (variation) => ({ value: variation.uuid, label: variation.spec_name })
-                          )
-                        }
-                      />
+                      <div className="flex flex-wrap gap-2">
+                        {productDetail.variations.map((v) => {
+                          const isSelected = variation?.uuid === v.uuid;
+                          return (
+                            <button
+                              key={v.uuid}
+                              onClick={() => {
+                                onChangeVariation && onChangeVariation({ value: v.uuid, label: v.spec_name });
+                              }}
+                              onMouseEnter={() => setHoveredVariationUUID(v.uuid)}
+                              onMouseLeave={() => setHoveredVariationUUID(null)}
+                              className={`
+                                px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 border
+                                ${isSelected
+                                  ? 'bg-blue-50 text-gray-900 border-2 border-blue-500'
+                                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 cursor-pointer'
+                                }
+                              `}
+                            >
+                              {v.spec_name}
+                            </button>
+                          );
+                        })}
+                      </div>
 
-                      {variationErr && <p className="error">{variationErr}</p>}
+                      {variationErr && <p className="error mt-2 text-red-500">{variationErr}</p>}
                     </>
                   )
                   : null

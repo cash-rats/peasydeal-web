@@ -214,7 +214,7 @@ function Cart() {
       },
       {
         method: 'post',
-        action: '/cart/checkout',
+        action: '/api/cart/checkout',
       },
     );
   };

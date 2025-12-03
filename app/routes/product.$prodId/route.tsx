@@ -82,10 +82,13 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   try {
     const prodDetail = await fetchProductDetail(decompURL.productUUID);
 
+    console.log('~~ prodDetail 1', prodDetail.main_pic_url);
+
     return data<LoaderTypeProductDetail>({
       product: prodDetail,
       canonical_url: `${getCanonicalDomain()}${url.pathname}`,
-      meta_image: prodDetail.main_pic_url?.url || '',
+      main_pic_url: prodDetail.main_pic_url || '',
+      meta_image: prodDetail.main_pic_url || '',
       user_agent: userAgent,
     });
   } catch (error: any) {
@@ -96,23 +99,14 @@ export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   }
 };
 
-type ActionType =
-  | 'to_product_detail';
-
 export const action = async ({ request }: ActionFunctionArgs) => {
   const form = await request.formData();
   const formObj = Object.fromEntries(form.entries());
-  const formAction = formObj['__action'] as ActionType;
 
-  if (formAction === 'to_product_detail') {
-    return redirect(composeProductDetailURL({
-      productName: formObj['productName'] as string,
-      productUUID: formObj['productUUID'] as string,
-    }));
-  }
-
-  // unknown action type.
-  return null;
+  return redirect(composeProductDetailURL({
+    productName: formObj['productName'] as string,
+    productUUID: formObj['productUUID'] as string,
+  }));
 }
 
 export function ErrorBoundary() {

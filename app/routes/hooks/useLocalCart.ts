@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { ShoppingCart } from '~/sessions/types';
-import { loadCart, saveCart } from '~/lib/cartStorage.client';
+import {
+  loadCart,
+  saveCart,
+  clearCart as clearCartFromStorage,
+} from '~/lib/cartStorage.client';
 
 type UseLocalCartParams = {
   initialCart?: ShoppingCart;
@@ -11,6 +15,7 @@ type UseLocalCartResult = {
   cart: ShoppingCart;
   setCart: (nextCart: ShoppingCart) => void;
   isInitialized: boolean;
+  clearCart: () => Promise<void>;
 };
 
 export const useLocalCart = ({
@@ -51,10 +56,20 @@ export const useLocalCart = ({
     saveCart(cart);
   }, [cart, isInitialized]);
 
+  const clearCart = useCallback(async () => {
+    setCart({});
+
+    try {
+      await clearCartFromStorage();
+    } catch (error) {
+      console.error('clearCart in IndexedDB failed', error);
+    }
+  }, [setCart]);
+
   return {
     cart,
     setCart,
     isInitialized,
+    clearCart,
   };
 };
-
