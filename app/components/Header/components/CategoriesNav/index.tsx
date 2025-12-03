@@ -341,7 +341,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                     .map((child) => (
                       <div
                         key={child.name}
-                        className="flex flex-col gap-3 min-w-0"
+                        className="flex flex-col gap-3 min-w-0 rounded-lg px-3 py-2 transition hover:bg-gray-50 hover:shadow-sm hover:ring-1 hover:ring-gray-200 hover:-translate-y-0.5"
                       >
                         <Link
                           to={`/collection/${child.name}`}
@@ -357,7 +357,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                               <Link
                                 key={subChild.name}
                                 to={`/collection/${subChild.name}`}
-                                className="block text-[13px] text-gray-700 hover:text-gray-900 leading-[18px]"
+                                className="block text-[13px] text-gray-700 hover:text-gray-900 leading-[18px] rounded-full px-2 py-1 transition hover:bg-gray-100"
                                 onClick={() => closeMenuFor(activeMenuName || '')}
                               >
                                 {subChild.label} ({subChild.count})
