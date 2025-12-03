@@ -246,15 +246,27 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
                       px-0.5
                     "
                   >
-                    {/* Category item list */}
-                    <MegaMenu
-                      category={category}
-                      activeMenuName={activeMenuName}
-                      onOpen={openMenuFor}
-                      onClose={closeMenuFor}
-                      onDelayedOpen={setDelayedOpenFor}
-                      onDelayedClose={setDelayedCloseFor}
-                    />
+                    <Link
+                      to={categoryUrl}
+                      className="
+                          flex-auto
+                          flex flex-row
+                          items-center
+                          nowrap
+                          text-center lg:text-left xl:text-center
+                          text-xs md:text-sm xl:text-base
+                        "
+                    >
+                      {/* Category item list */}
+                      <MegaMenu
+                        category={category}
+                        activeMenuName={activeMenuName}
+                        onOpen={openMenuFor}
+                        onClose={closeMenuFor}
+                        onDelayedOpen={setDelayedOpenFor}
+                        onDelayedClose={setDelayedCloseFor}
+                      />
+                    </Link>
                   </li>
                 );
               })
