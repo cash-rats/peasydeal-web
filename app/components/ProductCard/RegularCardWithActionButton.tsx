@@ -104,8 +104,6 @@ export default function ProductCard({
   onClickProduct = () => { },
   displayActionButton = true,
   noPadding = false,
-
-  onClickProduct = () => { },
 }: IProductCard) {
   const {
     main_pic: mainPic,
