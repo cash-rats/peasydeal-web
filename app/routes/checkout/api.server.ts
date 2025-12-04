@@ -17,7 +17,7 @@ type CreateOrderParams = {
   contact_name: string;
   phone_value: string;
   price_info: PriceInfo;
-  promo_code?: string;
+  promo_code?: string | null;
 }
 
 export const createOrder = async ({

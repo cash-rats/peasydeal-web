@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useFetcher } from 'react-router';
 import type { ApiErrorResponse, PaymentMethod } from '~/shared/types';
 
@@ -17,12 +17,15 @@ export const useCreateOrder = () => {
   const createOrderFetcher = useFetcher();
   const [errorAlert, setErrorAlert] = useState<string | null>(null);
   const [orderUUID, setOrderUUID] = useState<string>('');
-  const createOrder = async (props: CreateOrderProps) => {
-    createOrderFetcher.submit(props, {
-      method: 'post',
-      action: '/checkout?index',
-    });
-  };
+  const createOrder = useCallback(
+    async (props: CreateOrderProps) => {
+      createOrderFetcher.submit(props, {
+        method: 'post',
+        action: '/checkout?index',
+      });
+    },
+    [createOrderFetcher],
+  );
 
   useEffect(() => {
     if (createOrderFetcher.state !== 'idle' || !createOrderFetcher.data) return;
