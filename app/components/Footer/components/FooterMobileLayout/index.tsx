@@ -2,7 +2,6 @@ import type { LinksFunction } from 'react-router';
 
 import type { Category } from '~/shared/types';
 
-import styles from './styles/FooterMobileLayout.css?url';
 import LogoSection from '../LogoSection';
 import ProductsSecions from '../ProductsSection';
 import CompanySection from '../CompanySection';
@@ -11,9 +10,7 @@ import CompanySection from '../CompanySection';
 // import EmailSubscribe from '../EmailSubscribe';
 
 export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
+  return [];
 };
 
 interface FooterMobileLayoutProps {
@@ -23,17 +20,17 @@ interface FooterMobileLayoutProps {
 function FooterMobileLayout({ categories = [] }: FooterMobileLayoutProps) {
   return (
     <ul className="w-full list-none py-0 px-4 flex flex-col gap-6">
-      <li>
+      <li className="box-border flex flex-col items-center py-[10px]">
         <LogoSection />
       </li>
 
-      <li className="flex flex-row">
-        <div className='flex-auto'>
+      <li className="box-border flex flex-col items-center py-[10px]">
+        <div className="flex-auto">
           <ProductsSecions categories={categories} />
         </div>
       </li>
 
-      <li className='flex flex-col gap-4'>
+      <li className="box-border flex flex-col items-center gap-4 py-[10px]">
         {/* <EventSection /> */}
         <CompanySection />
       </li>
