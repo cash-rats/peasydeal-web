@@ -7,15 +7,13 @@ import HorizontalProductsLayout from '~/routes/components/HorizontalProductsLayo
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import type { Category } from '~/shared/types';
 import {
-  getCartTitleText,
   getCanonicalDomain,
+  getCartTitleText,
   getCartFBSEO_V2,
 } from '~/utils/seo';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import { useCartCount } from '~/routes/hooks';
 import { links as cartIndexLinks } from '../cart._index/route';
-
-import cartStyles from '../styles/cart.css?url';
 
 // export const meta: MetaFunction = () => {
 //   return [
@@ -28,7 +26,6 @@ import cartStyles from '../styles/cart.css?url';
 export const links: LinksFunction = () => [
   ...CatalogLayoutLinks(),
   ...cartIndexLinks?.() ?? [],
-  { rel: 'stylesheet', href: cartStyles },
 ];
 
 type LoaderType = {
@@ -65,7 +62,7 @@ function CartLayout() {
       navBarCategories={navBarCategories}
       cartCount={cartCount}
     >
-      <div className="Cart__wrapper pt-[110px] md:pt-[160px]">
+      <div>
         <Outlet />
 
         <section className="
@@ -74,7 +71,6 @@ function CartLayout() {
 				justify-center items-center
 				px-2 md:px-4
 				bg-white
-        mt-4
 			">
           <div className="w-full py-2.5 max-w-screen-xl mx-auto">
             {/* Recommended products - top items */}
