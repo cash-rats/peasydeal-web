@@ -37,9 +37,9 @@ function ThreeColumns({
         <div className='w-full max-w-screen-xl mx-auto'>
           <div className="
             grid
-            gap-3 md:gap-3 lg:gap-6
-            grid-cols-2 lg:grid-cols-3
-            mb-2 md:mb-3 lg:mb-4
+            gap-2 md:gap-3
+            grid-cols-2 md:grid-cols-3
+            mb-2 md:mb-3
           ">
             {
               Object.keys(products).length !== 0 && products.map((product: Product, index) => {
@@ -50,7 +50,6 @@ function ThreeColumns({
                     product={product}
                     onClickProduct={onClickProduct}
                     displayActionButton={false}
-                    noPadding={true}
                   />
                 )
               })

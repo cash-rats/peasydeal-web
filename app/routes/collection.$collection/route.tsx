@@ -21,7 +21,14 @@ import FourOhFour from '~/components/FourOhFour';
 import ThreeColumns, { links as ProductRowsContainerLinks } from '~/components/ProductRowsContainer/ThreeColumns';
 import { composErrorResponse } from '~/utils/error';
 import { isFromGoogleStoreBot } from '~/utils';
-import { getCanonicalDomain, getCollectionDescText, getCollectionTitleText, getCategoryFBSEO_V2, getFourOhFourDescText, getFourOhFourTitleText } from '~/utils/seo';
+import {
+  getCanonicalDomain,
+  getCollectionDescText,
+  getCollectionTitleText,
+  getCategoryFBSEO_V2,
+  getFourOhFourDescText,
+  getFourOhFourTitleText,
+} from '~/utils/seo';
 import { PAGE_LIMIT } from '~/shared/constants';
 
 import { resolveCategoryName } from '~/api/resolve-category-name.server';
