@@ -3,7 +3,7 @@ import type { LinksFunction } from 'react-router';
 
 import type { Category } from '~/shared/types';
 import Header from '~/components/Header';
-import Footer, { links as FooterLinks } from '~/components/Footer';
+import Footer from '~/components/Footer';
 import CategoriesNav from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
 import MobileSearchDialog from '~/components/MobileSearchDialog';
@@ -17,7 +17,6 @@ type CatalogLayoutProps = {
 };
 
 export const links: LinksFunction = () => [
-  ...FooterLinks(),
   ...DropDownSearchBarLinks(),
 ];
 

@@ -1,5 +1,3 @@
-import type { LinksFunction } from 'react-router';
-
 import type { Category } from '~/shared/types';
 
 import LogoSection from '../LogoSection';
@@ -8,10 +6,6 @@ import CompanySection from '../CompanySection';
 
 // import EventSection from '../EventSection';
 // import EmailSubscribe from '../EmailSubscribe';
-
-export const links: LinksFunction = () => {
-  return [];
-};
 
 interface FooterMobileLayoutProps {
   categories?: Category[];

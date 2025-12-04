@@ -12,8 +12,8 @@ import {
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 
-import Header, { links as HeaderLinks } from '~/components/Header';
-import Footer, { links as FooterLinks } from '~/components/Footer';
+import Header from '~/components/Header';
+import Footer from '~/components/Footer';
 import { composErrorResponse } from '~/utils/error';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
@@ -58,8 +58,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => ([
 
 export const links: LinksFunction = () => {
   return [
-    ...FooterLinks(),
-    ...HeaderLinks(),
     ...TrackingOrderErrorPageLinks(),
     ...TrackingOrderInitPageLinks(),
     ...SearchBarLinks(),

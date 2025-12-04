@@ -1,18 +1,10 @@
-import type { LinksFunction } from 'react-router';
 import { AiFillInstagram, AiOutlineTwitter } from 'react-icons/ai';
 import { SiFacebook } from 'react-icons/si';
 
 import type { Category } from '~/shared/types';
 
 import FooterTopInfo from './components/FooterTopInfo';
-import { links as FooterMobileAccordionLinks } from './components/FooterMobileLayout';
 import FooterTabletLayout from './components/FooterTabletLayout';
-
-export const links: LinksFunction = () => {
-  return [
-    ...FooterMobileAccordionLinks(),
-  ];
-};
 
 interface FooterProps {
   categories?: Category[];
