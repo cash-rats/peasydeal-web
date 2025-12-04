@@ -41,6 +41,7 @@ import {
 } from '~/routes/checkout/actions';
 import type { ActionPayload } from '~/routes/checkout/actions';
 import { getCheckoutSession } from '~/sessions/checkout.session.server';
+import { validatePhoneInput } from '~/routes/checkout/utils';
 
 export const links: LinksFunction = () => {
   return [
@@ -139,37 +140,6 @@ function CheckoutPage() {
 
   const loading = createOrderFetcher.state !== 'idle';
 
-  const validatePhone = (form: HTMLFormElement) => {
-    const phoneInput = form.querySelector<HTMLInputElement>('#phone');
-    if (!phoneInput) {
-      return true;
-    }
-
-    phoneInput.setCustomValidity('');
-
-    const rawPhone = phoneInput.value;
-    const phone = rawPhone.replace(/\s+/g, '');
-
-    const phoneIsNum = /^\+?[0-9]+$/.test(phone);
-
-    if (!phoneIsNum) {
-      phoneInput.setCustomValidity('Phone must contain only numbers');
-      // contact number can be as short as (input) 012345 -> 4 or as long as 25 (max constraint on frontend state)
-      phoneInput.reportValidity();
-      return false;
-    }
-
-    if (phone.length <= 3) {
-      // if they go below 4 (input) 012345 -> 4, could be potentially a user mistake
-      // and UK allows 9 number phone (land line) to 12 (mobile) but are also open to VOIP
-      phoneInput.setCustomValidity('The phone number seems too short.');
-      phoneInput.reportValidity();
-      return false;
-    }
-
-    return true;
-  };
-
   const assembleContactName = () => {
     let contactName = state.contactInfoForm.contact_name as string;
 
@@ -208,6 +178,7 @@ function CheckoutPage() {
   };
 
   const handleFormChange = (evt: FormEvent<HTMLFormElement>) => {
+    // Only shipping fields are updated here; contact fields are managed inside ContactInfoForm via its onChange prop.
     clearCreateOrderErrorAlert();
     clearStripeErrorAlert();
 
@@ -234,7 +205,8 @@ function CheckoutPage() {
     evt.preventDefault();
 
     if (!formRef.current) return;
-    if (!validatePhone(formRef.current)) {
+    const phoneInput = formRef.current.querySelector<HTMLInputElement>('#phone');
+    if (!validatePhoneInput(phoneInput)) {
       formRef.current.reportValidity();
       return;
     }
