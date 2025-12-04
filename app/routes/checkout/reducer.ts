@@ -47,6 +47,7 @@ export enum ActionTypes {
 
   update_shipping_detail_form = 'update_shipping_detail_form',
   update_contact_info_form = 'update_contact_info_form',
+  update_contact_name_same = 'update_contact_name_same',
 }
 
 type SetBothOrderID = {
@@ -128,6 +129,16 @@ const checkoutReducer = (state: StateShape, action: CheckoutAction): StateShape 
             ...data.country_data,
           },
         }
+      };
+    }
+    case ActionTypes.update_contact_name_same: {
+      const isSame = action.payload as boolean;
+      return {
+        ...state,
+        contactInfoForm: {
+          ...state.contactInfoForm,
+          contact_name_same: isSame,
+        },
       };
     }
     default:
