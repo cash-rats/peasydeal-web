@@ -3,7 +3,6 @@ import type { LinksFunction } from 'react-router';
 import type { Category } from '~/shared/types';
 
 import styles from './styles/FooterMobileLayout.css?url';
-import { links as FooterContentLinks } from '../FooterContent';
 import LogoSection from '../LogoSection';
 import ProductsSecions from '../ProductsSection';
 import CompanySection from '../CompanySection';
@@ -13,7 +12,6 @@ import CompanySection from '../CompanySection';
 
 export const links: LinksFunction = () => {
   return [
-    ...FooterContentLinks(),
     { rel: 'stylesheet', href: styles },
   ];
 };

@@ -5,12 +5,8 @@ import { AiOutlineArrowRight } from 'react-icons/ai';
 
 import { Input } from '~/components/ui/input';
 
-import styles from './styles/FooterContent.css?url';
-
 export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
+  return [];
 };
 
 const policies = [
@@ -39,7 +35,7 @@ const policies = [
 
 export function PolicyContent() {
   return (
-    <div className="text-[#666] md:pb-7">
+    <div className="text-[#666] md:pb-[30px]">
       {/* <h3 className="content-title"> Policy </h3> */}
       <h3 className="mt-0 font-medium pr-8 text-[#000] text-base hidden md:block">
         Policy
@@ -68,7 +64,7 @@ export function PolicyContent() {
 
 export function ContactUsContent() {
   return (
-    <div className="text-[#666] md:pb-7">
+    <div className="text-[#666] md:pb-[30px]">
       <h3 className="mt-0 font-medium pr-8 text-[#000] text-base hidden md:block"> Contact Us </h3>
       <p className="font-medium text-base"> contact@peasydeal.com </p>
     </div>
@@ -77,9 +73,9 @@ export function ContactUsContent() {
 
 export function SubscribeContent() {
   return (
-    <div className="text-[#666] md:pb-7">
+    <div className="text-[#666] md:pb-[30px]">
       <h3 className="mt-0 font-medium pr-8 text-[#000] text-base hidden md:block"> Subscribe </h3>
-      <p className="py-2 font-medium text-base">
+      <p className="py-2 font-medium text-base leading-[1.3rem]">
         Enter your email below to be the first to know about new collections and product launches.
       </p>
       <div className="relative mt-2">
