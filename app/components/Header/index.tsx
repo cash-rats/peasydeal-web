@@ -3,16 +3,11 @@ import {
   useRef,
   useState,
 } from 'react';
-import type { LinksFunction } from 'react-router';
 
 import type { Category } from '~/shared/types';
 import LogoHeader from "./components/LogoHeader";
-import NavBar, { links as NavBarLinks } from './components/NavBar';
+import NavBar from './components/NavBar';
 import PropBar from './components/PropBar';
-
-export const links: LinksFunction = () => {
-  return [...NavBarLinks()];
-};
 
 export interface HeaderProps {
   categoriesBar?: ReactNode;

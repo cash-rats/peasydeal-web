@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react';
 import type { LinksFunction } from 'react-router';
 
 import type { Category } from '~/shared/types';
-import Header, { links as HeaderLinks } from '~/components/Header';
+import Header from '~/components/Header';
 import Footer, { links as FooterLinks } from '~/components/Footer';
 import CategoriesNav from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
@@ -17,7 +17,6 @@ type CatalogLayoutProps = {
 };
 
 export const links: LinksFunction = () => [
-  ...HeaderLinks(),
   ...FooterLinks(),
   ...DropDownSearchBarLinks(),
 ];
