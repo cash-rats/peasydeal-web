@@ -1,5 +1,7 @@
 // Validates phone input value and writes any validation message to the input element.
 // Returns true when valid, false otherwise.
+import type { OrderItemFromAPI, OrderItem } from './types';
+
 export const validatePhoneInput = (input: HTMLInputElement | null): boolean => {
   if (!input) return true;
 
@@ -22,4 +24,19 @@ export const validatePhoneInput = (input: HTMLInputElement | null): boolean => {
   }
 
   return true;
+};
+
+export const transformOrderDetail = (orderDetail: OrderItemFromAPI): Array<OrderItem> => {
+  const transformedProds = Object.keys(orderDetail).reduce((prev: any, variationID) => {
+    const prod = orderDetail[variationID];
+    prev.push({
+      product_uuid: prod.productUUID,
+      variation_uuid: prod.variationUUID,
+      quantity: Number(prod.quantity),
+    });
+
+    return prev;
+  }, []);
+
+  return transformedProds;
 };

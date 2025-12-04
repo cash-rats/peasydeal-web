@@ -1,5 +1,4 @@
 import { redirect } from 'react-router';
-import httpStatus from 'http-status-codes';
 
 import type { PriceInfo } from '~/shared/cart';
 import { PaymentMethod } from '~/shared/enums';
@@ -14,6 +13,31 @@ import type {
   ShippingDetailFormType,
   ContactInfoFormType,
 } from './types';
+
+const parsePromoCode = (promoCode: string): string | null => {
+  if (!promoCode) return null;
+  try {
+    return JSON.parse(promoCode);
+  } catch (err) {
+    return null;
+  }
+};
+
+const parseCheckoutForms = (form: ActionPayload) => {
+  const shippingFormObj: ShippingDetailFormType = JSON.parse(form.shipping_form);
+  const contactInfoFormObj: ContactInfoFormType = JSON.parse(form.contact_info_form);
+  const priceInfoObj: PriceInfo = JSON.parse(form.price_info);
+  const cartItemsObj = JSON.parse(form.cart_items);
+
+  return {
+    shippingFormObj,
+    contactInfoFormObj,
+    priceInfoObj,
+    cartItemsObj,
+    parsedPromoCode: parsePromoCode(form.promo_code),
+    paymentSecret: form.payment_secret,
+  };
+};
 
 export enum ActionType {
   PaypalCreateOrder = "paypal_create_order",
@@ -38,18 +62,13 @@ export type PaypalOrderActionDataType = {
 
 export const __paypalCreateOrder = async (form: ActionPayload) => {
   const {
-    shipping_form: shippingForm,
-    contact_info_form: contactInfoForm,
-    cart_items: cartItems,
-    price_info: priceInfo,
-    payment_secret,
-    promo_code,
-  } = form;
-
-  const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
-  const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
-  const priceInfoObj: PriceInfo = JSON.parse(priceInfo);
-  const cartItemsObj = JSON.parse(cartItems);
+    shippingFormObj,
+    contactInfoFormObj,
+    priceInfoObj,
+    cartItemsObj,
+    parsedPromoCode,
+    paymentSecret,
+  } = parseCheckoutForms(form);
   const trfItemsObj = transformOrderDetail(cartItemsObj);
 
   const resp = await paypalCreateOrder({
@@ -63,11 +82,11 @@ export const __paypalCreateOrder = async (form: ActionPayload) => {
     email: contactInfoFormObj.email,
     contact_name: contactInfoFormObj.contact_name,
     phone_value: contactInfoFormObj.phone_value,
-    payment_secret,
+    payment_secret: paymentSecret,
 
     products: trfItemsObj,
     price_info: priceInfoObj,
-    promo_code: JSON.parse(promo_code),
+    promo_code: parsedPromoCode,
   });
 
   return Response.json(resp);
@@ -75,25 +94,14 @@ export const __paypalCreateOrder = async (form: ActionPayload) => {
 
 export const __stripeCreateOrder = async (formObj: ActionPayload) => {
   const {
-    shipping_form: shippingForm,
-    contact_info_form: contactInfoForm,
-    cart_items: cartItems,
-    price_info: priceInfo,
-    payment_secret,
-    promo_code,
-  } = formObj
+    shippingFormObj,
+    contactInfoFormObj,
+    priceInfoObj,
+    cartItemsObj,
+    parsedPromoCode,
+    paymentSecret,
+  } = parseCheckoutForms(formObj);
 
-  let parsedPromoCode: string | null = null;
-  try {
-    parsedPromoCode = promo_code ? JSON.parse(promo_code) : null;
-  } catch (err) {
-    parsedPromoCode = null;
-  }
-
-  const shippingFormObj: ShippingDetailFormType = JSON.parse(shippingForm);
-  const contactInfoFormObj: ContactInfoFormType = JSON.parse(contactInfoForm);
-  const priceInfoObj: PriceInfo = JSON.parse(priceInfo);
-  const cartItemsObj = JSON.parse(cartItems);
   const trfItemsObj = transformOrderDetail(cartItemsObj);
 
   const resp = await createOrder({
@@ -107,7 +115,7 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
     email: contactInfoFormObj.email,
     contact_name: contactInfoFormObj.contact_name,
     phone_value: contactInfoFormObj.phone_value,
-    payment_secret,
+    payment_secret: paymentSecret,
 
     products: trfItemsObj,
     price_info: priceInfoObj,
