@@ -3,11 +3,10 @@ import {
   Outlet,
   useLoaderData,
   useOutletContext,
-  useRouteLoaderData,
   redirect,
 } from 'react-router';
 import type {
-  ShouldRevalidateFunction,
+  ShouldRevalidateFunctionArgs,
   LoaderFunctionArgs,
   LinksFunction,
   MetaFunction,
@@ -18,6 +17,7 @@ import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import httpStatus from 'http-status-codes';
 
+import { useCartCount } from '~/routes/hooks';
 import { envs } from '~/utils/env';
 import { getCheckoutTitleText } from '~/utils/seo';
 import { createPaymentIntent } from '~/services/stripe.server';
@@ -25,6 +25,8 @@ import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.ser
 import type { Category } from '~/shared/types';
 import type { PriceInfo } from '~/shared/cart';
 import {
+  type CheckoutSessionData,
+  setCheckoutSessionData,
   commitCheckoutSession,
   getCheckoutSession,
 } from '~/sessions/checkout.session.server';
@@ -49,30 +51,9 @@ type LoaderType = {
   promo_code: string | null | undefined;
 };
 
-export const shouldRevalidate: ShouldRevalidateFunction = ({ formAction }) => {
-  if (
-    formAction &&
-    formAction.includes('components/ShippingDetailForm')
-  ) {
-    return false;
-  }
-
-  if (
-    formAction &&
-    formAction.includes('/checkout/result/components/Success')
-  ) {
-    return false;
-  }
-
-  if (
-    formAction &&
-    formAction.includes('/components/Header')
-  ) {
-    return false;
-  }
-
-  return true;
-};
+export function shouldRevalidate(_: ShouldRevalidateFunctionArgs) {
+  return false;
+}
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
@@ -82,33 +63,45 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       throw redirect('/cart');
     }
 
-    const { priceInfo, promoCode } = checkoutData;
+    const checkout = checkoutData as CheckoutSessionData;
 
-    const [navBarCategories, categories] =
-      await fetchCategoriesWithSplitAndHotDealInPlaced();
+    const {
+      priceInfo,
+      promoCode,
+    } = checkout;
 
-    const paymentIntent = await createPaymentIntent({
-      amount: Math.round(priceInfo.total_amount * 100),
-      currency: envs.STRIPE_CURRENCY_CODE,
+    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
+
+    const amount = Math.round(priceInfo.total_amount * 100);
+    const currency = envs.STRIPE_CURRENCY_CODE;
+
+    const newPaymentIntent = await createPaymentIntent({
+      amount,
+      currency,
+    });
+
+    const paymentIntent = {
+      id: newPaymentIntent.id,
+      clientSecret: newPaymentIntent.client_secret || '',
+      amount,
+      currency,
+    };
+
+    setCheckoutSessionData(session, {
+      ...checkout,
     });
 
     return Response.json({
-      client_secret: paymentIntent.client_secret || undefined,
-      payment_intend_id: paymentIntent.id,
+      client_secret: paymentIntent?.clientSecret || undefined,
+      payment_intend_id: paymentIntent?.id || '',
       categories,
       navBarCategories,
       price_info: priceInfo,
       promo_code: promoCode,
     }, {
-      headers: {
-        'Set-Cookie': await commitCheckoutSession(session),
-      },
+      headers: { 'Set-Cookie': await commitCheckoutSession(session) },
     });
   } catch (e) {
-    if (e instanceof Response) {
-      throw e;
-    }
-
     throw Response.json(e, {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
@@ -118,17 +111,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 function CheckoutLayout() {
   const {
     client_secret: clientSecret = '',
-    payment_intend_id,
     categories,
     price_info,
     promo_code,
     navBarCategories,
   } = useLoaderData<LoaderType>() || {};
 
-  const rootData = useRouteLoaderData('root') as any;
-  const cartCount = rootData?.cartCount || 0;
+  const cartCount = useCartCount();
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
 
+  // TODO: don't hardcode locale
   const options: StripeElementsOptions = {
     clientSecret,
     appearance: {},
@@ -139,7 +131,7 @@ function CheckoutLayout() {
     if (window && envs.STRIPE_PUBLIC_KEY) {
       setStripePromise(loadStripe(envs.STRIPE_PUBLIC_KEY));
     }
-  }, [payment_intend_id]);
+  }, []);
 
   return (
     <CatalogLayout
@@ -162,7 +154,7 @@ function CheckoutLayout() {
             >
               <Outlet
                 context={{
-                  paymentIntendID: payment_intend_id,
+                  paymentClientSecret: clientSecret,
                   priceInfo: price_info,
                   promoCode: promo_code,
                 }}
@@ -176,7 +168,7 @@ function CheckoutLayout() {
 }
 
 type ContextType = {
-  paymentIntendID: string;
+  paymentClientSecret: string;
   priceInfo: PriceInfo;
   promoCode: string | null | undefined;
 };

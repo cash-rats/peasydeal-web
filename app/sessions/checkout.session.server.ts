@@ -6,6 +6,13 @@ import { commitSession, destroySession, getSession } from './sessions';
 
 const CHECKOUT_SESSION_KEY = 'checkout:data';
 
+export type PaymentIntentSessionData = {
+  id: string;
+  clientSecret: string;
+  amount: number;
+  currency: string;
+};
+
 export type CheckoutSessionData = {
   priceInfo: PriceInfo;
   promoCode: string | null;

@@ -3,6 +3,7 @@ import {
   useEffect,
   useRef,
   useReducer,
+  useMemo,
 } from 'react';
 import {
   type LoaderFunctionArgs,
@@ -42,6 +43,12 @@ import {
 import type { ActionPayload } from '~/routes/checkout/actions';
 import { getCheckoutSession } from '~/sessions/checkout.session.server';
 import { validatePhoneInput } from '~/routes/checkout/utils';
+
+const getPaymentIntentIdFromClientSecret = (clientSecret: string) => {
+  if (!clientSecret) return '';
+  const [intentId] = clientSecret.split('_secret_');
+  return intentId || '';
+};
 
 export const links: LinksFunction = () => {
   return [
@@ -89,7 +96,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 function CheckoutPage() {
   const { cart_items: cartItems } = useLoaderData<LoaderType>() || {};
 
-  const { paymentIntendID, priceInfo, promoCode } = useContext();
+  const { paymentClientSecret, priceInfo, promoCode } = useContext();
+  const paymentIntendID = useMemo(
+    () => getPaymentIntentIdFromClientSecret(paymentClientSecret),
+    [paymentClientSecret],
+  );
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const {
