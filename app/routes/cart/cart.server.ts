@@ -25,8 +25,6 @@ export const fetchPriceInfo = async (params: FetchPriceInfoParams): Promise<Pric
     },
   })
 
-  console.timeEnd(`order-amount ${`${envs.MYFB_ENDPOINT}/data-server/ec/v1/accountant/order-amount`}`)
-
   const respJSON = await resp.json();
 
   if (resp.status !== httpStatus.OK) {
