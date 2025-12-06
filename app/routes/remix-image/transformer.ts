@@ -148,8 +148,6 @@ const transformer: CustomTransformer = {
         height,
       });
 
-      console.log('~~ transformer 1', envs.VERCEL_ENV);
-
       /* Ignore r2 auth on development env */
       try {
         await uploadToR2({
