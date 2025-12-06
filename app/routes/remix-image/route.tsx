@@ -1,8 +1,8 @@
 import type { LoaderFunctionArgs } from 'react-router';
-import { imageLoader, MemoryCache } from '~/lib/react-router-image/server';
-import type { LoaderConfig } from '~/lib/react-router-image';
 import httpStatus from 'http-status-codes';
 
+import { imageLoader } from '~/lib/react-router-image/server';
+import type { LoaderConfig } from '~/lib/react-router-image';
 import { envs } from '~/utils/env';
 
 import transformer from './transformer';
@@ -11,7 +11,7 @@ import { fileExtensionResolver, MimeType } from './mimes';
 
 const config: LoaderConfig = {
   selfUrl: `${envs.CDN_URL}/product-images`,
-  cache: new MemoryCache(),
+  cache: null,
   transformer,
 };
 
