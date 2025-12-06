@@ -15,6 +15,11 @@ import { decodeQuery, decodeTransformQuery, parseURL } from '../utils/url';
 import { fetchResolver } from './fetchResolver';
 import { pureTransformer } from './pureTransformer';
 
+const fallbackGifBuffer = Buffer.from(
+  'R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+  'base64'
+);
+
 export const imageLoader: AssetLoader = async (
   {
     selfUrl,
@@ -247,10 +252,19 @@ export const imageLoader: AssetLoader = async (
     }
 
     if (error instanceof RemixImageError) {
-      return textResponse(error.errorCode || 500, error.message);
-    } else {
-      return textResponse(500, 'Image loader encountered an unknown error!');
+      return imageResponse(
+        new Uint8Array(fallbackGifBuffer),
+        error.errorCode || 500,
+        'image/gif',
+        'no-store, max-age=0'
+      );
     }
+
+    return imageResponse(
+      new Uint8Array(fallbackGifBuffer),
+      500,
+      'image/gif',
+      'no-store, max-age=0'
+    );
   }
 };
-

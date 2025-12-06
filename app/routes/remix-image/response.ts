@@ -6,7 +6,7 @@ export const imageResponse = (
   contentType: string,
   cacheControl: string
 ): Response =>
-  new Response(file, {
+  new Response(file as any, {
     status,
     headers: {
       'Content-Type': contentType,
