@@ -120,23 +120,24 @@ export default function HorizontalProductsLayout({ catName = 'new_trend', title,
           className="flex overflow-x-scroll pt-5 pb-10 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         >
           <div className="flex flex-nowrap">
-            {
-              recProds?.map((prod: Product, index: number) => {
-                return (
-                  <div
-                    className="inline-block px-3 min-w-[320px] sm:min-w-[340px] md:min-w-[360px]"
-                    key={`${prod.productUUID}_${index}`}
-                  >
-                    <RegularCardWithActionButton
-                      key={`horzontal-prod-${index}`}
-                      product={prod}
-                      onClickProduct={handleClickGrid}
-                      displayActionButton={false}
-                    />
-                  </div>
-                )
-              })
-            }
+            {recProds?.map((prod: Product, index: number) => {
+              const isLoading = !prod || !prod.productUUID;
+
+              return (
+                <div
+                  className="inline-block px-3 min-w-[320px] sm:min-w-[340px] md:min-w-[360px]"
+                  key={`${prod.productUUID ?? 'loading'}_${index}`}
+                >
+                  <RegularCardWithActionButton
+                    key={`horzontal-prod-${index}`}
+                    loading={isLoading}
+                    product={prod}
+                    onClickProduct={handleClickGrid}
+                    displayActionButton={false}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

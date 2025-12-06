@@ -102,6 +102,8 @@ export function OptimizedImage({
 
   const getCdnUrl = useCallback(
     (width: number, height: number) => {
+      if (!src) return null;
+
       const contentType = (options.contentType as MimeType | undefined) ?? MimeType.WEBP;
       const fileExt = fileExtensionResolver.get(contentType);
       if (!fileExt) return null;
@@ -236,9 +238,8 @@ export function OptimizedImage({
           srcSet={srcset}
           sizes={sizes}
           alt={alt}
-          className={`w-full h-full object-cover transition-opacity duration-300 ${
-            loadingState === 'loaded' ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`w-full h-full object-cover transition-opacity duration-300 ${loadingState === 'loaded' ? 'opacity-100' : 'opacity-0'
+            }`}
           onLoad={handleLoad}
           onError={handleError}
           loading="lazy"

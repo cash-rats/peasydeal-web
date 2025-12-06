@@ -2,19 +2,15 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { envs } from '~/utils/env';
 
 let s3Client: S3Client | null | undefined = undefined;
+s3Client = new S3Client({
+  endpoint: `https://${envs.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+  region: 'auto',
+  credentials: {
+    accessKeyId: envs.R2_ACCESS_KEY_ID,
+    secretAccessKey: envs.R2_SECRET_ACCESS_KEY,
+  },
+});
 
-if (envs.NODE_ENV === 'production' || envs.NODE_ENV === 'staging') {
-  s3Client = new S3Client({
-    endpoint: `https://${envs.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-    region: 'auto',
-    credentials: {
-      accessKeyId: envs.R2_ACCESS_KEY_ID,
-      secretAccessKey: envs.R2_SECRET_ACCESS_KEY,
-    },
-  });
-} else {
-  /* Ignore r2 auth on development env */
-}
 interface IR2FileUploader {
   (params: { buffer: Buffer; filename: string; contentType: string }): Promise<boolean>;
 }

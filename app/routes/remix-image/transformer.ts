@@ -148,17 +148,17 @@ const transformer: CustomTransformer = {
         height,
       });
 
+      console.log('~~ transformer 1', envs.VERCEL_ENV);
+
       /* Ignore r2 auth on development env */
-      if (envs.NODE_ENV === 'production' || envs.NODE_ENV === 'staging') {
-        try {
-          await uploadToR2({
-            buffer: transformedImageBuffer,
-            filename: objectName,
-            contentType: outputContentType,
-          });
-        } catch (error) {
-          console.error('Error uploading to R2:', error);
-        }
+      try {
+        await uploadToR2({
+          buffer: transformedImageBuffer,
+          filename: objectName,
+          contentType: outputContentType,
+        });
+      } catch (error) {
+        console.error('Error uploading to R2:', error);
       }
     }
 
