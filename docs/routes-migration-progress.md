@@ -5,6 +5,14 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 ## Checklist
 - [x] `$.tsx`
 - [x] `_index`
+- [x] `__index/about-us.tsx`
+- [ ] `__index/contact-us.tsx`
+- [ ] `__index/payment-policy.tsx`
+- [ ] `__index/privacy.tsx`
+- [ ] `__index/return-policy.tsx`
+- [ ] `__index/sell-on-peasydeal.tsx`
+- [ ] `__index/shipping-policy.tsx`
+- [ ] `__index/terms-of-use.tsx`
 - [x] `api.product.review`
 - [x] `api.tracking.order-info`
 - [ ] `blog`
