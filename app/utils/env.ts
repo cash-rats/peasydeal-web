@@ -12,7 +12,6 @@ const envSchema = z.object({
   SESSION_SECRET: z.string().min(1, 'SESSION_SECRET is required'),
 
   // API Endpoints
-  MYFB_ENDPOINT: z.string().default(''),
   PEASY_DEAL_ENDPOINT: z.string().default('https://stagingapi.peasydeal.com'),
 
   // CDN

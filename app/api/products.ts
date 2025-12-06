@@ -58,18 +58,6 @@ const normalizeV2Data = (apiData: any[]): Product[] => {
   );
 };
 
-export const fetchActivityBanners = async (): Promise<ActivityBanner[]> => {
-  const endpoint = `${envs.MYFB_ENDPOINT}/data-server/ec/activity_banners`;
-  const resp = await fetch(endpoint);
-  const respJSON = await resp.json();
-  if (resp.status !== httpStatus.OK) {
-    const errResp = respJSON as ApiErrorResponse;
-    throw new Error(errResp.err_msg);
-  }
-
-  return respJSON as ActivityBanner[];
-};
-
 export const fetchLandingPageFeatureProducts = async ({
   categoriesPreviewNames = [],
 }: IFetchLandingPageFeatureProductsParams) => {
@@ -88,16 +76,16 @@ export const fetchLandingPageFeatureProducts = async ({
 
   const categoryPreviews = respJSON.category_previews
     ? respJSON.category_previews.map((categoryPreview: any) => ({
-        ...categoryPreview,
-        items: normalizeV2Data(categoryPreview.items),
-      }))
+      ...categoryPreview,
+      items: normalizeV2Data(categoryPreview.items),
+    }))
     : [];
 
   const promotionPreviews = respJSON.promotion_previews
     ? respJSON.promotion_previews.map((promotionPreview: any) => ({
-        ...promotionPreview,
-        items: normalizeV2Data(promotionPreview.items),
-      }))
+      ...promotionPreview,
+      items: normalizeV2Data(promotionPreview.items),
+    }))
     : [];
 
   return {
