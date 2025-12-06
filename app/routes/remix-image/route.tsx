@@ -27,6 +27,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
   const width = (url.searchParams.get('width') as string) || '';
   const height = (url.searchParams.get('height') as string) || '';
+  const widthNum = parseInt(width);
+  const heightNum = parseInt(height);
   const src = (url.searchParams.get('src') as string) || '';
   const contentType = (url.searchParams.get('contentType') as MimeType) || MimeType.WEBP;
   const fileExt = fileExtensionResolver.get(contentType);
@@ -38,8 +40,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     const filenameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
 
     const dnsURL = composeCDNUrl({
-      width: parseInt(width),
-      height: parseInt(height),
+      width: widthNum,
+      height: heightNum,
       filename: `${filenameWithoutExt}${fileExt}`,
     });
 
@@ -56,5 +58,32 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     }
   }
 
-  return imageLoader(config, request);
+  const transformedResponse = await imageLoader(config, request);
+
+  if (widthNum && heightNum && fileExt && src) {
+    const filename = src.substring(src.lastIndexOf('/') + 1, src.length);
+    const filenameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+    const cdnUrl = composeCDNUrl({
+      width: widthNum,
+      height: heightNum,
+      filename: `${filenameWithoutExt}${fileExt}`,
+    });
+
+    try {
+      const cdnProbe = await fetch(cdnUrl, { method: 'HEAD' });
+      if (cdnProbe.ok) {
+        return new Response(null, {
+          status: httpStatus.MOVED_TEMPORARILY,
+          headers: {
+            Location: cdnUrl,
+            'Cache-Control': `public, max-age=${maxAge}`,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('CDN probe after transform failed:', error);
+    }
+  }
+
+  return transformedResponse;
 };

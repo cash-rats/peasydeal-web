@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { envs } from '~/utils/env';
+import { fileExtensionResolver, MimeType } from '~/routes/remix-image/mimes';
 
 /**
  * Responsive image size configuration
@@ -61,6 +63,7 @@ export function OptimizedImage({
 }: OptimizedImageProps) {
   const [loadingState, setLoadingState] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [shouldLoad, setShouldLoad] = useState(false);
+  const [useCdn, setUseCdn] = useState(false);
 
   // IntersectionObserver setup for lazy loading
   const { ref, inView } = useInView({
@@ -97,11 +100,32 @@ export function OptimizedImage({
     [src, options.contentType, options.fit]
   );
 
+  const getCdnUrl = useCallback(
+    (width: number, height: number) => {
+      const contentType = (options.contentType as MimeType | undefined) ?? MimeType.WEBP;
+      const fileExt = fileExtensionResolver.get(contentType);
+      if (!fileExt) return null;
+
+      const filename = src.substring(src.lastIndexOf('/') + 1, src.length);
+      const filenameWithoutExt = filename.substring(0, filename.lastIndexOf('.'));
+
+      try {
+        const cdnUrl = new URL(envs.CDN_URL);
+        cdnUrl.pathname = `.webp/w${width}_h${height}/${filenameWithoutExt}${fileExt}`;
+        return cdnUrl.toString();
+      } catch (error) {
+        console.error('Failed to compose CDN URL:', error);
+        return null;
+      }
+    },
+    [options.contentType, src]
+  );
+
   // Generate srcset attribute for responsive images
   const srcset = responsive
     .map(({ size }) => {
-      const url = getLoaderUrl(size.width, size.height);
-      return `${url} ${size.width}w`;
+      const url = useCdn ? getCdnUrl(size.width, size.height) : getLoaderUrl(size.width, size.height);
+      return `${url ?? getLoaderUrl(size.width, size.height)} ${size.width}w`;
     })
     .join(', ');
 
@@ -117,7 +141,49 @@ export function OptimizedImage({
 
   // Use the first responsive size as the default src
   const defaultSize = responsive[0].size;
-  const imgSrc = getLoaderUrl(defaultSize.width, defaultSize.height);
+  const imgSrc =
+    (useCdn && getCdnUrl(defaultSize.width, defaultSize.height)) ||
+    getLoaderUrl(defaultSize.width, defaultSize.height);
+
+  // Probe CDN availability when the image should load
+  useEffect(() => {
+    if (!shouldLoad) return;
+
+    let cancelled = false;
+    const checkCdn = async () => {
+      const urls = responsive
+        .map(({ size }) => getCdnUrl(size.width, size.height))
+        .filter((u): u is string => Boolean(u));
+
+      if (urls.length !== responsive.length) {
+        setUseCdn(false);
+        return;
+      }
+
+      try {
+        const results = await Promise.all(
+          urls.map(async (url) => {
+            const res = await fetch(url, { method: 'HEAD' });
+            return res.ok;
+          })
+        );
+
+        if (!cancelled) {
+          setUseCdn(results.every(Boolean));
+        }
+      } catch {
+        if (!cancelled) {
+          setUseCdn(false);
+        }
+      }
+    };
+
+    checkCdn();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [getCdnUrl, responsive, shouldLoad]);
 
   // Handle image load complete
   const handleLoad = useCallback(() => {
