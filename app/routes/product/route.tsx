@@ -1,40 +1,17 @@
 import type { LinksFunction } from 'react-router';
-import { Outlet, useLoaderData } from 'react-router';
-import httpStatus from 'http-status-codes';
-
-import type { Category } from '~/shared/types';
+import { Outlet, useRouteLoaderData } from 'react-router';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import { useCartCount } from '~/routes/hooks';
-
-type LoaderData = {
-  categories: Category[];
-  navBarCategories: Category[];
-};
+import type { RootLoaderData } from '~/root';
 
 export const links: LinksFunction = () => [
   ...CatalogLayoutLinks(),
 ];
 
-export const loader = async () => {
-  try {
-    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-
-    return Response.json({
-      categories,
-      navBarCategories,
-    });
-  } catch (error) {
-    console.error(error);
-
-    throw Response.json(error, {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-    });
-  }
-};
-
 export default function ProductLayout() {
-  const { categories, navBarCategories } = useLoaderData<LoaderData>() || {};
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
   const cartCount = useCartCount();
 
   return (

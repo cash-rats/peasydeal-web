@@ -20,6 +20,8 @@ import {
 import { env } from '~/utils/env';
 import { storeDailySession } from '~/services/daily_session.server';
 import { storeSessionIDToSessionStore } from '~/services/daily_session';
+import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
+import type { Category } from '~/shared/types';
 
 import useRudderStackScript from './hooks/useRudderStackScript';
 import useGTMScript from './hooks/useGTMScript';
@@ -58,19 +60,32 @@ export const links: LinksFunction = () => {
 };
 
 export async function loader({ request }: Route.LoaderArgs) {
-  try {
-    const gaSessionID = await storeDailySession();
-    return {
-      env,
-      gaSessionID,
-    };
-  } catch (e) {
-    console.log('TODO: failed to store session id to redis', e);
-    return {
-      env,
-      gaSessionID: null,
-    };
-  }
+  const [gaSessionID, categoriesResult] = await Promise.all([
+    storeDailySession().catch((e) => {
+      console.log('TODO: failed to store session id to redis', e);
+      return null;
+    }),
+    fetchCategoriesWithSplitAndHotDealInPlaced().catch((e) => {
+      console.log('Failed to fetch categories', e);
+      return [[], []] as [Category[], Category[]];
+    }),
+  ]);
+
+  const [navBarCategories, categories] = categoriesResult;
+
+  return {
+    env,
+    gaSessionID,
+    categories,
+    navBarCategories,
+  };
+}
+
+export type RootLoaderData = Awaited<ReturnType<typeof loader>>;
+
+export function shouldRevalidate({ formMethod }: { formMethod?: string }) {
+  if (formMethod && formMethod.toUpperCase() !== 'GET') return true;
+  return false;
 }
 
 export const meta: MetaFunction = () => {
@@ -182,4 +197,3 @@ export default function App() {
     </Document>
   );
 }
-

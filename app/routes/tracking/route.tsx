@@ -18,8 +18,6 @@ import { composErrorResponse } from '~/utils/error';
 import SearchBar, { links as SearchBarLinks } from '~/components/SearchBar';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
 import CategoriesNav from '~/components/Header/components/CategoriesNav';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
-import type { Category } from '~/shared/types';
 
 import TrackingOrderInfo, { links as TrckingOrderInfoLinks } from '~/routes/tracking/components/TrackingOrderInfo';
 import TrackingSearchBar from '~/routes/tracking/components/TrackingSearchBar';
@@ -29,21 +27,18 @@ import { trackOrder } from '~/routes/tracking/api.server';
 import { normalizeTrackingOrder } from '~/routes/tracking/utils';
 import type { TrackOrder } from '~/routes/tracking/types';
 import MobileSearchDialog from '~/components/MobileSearchDialog';
+import type { RootLoaderData } from '~/root';
 
 type LoaderDataType = {
   query: string;
   order: TrackOrder | null;
   canonicalLink: string;
-  categories: Category[];
-  navBarCategories: Category[];
 };
 
 type CatchBoundaryDataType = {
   query: string;
   errMessage: string;
   canonicalLink: string;
-  categories: Category[];
-  navBarCategories: Category[];
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => ([
@@ -66,7 +61,6 @@ export const links: LinksFunction = () => {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
   const url = new URL(request.url);
 
   // Current route has just been requested. Ask user to search order by order ID.
@@ -75,8 +69,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       query: '',
       order: null,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
-      categories,
-      navBarCategories,
     });
   }
 
@@ -97,16 +89,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       query,
       order,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
-      navBarCategories,
-      categories,
     });
   } catch (err) {
     throw Response.json({
       query: '',
       errMessage: `Result for order ${query} is not found`,
       canonicalLink: `${getCanonicalDomain()}/tracking`,
-      navBarCategories,
-      categories,
     }, {
       status: httpStatus.NOT_FOUND,
     });
@@ -124,8 +112,10 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  const rootData = useRouteLoaderData("root") as any;
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const cartCount = rootData?.cartCount || 0;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
   const trackOrderFetcher = useFetcher();
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
   const handleOpen = () => setOpenSearchDialog(true);
@@ -163,12 +153,12 @@ export function ErrorBoundary() {
         />
 
         <Header
-          categories={caughtData.categories}
+          categories={categories}
           numOfItemsInCart={cartCount}
           categoriesBar={
             <CategoriesNav
-              categories={caughtData.categories}
-              topCategories={caughtData.navBarCategories}
+              categories={categories}
+              topCategories={navBarCategories}
             />
           }
           mobileSearchBar={
@@ -207,11 +197,11 @@ function TrackingOrder() {
   const {
     query,
     order,
-    categories,
-    navBarCategories
   } = useLoaderData<LoaderDataType>() || {};
-  const rootData = useRouteLoaderData("root") as any;
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const cartCount = rootData?.cartCount || 0;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
   const trackOrderFetcher = useFetcher();
 
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);

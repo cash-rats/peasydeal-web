@@ -1,11 +1,8 @@
-import { Outlet, useLoaderData } from 'react-router';
+import { Outlet, useRouteLoaderData } from 'react-router';
 import type { ActionFunctionArgs, LinksFunction, MetaFunction } from 'react-router';
 import { useEffect } from 'react';
-import httpStatus from 'http-status-codes';
 
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
-import type { Category } from '~/shared/types';
 import { getPaymentSuccessTitleText } from '~/utils/seo';
 import { useCartCount, useCartContext } from '~/routes/hooks';
 import { fetchOrder } from '~/routes/payment/api.server';
@@ -15,11 +12,7 @@ import {
   commitCheckoutSession,
 } from '~/sessions/checkout.session.server';
 import { sessionResetTransactionObject } from '~/sessions/transaction.session.server';
-
-type LoaderData = {
-  categories: Category[];
-  navBarCategories: Category[];
-};
+import type { RootLoaderData } from '~/root';
 
 export const links: LinksFunction = () => {
   return [
@@ -30,23 +23,6 @@ export const links: LinksFunction = () => {
 export const meta: MetaFunction = () => ([
   { title: getPaymentSuccessTitleText() },
 ]);
-
-export const loader = async () => {
-  try {
-    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-
-    return Response.json({
-      categories,
-      navBarCategories,
-    });
-  } catch (e) {
-    console.error(e);
-
-    throw Response.json(e, {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-    });
-  }
-};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const url = new URL(request.url);
@@ -70,7 +46,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Payment() {
-  const { categories, navBarCategories } = useLoaderData<LoaderData>() || {};
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
   const cartCount = useCartCount();
   const { clearCart, isInitialized } = useCartContext();
 

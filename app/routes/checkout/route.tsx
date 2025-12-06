@@ -3,6 +3,7 @@ import {
   Outlet,
   useLoaderData,
   useOutletContext,
+  useRouteLoaderData,
   redirect,
 } from 'react-router';
 import type {
@@ -21,8 +22,6 @@ import { useCartCount } from '~/routes/hooks';
 import { envs } from '~/utils/env';
 import { getCheckoutTitleText } from '~/utils/seo';
 import { createPaymentIntent } from '~/services/stripe.server';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
-import type { Category } from '~/shared/types';
 import type { PriceInfo } from '~/shared/cart';
 import {
   type CheckoutSessionData,
@@ -33,6 +32,7 @@ import {
 import CatalogLayout, {
   links as CatalogLayoutLinks,
 } from '~/components/layouts/CatalogLayout';
+import type { RootLoaderData } from '~/root';
 
 export const meta: MetaFunction = () => [
   { title: getCheckoutTitleText() },
@@ -45,8 +45,6 @@ export const links: LinksFunction = () => {
 type LoaderType = {
   client_secret?: string | undefined;
   payment_intend_id: string;
-  categories: Category[];
-  navBarCategories: Category[];
   price_info: PriceInfo;
   promo_code: string | null | undefined;
 };
@@ -70,8 +68,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       promoCode,
     } = checkout;
 
-    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-
     const amount = Math.round(priceInfo.total_amount * 100);
     const currency = envs.STRIPE_CURRENCY_CODE;
 
@@ -94,8 +90,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     return Response.json({
       client_secret: paymentIntent?.clientSecret || undefined,
       payment_intend_id: paymentIntent?.id || '',
-      categories,
-      navBarCategories,
       price_info: priceInfo,
       promo_code: promoCode,
     }, {
@@ -111,11 +105,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 function CheckoutLayout() {
   const {
     client_secret: clientSecret = '',
-    categories,
     price_info,
     promo_code,
-    navBarCategories,
   } = useLoaderData<LoaderType>() || {};
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
 
   const cartCount = useCartCount();
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);

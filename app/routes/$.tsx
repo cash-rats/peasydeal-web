@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
 import { data, redirect } from 'react-router';
 import httpStatus from 'http-status-codes';
-import { useLoaderData, useRouteLoaderData } from 'react-router';
+import { useRouteLoaderData } from 'react-router';
 
 import SearchBar from '~/components/SearchBar';
 import FourOhFour from '~/components/FourOhFour';
@@ -10,17 +10,11 @@ import Header from '~/components/Header';
 import Footer from '~/components/Footer';
 import CategoriesNav from '~/components/Header/components/CategoriesNav';
 import DropDownSearchBar, { links as DropDownSearchBarLinks } from '~/components/DropDownSearchBar';
-import type { Category } from '~/shared/types';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import MobileSearchDialog from '~/components/MobileSearchDialog'
 import CategoriesRow from "~/components/CategoriesRow";
+import type { RootLoaderData } from '~/root';
 
 import checkIsPossibleCategory from '../api/check_is_possible_category.server';
-
-type LoaderType = {
-  categories: Category[];
-  navBarCategories: Category[]
-};
 
 export const links: LinksFunction = () => {
   return [
@@ -42,12 +36,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       return redirect(`/collection/${categoryName}`);
     }
 
-    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-
-    return data<LoaderType>({
-      categories,
-      navBarCategories,
-    });
+    return data({});
   } catch (e) {
     console.error(e);
 
@@ -58,8 +47,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 }
 
 function GlobalSplatFourOhFour() {
-  const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
-  const rootData = useRouteLoaderData("root") as any;
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
   const cartCount = rootData?.cartCount || 0;
   const [openSearchDialog, setOpenSearchDialog] = useState<boolean>(false);
 

@@ -1,59 +1,20 @@
-import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from 'react-router';
-import { Outlet } from 'react-router';
-import { useLoaderData } from 'react-router';
-
-import httpStatus from 'http-status-codes';
+import type { LinksFunction } from 'react-router';
+import { Outlet, useRouteLoaderData } from 'react-router';
 import HorizontalProductsLayout from '~/routes/components/HorizontalProductsLayout';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
-import type { Category } from '~/shared/types';
-import {
-  getCanonicalDomain,
-  getCartTitleText,
-  getCartFBSEO_V2,
-} from '~/utils/seo';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import { useCartCount } from '~/routes/hooks';
 import { links as cartIndexLinks } from '../cart._index/route';
-
-// export const meta: MetaFunction = () => {
-//   return [
-//     { title: getCartTitleText() },
-//     ...getCartFBSEO_V2(),
-//     { tagName: 'link', rel: 'canonical', href: `${getCanonicalDomain()}/cart` },
-//   ]
-// }
+import type { RootLoaderData } from '~/root';
 
 export const links: LinksFunction = () => [
   ...CatalogLayoutLinks(),
   ...cartIndexLinks?.() ?? [],
 ];
 
-type LoaderType = {
-  categories: Category[];
-  navBarCategories: Category[];
-  canonicalLink: string;
-};
-
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  try {
-    const [navBarCategories, categories] = await fetchCategoriesWithSplitAndHotDealInPlaced();
-
-    return Response.json({
-      categories,
-      navBarCategories,
-      canonicalLink: `${getCanonicalDomain()}/cart`
-    });
-  } catch (e) {
-    console.error('cart error', e);
-
-    throw Response.json(e, {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-    });
-  }
-}
-
 function CartLayout() {
-  const { categories, navBarCategories } = useLoaderData<LoaderType>() || {};
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
   const cartCount = useCartCount();
 
   return (

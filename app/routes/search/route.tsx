@@ -5,6 +5,7 @@ import {
   redirect,
   useFetcher,
   useLoaderData,
+  useRouteLoaderData,
   useRouteError,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
@@ -18,13 +19,9 @@ import { useCartCount } from '~/routes/hooks';
 import reducer, { SearchActionType } from './reducer';
 import { searchMoreProductsLoader, searchProductsLoader } from './loaders';
 import type { SearchProductsDataType } from './types';
-import type { Category } from '~/shared/types';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
+import type { RootLoaderData } from '~/root';
 
-type LoaderData = SearchProductsDataType & {
-  categories: Category[];
-  navBarCategories: Category[];
-};
+type LoaderData = SearchProductsDataType;
 
 export const links: LinksFunction = () => [
   ...CatalogLayoutLinks(),
@@ -51,20 +48,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     });
   }
 
-  const [[navBarCategories, categories], searchData] = await Promise.all([
-    fetchCategoriesWithSplitAndHotDealInPlaced(),
-    searchProductsLoader({
-      query,
-      perPage: PAGE_LIMIT,
-      page,
-    }),
-  ]);
-
-  return {
-    ...searchData,
-    categories,
-    navBarCategories,
-  };
+  return searchProductsLoader({
+    query,
+    perPage: PAGE_LIMIT,
+    page,
+  });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -97,6 +85,9 @@ export function ErrorBoundary() {
 
 function Search() {
   const loaderData = useLoaderData<LoaderData>();
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
   const cartCount = useCartCount();
   const [state, dispatch] = useReducer(reducer, {
     products: loaderData.products,
@@ -158,8 +149,8 @@ function Search() {
 
   return (
     <CatalogLayout
-      categories={loaderData.categories}
-      navBarCategories={loaderData.navBarCategories}
+      categories={categories}
+      navBarCategories={navBarCategories}
       cartCount={cartCount}
     >
       <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">

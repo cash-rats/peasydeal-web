@@ -7,7 +7,7 @@ import {
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 
-import type { Category, TCategoryPreview, TPromotionType } from '~/shared/types';
+import type { TCategoryPreview, TPromotionType } from '~/shared/types';
 import CatalogLayout, { links as catalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import PromoActivities from '~/components/PromoActivities/PromoActivities';
 import { links as PromoCarouselLink } from '~/components/PromoCarousell';
@@ -17,12 +17,11 @@ import CategoriesRow from '~/components/CategoriesRow';
 import PromoActivitiesVariant from '~/components/PromoActivitiesVariant';
 import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
 import { getCanonicalDomain } from '~/utils';
-import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
 import { fetchLandingPageFeatureProducts } from './api.server';
+import type { RootLoaderData } from '~/root';
+import { useCartCount } from '~/routes/hooks';
 
 type LoaderData = {
-  categories: Category[];
-  navBarCategories: Category[];
   categoryPreviews: TCategoryPreview[];
   promotionPreviews: TCategoryPreview[];
   promotions: TPromotionType[];
@@ -45,7 +44,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const userAgent = request.headers.get('user-agent') || '';
 
-    const categoriesPromise = fetchCategoriesWithSplitAndHotDealInPlaced();
     const landingPromise = fetchLandingPageFeatureProducts({
       categoriesPreviewNames: [
         'hardware',
@@ -58,14 +56,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       ],
     });
 
-    const [[navBarCategories, categories], landings] = await Promise.all([
-      categoriesPromise,
-      landingPromise,
-    ]);
+    const landings = await landingPromise;
 
     return Response.json({
-      categories,
-      navBarCategories,
       categoryPreviews: landings.categoryPreviews,
       promotionPreviews: landings.promotionPreviews,
       promotions: landings.promotions,
@@ -100,14 +93,14 @@ export function ErrorBoundary() {
 
 export default function LandingPage() {
   const {
-    categories = [],
-    navBarCategories = [],
     categoryPreviews = [],
     promotionPreviews = [],
     promotions = [],
   } = useLoaderData<LoaderData>() || {};
-  const rootData = useRouteLoaderData('root') as { cartCount?: number } | undefined;
-  const cartCount = rootData?.cartCount ?? 0;
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
+  const cartCount = useCartCount();
 
   const handleClickProduct = (productUUID: string) => {
     console.log('[ga] user clicks on:', productUUID);
