@@ -115,11 +115,6 @@ export default function ContactUs() {
             </a>
           </section>
 
-          <section className="space-y-2">
-            <h2 className="text-lg font-semibold text-slate-900">Phone</h2>
-            <p className="text-base text-slate-700">+44 745 8149 925</p>
-          </section>
-
           <section className="space-y-3">
             <h2 className="text-lg font-semibold text-slate-900">Address</h2>
             <p className="text-base text-slate-700">
