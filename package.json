@@ -84,6 +84,7 @@
     "js-image-lib": "^1.0.1",
     "lru-cache": "^7.14.0",
     "lucide-react": "^0.471.0",
+    "mapbox-gl": "^3.17.0",
     "mime-tree": "^0.1.4",
     "nprogress": "^0.2.0",
     "query-string": "^7.1.3",

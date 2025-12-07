@@ -37,8 +37,10 @@ const envSchema = z.object({
   STRIPE_CURRENCY_CODE: z.string().default('GBP'),
 
   // Google Services
-  GOOGLE_MAP_API_KEY: z.string().default(''),
   GOOGLE_TAG_ID: z.string().optional(),
+
+  // Mapbox
+  MAPBOX_BOX_ACCESS_TOKEN: z.string().default(''),
 
   // Contentful CMS
   CONTENTFUL_SPACE_ID: z.string().optional(),

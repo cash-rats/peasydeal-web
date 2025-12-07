@@ -1,6 +1,8 @@
+import { useEffect, useRef, useState } from 'react';
 import type { LinksFunction, MetaFunction } from 'react-router';
 import { useRouteLoaderData } from 'react-router';
 
+import mapboxCss from 'mapbox-gl/dist/mapbox-gl.css?url';
 import FormBold from '~/components/FormBold';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import type { RootLoaderData } from '~/root';
@@ -10,8 +12,12 @@ import { getRootFBSEO_V2 } from '~/utils/seo';
 
 const PAGE_TITLE = 'Contact Us | PeasyDeal';
 const PAGE_DESC = 'If you have any questions or concerns, please do not hesitate to contact us. We would love to hear from you!';
+const OFFICE_COORDS: [number, number] = [-0.1462043, 51.5217089]; // lng, lat
 
-export const links: LinksFunction = () => [...CatalogLayoutLinks()];
+export const links: LinksFunction = () => [
+  ...CatalogLayoutLinks(),
+  { rel: 'stylesheet', href: mapboxCss },
+];
 
 export const meta: MetaFunction = () => {
   return getRootFBSEO_V2().map(tag => {
@@ -34,9 +40,49 @@ export default function ContactUs() {
   const categories = rootData?.categories ?? [];
   const navBarCategories = rootData?.navBarCategories ?? [];
   const cartCount = useCartCount();
-  const mapSrc = envs.GOOGLE_MAP_API_KEY
-    ? `https://www.google.com/maps/embed/v1/place?key=${envs.GOOGLE_MAP_API_KEY}&center=51.5217089,-0.1462043&zoom=15&q=5th%2BFloor%2C%2B167%2C%2B169%2BGreat%2BPortland%2BSt%2C%2BLondon%2BW1W%2B5PF%2C%2BUK`
-    : null;
+  const mapContainerRef = useRef<HTMLDivElement | null>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // Defer Mapbox initialization to the client to avoid SSR window references.
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isClient || !mapContainerRef.current || !envs.MAPBOX_BOX_ACCESS_TOKEN) return;
+
+    let cancelled = false;
+
+    (async () => {
+      const mapboxgl = (await import('mapbox-gl')).default;
+      mapboxgl.accessToken = envs.MAPBOX_BOX_ACCESS_TOKEN;
+
+      if (cancelled) return;
+
+      const container = mapContainerRef.current;
+      if (!container) return;
+
+      const map = new mapboxgl.Map({
+        container,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: OFFICE_COORDS,
+        zoom: 15,
+      });
+
+      mapInstanceRef.current = map;
+
+      new mapboxgl.Marker().setLngLat(OFFICE_COORDS).addTo(map);
+    })();
+
+    return () => {
+      cancelled = true;
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [isClient]);
 
   return (
     <CatalogLayout
@@ -79,21 +125,15 @@ export default function ContactUs() {
             <p className="text-base text-slate-700">
               5th Floor 167 169 Great Portland Street, London, W1W 5PF, United Kingdom
             </p>
-            {mapSrc ? (
-              <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-                <iframe
-                  title="PeasyDeal London Office"
-                  className="h-[320px] w-full border-0"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  src={mapSrc}
-                  allowFullScreen
-                />
-              </div>
-            ) : (
-              <p className="text-sm text-amber-700">
-                Map is unavailable because GOOGLE_MAP_API_KEY is not configured.
-              </p>
-            )}
+            <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
+              {envs.MAPBOX_BOX_ACCESS_TOKEN ? (
+                <div ref={mapContainerRef} className="h-[320px] w-full" />
+              ) : (
+                <p className="p-4 text-sm text-amber-700">
+                  Map is unavailable because MAPBOX_BOX_ACCESS_TOKEN is not configured.
+                </p>
+              )}
+            </div>
           </section>
 
           <section className="space-y-2 rounded-xl bg-slate-50 p-4">

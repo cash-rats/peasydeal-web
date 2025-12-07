@@ -99,7 +99,7 @@ const FormBold = () => {
                 setIsSpinnerVisible(true);
               }}
             />
-            { isSpinnerVisible && <Spinner /> }
+            {isSpinnerVisible && <Spinner />}
           </div>
         </form>
       </div>
