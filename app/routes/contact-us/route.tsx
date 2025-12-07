@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { LinksFunction, MetaFunction } from 'react-router';
 import { useRouteLoaderData } from 'react-router';
-
 import mapboxCss from 'mapbox-gl/dist/mapbox-gl.css?url';
+
 import FormBold from '~/components/FormBold';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import type { RootLoaderData } from '~/root';

@@ -29,7 +29,7 @@ function Footer({ categories }: FooterProps) {
           text-center text-white px-4 py-8 flex flex-col gap-4 max-w-screen-xl mx-auto
           border-b-[1px] border-b-[#2E4E73]
         ">
-          <span>PeasyDeal.com is a trading name of <b>PeasyDeal Limited</b>, a company registered in England and Wales.</span>
+          <span>PeasyDeal.com is a trading name of <b>PeasyDeal Limited</b></span>
           <span>© PeasyDeal Limited. 2023</span>
         </div>
 
