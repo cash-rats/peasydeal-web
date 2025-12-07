@@ -24,7 +24,7 @@ const FormBold = () => {
       <br />
       <div className="formbold-builder-form themeOne">
         <form
-          enctype="multipart/form-data"
+          encType="multipart/form-data"
           action="https://formbold.com/s/9RmJM"
           method="POST"
           className="mx-auto w-full rounded-[10px] border border-stroke bg-white p-10 themeOne"
