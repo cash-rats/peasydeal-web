@@ -131,12 +131,6 @@ export default function ContactUs() {
             </div>
           </section>
 
-          <section className="space-y-2 rounded-xl bg-slate-50 p-4">
-            <h2 className="text-base font-semibold text-slate-900">Opening Times (excluding bank holidays)</h2>
-            <p className="text-base text-slate-700">Monday - Friday: 9am - 5pm</p>
-            <p className="text-base text-slate-700">Weekend: Closed</p>
-          </section>
-
           <p className="text-sm text-slate-600">
             Whilst every effort is made to respond to all messages as soon as possible, during busy periods this could
             take up to 3 working days.
