@@ -15,8 +15,8 @@ Track movement of routes from `routes.bk/` back into `app/routes/`. Update each 
 - [x] `__index/terms-of-use.tsx`
 - [x] `api.product.review`
 - [x] `api.tracking.order-info`
-- [ ] `blog`
-- [ ] `blog._index`
+- [x] `blog`
+- [x] `blog._index`
 - [x] `cart`
 - [ ] `cart._index`
 - [x] `cart.checkout.tsx`

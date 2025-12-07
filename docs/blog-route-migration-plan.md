@@ -8,6 +8,12 @@ Align every `/blog` route module with the React Router 7 file structure so that
 2. `app/routes/blog/index.tsx` serves the landing page loader/UI. React Router 7 expects this file to live under `blog._index/route.tsx` (or `blog/route.tsx` + `_index` sibling) so the index route is explicit.
 3. Child routes (`blog/page/$page.tsx`, `blog/post/$blog.tsx`) already follow the modern pattern and only depend on the parent’s context via `Outlet`, so moving the parent/index won’t require code changes there.
 
+## Latest Findings
+- Blog routes only exist under `routes.bk/blog/**`; nothing is wired under `app/routes`, so `/blog` is currently absent from the build.
+- The legacy layout re-fetches categories inside the blog loader and derives cart count from `useRouteLoaderData('root')`, which does not expose cart count—so it always renders as `0`. Aligning with `CatalogLayout` and `useCartCount` would match other sections and drop the duplicate fetch.
+- UI pieces still rely on Chakra (`Button`, `Badge`) inside `routes.bk/blog/post/$blog.tsx` and `routes.bk/blog/components/PreviewPost.tsx`; swap to the shadcn UI primitives to avoid Chakra reliance during migration.
+- Assets referenced by the index route (`images/*.jpg`, `styles/blog.css?url`) need to move with the routes so imports stay valid.
+
 ## Step-by-Step Plan
 1. **Create layout directory**  
    - Move `app/routes/blog.tsx` → `app/routes/blog/route.tsx`.  
@@ -19,6 +25,12 @@ Align every `/blog` route module with the React Router 7 file structure so that
    - Move the existing `app/routes/blog/index.tsx` contents into the new file and delete the old one.  
    - Update relative imports (`./api`, `./components/BlogLayout`, `./images/*`, `./styles/*`) so they reference the new parent folder (e.g., `~/routes/blog/api`).  
    - Keep the `links`, `loader`, and `meta` implementations intact—only path updates and potential type imports should change.
+
+3. **Bring over children and assets**  
+   - Move `routes.bk/blog/page/$page.tsx` → `app/routes/blog.page.$page/route.tsx` (or equivalent folder naming).
+   - Move `routes.bk/blog/post/$blog.tsx` → `app/routes/blog.post.$blog/route.tsx`.
+   - Copy `routes.bk/blog/components`, `routes.bk/blog/api`, `routes.bk/blog/styles`, and `routes.bk/blog/images` under `app/routes/blog/` (adjust imports accordingly).
+   - Replace Chakra buttons/badges with shadcn UI + Tailwind to match the rest of the app.
 
 3. **Smoke check**  
    - Run `npm run lint` (and optionally `npm run typecheck`) to ensure the move didn’t introduce circular imports or missing files.  
