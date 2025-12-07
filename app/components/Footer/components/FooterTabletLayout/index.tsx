@@ -46,9 +46,6 @@ function FooterTabletLayout({ categories = [] }: FooterTabletLayoutProps) {
             <b className='mr-2'>Email: </b><br /> contact@peasydeal.com
           </span>
           <span className="text-base text-white font-normal capitalize">
-            <b className='mr-2'>Phone: </b><br /> +44 7458 149925
-          </span>
-          <span className="text-base text-white font-normal capitalize">
             <b className='mr-2'>Company Number: </b><br /> 13923560
           </span>
         </div>
