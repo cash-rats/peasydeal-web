@@ -2,12 +2,15 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import { BLOCKS, INLINES } from '@contentful/rich-text-types';
 import httpStatus from 'http-status-codes';
 import { FcIdea } from 'react-icons/fc';
-import type { MetaFunction } from 'react-router';
-import { data, useLoaderData } from 'react-router';
+import type { LinksFunction, MetaFunction } from 'react-router';
+import { data, useLoaderData, useRouteLoaderData } from 'react-router';
 
 import { fetchContentfulPostWithId } from '~/api/products';
 import type { TContentfulPost } from '~/shared/types';
 import { getRootFBSEO_V2 } from '~/utils/seo';
+import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
+import type { RootLoaderData } from '~/root';
+import { useCartCount } from '~/routes/hooks';
 
 type LoaderData = TContentfulPost;
 
@@ -54,6 +57,8 @@ const richTextRenderers = {
   ),
 };
 
+export const links: LinksFunction = () => [...CatalogLayoutLinks()];
+
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const contentfulFields = data || {};
 
@@ -89,6 +94,10 @@ export const loader = async () => {
 
 export default function SellOnPeasyDeal() {
   const post = useLoaderData<LoaderData>();
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
+  const cartCount = useCartCount();
   const attributes = post?.attributes as { benefits?: Array<{ name?: string; label?: string }> } | undefined;
 
   const intro = post?.introText
@@ -100,33 +109,39 @@ export default function SellOnPeasyDeal() {
     : null;
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-10 sm:px-6 lg:px-8">
-      <div className="rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-teal-400 px-6 py-16 text-center text-white shadow-lg sm:px-10">
-        <h1 className="text-3xl font-black sm:text-4xl">{post?.postName || 'Sell on PeasyDeal'}</h1>
-        {intro ? (
-          <div className="mt-4 text-xl font-semibold leading-8 sm:text-2xl">
-            {intro}
+    <CatalogLayout
+      categories={categories}
+      navBarCategories={navBarCategories}
+      cartCount={cartCount}
+    >
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-10 sm:px-6 lg:px-8">
+        <div className="rounded-2xl bg-gradient-to-r from-orange-400 via-pink-500 to-teal-400 px-6 py-16 text-center text-white shadow-lg sm:px-10">
+          <h1 className="text-3xl font-black sm:text-4xl">{post?.postName || 'Sell on PeasyDeal'}</h1>
+          {intro ? (
+            <div className="mt-4 text-xl font-semibold leading-8 sm:text-2xl">
+              {intro}
+            </div>
+          ) : null}
+        </div>
+
+        {attributes?.benefits?.length ? (
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            {attributes.benefits.map((benefit, index) => (
+              <div
+                key={`benefit-${benefit?.name || index}`}
+                className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-4 text-center shadow-sm"
+              >
+                <FcIdea fontSize="48px" className="mb-3" />
+                <h2 className="text-lg font-semibold text-slate-800">{benefit?.label}</h2>
+              </div>
+            ))}
           </div>
         ) : null}
-      </div>
 
-      {attributes?.benefits?.length ? (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {attributes.benefits.map((benefit, index) => (
-            <div
-              key={`benefit-${benefit?.name || index}`}
-              className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-slate-50 p-4 text-center shadow-sm"
-            >
-              <FcIdea fontSize="48px" className="mb-3" />
-              <h2 className="text-lg font-semibold text-slate-800">{benefit?.label}</h2>
-            </div>
-          ))}
+        <div className="space-y-6 text-slate-800">
+          {nodes}
         </div>
-      ) : null}
-
-      <div className="space-y-6 text-slate-800">
-        {nodes}
       </div>
-    </div>
+    </CatalogLayout>
   );
 }

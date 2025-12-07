@@ -1,12 +1,15 @@
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS, INLINES } from '@contentful/rich-text-types';
 import httpStatus from 'http-status-codes';
-import type { MetaFunction } from 'react-router';
-import { data, useLoaderData } from 'react-router';
+import type { LinksFunction, MetaFunction } from 'react-router';
+import { data, useLoaderData, useRouteLoaderData } from 'react-router';
 
 import { fetchContentfulPostWithId } from '~/api/products';
 import type { TContentfulPost } from '~/shared/types';
 import { getRootFBSEO_V2 } from '~/utils/seo';
+import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
+import type { RootLoaderData } from '~/root';
+import { useCartCount } from '~/routes/hooks';
 
 type LoaderData = TContentfulPost;
 
@@ -49,6 +52,8 @@ const richTextRenderers = {
   ),
 };
 
+export const links: LinksFunction = () => [...CatalogLayoutLinks()];
+
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   const contentfulFields = data || {};
 
@@ -89,28 +94,38 @@ export const loader = async () => {
 
 export default function AboutUs() {
   const post = useLoaderData<LoaderData>();
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
+  const cartCount = useCartCount();
 
   const nodes = post?.body
     ? documentToReactComponents(post.body, { renderNode: richTextRenderers })
     : null;
 
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-      <div className="space-y-6 text-center">
-        <h1 className="text-3xl font-semibold text-slate-800 sm:text-4xl">
-          {post?.postName}
-        </h1>
-        {post?.featuredImage?.fields?.file?.url ? (
-          <img
-            className="w-full rounded-lg object-cover shadow-sm"
-            src={post.featuredImage.fields.file.url}
-            alt={post?.postName || 'About PeasyDeal'}
-          />
-        ) : null}
+    <CatalogLayout
+      categories={categories}
+      navBarCategories={navBarCategories}
+      cartCount={cartCount}
+    >
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+        <div className="space-y-6 text-center">
+          <h1 className="text-3xl font-semibold text-slate-800 sm:text-4xl">
+            {post?.postName}
+          </h1>
+          {post?.featuredImage?.fields?.file?.url ? (
+            <img
+              className="w-full rounded-lg object-cover shadow-sm"
+              src={post.featuredImage.fields.file.url}
+              alt={post?.postName || 'About PeasyDeal'}
+            />
+          ) : null}
+        </div>
+        <div className="space-y-6 text-slate-800">
+          {nodes}
+        </div>
       </div>
-      <div className="space-y-6 text-slate-800">
-        {nodes}
-      </div>
-    </div>
+    </CatalogLayout>
   );
 }

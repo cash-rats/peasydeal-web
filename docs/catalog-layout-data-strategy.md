@@ -72,3 +72,29 @@ Rationale:
 - [x] Adjust error boundaries that show catalog chrome to consume shared data or fall back safely.
 - [x] Remove obsolete imports/loaders/types after refactor and ensure links arrays stay intact.
 - [ ] Run/outline verification steps (typecheck/lint if feasible) and document any manual checks needed.
+
+## Static policy/info pages (about-us, contact-us, etc.)
+- These routes now read categories/nav data from the root loader via `useRouteLoaderData('root') as RootLoaderData | undefined`, and wrap their existing content in `CatalogLayout` with `cartCount` from `useCartCount()`. Example:
+  ```ts
+  import type { LinksFunction } from 'react-router';
+  import { useRouteLoaderData } from 'react-router';
+  import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
+  import type { RootLoaderData } from '~/root';
+  import { useCartCount } from '~/routes/hooks';
+
+  export const links: LinksFunction = () => [...CatalogLayoutLinks()];
+
+  export default function AboutUs() {
+    const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+    const categories = rootData?.categories ?? [];
+    const navBarCategories = rootData?.navBarCategories ?? [];
+    const cartCount = useCartCount();
+
+    return (
+      <CatalogLayout categories={categories} navBarCategories={navBarCategories} cartCount={cartCount}>
+        {/* existing page content */}
+      </CatalogLayout>
+    );
+  }
+  ```
+- Keep loaders/meta as-is (Contentful fetchers stay in the same file). A separate `_index` child route is unnecessary unless we later add nested pages under these slugs.
