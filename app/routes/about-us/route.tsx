@@ -13,28 +13,37 @@ import { useCartCount } from '~/routes/hooks';
 
 type LoaderData = TContentfulPost;
 
+const HIDDEN_PHRASES = ['company no', 'landline'];
+
+const collectNodeText = (node: any): string => {
+  if (!node) return '';
+  if (typeof node.value === 'string') return node.value;
+  if (Array.isArray(node.content)) {
+    return node.content.map(collectNodeText).join(' ');
+  }
+  return '';
+};
+
+const shouldHideNode = (node: any): boolean => {
+  const text = collectNodeText(node).toLowerCase();
+  return HIDDEN_PHRASES.some(phrase => text.includes(phrase));
+};
+
 const richTextRenderers = {
-  [BLOCKS.PARAGRAPH]: (_node: any, children: any) => (
-    <p className="text-lg leading-8 text-slate-700">{children}</p>
-  ),
-  [BLOCKS.HEADING_1]: (_node: any, children: any) => (
-    <h2 className="text-2xl font-semibold text-slate-800 sm:text-3xl">{children}</h2>
-  ),
-  [BLOCKS.HEADING_2]: (_node: any, children: any) => (
-    <h3 className="text-xl font-semibold text-emerald-700 sm:text-2xl">{children}</h3>
-  ),
-  [BLOCKS.HEADING_3]: (_node: any, children: any) => (
-    <h4 className="text-lg font-semibold text-emerald-700">{children}</h4>
-  ),
-  [BLOCKS.UL_LIST]: (_node: any, children: any) => (
-    <ul className="list-disc space-y-2 pl-6 text-lg leading-8 text-slate-700">{children}</ul>
-  ),
-  [BLOCKS.OL_LIST]: (_node: any, children: any) => (
-    <ol className="list-decimal space-y-2 pl-6 text-lg leading-8 text-slate-700">{children}</ol>
-  ),
-  [BLOCKS.LIST_ITEM]: (_node: any, children: any) => (
-    <li className="text-lg leading-7 text-slate-700">{children}</li>
-  ),
+  [BLOCKS.PARAGRAPH]: (node: any, children: any) =>
+    shouldHideNode(node) ? null : <p className="text-lg leading-8 text-slate-700">{children}</p>,
+  [BLOCKS.HEADING_1]: (node: any, children: any) =>
+    shouldHideNode(node) ? null : <h2 className="text-2xl font-semibold text-slate-800 sm:text-3xl">{children}</h2>,
+  [BLOCKS.HEADING_2]: (node: any, children: any) =>
+    shouldHideNode(node) ? null : <h3 className="text-xl font-semibold text-emerald-700 sm:text-2xl">{children}</h3>,
+  [BLOCKS.HEADING_3]: (node: any, children: any) =>
+    shouldHideNode(node) ? null : <h4 className="text-lg font-semibold text-emerald-700">{children}</h4>,
+  [BLOCKS.UL_LIST]: (node: any, children: any) =>
+    shouldHideNode(node) ? null : <ul className="list-disc space-y-2 pl-6 text-lg leading-8 text-slate-700">{children}</ul>,
+  [BLOCKS.OL_LIST]: (node: any, children: any) =>
+    shouldHideNode(node) ? null : <ol className="list-decimal space-y-2 pl-6 text-lg leading-8 text-slate-700">{children}</ol>,
+  [BLOCKS.LIST_ITEM]: (node: any, children: any) =>
+    shouldHideNode(node) ? null : <li className="text-lg leading-7 text-slate-700">{children}</li>,
   [BLOCKS.QUOTE]: (_node: any, children: any) => (
     <blockquote className="border-l-4 border-emerald-500 bg-slate-50 px-4 py-3 text-lg leading-8 text-slate-800 italic">
       {children}
