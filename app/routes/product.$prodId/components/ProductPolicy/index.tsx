@@ -14,7 +14,7 @@ interface IProductPolicyProps {
 
 const ProductPolicy = ({
   productDetail
-}: IProductPolicyProps ) => {
+}: IProductPolicyProps) => {
   return (
     <section className="w-full my-6">
       <div className="bg-[#F7F8FA] rounded-2xl p-6 md:p-8">
@@ -31,10 +31,10 @@ const ProductPolicy = ({
             value="about"
             className="lg:hidden bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
           >
-            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800">
+            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800 flex items-center">
               <b>About this product</b>
             </AccordionTrigger>
-            <AccordionContent className="px-5 pb-5 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200">
+            <AccordionContent className="px-5 pb-0 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200 flex items-center">
               <div className={productRichTextClass}>
                 <div className='w-full overflow-scroll'>
                   <div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} />
@@ -47,11 +47,13 @@ const ProductPolicy = ({
             value="shipping"
             className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
           >
-            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800">
+            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800 flex items-center">
               Shipping Cost
             </AccordionTrigger>
-            <AccordionContent className="px-5 pb-5 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200">
-              Shipping costs are based on the weight of your order and the delivery method. Once at the checkout screen, shipping charges will be displayed. FREE Shipping on order £19.99+
+            <AccordionContent className="px-5 pb-0 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200 flex items-center">
+              <div className="pt-4">
+                Shipping costs are based on the weight of your order and the delivery method. Once at the checkout screen, shipping charges will be displayed. FREE Shipping on order £19.99+
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -59,11 +61,13 @@ const ProductPolicy = ({
             value="delivery"
             className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
           >
-            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800">
+            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800 flex items-center">
               Delivery Location
             </AccordionTrigger>
-            <AccordionContent className="px-5 pb-5 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200">
-              Items offered on peasydeal.com website are available for delivery to addresses in the following Islands: <b>UK Mainland, Scottish Highlands and Islands, Isle of Man Northern Ireland islands</b> in United Kingdom.
+            <AccordionContent className="px-5 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200 flex items-center">
+              <div className="pt-4">
+                Items offered on peasydeal.com website are available for delivery to addresses in the following Islands: <b>UK Mainland, Scottish Highlands and Islands, Isle of Man Northern Ireland islands</b> in United Kingdom.
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -71,11 +75,13 @@ const ProductPolicy = ({
             value="returns"
             className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
           >
-            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800">
+            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800 flex items-center">
               Free Return & Refund
             </AccordionTrigger>
-            <AccordionContent className="px-5 pb-5 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200">
-              You have our 100% money back guarantee. If you're not fully satisfied, you may return your unused item in its original condition and packaging within 14 days of receipt for a full refund. Please see our <Link to='/return-policy' className='text-blue-500'>Return &amp; Policy</Link> for more details.
+            <AccordionContent className="px-5 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200 flex items-center">
+              <div className="pt-4">
+                You have our 100% money back guarantee. If you're not fully satisfied, you may return your unused item in its original condition and packaging within 14 days of receipt for a full refund. Please see our <Link to='/return-policy' className='text-blue-500'>Return &amp; Policy</Link> for more details.
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -83,11 +89,13 @@ const ProductPolicy = ({
             value="deliveryTime"
             className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
           >
-            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800">
+            <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800 flex items-center">
               How long will it take to get my order?
             </AccordionTrigger>
-            <AccordionContent className="px-5 pb-5 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200">
-              Unless there are exceptional circumstances, we make every effort to fulfill your order within 12 business days of the date of your order. Business day mean Monday to Friday, except holidays. Please note we do not ship on <b>Weekend & Public Holidays</b>. Date of delivery may vary due to carrier shipping practices, delivery location, method of delivery and the items ordered. Products may also be delivered in separate shipments.
+            <AccordionContent className="px-5 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200 flex items-center">
+              <div className="pt-4">
+                Unless there are exceptional circumstances, we make every effort to fulfill your order within 12 business days of the date of your order. Business day mean Monday to Friday, except holidays. Please note we do not ship on <b>Weekend & Public Holidays</b>. Date of delivery may vary due to carrier shipping practices, delivery location, method of delivery and the items ordered. Products may also be delivered in separate shipments.
+              </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
