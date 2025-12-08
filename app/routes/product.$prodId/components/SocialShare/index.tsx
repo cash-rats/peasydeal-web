@@ -131,7 +131,7 @@ export default function SocialShare({ prodUUID }: SocialShareProps) {
               rounded-md
               border
               border-white/10
-              bg-black
+              bg-white
               p-5
               shadow-xl
               text-white
@@ -139,7 +139,7 @@ export default function SocialShare({ prodUUID }: SocialShareProps) {
           >
             <button
               type="button"
-              className="absolute right-2 top-2 text-sm"
+              className="absolute right-2 top-2 text-lg text-gray-400 hover:bg-gray-300 hover:text-gray-500 rounded-full p-1"
               onClick={closePopover}
               aria-label="Close share options"
             >
