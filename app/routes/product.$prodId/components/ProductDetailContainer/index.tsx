@@ -25,7 +25,7 @@ import useSticky from '../../hooks/useSticky';
 // @TODO: this component should be placed in nest component.
 import ProductDetailSection, { links as ProductDetailSectionLinks } from '../ProductDetailSection';
 import ProductActionBar from '../../components/ProductActionBar';
-import SocialShare, { links as SocialShareLinks } from '../../components/SocialShare';
+import SocialShare from '../../components/SocialShare';
 import type {
   ProductImg,
   ProductVariation,
@@ -37,7 +37,6 @@ export const links: LinksFunction = () => {
     ...ProductDetailSectionLinks(),
     ...RightTiltBoxLinks(),
     ...QuantityPickerLinks(),
-    ...SocialShareLinks(),
   ];
 };
 

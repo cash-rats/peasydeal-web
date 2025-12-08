@@ -119,6 +119,7 @@
   "devDependencies": {
     "@babel/core": "^7.18.13",
     "@faker-js/faker": "^7.4.0",
+    "@remix-run/eslint-config": "^2.17.2",
     "@storybook/addon-actions": "^7.5.3",
     "@storybook/addon-essentials": "^7.5.3",
     "@storybook/addon-interactions": "^7.5.3",

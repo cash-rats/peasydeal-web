@@ -1,25 +1,24 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import FocusLock from 'react-focus-lock';
-import type { LinksFunction } from 'react-router';
 import { MdOutlineIosShare } from 'react-icons/md';
 
 import { Button } from '~/components/ui/button';
-
-import styles from './styles/SocialShare.css?url';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-  ];
-};
 
 interface SocialShareProps {
   prodUUID: string;
 }
 
-const loadShareThisScript = () => {
+type ShareThis = {
+  initialize?: () => void;
+  href?: string;
+};
+
+const loadShareThisScript = (onLoad?: () => void) => {
   const script = document.createElement('script');
   script.async = true;
+  if (onLoad) {
+    script.onload = onLoad;
+  }
   script.id = 'sharethis';
   script.src = 'https://platform-api.sharethis.com/js/sharethis.js#property=635bb7bc9c9fa7001910fbe2&product=sop';
   script.type = 'text/javascript';
@@ -35,6 +34,7 @@ const removeShareThisScript = () => {
 
 export default function SocialShare({ prodUUID }: SocialShareProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isShareThisReady, setIsShareThisReady] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -45,20 +45,32 @@ export default function SocialShare({ prodUUID }: SocialShareProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const st = (window as typeof window & { __sharethis__?: any }).__sharethis__;
+    const st = (window as typeof window & { __sharethis__?: ShareThis }).__sharethis__;
     if (!st) {
-      loadShareThisScript();
-    } else if (typeof st.initialize === 'function') {
-      removeShareThisScript();
-      loadShareThisScript();
-      st.href = window.location.href;
-      st.initialize();
+      loadShareThisScript(() => setIsShareThisReady(true));
+    } else {
+      setIsShareThisReady(true);
+      if (typeof st.initialize === 'function') {
+        st.href = window.location.href;
+        st.initialize();
+      }
     }
 
     return () => {
       removeShareThisScript();
+      setIsShareThisReady(false);
     };
   }, [prodUUID]);
+
+  useEffect(() => {
+    if (!isOpen || typeof window === 'undefined' || !isShareThisReady) return;
+
+    const st = (window as typeof window & { __sharethis__?: ShareThis }).__sharethis__;
+    if (!st?.initialize) return;
+
+    st.href = window.location.href;
+    st.initialize();
+  }, [isOpen, isShareThisReady, prodUUID]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -94,15 +106,15 @@ export default function SocialShare({ prodUUID }: SocialShareProps) {
       <Button
         ref={triggerRef}
         type="button"
-        variant="ghost"
-        size="sm"
-        className="gap-2 text-white"
+        variant="outline"
+        size="lg"
+        className="bg-orange-50 hover:bg-orange-100 border-orange-200 text-orange-900 [&_svg]:size-5"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         onClick={() => setIsOpen(prev => !prev)}
       >
         <MdOutlineIosShare aria-hidden />
-        Share
+        Share this product
       </Button>
 
       {isOpen ? (
