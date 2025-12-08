@@ -1,7 +1,32 @@
+import type { CSSProperties, SyntheticEvent } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { envs } from '~/utils/env';
 import { fileExtensionResolver, MimeType } from '~/routes/remix-image/mimes';
+
+const cdnFailureCache = new Map<string, boolean>();
+
+const buildFailureKey = (src: string, width: number, height: number) => `${src}|${width}|${height}`;
+
+const extractSizeFromUrl = (url: string) => {
+  const cdnMatch = url.match(/w(\d+)_h(\d+)/);
+  if (cdnMatch?.[1] && cdnMatch?.[2]) {
+    return {
+      width: Number(cdnMatch[1]),
+      height: Number(cdnMatch[2]),
+    };
+  }
+
+  const fromQuery = new URL(url).searchParams;
+  const width = Number(fromQuery.get('width') || 0);
+  const height = Number(fromQuery.get('height') || 0);
+
+  if (width && height) {
+    return { width, height };
+  }
+
+  return null;
+};
 
 /**
  * Responsive image size configuration
@@ -35,7 +60,7 @@ export interface OptimizedImageProps {
   options?: ImageOptions;
   className?: string;
   onLoadingComplete?: () => void;
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 }
 
 /**
@@ -63,7 +88,7 @@ export function OptimizedImage({
 }: OptimizedImageProps) {
   const [loadingState, setLoadingState] = useState<'loading' | 'loaded' | 'error'>('loading');
   const [shouldLoad, setShouldLoad] = useState(false);
-  const [useCdn, setUseCdn] = useState(false);
+  const [useCdnForImage, setUseCdnForImage] = useState(Boolean(envs.CDN_URL));
 
   // IntersectionObserver setup for lazy loading
   const { ref, inView } = useInView({
@@ -126,7 +151,8 @@ export function OptimizedImage({
   // Generate srcset attribute for responsive images
   const srcset = responsive
     .map(({ size }) => {
-      const url = useCdn ? getCdnUrl(size.width, size.height) : getLoaderUrl(size.width, size.height);
+      const shouldUseCdn = useCdnForImage && !cdnFailureCache.has(buildFailureKey(src, size.width, size.height));
+      const url = shouldUseCdn ? getCdnUrl(size.width, size.height) : getLoaderUrl(size.width, size.height);
       return `${url ?? getLoaderUrl(size.width, size.height)} ${size.width}w`;
     })
     .join(', ');
@@ -144,48 +170,10 @@ export function OptimizedImage({
   // Use the first responsive size as the default src
   const defaultSize = responsive[0].size;
   const imgSrc =
-    (useCdn && getCdnUrl(defaultSize.width, defaultSize.height)) ||
-    getLoaderUrl(defaultSize.width, defaultSize.height);
-
-  // Probe CDN availability when the image should load
-  useEffect(() => {
-    if (!shouldLoad) return;
-
-    let cancelled = false;
-    const checkCdn = async () => {
-      const urls = responsive
-        .map(({ size }) => getCdnUrl(size.width, size.height))
-        .filter((u): u is string => Boolean(u));
-
-      if (urls.length !== responsive.length) {
-        setUseCdn(false);
-        return;
-      }
-
-      try {
-        const results = await Promise.all(
-          urls.map(async (url) => {
-            const res = await fetch(url, { method: 'HEAD' });
-            return res.ok;
-          })
-        );
-
-        if (!cancelled) {
-          setUseCdn(results.every(Boolean));
-        }
-      } catch {
-        if (!cancelled) {
-          setUseCdn(false);
-        }
-      }
-    };
-
-    checkCdn();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [getCdnUrl, responsive, shouldLoad]);
+    ((useCdnForImage &&
+      !cdnFailureCache.has(buildFailureKey(src, defaultSize.width, defaultSize.height)) &&
+      getCdnUrl(defaultSize.width, defaultSize.height)) ||
+      getLoaderUrl(defaultSize.width, defaultSize.height));
 
   // Handle image load complete
   const handleLoad = useCallback(() => {
@@ -194,9 +182,24 @@ export function OptimizedImage({
   }, [onLoadingComplete]);
 
   // Handle image load error
-  const handleError = useCallback(() => {
-    setLoadingState('error');
-  }, []);
+  const handleError = useCallback(
+    (event: SyntheticEvent<HTMLImageElement>) => {
+      const currentSrc = event?.currentTarget?.currentSrc ?? '';
+      const size = extractSizeFromUrl(currentSrc);
+
+      if (useCdnForImage) {
+        if (size) {
+          cdnFailureCache.set(buildFailureKey(src, size.width, size.height), true);
+        }
+        setUseCdnForImage(false);
+        setLoadingState('loading');
+        return;
+      }
+
+      setLoadingState('error');
+    },
+    [src, useCdnForImage]
+  );
 
   // Show blur placeholder
   const showBlurPlaceholder = placeholder === 'blur' && blurDataURL && loadingState === 'loading';
