@@ -215,6 +215,7 @@ const Carousel: FC<CarouselProps> = ({
                       style={{
                         borderRadius: radius,
                         objectFit: slideImageFit ? slideImageFit : "cover",
+                        visibility: previewImage ? 'hidden' : 'visible',
                       }}
                     />
                     {isPaused && (
@@ -240,6 +241,9 @@ const Carousel: FC<CarouselProps> = ({
                         flex items-center justify-center
                         pointer-events-none
                       "
+                      style={{
+                        backgroundColor: slideBackgroundColor || 'white',
+                      }}
                     >
                       <img
                         alt="Preview image"
