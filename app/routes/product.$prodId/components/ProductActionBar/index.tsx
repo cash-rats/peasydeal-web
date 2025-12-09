@@ -38,10 +38,10 @@ const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
     <div
       className='
         flex gap-[10px]
-        pt-4 py-2 bottom-0 left-0
+        pt-4 py-3 bottom-0 left-0
         px-2 md:px-0
         z-10
-        w-full bg-white
+        w-full
       '
       ref={ref}
     >
@@ -49,7 +49,7 @@ const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
         <Button
           type='button'
           variant='outline'
-          className='h-12 w-full rounded-lg border border-[#D53F8C] text-base font-semibold text-[#D53F8C] transition-colors hover:bg-[#FFF5F7] focus-visible:ring-[#D53F8C]'
+          className='h-12 w-full rounded-lg border border-[#F9A8D4] text-base font-semibold text-[#EC4899] transition-colors hover:bg-[#FDF2F8] focus-visible:ring-[#EC4899]'
           disabled={loading}
           aria-busy={loading}
           onClick={onClickAddToCart}
@@ -66,7 +66,7 @@ const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
 
       <div className='flex-auto'>
         <Button
-          className='h-12 w-full rounded-lg bg-[#D02E7D] text-base text-white font-semibold transition-colors hover:bg-[#B83280] focus-visible:ring-[#D53F8C]'
+          className='h-12 w-full rounded-lg bg-[#EC4899] text-base text-white font-semibold transition-colors hover:bg-[#DB2777] focus-visible:ring-[#EC4899]'
           type='button'
           onClick={handleBuyNow}
         >

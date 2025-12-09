@@ -1,13 +1,16 @@
 .QuantityPicker__wrapper {
   display: flex;
   align-items: center;
-  border: 1px solid #d9d9d9;
+  border: 1px solid #F9A8D4;
+  background: #FDF2F8;
+  border-radius: 12px;
+  height: 44px;
   width: 100%;
 }
 
 .QuantityPicker__icon-wrapper {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
 }
 
 .QuantityPicker__icon-button {
@@ -19,34 +22,29 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  color: inherit;
+  color: #DB2777;
 }
 
 .QuantityPicker__icon-button:focus-visible {
-  outline: 2px solid rgba(0, 102, 255, 0.5);
+  outline: 2px solid rgba(236, 72, 153, 0.35);
   outline-offset: 2px;
 }
 
 .QuantityPicker__text {
   text-align: left;
   appearance: none;
-  background: #fff;
-  border-top: 0;
-  border-bottom: 0;
-  border-left: 1px solid #d9d9d9;
-  border-right: 1px solid #d9d9d9;
-  border-radius: 3px;
+  background: transparent;
+  border: 0;
   box-sizing: border-box;
   font-size: 1rem;
-  height: 32px;
+  height: 100%;
   margin: 0;
-  padding: 7px 1em;
+  padding: 0 0.75em;
   vertical-align: middle;
   width: 100%;
 }
 .QuantityPicker__text:focus {
-  border-color: rgba(0, 102, 255, 0.5);
-  box-shadow: 0 0 3px 0 rgba(73, 143, 226, 0.5);
+  outline: none;
 }
 
 /*# sourceMappingURL=QuantityPicker.css.map */

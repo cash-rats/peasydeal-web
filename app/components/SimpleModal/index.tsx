@@ -6,6 +6,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 
 export interface SimpleModalProps extends PropsWithChildren {
   open: boolean;
@@ -45,8 +46,13 @@ export default function SimpleModal({
 }: SimpleModalProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showContent, setShowContent] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
   const previouslyFocusedElement = useRef<Element | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
@@ -107,7 +113,7 @@ export default function SimpleModal({
     };
   }, [open, showContent]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   // Calculate overlay background color based on opacity
   const overlayBg = showOverlay
@@ -156,7 +162,7 @@ export default function SimpleModal({
     }
   };
 
-  return (
+  return createPortal(
     <div
       aria-modal="true"
       role="dialog"
@@ -164,7 +170,7 @@ export default function SimpleModal({
       style={{
         top: 0,
         left: 0,
-        zIndex: 999,
+        zIndex: 9999,
         backgroundColor: overlayBg,
         opacity: isAnimating ? 1 : 0,
       }}
@@ -228,6 +234,7 @@ export default function SimpleModal({
           </div>
         ) : null}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

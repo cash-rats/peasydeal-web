@@ -156,14 +156,15 @@ function ProductDetailContainer({
       <div
         ref={productContentWrapperRef}
         className="
-								rounded-md border-x border-b border-t-8 border-[#D02E7D]
-								py-7 px-5
-								w-full
-								h-fit
-								sticky
-								col-span-5 xl:col-span-4
-                mt-6
-							"
+          rounded-xl border border-[#F9A8D4] bg-white
+          py-7 px-5
+          w-full
+          h-fit
+          sticky
+          shadow-[0_12px_35px_rgba(236,72,153,0.1)]
+          col-span-5 xl:col-span-4
+          mt-6
+        "
       >
 
         {
@@ -196,12 +197,9 @@ function ProductDetailContainer({
                 className="
                   inline-flex items-center gap-2
                   mb-3 px-3 py-2
-                  rounded-full
-                  bg-gradient-to-r from-[#1D4ED8] to-[#60A5FA]
-                  text-white
-                  shadow-[0_10px_30px_rgba(37,99,235,0.25)]
-                  ring-1 ring-white/40
-                  backdrop-blur-[2px]
+                  rounded-full bg-gradient-to-r from-[#1D4ED8] to-[#60A5FA]
+                  text-white shadow-[0_10px_30px_rgba(37,99,235,0.25)]
+                  ring-1 ring-white/40 backdrop-blur-[2px]
                 "
               >
                 <span
@@ -255,7 +253,7 @@ function ProductDetailContainer({
 											text-[10px] md:text-[12px]
 											rounded-[2px] md:rounded-[4px]
 											text-white font-medium uppercase
-											bg-[#D43B33]
+											bg-[#EC4899]
 										'
             >
               <b>
@@ -292,11 +290,12 @@ function ProductDetailContainer({
                               onMouseEnter={() => setHoveredVariationUUID(v.uuid)}
                               onMouseLeave={() => setHoveredVariationUUID(null)}
                               className={`
-                                px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 border
+                                h-10 px-4 inline-flex items-center justify-center
+                                rounded-full text-sm font-semibold transition-all duration-200 border
                                 ${isSelected
-                                  ? 'bg-blue-50 text-gray-900 border-2 border-blue-500'
-                                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-gray-900 cursor-pointer'
-                                }
+                                  ? 'border-[#EC4899] bg-[#FDF2F8] text-[#DB2777] shadow-[0_0_0_1px_#F9A8D4]'
+                                  : 'border-[#E5E7EB] bg-white text-[#111827] hover:border-[#F9A8D4] hover:bg-[#F9FAFB]'
+                                } cursor-pointer
                               `}
                             >
                               {v.spec_name}
