@@ -4,7 +4,6 @@ import type { LinksFunction } from 'react-router';
 import RightTiltBox, { links as RightTiltBoxLinks } from '~/components/Tags/RightTiltBox';
 
 import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
-import { Tag, TagLeftIcon } from '@chakra-ui/react';
 import { BsLightningCharge, BsChevronRight } from 'react-icons/bs';
 import { RiRefund2Fill } from 'react-icons/ri';
 
@@ -193,15 +192,33 @@ function ProductDetailContainer({
           />
           {
             hasSuperDeal && (
-              <Tag
-                colorScheme="cyan"
-                variant='solid'
-                className="nowrap mb-2 flex items-center space-x-1"
-                size='md'
+              <div
+                className="
+                  inline-flex items-center gap-2
+                  mb-3 px-3 py-2
+                  rounded-full
+                  bg-gradient-to-r from-[#1D4ED8] to-[#60A5FA]
+                  text-white
+                  shadow-[0_10px_30px_rgba(37,99,235,0.25)]
+                  ring-1 ring-white/40
+                  backdrop-blur-[2px]
+                "
               >
-                <TagLeftIcon boxSize='16px' as={BsLightningCharge} />
-                <span>SUPER DEAL</span>
-              </Tag>
+                <span
+                  className="
+                    flex h-8 w-8 items-center justify-center
+                    rounded-full border border-white/30
+                    bg-white/15 text-white
+                    shadow-inner
+                  "
+                >
+                  <BsLightningCharge size={16} />
+                </span>
+                <div className="leading-tight text-sm">
+                  <div className="font-semibold tracking-wide">SUPER DEAL</div>
+                  <div className="text-white/90 text-[11px]">Extra savings applied</div>
+                </div>
+              </div>
             )
           }
 
