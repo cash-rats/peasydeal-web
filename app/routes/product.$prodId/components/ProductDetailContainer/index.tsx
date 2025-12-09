@@ -266,10 +266,10 @@ function ProductDetailContainer({
             </p>
           </div>
 
-          <small className="uppercase">
+          <div className="uppercase text-sm md:text-base">
             <span className=""> availability: </span>
-            <span className="text-[#D02E7D]" > in-stock </span>
-          </small>
+            <span className="text-[#54B435] font-semibold"> in-stock </span>
+          </div>
 
           <hr className='my-4' />
           <div className="mt-5">
