@@ -63,24 +63,55 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export function ErrorBoundary() {
   const error = useRouteError();
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
+  const cartCount = useCartCount();
+
+  const fallback = (
+    <div className="min-h-[35rem] px-4 py-8 flex justify-center">
+      <div className="px-8 flex flex-col justify-center">
+        <p className="max-w-[384px] mb-2 text-lg leading-[26px] font-semibold text-center">
+          Something went wrong.
+        </p>
+        <p className="max-w-[384px] mb-2 text-lg leading-[26px] font-semibold text-center">
+          Please try again.
+        </p>
+      </div>
+    </div>
+  );
 
   if (isRouteErrorResponse(error) && error.status === httpStatus.NOT_FOUND) {
     const data = (error.data ?? {}) as { query?: string };
     return (
-      <div className="min-h-[35rem] px-4 py-8 flex justify-center">
-        <div className="px-8 flex flex-col justify-center">
-          <p className="max-w-[384px] mb-2 text-lg leading-[26px] font-semibold text-center">
-            No product found for: {data.query}
-          </p>
-          <p className="max-w-[384px] mb-2 text-lg leading-[26px] font-semibold text-center">
-            Please try search again, check your key word or try another word.
-          </p>
+      <CatalogLayout
+        categories={categories}
+        navBarCategories={navBarCategories}
+        cartCount={cartCount}
+      >
+        <div className="min-h-[35rem] px-4 py-8 flex justify-center">
+          <div className="px-8 flex flex-col justify-center">
+            <p className="max-w-[384px] mb-2 text-lg leading-[26px] font-semibold text-center">
+              No product found for: {data.query}
+            </p>
+            <p className="max-w-[384px] mb-2 text-lg leading-[26px] font-semibold text-center">
+              Please try search again, check your key word or try another word.
+            </p>
+          </div>
         </div>
-      </div>
+      </CatalogLayout>
     );
   }
 
-  return <div />;
+  return (
+    <CatalogLayout
+      categories={categories}
+      navBarCategories={navBarCategories}
+      cartCount={cartCount}
+    >
+      {fallback}
+    </CatalogLayout>
+  );
 }
 
 function Search() {
