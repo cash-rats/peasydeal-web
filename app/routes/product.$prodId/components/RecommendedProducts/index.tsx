@@ -76,6 +76,8 @@ function RecommendedProducts({
     }
   }, [fetcher.state, fetcher.data]);
 
+  const isLoading = fetcher.state !== 'idle';
+
   return (
     <div ref={ref}>
       <div
@@ -108,6 +110,8 @@ function RecommendedProducts({
             </h4>
             <ProductPromotionRow
               onClickProduct={onClickProduct}
+              loading={isLoading}
+              defaultSkeleton={4}
               products={rows[0]}
             />
           </div>
@@ -126,7 +130,7 @@ function RecommendedProducts({
             </h3>
             {
               <ProductRowsLayout
-                loading={fetcher.state !== 'idle'}
+                loading={isLoading}
                 onClickProduct={onClickProduct}
                 products={rows[1]}
                 defaultSkeloton={8}

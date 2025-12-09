@@ -9,12 +9,20 @@ import { RegularCardWithActionButton } from '../ProductCard';
 interface IProductPromotionRow {
   products?: Product[];
   onClickProduct?: (title: string, productID: string) => void;
+  loading?: boolean;
+  defaultSkeleton?: number;
 }
 
 export default function ProductPromotionRow({
   products = [],
+  loading = false,
+  defaultSkeleton = 4,
   onClickProduct = () => { },
 }: IProductPromotionRow) {
+  const shouldShowSkeleton = loading || products.length === 0;
+  const skeletonCount = Math.max(defaultSkeleton, 1);
+  const items = shouldShowSkeleton ? Array.from({ length: skeletonCount }) : products;
+
   return (
     <div className='
       grid
@@ -23,10 +31,11 @@ export default function ProductPromotionRow({
       mb-2 md:mb-3 lg:mb-4
     '>
       {
-        products.map((product: Product, index) => (
+        items.map((product: Product | undefined, index) => (
           <RegularCardWithActionButton
-            key={`product-item-${index}-${product.productUUID}`}
-            product={product}
+            key={`product-item-${index}-${product?.productUUID ?? 'skeleton'}`}
+            loading={shouldShowSkeleton}
+            product={shouldShowSkeleton ? undefined : product}
             onClickProduct={onClickProduct}
             displayActionButton={false}
           />
@@ -35,4 +44,3 @@ export default function ProductPromotionRow({
     </div>
   );
 };
-

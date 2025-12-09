@@ -154,13 +154,13 @@ export default function ProductCard({
       : getPriceRow(salePrice, [retailPrice])
   }, [salePrice, retailPrice, hasSuperDeal]);
 
-  if (!product) return null;
-
   if (loading) {
     return (
       <ProductCardSkeleton />
     )
   }
+
+  if (!product) return null;
 
   return (
     <Link

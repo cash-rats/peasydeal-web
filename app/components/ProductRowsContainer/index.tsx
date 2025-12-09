@@ -29,7 +29,11 @@ function ProductRowsContainer({
   onClickProduct = () => { },
   products = [],
   loading = false,
+  defaultSkeloton,
 }: ProductRowsContainerProps) {
+  const shouldShowSkeleton = loading || (products.length === 0 && defaultSkeloton !== undefined);
+  const skeletonCount = Math.max(defaultSkeloton ?? 8, 1);
+  const items = shouldShowSkeleton ? Array.from({ length: skeletonCount }) : products;
 
   return (
     <div className='w-full'>
@@ -42,17 +46,15 @@ function ProductRowsContainer({
             mb-2 md:mb-3 lg:mb-4
           ">
             {
-              Object.keys(products).length !== 0 && products.map((product: Product, index) => {
-                return (
-                  <RegularCardWithActionButton
-                    key={`product-item-${index}-${product.productUUID}`}
-                    loading={loading}
-                    product={product}
-                    onClickProduct={onClickProduct}
-                    displayActionButton={false}
-                  />
-                )
-              })
+              items.map((product: Product | undefined, index) => (
+                <RegularCardWithActionButton
+                  key={`product-item-${index}-${product?.productUUID ?? 'skeleton'}`}
+                  loading={shouldShowSkeleton}
+                  product={shouldShowSkeleton ? undefined : product}
+                  onClickProduct={onClickProduct}
+                  displayActionButton={false}
+                />
+              ))
             }
           </div>
         </div>
