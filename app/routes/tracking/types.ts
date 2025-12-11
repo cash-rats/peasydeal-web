@@ -34,6 +34,7 @@ export type TrackOrder = {
   country: string;
   postalcode: string;
   display_address?: string;
+  display_postalcode?: string;
   shipping_status: string;
   subtotal: number;
   total_amount: number;

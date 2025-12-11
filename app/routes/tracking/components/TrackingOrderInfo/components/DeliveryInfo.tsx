@@ -48,11 +48,11 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
         />
 
         {
-          orderInfo.postalcode
+          orderInfo.display_postalcode
             ? (
               <InfoPiece
                 title='Postal Code'
-                info={orderInfo.postalcode}
+                info={orderInfo.display_postalcode}
               />
             )
             : null

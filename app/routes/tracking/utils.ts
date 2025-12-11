@@ -52,8 +52,9 @@ const normalizeTrackingOrder = (trackOrder: TrackOrder): TrackOrder => {
 
   return {
     ...trackOrder,
-    display_name: maskName(trackOrder.contact_name),
-    display_address: maskAddress(address.trim()),
+    display_name: trackOrder.contact_name,
+    display_address: address.trim(),
+    display_postalcode: trackOrder.postalcode || '',
 
     // Hide the confidential data.
     address: '',
