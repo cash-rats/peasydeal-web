@@ -28,6 +28,7 @@ import { normalizeTrackingOrder } from '~/routes/tracking/utils';
 import type { TrackOrder } from '~/routes/tracking/types';
 import MobileSearchDialog from '~/components/MobileSearchDialog';
 import type { RootLoaderData } from '~/root';
+import { useCartCount } from '~/routes/hooks';
 
 type LoaderDataType = {
   query: string;
@@ -113,7 +114,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export function ErrorBoundary() {
   const error = useRouteError();
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
-  const cartCount = rootData?.cartCount || 0;
+  const cartCount = useCartCount();
   const categories = rootData?.categories ?? [];
   const navBarCategories = rootData?.navBarCategories ?? [];
   const trackOrderFetcher = useFetcher();
