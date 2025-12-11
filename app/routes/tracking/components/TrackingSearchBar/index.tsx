@@ -26,11 +26,11 @@ function TrackingSearchBar({
   };
 
   return (
-    <div className='w-full px-5 py-5'>
-      <div className='mx-auto flex w-full max-w-3xl flex-wrap items-stretch gap-3'>
+    <div className='w-full bg-gray-50 px-4 py-6 sm:px-6 lg:px-8'>
+      <div className='mx-auto flex w-full max-w-3xl flex-wrap items-center gap-3 rounded-full bg-white p-2 shadow-sm ring-1 ring-gray-200'>
         <div className='relative flex-1 min-w-[220px]'>
           <Input
-            className='h-12 rounded-3xl border border-[#d9d9d9] bg-white pr-10 text-base text-[#333]'
+            className='h-11 rounded-full border border-transparent bg-transparent px-4 pr-12 text-base text-gray-800 shadow-none focus-visible:ring-0'
             placeholder='Search order by id.'
             name='query'
             value={orderID}
@@ -49,9 +49,8 @@ function TrackingSearchBar({
         </div>
 
         <Button
-          variant='ghost'
           type='submit'
-          className='h-12 rounded-3xl !bg-[#d02e7d] px-10 text-base font-semibold !text-white hover:!bg-[#b71b67]'
+          className='h-11 rounded-full bg-[#d02e7d] px-8 text-base font-semibold text-white transition hover:bg-[#b71b67]'
           onClick={(evt) => onSearch(orderID, evt)}
         >
           search

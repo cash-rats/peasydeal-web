@@ -9,9 +9,14 @@ type DeliveryInfoProps = {
   orderInfo: TrackOrder;
 };
 
-// - [x] No need to display shipping status when payment status is `unpaid`
-// - [x] Only display shipping status table when shipping status is `shipping`
 function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
+  const contactName = orderInfo.display_name || orderInfo.contact_name;
+  const address = orderInfo.display_address || [
+    orderInfo.address,
+    orderInfo.address2,
+    orderInfo.city,
+    orderInfo.country,
+  ].filter(Boolean).join(', ');
   const paymentStatusWording = useMemo(() => {
     return {
       [PaymentStatus.Paid]: 'Paid.',
@@ -22,39 +27,56 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
   }, []);
 
   return (
-    <div className="p-4 border-[1px] border-border-color border-b-0 bg-white">
-      <h2 className="font-poppins text-xl font-normal mb-[0.7rem]">
+    <div>
+      <h2 className="text-xl font-semibold text-gray-900">
         Delivery Information
       </h2>
 
-      <InfoPiece
-        title='Contact Name'
-        info={orderInfo.display_name}
-      />
+      <div className="mt-5 space-y-4 text-sm text-gray-700">
+        <InfoPiece
+          title='Contact Name'
+          info={contactName || '—'}
+        />
 
-      <InfoPiece
-        title='Address'
-        info={(
-          <p className="font-poppins">
-            {orderInfo.display_address} &nbsp;
-          </p>
-        )}
-      />
+        <InfoPiece
+          title='Address'
+          info={(
+            <p className="text-gray-900">
+              {address || '—'}
+            </p>
+          )}
+        />
 
-      <InfoPiece
-        title='Payment Status'
-        info={paymentStatusWording[orderInfo.payment_status]}
-      />
+        {
+          orderInfo.postalcode
+            ? (
+              <InfoPiece
+                title='Postal Code'
+                info={orderInfo.postalcode}
+              />
+            )
+            : null
+        }
 
-      {orderInfo.payment_status === 'paid' && (
-        <>
-          <InfoPiece
-            title='Shipping Status'
-            info={orderInfo.shipping_status}
-          />
+        <InfoPiece
+          title='Payment Status'
+          info={paymentStatusWording[orderInfo.payment_status]}
+        />
 
-          {
-            orderInfo.shipping_status === 'shipping' && (
+        {
+          orderInfo.shipping_status
+            ? (
+              <InfoPiece
+                title='Shipping Status'
+                info={orderInfo.shipping_status.split('_').join(' ')}
+              />
+            )
+            : null
+        }
+
+        {
+          orderInfo.tracking_number
+            ? (
               <TrackingTable trackings={[
                 {
                   carrier: orderInfo.carrier,
@@ -63,9 +85,9 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
                 }
               ]} />
             )
-          }
-        </>
-      )}
+            : null
+        }
+      </div>
     </div>
   );
 }

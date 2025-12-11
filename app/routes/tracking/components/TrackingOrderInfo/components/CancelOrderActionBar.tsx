@@ -129,6 +129,7 @@ export default function CancelOrderActionBar({
       >
         <Button
           onClick={onOpen}
+          className="bg-[#6366f1] px-6 text-white hover:bg-[#5154d6]"
         >
           Cancel Order
         </Button>

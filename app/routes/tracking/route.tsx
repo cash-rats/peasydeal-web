@@ -256,7 +256,7 @@ function TrackingOrder() {
         }
       />
 
-      <main>
+      <main className='bg-gray-50'>
         <Form action='/tracking'>
           {/* order search form */}
           <TrackingSearchBar

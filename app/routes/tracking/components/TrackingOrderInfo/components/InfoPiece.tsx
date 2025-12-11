@@ -8,8 +8,8 @@ type InfoPieceProps = {
 function InfoPiece({ title, info }: InfoPieceProps) {
   return (
     <div className="mb-4">
-      <h4 className="font-poppins font-medium text-base text-[rgb(130,129,131)]">{title}</h4>
-      <div className="font-poppins mb-0">
+      <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500">{title}</h4>
+      <div className="mt-1 text-base font-medium text-gray-900">
         {info}
       </div>
     </div>
