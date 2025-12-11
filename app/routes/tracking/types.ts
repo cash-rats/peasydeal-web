@@ -22,6 +22,9 @@ export type TrackOrderProduct = {
   url: string;
   uuid: string;
   can_review: boolean;
+  carrier: string;
+  tracking_number: string;
+  tracking_link: string;
 }
 
 export type TrackOrder = {
@@ -43,9 +46,6 @@ export type TrackOrder = {
   discount_amount: number;
   created_at: string;
   parsed_created_at: Date;
-  carrier: string;
-  tracking_number: string;
-  tracking_link: string;
   payment_status: PaymentStatus;
   products: TrackOrderProduct[];
   order_status: OrderStatus;

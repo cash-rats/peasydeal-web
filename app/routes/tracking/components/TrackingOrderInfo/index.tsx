@@ -229,13 +229,23 @@ function TrackingOrderIndex({
                 .orderInfo
                 .products
                 .map((product) => {
-                  const shippingStatus = state.orderInfo.shipping_status || state.orderInfo.order_status;
-                  const hasTracking = Boolean(state.orderInfo.tracking_number);
-                  const statusColor = state.orderInfo.order_status === OrderStatus.Cancelled
-                    ? 'text-red-600'
-                    : state.orderInfo.order_status === OrderStatus.Complete
+                  const hasVendorAndNumber = Boolean(product.carrier && product.tracking_number);
+                  const hasTrackingAll = Boolean(
+                    hasVendorAndNumber
+                    && product.tracking_link
+                  );
+                  const shippingStatus =
+                    state.orderInfo.order_status === OrderStatus.Cancelled
+                      ? OrderStatus.Cancelled
+                      : hasVendorAndNumber
+                        ? 'shipped'
+                        : OrderStatus.Processing;
+                  const statusColor =
+                    shippingStatus === 'shipped' || state.orderInfo.order_status === OrderStatus.Complete
                       ? 'text-green-600'
-                      : 'text-amber-600';
+                      : state.orderInfo.order_status === OrderStatus.Cancelled
+                        ? 'text-red-600'
+                        : 'text-amber-600';
 
                   return (
                     <div
@@ -254,37 +264,25 @@ function TrackingOrderIndex({
                           <p className="text-sm text-gray-500">{product.spec_name}</p>
                           <div className="space-y-1 text-sm text-gray-600">
                             {
-                              hasTracking
-                                ? (
-                                  <>
-                                    <p>
-                                      Shipping Vendor:{' '}
-                                      <span className="font-medium text-gray-900">{state.orderInfo.carrier || 'N/A'}</span>
-                                    </p>
-                                    <p>
-                                      Tracking Number:{' '}
-                                      {
-                                        state.orderInfo.tracking_link
-                                          ? (
-                                            <a
-                                              className="font-semibold text-[#6366f1] hover:underline"
-                                              href={state.orderInfo.tracking_link}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                            >
-                                              {state.orderInfo.tracking_number}
-                                            </a>
-                                          )
-                                          : (
-                                            <span className="font-medium text-gray-900">
-                                              {state.orderInfo.tracking_number}
-                                            </span>
-                                          )
-                                      }
-                                    </p>
-                                  </>
-                                )
-                                : null
+                              hasTrackingAll && (
+                                <>
+                                  <p>
+                                    Shipping Vendor:{' '}
+                                    <span className="font-medium text-gray-900">{product.carrier}</span>
+                                  </p>
+                                  <p>
+                                    Tracking Number:{' '}
+                                    <a
+                                      className="font-semibold text-[#6366f1] hover:underline"
+                                      href={product.tracking_link}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      {product.tracking_number}
+                                    </a>
+                                  </p>
+                                </>
+                              )
                             }
                             <p>
                               Status:{' '}
