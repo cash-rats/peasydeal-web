@@ -56,7 +56,3 @@ export const loader = async (_args: LoaderFunctionArgs) => {
 
   return new Response(xml, { headers });
 };
-
-export default function SitemapIndex() {
-  return null;
-}

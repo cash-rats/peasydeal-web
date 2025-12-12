@@ -225,9 +225,9 @@ These routes should not appear in any sitemap; they are discoverable via navigat
 ## TODO Checklist (execution tracking)
 - [x] Add `public/robots.txt` with `Sitemap: <canonical-domain>/sitemap.xml`.
 - [x] Implement dynamic sitemap index route `app/routes/sitemap.xml/route.tsx` (uses `getCanonicalDomain()`, reads cached XML or builds from cached child URLs).
-- [ ] Add products sitemap route `app/routes/sitemaps.products.xml/route.tsx`:
-  - [ ] Read cached XML from Redis key `sitemap:products` (precomputed by worker).
-  - [ ] Return XML with correct content type; 503 or minimal fallback if missing.
+- [x] Add products sitemap route `app/routes/sitemaps.products.xml/route.tsx`:
+  - [x] Read cached XML from Redis key `sitemap:products` (precomputed by worker).
+  - [x] Return XML with correct content type; 503 or minimal fallback if missing.
 - [ ] (Optional) Add collection sitemap route `app/routes/sitemaps.collections.xml/route.tsx` (reads cached XML/JSON, cache in Redis).
 - [ ] (Optional) Add static pages sitemap route `app/routes/sitemaps.static-pages.xml/route.tsx` (reads cached XML/JSON, cache optional).
 - [ ] Update sitemap index loader to include all active child sitemaps (dynamic routes and/or existing `public/sitemaps/*.xml`).
