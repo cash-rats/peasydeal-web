@@ -5,10 +5,10 @@ import { getCanonicalDomain } from '~/utils/seo';
 
 const SITEMAP_INDEX_KEY = 'sitemap:index';
 const SITEMAP_PATHS = [
-  'sitemaps/static_pages.xml',
-  'sitemaps/collection.xml',
-  'sitemaps/promotions.xml',
-  'sitemaps/products.xml',
+  'sitemaps.static-pages.xml',
+  'sitemaps.collections.xml',
+  'sitemaps.promotions.xml',
+  'sitemaps.products.xml',
 ];
 const XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
 
