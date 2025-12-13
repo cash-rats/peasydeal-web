@@ -232,7 +232,7 @@ These routes should not appear in any sitemap; they are discoverable via navigat
 - [x] (Optional) Add promotions sitemap route `app/routes/sitemaps.promotions.xml/route.tsx` (reads cached XML/JSON, cache in Redis).
 - [x] (Optional) Add static pages sitemap route `app/routes/sitemaps.static-pages.xml/route.tsx` (reads cached XML/JSON, cache optional).
 - [x] Update sitemap index loader to include all active child sitemaps (dynamic routes and/or existing `public/sitemaps/*.xml`).
-- [ ] Worker: schedule job to fetch `/v2/products/sitemap`, build XML (or JSON), and store in Redis via atomic swap (`sitemap:products:next` → `sitemap:products`), plus meta key (`generated_at`, `count`).
+- [x] Worker: schedule job to fetch `/v2/products/sitemap`, build XML (or JSON), and store in Redis via atomic swap (`sitemap:products:next` → `sitemap:products`), plus meta key (`generated_at`, `count`).
 - [ ] If keeping/generating static XML files: ensure they use `getCanonicalDomain()` and live under `public/sitemaps`.
 - [ ] Remove or update legacy `public/sitemaps` files that hard-code `staging` hosts.
 - [ ] Validation: load `/sitemap.xml` and child sitemaps locally, confirm correct host + XML shape.
