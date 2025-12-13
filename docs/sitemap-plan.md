@@ -182,7 +182,7 @@ Required: `product_uuid`, `updated_at`, and either `product_name` or `slug`. Opt
 ### Relationship to static files in `public/sitemaps`
 
 Two approaches:
-1) **Hybrid**: keep static XML for static pages/collections, and serve products via Redis-backed routes. `/sitemap.xml` references both static files and dynamic routes.  
+1) **Hybrid**: keep static XML for static pages/collections, and serve products via Redis-backed routes. `/sitemap.xml` references both static files and dynamic routes.
 2) **Fully dynamic**: generate everything via the worker and serve all XML from Redis-backed routes. Keep static files only as a local fallback if desired.
 
 ---
@@ -234,6 +234,6 @@ These routes should not appear in any sitemap; they are discoverable via navigat
 - [x] Update sitemap index loader to include all active child sitemaps (dynamic routes and/or existing `public/sitemaps/*.xml`).
 - [x] Worker: schedule job to fetch `/v2/products/sitemap`, build XML (or JSON), and store in Redis via atomic swap (`sitemap:products:next` → `sitemap:products`), plus meta key (`generated_at`, `count`).
 - [ ] If keeping/generating static XML files: ensure they use `getCanonicalDomain()` and live under `public/sitemaps`.
-- [ ] Remove or update legacy `public/sitemaps` files that hard-code `staging` hosts.
+- [x] Remove or update legacy `public/sitemaps` files that hard-code `staging` hosts.
 - [ ] Validation: load `/sitemap.xml` and child sitemaps locally, confirm correct host + XML shape.
 - [ ] Submit `/sitemap.xml` in Google Search Console and verify `robots.txt` reachability.
