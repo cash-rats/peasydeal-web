@@ -56,8 +56,10 @@ export const fetchPromotionProducts = async (
   url.searchParams.append('page', params.page.toString());
   url.searchParams.append('per_page', params.perpage.toString());
 
-  const resp = await fetch(url.toString());
+  const resp = await fetch(url);
   const respJSON = await resp.json();
+
+  console.log('~~ 1 promo prods', respJSON);
 
   if (resp.status !== httpStatus.OK) {
     const errResp = respJSON as ApiErrorResponse;

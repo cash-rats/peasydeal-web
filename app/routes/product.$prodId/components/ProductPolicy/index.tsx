@@ -6,7 +6,7 @@ import {
   AccordionTrigger
 } from '~/components/ui/accordion';
 
-import { productRichTextClass } from '../productRichTextClass';
+import AboutThisProduct from '../AboutThisProduct';
 
 interface IProductPolicyProps {
   productDetail: any;
@@ -34,11 +34,14 @@ const ProductPolicy = ({
             <AccordionTrigger className="px-5 py-4 text-base md:text-lg font-medium text-gray-800 flex items-center">
               <b>About this product</b>
             </AccordionTrigger>
-            <AccordionContent className="px-5 pb-0 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200 flex items-center">
-              <div className={productRichTextClass}>
-                <div className='w-full overflow-scroll'>
-                  <div dangerouslySetInnerHTML={{ __html: productDetail?.description || '' }} />
-                </div>
+          <AccordionContent className="px-5 pb-0 pt-0 text-sm md:text-base text-gray-600 leading-relaxed border-t border-gray-200 flex items-center">
+              <div className="w-full py-4">
+                <AboutThisProduct
+                  descriptionHtml={productDetail?.description || ''}
+                  showTitle={false}
+                  containerClassName="bg-transparent border-0 p-0"
+                  fadeFromClassName="from-white"
+                />
               </div>
             </AccordionContent>
           </AccordionItem>
