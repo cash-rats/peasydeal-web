@@ -7,6 +7,7 @@ import type { LoaderFunctionArgs, ActionFunctionArgs, LinksFunction } from 'reac
 import {
   data,
   redirect,
+  useNavigate,
   useLoaderData,
   useRouteError,
   isRouteErrorResponse,
@@ -18,7 +19,6 @@ import { getCanonicalDomain } from '~/utils/seo';
 import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
 import { composErrorResponse } from '~/utils/error';
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
-import { isFromGoogleStoreBot } from '~/utils';
 
 import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
 import type { LoaderTypeProductDetail, OptionType } from './types';
@@ -119,6 +119,7 @@ export function ErrorBoundary() {
 
 function ProductDetailPage() {
   const loaderData = useLoaderData<LoaderTypeProductDetail>() || {};
+  const navigate = useNavigate();
 
   // TODO: extract state initializer to independent function
   const { state, dispatch } = useProductState(loaderData.product);
@@ -173,6 +174,7 @@ function ProductDetailPage() {
     addItemToCart,
     isAddingToCart,
     openSuccessModal,
+    setOpenSuccessModal,
   } = useAddToCart({
     sessionStorableCartItem: state.sessionStorableCartItem,
     variationImages: state.variationImages,
@@ -219,7 +221,15 @@ function ProductDetailPage() {
 
   return (
     <>
-      <ItemAddedModal open={openSuccessModal} />
+      <ItemAddedModal
+        open={openSuccessModal}
+        onClose={() => setOpenSuccessModal(false)}
+        onContinueShopping={() => setOpenSuccessModal(false)}
+        onViewCart={() => {
+          setOpenSuccessModal(false);
+          navigate('/cart');
+        }}
+      />
 
       <Breadcrumbs
         categories={state.categories}

@@ -49,3 +49,7 @@ export function useCartContext(): CartContextValue {
 
   return context;
 }
+
+export function useOptionalCartContext(): CartContextValue | undefined {
+  return useContext(CartContext);
+}

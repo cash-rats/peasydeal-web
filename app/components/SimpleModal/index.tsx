@@ -14,6 +14,7 @@ export interface SimpleModalProps extends PropsWithChildren {
   title?: string;
   overlayOpacity?: number; // 0-100, defaults to 50
   showOverlay?: boolean; // defaults to true
+  overlayClassName?: string;
   staggerDelay?: number; // milliseconds, defaults to 150
   showCloseButton?: boolean; // defaults to true
   closeOnOverlayClick?: boolean; // defaults to true
@@ -35,6 +36,7 @@ export default function SimpleModal({
   children,
   overlayOpacity = 50,
   showOverlay = true,
+  overlayClassName,
   staggerDelay = 150,
   showCloseButton = true,
   closeOnOverlayClick = true,
@@ -120,10 +122,6 @@ export default function SimpleModal({
     ? `rgba(0, 0, 0, ${overlayOpacity / 100})`
     : 'transparent';
 
-  const contentTransform = showContent
-    ? 'translate(-50%, -50%) scale(1)'
-    : 'translate(-50%, -50%) scale(0.95)';
-
   const sizeClassMap: Record<NonNullable<SimpleModalProps['size']>, string> = {
     sm: 'max-w-sm',
     md: 'max-w-md',
@@ -166,7 +164,12 @@ export default function SimpleModal({
     <div
       aria-modal="true"
       role="dialog"
-      className="fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300 w-screen h-screen"
+      className={[
+        'fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300 w-screen h-screen',
+        overlayClassName,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       style={{
         top: 0,
         left: 0,
