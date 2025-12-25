@@ -38,6 +38,7 @@ const envSchema = z.object({
 
   // Google Services
   GOOGLE_TAG_ID: z.string().optional(),
+  GOOGLE_ANALYTICS_ID: z.string().optional(),
 
   // Mapbox
   MAPBOX_BOX_ACCESS_TOKEN: z.string().default(''),
