@@ -10,7 +10,7 @@ const useGTCScript = (params: useUseGTCScriptParams) => {
   useEffect(() => {
     if (
       params.env &&
-      params.env !== 'development' &&
+      params.env === 'production' &&
       params.googleTagID
     ) {
       const gtmScript = document.createElement('script');

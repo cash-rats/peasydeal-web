@@ -21,16 +21,14 @@ import { env } from '~/utils/env';
 import { storeDailySession } from '~/services/daily_session.server';
 import { storeSessionIDToSessionStore } from '~/services/daily_session';
 import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.server';
+import { CartProvider } from '~/routes/hooks';
 import type { Category } from '~/shared/types';
 
 import useRudderStackScript from './hooks/useRudderStackScript';
 import useGTMScript from './hooks/useGTMScript';
-import useGoogleAnalytics from './hooks/useGoogleAnalytics';
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
-// import { links as cartLinks } from '~/routes/cart/route';
-import { CartProvider } from '~/routes/hooks';
 import tailwindStylesheetUrl from './styles/tailwind.css?url';
 import styles from './styles/global.css?url';
 import structuredData from './structured_data';
@@ -125,12 +123,6 @@ function Document({ children }: DocumentProps) {
     env: envData?.NODE_ENV,
     rudderStackKey: envData?.RUDDER_STACK_KEY,
     rudderStackUrl: envData?.RUDDER_STACK_URL,
-  });
-
-  useGoogleAnalytics({
-    env: envData?.VERCEL_ENV,
-    measurementId: envData?.GOOGLE_ANALYTICS_ID,
-    sessionId: gaSessionID,
   });
 
   return (
