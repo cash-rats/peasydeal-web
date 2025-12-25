@@ -119,8 +119,6 @@ function Document({ children }: DocumentProps) {
     storeSessionIDToSessionStore(gaSessionID);
   }, [gaSessionID]);
 
-  console.log('~~ 1', envData?.RUDDERSTACK_WRITE_KEY, envData?.RUDDERSTACK_DATAPLANE_URL);
-
   useRudderStackScript({
     enabled: true,
     writeKey: envData?.RUDDERSTACK_WRITE_KEY,
