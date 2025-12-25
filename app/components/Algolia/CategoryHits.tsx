@@ -92,7 +92,7 @@ export function CategoryHits({
                 key={index}
                 to={getCategoryUrl(catInfo)}
                 onClick={() => {
-                  trackEvent('search_action_category_hit', {
+                  trackEvent('pd_search_action_category_hit', {
                     query: catInfo,
                   });
                 }}

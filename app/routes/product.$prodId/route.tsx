@@ -136,7 +136,7 @@ function ProductDetailPage() {
   trackWindowScrollTo(recmmendedProdsRef, () => {
     const gaSessionID = getSessionIDFromSessionStore();
     if (gaSessionID) {
-      trackEvent('prod_page_scroll_to_recommends', {
+      trackEvent('pd_prod_page_scroll_to_recommends', {
         session: gaSessionID,
       })
     }
@@ -199,7 +199,7 @@ function ProductDetailPage() {
     const gaSessionID = getSessionIDFromSessionStore();
 
     if (gaSessionID) {
-      trackEvent('select_recommend_prod_page', {
+      trackEvent('pd_select_recommend_prod_page', {
         session: gaSessionID,
         product: `${title}_${productUUID}`,
       });

@@ -34,7 +34,7 @@ function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: s
 
       // Track conversion event
       if (typeof document === 'undefined') return;
-      trackEvent('purchase', {
+      trackEvent('pd_purchase', {
         payment_method: paymentMethod,
         transaction_id: orderId,
         value: orderFetcher.data?.total,

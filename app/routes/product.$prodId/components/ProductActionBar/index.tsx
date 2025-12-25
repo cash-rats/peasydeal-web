@@ -31,7 +31,7 @@ const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
       [item.variationUUID]: item,
     });
 
-    trackEvent('click_buy_now');
+    trackEvent('pd_click_buy_now');
     navigate('/cart');
   }, [cart, navigate, sessionStorableCartItem, setCart]);
 

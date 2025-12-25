@@ -65,7 +65,7 @@ export default function PromoActivities({ promotions = [] }: IPromoActivities) {
               <Link
                 to={`/promotion/${name}`}
                 onClick={() => {
-                  trackEvent('click_promotion_activities', {
+                  trackEvent('pd_click_promotion_activities', {
                     promotion: name,
                   });
                 }}

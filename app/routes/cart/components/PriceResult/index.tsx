@@ -213,7 +213,7 @@ export default function PriceResult({
   };
 
   const handleApplyPromoCode = () => {
-    trackEvent('click_apply_promo_code', {
+    trackEvent('pd_click_apply_promo_code', {
       code: promoCode,
     });
 
@@ -232,7 +232,7 @@ export default function PriceResult({
       return;
     }
 
-    trackEvent('click_continue_checkout');
+    trackEvent('pd_click_continue_checkout');
     onCheckout?.();
   };
 
@@ -243,7 +243,7 @@ export default function PriceResult({
       return;
     }
 
-    trackEvent('click_continue_shopping');
+    trackEvent('pd_click_continue_shopping');
   };
 
   return (

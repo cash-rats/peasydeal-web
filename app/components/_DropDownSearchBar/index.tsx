@@ -156,7 +156,7 @@ function DropDownSearchBar({
     // we need to do some operation to fetch more results. Only perform search when use finish typing.
     timerRef.current = setTimeout(async () => {
       try {
-        trackEvent('search_auto_complete', {
+        trackEvent('pd_search_auto_complete', {
           query: evt.target.value,
           layout: 'full',
         });
@@ -178,7 +178,7 @@ function DropDownSearchBar({
   }
 
   const handleViewAllResults = (evt: MouseEvent<HTMLDivElement>) => {
-    trackEvent('click_search_view_all_result');
+    trackEvent('pd_click_search_view_all_result');
 
     setShowDropdown(false);
     onSearch(searchContent, evt);

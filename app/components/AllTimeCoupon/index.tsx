@@ -17,7 +17,7 @@ const AllTimeCoupon = ({ isFullLayout = false}: { isFullLayout?: boolean }) => {
       <Link
         to="/collection/electronics"
         onClick={() => {
-          trackEvent('click_all_time_coupon', {
+          trackEvent('pd_click_all_time_coupon', {
             coupon: 'ELEC15',
           });
         }}

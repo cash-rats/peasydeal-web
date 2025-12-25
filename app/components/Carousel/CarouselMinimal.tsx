@@ -148,7 +148,7 @@ const Carousel: FC<CarouselProps> = ({
             const gaSessionID = getSessionIDFromSessionStore()
 
             if (gaSessionID) {
-              trackEvent('click_product_light_box', {
+              trackEvent('pd_click_product_light_box', {
                 session: gaSessionID,
               });
             }

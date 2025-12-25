@@ -32,7 +32,7 @@ export function ProductHits({
               to={`/search?query=${encodeURIComponent(item.title)}`}
               key={item.objectID}
               onClick={() => {
-                trackEvent('search_action_product_hit', {
+                trackEvent('pd_search_action_product_hit', {
                   query: item.title,
                 });
               }}

@@ -33,7 +33,7 @@ export function RecentSearchHits({ items, autocomplete }: RecentSearchHitsParams
               to={`/search?query=${encodeURIComponent(item.label)}`}
               key={index}
               onClick={() => {
-                trackEvent('search_action_recent_search_hit', {
+                trackEvent('pd_search_action_recent_search_hit', {
                   query: item.label,
                 });
               }}

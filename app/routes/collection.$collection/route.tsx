@@ -272,7 +272,7 @@ function Collection() {
               color-slate-800
             "
                 onClick={() => {
-                  trackEvent('click_open_category_halfsheet', {
+                  trackEvent('pd_click_open_category_halfsheet', {
                     category: stateCategory?.name,
                   });
                 }}
@@ -300,7 +300,7 @@ function Collection() {
                     <Link
                       to={`/collection/${subcat.name}`}
                       onClick={() => {
-                        trackEvent('click_sub_category', {
+                        trackEvent('pd_click_sub_category', {
                           category: subcat.name,
                           layout: 'mobile',
                         });
@@ -343,7 +343,7 @@ function Collection() {
                     <Link
                       to={`/collection/${subcat.name}`}
                       onClick={() => {
-                        trackEvent('click_sub_category', {
+                        trackEvent('pd_click_sub_category', {
                           category: subcat.name,
                           layout: 'desktop',
                         });

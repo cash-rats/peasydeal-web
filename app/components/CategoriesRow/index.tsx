@@ -136,7 +136,7 @@ const CategoriesRow = ({ categories = [] }: CategoriesRowParams) => {
                         }/${category.name}`
                       }
                       onClick={() => {
-                        trackEvent('click_shop_by_category', {
+                        trackEvent('pd_click_shop_by_category', {
                           category: category.name,
                         });
                       }}

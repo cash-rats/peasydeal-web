@@ -109,7 +109,7 @@ const PromoCarousell = () => {
           key={campaign.id}
           to={campaign.href}
           onClick={() =>
-            trackEvent('click_event_carousell', {
+            trackEvent('pd_click_event_carousell', {
               event: campaign.eventName,
             })
           }

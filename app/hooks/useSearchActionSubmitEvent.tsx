@@ -14,7 +14,7 @@ export function useSearchActionSubmitEvent({
 }: UseSearchActionSubmitEventParams) {
   useEffect(() => {
     const submitListener = () => {
-      trackEvent('search_action_click', {
+      trackEvent('pd_search_action_click', {
         query,
       });
     };
@@ -26,4 +26,3 @@ export function useSearchActionSubmitEvent({
     };
   }, [formRef, query]);
 }
-

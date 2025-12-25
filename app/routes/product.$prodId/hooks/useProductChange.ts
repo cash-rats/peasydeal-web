@@ -33,7 +33,7 @@ export function useProductChange({ product, dispatch }: UseProductChangeProps) {
 
     const gaSessionID = getSessionIDFromSessionStore();
 
-    trackEvent('view_product_detail', {
+    trackEvent('pd_view_product_detail', {
       session: gaSessionID,
       product: `${product.title}_${product.uuid}`,
     });

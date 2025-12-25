@@ -40,7 +40,7 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
       setCart(nextCart);
 
       const gaSessionID = getSessionIDFromSessionStore();
-      trackEvent('click_add_to_cart', {
+      trackEvent('pd_click_add_to_cart', {
         session: gaSessionID,
         product: item.productUUID,
       });
