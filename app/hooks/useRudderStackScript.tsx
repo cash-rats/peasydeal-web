@@ -32,7 +32,7 @@ const useRudderStackScript = ({ enabled, writeKey, dataplaneUrl }: Params) => {
         .querySelectorAll('script[data-loader="RS_JS_SDK"]')
         .forEach((s) => s.parentNode?.removeChild(s));
     };
-  }, [enabled, writeKey, dataplaneUrl]);
+  }, []);
 };
 
 export default useRudderStackScript;

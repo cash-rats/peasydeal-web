@@ -111,16 +111,18 @@ function Document({ children }: DocumentProps) {
   const { env: envData, gaSessionID } = useLoaderData() || {};
   const isRudderEnabled = Boolean(
     envData?.VERCEL_ENV === 'production' &&
-      envData?.RUDDERSTACK_WRITE_KEY &&
-      envData?.RUDDERSTACK_DATAPLANE_URL,
+    envData?.RUDDERSTACK_WRITE_KEY &&
+    envData?.RUDDERSTACK_DATAPLANE_URL,
   );
 
   useEffect(() => {
     storeSessionIDToSessionStore(gaSessionID);
   }, [gaSessionID]);
 
+  console.log('~~ 1', envData?.RUDDERSTACK_WRITE_KEY, envData?.RUDDERSTACK_DATAPLANE_URL);
+
   useRudderStackScript({
-    enabled: isRudderEnabled,
+    enabled: true,
     writeKey: envData?.RUDDERSTACK_WRITE_KEY,
     dataplaneUrl: envData?.RUDDERSTACK_DATAPLANE_URL,
   });
