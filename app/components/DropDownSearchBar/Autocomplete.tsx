@@ -10,7 +10,7 @@ import {
   RecentSearchHits,
 } from '~/components/Algolia';
 import { useCreateAutocomplete } from '~/components/Algolia/hooks';
-import { useSearchActionSubmitEvent } from '~/hooks/rudderStack';
+import { useSearchActionSubmitEvent } from '~/hooks/useSearchActionSubmitEvent';
 
 function Autocomplete(props: Partial<AutocompleteOptions<AlgoliaIndexItem>>) {
   const {

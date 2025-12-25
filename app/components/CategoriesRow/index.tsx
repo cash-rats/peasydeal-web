@@ -23,6 +23,7 @@ import imgSport from './images/sport.png';
 import imgToy from './images/toy.png';
 
 import type { Category } from '~/shared/types';
+import { trackEvent } from '~/lib/gtm';
 
 const imageMapper = (name: string) => {
   switch (name) {
@@ -135,7 +136,7 @@ const CategoriesRow = ({ categories = [] }: CategoriesRowParams) => {
                         }/${category.name}`
                       }
                       onClick={() => {
-                        window.rudderanalytics?.track('click_shop_by_category', {
+                        trackEvent('click_shop_by_category', {
                           category: category.name,
                         });
                       }}

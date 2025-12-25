@@ -1,24 +1,29 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
 
-type IUseSearchActionClick = {
+import { trackEvent } from '~/lib/gtm';
+
+type UseSearchActionSubmitEventParams = {
   formRef: RefObject<HTMLFormElement>;
   query: string;
 };
 
-export const useSearchActionSubmitEvent = ({ formRef, query }: IUseSearchActionClick) => {
+export function useSearchActionSubmitEvent({
+  formRef,
+  query,
+}: UseSearchActionSubmitEventParams) {
   useEffect(() => {
     const submitListener = () => {
-      window.rudderanalytics?.track('search_action_click', {
+      trackEvent('search_action_click', {
         query,
       });
-    }
+    };
 
     formRef.current?.addEventListener('submit', submitListener);
 
     return () => {
       formRef.current?.removeEventListener('submit', submitListener);
-    }
-
+    };
   }, [formRef, query]);
-};
+}
+

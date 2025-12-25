@@ -40,6 +40,7 @@ import structuredData from './structured_data';
 import { Button } from '~/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '~/components/ui/sheet';
 import { FiChevronRight } from 'react-icons/fi';
+import { trackEvent } from '~/lib/gtm';
 
 export const handle = { structuredData };
 
@@ -271,7 +272,7 @@ function Collection() {
               color-slate-800
             "
                 onClick={() => {
-                  window.rudderanalytics?.track('click_open_category_halfsheet', {
+                  trackEvent('click_open_category_halfsheet', {
                     category: stateCategory?.name,
                   });
                 }}
@@ -299,7 +300,7 @@ function Collection() {
                     <Link
                       to={`/collection/${subcat.name}`}
                       onClick={() => {
-                        window.rudderanalytics?.track('click_sub_category', {
+                        trackEvent('click_sub_category', {
                           category: subcat.name,
                           layout: 'mobile',
                         });
@@ -342,7 +343,7 @@ function Collection() {
                     <Link
                       to={`/collection/${subcat.name}`}
                       onClick={() => {
-                        window.rudderanalytics?.track('click_sub_category', {
+                        trackEvent('click_sub_category', {
                           category: subcat.name,
                           layout: 'desktop',
                         });

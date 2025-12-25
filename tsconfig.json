@@ -1,5 +1,14 @@
 {
-  "exclude": ["./cypress", "./cypress.config.ts"],
+  "exclude": [
+    "./cypress",
+    "./cypress.config.ts",
+    "./routes.bk",
+    "./__index",
+    "./_index.disabled",
+    "./docs",
+    "./playground",
+    "./vitest.config.ts"
+  ],
   "include": [
     "**/*.ts",
     "**/*.tsx",

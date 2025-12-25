@@ -4,6 +4,7 @@ import { BsBox } from 'react-icons/bs';
 import { Link } from 'react-router';
 
 import type { CategoryRecord } from '~/components/Algolia/types';
+import { trackEvent } from '~/lib/gtm';
 
 import { Highlight } from './Highlight';
 
@@ -91,7 +92,7 @@ export function CategoryHits({
                 key={index}
                 to={getCategoryUrl(catInfo)}
                 onClick={() => {
-                  window.rudderanalytics?.track('search_action_category_hit', {
+                  trackEvent('search_action_category_hit', {
                     query: catInfo,
                   });
                 }}

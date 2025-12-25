@@ -5,6 +5,7 @@ import { VscArrowRight } from "react-icons/vsc";
 import type { TCategoryPreview } from "~/shared/types";
 import { ProductRow } from "~/components/ProductRow";
 import { Button } from '~/components/ui/button';
+import { trackEvent } from '~/lib/gtm';
 
 type ICategoryPreview = {
   category: TCategoryPreview;
@@ -42,7 +43,7 @@ export const CategoryPreview = ({
             size='lg'
             className='text-teal-600 hover:text-teal-700 px-2 font-medium'
             onClick={() => {
-              window.rudderanalytics?.track(`click_preview_top_see_all`, {
+              trackEvent('click_preview_top_see_all', {
                 category: name,
               });
             }}
@@ -78,7 +79,7 @@ export const CategoryPreview = ({
           size='lg'
           className='border-pink-400 text-pink-600 hover:bg-pink-50'
           onClick={() => {
-            window.rudderanalytics?.track(`click_preview_bottom_see_all`, {
+            trackEvent('click_preview_bottom_see_all', {
               category: name,
             });
           }}

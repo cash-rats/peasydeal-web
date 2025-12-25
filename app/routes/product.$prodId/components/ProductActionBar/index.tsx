@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import type { ShoppingCartItem } from '~/sessions/types';
 import { Button } from '~/components/ui/button';
 import { useCartContext } from '~/routes/hooks';
+import { trackEvent } from '~/lib/gtm';
 
 interface ProductActionBarProps {
   onClickAddToCart?: () => void;
@@ -30,7 +31,7 @@ const ProductActionBar = forwardRef<HTMLDivElement, ProductActionBarProps>(({
       [item.variationUUID]: item,
     });
 
-    window.rudderanalytics?.track('click_buy_now');
+    trackEvent('click_buy_now');
     navigate('/cart');
   }, [cart, navigate, sessionStorableCartItem, setCart]);
 

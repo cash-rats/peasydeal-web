@@ -15,6 +15,7 @@ import { OptimizedImage as Image } from '~/components/OptimizedImage';
 import { useSwipe } from '~/hooks/useSwipe';
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
+import { trackEvent } from '~/lib/gtm';
 import { envs } from '~/utils/env';
 export interface CarouselMinimalImage {
   title: string;
@@ -147,11 +148,9 @@ const Carousel: FC<CarouselProps> = ({
             const gaSessionID = getSessionIDFromSessionStore()
 
             if (gaSessionID) {
-              window.
-                rudderanalytics?.
-                track('click_product_light_box', {
-                  session: gaSessionID,
-                });
+              trackEvent('click_product_light_box', {
+                session: gaSessionID,
+              });
             }
           },
         }}

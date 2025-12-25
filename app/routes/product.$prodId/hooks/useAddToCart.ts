@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import type { ShoppingCart, ShoppingCartItem } from '~/sessions/types';
 import { useCartContext } from '~/routes/hooks';
+import { trackEvent } from '~/lib/gtm';
 
 import { tryPickUserSelectedVariationImage } from '../utils';
 import type { ProductImg } from '../types';
@@ -39,7 +40,7 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
       setCart(nextCart);
 
       const gaSessionID = getSessionIDFromSessionStore();
-      window.rudderanalytics?.track('click_add_to_cart', {
+      trackEvent('click_add_to_cart', {
         session: gaSessionID,
         product: item.productUUID,
       });

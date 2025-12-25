@@ -5,6 +5,7 @@ import type { AutocompleteApi, InternalAutocompleteSource } from '@algolia/autoc
 
 import type { RecentSearchHit } from './types';
 import { Highlight } from './Highlight';
+import { trackEvent } from '~/lib/gtm';
 
 interface RecentSearchHitsParams {
   items: RecentSearchHit[];
@@ -32,7 +33,7 @@ export function RecentSearchHits({ items, autocomplete }: RecentSearchHitsParams
               to={`/search?query=${encodeURIComponent(item.label)}`}
               key={index}
               onClick={() => {
-                window.rudderanalytics?.track('search_action_recent_search_hit', {
+                trackEvent('search_action_recent_search_hit', {
                   query: item.label,
                 });
               }}

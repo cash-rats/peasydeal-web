@@ -2,6 +2,7 @@ import { Link } from 'react-router';
 import type { LinksFunction } from 'react-router';
 
 import styles from './styles/allTimeCoupon.css?url';
+import { trackEvent } from '~/lib/gtm';
 
 export const links: LinksFunction = () => {
   return [
@@ -16,7 +17,7 @@ const AllTimeCoupon = ({ isFullLayout = false}: { isFullLayout?: boolean }) => {
       <Link
         to="/collection/electronics"
         onClick={() => {
-          window.rudderanalytics?.track('click_all_time_coupon', {
+          trackEvent('click_all_time_coupon', {
             coupon: 'ELEC15',
           });
         }}

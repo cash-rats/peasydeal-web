@@ -38,7 +38,6 @@ const envSchema = z.object({
 
   // Google Services
   GOOGLE_TAG_ID: z.string().optional(),
-  GOOGLE_ANALYTICS_ID: z.string().optional(),
 
   // Mapbox
   MAPBOX_BOX_ACCESS_TOKEN: z.string().default(''),
@@ -48,9 +47,6 @@ const envSchema = z.object({
   CONTENTFUL_ACCESS_TOKEN: z.string().optional(),
 
   // Analytics
-  RUDDER_STACK_KEY: z.string().default(''),
-  RUDDER_STACK_URL: z.string().default(''),
-
   // Algolia Search
   ALGOLIA_APP_ID: z.string().default(''),
   ALGOLIA_APP_WRITE_KEY: z.string().default(''),

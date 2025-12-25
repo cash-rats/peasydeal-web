@@ -24,7 +24,6 @@ import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.ser
 import { CartProvider } from '~/routes/hooks';
 import type { Category } from '~/shared/types';
 
-import useRudderStackScript from './hooks/useRudderStackScript';
 import useGTMScript from './hooks/useGTMScript';
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
@@ -119,12 +118,6 @@ function Document({ children }: DocumentProps) {
     googleTagID: envData?.GOOGLE_TAG_ID,
   });
 
-  useRudderStackScript({
-    env: envData?.NODE_ENV,
-    rudderStackKey: envData?.RUDDER_STACK_KEY,
-    rudderStackUrl: envData?.RUDDER_STACK_URL,
-  });
-
   return (
     <html lang="en">
       <head suppressHydrationWarning>
@@ -133,27 +126,6 @@ function Document({ children }: DocumentProps) {
         <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
         <meta name="google-site-verification" content="y_IC62RND-gmcbw_K_Hr9uw_8UHGnO9XIyO_fG2q09E" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {envData?.VERCEL_ENV === 'production' &&
-          envData?.NODE_ENV !== 'development' &&
-          envData?.GOOGLE_ANALYTICS_ID ? (
-          <>
-            <script
-              async
-              src={`https://www.googletagmanager.com/gtag/js?id=${envData.GOOGLE_ANALYTICS_ID}`}
-            />
-            <script
-              dangerouslySetInnerHTML={{
-                __html: `
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  window.gtag = gtag;
-                  gtag('js', new Date());
-                  gtag('config', '${envData.GOOGLE_ANALYTICS_ID}', { send_page_view: false });
-                `,
-              }}
-            />
-          </>
-        ) : null}
       </head>
       <body>
         <noscript>

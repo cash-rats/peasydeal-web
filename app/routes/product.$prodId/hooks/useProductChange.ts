@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
+import { trackEvent } from '~/lib/gtm';
 import { changeProduct, updateProductImages } from '../reducer';
 import type { ProductDetail } from '../types';
 
@@ -32,12 +33,9 @@ export function useProductChange({ product, dispatch }: UseProductChangeProps) {
 
     const gaSessionID = getSessionIDFromSessionStore();
 
-    window
-      .rudderanalytics
-      ?.track('view_product_detail', {
-        session: gaSessionID,
-      product: `${product.title}_${product.uuid}`
+    trackEvent('view_product_detail', {
+      session: gaSessionID,
+      product: `${product.title}_${product.uuid}`,
     });
   }, [product.uuid]);
 }
-

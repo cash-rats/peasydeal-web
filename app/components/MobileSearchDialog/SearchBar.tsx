@@ -9,7 +9,7 @@ import type { AutocompleteApi } from '@algolia/autocomplete-core'
 import { MdClear as ClearIcon } from 'react-icons/md';
 import { BiSearch as SearchIcon } from 'react-icons/bi';
 
-import { useSearchActionSubmitEvent } from '~/hooks/rudderStack';
+import { useSearchActionSubmitEvent } from '~/hooks/useSearchActionSubmitEvent';
 import type { AutocompleteItem } from '~/components/Algolia/types';
 
 /*

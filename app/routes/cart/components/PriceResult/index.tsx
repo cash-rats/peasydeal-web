@@ -12,6 +12,7 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { cn } from '~/lib/utils';
 import { round10 } from '~/utils/preciseRound';
+import { trackEvent } from '~/lib/gtm';
 
 import ResultRow from './components/ResultRow';
 import type { PriceInfo } from '../../types';
@@ -212,7 +213,7 @@ export default function PriceResult({
   };
 
   const handleApplyPromoCode = () => {
-    window.rudderanalytics?.track('click_apply_promo_code', {
+    trackEvent('click_apply_promo_code', {
       code: promoCode,
     });
 
@@ -231,7 +232,7 @@ export default function PriceResult({
       return;
     }
 
-    window.rudderanalytics?.track('click_continue_checkout');
+    trackEvent('click_continue_checkout');
     onCheckout?.();
   };
 
@@ -242,7 +243,7 @@ export default function PriceResult({
       return;
     }
 
-    window.rudderanalytics?.track('click_continue_shopping');
+    trackEvent('click_continue_shopping');
   };
 
   return (

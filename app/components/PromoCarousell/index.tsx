@@ -6,6 +6,7 @@ import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useSwipe } from '~/hooks/useSwipe';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
+import { trackEvent } from '~/lib/gtm';
 
 import styles from './styles/promoCarousell.css?url';
 import shoes from './images/light-up-shoes.png';
@@ -108,7 +109,7 @@ const PromoCarousell = () => {
           key={campaign.id}
           to={campaign.href}
           onClick={() =>
-            window.rudderanalytics?.track('click_event_carousell', {
+            trackEvent('click_event_carousell', {
               event: campaign.eventName,
             })
           }

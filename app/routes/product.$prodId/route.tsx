@@ -19,6 +19,7 @@ import { getCanonicalDomain } from '~/utils/seo';
 import { decomposeProductDetailURL, composeProductDetailURL } from '~/utils';
 import { composErrorResponse } from '~/utils/error';
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
+import { trackEvent } from '~/lib/gtm';
 
 import Breadcrumbs, { links as BreadCrumbLinks } from './components/Breadcrumbs';
 import type { LoaderTypeProductDetail, OptionType } from './types';
@@ -135,7 +136,7 @@ function ProductDetailPage() {
   trackWindowScrollTo(recmmendedProdsRef, () => {
     const gaSessionID = getSessionIDFromSessionStore();
     if (gaSessionID) {
-      window.rudderanalytics?.track('prod_page_scroll_to_recommends', {
+      trackEvent('prod_page_scroll_to_recommends', {
         session: gaSessionID,
       })
     }
@@ -198,12 +199,10 @@ function ProductDetailPage() {
     const gaSessionID = getSessionIDFromSessionStore();
 
     if (gaSessionID) {
-      window
-        .rudderanalytics
-        ?.track('select_recommend_prod_page', {
-          session: gaSessionID,
-          product: `${title}_${productUUID}`,
-        });
+      trackEvent('select_recommend_prod_page', {
+        session: gaSessionID,
+        product: `${title}_${productUUID}`,
+      });
     }
   }
 

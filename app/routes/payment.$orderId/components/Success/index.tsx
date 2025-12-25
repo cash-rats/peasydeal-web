@@ -8,6 +8,7 @@ import ProductSummary from './components/ProductSummary';
 import OrderInformation from './components/OrderInformation';
 import type { SuccessOrderDetail } from '~/routes/payment/types';
 import LoadingSkeleton from '../LoadingSkeleton';
+import { trackEvent } from '~/lib/gtm';
 
 /*
   Load order information by stripe `client_secret` and it's relative items.
@@ -33,7 +34,7 @@ function Success({ orderId, paymentMethod }: { orderId: string, paymentMethod: s
 
       // Track conversion event
       if (typeof document === 'undefined') return;
-      window.rudderanalytics?.track(`purchase`, {
+      trackEvent('purchase', {
         payment_method: paymentMethod,
         transaction_id: orderId,
         value: orderFetcher.data?.total,

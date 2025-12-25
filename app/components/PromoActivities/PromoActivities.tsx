@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import type { TPromotionType } from '~/shared/types';
+import { trackEvent } from '~/lib/gtm';
 
 import { VscChevronRight } from "react-icons/vsc";
 
@@ -64,7 +65,7 @@ export default function PromoActivities({ promotions = [] }: IPromoActivities) {
               <Link
                 to={`/promotion/${name}`}
                 onClick={() => {
-                  window.rudderanalytics?.track('click_promotion_activities', {
+                  trackEvent('click_promotion_activities', {
                     promotion: name,
                   });
                 }}

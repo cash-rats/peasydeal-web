@@ -4,6 +4,7 @@ import { RiTruckLine, RiSearchLine } from 'react-icons/ri';
 import { IoPricetagsOutline } from "react-icons/io5"
 
 import RedDot from '~/components/RedDot';
+import { trackEvent } from '~/lib/gtm';
 
 interface NavBarProps {
   /*
@@ -27,7 +28,7 @@ function NavBar({ cartItemCount = 0, toggleOpenMobileSearchBar = () => { } }: Na
           className="flex min-w-[53px] md:min-w-[73x] basis-1/3"
           to="/promotion/super_deal"
           onClick={() => {
-            window.rudderanalytics?.track('click_navbar_super_deal');
+            trackEvent('click_navbar_super_deal');
           }}
         >
           <li className='flex flex-col items-center'>
@@ -49,7 +50,7 @@ function NavBar({ cartItemCount = 0, toggleOpenMobileSearchBar = () => { } }: Na
           to="/cart"
           className='min-w-[53px] md:min-w-[73x] basis-1/3'
           onClick={() => {
-            window.rudderanalytics?.track('click_navbar_cart');
+            trackEvent('click_navbar_cart');
           }}
         >
           <li className="flex justify-center items-center relative transition-all ease-linear">
@@ -96,7 +97,7 @@ function NavBar({ cartItemCount = 0, toggleOpenMobileSearchBar = () => { } }: Na
           className="min-w-[53px] md:min-w-[73x] basis-1/3 hidden md:flex"
           to="/tracking"
           onClick={() => {
-            window.rudderanalytics?.track('click_navbar_track_order');
+            trackEvent('click_navbar_track_order');
           }}
         >
           <li className='flex flex-col items-center '>

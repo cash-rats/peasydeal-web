@@ -4,6 +4,7 @@ import { IoIosReturnLeft as Return } from 'react-icons/io'
 import { Link } from 'react-router';
 
 import type { AlgoliaIndexItem } from '~/components/Algolia/types';
+import { trackEvent } from '~/lib/gtm';
 
 import HitThumbnail from './components/HitThumbnail';
 import { Highlight } from './Highlight';
@@ -31,7 +32,7 @@ export function ProductHits({
               to={`/search?query=${encodeURIComponent(item.title)}`}
               key={item.objectID}
               onClick={() => {
-                window.rudderanalytics?.track('search_action_product_hit', {
+                trackEvent('search_action_product_hit', {
                   query: item.title,
                 });
               }}

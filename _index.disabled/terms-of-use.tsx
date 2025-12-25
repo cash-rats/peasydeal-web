@@ -35,7 +35,7 @@ export const meta: MetaFunction = ({ data }: { data: TContentfulPost }) => {
     })
 };
 
-export const loader = async (: LoaderFunctionArgs) => {
+export const loader = async (_args: LoaderFunctionArgs) => {
   try {
     const entryId = "5DsLbnFtdnoasflHy3ZU60";
     const res = await fetchContentfulPostWithId({ entryId });
