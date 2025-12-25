@@ -24,7 +24,8 @@ import { fetchCategoriesWithSplitAndHotDealInPlaced } from '~/api/categories.ser
 import { CartProvider } from '~/routes/hooks';
 import type { Category } from '~/shared/types';
 
-import useGTMScript from './hooks/useGTMScript';
+import useRudderStackScript from './hooks/useRudderStackScript';
+import useRudderStackPageTracking from './hooks/useRudderStackPageTracking';
 import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
@@ -108,15 +109,23 @@ interface DocumentProps {
 
 function Document({ children }: DocumentProps) {
   const { env: envData, gaSessionID } = useLoaderData() || {};
+  const isRudderEnabled = Boolean(
+    envData?.VERCEL_ENV === 'production' &&
+      envData?.RUDDERSTACK_WRITE_KEY &&
+      envData?.RUDDERSTACK_DATAPLANE_URL,
+  );
 
   useEffect(() => {
     storeSessionIDToSessionStore(gaSessionID);
   }, [gaSessionID]);
 
-  useGTMScript({
-    env: envData?.NODE_ENV,
-    googleTagID: envData?.GOOGLE_TAG_ID,
+  useRudderStackScript({
+    enabled: isRudderEnabled,
+    writeKey: envData?.RUDDERSTACK_WRITE_KEY,
+    dataplaneUrl: envData?.RUDDERSTACK_DATAPLANE_URL,
   });
+
+  useRudderStackPageTracking({ enabled: isRudderEnabled });
 
   return (
     <html lang="en">
@@ -128,18 +137,6 @@ function Document({ children }: DocumentProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
-        <noscript>
-          {envData && envData.GOOGLE_TAG_ID ? (
-            <iframe
-              title="Google Tag Manager"
-              src={`https://www.googletagmanager.com/ns.html?id=${env.GOOGLE_TAG_ID}`}
-              height="0"
-              width="0"
-              style={{ display: 'none', visibility: 'hidden' }}
-            />
-          ) : null}
-        </noscript>
-
         <script
           dangerouslySetInnerHTML={{
             __html: `

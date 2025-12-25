@@ -47,6 +47,10 @@ const envSchema = z.object({
   CONTENTFUL_ACCESS_TOKEN: z.string().optional(),
 
   // Analytics
+  // RudderStack
+  RUDDERSTACK_WRITE_KEY: z.string().optional(),
+  RUDDERSTACK_DATAPLANE_URL: z.string().optional(),
+
   // Algolia Search
   ALGOLIA_APP_ID: z.string().default(''),
   ALGOLIA_APP_WRITE_KEY: z.string().default(''),
