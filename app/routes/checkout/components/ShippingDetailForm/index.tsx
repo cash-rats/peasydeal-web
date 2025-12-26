@@ -77,7 +77,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
       fetchWhenIdleRef.current = false;
       lastRequestedPostalRef.current = pendingPostal;
       fetchOptions(pendingPostal);
-    }, 800);
+    }, 500);
 
     return () => {
       if (debounceTimerRef.current) {
