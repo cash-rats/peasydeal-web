@@ -1,3 +1,5 @@
+// @Deprecated was being used in VPS setup
+
 require('dotenv').config();
 
 const shareConfigs = () => ({
