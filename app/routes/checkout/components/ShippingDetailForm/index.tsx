@@ -6,6 +6,7 @@ import TextDropdownField from '~/components/TextDropdownField';
 import type { Option as DropdownOption } from '~/components/TextDropdownField';
 
 import { Button } from '~/components/ui/button';
+import { Alert, AlertDescription } from '~/components/ui/alert';
 import {
   Tooltip,
   TooltipContent,
@@ -38,6 +39,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
   const lastRequestedPostalRef = useRef<string>('');
   const pendingPostalRef = useRef<string>('');
   const fetchWhenIdleRef = useRef<boolean>(false);
+  const suppressNextAutoLookupRef = useRef<boolean>(false);
   const debounceTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -46,6 +48,17 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
 
   useEffect(() => {
     const normalized = (values.postal ?? '').trim().replace(/\s+/g, ' ');
+
+    if (suppressNextAutoLookupRef.current) {
+      suppressNextAutoLookupRef.current = false;
+      fetchWhenIdleRef.current = false;
+      pendingPostalRef.current = normalized;
+      if (debounceTimerRef.current) {
+        window.clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      return;
+    }
 
     if (normalized.length < 3) {
       pendingPostalRef.current = '';
@@ -109,6 +122,7 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
   }
 
   const handleSelectOption = (option: DropdownOption<Option>) => {
+    suppressNextAutoLookupRef.current = true;
     setPostal(option.value.postal);
     onSelectAddress({ ...option.value });
   };
@@ -174,15 +188,20 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
                 }
               </Button>
             </div>
-            {
-              !isLoading &&
-              hasNoResults && (
-                <p className="ml-4">
-                  No address found, please input address manually.
-                </p>
-              )
-            }
           </div>
+
+          {
+            !isLoading &&
+            hasNoResults && (
+              <Alert className="items-start gap-2">
+                <FiHelpCircle className="h-4 w-4 mt-[2px] text-emerald-700" />
+                <AlertDescription className="font-normal text-emerald-800">
+                  Address not found in the dropdown. Please complete the address
+                  manually below.
+                </AlertDescription>
+              </Alert>
+            )
+          }
         </div>
 
       </div>
