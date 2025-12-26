@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { useFetcher } from 'react-router';
 
 import type { AddressOption } from '~/routes/api.fetch-address-options-by-postal/types';
@@ -12,6 +12,11 @@ import {
 export function useAddressLookup() {
   const fetcher = useFetcher<AddressOption[]>();
   const [state, dispatch] = useReducer(addressOptionsReducer, inistialState);
+  const lastLookupPostalRef = useRef<string>('');
+
+  const normalizePostal = (postal?: string) => (
+    (postal ?? '').trim().replace(/\s+/g, ' ')
+  );
 
   useEffect(() => {
     if (fetcher.state !== 'idle') return;
@@ -34,6 +39,7 @@ export function useAddressLookup() {
     const nextPostal = postal ?? state.postal;
     if (!nextPostal) return;
 
+    lastLookupPostalRef.current = normalizePostal(nextPostal);
     fetcher.submit(
       { postal: nextPostal },
       {
@@ -46,7 +52,8 @@ export function useAddressLookup() {
   const hasNoResults = (
     fetcher.state === 'idle' &&
     Array.isArray(fetcher.data) &&
-    state.options.length === 0
+    fetcher.data.length === 0 &&
+    lastLookupPostalRef.current === normalizePostal(state.postal)
   );
 
   return {
