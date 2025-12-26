@@ -2,17 +2,28 @@ import httpStatus from 'http-status-codes';
 import { envs } from '~/utils/env';
 
 import { AddressOption } from './types';
+import { getSupabaseAdminClient } from '~/services/supabase.server';
 
 const transformDataToAddressOption = (data: any[]): AddressOption[] => {
   return data.map((item) => {
+    const getString = (...keys: string[]) => {
+      for (const key of keys) {
+        const value = item?.[key];
+        if (typeof value === 'string') return value;
+      }
+      return '';
+    };
+
+    const line3 = getString('line_3', 'line3');
+
     return {
-      line1: item.line_1,
-      line2: item.line_2,
-      line3: item.line_3,
-      city: item.city,
-      county: item.county,
-      country: item.country,
-      postal: (item.postcode ?? '').toUpperCase(),
+      line1: getString('line_1', 'line1'),
+      line2: getString('line_2', 'line2'),
+      line3: line3 || undefined,
+      city: getString('city'),
+      county: getString('county'),
+      country: getString('country'),
+      postal: getString('postcode', 'postal', 'postalcode', 'post_code').toUpperCase(),
     };
   });
 };
@@ -35,4 +46,18 @@ export const fetchAddressOptionsByPostal = async ({ postal }: { postal: string }
   }
 
   return transformDataToAddressOption(respJSON.data);
+};
+
+export const fetchAddressOptionsByPostalViaSupabase = async ({ postal }: { postal: string }): Promise<AddressOption[]> => {
+  const supabase = getSupabaseAdminClient();
+  const { data, error } = await supabase.rpc('search_uk_addresses_by_postcode', {
+    p_input: postal,
+    p_limit: 50,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return transformDataToAddressOption(Array.isArray(data) ? data : []);
 };

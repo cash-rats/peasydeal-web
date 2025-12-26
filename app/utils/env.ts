@@ -14,6 +14,10 @@ const envSchema = z.object({
   // API Endpoints
   PEASY_DEAL_ENDPOINT: z.string().default('https://stagingapi.peasydeal.com'),
 
+  // Supabase (server-only when using service role)
+  SUPABASE_URL: z.string().optional(),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().optional(),
+
   // CDN
   CDN_URL: z.string().default('https://cdn.peasydeal.com'),
 

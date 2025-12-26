@@ -20,7 +20,7 @@ type TextDropdownFieldProps<T> = {
 
   onChange?: (v: ChangeEvent<HTMLInputElement>) => void;
   onSelect?: (v: Option<T>) => void;
-} & Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'defaultValue'>;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'onSelect' | 'value' | 'defaultValue'>;
 
 // - [ ] enable dropdown when onfocus and options is not empty.
 export default function TextDropdownField<T>({

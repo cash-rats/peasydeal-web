@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import { useEffect, useRef, type ChangeEvent } from 'react';
 import { FiHelpCircle } from 'react-icons/fi';
 import MoonLoader from 'react-spinners/MoonLoader';
 
@@ -33,6 +33,72 @@ const ShippingDetailForm = ({ values, onSelectAddress = () => { } }: ShippingDet
     isLoading,
     hasNoResults,
   } = useAddressLookup();
+
+  const isLoadingRef = useRef<boolean>(false);
+  const lastRequestedPostalRef = useRef<string>('');
+  const pendingPostalRef = useRef<string>('');
+  const fetchWhenIdleRef = useRef<boolean>(false);
+  const debounceTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
+
+  useEffect(() => {
+    const normalized = (values.postal ?? '').trim().replace(/\s+/g, ' ');
+
+    if (normalized.length < 3) {
+      pendingPostalRef.current = '';
+      lastRequestedPostalRef.current = '';
+      fetchWhenIdleRef.current = false;
+      if (debounceTimerRef.current) {
+        window.clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      return;
+    }
+
+    pendingPostalRef.current = normalized;
+
+    if (debounceTimerRef.current) {
+      window.clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = window.setTimeout(() => {
+      const pendingPostal = pendingPostalRef.current;
+      if (!pendingPostal) return;
+      if (pendingPostal === lastRequestedPostalRef.current) return;
+
+      if (isLoadingRef.current) {
+        fetchWhenIdleRef.current = true;
+        return;
+      }
+
+      fetchWhenIdleRef.current = false;
+      lastRequestedPostalRef.current = pendingPostal;
+      fetchOptions(pendingPostal);
+    }, 800);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        window.clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+    };
+  }, [values.postal, fetchOptions]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!fetchWhenIdleRef.current) return;
+    const pendingPostal = pendingPostalRef.current;
+    if (!pendingPostal) return;
+    if (pendingPostal.length < 3) return;
+    if (pendingPostal === lastRequestedPostalRef.current) return;
+
+    fetchWhenIdleRef.current = false;
+    lastRequestedPostalRef.current = pendingPostal;
+    fetchOptions(pendingPostal);
+  }, [isLoading, fetchOptions]);
 
   // Deprecate this method in favor of lookup address button.
   const handleChangePostal = (evt: ChangeEvent<HTMLInputElement>) => {

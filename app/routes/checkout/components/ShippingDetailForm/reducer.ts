@@ -68,6 +68,8 @@ export const addressOptionsReducer = (state: StateShape, action: AddressOptionsA
       const payload = action.payload as string;
       return {
         ...state,
+        options: [],
+        selectedOption: null,
         postal: payload,
       };
     }
