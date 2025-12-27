@@ -2,25 +2,27 @@ import type { ReactNode } from 'react';
 import format from 'date-fns/format/index.js';
 import { round10 } from '~/utils/preciseRound';
 
-import { Separator } from '~/components/ui/separator';
+import { CreditCard } from 'lucide-react';
+
+import { Card, CardContent } from '~/components/ui/card';
 
 interface AmountRowProps {
-  title: ReactNode;
-  num: number;
+  title: string;
+  value: string;
+  valueClassName?: string;
 };
 
-function AmountRow({ title, num }: AmountRowProps) {
+function AmountRow({ title, value, valueClassName }: AmountRowProps) {
   return (
-    <div className="flex flex-row w-full">
-      <label className="text-left w-[69%] flex justify-start capitalize font-poppins">
+    <div className="flex items-center justify-between text-sm">
+      <div className="text-muted-foreground">
         {title}
-      </label>
-
-      <div className="w-[31%] flex justify-end font-medium">
-        ${num}
+      </div>
+      <div className={valueClassName ?? 'font-medium text-foreground'}>
+        {value}
       </div>
     </div>
-  )
+  );
 }
 
 interface OrderDetailProps {
@@ -30,6 +32,9 @@ interface OrderDetailProps {
   taxAmount: number;
   shippingFee: number;
   total: number;
+  paymentMethod?: string;
+  statusLabel?: string;
+  children?: ReactNode;
 }
 
 function OrderDetail({
@@ -39,66 +44,83 @@ function OrderDetail({
   shippingFee,
   taxAmount,
   total,
+  paymentMethod,
+  statusLabel = 'Confirmed',
+  children,
 }: OrderDetailProps) {
+  const vatIncludedSubtotal = round10(subtotal + taxAmount, -2).toFixed(2);
+  const shippingFeeAmount = round10(shippingFee, -2).toFixed(2);
+  const totalAmount = round10(total, -2).toFixed(2);
+  const resolvedPaymentMethod = paymentMethod?.trim() ? paymentMethod : 'Credit Card';
+
   return (
-    <div className="border-[1px] border-[#E6E6E6] bg-white mt-6 w-full p-3 flex flex-col">
-      <h1 className="font-bold font-poppins text-[1.2rem]">
-        Order details
-      </h1>
-
-      <div className="mt-4 flex flex-col gap-[5px]">
-        <div className="flex flex-row justify-between">
-          <div>
-            Order number:
-          </div>
-
-          <div className="font-medium">
-            {orderUuid}
-          </div>
-        </div>
-
-        <div className="flex flex-row justify-between">
-          <div>
-            Date
-          </div>
-          <div className="font-medium">
-            {format(date, 'MMM dd, yyyy')}
-          </div>
-        </div>
-
-        <div className="flex flex-row justify-between mb-3">
-          <div>
-            Payment method
-          </div>
-          <div className="font-medium">
-            Credit Card
-          </div>
-        </div>
-
-        <Separator className="bg-[#E6E6E6]" />
-
-        {/* Amount */}
-        <div className="flex flex-row mt-4">
-          <div className="w-[45%] 499:w-[60%]" />
-          <div className="flex flex-col w-1/2 gap-1 499:w-[40%]" >
-            <AmountRow
-              title='Subtotal (VAT Incl.)'
-              num={round10(subtotal + taxAmount, -2)}
-            />
-
-            <AmountRow
-              title='Shipping fee'
-              num={shippingFee}
-            />
-
-            <AmountRow
-              title='Total'
-              num={total}
-            />
-          </div>
-        </div>
+    <Card className="overflow-hidden shadow-sm">
+      <div className="flex items-center justify-between border-b bg-muted/40 px-6 py-4">
+        <h2 className="text-lg font-semibold text-foreground">
+          Order Details
+        </h2>
+        <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wide text-blue-700">
+          {statusLabel}
+        </span>
       </div>
-    </div>
+
+      <CardContent className="space-y-8 px-6 pb-0 pt-6">
+        <div className="grid grid-cols-1 gap-6 text-sm md:grid-cols-3">
+          <div>
+            <p className="text-muted-foreground">Order Number</p>
+            <p className="mt-1 font-mono font-medium text-foreground">
+              {orderUuid}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-muted-foreground">Date</p>
+            <p className="mt-1 font-medium text-foreground">
+              {format(date, 'MMM dd, yyyy')}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-muted-foreground">Payment Method</p>
+            <div className="mt-1 flex items-center gap-2 font-medium text-foreground">
+              <CreditCard className="h-4 w-4 text-muted-foreground" aria-hidden />
+              <span>{resolvedPaymentMethod}</span>
+            </div>
+          </div>
+        </div>
+
+        {children ? (
+          <div className="border-t pt-6">
+            {children}
+          </div>
+        ) : null}
+
+        <div className="-mx-6 overflow-hidden border-t bg-muted/30">
+          <div className="space-y-2 px-6 py-4 text-xs">
+            <AmountRow
+              title="Subtotal (VAT Incl.)"
+              value={`$${vatIncludedSubtotal}`}
+              valueClassName="font-medium text-foreground"
+            />
+
+            <AmountRow
+              title="Shipping Fee"
+              value={shippingFee === 0 ? 'Free' : `$${shippingFeeAmount}`}
+              valueClassName={
+                shippingFee === 0 ? 'font-medium text-emerald-600' : 'font-medium text-foreground'
+              }
+            />
+          </div>
+
+          <div className="flex items-center justify-between border-t px-6 py-4">
+            <div className="text-sm font-semibold text-foreground">Total</div>
+            <div className="text-base font-semibold text-foreground">
+              ${totalAmount}
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

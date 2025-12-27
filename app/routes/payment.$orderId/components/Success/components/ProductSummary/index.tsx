@@ -1,8 +1,7 @@
-import { Fragment } from 'react';
-
-import { Separator } from '~/components/ui/separator';
+import { Package } from 'lucide-react';
 
 import type { OrderItem } from '~/routes/payment/types';
+import { round10 } from '~/utils/preciseRound';
 
 interface ProductSummaryProps {
   products: OrderItem[];
@@ -10,40 +9,42 @@ interface ProductSummaryProps {
 
 function ProductSummary({ products = [] }: ProductSummaryProps) {
   return (
-    <div className="w-full mt-6">
-      <h1 className="font-semibold text-[1.4rem]">
-        Products Summary
-      </h1>
-      <div className="flex flex-col mt-3 font-medium">
-        {
-          products.map((product, idx) => {
-            return (
-              <Fragment key={product.product_variation_uuid}>
-                <div className="flex flex-row my-3 mx-0">
-                  <div className="flex-1 flex justify-start flex-col gap-[10px] font-poppins">
-                    <label>
-                      {product.order_quantity} X {product.title}
-                    </label>
-                    <p className="font-normal">
-                      {product.spec_name}
-                    </p>
-                  </div>
+    <div>
+      <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
+        Items in your order
+      </h3>
 
-                  <div className="flex-1 flex justify-end font-poppins">
-                    ${product.sale_price}
-                  </div>
+      <ul className="divide-y divide-border">
+        {products.map((product) => {
+          const subtitle = product.spec_name?.trim() || product.subtitle?.trim() || 'Default Title';
+
+          return (
+            <li key={product.product_variation_uuid} className="flex items-start gap-4 py-4">
+              <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted/40 text-muted-foreground">
+                <Package className="h-5 w-5" aria-hidden />
+              </div>
+
+              <div className="min-w-0 flex-1">
+                <div className="flex items-start justify-between gap-4 text-sm font-medium text-foreground">
+                  <h4 className="truncate">
+                    {product.title}
+                  </h4>
+                  <p className="shrink-0">
+                    ${round10(product.sale_price, -2).toFixed(2)}
+                  </p>
                 </div>
-                {
-                  // Don't display `Divider` when it reaches the last product element.
-                  products.length - 1 !== idx && (<Separator className="bg-[#E6E6E6]" />)
-                }
 
-              </Fragment>
-            );
-          })
-        }
-
-      </div>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {subtitle}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Qty: {product.order_quantity}
+                </p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }

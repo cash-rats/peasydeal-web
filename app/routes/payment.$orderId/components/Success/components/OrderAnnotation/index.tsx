@@ -1,6 +1,5 @@
-import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-import { FaRegCheckCircle } from "react-icons/fa";
+import { Check, ShoppingBag, Truck } from 'lucide-react';
 
 import { Button } from '~/components/ui/button';
 
@@ -9,43 +8,38 @@ interface OrderAnnotationProps {
   orderUUID: string;
 }
 
-function Text({ children }: { children: ReactNode }) {
-  return (
-    <p className="mt-2 font-poppins text-center text-base text-[#7f7f7f]">
-      {children}
-    </p>
-  )
-}
-
 function OrderAnnotation({ email, orderUUID }: OrderAnnotationProps) {
   return (
-    <div className="flex flex-col pt-4">
-      <div className="flex justify-center">
-        <FaRegCheckCircle className="h-[120px] w-[120px] text-emerald-500" />
+    <div className="flex flex-col items-center pt-8 text-center">
+      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
+        <Check className="h-10 w-10 text-emerald-600" aria-hidden />
       </div>
 
-      <h1 className="text-center font-semibold text-3xl mt-4 font-poppins">
-        Your order has been placed
+      <h1 className="mt-6 text-3xl font-semibold">
+        Your order has been placed!
       </h1>
 
-      <Text>
-        An email of your order detail has been sent to <b>{email}</b>
-      </Text>
+      <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
+        Thank you for your purchase. An email confirmation has been sent to{' '}
+        <span className="font-medium text-foreground">{email}</span>.
+      </p>
 
-      <Text>
-        Please keep your order number. You can trace your package with the order number.
-      </Text>
-
-      <div className="flex justify-center gap-6 mt-6">
-        <Button className="bg-emerald-500 text-white hover:bg-emerald-600">
-          <Link to='/'>
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <Button
+          asChild
+          size="lg"
+          className="bg-emerald-600 text-white hover:bg-emerald-700"
+        >
+          <Link to="/">
+            <ShoppingBag aria-hidden />
             Continue Shopping
           </Link>
         </Button>
 
-        <Button className="bg-sky-500 text-white hover:bg-sky-600">
+        <Button asChild size="lg" variant="outline">
           <Link to={`/tracking?query=${orderUUID}`}>
-            Track you order
+            <Truck aria-hidden />
+            Track your order
           </Link>
         </Button>
       </div>
