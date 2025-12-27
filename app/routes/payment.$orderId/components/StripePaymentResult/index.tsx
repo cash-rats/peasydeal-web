@@ -6,6 +6,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { envs } from '~/utils/env'
 
 import PaymentResultLoader from './StripePaymentResultLoader';
+import LoadingSkeleton from '~/routes/payment.$orderId/components/LoadingSkeleton';
 
 interface StripePaymentResultProps {
   orderID: string;
@@ -36,21 +37,17 @@ export default function StripePaymentResult({ orderID, clientSecret }: StripePay
 
   return (
     <>
-      {
-        stripePromise && (
-          <Elements
-            stripe={stripePromise}
-            options={options}
-          >
-            {
-              <PaymentResultLoader
-                orderId={orderID}
-                clientSecret={clientSecret}
-              />
-            }
-          </Elements>
-        )
-      }
+      {stripePromise ? (
+        <Elements stripe={stripePromise} options={options}>
+          <PaymentResultLoader orderId={orderID} clientSecret={clientSecret} />
+        </Elements>
+      ) : (
+        <div className="w-full bg-gray-50 px-4 pb-14">
+          <div className="mx-auto flex max-w-5xl flex-col justify-center py-8">
+            <LoadingSkeleton />
+          </div>
+        </div>
+      )}
     </>
   )
 }

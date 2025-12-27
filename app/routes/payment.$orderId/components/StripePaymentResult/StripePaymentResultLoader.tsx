@@ -60,7 +60,11 @@ function PaymentResultLoader({ clientSecret, orderId }: PaymentResultLoaderProps
     }
 
     return (
-      <LoadingSkeleton />
+      <div className="w-full bg-gray-50 px-4 pb-14">
+        <div className="mx-auto flex max-w-5xl flex-col justify-center py-8">
+          <LoadingSkeleton />
+        </div>
+      </div>
     )
   }
 
