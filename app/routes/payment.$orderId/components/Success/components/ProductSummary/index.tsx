@@ -17,11 +17,22 @@ function ProductSummary({ products = [] }: ProductSummaryProps) {
       <ul className="divide-y divide-border">
         {products.map((product) => {
           const subtitle = product.spec_name?.trim() || product.subtitle?.trim() || 'Default Title';
+          const imageUrl = product.image_url?.trim();
 
           return (
             <li key={product.product_variation_uuid} className="flex items-start gap-4 py-4">
               <div className="flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted/40 text-muted-foreground">
-                <Package className="h-5 w-5" aria-hidden />
+                {imageUrl ? (
+                  <img
+                    alt={product.title}
+                    src={imageUrl}
+                    className="h-full w-full object-cover object-center"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <Package className="h-5 w-5" aria-hidden />
+                )}
               </div>
 
               <div className="min-w-0 flex-1">

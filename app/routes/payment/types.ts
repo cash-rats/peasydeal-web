@@ -5,6 +5,7 @@ export type OrderItem = {
   description: string;
   spec_name: string;
   product_variation_uuid: string;
+  image_url?: string;
   sale_price: number;
   retail_price: number;
 
