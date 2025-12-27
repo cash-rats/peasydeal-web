@@ -1,6 +1,6 @@
 import type { PaymentIntent } from '@stripe/stripe-js';
 import { Link } from 'react-router';
-import { TriangleAlert } from 'lucide-react';
+import { ShieldCheck, TriangleAlert } from 'lucide-react';
 
 import { Button } from '~/components/ui/button';
 
@@ -29,6 +29,22 @@ function Failed({ reason = defaultReason, solution = defaultSolution, paymentSta
           <p className="mt-3 max-w-2xl text-sm text-muted-foreground">
             {solution}
           </p>
+
+          <div className="mt-5 w-full max-w-md rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-3 text-left">
+            <div className="flex items-start gap-3">
+              <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-white/70 text-emerald-700">
+                <ShieldCheck className="h-4 w-4" aria-hidden />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-emerald-900">
+                  You are not charged.
+                </p>
+                <p className="mt-1 text-sm text-emerald-800/80">
+                  If you see a pending authorization, it should disappear automatically.
+                </p>
+              </div>
+            </div>
+          </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
             {paymentStatus === 'requires_payment_method' ? (
