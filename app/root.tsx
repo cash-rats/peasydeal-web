@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react'
-import type { LinksFunction, MetaFunction } from 'react-router';
+import type {
+  LinksFunction,
+  MetaFunction,
+  ShouldRevalidateFunctionArgs,
+} from 'react-router';
 import type { Route } from './+types/root';
 import {
   Links,
@@ -82,9 +86,12 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export type RootLoaderData = Awaited<ReturnType<typeof loader>>;
 
-export function shouldRevalidate({ formMethod }: { formMethod?: string }) {
-  if (formMethod && formMethod.toUpperCase() !== 'GET') return true;
-  return false;
+export function shouldRevalidate({
+  formAction,
+  defaultShouldRevalidate,
+}: ShouldRevalidateFunctionArgs) {
+  if (formAction?.startsWith('/api/')) return false;
+  return defaultShouldRevalidate;
 }
 
 export const meta: MetaFunction = () => {
