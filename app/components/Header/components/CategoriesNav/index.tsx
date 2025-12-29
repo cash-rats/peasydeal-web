@@ -3,7 +3,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type WheelEvent,
 } from "react";
 import {
   Link,
@@ -117,7 +116,7 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     el.scrollBy({ left: delta, behavior: 'smooth' });
   };
 
-  const handleWheelScroll = useCallback((event: WheelEvent<HTMLDivElement>) => {
+  const handleWheelScroll = useCallback((event: WheelEvent) => {
     const el = navScrollRef.current;
     if (!el) return;
 
@@ -130,7 +129,9 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
     const maxScrollLeft = el.scrollWidth - el.clientWidth;
     const canScroll = (primaryDelta < 0 && el.scrollLeft > 0) || (primaryDelta > 0 && el.scrollLeft < maxScrollLeft);
 
-    event.preventDefault();
+    if (event.cancelable) {
+      event.preventDefault();
+    }
     event.stopPropagation();
 
     if (!canScroll) return;
@@ -142,6 +143,18 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
       el.scrollBy({ left: delta, behavior: 'auto' });
     }
   }, []);
+
+  useEffect(() => {
+    const el = navScrollRef.current;
+    if (!el) return;
+
+    const wheelListener = (event: WheelEvent) => handleWheelScroll(event);
+    el.addEventListener('wheel', wheelListener, { passive: false });
+
+    return () => {
+      el.removeEventListener('wheel', wheelListener);
+    };
+  }, [handleWheelScroll]);
 
   const showMegaMenuPanel = !!activeMenuName;
   const activeRailCategory = activeRail
@@ -189,7 +202,6 @@ export default function CategoriesNav({ categories = [], topCategories = [] }: C
 
         <nav
           ref={navScrollRef}
-          onWheel={handleWheelScroll}
           className="flex-auto relative overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden overscroll-contain"
         >
           <ul id="mega-nav-bar" className={`
