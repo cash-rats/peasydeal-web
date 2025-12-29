@@ -38,6 +38,7 @@ const envSchema = z.object({
 
   // Payment - Stripe
   STRIPE_PUBLIC_KEY: z.string().optional(),
+  STRIPE_PRIVATE_KEY: z.string().default(''),
   STRIPE_CURRENCY_CODE: z.string().default('GBP'),
 
   // Google Services
