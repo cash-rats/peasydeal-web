@@ -75,8 +75,6 @@ function CheckoutForm({
 
   // const handlePaypalApproveOrder = async (data: OnApproveData, action: OnApproveActions) => paypalApproveOrder(data, action);
 
-  console.log('debug 2', selectedMethod);
-
   return (
     <>
       <h3 className="title mt-4">

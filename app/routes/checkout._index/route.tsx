@@ -9,9 +9,12 @@ import {
   type LoaderFunctionArgs,
   type LinksFunction,
   type ActionFunctionArgs,
+  useRouteError,
+  isRouteErrorResponse,
   redirect,
   useLoaderData,
 } from 'react-router';
+import httpStatus from 'http-status-codes';
 import { Alert } from '~/components/ui/alert';
 import { Spinner } from '~/components/ui/spinner';
 
@@ -43,6 +46,7 @@ import {
 import type { ActionPayload } from '~/routes/checkout/actions';
 import { getCheckoutSession } from '~/sessions/checkout.session.server';
 import { validatePhoneInput } from '~/routes/checkout/utils';
+import { tryCatch } from '~/utils/try-catch';
 
 const getPaymentIntentIdFromClientSecret = (clientSecret: string) => {
   if (!clientSecret) return '';
@@ -63,17 +67,23 @@ type LoaderType = {
 };
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  try {
-    const { data } = await getCheckoutSession(request);
+  const [checkoutSession, checkoutError] = await tryCatch(
+    getCheckoutSession(request),
+  );
 
-    if (!data || !data.cart || Object.keys(data.cart).length === 0) {
-      throw redirect('/cart');
-    }
-
-    return Response.json({ cart_items: data.cart });
-  } catch (error) {
-    return Response.json({ cart_items: {} });
+  if (checkoutError || !checkoutSession) {
+    throw new Response('Failed to load checkout cart', {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    });
   }
+
+  const { data } = checkoutSession;
+
+  if (!data || !data.cart || Object.keys(data.cart).length === 0) {
+    throw redirect('/cart');
+  }
+
+  return Response.json({ cart_items: data.cart });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -327,6 +337,41 @@ function CheckoutPage() {
           <Spinner className="h-8 w-8 text-slate-600" />
         </div>
       ) : null}
+    </div>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const isResponseError = isRouteErrorResponse(error);
+
+  return (
+    <div className="checkout-page-container">
+      <div className="flex flex-col items-center justify-center space-y-4 py-12 text-center">
+        <h1 className="text-2xl font-semibold">Unable to load checkout details</h1>
+        <p className="text-gray-600">
+          We couldn&apos;t load your cart for checkout. Please return to your cart and try again.
+        </p>
+        {isResponseError && (
+          <p className="text-sm text-gray-500">
+            Error code: {error.status}
+          </p>
+        )}
+        <div className="flex items-center gap-4">
+          <a
+            className="rounded bg-black px-4 py-2 text-white"
+            href="/cart"
+          >
+            Return to cart
+          </a>
+          <a
+            className="rounded border border-black px-4 py-2 text-black"
+            href="/"
+          >
+            Go home
+          </a>
+        </div>
+      </div>
     </div>
   );
 }

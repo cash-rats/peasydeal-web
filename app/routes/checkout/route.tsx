@@ -4,6 +4,8 @@ import {
   useLoaderData,
   useOutletContext,
   useRouteLoaderData,
+  useRouteError,
+  isRouteErrorResponse,
   redirect,
 } from 'react-router';
 import type {
@@ -18,6 +20,7 @@ import type { StripeElementsOptions, Stripe } from '@stripe/stripe-js';
 import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import httpStatus from 'http-status-codes';
 
+import { tryCatch } from '~/utils/try-catch';
 import { useCartCount } from '~/routes/hooks';
 import { envs } from '~/utils/env';
 import { getCheckoutTitleText } from '~/utils/seo';
@@ -54,52 +57,74 @@ export function shouldRevalidate(_: ShouldRevalidateFunctionArgs) {
 }
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  try {
-    const { session, data: checkoutData } = await getCheckoutSession(request);
+  const [checkoutSessionResult, checkoutSessionError] = await tryCatch(
+    getCheckoutSession(request),
+  );
 
-    if (!checkoutData) {
-      throw redirect('/cart');
-    }
-
-    const checkout = checkoutData as CheckoutSessionData;
-
-    const {
-      priceInfo,
-      promoCode,
-    } = checkout;
-
-    const amount = Math.round(priceInfo.total_amount * 100);
-    const currency = envs.STRIPE_CURRENCY_CODE;
-
-    const newPaymentIntent = await createPaymentIntent({
-      amount,
-      currency,
-    });
-
-    const paymentIntent = {
-      id: newPaymentIntent.id,
-      clientSecret: newPaymentIntent.client_secret || '',
-      amount,
-      currency,
-    };
-
-    setCheckoutSessionData(session, {
-      ...checkout,
-    });
-
-    return Response.json({
-      client_secret: paymentIntent?.clientSecret || undefined,
-      payment_intend_id: paymentIntent?.id || '',
-      price_info: priceInfo,
-      promo_code: promoCode,
-    }, {
-      headers: { 'Set-Cookie': await commitCheckoutSession(session) },
-    });
-  } catch (e) {
-    throw Response.json(e, {
+  if (checkoutSessionError || !checkoutSessionResult) {
+    throw new Response('Failed to load checkout session', {
       status: httpStatus.INTERNAL_SERVER_ERROR,
     });
   }
+
+  const { session, data: checkoutData } = checkoutSessionResult;
+
+  if (!checkoutData) {
+    throw redirect('/cart');
+  }
+
+  const checkout = checkoutData as CheckoutSessionData;
+
+  const {
+    priceInfo,
+    promoCode,
+  } = checkout;
+
+  const amount = Math.round(priceInfo.total_amount * 100);
+  const currency = envs.STRIPE_CURRENCY_CODE;
+
+  const [paymentIntentResult, paymentIntentError] = await tryCatch(
+    createPaymentIntent({
+      amount,
+      currency,
+    }),
+  );
+
+  if (paymentIntentError || !paymentIntentResult) {
+    throw new Response('Failed to create payment intent', {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    });
+  }
+
+  const paymentIntent = {
+    id: paymentIntentResult.id,
+    clientSecret: paymentIntentResult.client_secret || '',
+    amount,
+    currency,
+  };
+
+  setCheckoutSessionData(session, {
+    ...checkout,
+  });
+
+  const [committedCookie, commitError] = await tryCatch(
+    commitCheckoutSession(session),
+  );
+
+  if (commitError || !committedCookie) {
+    throw new Response('Failed to commit checkout session', {
+      status: httpStatus.INTERNAL_SERVER_ERROR,
+    });
+  }
+
+  return Response.json({
+    client_secret: paymentIntent?.clientSecret || undefined,
+    payment_intend_id: paymentIntent?.id || '',
+    price_info: priceInfo,
+    promo_code: promoCode,
+  }, {
+    headers: { 'Set-Cookie': committedCookie },
+  });
 };
 
 function CheckoutLayout() {
@@ -170,6 +195,51 @@ type ContextType = {
 
 export function useContext() {
   return useOutletContext<ContextType>();
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const cartCount = useCartCount();
+
+  const categories = rootData?.categories ?? [];
+  const navBarCategories = rootData?.navBarCategories ?? [];
+
+  const isResponseError = isRouteErrorResponse(error);
+
+  return (
+    <CatalogLayout
+      categories={categories}
+      navBarCategories={navBarCategories}
+      cartCount={cartCount}
+    >
+      <div className="min-h-[35rem] flex flex-col items-center justify-center space-y-4 px-4 text-center">
+        <h1 className="text-2xl font-semibold">Unable to load checkout</h1>
+        <p className="text-gray-600">
+          Checkout is unavailable right now. Please try again or return to your cart.
+        </p>
+        {isResponseError && (
+          <p className="text-sm text-gray-500">
+            Error code: {error.status}
+          </p>
+        )}
+        <div className="flex items-center gap-4">
+          <a
+            className="rounded bg-black px-4 py-2 text-white"
+            href="/cart"
+          >
+            Return to cart
+          </a>
+          <a
+            className="rounded border border-black px-4 py-2 text-black"
+            href="/"
+          >
+            Go home
+          </a>
+        </div>
+      </div>
+    </CatalogLayout>
+  );
 }
 
 export default CheckoutLayout;
