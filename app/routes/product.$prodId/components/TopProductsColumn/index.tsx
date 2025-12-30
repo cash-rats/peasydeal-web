@@ -89,7 +89,7 @@ export default function TopProductsColumn() {
   }, []);
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
+    if (fetcher.state === 'idle' && fetcher.data) {
       const prods = fetcher.data as ActionType;
       const bannerProduct = prods.top_products[0];
 
@@ -100,7 +100,7 @@ export default function TopProductsColumn() {
         super_deal_products: prods.super_deal_products,
       });
     }
-  }, [fetcher.type]);
+  }, [fetcher.data, fetcher.state]);
 
   return (
     <div

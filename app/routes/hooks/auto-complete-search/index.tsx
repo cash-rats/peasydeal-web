@@ -41,7 +41,7 @@ export function useSearchSuggests(): [SuggestItem[], SearchSuggest] {
   }
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
+    if (fetcher.state === 'idle' && fetcher.data) {
       const { results } = fetcher.data as ActionType;
       let suggestItems: SuggestItem[] = [];
 
@@ -62,7 +62,7 @@ export function useSearchSuggests(): [SuggestItem[], SearchSuggest] {
 
       setSuggests(suggestItems);
     }
-  }, [fetcher.type])
+  }, [fetcher.data, fetcher.state])
 
   return [suggests, searchSuggests];
 }

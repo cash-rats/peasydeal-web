@@ -11,18 +11,36 @@ export default function useEmailSubscribe() {
   const fetcher = useFetcher();
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
-      const data = fetcher.data;
+    if (fetcher.state !== 'idle') return;
+    if (fetcher.data === undefined) return;
 
-      if (data?.error) {
-        setError(data);
+    const result = fetcher.data as
+      | { ok: true }
+      | ({ ok: false } & ApiErrorResponse)
+      | ApiErrorResponse
+      | undefined;
+
+    if (!result) return;
+
+    if ('ok' in result) {
+      if (!result.ok) {
+        setError(result);
         return;
       }
 
       setError(null);
       setOpenModal(true);
+      return;
     }
-  }, [fetcher]);
+
+    if (result?.error) {
+      setError(result);
+      return;
+    }
+
+    setError(null);
+    setOpenModal(true);
+  }, [fetcher.data, fetcher.state]);
 
   const onCloseModal = () => {
     setOpenModal(false);

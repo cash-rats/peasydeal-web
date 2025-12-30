@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer } from 'react';
 import type { ChangeEvent } from 'react';
 import { FiX } from 'react-icons/fi';
 
@@ -69,10 +69,10 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
   }, [forceDisable]);
 
   useEffect(() => {
-    if (subFetcher.type === 'done') {
+    if (subFetcher.state === 'idle' && subFetcher.data !== undefined) {
       dispatch(setOpenPromoteSubscriptionModal(true));
     }
-  }, [subFetcher.type]);
+  }, [subFetcher.data, subFetcher.state]);
 
   return (
     <Dialog
@@ -91,7 +91,7 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
         </DialogClose>
 
         {
-          subFetcher.type === 'done' ? (
+          subFetcher.state === 'idle' && subFetcher.data !== undefined ? (
             <div className="p-8 max-w-screen-sm mx-auto bg-white rounded-2xl">
               <div className="font-poppins text-base text-center justify-center gap-2">
                 {
@@ -140,7 +140,7 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
                   value={email}
                   onChange={handleChangeEmail}
                 />
-                <subFetcher.Form action='/subscribe?index' method='post'>
+                <subFetcher.Form action='/api/email-subscribe' method='post'>
                   <div className='flex flex-col sm:flex-row justify-center gap-y-2 sm:gap-y-0 gap-x-2 items-center'>
                     <input type='hidden' name='email' value={email} />
                     <Button

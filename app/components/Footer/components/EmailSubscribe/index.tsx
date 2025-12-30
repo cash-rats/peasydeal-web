@@ -1,22 +1,57 @@
+import { useEffect, useState } from 'react';
 import type { ChangeEvent } from 'react';
+import { useFetcher } from 'react-router';
 
 import SubscribeModal from '~/components/EmailSubscribeModal';
-import useEmailSubscribe from '~/hooks/useEmailSubscribe';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { cn } from '~/lib/utils';
+import type { ApiErrorResponse } from '~/shared/types';
 
 function EmailSubscribe() {
-  const {
-    setEmail,
-    openModal,
-    error,
-    email,
-    fetcher,
-    onCloseModal,
-  } = useEmailSubscribe();
+  const fetcher = useFetcher();
+  const [email, setEmail] = useState('');
+  const [openModal, setOpenModal] = useState(false);
+  const [error, setError] = useState<ApiErrorResponse | null>(null);
 
-  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)
+  useEffect(() => {
+    if (fetcher.state !== 'idle') return;
+    if (fetcher.data === undefined) return;
+
+    const result = fetcher.data as
+      | { ok: true }
+      | ({ ok: false } & ApiErrorResponse)
+      | ApiErrorResponse
+      | undefined;
+
+    if (!result) return;
+
+    if ('ok' in result) {
+      if (!result.ok) {
+        setError(result);
+        return;
+      }
+
+      setError(null);
+      setOpenModal(true);
+      return;
+    }
+
+    if (result?.error) {
+      setError(result);
+      return;
+    }
+
+    setError(null);
+    setOpenModal(true);
+  }, [fetcher.data, fetcher.state]);
+
+  const onCloseModal = () => {
+    setOpenModal(false);
+    setError(null);
+  };
+
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
 
   return (
     <>
@@ -36,7 +71,7 @@ function EmailSubscribe() {
 
         <div className="w-full">
           <fetcher.Form
-            action='/subscribe?index'
+            action='/api/email-subscribe'
             method='post'
             className="mt-3 flex w-full flex-col gap-2 sm:flex-row sm:items-center"
           >

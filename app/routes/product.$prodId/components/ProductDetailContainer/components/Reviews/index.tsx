@@ -26,10 +26,10 @@ function Reviews({ productUUID }: ReviewsParams) {
   const fetcher = useFetcher();
 
   useEffect(() => {
-    if (fetcher.type === 'done') {
-      setReviewInfo(fetcher.data)
+    if (fetcher.state === 'idle' && fetcher.data) {
+      setReviewInfo(fetcher.data as ReviewResponse)
     }
-  }, [fetcher.type]);
+  }, [fetcher.data, fetcher.state]);
 
   useEffect(() => {
     fetcher.submit({

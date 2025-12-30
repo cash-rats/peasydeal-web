@@ -122,8 +122,8 @@ function ReviewModal({
 
   // Remove all images from image uploader
   useEffect(() => {
-    if (reviewFetcher.type === 'done') {
-      const data = reviewFetcher.data;
+    if (reviewFetcher.state === 'idle' && reviewFetcher.data !== undefined) {
+      const data = reviewFetcher.data as any;
       if (data?.err_code) {
         data.err_code === 'validation_error'
           ? dispatch(setFormError(data.err_msg as FormError))
@@ -139,7 +139,7 @@ function ReviewModal({
       dispatch(updateLoadingState('done'))
     }
 
-  }, [reviewFetcher.type]);
+  }, [reviewFetcher.data, reviewFetcher.state]);
 
   return (
     <SimpleModal
