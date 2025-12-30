@@ -137,6 +137,7 @@ function Document({ children }: DocumentProps) {
   return (
     <html lang="en">
       <head suppressHydrationWarning>
+        <meta charSet="utf-8" />
         <Meta />
         <Links />
         <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
