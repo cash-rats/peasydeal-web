@@ -1,14 +1,15 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { FiX } from 'react-icons/fi';
+import { useFetcher } from 'react-router';
 
 import successImage from '~/components/EmailSubscribeModal/images/email_subscription.png';
 import reducer, { setOpenPromoteSubscriptionModal } from '~/components/PromoteSubscriptionModal/reducer';
 
 import voucherImage from './images/3off@2x.png';
-import useEmailSubscribe from '~/hooks/useEmailSubscribe';
 import { Dialog, DialogClose, DialogContent } from '~/components/ui/dialog';
 import { Button } from '~/components/ui/button';
+import type { ApiErrorResponse } from '~/shared/types';
 
 interface PromoteSubscriptionModalProps {
   /**
@@ -27,12 +28,9 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
     error: null,
   });
 
-  const {
-    email,
-    setEmail,
-    fetcher: subFetcher,
-    error: subscribeError,
-  } = useEmailSubscribe();
+  const subFetcher = useFetcher();
+  const [email, setEmail] = useState('');
+  const [subscribeError, setSubscribeError] = useState<ApiErrorResponse | null>(null);
 
   const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
 
@@ -44,6 +42,7 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
 
     // Close Modal
     dispatch(setOpenPromoteSubscriptionModal(false));
+    setSubscribeError(null);
   };
 
   useEffect(() => {
@@ -72,6 +71,31 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
     if (subFetcher.state === 'idle' && subFetcher.data !== undefined) {
       dispatch(setOpenPromoteSubscriptionModal(true));
     }
+  }, [subFetcher.data, subFetcher.state]);
+
+  useEffect(() => {
+    if (subFetcher.state !== 'idle') return;
+    if (subFetcher.data === undefined) return;
+
+    const result = subFetcher.data as
+      | { ok: true }
+      | ({ ok: false } & ApiErrorResponse)
+      | ApiErrorResponse
+      | undefined;
+
+    if (!result) return;
+
+    if ('ok' in result) {
+      setSubscribeError(result.ok ? null : result);
+      return;
+    }
+
+    if (result?.error) {
+      setSubscribeError(result);
+      return;
+    }
+
+    setSubscribeError(null);
   }, [subFetcher.data, subFetcher.state]);
 
   return (
