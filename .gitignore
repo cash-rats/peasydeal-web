@@ -9,6 +9,7 @@ node_modules
 .deploy.env
 
 /redesigns/*
+!/redesigns/subscribe_modal_redesign/*
 
 /cypress/screenshots
 /cypress/videos
