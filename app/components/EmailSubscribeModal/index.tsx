@@ -1,15 +1,6 @@
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-} from '@chakra-ui/react'
-
+import SimpleModal from '~/components/SimpleModal';
 import type { ApiErrorResponse } from '~/shared/types';
-import imageBg from './images/email_subscription.png'
+import imageBg from './images/email_subscription.png';
 
 interface SubscribeModalParams {
   open: boolean;
@@ -19,46 +10,33 @@ interface SubscribeModalParams {
 
 function SubscribeModal({ open, onClose, error }: SubscribeModalParams) {
   return (
-    <Modal
-      isCentered
-      closeOnOverlayClick
-      isOpen={open}
+    <SimpleModal
+      open={open}
       onClose={onClose}
+      title="Thank you for subscribing!"
+      size="md"
     >
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          Thank you for subscrbing!
-        </ModalHeader>
-
-        <ModalCloseButton />
-
-        <ModalBody>
-          <div className="pb-4">
-            <div className="font-poppins text-base text-center justify-center gap-2">
-              {
-                error !== null
-                  ? 'Something went wrong! Please check the email your entered and try again.'
-                  : (
-                    <>
-                    <img src={imageBg} alt="email subscribe successfull" className='mx-auto mb-2'/>
-                    <p>An confirmation link and coupon has send to your email.</p>
-                    <br/>
-                    <p>Please check your email for <b>£3 GBP voucher code</b> and click the <b>Confirm & Validate</b> button in the email to activate your voucher.</p>
-                  </>)
-              }
-            </div>
-
-            <div className="flex justify-end  mt-4">
-              <Button onClick={onClose}>
-                close
-              </Button>
-            </div>
-          </div>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+      <div className="font-poppins text-center text-base">
+        {error !== null ? (
+          <p>Something went wrong! Please check the email you entered and try again.</p>
+        ) : (
+          <>
+            <img
+              src={imageBg}
+              alt="Email subscription successful"
+              className="mx-auto mb-2"
+            />
+            <p>A confirmation link and coupon have been sent to your email.</p>
+            <br />
+            <p>
+              Please check your email for <b>£3 GBP voucher code</b> and click the{' '}
+              <b>Confirm &amp; Validate</b> button in the email to activate your voucher.
+            </p>
+          </>
+        )}
+      </div>
+    </SimpleModal>
   );
-};
+}
 
 export default SubscribeModal;
