@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useStripe } from '@stripe/react-stripe-js';
-import type { PaymentIntent } from '@stripe/stripe-js';
+import type { PaymentIntent, Stripe } from '@stripe/stripe-js';
 
 import LoadingSkeleton from '~/routes/payment.$orderId/components/LoadingSkeleton';
 import Success from '~/routes/payment.$orderId/components/Success';
@@ -14,23 +13,33 @@ import Failed from '~/routes/payment.$orderId/components/Failed';
 interface PaymentResultLoaderProps {
   clientSecret: string;
   orderId: string;
+  stripePromise: Promise<Stripe | null>;
 };
 
-function PaymentResultLoader({ clientSecret, orderId }: PaymentResultLoaderProps) {
-  const stripe = useStripe();
+function PaymentResultLoader({ clientSecret, orderId, stripePromise }: PaymentResultLoaderProps) {
   const [stripePaymentStatus, setStripePaymentStatus] = useState<PaymentIntent.Status | null | undefined>(null);
 
   useEffect(() => {
-    if (!stripe) {
-      return;
-    }
+    let isCancelled = false;
 
-    stripe
-      .retrievePaymentIntent(clientSecret)
-      .then(({ paymentIntent = {} }) => {
-        setStripePaymentStatus(paymentIntent.status);
+    stripePromise
+      .then((stripe) => {
+        if (!stripe) throw new Error('Stripe not initialized');
+        return stripe.retrievePaymentIntent(clientSecret);
       })
-  }, [clientSecret, stripe]);
+      .then((result) => {
+        if (isCancelled) return;
+        setStripePaymentStatus(result?.paymentIntent?.status);
+      })
+      .catch(() => {
+        if (isCancelled) return;
+        setStripePaymentStatus('requires_payment_method');
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [clientSecret, stripePromise]);
 
   function renderResult(paymentStatus: PaymentIntent.Status | null | undefined) {
     if (paymentStatus === 'succeeded') {
@@ -54,6 +63,16 @@ function PaymentResultLoader({ clientSecret, orderId }: PaymentResultLoaderProps
         <Failed
           reason="Payment processing. We'll update you when payment is received."
           solution="You'll receive an email about your order detail once payment is processed"
+          paymentStatus={paymentStatus}
+        />
+      );
+    }
+
+    if (paymentStatus) {
+      return (
+        <Failed
+          reason="Payment not completed."
+          solution="You will be redirected to checkout to try again."
           paymentStatus={paymentStatus}
         />
       );
