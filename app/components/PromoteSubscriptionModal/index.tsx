@@ -3,7 +3,7 @@ import type { ChangeEvent } from 'react';
 import { FiX } from 'react-icons/fi';
 import { useFetcher } from 'react-router';
 
-import successImage from '~/components/EmailSubscribeModal/images/email_subscription.png';
+import SubscribeResultCard from '~/components/EmailSubscribeModal/SubscribeResultCard';
 import reducer, { setOpenPromoteSubscriptionModal } from '~/components/PromoteSubscriptionModal/reducer';
 
 import voucherImage from './images/3off@2x.png';
@@ -98,6 +98,12 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
     setSubscribeError(null);
   }, [subFetcher.data, subFetcher.state]);
 
+  const showSubscribeResult = subFetcher.state === 'idle' && subFetcher.data !== undefined;
+
+  const dialogContentClassName = showSubscribeResult
+    ? 'w-full max-w-md bg-transparent p-0 shadow-none border-0'
+    : 'max-w-[90vw] md:max-w-[486px] lg:max-w-lg xl:max-w-screen-xl rounded-2xl overflow-hidden p-0 border-0 bg-transparent shadow-none';
+
   return (
     <Dialog
       open={state.open}
@@ -105,32 +111,20 @@ function PromoteSubscriptionModal({ forceDisable = false }: PromoteSubscriptionM
         if (!open) onCloseModal();
       }}
     >
-      <DialogContent className="max-w-[90vw] md:max-w-[486px] lg:max-w-lg xl:max-w-screen-xl rounded-2xl overflow-hidden p-0 border-0 bg-transparent shadow-none">
-        <DialogClose
-          className="absolute right-3 top-3 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white hover:bg-black/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
-          onClick={onCloseModal}
-        >
-          <FiX className="h-4 w-4" aria-hidden />
-          <span className="sr-only">Close</span>
-        </DialogClose>
+      <DialogContent className={dialogContentClassName}>
+        {!showSubscribeResult ? (
+          <DialogClose
+            className="absolute right-3 top-3 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/70 text-white hover:bg-black/80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            onClick={onCloseModal}
+          >
+            <FiX className="h-4 w-4" aria-hidden />
+            <span className="sr-only">Close</span>
+          </DialogClose>
+        ) : null}
 
         {
-          subFetcher.state === 'idle' && subFetcher.data !== undefined ? (
-            <div className="p-8 max-w-screen-sm mx-auto bg-white rounded-2xl">
-              <div className="font-poppins text-base text-center justify-center gap-2">
-                {
-                  subscribeError !== null
-                    ? 'Something went wrong! Please check the email your entered and try again.'
-                    : (
-                      <>
-                        <img src={successImage} alt="email subscribe successfull" className='mx-auto mb-2' />
-                        <p className="leading-relaxed text-base md:text-xl lg:text-2xl my-2 md:my-4 max-w-3xl font-poppins font-medium">An confirmation link and coupon has send to your email.</p>
-                        <br />
-                        <p className="leading-relaxed text-base md:text-xl lg:text-2xl my-2 md:my-4 max-w-3xl font-poppins font-medium">Please check your email for <b>£3 GBP voucher code</b> and click the <b>Confirm & Validate</b> button in the email to activate your voucher.</p>
-                      </>)
-                }
-              </div>
-            </div>
+          showSubscribeResult ? (
+            <SubscribeResultCard error={subscribeError} onClose={onCloseModal} />
           ) : (
             <div className="flex flex-col xl:flex-row bg-white rounded-2xl overflow-hidden">
               <div className="h-full bg-[#a02121] aspect-square min-w-[320px] xl:max-w-[500px]">
