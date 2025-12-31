@@ -9,7 +9,8 @@ node_modules
 .deploy.env
 
 /redesigns/*
-!/redesigns/subscribe_modal_redesign/*
+!/redesigns/subscribe_modal_redesign
+!/redesigns/cart_page
 
 /cypress/screenshots
 /cypress/videos
