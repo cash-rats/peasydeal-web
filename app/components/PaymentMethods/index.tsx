@@ -21,10 +21,6 @@ const paymentMethod = [
     src: Paypal,
     alt: 'paypal'
   },
-  {
-    src: Klarna,
-    alt: 'klarna'
-  },
 ];
 
 const PaymentMethods = () => {

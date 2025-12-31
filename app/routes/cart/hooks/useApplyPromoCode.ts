@@ -25,7 +25,7 @@ export const useApplyPromoCode = ({ dispatch, shoppingCart }: UseApplyPromoCodeP
       },
       {
         method: 'post',
-        action: '/cart/price',
+        action: '/api/cart/price',
       },
     );
   }, [fetcher, dispatch, shoppingCart]);

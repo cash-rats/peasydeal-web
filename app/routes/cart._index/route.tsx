@@ -160,7 +160,7 @@ function Cart() {
     };
   }, []);
 
-  // Apply initial price info from /cart/price.
+  // Apply initial price info from /api/cart/price.
   useEffect(() => {
     if (cartPriceFetcher.state !== 'idle') return;
     if (!cartPriceFetcher.data) return;

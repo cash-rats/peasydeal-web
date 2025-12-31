@@ -194,21 +194,11 @@ export default function PriceResult({
     discount_error_msgs: discountErrorMsgs = [],
   } = priceInfo ?? defaultPriceInfo;
 
-  useEffect(() => {
-    if (appliedPromoCode && !discount_code_valid) {
-      setError(
-        `Seems like promo code ${appliedPromoCode} is invalid. Let's check and try again`
-      );
-      return;
-    }
-
-    setError('');
-  }, [appliedPromoCode, discount_code_valid, priceInfo]);
-
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const value = evt.target.value || '';
     const code = value.toUpperCase();
     setPromoCode(code);
+    setError('');
     onChangePromoCode(code);
   };
 
