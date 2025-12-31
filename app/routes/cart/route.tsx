@@ -3,12 +3,10 @@ import { Outlet, useRouteLoaderData } from 'react-router';
 import HorizontalProductsLayout from '~/routes/components/HorizontalProductsLayout';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
 import { useCartCount } from '~/routes/hooks';
-import { links as cartIndexLinks } from '../cart._index/route';
 import type { RootLoaderData } from '~/root';
 
 export const links: LinksFunction = () => [
   ...CatalogLayoutLinks(),
-  ...cartIndexLinks?.() ?? [],
 ];
 
 function CartLayout() {

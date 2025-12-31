@@ -1,13 +1,12 @@
 import {
   type ChangeEvent,
   type MouseEvent,
-  useEffect,
   useState,
 } from 'react';
 import { Link } from 'react-router';
 import { BsBagCheck, BsCheckCircleFill, BsExclamationCircleFill } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
-import { HiOutlineTicket } from 'react-icons/hi';
+import { HiLightningBolt, HiOutlineTicket, HiSparkles, HiTruck } from 'react-icons/hi';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import { cn } from '~/lib/utils';
@@ -85,6 +84,40 @@ const LoadingSpinner = ({ className }: { className?: string }) => (
     )}
   />
 );
+
+const getDiscountBadgeTheme = (eventName: string) => {
+  const normalized = (eventName || '').toLowerCase();
+
+  if (normalized.includes('super deal')) {
+    return {
+      className:
+        'bg-blue-50 text-blue-600 border-blue-100',
+      Icon: HiLightningBolt,
+    };
+  }
+
+  if (normalized.includes('free shipping')) {
+    return {
+      className:
+        'bg-emerald-50 text-emerald-600 border-emerald-100',
+      Icon: HiTruck,
+    };
+  }
+
+  if (normalized.includes('new sub')) {
+    return {
+      className:
+        'bg-amber-50 text-amber-600 border-amber-100',
+      Icon: HiSparkles,
+    };
+  }
+
+  return {
+    className:
+      'bg-slate-50 text-slate-600 border-slate-100',
+    Icon: ImPriceTags,
+  };
+};
 
 const PromoCodeBox = ({
   promoCode,
@@ -237,8 +270,8 @@ export default function PriceResult({
   };
 
   return (
-    <div className="p-4 bg-white">
-      <div className="w-full">
+    <div className="space-y-6">
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
         <PromoCodeBox
           promoCode={promoCode}
           handleChange={handleChange}
@@ -249,82 +282,71 @@ export default function PriceResult({
           discountErrorMsgs={discountErrorMsgs}
           discountCodeValid={!!(!error && appliedPromoCode && discount_code_valid)}
         />
+      </div>
 
-        <div className="pt-6 mb-4">
-          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-            Summary
-          </h2>
-          <div className="mt-2 h-[2px] w-12 bg-[#D02E7D] rounded-full" />
-        </div>
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <h2 className="text-lg font-bold text-slate-900 mb-6">Summary</h2>
 
-        <div className="py-2">
-          <hr className="h-[1px] w-full bg-slate-200" />
-        </div>
-
-        <ResultRow
-          label="Items (VAT Incl.)"
-          value={
-            calculating ? (
-              <InlineSkeleton width={45} height={20} />
-            ) : (
-              `£ ${taxIncl}`
-            )
-          }
-        />
-
-        {discount_code_valid && (
+        <div className="space-y-4 text-sm">
           <ResultRow
-            label="Promo code deal"
+            label="Items (VAT Incl.)"
             value={
               calculating ? (
                 <InlineSkeleton width={45} height={20} />
               ) : (
-                <div className="result-value text-primary uppercase">
-                  {discount_type === 'price_off' && `extra - £ ${discount_amount} off!`}
-                  {discount_type === 'free_shipping' && 'free shipping!'}
-                  {discount_type === 'percentage_off' && `- £ ${promo_code_discount}`}
-                </div>
+                `£ ${taxIncl}`
               )
             }
           />
-        )}
 
-        <ResultRow
-          label="Shipping Cost"
-          value={
-            calculating ? (
-              <InlineSkeleton width={45} height={20} />
-            ) : (
-              `£ ${origin_shipping_fee}`
-            )
-          }
-        />
+          {discount_code_valid && (
+            <ResultRow
+              label="Promo code deal"
+              value={
+                calculating ? (
+                  <InlineSkeleton width={45} height={20} />
+                ) : (
+                  <div className="result-value text-primary uppercase">
+                    {discount_type === 'price_off' && `extra - £ ${discount_amount} off!`}
+                    {discount_type === 'free_shipping' && 'free shipping!'}
+                    {discount_type === 'percentage_off' && `- £ ${promo_code_discount}`}
+                  </div>
+                )
+              }
+            />
+          )}
 
-        <div className="py-2">
-          <hr className="h-[1px] w-full bg-slate-200" />
-        </div>
+          <ResultRow
+            label="Shipping Cost"
+            value={
+              calculating ? (
+                <InlineSkeleton width={45} height={20} />
+              ) : (
+                `£ ${origin_shipping_fee}`
+              )
+            }
+          />
 
-        {applied_events.length > 0 && (
-          <>
-            <div className="flex flex-col mb-4">
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#D02E7D]/10">
-                  <ImPriceTags className="text-sm text-[#D02E7D]" />
-                </div>
-                <h4 className="text-base font-bold text-slate-800 font-poppins">
-                  Discount Applied!
-                </h4>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-3">
-                {applied_events.map((event, idx) => (
-                  <span
-                    key={`promotion-${idx}`}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-[#D02E7D]/30 bg-[#D02E7D]/5 px-3 py-1.5 text-sm font-semibold text-[#D02E7D]"
-                  >
-                    <ImPriceTags className="text-xs" />
-                    {event}
-                  </span>
-                ))}
+          {applied_events.length > 0 && (
+            <>
+              <div className="py-2 border-t border-dashed border-slate-200" />
+              <div className="flex flex-wrap gap-2">
+                {applied_events.map((event, idx) => {
+                  const { className, Icon } = getDiscountBadgeTheme(event);
+
+                  return (
+                    <span
+                      key={`promotion-${idx}`}
+                      className={cn(
+                        'inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-bold uppercase tracking-wide border',
+                        className
+                      )}
+                    >
+                      <Icon className="h-3 w-3" aria-hidden />
+                      {event}
+                    </span>
+                  );
+                })}
               </div>
 
               {shipping_fee === 0 && (
@@ -334,7 +356,7 @@ export default function PriceResult({
                     calculating ? (
                       <InlineSkeleton width={45} height={20} />
                     ) : (
-                      <span className="text-[#D02E7D]">- £ {origin_shipping_fee}</span>
+                      <span className="text-[#D02E7D] font-bold">- £ {origin_shipping_fee}</span>
                     )
                   }
                 />
@@ -347,20 +369,16 @@ export default function PriceResult({
                     calculating ? (
                       <InlineSkeleton width={45} height={20} />
                     ) : (
-                      <span className="text-[#D02E7D]">- £ {promo_code_discount}</span>
+                      <span className="text-[#D02E7D] font-bold">- £ {promo_code_discount}</span>
                     )
                   }
                 />
               )}
-            </div>
+            </>
+          )}
+        </div>
 
-            <div className="py-2">
-              <hr className="h-[1px] w-full bg-slate-200" />
-            </div>
-          </>
-        )}
-
-        <div className="mt-3 bg-slate-50 rounded-lg p-4 border border-slate-100">
+        <div className="mt-6 pt-4 border-t border-slate-200">
           <ResultRow
             label={<span className="text-lg font-bold text-slate-800">Total to pay</span>}
             value={
@@ -375,7 +393,7 @@ export default function PriceResult({
           />
         </div>
 
-        <div className="mt-[30px] flex flex-col justify-center gap-3">
+        <div className="mt-6 flex flex-col justify-center gap-3">
           <Button
             className="w-full font-bold text-lg shadow-sm bg-amber-400 text-slate-900 border border-amber-300 hover:bg-amber-300 hover:border-amber-200"
             size="lg"

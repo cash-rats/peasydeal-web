@@ -66,7 +66,7 @@ export default function QuantityDropDown({
         <Button
           type="button"
           variant="outline"
-          className="w-full justify-between bg-white"
+          className="w-full h-9 justify-between bg-white px-2 text-sm"
           ref={triggerRef}
           disabled={disabled}
         >
@@ -84,7 +84,7 @@ export default function QuantityDropDown({
           quantities.map((quantity) => (
             <DropdownMenuItem
               key={quantity}
-              className="cursor-pointer justify-between py-2.5"
+              className="cursor-pointer justify-center py-2 text-sm"
               onSelect={(evt) => handleSelection(evt, quantity)}
             >
               {quantity}

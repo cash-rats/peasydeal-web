@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import type { ChangeEvent, FocusEvent, MouseEvent } from 'react';
-import type { LinksFunction } from 'react-router';
 import { Link } from 'react-router';
 import { BsTrash } from 'react-icons/bs';
 import { ImPriceTags } from 'react-icons/im';
@@ -9,12 +8,6 @@ import QuantityDropDown from '~/components/QuantityDropDown';
 import { SUPER_DEAL_OFF } from '~/shared/constants';
 import { round10 } from '~/utils/preciseRound';
 import { composeProductDetailURL } from '~/utils';
-
-import styles from './styles/Item.css?url';
-
-export const links: LinksFunction = () => [
-  { rel: 'stylesheet', href: styles },
-];
 
 type ItemProps = {
   productUUID: string;
@@ -117,159 +110,98 @@ function CartItem({
   }, [item]);
 
   return (
-    <div className="
-			p-4 md:p-4
-			mt-4
-			mb-12 md:mb-0
-			bg-white
-			md:grid grid-cols-12 gap-4
-			relative
-		cart-item">
+    <div className="group bg-white rounded-2xl p-4 shadow-sm border border-slate-200 transition-all hover:shadow-md">
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+        <div className="md:col-span-6 flex gap-4">
+          <div className="w-24 h-24 shrink-0 bg-slate-50 rounded-xl overflow-hidden border border-slate-100">
+            <Link
+              to={composeProductDetailURL({ productName: item.title, productUUID: item.productUUID })}
+              className="block w-full h-full"
+            >
+              <img
+                alt={item.title}
+                src={item.image}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </Link>
+          </div>
 
-      {/* Item image */}
-      <div className="flex items-center col-span-6 top">
-        <div className="grid grid-cols-12">
-          <div className="col-span-12 flex flex-row items-center justify-start">
-            <div className="flex aspect-square max-w-[120px] mr-4 overflow-hidden product-image">
-              <Link to={composeProductDetailURL({ productName: item.title, productUUID: item.productUUID })}>
-                <img
-                  className='my-auto slef-center'
-                  alt={item.title}
-                  src={item.image}
-                />
-              </Link>
-            </div>
-
-            <div className="flex flex-col product-description">
-              <p className="text-lg font-medium mb-2 product-title">
+          <div className="flex flex-col justify-between py-1 min-w-0">
+            <div className="min-w-0">
+              <h3 className="font-bold text-slate-900 text-lg leading-tight mb-1">
                 <Link to={composeProductDetailURL({ productName: item.title, productUUID: item.productUUID })}>
                   {item.title}
                 </Link>
-              </p>
-
-              <p className="text-sm product-description-text">
+              </h3>
+              <p className="text-sm text-slate-500">
                 Variation: {item.description}
               </p>
-
-              {
-                item.discountReason
-                  ? (
-                    <div className="mt-2 hidden md:flex">
-                      <span className='flex items-center w-fit mb-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700'>
-                        <ImPriceTags className='mr-1 text-blue-500' />
-                        <span>{item.discountReason}</span>
-                      </span>
-                    </div>
-                  )
-                  : null
-              }
-
-
-              <div className="items-center flex flex-row md:hidden my-4 product-price-mobile">
-                <span className='text-lg font-poppins font-bold mr-2'>£{item.salePrice} </span>
-                <div className="relative w-fit">
-                  <span className='flex flex-col w-fit'>
-                    <span>£{item.retailPrice}</span>
-                    <div className="block h-[1px] w-full bg-black absolute top-[10px]"></div>
-                  </span>
-                </div>
-              </div>
-              {
-                isSuperDeal ? (
-                  <div className='w-fit text-sm block md:hidden font-slate-500'>
-                    Final charge will be: <span className='font-bold'>£{round10(item.salePrice * SUPER_DEAL_OFF, -2)}</span>
-                  </div>
-                ) : null
-              }
             </div>
-          </div>
 
-        </div>
-      </div>
-
-
-      <div className="col-span-2 text-right self-center hidden md:flex flex-row md:flex-col bottom">
-        <div className="relative w-fit ml-auto product-price">
-          <span className='flex flex-col w-fit'>
-            <span className='CartItem__retail-price'>£{item.retailPrice}</span>
-            <div className="block h-[1px] w-full bg-black absolute top-[10px]"></div>
-          </span>
-        </div>
-        <span className='text-lg font-poppins font-medium text-[#D02E7D] CartItem__sale-price'>£{item.salePrice}</span>
-        {
-          isSuperDeal ? (
-            <div className='w-fit text-sm font-slate-500'>
-              Final charge will be: <span className='font-bold'>£{round10(item.salePrice * SUPER_DEAL_OFF, -2)}</span>
-            </div>
-          ) : null
-        }
-      </div>
-
-      {
-        item.discountReason
-          ? (
-            <div className="border-t-[#efefef] border-t md:hidden mt-4 pt-4 pb-1">
-              <span className='flex items-center w-fit mb-2 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700'>
-                <ImPriceTags className='mr-1 text-blue-500' />
+            {item.discountReason ? (
+              <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold w-fit">
+                <ImPriceTags className="text-sm text-blue-500" />
                 <span>{item.discountReason}</span>
-              </span>
-            </div>
-          )
-          : null
-      }
-
-      <div className="
-				col-span-2 text-right self-center
-				flex flex-row md:flex-col
-				gap-4 md:gap-0
-				pt-4 mt-2 md:pt-0 md:mt-0
-				border-t-[#efefef] md:border-0
-				border-t
-			">
-        <div className="flex flex-col flex-auto">
-          <span className="flex md:hidden font-medium mb-2 CartItem__quantity-text">Quantity</span>
-          <QuantityDropDown
-            value={item.quantity}
-            onClickNumber={onClickQuantity}
-            onChange={handleChangeQuantity}
-            onBlur={handleBlurQuantity}
-            disabled={calculating}
-            purchaseLimit={item.purchaseLimit}
-          />
-          {
-            exceedMaxMsg && (
-              <p className="mt-0 w-full mt text-[#757575] font-sm md:absolute top-[-25px]">
-                Max {item.purchaseLimit} pieces
-              </p>
-            )
-          }
-        </div>
-        <div className="flex md:hidden flex-col  ml-auto">
-          <span className="flex font-medium mb-2">Subtotal</span>
-          <div className='center md:hidden self-center text-[#D02E7D] text-2xl'>
-            <SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+              </div>
+            ) : null}
           </div>
         </div>
-      </div>
 
-      <div className="hidden md:block col-span-2 text-right self-center text-lg">
-        <div className="product-total">
-          <SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+        <div className="md:col-span-2 text-center">
+          <div className="flex flex-col items-center">
+            <span className="text-slate-400 line-through text-sm">£{item.retailPrice}</span>
+            <span className="text-[#D02E7D] font-bold text-lg">£{item.salePrice}</span>
+            {isSuperDeal ? (
+              <span className="text-xs text-slate-500 mt-1 leading-tight">
+                Final charge:
+                <br />
+                £{round10(item.salePrice * SUPER_DEAL_OFF, -2)}
+              </span>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="md:col-span-2 flex justify-center">
+          <div className="w-20">
+            <QuantityDropDown
+              value={item.quantity}
+              onClickNumber={onClickQuantity}
+              onChange={handleChangeQuantity}
+              onBlur={handleBlurQuantity}
+              disabled={calculating}
+              purchaseLimit={item.purchaseLimit}
+            />
+          </div>
+          {exceedMaxMsg ? (
+            <p className="mt-1 text-xs text-slate-500 text-center w-full md:hidden">
+              Max {item.purchaseLimit} pieces
+            </p>
+          ) : null}
+        </div>
+
+        <div className="md:col-span-2 flex flex-row md:flex-col justify-between items-center md:items-end gap-2 md:gap-4 mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
+          <span className="font-bold text-slate-900 text-xl">
+            <SubTotalPriceTag quantity={item.quantity} salePrice={item.salePrice} calculating={calculating} />
+          </span>
+          <button
+            type="button"
+            aria-label="Remove item"
+            className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50 flex items-center gap-1 text-sm"
+            onClick={(evt) => onClickRemove(evt, item.variationUUID)}
+            disabled={calculating}
+          >
+            <BsTrash className="text-lg" />
+            <span className="md:hidden">Remove</span>
+          </button>
         </div>
       </div>
-      <div className="
-				absolute
-				bottom-[-38px] right-1 md:bottom-2 md:right-2
-			">
-        <button
-          type="button"
-          className="flex items-center rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
-          onClick={(evt) => onClickRemove(evt, item.variationUUID)}
-        >
-          <BsTrash fontSize={18} className='text-slate-500' />
-          <span className='ml-2 text-sm'>Delete</span>
-        </button>
-      </div>
+
+      {exceedMaxMsg ? (
+        <p className="hidden md:block mt-2 text-xs text-slate-500">
+          Max {item.purchaseLimit} pieces
+        </p>
+      ) : null}
     </div>
   );
 }

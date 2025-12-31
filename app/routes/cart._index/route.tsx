@@ -5,11 +5,11 @@ import {
   isRouteErrorResponse,
 } from 'react-router';
 import type {
-  LinksFunction,
   ShouldRevalidateFunction,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { FcHighPriority } from 'react-icons/fc';
+import { HiLockClosed } from 'react-icons/hi';
 import LoadingBackdrop from '~/components/PeasyDealLoadingBackdrop';
 import FiveHundredError from '~/components/FiveHundreError';
 import PaymentMethods from '~/components/PaymentMethods';
@@ -20,22 +20,12 @@ import CartItem from '~/routes/cart/components/Item';
 import EmptyShoppingCart from '~/routes/cart/components/EmptyShoppingCart';
 import PriceResult from '~/routes/cart/components/PriceResult';
 import type { CartPriceResponse } from '~/routes/cart/types';
-import itemStyles from '~/routes/cart/components/Item/styles/Item.css?url';
-import styles from '~/routes/cart/styles/cart.css?url';
-import sslCheckout from '~/routes/cart/images/SSL-Secure-Connection.png';
 import { sortItemsByAddedTime } from '~/routes/cart/utils';
 import { round10 } from '~/utils/preciseRound';
 import { loadCart as loadCartFromClient } from '~/lib/cartStorage.client';
 import { setCartItems, setPriceInfo } from '~/routes/cart/reducer';
 import { useRemoveItem } from '~/routes/cart/hooks/useRemoveItem';
 import { useCartContext } from '~/routes/hooks';
-
-export const links: LinksFunction = () => {
-  return [
-    { rel: 'stylesheet', href: styles },
-    { rel: 'stylesheet', href: itemStyles },
-  ];
-};
 
 const FREE_SHIPPING = 19.99;
 
@@ -247,129 +237,75 @@ function Cart() {
     <>
       <LoadingBackdrop open={isPriceCalculating} />
 
-      <section className="
-				py-0 px-auto
-				flex flex-col
-				justify-center items-center
-				mt-4 md:mt-8
-				mx-2 md:mx-4
-				bg-[#F7F8FA]
-			">
-        {
-          freeshippingRequiredPrice > 0
-            ? (
-              <div className="
-								w-full py-2.5 max-w-screen-xl mx-auto
-								capitalized
-								text-lg font-poppins nowrap
-								flex
-								items-center
-								bg-white
-								p-4
-								rounded-lg border-[2px] border-[#fc1d7a]
-							">
-                <FcHighPriority fontSize={24} className='w-[36px] mr-4' />
-                <span>
-                  <b className='text-[#fc1d7a] font-poppins font-bold'>Wait!</b>
-                  {` Spend £${round10(freeshippingRequiredPrice, -2)} more to get free shipping`}
-                </span>
-              </div>
-            ) : null
-        }
-        <div className="w-full py-2.5 max-w-screen-xl mx-auto">
-          <div className="flex flex-col">
-            <h1 className="
-							font-poppins font-semibold
-							text-xl md:text-3xl
-							mt-6 md:mt-8
-							mb-2 md:mb-3
-							flex
-							items-center
-							relative
-						">
-              <span>Shopping Cart</span>
-              <div className="block w-[1px] h-[25px] bg-[#757575] mx-2 md:mx-4" />
-              <span className="
-								items-center
-								font-poppins font-normal
-								text-xl md:text-2xl
-							">
-                {
-                  Object.keys(state.cartItems).length > 0 && (
-                    <>
-                      {Object.keys(state.cartItems).length} {Object.keys(state.cartItems).length > 1 ? 'items' : 'item'}
-                    </>
-                  )
-                }
+      <section className="bg-slate-50 py-8 sm:py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {freeshippingRequiredPrice > 0 ? (
+            <div className="mb-6 flex items-start gap-3 rounded-2xl border border-[#fc1d7a]/30 bg-white p-4 shadow-sm">
+              <FcHighPriority fontSize={22} className="mt-0.5 text-[#fc1d7a]" />
+              <p className="text-sm sm:text-base text-slate-700">
+                <span className="font-bold text-[#fc1d7a]">Wait!</span>
+                {` Spend £${round10(freeshippingRequiredPrice, -2)} more to get free shipping`}
+              </p>
+            </div>
+          ) : null}
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+            <div className="flex items-baseline gap-3">
+              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                Shopping Cart
+              </h1>
+              <span className="text-slate-500 font-medium text-base sm:text-lg">
+                {Object.keys(state.cartItems).length}{' '}
+                {Object.keys(state.cartItems).length > 1 ? 'items' : 'item'}
               </span>
-              <img
-                src={sslCheckout}
-                alt="secure checkout with SSL protection"
-                className='h-[42px] md:h-[48px] ml-auto right-0 absolute'
-              />
-            </h1>
+            </div>
 
-            {/* title row */}
-            <div className='flex flex-col md:grid grid-cols-3 gap-4 mt-2 md:mt-6'>
-              <div className='col-span-2'>
-                <div className="
-									w-full h-height
-									capitalized
-									text-lg font-poppins nowrap
-									ml-auto items-center
-									bg-white
-									p-4
-									hidden md:grid grid-cols-12 gap-4
-								">
-                  <span className="col-span-6 font-medium">
-                    Item
-                  </span>
+            <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-200">
+              <HiLockClosed aria-hidden className="h-5 w-5 text-emerald-600" />
+              <span className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+                SSL Secure Connection
+              </span>
+            </div>
+          </div>
 
-                  <span className="col-span-2 text-right font-medium">
-                    Price
-                  </span>
-
-                  <span className="col-span-2 text-right font-medium">
-                    Quantity
-                  </span>
-
-                  <span className="col-span-2 text-right font-medium">
-                    Total
-                  </span>
-
-                </div>
-                {
-                  sortItemsByAddedTime(state.cartItems)
-                    .map((item) => {
-                      const variationUUID = item.variationUUID;
-
-                      return (
-                        <CartItem
-                          key={variationUUID}
-                          item={{
-                            productUUID: item.productUUID,
-                            variationUUID,
-                            image: item.image,
-                            title: item.title,
-                            description: item.specName,
-                            salePrice: Number(item.salePrice),
-                            retailPrice: Number(item.retailPrice),
-                            quantity: Number(item.quantity),
-                            purchaseLimit: Number(item.purchaseLimit),
-                            tagComboTags: item.tagComboTags,
-                            discountReason: item.discountReason,
-                          }}
-                          calculating={isPriceCalculating}
-                          onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
-                          onClickRemove={handleRemove}
-                        />
-
-                      )
-                    })
-                }
+          <div className="lg:grid lg:grid-cols-12 lg:gap-8">
+            <div className="lg:col-span-8 space-y-4 sm:space-y-6">
+              <div className="hidden md:grid grid-cols-12 gap-4 text-sm font-semibold text-slate-500 uppercase tracking-wider border-b border-slate-200 pb-3 mb-2">
+                <div className="col-span-6">Item</div>
+                <div className="col-span-2 text-center">Price</div>
+                <div className="col-span-2 text-center">Quantity</div>
+                <div className="col-span-2 text-right">Total</div>
               </div>
 
-              <div className='flex flex-col'>
+              {sortItemsByAddedTime(state.cartItems).map((item) => {
+                const variationUUID = item.variationUUID;
+
+                return (
+                  <CartItem
+                    key={variationUUID}
+                    item={{
+                      productUUID: item.productUUID,
+                      variationUUID,
+                      image: item.image,
+                      title: item.title,
+                      description: item.specName,
+                      salePrice: Number(item.salePrice),
+                      retailPrice: Number(item.retailPrice),
+                      quantity: Number(item.quantity),
+                      purchaseLimit: Number(item.purchaseLimit),
+                      tagComboTags: item.tagComboTags,
+                      discountReason: item.discountReason,
+                    }}
+                    calculating={isPriceCalculating}
+                    onClickQuantity={(evt, number) => handleOnClickQuantity(evt, variationUUID, number)}
+                    onClickRemove={handleRemove}
+                  />
+                );
+              })}
+            </div>
+
+            <div className="lg:col-span-4 mt-8 lg:mt-0">
+              <div className="sticky top-6 space-y-6">
                 <PriceResult
                   onApplyPromoCode={handleClickApplyPromoCode}
                   appliedPromoCode={state.promoCode}
@@ -377,9 +313,14 @@ function Cart() {
                   calculating={isPriceCalculating}
                   onCheckout={handleCheckout}
                 />
-                <div className='bg-white p-4 mt-4 gap-4'>
-                  <h3 className='text-center font-bold'>100% Secure Payment with</h3>
-                  <PaymentMethods />
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                  <h3 className="text-center text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wider">
+                    100% Secure Payment with
+                  </h3>
+                  <div className="flex justify-center">
+                    <PaymentMethods />
+                  </div>
                 </div>
               </div>
             </div>
