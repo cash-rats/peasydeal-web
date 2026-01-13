@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 import type { Category, TaxonomyWithParents } from '~/shared/types';
 import type { CategoryType } from '~/shared/types';
 import { ioredis as redis } from '~/redis.server';

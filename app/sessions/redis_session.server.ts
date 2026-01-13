@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant';
 
-import { envs, isProd, isPreview } from '~/utils/env';
+import { envs, isProd, isPreview } from '~/utils/env.server';
 
 import { createRedisSessionStorage } from './create_redis_session.server';
 

@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 
 let _supabaseAdminClient: SupabaseClient | null = null;
 
@@ -22,4 +22,3 @@ export function getSupabaseAdminClient(): SupabaseClient {
 
   return _supabaseAdminClient;
 }
-

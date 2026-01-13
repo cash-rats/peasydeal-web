@@ -5,7 +5,7 @@ import { FcIdea } from 'react-icons/fc';
 import type { LinksFunction, MetaFunction } from 'react-router';
 import { data, useLoaderData, useRouteLoaderData } from 'react-router';
 
-import { fetchContentfulPostWithId } from '~/api/products';
+import { fetchContentfulPostWithId } from '~/api/contentful.server';
 import type { TContentfulPost } from '~/shared/types';
 import { getRootFBSEO_V2 } from '~/utils/seo';
 import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';

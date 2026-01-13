@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 import type { Product, ApiErrorResponse } from '~/shared/types';
 
 import { pickMainImage } from '~/utils/images';

@@ -1,7 +1,7 @@
 import sharp from 'sharp';
 
 import type { TransformOptions } from '~/lib/react-router-image';
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 
 import { uploadToR2 } from './r2';
 import { MimeType, fileExtensionResolver } from './mimes';

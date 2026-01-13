@@ -1,8 +1,6 @@
 import httpStatus from 'http-status-codes';
-import * as contentful from 'contentful';
 
-import type { Product, ApiErrorResponse, TContentfulPost } from '~/shared/types';
-import type { ActivityBanner } from '~/routes/__index/types';
+import type { Product, ApiErrorResponse } from '~/shared/types';
 import { pickMainImage } from '~/utils/images';
 import { envs } from '~/utils/env';
 
@@ -24,15 +22,6 @@ export interface IFetchLandingPageFeatureProductsParams {
   categoriesPreviewNames: string[];
   prmotionPreviewNames?: string[];
 }
-
-interface IContentfulRes {
-  fields?: TContentfulPost;
-}
-
-const contenfulClient = contentful.createClient({
-  space: envs.CONTENTFUL_SPACE_ID,
-  accessToken: envs.CONTENTFUL_ACCESS_TOKEN,
-});
 
 const normalizeV2Data = (apiData: any[]): Product[] => {
   return apiData.map(
@@ -93,17 +82,6 @@ export const fetchLandingPageFeatureProducts = async ({
     promotionPreviews,
     promotions: respJSON?.promotions || [],
   };
-};
-
-export const fetchContentfulPostWithId = async ({ entryId }: { entryId: string }) => {
-  try {
-    const resp = await contenfulClient.getEntry<IContentfulRes>(entryId);
-    return resp?.fields;
-  } catch (error: any) {
-    console.error(error);
-
-    throw new Error(error?.message);
-  }
 };
 
 export const fetchProductsByCategoryV2 = async ({

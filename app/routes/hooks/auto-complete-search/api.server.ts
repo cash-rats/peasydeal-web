@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import type { Product, ApiErrorResponse } from '~/shared/types';
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 
 export interface SearchProductPreviewsParams {
   page?: number;

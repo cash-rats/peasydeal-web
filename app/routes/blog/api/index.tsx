@@ -1,12 +1,26 @@
-import { envs } from '~/utils/env';
-
 import type { TContentfulPost, IBlogStaticProps } from '~/shared/types';
 import { createClient } from 'contentful';
+import { envs } from '~/utils/env.server';
 
-const contenfulClient = createClient({
-  space: envs.CONTENTFUL_SPACE_ID,
-  accessToken: envs.CONTENTFUL_ACCESS_TOKEN,
-})
+let _contentfulClient: ReturnType<typeof createClient> | null = null;
+const getContentfulEnv = () => {
+  if (typeof window !== 'undefined') {
+    throw new Error('Contentful env must only be read on the server.');
+  }
+  const space = envs.CONTENTFUL_SPACE_ID;
+  const accessToken = envs.CONTENTFUL_ACCESS_TOKEN;
+  if (!space || !accessToken) {
+    throw new Error('Missing Contentful environment variables.');
+  }
+  return { space, accessToken };
+};
+
+const getContentfulClient = () => {
+  if (_contentfulClient) return _contentfulClient;
+  const { space, accessToken } = getContentfulEnv();
+  _contentfulClient = createClient({ space, accessToken });
+  return _contentfulClient;
+};
 
 interface IContentfulRes {
   fields?: TContentfulPost,
@@ -20,12 +34,13 @@ export const contentfulConfig = {
 
 export class ContentfulGQLApi {
   static async callContentful(query: string) {
-    const fetchUrl = `https://graphql.contentful.com/content/v1/spaces/${envs.CONTENTFUL_SPACE_ID}`;
+    const { space, accessToken } = getContentfulEnv();
+    const fetchUrl = `https://graphql.contentful.com/content/v1/spaces/${space}`;
 
     const fetchOptions = {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${envs.CONTENTFUL_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ query }),
@@ -129,7 +144,7 @@ export const fetchContentfulWithSlug = async ({
   slug,
 }: { slug: string }): Promise<any> => {
   try {
-    const resp = await contenfulClient.getEntries<any>({
+    const resp = await getContentfulClient().getEntries<any>({
       content_type: 'blogs',
       'fields.slug[in]': slug,
     });
@@ -146,7 +161,7 @@ export const fetchContentfulWithEntry = async ({
   entry,
 }: { entry: string }): Promise<any> => {
   try {
-    const resp = await contenfulClient.getEntry<IContentfulRes>(entry);
+    const resp = await getContentfulClient().getEntry<IContentfulRes>(entry);
     return resp?.fields;
   } catch (error: any) {
     console.error(error);

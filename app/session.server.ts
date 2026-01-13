@@ -1,5 +1,5 @@
 import { createCookieSessionStorage, redirect } from "react-router";
-import { env } from "~/utils/env";
+import { env } from "~/utils/env.server";
 
 // SESSION_SECRET is validated via env.ts schema
 export const sessionStorage = createCookieSessionStorage({

@@ -3,7 +3,7 @@ import type { PriceInfo } from './types';
 
 export type { PriceInfo } from './types';
 
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 import type { ShoppingCart, ShoppingCartItem } from '~/sessions/types';
 
 export type PriceQuery = {

@@ -1,5 +1,5 @@
 import IORedis, { type Redis, } from 'ioredis';
-import { env } from '~/utils/env';
+import { env } from '~/utils/env.server';
 
 let ioredis: Redis;
 declare global {

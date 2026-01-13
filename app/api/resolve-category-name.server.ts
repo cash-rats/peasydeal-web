@@ -1,6 +1,6 @@
 import httpStatus from 'http-status-codes';
 
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 
 export const resolveCategoryName = async (categoryName: string): Promise<string> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);

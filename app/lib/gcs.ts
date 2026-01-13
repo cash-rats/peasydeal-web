@@ -3,7 +3,7 @@ import type { Bucket } from '@google-cloud/storage';
 import { fileURLToPath } from 'url';
 import { resolve, dirname } from 'path';
 
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

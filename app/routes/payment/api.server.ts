@@ -1,7 +1,7 @@
 import httpStatus from 'http-status-codes';
 
 import type { ApiErrorResponse } from '~/shared/types';
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 
 import type { SuccessOrderDetail } from './types';
 

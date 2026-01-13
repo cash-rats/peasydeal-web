@@ -1,4 +1,4 @@
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 
 export const activateEmailSubscribe = async (uuid: string) => {
   console.log('uuid', uuid);

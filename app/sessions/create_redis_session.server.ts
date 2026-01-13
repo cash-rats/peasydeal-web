@@ -6,7 +6,7 @@ import {
 import crypto from "crypto";
 
 import { ioredis as redis } from '~/redis.server';
-import { envs } from '~/utils/env'
+import { envs } from '~/utils/env.server'
 
 function genRandomID(): string {
   const randomBytes = crypto.randomBytes(8);

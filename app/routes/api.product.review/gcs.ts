@@ -1,7 +1,7 @@
 import { Storage } from '@google-cloud/storage';
 import type { Bucket } from '@google-cloud/storage';
 
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 import { getGCSKeyPath } from '~/lib/gcs';
 
 let storage: Storage | null | undefined = undefined;
