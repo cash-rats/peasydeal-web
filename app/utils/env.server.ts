@@ -59,7 +59,7 @@ const serverEnvSchema = z.object({
 
   // Algolia Search
   ALGOLIA_APP_ID: z.string().default(''),
-  ALGOLIA_APP_WRITE_KEY: z.string().default(''),
+  ALGOLIA_APP_SEARCH_KEY: z.string().default(''),
   ALGOLIA_INDEX_NAME: z.string().default(''),
 
   // Google Cloud Storage
@@ -117,4 +117,3 @@ export const isProd = () => env.VERCEL_ENV === 'production';
 export const isStaging = () => env.VERCEL_ENV === 'preview';
 export const isPreview = () => isStaging();
 export const isDev = () => !isProd() && !isStaging();
-

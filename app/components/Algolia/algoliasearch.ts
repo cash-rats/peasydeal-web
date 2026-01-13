@@ -7,10 +7,10 @@ let searchClient: ReturnType<typeof algoliasearch> | null = null;
 
 export function getSearchClient() {
   if (!searchClient) {
-    invariant(envs.ALGOLIA_APP_ID, `ALGOLIA_APP_ID can not be empty ${envs.ALGOLIA_APP_ID}`);
-    invariant(envs.ALGOLIA_APP_WRITE_KEY, `ALGOLIA_APP_WRITE_KEY can not be empty ${envs.ALGOLIA_APP_WRITE_KEY}`);
+    invariant(envs.ALGOLIA_APP_ID, 'ALGOLIA_APP_ID can not be empty');
+    invariant(envs.ALGOLIA_APP_SEARCH_KEY, 'ALGOLIA_APP_SEARCH_KEY can not be empty');
 
-    searchClient = algoliasearch(envs.ALGOLIA_APP_ID, envs.ALGOLIA_APP_WRITE_KEY);
+    searchClient = algoliasearch(envs.ALGOLIA_APP_ID, envs.ALGOLIA_APP_SEARCH_KEY);
   }
 
   return searchClient;

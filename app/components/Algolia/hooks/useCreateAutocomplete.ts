@@ -41,7 +41,7 @@ export default function useCreateAutocomplete(props: Partial<AutocompleteOptions
     insightsClient(
       'init', {
       appId: envs.ALGOLIA_APP_ID,
-      apiKey: envs.ALGOLIA_APP_WRITE_KEY,
+      apiKey: envs.ALGOLIA_APP_SEARCH_KEY,
     });
   }, []);
 
