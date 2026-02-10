@@ -1,9 +1,7 @@
 const DAILY_SESSION_KEY = 'ga_session';
 
 /*
- * Store sessionID to session store. we'll send this ID
- * to google analytics to observe actions during given
- * session.
+ * Store sessionID in session storage for client-side analytics use.
  */
 export function storeSessionIDToSessionStore(sessionID: string) {
   window?.sessionStorage?.setItem(DAILY_SESSION_KEY, sessionID);

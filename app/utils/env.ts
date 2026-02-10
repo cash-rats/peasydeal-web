@@ -22,8 +22,6 @@ const publicEnvSchema = z.object({
   STRIPE_PUBLIC_KEY: z.string().optional(),
   STRIPE_CURRENCY_CODE: z.string().default('GBP'),
 
-  GOOGLE_TAG_ID: z.string().optional(),
-
   MAPBOX_BOX_ACCESS_TOKEN: z.string().default(''),
 
   // Analytics

@@ -42,9 +42,6 @@ const serverEnvSchema = z.object({
   STRIPE_PRIVATE_KEY: z.string().default(''),
   STRIPE_CURRENCY_CODE: z.string().default('GBP'),
 
-  // Google Services
-  GOOGLE_TAG_ID: z.string().optional(),
-
   // Mapbox
   MAPBOX_BOX_ACCESS_TOKEN: z.string().default(''),
 
