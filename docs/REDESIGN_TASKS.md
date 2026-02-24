@@ -200,7 +200,7 @@ These are the building blocks used across all pages. Must be done first.
 | | - Tab click swaps gallery content | | |
 | | - Quick-add cart icon on overlay | | |
 | | - Responsive: horizontal tabs on tablet/mobile | | |
-| **3.8** | **Home page composition** — update `app/routes/__index/index.tsx` | — | ⬜ |
+| **3.8** | **Home page composition** — update `app/routes/__index/index.tsx` | — | ✅ |
 | | - Wire all new sections together in order | | |
 | | - Data loading: loaders for featured products, campaigns, collections | | |
 | | - Add new shared sections: value props, trust badges, FAQ, reviews, CTA banners, collection carousel, inline image text banner | | |
