@@ -1,0 +1,399 @@
+import { useState, useCallback, forwardRef } from "react";
+import { cn } from "~/lib/utils";
+import { Badge } from "~/components/v2/Badge";
+import { QuantityPicker } from "~/components/v2/QuantityPicker";
+import { Button } from "~/components/v2/Button";
+
+export interface ProductVariant {
+  label: string;
+  value: string;
+}
+
+export interface AccordionItem {
+  title: string;
+  content: string;
+}
+
+export interface ProductInfoProps {
+  badges?: Array<{
+    variant: "discount" | "new" | "selling-fast" | "hot" | "limited";
+    label: string;
+  }>;
+  title: string;
+  rating?: number;
+  reviewCount?: number;
+  salePrice?: number;
+  retailPrice: number;
+  currency?: string;
+  shippingNote?: string;
+  description?: string;
+  stock?: number;
+  variants?: ProductVariant[];
+  selectedVariant?: string;
+  onVariantChange?: (value: string) => void;
+  quantity?: number;
+  onQuantityChange?: (qty: number) => void;
+  onAddToCart?: () => void;
+  onBuyNow?: () => void;
+  accordionItems?: AccordionItem[];
+  onShare?: () => void;
+  onAskQuestion?: () => void;
+  /** Ref forwarded to the price block for StickyATCBar visibility */
+  priceRef?: React.Ref<HTMLDivElement>;
+  className?: string;
+}
+
+function StarIcon({ filled, half }: { filled: boolean; half?: boolean }) {
+  if (half) {
+    return (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="halfStar">
+            <stop offset="50%" stopColor="#E8A040" />
+            <stop offset="50%" stopColor="#E0E0E0" />
+          </linearGradient>
+        </defs>
+        <path d="M8 1L10 5.5H15L11 8.5L12.5 13L8 10L3.5 13L5 8.5L1 5.5H6L8 1Z" fill="url(#halfStar)" />
+      </svg>
+    );
+  }
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path
+        d="M8 1L10 5.5H15L11 8.5L12.5 13L8 10L3.5 13L5 8.5L1 5.5H6L8 1Z"
+        fill={filled ? "#E8A040" : "#E0E0E0"}
+      />
+    </svg>
+  );
+}
+
+function PlusIcon({ className }: { className?: string }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" className={className}>
+      <path d="M10 4V16M4 10H16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function TruckIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M1 3H10V11H1V3ZM10 6H13L15 8V11H10V6ZM4 11C4 12.1 3.1 13 2 13C0.9 13 0 12.1 0 11M13 11C13 12.1 12.1 13 11 13C9.9 13 9 12.1 9 11" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M8 4V8L10.5 10.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ShareIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M7 1V9M7 1L4 4M7 1L10 4M2 9V12H12V9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function QuestionIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M5 5.5C5 4.4 5.9 3.5 7 3.5C8.1 3.5 9 4.4 9 5.5C9 6.6 7 7 7 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <circle cx="7" cy="10" r="0.5" fill="currentColor" />
+    </svg>
+  );
+}
+
+export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
+  function ProductInfo(
+    {
+      badges,
+      title,
+      rating = 0,
+      reviewCount = 0,
+      salePrice,
+      retailPrice,
+      currency = "$",
+      shippingNote,
+      description,
+      stock,
+      variants,
+      selectedVariant,
+      onVariantChange,
+      quantity = 1,
+      onQuantityChange,
+      onAddToCart,
+      onBuyNow,
+      accordionItems,
+      onShare,
+      onAskQuestion,
+      priceRef,
+      className,
+    },
+    ref
+  ) {
+    const [descExpanded, setDescExpanded] = useState(false);
+    const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+
+    const toggleAccordion = useCallback((index: number) => {
+      setOpenAccordion((prev) => (prev === index ? null : index));
+    }, []);
+
+    const renderStars = () => {
+      const stars = [];
+      for (let i = 1; i <= 5; i++) {
+        if (rating >= i) {
+          stars.push(<StarIcon key={i} filled />);
+        } else if (rating >= i - 0.5) {
+          stars.push(<StarIcon key={i} filled={false} half />);
+        } else {
+          stars.push(<StarIcon key={i} filled={false} />);
+        }
+      }
+      return stars;
+    };
+
+    return (
+      <div ref={ref} className={cn("flex flex-col pt-2", className)}>
+        {/* Badges */}
+        {badges && badges.length > 0 && (
+          <div className="flex gap-1.5 mb-3">
+            {badges.map((b, i) => (
+              <Badge key={i} variant={b.variant}>
+                {b.label}
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        {/* Title */}
+        <h1 className="font-heading text-[32px] font-bold text-black leading-[1.2] mb-3">
+          {title}
+        </h1>
+
+        {/* Rating */}
+        {reviewCount > 0 && (
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex gap-0.5">{renderStars()}</div>
+            <span className="font-body text-sm font-normal text-[#888]">
+              ({reviewCount})
+            </span>
+          </div>
+        )}
+
+        {/* Price block */}
+        <div ref={priceRef} className="mb-1">
+          <div className="flex items-baseline">
+            {salePrice != null ? (
+              <>
+                <span className="font-heading text-2xl font-bold text-[#C75050]">
+                  {currency}{salePrice.toFixed(2)}
+                </span>
+                <span className="font-body text-base font-normal text-[#999] line-through ml-2.5">
+                  {currency}{retailPrice.toFixed(2)}
+                </span>
+              </>
+            ) : (
+              <span className="font-heading text-2xl font-bold text-black">
+                {currency}{retailPrice.toFixed(2)}
+              </span>
+            )}
+          </div>
+          {shippingNote && (
+            <p className="font-body text-[13px] font-normal text-[#888] mt-1">
+              {shippingNote}
+            </p>
+          )}
+        </div>
+
+        {/* Description */}
+        {description && (
+          <div className="my-4">
+            <p
+              className={cn(
+                "font-body text-sm font-normal text-[#666] leading-[1.6]",
+                !descExpanded && "line-clamp-3"
+              )}
+            >
+              {description}
+            </p>
+            {description.length > 150 && (
+              <button
+                type="button"
+                className="font-body text-sm font-medium text-black underline underline-offset-2 mt-1"
+                onClick={() => setDescExpanded(!descExpanded)}
+              >
+                {descExpanded ? "Show less" : "Read more"}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Stock indicator */}
+        {stock != null && stock > 0 && (
+          <div className="flex items-center gap-1.5 mb-5">
+            <span className="w-2 h-2 rounded-full bg-[#4A7C59]" />
+            <span className="font-body text-[13px] font-medium text-[#4A7C59]">
+              {stock} in stock
+            </span>
+          </div>
+        )}
+
+        {/* Variant selector */}
+        {variants && variants.length > 0 && (
+          <div className="mb-5">
+            <p className="font-body text-sm font-semibold text-black mb-2.5">
+              Size:{" "}
+              <span className="font-normal">
+                {variants.find((v) => v.value === selectedVariant)?.label ?? ""}
+              </span>
+            </p>
+            <div className="flex gap-2">
+              {variants.map((v) => (
+                <button
+                  key={v.value}
+                  type="button"
+                  className={cn(
+                    "px-5 py-2.5 rounded-lg font-body text-sm font-medium transition-all duration-fast",
+                    v.value === selectedVariant
+                      ? "border-[1.5px] border-black bg-black text-white"
+                      : "border-[1.5px] border-[#E0E0E0] bg-white text-black hover:border-black"
+                  )}
+                  onClick={() => onVariantChange?.(v.value)}
+                >
+                  {v.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Quantity + Add to Cart */}
+        <div className="flex gap-3 mb-3">
+          <QuantityPicker
+            value={quantity}
+            onChange={(v) => onQuantityChange?.(v)}
+          />
+          <Button
+            variant="secondary"
+            className="flex-1 h-12"
+            onClick={onAddToCart}
+          >
+            Add to Cart
+          </Button>
+        </div>
+
+        {/* Buy It Now */}
+        <Button
+          variant="primary"
+          className="w-full h-12 mb-4"
+          onClick={onBuyNow}
+        >
+          Buy It Now
+        </Button>
+
+        {/* Trust signals */}
+        <div className="flex gap-6 items-center mb-4">
+          <div className="flex items-center gap-1.5">
+            <TruckIcon />
+            <span className="font-body text-[13px] font-normal text-[#666]">
+              Free shipping
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <ClockIcon />
+            <span className="font-body text-[13px] font-normal text-[#666]">
+              7-day returns
+            </span>
+          </div>
+        </div>
+
+        {/* Store pickup */}
+        <div className="mb-5 pb-5 border-b border-[#E0E0E0]">
+          <div className="flex items-start gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-[#4A7C59] mt-0.5 flex-shrink-0">
+              <path d="M2 7L5.5 10.5L12 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <div>
+              <p className="font-body text-sm font-semibold text-black">
+                Pickup available
+              </p>
+              <p className="font-body text-[13px] font-normal text-[#888] mt-0.5">
+                Usually ready in 24 hours
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Accordion sections */}
+        {accordionItems && accordionItems.length > 0 && (
+          <div>
+            {accordionItems.map((item, i) => {
+              const isOpen = openAccordion === i;
+              return (
+                <div key={i} className="border-b border-[#E0E0E0]">
+                  <button
+                    type="button"
+                    className="flex w-full justify-between items-center py-5 cursor-pointer"
+                    onClick={() => toggleAccordion(i)}
+                    aria-expanded={isOpen}
+                  >
+                    <span className="font-body text-base font-semibold text-black">
+                      {item.title}
+                    </span>
+                    <PlusIcon
+                      className={cn(
+                        "text-black transition-transform duration-fast flex-shrink-0",
+                        isOpen && "rotate-45"
+                      )}
+                    />
+                  </button>
+                  <div
+                    className={cn(
+                      "grid transition-all duration-slow",
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    )}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="pb-5 font-body text-sm font-normal text-[#666] leading-[1.6]">
+                        {item.content}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Action links */}
+        <div className="flex gap-5 pt-4">
+          <button
+            type="button"
+            className="flex items-center gap-1.5 font-body text-[13px] font-normal text-[#888] hover:text-black transition-colors duration-fast"
+            onClick={onShare}
+          >
+            <ShareIcon />
+            Share
+          </button>
+          <button
+            type="button"
+            className="flex items-center gap-1.5 font-body text-[13px] font-normal text-[#888] hover:text-black transition-colors duration-fast"
+            onClick={onAskQuestion}
+          >
+            <QuestionIcon />
+            Ask a question
+          </button>
+        </div>
+      </div>
+    );
+  }
+);

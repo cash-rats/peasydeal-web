@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AnnouncementBar } from "~/components/v2/AnnouncementBar";
 import { Header } from "~/components/v2/Header";
 import type { NavItem } from "~/components/v2/Header";
@@ -25,6 +25,12 @@ import { TabbedProductGrid } from "~/components/v2/TabbedProductGrid";
 import { CoreProductsCarousel } from "~/components/v2/CoreProductsCarousel";
 import { LifestyleGallery } from "~/components/v2/LifestyleGallery";
 import type { Product } from "~/shared/types";
+// Phase 4 — Product page components
+import { Breadcrumbs } from "~/components/v2/Breadcrumbs";
+import { ProductImageGallery } from "~/components/v2/ProductImageGallery";
+import { ProductInfo } from "~/components/v2/ProductInfo";
+import { RecommendedProducts } from "~/components/v2/RecommendedProducts";
+import { StickyATCBar } from "~/components/v2/StickyATCBar";
 
 const navItems: NavItem[] = [
   { label: "Home", href: "/" },
@@ -94,10 +100,20 @@ const mockProducts2 = Array.from({ length: 6 }, (_, i) =>
   })
 );
 
+const productImages = [
+  "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&h=1000&fit=crop",
+  "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=800&h=1000&fit=crop",
+  "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&h=1000&fit=crop",
+  "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&h=800&fit=crop&q=70",
+];
+
 export default function RedesignPreview() {
   const [qty, setQty] = useState(1);
+  const [pdpQty, setPdpQty] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState("30ml");
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const priceBlockRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="v2 min-h-screen bg-white">
@@ -357,6 +373,104 @@ export default function RedesignPreview() {
             ],
           },
         ]}
+      />
+
+      {/* ========== PHASE 4: PRODUCT PAGE SECTIONS ========== */}
+
+      {/* Divider */}
+      <div className="max-w-[var(--container-max)] mx-auto px-12 py-16">
+        <div className="border-t border-[#E0E0E0] pt-16">
+          <h2 className="font-heading text-[36px] font-bold text-black text-center mb-2">Product Detail Page Preview</h2>
+          <p className="font-body text-sm text-[#888] text-center mb-12">Phase 4 components shown below</p>
+        </div>
+      </div>
+
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Skincare", href: "/skincare" },
+          { label: "Serums", href: "/skincare/serums" },
+          { label: "Vitamin C Brightening Serum" },
+        ]}
+      />
+
+      {/* Product detail 2-col layout */}
+      <div className="max-w-[var(--container-max)] mx-auto px-4 redesign-sm:px-6 redesign-md:px-12 py-2 redesign-md:py-2">
+        <div className="grid grid-cols-1 redesign-sm:grid-cols-2 gap-6 redesign-md:gap-12 items-start">
+          {/* Left: Image gallery */}
+          <ProductImageGallery
+            images={productImages}
+            productName="Vitamin C Brightening Serum"
+            onZoom={() => {}}
+          />
+
+          {/* Right: Product info */}
+          <ProductInfo
+            priceRef={priceBlockRef}
+            badges={[
+              { variant: "new", label: "New" },
+              { variant: "discount", label: "-20%" },
+            ]}
+            title="Vitamin C Brightening Serum"
+            rating={4.5}
+            reviewCount={127}
+            salePrice={39.99}
+            retailPrice={52.00}
+            shippingNote="Tax included. Shipping calculated at checkout."
+            description="A powerful antioxidant serum that evens skin tone and boosts radiance. Made with 15% L-Ascorbic Acid, Vitamin E, and Ferulic Acid for maximum efficacy. Paraben-free, cruelty-free, and suitable for all skin types. Apply 3-5 drops to clean, dry skin morning and night before moisturizer."
+            stock={131}
+            variants={[
+              { label: "15ml", value: "15ml" },
+              { label: "30ml", value: "30ml" },
+              { label: "50ml", value: "50ml" },
+            ]}
+            selectedVariant={selectedVariant}
+            onVariantChange={setSelectedVariant}
+            quantity={pdpQty}
+            onQuantityChange={setPdpQty}
+            onAddToCart={() => {}}
+            onBuyNow={() => {}}
+            accordionItems={[
+              {
+                title: "Overview",
+                content: "Our Vitamin C Brightening Serum is formulated with 15% L-Ascorbic Acid, the most potent form of Vitamin C, combined with Vitamin E and Ferulic Acid for maximum antioxidant protection. This lightweight serum absorbs quickly, leaving your skin feeling hydrated and refreshed.",
+              },
+              {
+                title: "How to use",
+                content: "Apply 3-5 drops to clean, dry skin in the morning and evening. Gently pat into face, neck, and décolleté. Follow with moisturizer and sunscreen (AM). For best results, use consistently for 4-6 weeks.",
+              },
+              {
+                title: "Ingredients",
+                content: "Water, Ascorbic Acid (15%), Propanediol, Ethoxydiglycol, Tocopherol (Vitamin E), Ferulic Acid, Panthenol, Sodium Hyaluronate, Glycerin, Xanthan Gum, Phenoxyethanol.",
+              },
+            ]}
+          />
+        </div>
+      </div>
+
+      {/* Recommended Products */}
+      <RecommendedProducts
+        products={mockProducts.slice(0, 4)}
+      />
+
+      {/* Sticky ATC Bar (appears when scrolling past price) */}
+      <StickyATCBar
+        priceBlockRef={priceBlockRef as React.RefObject<HTMLDivElement>}
+        productName="Vitamin C Brightening Serum"
+        thumbnailSrc="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=100&h=100&fit=crop"
+        salePrice={39.99}
+        retailPrice={52.00}
+        variants={[
+          { label: "15ml", value: "15ml" },
+          { label: "30ml", value: "30ml" },
+          { label: "50ml", value: "50ml" },
+        ]}
+        selectedVariant={selectedVariant}
+        onVariantChange={setSelectedVariant}
+        quantity={pdpQty}
+        onQuantityChange={setPdpQty}
+        onAddToCart={() => {}}
       />
 
       {/* ========== SHARED SECTIONS ========== */}
