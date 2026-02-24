@@ -58,6 +58,10 @@ module.exports = {
   			'menu': 'cubic-bezier(0.4, 0, 0.2, 1)',
   		},
   		keyframes: {
+  			marquee: {
+  				'0%': { transform: 'translateX(0)' },
+  				'100%': { transform: 'translateX(-50%)' },
+  			},
   			slider: {
   				'0%, 30%': {
   					marginLeft: '0'
