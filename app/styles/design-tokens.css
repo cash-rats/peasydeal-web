@@ -1,0 +1,82 @@
+/* ==========================================================================
+   PeasyDeal Redesign — Design Tokens
+   Source: REDESIGN_PRD.md §2.1
+   ========================================================================== */
+
+:root {
+  /* Typography */
+  --font-heading: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-hero: 40px;
+  --font-size-section-title: 28px;
+  --font-size-card-title-lg: 32px;
+  --font-size-card-title: 15px;
+  --font-size-body: 14px;
+  --font-size-caption: 12px;
+  --font-size-badge: 11px;
+  --line-height-heading: 1.2;
+  --line-height-body: 1.5;
+  --letter-spacing-uppercase: 1.5px;
+
+  /* Color Palette */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-card: #F5F5F5;
+  --color-bg-dark: #000000;
+  --color-bg-warm: #F0EBE3;
+  --color-text-primary: #000000;
+  --color-text-secondary: #888888;
+  --color-text-muted: #999999;
+  --color-text-disabled: #AAAAAA;
+  --color-text-body: #666666;
+  --color-price-sale: #C75050;
+  --color-badge-discount: #4A7C59;
+  --color-badge-new: #C75050;
+  --color-badge-selling: #4A7C59;
+  --color-border-light: #E0E0E0;
+  --color-white: #FFFFFF;
+
+  /* Spacing Scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 80px;
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  /* Shadows */
+  --shadow-card-hover: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-overlay: 0 2px 8px rgba(0, 0, 0, 0.10);
+  --shadow-header-sticky: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --shadow-badge: 0 1px 3px rgba(0, 0, 0, 0.15);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 200ms ease;
+  --transition-slow: 300ms ease;
+  --transition-menu: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Container */
+  --container-max: 1320px;
+  --container-padding: 48px;
+}
+
+/* Responsive container padding */
+@media (max-width: 1023px) {
+  :root {
+    --container-padding: 24px;
+  }
+}
+
+@media (max-width: 639px) {
+  :root {
+    --container-padding: 16px;
+  }
+}

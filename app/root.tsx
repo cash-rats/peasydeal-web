@@ -34,6 +34,8 @@ import FiveHundredError from './components/FiveHundreError';
 import FourOhFour from './components/FourOhFour';
 import Layout, { links as LayoutLinks } from './Layout';
 import tailwindStylesheetUrl from './styles/tailwind.css?url';
+import designTokenStyles from './styles/design-tokens.css?url';
+import redesignBaseStyles from './styles/redesign-base.css?url';
 import styles from './styles/global.css?url';
 import structuredData from './structured_data';
 
@@ -45,6 +47,9 @@ export const links: LinksFunction = () => {
     { rel: 'icon', type: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
     { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon-180x180.png' },
     { rel: 'manifest', href: '/manifest.webmanifest' },
+
+    { rel: 'stylesheet', href: designTokenStyles },
+    { rel: 'stylesheet', href: redesignBaseStyles },
     { rel: 'stylesheet', href: tailwindStylesheetUrl },
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
@@ -55,6 +60,14 @@ export const links: LinksFunction = () => {
     {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap',
+    },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap'
+    },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap'
     },
     { rel: 'stylesheet', href: styles },
     // ...cartLinks(),

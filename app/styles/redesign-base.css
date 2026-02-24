@@ -1,0 +1,59 @@
+/* ==========================================================================
+   PeasyDeal Redesign — Base Styles (v2 scope)
+   Scoped to .v2 class to avoid conflicts with legacy components.
+   ========================================================================== */
+
+.v2 {
+  font-family: var(--font-body);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height-body);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.v2 *,
+.v2 *::before,
+.v2 *::after {
+  box-sizing: border-box;
+}
+
+.v2 img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Container utility */
+.v2-container {
+  max-width: var(--container-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+/* Heading base */
+.v2 h1,
+.v2 h2,
+.v2 h3 {
+  font-family: var(--font-heading);
+  line-height: var(--line-height-heading);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* Link reset for v2 */
+.v2 a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Button reset for v2 */
+.v2 button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+}

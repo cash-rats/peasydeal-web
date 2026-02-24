@@ -20,9 +20,43 @@ module.exports = {
   		'1200': '1200px',
   		'1348': '1348px',
   		'1600': '1600px',
+  		'redesign-sm': '640px',
+  		'redesign-md': '1024px',
+  		'redesign-lg': '1440px',
             ...defaultTheme.screens
   	},
   	extend: {
+  		fontFamily: {
+  			heading: ['Playfair Display', 'Georgia', 'serif'],
+  			body: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+  		},
+  		fontSize: {
+  			'hero': '40px',
+  			'section-title': '28px',
+  			'card-title-lg': '32px',
+  			'card-title': '15px',
+  			'body-redesign': '14px',
+  			'caption': '12px',
+  			'badge': '11px',
+  		},
+  		spacing: {
+  			'4.5': '18px',
+  			'13': '52px',
+  			'15': '60px',
+  			'18': '72px',
+  			'22': '88px',
+  		},
+  		maxWidth: {
+  			'container': '1320px',
+  		},
+  		transitionDuration: {
+  			'fast': '150ms',
+  			'normal': '200ms',
+  			'slow': '300ms',
+  		},
+  		transitionTimingFunction: {
+  			'menu': 'cubic-bezier(0.4, 0, 0.2, 1)',
+  		},
   		keyframes: {
   			slider: {
   				'0%, 30%': {
@@ -120,6 +154,24 @@ module.exports = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			'rd': {
+  				'bg-primary': '#FFFFFF',
+  				'bg-card': '#F5F5F5',
+  				'bg-dark': '#000000',
+  				'bg-warm': '#F0EBE3',
+  				'text-primary': '#000000',
+  				'text-secondary': '#888888',
+  				'text-muted': '#999999',
+  				'text-disabled': '#AAAAAA',
+  				'text-body': '#666666',
+  				'price-sale': '#C75050',
+  				'badge-discount': '#4A7C59',
+  				'badge-new': '#C75050',
+  				'badge-selling': '#4A7C59',
+  				'badge-hot': '#E8A040',
+  				'badge-limited': '#333333',
+  				'border-light': '#E0E0E0',
   			}
   		},
   		boxShadow: {
@@ -128,12 +180,20 @@ module.exports = {
   			searchbox: 'rgb(0 0 0 / 12%) 1px 2px 8px 1px',
   			button: '0 2px 5px 0 rgb(0 0 0 / 50%)',
   			'button-hover': '0 2px 10px 0 rgb(0 0 0 / 50%)',
-  			'price-panel': 'rgb(0 0 0 / 20%) 0px 0px 4px 1px, rgb(0 0 0 / 14%) 0px 0px 1px 0px, rgb(0 0 0 / 12%) 0px 2px 1px -1px'
+  			'price-panel': 'rgb(0 0 0 / 20%) 0px 0px 4px 1px, rgb(0 0 0 / 14%) 0px 0px 1px 0px, rgb(0 0 0 / 12%) 0px 2px 1px -1px',
+  			'card-hover': '0 4px 16px rgba(0, 0, 0, 0.08)',
+  			'overlay': '0 2px 8px rgba(0, 0, 0, 0.10)',
+  			'header-sticky': '0 2px 12px rgba(0, 0, 0, 0.06)',
+  			'badge': '0 1px 3px rgba(0, 0, 0, 0.15)',
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
+  			sm: 'calc(var(--radius) - 4px)',
+  			'rd-sm': '8px',
+  			'rd-md': '12px',
+  			'rd-lg': '16px',
+  			'rd-full': '999px',
   		},
   	}
   },
