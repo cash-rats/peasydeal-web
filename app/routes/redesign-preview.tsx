@@ -31,6 +31,21 @@ import { ProductImageGallery } from "~/components/v2/ProductImageGallery";
 import { ProductInfo } from "~/components/v2/ProductInfo";
 import { RecommendedProducts } from "~/components/v2/RecommendedProducts";
 import { StickyATCBar } from "~/components/v2/StickyATCBar";
+// Phase 5 — Cart, Checkout & Payment components
+import { CartDrawer } from "~/components/v2/CartDrawer";
+import type { CartItem } from "~/components/v2/CartDrawer";
+import { CartPage } from "~/components/v2/CartPage";
+import { CheckoutLayout } from "~/components/v2/CheckoutLayout";
+import { ExpressCheckout } from "~/components/v2/ExpressCheckout";
+import { ContactInfoSection } from "~/components/v2/ContactInfoSection";
+import { ShippingAddressSection } from "~/components/v2/ShippingAddressSection";
+import type { ShippingAddress } from "~/components/v2/ShippingAddressSection";
+import { CheckoutInput } from "~/components/v2/CheckoutInput";
+import { CheckoutNav } from "~/components/v2/CheckoutNav";
+import { OrderSummary } from "~/components/v2/OrderSummary";
+import { PaymentStep } from "~/components/v2/PaymentStep";
+import type { PaymentMethod } from "~/components/v2/PaymentStep";
+import { PaymentSuccess, PaymentFailed, PaymentLoadingSkeleton } from "~/components/v2/PaymentResult";
 
 const navItems: NavItem[] = [
   { label: "Home", href: "/" },
@@ -107,6 +122,46 @@ const productImages = [
   "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=800&h=800&fit=crop&q=70",
 ];
 
+const mockCartItems: CartItem[] = [
+  {
+    id: "cart-1",
+    name: "Vitamin C Brightening Serum",
+    variant: "30ml",
+    thumbnailSrc: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200&h=250&fit=crop",
+    salePrice: 39.99,
+    retailPrice: 52.0,
+    quantity: 2,
+  },
+  {
+    id: "cart-2",
+    name: "Hydra Glow Face Cream",
+    variant: "50ml",
+    thumbnailSrc: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=250&fit=crop",
+    retailPrice: 44.99,
+    quantity: 1,
+  },
+  {
+    id: "cart-3",
+    name: "Gentle Foaming Cleanser with Aloe Vera Extract",
+    thumbnailSrc: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=200&h=250&fit=crop",
+    salePrice: 19.99,
+    retailPrice: 28.0,
+    quantity: 1,
+  },
+];
+
+const emptyShippingAddress: ShippingAddress = {
+  country: "US",
+  firstName: "",
+  lastName: "",
+  company: "",
+  address: "",
+  city: "",
+  state: "",
+  postcode: "",
+  phone: "",
+};
+
 export default function RedesignPreview() {
   const [qty, setQty] = useState(1);
   const [pdpQty, setPdpQty] = useState(1);
@@ -114,6 +169,13 @@ export default function RedesignPreview() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const priceBlockRef = useRef<HTMLDivElement>(null);
+  // Phase 5 state
+  const [cartDrawerOpen, setCartDrawerOpen] = useState(false);
+  const [checkoutEmail, setCheckoutEmail] = useState("");
+  const [marketingOptIn, setMarketingOptIn] = useState(true);
+  const [shippingAddress, setShippingAddress] = useState(emptyShippingAddress);
+  const [saveInfo, setSaveInfo] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("stripe");
 
   return (
     <div className="v2 min-h-screen bg-white">
@@ -472,6 +534,140 @@ export default function RedesignPreview() {
         onQuantityChange={setPdpQty}
         onAddToCart={() => {}}
       />
+
+      {/* ========== PHASE 5: CART / CHECKOUT / PAYMENT ========== */}
+
+      {/* Divider */}
+      <div className="max-w-[var(--container-max)] mx-auto px-12 py-16">
+        <div className="border-t border-[#E0E0E0] pt-16">
+          <h2 className="font-heading text-[36px] font-bold text-black text-center mb-2">Cart, Checkout &amp; Payment Preview</h2>
+          <p className="font-body text-sm text-[#888] text-center mb-12">Phase 5 components shown below</p>
+        </div>
+      </div>
+
+      {/* Cart Drawer trigger */}
+      <div className="max-w-[var(--container-max)] mx-auto px-12 mb-8">
+        <button
+          type="button"
+          onClick={() => setCartDrawerOpen(true)}
+          className="h-12 px-8 rounded-lg border-none bg-black text-white font-body text-sm font-semibold cursor-pointer hover:bg-[#333] transition-colors duration-fast"
+        >
+          Open Cart Drawer
+        </button>
+      </div>
+
+      {/* Cart Drawer */}
+      <CartDrawer
+        open={cartDrawerOpen}
+        onClose={() => setCartDrawerOpen(false)}
+        items={mockCartItems}
+        freeShippingThreshold={200}
+        giftWrapPrice={2.0}
+        onViewCart={() => setCartDrawerOpen(false)}
+        onCheckout={() => setCartDrawerOpen(false)}
+      />
+
+      {/* Cart Page (inline preview) */}
+      <CartPage
+        items={mockCartItems.map((i) => ({
+          id: i.id,
+          name: i.name,
+          variant: i.variant,
+          thumbnailSrc: i.thumbnailSrc,
+          salePrice: i.salePrice,
+          retailPrice: i.retailPrice,
+          quantity: i.quantity,
+        }))}
+      />
+
+      {/* Checkout Input demo */}
+      <div className="max-w-[var(--container-max)] mx-auto px-12 py-8">
+        <h3 className="font-heading text-xl font-bold text-black mb-6">Form Inputs (§8.9)</h3>
+        <div className="max-w-md flex flex-col gap-3">
+          <CheckoutInput label="Email" type="email" value="" onChange={() => {}} />
+          <CheckoutInput label="Email" type="email" value="test@example.com" onChange={() => {}} />
+          <CheckoutInput label="Email" type="email" value="" onChange={() => {}} error="Enter a valid email address" />
+        </div>
+      </div>
+
+      {/* Checkout Layout preview (compact) */}
+      <div className="max-w-[var(--container-max)] mx-auto px-12 py-8">
+        <h3 className="font-heading text-xl font-bold text-black mb-6">Checkout Layout (§8.1-8.8)</h3>
+      </div>
+      <div className="border border-[#E0E0E0] rounded-xl overflow-hidden mx-4 redesign-md:mx-12 mb-16">
+        <CheckoutLayout
+          currentStep="information"
+          leftContent={
+            <div>
+              <ExpressCheckout />
+              <ContactInfoSection
+                email={checkoutEmail}
+                onEmailChange={setCheckoutEmail}
+                marketingOptIn={marketingOptIn}
+                onMarketingOptInChange={setMarketingOptIn}
+                onLoginClick={() => {}}
+              />
+              <ShippingAddressSection
+                address={shippingAddress}
+                onChange={(field, value) =>
+                  setShippingAddress((prev) => ({ ...prev, [field]: value }))
+                }
+                saveInfo={saveInfo}
+                onSaveInfoChange={setSaveInfo}
+              />
+              <CheckoutNav
+                returnLabel="Return to cart"
+                returnHref="/cart"
+                continueLabel="Continue to shipping"
+                onContinue={() => {}}
+              />
+            </div>
+          }
+          rightContent={
+            <OrderSummary
+              items={mockCartItems.map((i) => ({
+                id: i.id,
+                name: i.name,
+                variant: i.variant,
+                thumbnailSrc: i.thumbnailSrc,
+                quantity: i.quantity,
+                salePrice: i.salePrice,
+                retailPrice: i.retailPrice,
+              }))}
+              subtotal={144.96}
+              total={144.96}
+              currency="$"
+            />
+          }
+        />
+      </div>
+
+      {/* Payment Step */}
+      <div className="max-w-[var(--container-max)] mx-auto px-12 py-8">
+        <h3 className="font-heading text-xl font-bold text-black mb-6">Payment Step (§8.11)</h3>
+        <div className="max-w-lg">
+          <PaymentStep
+            activeMethod={paymentMethod}
+            onMethodChange={setPaymentMethod}
+          />
+        </div>
+      </div>
+
+      {/* Payment Results */}
+      <div className="max-w-[var(--container-max)] mx-auto px-12 py-8">
+        <h3 className="font-heading text-xl font-bold text-black mb-6">Payment Results (§8.12)</h3>
+      </div>
+      <PaymentSuccess
+        orderNumber="#PD-20260224-001"
+        items={[
+          { id: "1", name: "Vitamin C Brightening Serum", variant: "30ml", thumbnailSrc: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?w=200&h=200&fit=crop", quantity: 2, price: 79.98 },
+          { id: "2", name: "Hydra Glow Face Cream", variant: "50ml", thumbnailSrc: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=200&h=200&fit=crop", quantity: 1, price: 44.99 },
+        ]}
+        shippingInfo={{ name: "Jane Smith", address: "123 Main St, Los Angeles, CA 90001", method: "Standard Shipping (5-7 days)" }}
+        total={124.97}
+      />
+      <PaymentFailed />
+      <PaymentLoadingSkeleton />
 
       {/* ========== SHARED SECTIONS ========== */}
 
