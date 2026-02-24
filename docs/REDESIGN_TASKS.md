@@ -213,15 +213,15 @@ These are the building blocks used across all pages. Must be done first.
 
 | # | Task | PRD Ref | Status |
 |---|------|---------|--------|
-| **4.1** | **Breadcrumbs** — `app/components/v2/Breadcrumbs/` | §5.1 | ⬜ |
+| **4.1** | **Breadcrumbs** — `app/components/v2/Breadcrumbs/` | §5.1 | ✅ |
 | | - Chevron separator, hover color transition | | |
 | | - Current crumb: no pointer events | | |
-| **4.2** | **Product Image Gallery** — `app/components/v2/ProductImageGallery/` | §5.3 | ⬜ |
+| **4.2** | **Product Image Gallery** — `app/components/v2/ProductImageGallery/` | §5.3 | ✅ |
 | | - Main image (3:4 aspect, zoom icon) + 2-col thumbnail grid below | | |
 | | - Active thumbnail border, hover states | | |
 | | - Sticky positioning on desktop | | |
 | | - Mobile: horizontal swipe carousel with dot indicators | | |
-| **4.3** | **Product Info (Right Column)** — `app/components/v2/ProductInfo/` | §5.4 | ⬜ |
+| **4.3** | **Product Info (Right Column)** — `app/components/v2/ProductInfo/` | §5.4 | ✅ |
 | | - Badges row, title, rating stars, price block | | |
 | | - Description with "Read more" expand | | |
 | | - Stock indicator (green dot + count) | | |
@@ -232,10 +232,10 @@ These are the building blocks used across all pages. Must be done first.
 | | - Store pickup section | | |
 | | - Accordion sections (Overview / How to use / Ingredients) | | |
 | | - Action links (Share, Ask a question) | | |
-| **4.4** | **Recommended Products section** — `app/components/v2/RecommendedProducts/` | §5.5 | ⬜ |
+| **4.4** | **Recommended Products section** — `app/components/v2/RecommendedProducts/` | §5.5 | ✅ |
 | | - Centered heading + 4-col grid of product cards | | |
 | | - Cards with border variant (1px solid #E0E0E0) | | |
-| **4.5** | **Sticky Add-to-Cart Bar** — `app/components/v2/StickyATCBar/` | §5.6 | ⬜ |
+| **4.5** | **Sticky Add-to-Cart Bar** — `app/components/v2/StickyATCBar/` | §5.6 | ✅ |
 | | - Fixed bottom bar, IntersectionObserver trigger on price block | | |
 | | - Product thumbnail, name, price, variant select, quantity picker (pill), ATC button | | |
 | | - Slide-in/out animation | | |
