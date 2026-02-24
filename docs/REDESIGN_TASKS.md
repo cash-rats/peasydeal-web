@@ -255,7 +255,7 @@ These are the building blocks used across all pages. Must be done first.
 
 | # | Task | PRD Ref | Status |
 |---|------|---------|--------|
-| **5.1** | **Cart Drawer (Slide-Out)** — `app/components/v2/CartDrawer/` | §8.10 | ⬜ |
+| **5.1** | **Cart Drawer (Slide-Out)** — `app/components/v2/CartDrawer/` | §8.10 | ✅ |
 | | - Fixed right panel (420px), overlay backdrop | | |
 | | - Header: title, item count badge, close button | | |
 | | - Free shipping progress bar (animated, green at 100%) | | |
@@ -264,46 +264,46 @@ These are the building blocks used across all pages. Must be done first.
 | | - Empty state | | |
 | | - Animations: slide-in/out, item add/remove, quantity change | | |
 | | - Triggered by cart icon click or add-to-cart | | |
-| **5.2** | **Cart Page (Fallback)** — `app/components/v2/CartPage/` | §8.10.B | ⬜ |
+| **5.2** | **Cart Page (Fallback)** — `app/components/v2/CartPage/` | §8.10.B | ✅ |
 | | - Full-page cart table: product, price, quantity, total columns | | |
 | | - Mobile: card-based layout (no table) | | |
 | | - Cart footer: subtotal, tax note, checkout button, continue shopping | | |
 | | - Empty cart state | | |
 | | - Remove item modal | | |
 | | - Update `app/routes/cart/` to use new components | | |
-| **5.3** | **Checkout Form Input component** — `app/components/v2/CheckoutInput/` | §8.9 | ⬜ |
+| **5.3** | **Checkout Form Input component** — `app/components/v2/CheckoutInput/` | §8.9 | ✅ |
 | | - Floating label (Shopify pattern) | | |
 | | - States: default, focus, has-value, error | | |
 | | - Select variant with custom chevron | | |
 | | - Error message with icon | | |
-| **5.4** | **Checkout Page Layout** — `app/components/v2/CheckoutLayout/` | §8.1–8.2 | ⬜ |
+| **5.4** | **Checkout Page Layout** — `app/components/v2/CheckoutLayout/` | §8.1–8.2 | ✅ |
 | | - Two-column: form (left) + order summary (right) | | |
 | | - No standard header/footer (checkout-only chrome) | | |
 | | - Store name/logo linking to home | | |
 | | - Breadcrumb steps: Cart → Information → Shipping → Payment | | |
 | | - Responsive: single column, summary as collapsible accordion | | |
-| **5.5** | **Express Checkout** — `app/components/v2/ExpressCheckout/` | §8.3 | ⬜ |
+| **5.5** | **Express Checkout** — `app/components/v2/ExpressCheckout/` | §8.3 | ✅ |
 | | - Shop Pay, PayPal, Google Pay buttons | | |
 | | - "OR" divider | | |
-| **5.6** | **Contact Information Section** — `app/components/v2/ContactInfoSection/` | §8.4 | ⬜ |
+| **5.6** | **Contact Information Section** — `app/components/v2/ContactInfoSection/` | §8.4 | ✅ |
 | | - Email input, marketing opt-in checkbox | | |
-| **5.7** | **Shipping Address Section** — `app/components/v2/ShippingAddressSection/` | §8.5 | ⬜ |
+| **5.7** | **Shipping Address Section** — `app/components/v2/ShippingAddressSection/` | §8.5 | ✅ |
 | | - Country, name row (2-col), company (optional), address, suburb, state/postcode row (3-col), phone | | |
 | | - Save info checkbox | | |
-| **5.8** | **Navigation Row + Policy Links** — `app/components/v2/CheckoutNav/` | §8.6–8.7 | ⬜ |
+| **5.8** | **Navigation Row + Policy Links** — `app/components/v2/CheckoutNav/` | §8.6–8.7 | ✅ |
 | | - Return link (left) + Continue/Pay button (right) | | |
 | | - Policy links below | | |
-| **5.9** | **Order Summary (Right Column)** — `app/components/v2/OrderSummary/` | §8.8 | ⬜ |
+| **5.9** | **Order Summary (Right Column)** — `app/components/v2/OrderSummary/` | §8.8 | ✅ |
 | | - Mobile toggle header | | |
 | | - Order items list (thumbnails with quantity badges) | | |
 | | - Discount/gift card input with apply button | | |
 | | - Price breakdown: subtotal, shipping, tax, total | | |
-| **5.10** | **Payment Step** — `app/components/v2/PaymentStep/` | §8.11 | ⬜ |
+| **5.10** | **Payment Step** — `app/components/v2/PaymentStep/` | §8.11 | ✅ |
 | | - Payment method tabs (Stripe, PayPal) | | |
 | | - Stripe Elements with custom appearance API theme | | |
 | | - Pay Now button with loading state | | |
 | | - Security trust line | | |
-| **5.11** | **Payment Result Pages** — `app/components/v2/PaymentResult/` | §8.12 | ⬜ |
+| **5.11** | **Payment Result Pages** — `app/components/v2/PaymentResult/` | §8.12 | ✅ |
 | | - Success page: animated checkmark, order details card, action buttons | | |
 | | - Failed page: error icon, message, retry/support buttons | | |
 | | - Loading skeleton with shimmer animation | | |
