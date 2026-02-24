@@ -88,11 +88,16 @@ module.exports = {
   				'100%': {
   					transform: 'translate3d(-1800px, 0, 0)'
   				}
-  			}
+  			},
+  			kenburns: {
+  				'0%': { transform: 'scale(1)' },
+  				'100%': { transform: 'scale(1.05)' },
+  			},
   		},
   		animation: {
   			play: 'animation',
-  			scrollgrid: 'scrollgrid 80s linear infinite'
+  			scrollgrid: 'scrollgrid 80s linear infinite',
+  			kenburns: 'kenburns 20s ease infinite alternate',
   		},
   		backgroundImage: {
   			'home-gradient-light-sm': 'url("/images/home-gradient-light-sm.png")',
