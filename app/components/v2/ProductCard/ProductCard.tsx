@@ -164,13 +164,13 @@ export function ProductCard({
       role="article"
     >
       {/* Image Area */}
-      <div className="relative w-full aspect-[4/5] flex items-center justify-center p-5 overflow-hidden">
+      <div className="relative w-full aspect-[4/5] overflow-hidden">
         {/* Primary Image */}
         {product.main_pic && !imageError ? (
           <img
             src={product.main_pic}
             alt={product.title}
-            className="max-w-[80%] max-h-[80%] object-contain transition-opacity duration-normal"
+            className="w-full h-full object-cover transition-opacity duration-normal"
             loading="lazy"
             onError={() => setImageError(true)}
           />
