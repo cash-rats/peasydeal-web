@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import type { LinksFunction, MetaFunction } from 'react-router';
 import { useRouteLoaderData } from 'react-router';
 import mapboxCss from 'mapbox-gl/dist/mapbox-gl.css?url';
 
 import FormBold from '~/components/FormBold';
-import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
+import { V2Layout } from '~/components/v2/GlobalLayout';
 import type { RootLoaderData } from '~/root';
-import { useCartCount } from '~/routes/hooks';
+import { Breadcrumbs } from '~/components/v2/Breadcrumbs';
+import { PageTitle } from '~/components/v2/PageTitle';
 import { envs } from '~/utils/env';
 import { getRootFBSEO_V2 } from '~/utils/seo';
 
@@ -15,22 +16,18 @@ const PAGE_DESC = 'If you have any questions or concerns, please do not hesitate
 const OFFICE_COORDS: [number, number] = [-0.1462043, 51.5217089]; // lng, lat
 
 export const links: LinksFunction = () => [
-  ...CatalogLayoutLinks(),
   { rel: 'stylesheet', href: mapboxCss },
 ];
 
 export const meta: MetaFunction = () => {
   return getRootFBSEO_V2().map(tag => {
     if (!('property' in tag)) return tag;
-
     if (tag.property === 'og:title') {
       tag.content = PAGE_TITLE;
     }
-
     if (tag.property === 'og:description') {
       tag.content = PAGE_DESC;
     }
-
     return tag;
   });
 };
@@ -39,13 +36,16 @@ export default function ContactUs() {
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const categories = rootData?.categories ?? [];
   const navBarCategories = rootData?.navBarCategories ?? [];
-  const cartCount = useCartCount();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<any>(null);
   const [isClient, setIsClient] = useState(false);
 
+  const breadcrumbs = useMemo(
+    () => [{ label: 'Home', href: '/' }, { label: 'Contact Us' }],
+    []
+  );
+
   useEffect(() => {
-    // Defer Mapbox initialization to the client to avoid SSR window references.
     setIsClient(true);
   }, []);
 
@@ -85,60 +85,52 @@ export default function ContactUs() {
   }, [isClient]);
 
   return (
-    <CatalogLayout
-      categories={categories}
-      navBarCategories={navBarCategories}
-      cartCount={cartCount}
-    >
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-        <header className="space-y-3 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">
-            Support
-          </p>
-          <h1 className="text-3xl font-semibold text-slate-800 sm:text-4xl">
-            Contact Us
-          </h1>
-          <p className="text-lg leading-7 text-slate-700">
-            {PAGE_DESC}
-          </p>
-        </header>
+    <V2Layout categories={categories} navBarCategories={navBarCategories}>
+      <div className="v2 max-w-[var(--container-max)] mx-auto px-4 redesign-sm:px-6 redesign-md:px-12 py-6">
+        <Breadcrumbs items={breadcrumbs} className="mb-4" />
+        <PageTitle
+          title="Contact Us"
+          subtitle={PAGE_DESC}
+        />
 
-        <article className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-          <section className="space-y-2">
-            <h2 className="text-lg font-semibold text-slate-900">Email</h2>
-            <a
-              className="inline-flex items-center gap-2 text-base font-medium text-blue-600 underline underline-offset-2 transition-colors hover:text-blue-700"
-              aria-label="Email PeasyDeal support"
-              href="mailto:contact@peasydeal.com"
-            >
-              contact@peasydeal.com
-            </a>
-          </section>
+        <div className="max-w-[780px] mx-auto space-y-8">
+          <article className="space-y-6 rounded-rd-lg border border-rd-border bg-rd-bg-card p-6 redesign-sm:p-8">
+            <section className="space-y-2">
+              <h2 className="font-heading text-lg font-semibold text-black">Email</h2>
+              <a
+                className="inline-flex items-center gap-2 font-body text-base font-medium text-black underline underline-offset-2 transition-colors hover:text-rd-text-body"
+                aria-label="Email PeasyDeal support"
+                href="mailto:contact@peasydeal.com"
+              >
+                contact@peasydeal.com
+              </a>
+            </section>
 
-          <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-slate-900">Address</h2>
-            <p className="text-base text-slate-700">
-              5th Floor 167 169 Great Portland Street, London, W1W 5PF, United Kingdom
+            <section className="space-y-3">
+              <h2 className="font-heading text-lg font-semibold text-black">Address</h2>
+              <p className="font-body text-base text-rd-text-body">
+                5th Floor 167 169 Great Portland Street, London, W1W 5PF, United Kingdom
+              </p>
+              <div className="overflow-hidden rounded-rd-md border border-rd-border">
+                {envs.MAPBOX_BOX_ACCESS_TOKEN ? (
+                  <div ref={mapContainerRef} className="h-[320px] w-full" />
+                ) : (
+                  <p className="p-4 font-body text-sm text-rd-text-body">
+                    Map is unavailable because MAPBOX_BOX_ACCESS_TOKEN is not configured.
+                  </p>
+                )}
+              </div>
+            </section>
+
+            <p className="font-body text-sm text-rd-text-body">
+              Whilst every effort is made to respond to all messages as soon as possible, during busy periods this could
+              take up to 3 working days.
             </p>
-            <div className="overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-              {envs.MAPBOX_BOX_ACCESS_TOKEN ? (
-                <div ref={mapContainerRef} className="h-[320px] w-full" />
-              ) : (
-                <p className="p-4 text-sm text-amber-700">
-                  Map is unavailable because MAPBOX_BOX_ACCESS_TOKEN is not configured.
-                </p>
-              )}
-            </div>
-          </section>
+          </article>
 
-          <p className="text-sm text-slate-600">
-            Whilst every effort is made to respond to all messages as soon as possible, during busy periods this could
-            take up to 3 working days.
-          </p>
-        </article>
-
-        <FormBold />
+          <FormBold />
+        </div>
       </div>
-    </CatalogLayout>
+    </V2Layout>
   );
 }

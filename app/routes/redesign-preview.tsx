@@ -65,25 +65,23 @@ const megaMenuConfig: MegaMenuConfig = {
   categories: [
     {
       heading: "Skincare",
+      href: "/skincare",
       links: [
         { label: "Cleansers", href: "/skincare/cleansers" },
         { label: "Moisturizers", href: "/skincare/moisturizers" },
         { label: "Serums", href: "/skincare/serums" },
-        { label: "Shop All", href: "/skincare" },
       ],
     },
     {
       heading: "Body Care",
+      href: "/body",
       links: [
         { label: "Body Wash", href: "/body/wash" },
         { label: "Lotions", href: "/body/lotions" },
         { label: "Oils", href: "/body/oils" },
-        { label: "Shop All", href: "/body" },
       ],
     },
   ],
-  trendingTitle: "Trending Now",
-  trendingProducts: [],
 };
 
 // Mock product data for Phase 3 components

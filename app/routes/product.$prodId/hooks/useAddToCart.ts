@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { getSessionIDFromSessionStore } from '~/services/daily_session';
 import type { ShoppingCart, ShoppingCartItem } from '~/sessions/types';
@@ -16,7 +16,6 @@ interface UseAddToCartProps {
 export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAddToCartProps) {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
-  const modalTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { cart, setCart } = useCartContext();
 
   const addItemToCart = useCallback(async () => {
@@ -46,9 +45,6 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
       });
 
       setOpenSuccessModal(true);
-      modalTimerRef.current = setTimeout(() => {
-        setOpenSuccessModal(false);
-      }, 1800);
     } finally {
       setIsAddingToCart(false);
     }
@@ -58,14 +54,6 @@ export function useAddToCart({ sessionStorableCartItem, variationImages }: UseAd
     cart,
     setCart,
   ]);
-
-  useEffect(() => {
-    return () => {
-      if (modalTimerRef.current) {
-        clearTimeout(modalTimerRef.current);
-      }
-    };
-  }, []);
 
   return {
     addItemToCart,

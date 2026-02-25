@@ -8,6 +8,8 @@ export interface CartItem {
   variant?: string;
   thumbnailSrc?: string;
   salePrice?: number;
+  /** Original sale price before super_deal discount */
+  originalSalePrice?: number;
   retailPrice: number;
   quantity: number;
   currency?: string;
@@ -95,7 +97,7 @@ export function CartDrawer({
   items,
   onQuantityChange,
   onRemoveItem,
-  freeShippingThreshold = 100,
+  freeShippingThreshold = 19.99,
   giftWrapPrice,
   giftWrapChecked = false,
   onGiftWrapChange,
@@ -274,13 +276,19 @@ export function CartDrawer({
                         {item.variant}
                       </p>
                     )}
-                    <div className="flex items-baseline gap-1.5">
+                    <div className="flex items-baseline gap-1.5 flex-wrap">
                       {item.salePrice != null ? (
                         <>
                           <span className="font-body text-sm font-semibold text-[#C75050]">
                             {item.currency ?? currency}
                             {item.salePrice.toFixed(2)}
                           </span>
+                          {item.originalSalePrice != null && item.originalSalePrice !== item.salePrice && (
+                            <span className="font-body text-xs text-[#999] line-through">
+                              {item.currency ?? currency}
+                              {item.originalSalePrice.toFixed(2)}
+                            </span>
+                          )}
                           <span className="font-body text-xs text-[#999] line-through">
                             {item.currency ?? currency}
                             {item.retailPrice.toFixed(2)}
@@ -320,7 +328,7 @@ export function CartDrawer({
             {/* Footer */}
             <div className="flex-shrink-0 px-6 pt-4 pb-6 border-t border-[#E0E0E0] bg-white">
               {/* Gift wrap */}
-              {giftWrapPrice != null && (
+              {/* {giftWrapPrice != null && (
                 <label className="flex items-center gap-2.5 pb-4 border-b border-[#E0E0E0] mb-3 cursor-pointer">
                   <span
                     className={cn(
@@ -336,10 +344,10 @@ export function CartDrawer({
                     For <span className="font-semibold">{currency}{giftWrapPrice.toFixed(2)}</span>, please wrap the products in this order.
                   </span>
                 </label>
-              )}
+              )} */}
 
               {/* Action links */}
-              <div className="flex gap-5 mb-4">
+              {/* <div className="flex gap-5 mb-4">
                 <button type="button" className="flex items-center gap-1.5 font-body text-[13px] text-black bg-transparent border-none p-0 cursor-pointer hover:text-[#666] transition-colors duration-fast">
                   <span className="text-[#888]"><PencilIcon /></span>
                   Order note
@@ -352,7 +360,7 @@ export function CartDrawer({
                   <span className="text-[#888]"><TagIcon /></span>
                   Coupon
                 </button>
-              </div>
+              </div> */}
 
               {/* Estimated total */}
               <div className="flex justify-between items-baseline mb-1">

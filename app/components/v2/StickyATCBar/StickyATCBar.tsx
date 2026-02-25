@@ -8,6 +8,8 @@ export interface StickyATCBarProps {
   productName: string;
   thumbnailSrc?: string;
   salePrice?: number;
+  /** Original sale price before super_deal discount */
+  originalSalePrice?: number;
   retailPrice: number;
   currency?: string;
   variants?: Array<{ label: string; value: string }>;
@@ -32,6 +34,7 @@ export function StickyATCBar({
   productName,
   thumbnailSrc,
   salePrice,
+  originalSalePrice,
   retailPrice,
   currency = "$",
   variants,
@@ -106,6 +109,11 @@ export function StickyATCBar({
                   <span className="font-body text-sm font-semibold text-[#C75050]">
                     {currency}{salePrice.toFixed(2)}
                   </span>
+                  {originalSalePrice != null && originalSalePrice !== salePrice && (
+                    <span className="font-body text-xs font-normal text-[#999] line-through">
+                      {currency}{originalSalePrice.toFixed(2)}
+                    </span>
+                  )}
                   <span className="font-body text-xs font-normal text-[#999] line-through">
                     {currency}{retailPrice.toFixed(2)}
                   </span>
@@ -126,6 +134,11 @@ export function StickyATCBar({
               <span className="font-body text-sm font-semibold text-[#C75050]">
                 {currency}{salePrice.toFixed(2)}
               </span>
+              {originalSalePrice != null && originalSalePrice !== salePrice && (
+                <span className="font-body text-xs font-normal text-[#999] line-through">
+                  {currency}{originalSalePrice.toFixed(2)}
+                </span>
+              )}
               <span className="font-body text-xs font-normal text-[#999] line-through">
                 {currency}{retailPrice.toFixed(2)}
               </span>

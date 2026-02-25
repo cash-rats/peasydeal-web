@@ -1,15 +1,16 @@
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
-import { BLOCKS, INLINES } from '@contentful/rich-text-types';
 import httpStatus from 'http-status-codes';
-import type { LinksFunction, MetaFunction } from 'react-router';
+import type { MetaFunction } from 'react-router';
 import { data, useLoaderData, useRouteLoaderData } from 'react-router';
+import { useMemo } from 'react';
 
 import { fetchContentfulPostWithId } from '~/api/contentful.server';
 import type { TContentfulPost } from '~/shared/types';
 import { getRootFBSEO_V2 } from '~/utils/seo';
-import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
+import { V2Layout } from '~/components/v2/GlobalLayout';
 import type { RootLoaderData } from '~/root';
-import { useCartCount } from '~/routes/hooks';
+import { Breadcrumbs } from '~/components/v2/Breadcrumbs';
+import { PageTitle } from '~/components/v2/PageTitle';
+import { ContentfulRichText } from '~/components/v2/ContentfulRichText';
 
 type LoaderData = TContentfulPost;
 
@@ -24,80 +25,40 @@ const collectNodeText = (node: any): string => {
   return '';
 };
 
-const shouldHideNode = (node: any): boolean => {
-  const text = collectNodeText(node).toLowerCase();
-  return HIDDEN_PHRASES.some(phrase => text.includes(phrase));
-};
-
-const richTextRenderers = {
-  [BLOCKS.PARAGRAPH]: (node: any, children: any) =>
-    shouldHideNode(node) ? null : <p className="text-lg leading-8 text-slate-700">{children}</p>,
-  [BLOCKS.HEADING_1]: (node: any, children: any) =>
-    shouldHideNode(node) ? null : <h2 className="text-2xl font-semibold text-slate-800 sm:text-3xl">{children}</h2>,
-  [BLOCKS.HEADING_2]: (node: any, children: any) =>
-    shouldHideNode(node) ? null : <h3 className="text-xl font-semibold text-emerald-700 sm:text-2xl">{children}</h3>,
-  [BLOCKS.HEADING_3]: (node: any, children: any) =>
-    shouldHideNode(node) ? null : <h4 className="text-lg font-semibold text-emerald-700">{children}</h4>,
-  [BLOCKS.UL_LIST]: (node: any, children: any) =>
-    shouldHideNode(node) ? null : <ul className="list-disc space-y-2 pl-6 text-lg leading-8 text-slate-700">{children}</ul>,
-  [BLOCKS.OL_LIST]: (node: any, children: any) =>
-    shouldHideNode(node) ? null : <ol className="list-decimal space-y-2 pl-6 text-lg leading-8 text-slate-700">{children}</ol>,
-  [BLOCKS.LIST_ITEM]: (node: any, children: any) =>
-    shouldHideNode(node) ? null : <li className="text-lg leading-7 text-slate-700">{children}</li>,
-  [BLOCKS.QUOTE]: (_node: any, children: any) => (
-    <blockquote className="border-l-4 border-emerald-500 bg-slate-50 px-4 py-3 text-lg leading-8 text-slate-800 italic">
-      {children}
-    </blockquote>
-  ),
-  [INLINES.HYPERLINK]: (node: any, children: any) => (
-    <a
-      className="font-medium text-blue-600 underline underline-offset-2 transition-colors hover:text-blue-700"
-      href={node?.data?.uri || '#'}
-      target="_blank"
-      rel="noreferrer"
-    >
-      {children}
-    </a>
-  ),
-};
-
-export const links: LinksFunction = () => [...CatalogLayoutLinks()];
-
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
-  const contentfulFields = data || {};
-
-  return getRootFBSEO_V2()
-    .map(tag => {
-      if (!('property' in tag)) return tag;
-
-      if (tag.property === 'og:title') {
-        tag.content = contentfulFields?.seoReference?.fields?.SEOtitle;
-      }
-
-      if (tag.property === 'og:description') {
-        tag.content = contentfulFields?.seoReference?.fields?.SEOdescription;
-      }
-
-      if (tag.property === 'og:image') {
-        tag.content = contentfulFields?.seoReference?.fields?.ogImage?.fields?.file?.url;
-      }
-
-      return tag;
-    });
+export const meta: MetaFunction = ({ data: loaderData }) => {
+  const post = loaderData as LoaderData | undefined;
+  return getRootFBSEO_V2().map((tag) => {
+    if (!('property' in tag)) return tag;
+    if (tag.property === 'og:title') {
+      tag.content = post?.seoReference?.fields?.SEOtitle;
+    }
+    if (tag.property === 'og:description') {
+      tag.content = post?.seoReference?.fields?.SEOdescription;
+    }
+    if (tag.property === 'og:image') {
+      tag.content = post?.seoReference?.fields?.ogImage?.fields?.file?.url;
+    }
+    return tag;
+  });
 };
 
 export const loader = async () => {
   try {
     const entryId = '2ihmYXUn9a3TVZB0AJLL1Z';
-    const res = await fetchContentfulPostWithId({ entryId });
+    const res = (await fetchContentfulPostWithId({ entryId })) as LoaderData;
+
+    // Filter out paragraphs containing hidden phrases
+    if (res?.body?.content) {
+      res.body.content = res.body.content.filter((node: any) => {
+        const text = collectNodeText(node).toLowerCase();
+        return !HIDDEN_PHRASES.some((phrase) => text.includes(phrase));
+      });
+    }
 
     return data<LoaderData>(res);
   } catch (e) {
     console.error(e);
-
-    throw data(e, {
-      status: httpStatus.INTERNAL_SERVER_ERROR,
-    });
+    throw data(e, { status: httpStatus.INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -106,35 +67,33 @@ export default function AboutUs() {
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const categories = rootData?.categories ?? [];
   const navBarCategories = rootData?.navBarCategories ?? [];
-  const cartCount = useCartCount();
 
-  const nodes = post?.body
-    ? documentToReactComponents(post.body, { renderNode: richTextRenderers })
-    : null;
+  const breadcrumbs = useMemo(
+    () => [{ label: 'Home', href: '/' }, { label: 'About Us' }],
+    []
+  );
+
+  const featuredImageUrl = post?.featuredImage?.fields?.file?.url as string | undefined;
 
   return (
-    <CatalogLayout
-      categories={categories}
-      navBarCategories={navBarCategories}
-      cartCount={cartCount}
-    >
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
-        <div className="space-y-6 text-center">
-          <h1 className="text-3xl font-semibold text-slate-800 sm:text-4xl">
-            {post?.postName}
-          </h1>
-          {post?.featuredImage?.fields?.file?.url ? (
-            <img
-              className="w-full rounded-lg object-cover shadow-sm"
-              src={post.featuredImage.fields.file.url}
-              alt={post?.postName || 'About PeasyDeal'}
-            />
-          ) : null}
-        </div>
-        <div className="space-y-6 text-slate-800">
-          {nodes}
+    <V2Layout categories={categories} navBarCategories={navBarCategories}>
+      <div className="v2 max-w-[var(--container-max)] mx-auto px-4 redesign-sm:px-6 redesign-md:px-12 py-6">
+        <Breadcrumbs items={breadcrumbs} className="mb-4" />
+        <PageTitle title={post?.postName || 'About Us'} />
+
+        {featuredImageUrl && (
+          <img
+            className="w-full rounded-rd-lg object-cover mb-10 max-h-[400px]"
+            src={featuredImageUrl}
+            alt={post?.postName || 'About PeasyDeal'}
+            loading="lazy"
+          />
+        )}
+
+        <div className="max-w-[780px] mx-auto">
+          <ContentfulRichText document={post?.body} />
         </div>
       </div>
-    </CatalogLayout>
+    </V2Layout>
   );
 }

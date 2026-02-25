@@ -8,6 +8,8 @@ export interface CartPageItem {
   variant?: string;
   thumbnailSrc?: string;
   salePrice?: number;
+  /** Original sale price before super_deal discount */
+  originalSalePrice?: number;
   retailPrice: number;
   quantity: number;
   currency?: string;
@@ -202,6 +204,11 @@ export function CartPage({
                         <span className="font-body text-sm font-medium text-[#C75050]">
                           {c}{item.salePrice.toFixed(2)}
                         </span>
+                        {item.originalSalePrice != null && item.originalSalePrice !== item.salePrice && (
+                          <span className="block font-body text-xs text-[#999] line-through">
+                            {c}{item.originalSalePrice.toFixed(2)}
+                          </span>
+                        )}
                         <span className="block font-body text-xs text-[#999] line-through">
                           {c}{item.retailPrice.toFixed(2)}
                         </span>
@@ -270,6 +277,11 @@ export function CartPage({
                       <span className="font-body text-sm font-semibold text-[#C75050]">
                         {c}{item.salePrice.toFixed(2)}
                       </span>
+                      {item.originalSalePrice != null && item.originalSalePrice !== item.salePrice && (
+                        <span className="font-body text-xs text-[#999] line-through">
+                          {c}{item.originalSalePrice.toFixed(2)}
+                        </span>
+                      )}
                       <span className="font-body text-xs text-[#999] line-through">
                         {c}{item.retailPrice.toFixed(2)}
                       </span>

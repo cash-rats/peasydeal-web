@@ -70,7 +70,7 @@ export function CoreProductsCarousel({
               <img
                 src={product.imageSrc}
                 alt={product.imageAlt ?? product.name}
-                className="max-w-[75%] max-h-[75%] object-contain transition-transform duration-normal group-hover:scale-[1.02]"
+                className="w-full h-full object-cover transition-transform duration-normal group-hover:scale-[1.02]"
                 loading="lazy"
               />
             </div>

@@ -3,7 +3,6 @@ import {
   Outlet,
   useLoaderData,
   useOutletContext,
-  useRouteLoaderData,
   useRouteError,
   isRouteErrorResponse,
   redirect,
@@ -11,7 +10,6 @@ import {
 import type {
   ShouldRevalidateFunctionArgs,
   LoaderFunctionArgs,
-  LinksFunction,
   MetaFunction,
 } from 'react-router';
 import { Elements } from '@stripe/react-stripe-js';
@@ -21,7 +19,6 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 import httpStatus from 'http-status-codes';
 
 import { tryCatch } from '~/utils/try-catch';
-import { useCartCount } from '~/routes/hooks';
 import { envs } from '~/utils/env';
 import { getCheckoutTitleText } from '~/utils/seo';
 import { createPaymentIntent } from '~/services/stripe.server';
@@ -32,18 +29,11 @@ import {
   commitCheckoutSession,
   getCheckoutSession,
 } from '~/sessions/checkout.session.server';
-import CatalogLayout, {
-  links as CatalogLayoutLinks,
-} from '~/components/layouts/CatalogLayout';
-import type { RootLoaderData } from '~/root';
 
 export const meta: MetaFunction = () => [
   { title: getCheckoutTitleText() },
 ];
 
-export const links: LinksFunction = () => {
-  return CatalogLayoutLinks();
-};
 
 type LoaderType = {
   client_secret?: string | undefined;
@@ -133,11 +123,7 @@ function CheckoutLayout() {
     price_info,
     promo_code,
   } = useLoaderData<LoaderType>() || {};
-  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
-  const categories = rootData?.categories ?? [];
-  const navBarCategories = rootData?.navBarCategories ?? [];
 
-  const cartCount = useCartCount();
   const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
 
   // TODO: don't hardcode locale
@@ -154,36 +140,30 @@ function CheckoutLayout() {
   }, []);
 
   return (
-    <CatalogLayout
-      categories={categories}
-      navBarCategories={navBarCategories}
-      cartCount={cartCount}
-    >
+    <>
       {stripePromise && (
-        <div className="min-h-[35rem] flex justify-center">
-          <Elements
-            stripe={stripePromise}
-            options={options}
+        <Elements
+          stripe={stripePromise}
+          options={options}
+        >
+          <PayPalScriptProvider
+            options={{
+              'client-id': envs.PAYPAL_CLIENT_ID,
+              currency: envs.PAYPAL_CURRENCY_CODE,
+              intent: 'capture',
+            }}
           >
-            <PayPalScriptProvider
-              options={{
-                'client-id': envs.PAYPAL_CLIENT_ID,
-                currency: envs.PAYPAL_CURRENCY_CODE,
-                intent: 'capture',
+            <Outlet
+              context={{
+                paymentClientSecret: clientSecret,
+                priceInfo: price_info,
+                promoCode: promo_code,
               }}
-            >
-              <Outlet
-                context={{
-                  paymentClientSecret: clientSecret,
-                  priceInfo: price_info,
-                  promoCode: promo_code,
-                }}
-              />
-            </PayPalScriptProvider>
-          </Elements>
-        </div>
+            />
+          </PayPalScriptProvider>
+        </Elements>
       )}
-    </CatalogLayout>
+    </>
   );
 }
 
@@ -199,46 +179,38 @@ export function useContext() {
 
 export function ErrorBoundary() {
   const error = useRouteError();
-  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
-  const cartCount = useCartCount();
-
-  const categories = rootData?.categories ?? [];
-  const navBarCategories = rootData?.navBarCategories ?? [];
 
   const isResponseError = isRouteErrorResponse(error);
 
   return (
-    <CatalogLayout
-      categories={categories}
-      navBarCategories={navBarCategories}
-      cartCount={cartCount}
-    >
-      <div className="min-h-[35rem] flex flex-col items-center justify-center space-y-4 px-4 text-center">
-        <h1 className="text-2xl font-semibold">Unable to load checkout</h1>
-        <p className="text-gray-600">
-          Checkout is unavailable right now. Please try again or return to your cart.
+    <div className="min-h-screen flex flex-col items-center justify-center space-y-4 px-4 text-center bg-white">
+      <a href="/" className="block font-heading text-2xl font-black text-black no-underline mb-4">
+        PeasyDeal
+      </a>
+      <h1 className="text-2xl font-semibold">Unable to load checkout</h1>
+      <p className="text-gray-600">
+        Checkout is unavailable right now. Please try again or return to your cart.
+      </p>
+      {isResponseError && (
+        <p className="text-sm text-gray-500">
+          Error code: {error.status}
         </p>
-        {isResponseError && (
-          <p className="text-sm text-gray-500">
-            Error code: {error.status}
-          </p>
-        )}
-        <div className="flex items-center gap-4">
-          <a
-            className="rounded bg-black px-4 py-2 text-white"
-            href="/cart"
-          >
-            Return to cart
-          </a>
-          <a
-            className="rounded border border-black px-4 py-2 text-black"
-            href="/"
-          >
-            Go home
-          </a>
-        </div>
+      )}
+      <div className="flex items-center gap-4">
+        <a
+          className="rounded bg-black px-4 py-2 text-white"
+          href="/cart"
+        >
+          Return to cart
+        </a>
+        <a
+          className="rounded border border-black px-4 py-2 text-black"
+          href="/"
+        >
+          Go home
+        </a>
       </div>
-    </CatalogLayout>
+    </div>
   );
 }
 

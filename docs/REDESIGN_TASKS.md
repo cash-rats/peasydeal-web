@@ -314,21 +314,106 @@ These are the building blocks used across all pages. Must be done first.
 
 ---
 
-## Phase 6 — Remaining Pages (§6, §7, §9, error pages)
+## Phase 6 — Remaining Pages & Components (§6, §7, §9, §11.4, §11.5, §11.14–11.16)
 **Branch:** `redesign/phase-6-remaining`
 **Dependencies:** Phase 0–2
-**Note:** PRD sections §6, §7, §9 are marked "Awaiting screenshots." Tasks below are placeholders.
+**Note:** PRD sections drafted based on v2 design system patterns and existing v1 component analysis.
 
 | # | Task | PRD Ref | Status |
 |---|------|---------|--------|
-| **6.1** | **Category / Collection Pages** — redesign `app/routes/__index/$collection/` | §6 | 🔲 Blocked (awaiting PRD) |
-| **6.2** | **Search** — redesign `DropDownSearchBar`, `MobileSearchDialog` | §7 | 🔲 Blocked (awaiting PRD) |
-| **6.3** | **Blog** — redesign `app/routes/blog/` | §9 | 🔲 Blocked (awaiting PRD) |
-| **6.4** | **Error Pages** — redesign `FourOhFour`, `FiveHundreError` | — | 🔲 Blocked (awaiting PRD) |
-| **6.5** | **Modals** — redesign `PeasyDealMessageModal`, `ItemAddedModal`, `EmailSubscribeModal`, etc. | §11.4 | 🔲 Blocked (awaiting PRD) |
-| **6.6** | **Loading States** — redesign `CssSpinner`, `Spinner`, `Snackbar` | §11.5 | 🔲 Blocked (awaiting PRD) |
-| **6.7** | **Tracking Pages** — redesign `app/routes/tracking/` | — | 🔲 Blocked (awaiting PRD) |
-| **6.8** | **Misc Components** — `PageTitle`, `LoadMore`/`LoadMoreButton` | — | 🔲 Blocked (awaiting PRD) |
+| **6.1** | **Spinner** — `app/components/v2/Spinner/` | §11.5.1 | ✅ |
+| | - SVG circle spinner with size variants (sm/md/lg/xl) | | |
+| | - `currentColor` inheritance, `800ms` linear rotation | | |
+| **6.2** | **Skeleton Loader** — `app/components/v2/Skeleton/` | §11.5.2 | ✅ |
+| | - Generic skeleton component with width/height/rounded props | | |
+| | - Shimmer animation (already in `redesign-base.css`) | | |
+| | - Blog card skeleton variant | | |
+| **6.3** | **Toast Notifications** — `app/components/v2/Toast/` | §11.5.4 | ✅ |
+| | - Success/error/info/warning variants | | |
+| | - Slide-in from right, auto-dismiss with hover pause | | |
+| | - Replace old `Snackbar` hooks with `useToast()` | | |
+| **6.4** | **Full-Page Loading Overlay** — `app/components/v2/LoadingOverlay/` | §11.5.3 | ✅ |
+| | - White frosted glass overlay with xl spinner | | |
+| | - Optional message text | | |
+| **6.5** | **Base Modal** — `app/components/v2/Modal/` | §11.4.1 | ✅ |
+| | - Shared overlay + dialog shell | | |
+| | - Close on overlay click / Escape | | |
+| | - Slide-up + fade entrance animation | | |
+| **6.6** | **Item Added Modal** — `app/components/v2/ItemAddedModal/` | §11.4.2 | ✅ |
+| | - Animated checkmark, "Added to cart" message | | |
+| | - Continue Shopping / View Cart buttons | | |
+| | - 2s auto-dismiss | | |
+| **6.7** | **Email Subscription Modal** — `app/components/v2/EmailSubscribeModal/` | §11.4.3 | ✅ |
+| | - Split-card layout (image + form) | | |
+| | - Floating-label email input, subscribe button | | |
+| | - Success state with checkmark, localStorage dismissal logic | | |
+| **6.8** | **Confirmation Modal** — `app/components/v2/ConfirmModal/` | §11.4.4 | ✅ |
+| | - Generic confirm/cancel with optional warning icon | | |
+| | - Destructive variant (red confirm button) | | |
+| **6.9** | **Error Pages** — `app/components/v2/ErrorPage/` | §11.14 | ✅ |
+| | - 404: illustration, "Page not found", Go Home / Browse Products | | |
+| | - 500: "Something went wrong", Try Again / Go Home | | |
+| | - Dev-only error details display | | |
+| **6.10** | **PageTitle** — `app/components/v2/PageTitle/` | §11.16.1 | ✅ |
+| | - Warm background banner with heading + optional subtitle | | |
+| | - Consistent with collection page header pattern | | |
+| **6.11** | **LoadMore / InfiniteScroll** — `app/components/v2/LoadMore/` | §11.16.2 | ✅ |
+| | - IntersectionObserver-based scroll detection | | |
+| | - Styled load-more button (v2 Button secondary) | | |
+| **6.12** | **Search — Desktop Dropdown** — `app/components/v2/SearchDropdown/` | §7.1 | ✅ |
+| | - Expanding search bar in header | | |
+| | - Recent searches, product suggestions, category suggestions | | |
+| | - Algolia integration preserved | | |
+| **6.13** | **Search — Mobile Full-Screen** — `app/components/v2/MobileSearch/` | §7.2 | ✅ |
+| | - Full-screen overlay with back button | | |
+| | - Same suggestion sections as desktop | | |
+| | - Touch-friendly spacing | | |
+| **6.14** | **Category / Collection Page** — `app/components/v2/CollectionPage/` | §6.1–6.8 | ✅ |
+| | - Warm banner header, 4-col product grid | | |
+| | - Desktop sticky sidebar, mobile bottom drawer | | |
+| | - Sort bar, progress indicator, load more | | |
+| | - Empty collection state | | |
+| **6.15** | **Blog Landing Page** — `app/components/v2/BlogLayout/` | §9.1, §9.2, §9.4 | ✅ |
+| | - Hero section, 2-col grid (posts + sidebar) | | |
+| | - Blog post cards with hover effects | | |
+| | - Pagination, latest posts widget, follow us widget | | |
+| **6.16** | **Blog Post Page** — `app/components/v2/BlogPost/` | §9.3, §9.4 | ✅ |
+| | - Article layout with rich text rendering | | |
+| | - Sidebar with latest posts + follow us | | |
+| | - Back navigation, tags, meta | | |
+| **6.17** | **Tracking Pages** — `app/components/v2/Tracking/` | §11.15 | ✅ |
+| | - Search page with styled input | | |
+| | - Order details: header card, product list, delivery info, summary | | |
+| | - Cancel order flow (modal with reason selection) | | |
+| | - Review modal (star rating, image upload, success state) | | |
+| | - Error state | | |
+| **6.18** | **Collection page composition** — update `app/routes/__index/collection/` | §6 | ✅ |
+| | - Wire v2 collection components into route | | |
+| | - Preserve existing loaders, session tracking, structured data | | |
+| **6.19** | **Search page composition** — update search routes | §7 | ✅ |
+| | - Wire v2 search components into header and routes | | |
+| | - Preserve Algolia integration | | |
+| **6.20** | **Blog page composition** — update `app/routes/blog/` | §9 | ✅ |
+| | - Wire v2 blog components into routes | | |
+| | - Preserve Contentful CMS integration | | |
+| **6.21** | **Tracking page composition** — update `app/routes/tracking/` | §11.15 | ✅ |
+| | - Wire v2 tracking components into routes | | |
+| | - Preserve existing API, review submission, cancel order logic | | |
+| **6.22** | **Global layout wiring** — replace v1 Header/Footer/CategoriesNav with v2 in all layout routes | §3, §10 | ✅ |
+| | - Create `app/components/v2/GlobalLayout/` with `V2Layout` component and `mappers.ts` | | |
+| | - Category→NavItem/MegaMenu/MobileNav/Footer mapper functions | | |
+| | - Cart count management via existing `/components/Header` resource route | | |
+| | - Wire into `__index.tsx` (main layout), `blog.tsx`, `tracking/index.tsx` | | |
+| | - Integrate v2 AnnouncementBar, Header, MegaMenu, MobileNavDrawer, SearchDropdown, MobileSearch, Footer | | |
+| **6.23** | **Promotion page composition** — update `app/routes/promotion.$promotion/` | §4.3, §6 | ✅ |
+| | - Replace v1 AllTimeCoupon, PromotionBannerWithTitle, ProductRowsContainer, LoadMoreButtonProgressBar | | |
+| | - Wire v2 CollectionHeader, ProductGrid, SortBar, ProgressIndicator, LoadMoreButton, EmptyCollection | | |
+| | - Replace FourOhFour with v2 NotFoundPage in ErrorBoundary | | |
+| | - Preserve existing loaders, reducer, API, structured data, meta | | |
+| **6.24** | **Shop All page** — new `app/routes/shop-all/route.tsx` | §6 | ✅ |
+| | - Category cards grid (text on warm-toned backgrounds, responsive 2/3/4-col) | | |
+| | - Recommended products via TabbedProductGrid (Trending + Hot Deals tabs) | | |
+| | - Update all "Shop All" / "All Products" links to `/shop-all` (mega menu, footer, empty collection, error page, home page) | | |
 
 ---
 

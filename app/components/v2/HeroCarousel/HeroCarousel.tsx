@@ -79,20 +79,22 @@ export function HeroCarousel({
             alt={slides[active].imageAlt ?? ""}
             className="absolute inset-0 w-full h-full object-cover transition-opacity duration-slow"
           />
+          {/* Gradient overlay for text readability */}
+          <div className="absolute inset-0 bg-black/30 z-[1]" />
           {/* Text overlay */}
-          <div className="absolute top-0 right-0 bottom-0 w-[45%] flex flex-col justify-center items-center text-center p-12 z-10">
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-12 z-10">
             {slides[active].subtitle && (
-              <p className="font-body text-sm font-normal text-black mb-3 tracking-wider">
+              <p className="font-body text-sm font-normal text-white/80 mb-3 tracking-wider">
                 {slides[active].subtitle}
               </p>
             )}
-            <h2 className="font-heading text-[48px] font-normal text-black leading-[1.15] mb-7 max-w-[400px] italic">
+            <h2 className="font-heading text-[48px] font-normal text-white leading-[1.15] mb-7 max-w-[500px] italic drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
               {slides[active].headline}
             </h2>
             {slides[active].ctaLabel && (
               <a
                 href={slides[active].ctaHref ?? "#"}
-                className="inline-flex items-center px-9 py-3.5 bg-black text-white font-body text-sm font-medium rounded-full border-none no-underline hover:bg-[#333] transition-colors duration-fast"
+                className="inline-flex items-center px-9 py-3.5 bg-white text-black font-body text-sm font-medium rounded-full border-none no-underline hover:bg-[#F0F0F0] transition-colors duration-fast"
               >
                 {slides[active].ctaLabel}
               </a>
@@ -118,17 +120,18 @@ export function HeroCarousel({
             alt={slides[active].imageAlt ?? ""}
             className="w-full h-full object-cover"
           />
-          <div className="absolute top-0 right-0 bottom-0 w-[45%] flex flex-col justify-center items-center text-center p-8 z-10">
+          <div className="absolute inset-0 bg-black/30 z-[1]" />
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-8 z-10">
             {slides[active].subtitle && (
-              <p className="font-body text-sm text-black mb-3">{slides[active].subtitle}</p>
+              <p className="font-body text-sm text-white/80 mb-3">{slides[active].subtitle}</p>
             )}
-            <h2 className="font-heading text-[40px] font-normal text-black leading-[1.15] mb-6 italic">
+            <h2 className="font-heading text-[40px] font-normal text-white leading-[1.15] mb-6 max-w-[440px] italic drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]">
               {slides[active].headline}
             </h2>
             {slides[active].ctaLabel && (
               <a
                 href={slides[active].ctaHref ?? "#"}
-                className="inline-flex px-8 py-3 bg-black text-white font-body text-sm font-medium rounded-full no-underline hover:bg-[#333] transition-colors duration-fast"
+                className="inline-flex px-8 py-3 bg-white text-black font-body text-sm font-medium rounded-full no-underline hover:bg-[#F0F0F0] transition-colors duration-fast"
               >
                 {slides[active].ctaLabel}
               </a>

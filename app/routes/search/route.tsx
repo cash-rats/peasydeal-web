@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef } from 'react';
-import type { ActionFunctionArgs, LinksFunction, LoaderFunctionArgs } from 'react-router';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'react-router';
 import {
   isRouteErrorResponse,
   redirect,
@@ -11,22 +11,22 @@ import {
 import httpStatus from 'http-status-codes';
 
 import { PAGE_LIMIT } from '~/shared/constants';
-import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
-import PageTitle from '~/components/PageTitle';
-import ProductRowsContainer, { links as ProductRowsContainerLinks } from '~/components/ProductRowsContainer';
-import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
-import { useCartCount } from '~/routes/hooks';
+import { V2Layout } from '~/components/v2/GlobalLayout';
+import {
+  ProductGrid,
+  SortBar,
+  ProgressIndicator,
+  EmptyCollection,
+} from '~/components/v2/CollectionPage';
+import { LoadMoreButton } from '~/components/v2/LoadMore/LoadMore';
+import { Breadcrumbs } from '~/components/v2/Breadcrumbs';
+
 import reducer, { SearchActionType } from './reducer';
 import { searchMoreProductsLoader, searchProductsLoader } from './loaders';
 import type { SearchProductsDataType } from './types';
 import type { RootLoaderData } from '~/root';
 
 type LoaderData = SearchProductsDataType;
-
-export const links: LinksFunction = () => [
-  ...CatalogLayoutLinks(),
-  ...ProductRowsContainerLinks(),
-];
 
 type LoaderType = 'search' | 'search_more';
 
@@ -66,8 +66,6 @@ export function ErrorBoundary() {
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const categories = rootData?.categories ?? [];
   const navBarCategories = rootData?.navBarCategories ?? [];
-  const cartCount = useCartCount();
-
   const fallback = (
     <div className="min-h-[35rem] px-4 py-8 flex justify-center">
       <div className="px-8 flex flex-col justify-center">
@@ -84,10 +82,9 @@ export function ErrorBoundary() {
   if (isRouteErrorResponse(error) && error.status === httpStatus.NOT_FOUND) {
     const data = (error.data ?? {}) as { query?: string };
     return (
-      <CatalogLayout
+      <V2Layout
         categories={categories}
         navBarCategories={navBarCategories}
-        cartCount={cartCount}
       >
         <div className="min-h-[35rem] px-4 py-8 flex justify-center">
           <div className="px-8 flex flex-col justify-center">
@@ -99,18 +96,17 @@ export function ErrorBoundary() {
             </p>
           </div>
         </div>
-      </CatalogLayout>
+      </V2Layout>
     );
   }
 
   return (
-    <CatalogLayout
+    <V2Layout
       categories={categories}
       navBarCategories={navBarCategories}
-      cartCount={cartCount}
     >
       {fallback}
-    </CatalogLayout>
+    </V2Layout>
   );
 }
 
@@ -119,7 +115,6 @@ function Search() {
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const categories = rootData?.categories ?? [];
   const navBarCategories = rootData?.navBarCategories ?? [];
-  const cartCount = useCartCount();
   const [state, dispatch] = useReducer(reducer, {
     products: loaderData.products,
     query: loaderData.query,
@@ -163,10 +158,6 @@ function Search() {
     currPageRef.current = newPage;
   }, [loadMoreFetcher.state, loadMoreFetcher.data]);
 
-  const handleClickProduct = () => {
-    console.log('handleClickProduct');
-  };
-
   const handleLoadMore = () => {
     const nextPage = currPageRef.current + 1;
     const params = new URLSearchParams({
@@ -178,29 +169,56 @@ function Search() {
     loadMoreFetcher.load(`/search?${params.toString()}`);
   };
 
+  const hasMore = state.current < state.total;
+
   return (
-    <CatalogLayout
+    <V2Layout
       categories={categories}
       navBarCategories={navBarCategories}
-      cartCount={cartCount}
     >
-      <div className="my-0 mx-auto w-full flex flex-col justify-center flex-wrap items-center">
-        <PageTitle title={`Search results for "${loaderData.query}" (${state.total})`} />
+      <div className="max-w-[var(--container-max)] mx-auto px-4 redesign-sm:px-6 redesign-md:px-12 py-4">
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/' },
+            { label: `Search results for "${loaderData.query}"` },
+          ]}
+          className="px-0 mb-6"
+        />
 
-        <div className="pt-8">
-          <ProductRowsContainer products={state.products} onClickProduct={handleClickProduct} />
-        </div>
+        <h1 className="font-heading text-2xl redesign-sm:text-3xl font-bold text-black mb-2">
+          Search results for &ldquo;{loaderData.query}&rdquo;
+        </h1>
 
-        <div className="mb-4">
-          <LoadMoreButtonProgressBar
+        <SortBar current={state.current} total={state.total} />
+
+        {state.products.length === 0 ? (
+          <EmptyCollection />
+        ) : (
+          <ProductGrid
+            products={state.products}
             loading={loadMoreFetcher.state !== 'idle'}
-            current={state.current}
-            total={state.total}
-            onClickLoadMore={handleLoadMore}
           />
-        </div>
+        )}
+
+        {state.total > 0 && (
+          <div className="flex flex-col items-center mt-8 mb-8">
+            <ProgressIndicator current={state.current} total={state.total} />
+            {hasMore ? (
+              <LoadMoreButton
+                loading={loadMoreFetcher.state !== 'idle'}
+                onClick={handleLoadMore}
+              >
+                Load More
+              </LoadMoreButton>
+            ) : (
+              <p className="font-body text-[13px] text-rd-text-secondary mt-6">
+                You've reached the end
+              </p>
+            )}
+          </div>
+        )}
       </div>
-    </CatalogLayout>
+    </V2Layout>
   );
 }
 

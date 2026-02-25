@@ -1,22 +1,15 @@
-import { useReducer, useRef, useEffect } from 'react';
-import type { LinksFunction, LoaderFunctionArgs, MetaFunction } from 'react-router';
+import { useMemo, useReducer, useRef, useEffect } from 'react';
+import type { LoaderFunctionArgs, MetaFunction } from 'react-router';
 import {
   useLoaderData,
   useFetcher,
   useParams,
-  NavLink,
-  useNavigation,
   isRouteErrorResponse,
   useRouteError,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 
-import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
-import FourOhFour from '~/components/FourOhFour';
-import LoadMoreButtonProgressBar from '~/components/LoadMoreButtonProgressBar';
 import { PAGE_LIMIT } from '~/shared/constants';
-import PromotionBannerWithTitle, { links as PageTitleLinks } from '~/components/PageTitle/PromotionBannerWithTitle';
-import ProductRowsContainer, { links as ProductRowsContainerLinks } from '~/components/ProductRowsContainer';
 import {
   getCanonicalDomain,
   getFourOhFourTitleText,
@@ -26,6 +19,16 @@ import {
   getCategoryFBSEO_V2,
 } from '~/utils/seo';
 
+import {
+  CollectionHeader,
+  ProductGrid,
+  SortBar,
+  ProgressIndicator,
+  EmptyCollection,
+} from '~/components/v2/CollectionPage';
+import { LoadMoreButton } from '~/components/v2/LoadMore/LoadMore';
+import { NotFoundPage } from '~/components/v2/ErrorPage';
+
 import { loadProducts, loadMoreProducts } from './loaders';
 import type { LoadProductsDataType, LoadMoreDataType } from './types';
 import reducer, { PromotionActionType } from './reducer';
@@ -34,12 +37,6 @@ import structuredData from './structured_data';
 type LoaderType = 'load_products' | 'load_more_products';
 
 export const handle = { structuredData };
-
-export const links: LinksFunction = () => [
-  ...AllTimeCouponLink(),
-  ...ProductRowsContainerLinks(),
-  ...PageTitleLinks(),
-];
 
 export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
   const { promotion = '' } = params;
@@ -120,7 +117,6 @@ function Promotion() {
     hasMore = false,
     page = 1,
     category,
-    categories = {},
   } = loaderData || {};
 
   const [state, dispatch] = useReducer(reducer, {
@@ -135,7 +131,6 @@ function Promotion() {
 
   const { promotion } = useParams();
   const loadMoreFetcher = useFetcher();
-  const navigation = useNavigation();
 
   const stateCategory = state.category;
 
@@ -191,72 +186,55 @@ function Promotion() {
     loadMoreFetcher.load(`/promotion/${promotion}?${params.toString()}`);
   };
 
-  const categoriesMap = categories || {};
-  const isChangingPromotion =
-    navigation.state !== 'idle' &&
-    navigation.location &&
-    categoriesMap.hasOwnProperty(decodeURI(navigation.location.pathname.substring(1)));
+  const breadcrumbItems = useMemo(() => {
+    const items: Array<{ label: string; href?: string }> = [
+      { label: 'Home', href: '/' },
+    ];
+    items.push({ label: stateCategory?.title });
+    return items;
+  }, [stateCategory]);
 
-  const breadcrumbs = [
-    {
-      key: 'promotion_breadcrumbs_home',
-      label: 'Home',
-      to: '/',
-      isCurrent: false,
-    },
-    {
-      key: 'promotion_breadcrumbs_current',
-      label: stateCategory?.title,
-      to: `/promotion/${stateCategory?.name}`,
-      isCurrent: true,
-    },
-  ];
+  const hasMore_ = state.current < state.total;
 
   return (
-    <>
-      <div className="w-full mb-2.5 md:pb-8">
-        <AllTimeCoupon isFullLayout />
-      </div>
-      <div className="py-0 px-auto flex flex-col justify-center items-center mx-2 md:mx-4">
-        <nav className="w-full py-2.5 max-w-screen-xl mx-auto" aria-label="Breadcrumb">
-          <ol className="flex flex-wrap items-center gap-1 text-sm md:text-base font-semibold">
-            {breadcrumbs.map((crumb, index) => {
-              if (!crumb.label) return null;
-              const isLast = index === breadcrumbs.length - 1;
-              return (
-                <li key={crumb.key} className="flex items-center gap-1">
-                  <NavLink
-                    to={crumb.to}
-                    aria-current={crumb.isCurrent ? 'page' : undefined}
-                    className={crumb.isCurrent ? '!text-[#D02E7D]' : undefined}
-                  >
-                    {crumb.label}
-                  </NavLink>
-                  {!isLast ? <span aria-hidden="true">/</span> : null}
-                </li>
-              );
-            })}
-          </ol>
-        </nav>
+    <div className="max-w-[var(--container-max)] mx-auto px-4 redesign-sm:px-6 redesign-md:px-12 py-4">
+      <CollectionHeader
+        title={stateCategory?.title}
+        description={stateCategory?.description}
+        breadcrumbs={breadcrumbItems}
+      />
 
-        <PromotionBannerWithTitle
-          title={stateCategory?.title}
-          subtitle={stateCategory?.description}
-          superSale={stateCategory?.name === 'super_deal'}
-        />
+      <div className="flex-1 min-w-0">
+        <SortBar current={state.current} total={state.total} />
 
-        <ProductRowsContainer loading={isChangingPromotion} products={state.products} />
-
-        <div className="mb-4">
-          <LoadMoreButtonProgressBar
+        {state.products.length === 0 ? (
+          <EmptyCollection />
+        ) : (
+          <ProductGrid
+            products={state.products}
             loading={loadMoreFetcher.state !== 'idle'}
-            current={state.current}
-            total={state.total}
-            onClickLoadMore={handleLoadMore}
           />
-        </div>
+        )}
+
+        {state.total > 0 && (
+          <div className="flex flex-col items-center mt-8">
+            <ProgressIndicator current={state.current} total={state.total} />
+            {hasMore_ ? (
+              <LoadMoreButton
+                loading={loadMoreFetcher.state !== 'idle'}
+                onClick={handleLoadMore}
+              >
+                Show More
+              </LoadMoreButton>
+            ) : (
+              <p className="font-body text-[13px] text-rd-text-secondary mt-6">
+                You've reached the end
+              </p>
+            )}
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -267,9 +245,9 @@ export function ErrorBoundary() {
 
   if (isRouteErrorResponse(error)) {
     if (error.status === 404) {
-      return <FourOhFour />;
+      return <NotFoundPage />;
     }
   }
 
-  return <FourOhFour />;
+  return <NotFoundPage />;
 }

@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { cn } from "~/lib/utils";
 
 export interface FooterLinkGroup {
@@ -111,7 +111,7 @@ export function Footer({
 
             <p className="mt-3 font-body text-[12px] font-normal leading-[1.4] text-[#888]">
               By signing up, you agree to our{" "}
-              <Link to="/terms" className="text-black underline">Terms of Use</Link>
+              <Link to="/terms-of-use" className="text-black underline">Terms of Use</Link>
               {" "}and{" "}
               <Link to="/privacy" className="text-black underline">Privacy Policy</Link>.
             </p>

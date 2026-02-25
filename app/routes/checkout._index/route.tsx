@@ -1,13 +1,12 @@
 import {
-  type FormEvent,
   useEffect,
   useRef,
   useReducer,
   useMemo,
+  useCallback,
 } from 'react';
 import {
   type LoaderFunctionArgs,
-  type LinksFunction,
   type ActionFunctionArgs,
   useRouteError,
   isRouteErrorResponse,
@@ -15,23 +14,13 @@ import {
   useLoaderData,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
-import { Alert } from '~/components/ui/alert';
-import { Spinner } from '~/components/ui/spinner';
 
 import type { PaymentMethod } from '~/shared/types';
 import { useContext } from '~/routes/checkout/route';
 import type { ShoppingCart } from '~/sessions/types';
 import { useCreateOrder, useStripeConfirmPayment } from '~/routes/checkout/hooks';
-import styles from '~/routes/checkout/styles/Checkout.css?url';
-import CheckoutForm, {
-  links as CheckoutFormLinks,
-} from '~/routes/checkout/components/CheckoutForm';
-import ShippingDetailForm from '~/routes/checkout/components/ShippingDetailForm';
-import type { AddressOption as Option } from '~/routes/api.fetch-address-options-by-postal/types';
-import CartSummary from '~/routes/checkout/components/CartSummary';
-import ContactInfoForm, {
-  links as ContactInfoFormLinks,
-} from '~/routes/checkout/components/ContactInfoForm';
+import StripeCheckout from '~/routes/checkout/components/CheckoutForm/components/StripeCheckout';
+import type { StripePaymentElement, StripePaymentElementChangeEvent } from '@stripe/stripe-js';
 import reducer, {
   ActionTypes as ReducerActionTypes,
   initState,
@@ -45,21 +34,22 @@ import {
 } from '~/routes/checkout/actions';
 import type { ActionPayload } from '~/routes/checkout/actions';
 import { getCheckoutSession } from '~/sessions/checkout.session.server';
-import { validatePhoneInput } from '~/routes/checkout/utils';
 import { tryCatch } from '~/utils/try-catch';
+import { sortItemsByAddedTime } from '~/routes/cart/utils';
+
+import { CheckoutLayout } from '~/components/v2/CheckoutLayout';
+import { ExpressCheckout } from '~/components/v2/ExpressCheckout';
+import { ContactInfoSection } from '~/components/v2/ContactInfoSection';
+import { ShippingAddressSection } from '~/components/v2/ShippingAddressSection';
+import type { ShippingAddress } from '~/components/v2/ShippingAddressSection/ShippingAddressSection';
+import { CheckoutNav } from '~/components/v2/CheckoutNav';
+import { OrderSummary } from '~/components/v2/OrderSummary';
+import type { OrderItem } from '~/components/v2/OrderSummary/OrderSummary';
 
 const getPaymentIntentIdFromClientSecret = (clientSecret: string) => {
   if (!clientSecret) return '';
   const [intentId] = clientSecret.split('_secret_');
   return intentId || '';
-};
-
-export const links: LinksFunction = () => {
-  return [
-    ...CheckoutFormLinks(),
-    ...ContactInfoFormLinks(),
-    { rel: 'stylesheet', href: styles },
-  ];
 };
 
 type LoaderType = {
@@ -111,7 +101,6 @@ function CheckoutPage() {
     () => getPaymentIntentIdFromClientSecret(paymentClientSecret),
     [paymentClientSecret],
   );
-  const formRef = useRef<HTMLFormElement | null>(null);
 
   const {
     createOrder,
@@ -133,20 +122,8 @@ function CheckoutPage() {
   const reducerState = useRef<StateShape>(state);
   reducerState.current = state;
 
-  useEffect(() => {
-    const contactName = state.contactInfoForm.contact_name;
-    const shippingName = state.shippingDetailForm.firstname;
-    if (
-      contactName &&
-      shippingName &&
-      contactName === shippingName
-    ) {
-      dispatch({
-        type: ReducerActionTypes.update_contact_name_same,
-        payload: true,
-      });
-    }
-  }, [state.contactInfoForm.contact_name, state.shippingDetailForm.firstname]);
+  // Stripe PaymentElement ref
+  const paymentElement = useRef<StripePaymentElement | null>(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -162,16 +139,13 @@ function CheckoutPage() {
   const loading = createOrderFetcher.state !== 'idle';
 
   const assembleContactName = () => {
-    let contactName = state.contactInfoForm.contact_name as string;
-
-    /**** contact name same as shipping name ******/
     const contactInfo = state.contactInfoForm;
     const shippingInfo = state.shippingDetailForm;
 
     if (contactInfo.contact_name_same) {
-      contactName = `${shippingInfo.firstname} ${shippingInfo.lastname}`;
+      return `${shippingInfo.firstname} ${shippingInfo.lastname}`;
     }
-    return contactName;
+    return contactInfo.contact_name as string;
   };
 
   const composeOrderInfoForSubmission = (paymentMethod: PaymentMethod) => {
@@ -189,155 +163,190 @@ function CheckoutPage() {
     };
   };
 
-  const handleCreateOrder = async (paymentMethod: PaymentMethod = 'stripe') => {
+  const handleCreateOrder = useCallback(async (paymentMethod: PaymentMethod = 'stripe') => {
     const orderInfo = composeOrderInfoForSubmission(paymentMethod);
     dispatch({
       type: ReducerActionTypes.update_contact_info_form,
       payload: reducerState.current.contactInfoForm,
     });
     await createOrder(orderInfo);
-  };
+  }, [createOrder, priceInfo, cartItems, paymentIntendID, promoCode]);
 
-  const handleFormChange = (evt: FormEvent<HTMLFormElement>) => {
-    // Only shipping fields are updated here; contact fields are managed inside ContactInfoForm via its onChange prop.
+  const handleConfirmPayment = useCallback(() => {
     clearCreateOrderErrorAlert();
     clearStripeErrorAlert();
-
-    const target = evt.target as HTMLInputElement;
-
-    const fieldName = target.name;
-    let fieldValue: string | boolean = target.value;
-
-    if (target.type === 'checkbox') {
-      fieldValue = target.checked;
-    }
-
-    if (Object.prototype.hasOwnProperty.call(reducerState.current.shippingDetailForm, fieldName)) {
-      dispatch({
-        type: ReducerActionTypes.update_shipping_detail_form,
-        payload: {
-          [fieldName]: fieldValue,
-        },
-      });
-    }
-  };
-
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-
-    if (!formRef.current) return;
-    const phoneInput = formRef.current.querySelector<HTMLInputElement>('#phone');
-    if (!validatePhoneInput(phoneInput)) {
-      formRef.current.reportValidity();
-      return;
-    }
 
     if (!orderUUID) {
       handleCreateOrder('stripe');
       return;
     }
-
     stripeConfirmPayment(orderUUID);
-  };
+  }, [orderUUID, handleCreateOrder, stripeConfirmPayment, clearCreateOrderErrorAlert, clearStripeErrorAlert]);
 
-  const handleSelectAddress = (option: Option) => {
-    const addressLine2 = [
-      option.line2,
-      option.line3,
-      option.county,
-      option.country,
-    ].filter(Boolean).join(', ');
+  /* ─── V2 Shipping Address bridge ─── */
+  const shippingAddress: ShippingAddress = useMemo(() => ({
+    country: 'GB',
+    firstName: state.shippingDetailForm.firstname,
+    lastName: state.shippingDetailForm.lastname,
+    company: '',
+    address: state.shippingDetailForm.address1,
+    city: state.shippingDetailForm.city,
+    state: state.shippingDetailForm.address2,
+    postcode: state.shippingDetailForm.postal,
+    phone: state.contactInfoForm.phone_value,
+  }), [state.shippingDetailForm, state.contactInfoForm.phone_value]);
 
+  const handleShippingChange = useCallback((field: keyof ShippingAddress, value: string) => {
+    clearCreateOrderErrorAlert();
+    clearStripeErrorAlert();
+
+    // Map v2 field names → v1 reducer field names
+    const fieldMap: Record<string, string> = {
+      firstName: 'firstname',
+      lastName: 'lastname',
+      address: 'address1',
+      city: 'city',
+      state: 'address2',
+      postcode: 'postal',
+    };
+
+    if (field === 'phone') {
+      dispatch({
+        type: ReducerActionTypes.update_contact_info_form,
+        payload: { phone_value: value },
+      });
+      return;
+    }
+
+    const reducerField = fieldMap[field];
+    if (reducerField) {
+      dispatch({
+        type: ReducerActionTypes.update_shipping_detail_form,
+        payload: { [reducerField]: value },
+      });
+    }
+  }, [clearCreateOrderErrorAlert, clearStripeErrorAlert]);
+
+  /* ─── V2 Contact bridge ─── */
+  const handleEmailChange = useCallback((value: string) => {
+    clearCreateOrderErrorAlert();
+    clearStripeErrorAlert();
     dispatch({
-      type: ReducerActionTypes.update_shipping_detail_form,
-      payload: {
-        address1: option.line1,
-        address2: addressLine2,
-        city: option.city,
-        postal: option.postal,
-      },
+      type: ReducerActionTypes.update_contact_info_form,
+      payload: { email: value },
     });
-  };
+  }, [clearCreateOrderErrorAlert, clearStripeErrorAlert]);
 
-  return (
-    <div className="checkout-page-container">
-      <h1 className="title"> Shipping Information </h1>
+  /* ─── Stripe handlers ─── */
+  const handlePaymentElementReady = useCallback((element: StripePaymentElement) => {
+    paymentElement.current = element;
+    element.collapse();
+  }, []);
+
+  const handleStripeChange = useCallback((_event: StripePaymentElementChangeEvent) => {
+    // no-op — Stripe manages its own state
+  }, []);
+
+  // Map cart items for v2 OrderSummary
+  const orderItems: OrderItem[] = useMemo(() =>
+    sortItemsByAddedTime(cartItems).map(item => ({
+      id: item.variationUUID,
+      name: item.title,
+      variant: item.specName,
+      thumbnailSrc: item.image,
+      quantity: Number(item.quantity),
+      salePrice: Number(item.salePrice) || undefined,
+      retailPrice: Number(item.retailPrice),
+    })),
+    [cartItems],
+  );
+
+  const handleFormSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    handleConfirmPayment();
+  }, [handleConfirmPayment]);
+
+  const leftContent = (
+    <form onSubmit={handleFormSubmit}>
+      {/* Express checkout buttons */}
+      {/* <ExpressCheckout /> */}
+
+      {/* Error alerts */}
       {createOrderErrorAlert ? (
-        <Alert variant="destructive">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
           {createOrderErrorAlert}
-        </Alert>
+        </div>
       ) : null}
 
       {stripeErrorAlert ? (
-        <Alert variant="destructive">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
           {stripeErrorAlert}
-        </Alert>
+        </div>
       ) : null}
 
-      <div className="checkout-content">
-        <div className="left">
-          <div className="mb-4 md:my-0 mx-auto">
-            <CartSummary
-              cart={cartItems}
-              priceInfo={priceInfo}
-            />
-          </div>
-        </div>
+      {/* Contact section */}
+      <ContactInfoSection
+        email={state.contactInfoForm.email}
+        onEmailChange={handleEmailChange}
+        marketingOptIn={false}
+        onMarketingOptInChange={() => {}}
+      />
 
-        <div className="right">
-          <createOrderFetcher.Form
-            ref={formRef}
-            onChange={handleFormChange}
-            onSubmit={handleSubmit}
-          >
-            <div className="form-container">
-              <h1 className="shipping-info-title">
-                Shipping Details
-              </h1>
+      {/* Shipping address section */}
+      <ShippingAddressSection
+        address={shippingAddress}
+        onChange={handleShippingChange}
+        countries={[
+          { label: 'United Kingdom', value: 'GB' },
+          { label: 'United States', value: 'US' },
+          { label: 'Canada', value: 'CA' },
+          { label: 'Australia', value: 'AU' },
+        ]}
+      />
 
-              <div className="pricing-panel">
-                <div className="shipping-form-container">
-                  <ShippingDetailForm
-                    values={state.shippingDetailForm}
-                    onSelectAddress={handleSelectAddress}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="form-container">
-              <h1 className="title">
-                Contact Information
-              </h1>
-
-              <div className="pricing-panel">
-                <div className="shipping-form-container">
-                  <ContactInfoForm
-                    values={state.contactInfoForm}
-                    onChange={(data) => {
-                      dispatch({
-                        type: ReducerActionTypes.update_contact_info_form,
-                        payload: data,
-                      });
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {
-              <CheckoutForm loading={loading || isPaying} />
-            }
-          </createOrderFetcher.Form>
-        </div>
+      {/* Stripe Payment Element */}
+      <div className="mt-8">
+        <h2 className="font-body text-lg font-semibold text-black mb-4">
+          Payment
+        </h2>
+        <StripeCheckout
+          loading={loading || isPaying}
+          onChange={handleStripeChange}
+          onReady={handlePaymentElementReady}
+        />
       </div>
 
-      {loading ? (
-        <div className="flex justify-center py-6">
-          <Spinner className="h-8 w-8 text-slate-600" />
-        </div>
-      ) : null}
-    </div>
+      {/* Bottom navigation */}
+      <CheckoutNav
+        returnLabel="Return to cart"
+        returnHref="/cart"
+        continueLabel={loading || isPaying ? 'Processing...' : 'Pay now'}
+        onContinue={handleConfirmPayment}
+        loading={loading || isPaying}
+      />
+    </form>
+  );
+
+  const rightContent = (
+    <OrderSummary
+      items={orderItems}
+      subtotal={priceInfo ? priceInfo.sub_total + priceInfo.tax_amount : 0}
+      shipping={priceInfo?.shipping_fee ?? null}
+      discount={priceInfo?.promo_code_discount || undefined}
+      discountCode={promoCode || undefined}
+      tax={priceInfo?.tax_amount}
+      taxIncluded={priceInfo?.vat_included}
+      total={priceInfo?.total_amount ?? 0}
+      currency="£"
+    />
+  );
+
+  return (
+    <CheckoutLayout
+      currentStep="payment"
+      leftContent={leftContent}
+      rightContent={rightContent}
+    />
   );
 }
 
@@ -346,31 +355,32 @@ export function ErrorBoundary() {
   const isResponseError = isRouteErrorResponse(error);
 
   return (
-    <div className="checkout-page-container">
-      <div className="flex flex-col items-center justify-center space-y-4 py-12 text-center">
-        <h1 className="text-2xl font-semibold">Unable to load checkout details</h1>
-        <p className="text-gray-600">
-          We couldn&apos;t load your cart for checkout. Please return to your cart and try again.
+    <div className="min-h-screen flex flex-col items-center justify-center space-y-4 px-4 text-center bg-white">
+      <a href="/" className="block font-heading text-2xl font-black text-black no-underline mb-4">
+        PeasyDeal
+      </a>
+      <h1 className="text-2xl font-semibold">Unable to load checkout details</h1>
+      <p className="text-gray-600">
+        We couldn&apos;t load your cart for checkout. Please return to your cart and try again.
+      </p>
+      {isResponseError && (
+        <p className="text-sm text-gray-500">
+          Error code: {error.status}
         </p>
-        {isResponseError && (
-          <p className="text-sm text-gray-500">
-            Error code: {error.status}
-          </p>
-        )}
-        <div className="flex items-center gap-4">
-          <a
-            className="rounded bg-black px-4 py-2 text-white"
-            href="/cart"
-          >
-            Return to cart
-          </a>
-          <a
-            className="rounded border border-black px-4 py-2 text-black"
-            href="/"
-          >
-            Go home
-          </a>
-        </div>
+      )}
+      <div className="flex items-center gap-4">
+        <a
+          className="rounded bg-black px-4 py-2 text-white"
+          href="/cart"
+        >
+          Return to cart
+        </a>
+        <a
+          className="rounded border border-black px-4 py-2 text-black"
+          href="/"
+        >
+          Go home
+        </a>
       </div>
     </div>
   );

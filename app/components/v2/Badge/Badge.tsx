@@ -1,7 +1,7 @@
 import { cn } from "~/lib/utils";
 
 export interface BadgeProps {
-  variant: "discount" | "new" | "selling-fast" | "hot" | "limited";
+  variant: "discount" | "new" | "selling-fast" | "hot" | "limited" | "super-deal";
   children: React.ReactNode;
   className?: string;
 }
@@ -12,6 +12,7 @@ const variantStyles: Record<BadgeProps["variant"], string> = {
   "selling-fast": "bg-[#4A7C59]",
   hot: "bg-[#E8A040]",
   limited: "bg-[#333333]",
+  "super-deal": "bg-[#C75050]",
 };
 
 export function Badge({ variant, children, className }: BadgeProps) {

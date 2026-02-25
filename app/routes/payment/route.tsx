@@ -1,10 +1,10 @@
 import { Outlet, useRouteLoaderData } from 'react-router';
-import type { ActionFunctionArgs, LinksFunction, MetaFunction } from 'react-router';
+import type { ActionFunctionArgs, MetaFunction } from 'react-router';
 import { useEffect } from 'react';
 
-import CatalogLayout, { links as CatalogLayoutLinks } from '~/components/layouts/CatalogLayout';
+import { V2Layout } from '~/components/v2/GlobalLayout';
 import { getPaymentSuccessTitleText } from '~/utils/seo';
-import { useCartCount, useCartContext } from '~/routes/hooks';
+import { useCartContext } from '~/routes/hooks';
 import { fetchOrder } from '~/routes/payment/api.server';
 import { getCookieSession } from '~/sessions/session_utils.server';
 import {
@@ -14,11 +14,6 @@ import {
 import { sessionResetTransactionObject } from '~/sessions/transaction.session.server';
 import type { RootLoaderData } from '~/root';
 
-export const links: LinksFunction = () => {
-  return [
-    ...CatalogLayoutLinks(),
-  ];
-};
 
 export const meta: MetaFunction = () => ([
   { title: getPaymentSuccessTitleText() },
@@ -49,7 +44,6 @@ export default function Payment() {
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const categories = rootData?.categories ?? [];
   const navBarCategories = rootData?.navBarCategories ?? [];
-  const cartCount = useCartCount();
   const { clearCart, isInitialized } = useCartContext();
 
   useEffect(() => {
@@ -61,16 +55,15 @@ export default function Payment() {
   }, [clearCart, isInitialized]);
 
   return (
-    <CatalogLayout
+    <V2Layout
       categories={categories}
       navBarCategories={navBarCategories}
-      cartCount={cartCount}
     >
 
       <div className="min-h-[35rem] flex justify-center">
         <Outlet />
       </div>
 
-    </CatalogLayout>
+    </V2Layout>
   );
 }

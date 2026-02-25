@@ -90,15 +90,15 @@ const FormBold = () => {
             </div>
           </div>
           <div className="btn-toolbar flex items-center space-x-3">
-            <input
+            <button
               type="submit"
-              className="inline-flex cursor-pointer items-center justify-center rounded border border-primary bg-primary px-8 py-2 text-base font-medium text-white hover:bg-opacity-90"
-              value="Submit"
-              onClick={(e) => {
-                // set spinner visible
+              className="inline-flex cursor-pointer items-center justify-center rounded-rd-sm border border-black bg-black px-8 py-2.5 font-body text-base font-medium text-white transition-colors hover:bg-[#333]"
+              onClick={() => {
                 setIsSpinnerVisible(true);
               }}
-            />
+            >
+              Submit
+            </button>
             {isSpinnerVisible && <Spinner />}
           </div>
         </form>

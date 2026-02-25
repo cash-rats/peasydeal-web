@@ -11,7 +11,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-  useLoaderData,
+  useRouteLoaderData,
   isRouteErrorResponse,
   useRouteError,
 } from 'react-router';
@@ -128,7 +128,8 @@ interface DocumentProps {
 }
 
 function Document({ children }: DocumentProps) {
-  const { env: envData, gaSessionID } = useLoaderData() || {};
+  const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
+  const { env: envData, gaSessionID } = rootData || {} as any;
   const isRudderEnabled = Boolean(
     envData?.VERCEL_ENV === 'production' &&
     envData?.RUDDERSTACK_WRITE_KEY &&

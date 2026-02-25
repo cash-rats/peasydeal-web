@@ -39,7 +39,7 @@ function StripeCheckout({
             onReady={onReady}
           />
 
-          <div className="mt-5">
+          {/* <div className="mt-5">
             <Button
               type="submit"
               className="w-full text-white"
@@ -73,7 +73,7 @@ function StripeCheckout({
                 We use Stripe as our payment system which exceeds the most stringent field standards for security.
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

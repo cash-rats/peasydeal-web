@@ -4,5 +4,4 @@ export type {
   MegaMenuConfig,
   MegaMenuLink,
   MegaMenuCategory,
-  MegaMenuProduct,
 } from "./MegaMenu";

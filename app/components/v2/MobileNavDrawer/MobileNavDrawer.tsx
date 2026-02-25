@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { Link } from "@remix-run/react";
+import { Link } from "react-router";
 import { cn } from "~/lib/utils";
 
 export interface MobileNavCategory {

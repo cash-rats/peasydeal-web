@@ -1,8 +1,10 @@
 import { useMemo, useState, useCallback } from "react";
+import { Link } from "react-router";
 import { cn } from "~/lib/utils";
 import { Badge } from "~/components/v2/Badge";
 import type { Product } from "~/shared/types";
 import { SUPER_DEAL_OFF } from "~/shared/constants";
+import { composeProductDetailURL } from "~/utils";
 
 export interface ProductCardProps {
   product?: Product;
@@ -20,13 +22,13 @@ export interface ProductCardProps {
 
 /** Maps tabComboType tags to Badge variants */
 function getTagBadges(tabComboType: string | null): Array<{
-  variant: "discount" | "new" | "selling-fast" | "hot" | "limited";
+  variant: "discount" | "new" | "selling-fast" | "hot" | "limited" | "super-deal";
   label: string;
 }> {
   if (!tabComboType) return [];
   const tags = tabComboType.split(",").map((t) => t.trim());
   const badges: Array<{
-    variant: "discount" | "new" | "selling-fast" | "hot" | "limited";
+    variant: "discount" | "new" | "selling-fast" | "hot" | "limited" | "super-deal";
     label: string;
   }> = [];
 
@@ -39,7 +41,7 @@ function getTagBadges(tabComboType: string | null): Array<{
         badges.push({ variant: "hot", label: "Hot" });
         break;
       case "super_deal":
-        badges.push({ variant: "selling-fast", label: "Selling fast!" });
+        badges.push({ variant: "super-deal", label: "Super Deal" });
         break;
       case "price_off":
         // discount badge is handled separately from price calculation
@@ -132,6 +134,14 @@ export function ProductCard({
   const hasVariations = (product?.variations?.length ?? 0) > 1;
   const ctaText = hasVariations ? "Choose Options" : "Add to Cart";
 
+  const productUrl = useMemo(() => {
+    if (!product) return "";
+    return composeProductDetailURL({
+      productName: product.title,
+      productUUID: product.productUUID,
+    });
+  }, [product]);
+
   const handleCardClick = useCallback(() => {
     if (product && onClick) onClick(product);
   }, [product, onClick]);
@@ -149,19 +159,19 @@ export function ProductCard({
   }
 
   return (
-    <div
+    <Link
+      to={productUrl}
       className={cn(
-        "group w-full flex flex-col rounded-rd-md overflow-hidden cursor-pointer",
+        "group w-full flex flex-col rounded-rd-md overflow-hidden cursor-pointer no-underline",
         "transition-all duration-normal",
         "hover:shadow-card-hover hover:-translate-y-0.5",
         "active:shadow-overlay active:translate-y-0",
         bordered
           ? "border border-[#E0E0E0] bg-white"
-          : "bg-[#F5F5F5]",
+          : "bg-white",
         className
       )}
       onClick={handleCardClick}
-      role="article"
     >
       {/* Image Area */}
       <div className="relative w-full aspect-[4/5] overflow-hidden">
@@ -186,11 +196,32 @@ export function ProductCard({
             {priceInfo?.isOnSale && priceInfo.discountPercent >= 10 && (
               <Badge variant="discount">-{priceInfo.discountPercent}%</Badge>
             )}
-            {tagBadges.map((badge) => (
-              <Badge key={badge.variant} variant={badge.variant}>
-                {badge.label}
-              </Badge>
-            ))}
+            {tagBadges.map((badge) =>
+              badge.variant === "super-deal" ? (
+                <Badge key={badge.variant} variant="super-deal">
+                  <span className="inline-flex items-center gap-0.5">
+                    <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                      <path d="M6.5 1L3 7H6L5.5 11L9 5H6L6.5 1Z" fill="currentColor" />
+                    </svg>
+                    {badge.label}
+                    <span className="relative group/tip cursor-help">
+                      <svg width="9" height="9" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                        <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" strokeWidth="1" />
+                        <path d="M4.2 4.3C4.2 3.6 4.8 3 5.5 3C6.2 3 6.8 3.6 6.8 4.3C6.8 5 5.5 5.2 5.5 6" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" />
+                        <circle cx="5.5" cy="7.5" r="0.4" fill="currentColor" />
+                      </svg>
+                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-black text-white font-body text-[10px] font-medium rounded whitespace-nowrap opacity-0 pointer-events-none group-hover/tip:opacity-100 transition-opacity duration-fast">
+                        Extra 10% OFF
+                      </span>
+                    </span>
+                  </span>
+                </Badge>
+              ) : (
+                <Badge key={badge.variant} variant={badge.variant}>
+                  {badge.label}
+                </Badge>
+              )
+            )}
           </div>
         )}
 
@@ -275,6 +306,6 @@ export function ProductCard({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

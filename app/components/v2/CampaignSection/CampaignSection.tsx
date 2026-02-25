@@ -1,7 +1,6 @@
 import { useRef, useCallback } from "react";
 import { cn } from "~/lib/utils";
 import { CarouselArrows } from "~/components/v2/CarouselArrows";
-import type { ProductCardProps } from "~/components/v2/ProductCard";
 import { ProductCard } from "~/components/v2/ProductCard";
 import type { Product } from "~/shared/types";
 
@@ -63,7 +62,7 @@ function ProductRowCarousel({
         className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-none"
       >
         {products.map((product, i) => (
-          <div key={product.productUUID ?? i} className="min-w-[260px] flex-shrink-0 snap-start">
+          <div key={product.productUUID ?? i} className="w-[260px] flex-shrink-0 snap-start">
             <ProductCard
               product={product}
               onClick={onProductClick}
@@ -83,6 +82,7 @@ export function CampaignSection({
   onAddToCart,
   className,
 }: CampaignSectionProps) {
+  console.log("campaign", campaign);
   return (
     <section
       className={cn(
@@ -90,13 +90,14 @@ export function CampaignSection({
         className
       )}
     >
-      <div className="grid grid-cols-1 redesign-md:grid-cols-[420px_1fr] gap-8">
-        {/* Left — Campaign lifestyle card */}
+      <div className="grid grid-cols-1 redesign-md:grid-cols-[420px_1fr] gap-8 redesign-md:items-start">
+        {/* Left — Campaign lifestyle card (sticky on desktop) */}
+        <div className="redesign-md:sticky redesign-md:top-4">
         <a
           href={campaign.ctaHref ?? "#"}
           className={cn(
             "relative rounded-2xl overflow-hidden no-underline block",
-            "h-[280px] redesign-md:h-full redesign-md:min-h-[680px]",
+            "h-[280px] redesign-md:h-[540px]",
             "group"
           )}
         >
@@ -122,9 +123,10 @@ export function CampaignSection({
             </span>
           </div>
         </a>
+        </div>
 
         {/* Right — Stacked product carousel rows */}
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-12 min-w-0">
           {rows.map((row, i) => (
             <ProductRowCarousel
               key={i}

@@ -11,18 +11,21 @@ export interface ProductVariant {
 
 export interface AccordionItem {
   title: string;
+  /** Rendered as HTML via dangerouslySetInnerHTML */
   content: string;
 }
 
 export interface ProductInfoProps {
   badges?: Array<{
-    variant: "discount" | "new" | "selling-fast" | "hot" | "limited";
+    variant: "discount" | "new" | "selling-fast" | "hot" | "limited" | "super-deal";
     label: string;
   }>;
   title: string;
   rating?: number;
   reviewCount?: number;
   salePrice?: number;
+  /** Original sale price before super_deal discount — shown struck through */
+  originalSalePrice?: number;
   retailPrice: number;
   currency?: string;
   shippingNote?: string;
@@ -118,6 +121,7 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
       rating = 0,
       reviewCount = 0,
       salePrice,
+      originalSalePrice,
       retailPrice,
       currency = "$",
       shippingNote,
@@ -164,11 +168,32 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
         {/* Badges */}
         {badges && badges.length > 0 && (
           <div className="flex gap-1.5 mb-3">
-            {badges.map((b, i) => (
-              <Badge key={i} variant={b.variant}>
-                {b.label}
-              </Badge>
-            ))}
+            {badges.map((b, i) =>
+              b.variant === "super-deal" ? (
+                <Badge key={i} variant="super-deal">
+                  <span className="inline-flex items-center gap-1">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                      <path d="M6.5 1L3 7H6L5.5 11L9 5H6L6.5 1Z" fill="currentColor" />
+                    </svg>
+                    {b.label}
+                    <span className="relative group/tip cursor-help">
+                      <svg width="11" height="11" viewBox="0 0 11 11" fill="none" aria-hidden="true">
+                        <circle cx="5.5" cy="5.5" r="4.5" stroke="currentColor" strokeWidth="1" />
+                        <path d="M4.2 4.3C4.2 3.6 4.8 3 5.5 3C6.2 3 6.8 3.6 6.8 4.3C6.8 5 5.5 5.2 5.5 6" stroke="currentColor" strokeWidth="0.8" strokeLinecap="round" />
+                        <circle cx="5.5" cy="7.5" r="0.4" fill="currentColor" />
+                      </svg>
+                      <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-1 bg-black text-white font-body text-[10px] font-medium rounded whitespace-nowrap opacity-0 pointer-events-none group-hover/tip:opacity-100 transition-opacity duration-fast">
+                        Extra 10% OFF
+                      </span>
+                    </span>
+                  </span>
+                </Badge>
+              ) : (
+                <Badge key={i} variant={b.variant}>
+                  {b.label}
+                </Badge>
+              )
+            )}
           </div>
         )}
 
@@ -189,13 +214,18 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
 
         {/* Price block */}
         <div ref={priceRef} className="mb-1">
-          <div className="flex items-baseline">
+          <div className="flex items-baseline flex-wrap gap-x-2.5">
             {salePrice != null ? (
               <>
                 <span className="font-heading text-2xl font-bold text-[#C75050]">
                   {currency}{salePrice.toFixed(2)}
                 </span>
-                <span className="font-body text-base font-normal text-[#999] line-through ml-2.5">
+                {originalSalePrice != null && originalSalePrice !== salePrice && (
+                  <span className="font-body text-base font-normal text-[#999] line-through">
+                    {currency}{originalSalePrice.toFixed(2)}
+                  </span>
+                )}
+                <span className="font-body text-base font-normal text-[#999] line-through">
                   {currency}{retailPrice.toFixed(2)}
                 </span>
               </>
@@ -251,25 +281,31 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
             <p className="font-body text-sm font-semibold text-black mb-2.5">
               Size:{" "}
               <span className="font-normal">
-                {variants.find((v) => v.value === selectedVariant)?.label ?? ""}
+                {(() => {
+                  const label = variants.find((v) => v.value === selectedVariant)?.label ?? "";
+                  return label.toLowerCase() === "default title" ? "Default" : label;
+                })()}
               </span>
             </p>
-            <div className="flex gap-2">
-              {variants.map((v) => (
-                <button
-                  key={v.value}
-                  type="button"
-                  className={cn(
-                    "px-5 py-2.5 rounded-lg font-body text-sm font-medium transition-all duration-fast",
-                    v.value === selectedVariant
-                      ? "border-[1.5px] border-black bg-black text-white"
-                      : "border-[1.5px] border-[#E0E0E0] bg-white text-black hover:border-black"
-                  )}
-                  onClick={() => onVariantChange?.(v.value)}
-                >
-                  {v.label}
-                </button>
-              ))}
+            <div className="flex flex-wrap gap-2">
+              {variants.map((v) => {
+                const displayLabel = v.label.toLowerCase() === "default title" ? "Default" : v.label;
+                return (
+                  <button
+                    key={v.value}
+                    type="button"
+                    className={cn(
+                      "px-5 py-2.5 rounded-lg font-body text-sm font-medium transition-all duration-fast",
+                      v.value === selectedVariant
+                        ? "border-[1.5px] border-black bg-black text-white"
+                        : "border-[1.5px] border-[#E0E0E0] bg-white text-black hover:border-black"
+                    )}
+                    onClick={() => onVariantChange?.(v.value)}
+                  >
+                    {displayLabel}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -297,35 +333,30 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
         >
           Buy It Now
         </Button>
-
-        {/* Trust signals */}
-        <div className="flex gap-6 items-center mb-4">
-          <div className="flex items-center gap-1.5">
+        <div className="mb-5 pb-5 border-b border-[#E0E0E0]">
+          <div className="flex items-start gap-1.5">
             <TruckIcon />
-            <span className="font-body text-[13px] font-normal text-[#666]">
-              Free shipping
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <ClockIcon />
-            <span className="font-body text-[13px] font-normal text-[#666]">
-              7-day returns
-            </span>
+            <div>
+              <p className="font-body text-sm font-semibold text-black">
+                Free shipping
+              </p>
+              <p className="font-body text-[13px] font-normal text-[#888] mt-0.5">
+                FREE Shipping on order £19.99+
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Store pickup */}
+        {/* Money back guarantee */}
         <div className="mb-5 pb-5 border-b border-[#E0E0E0]">
           <div className="flex items-start gap-1.5">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-[#4A7C59] mt-0.5 flex-shrink-0">
-              <path d="M2 7L5.5 10.5L12 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <ClockIcon />
             <div>
               <p className="font-body text-sm font-semibold text-black">
-                Pickup available
+                7-day returns
               </p>
               <p className="font-body text-[13px] font-normal text-[#888] mt-0.5">
-                Usually ready in 24 hours
+                100% money back guarantee
               </p>
             </div>
           </div>
@@ -363,9 +394,22 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
                     )}
                   >
                     <div className="overflow-hidden">
-                      <div className="pb-5 font-body text-sm font-normal text-[#666] leading-[1.6]">
-                        {item.content}
-                      </div>
+                      <div
+                        className={cn(
+                          "pb-5 font-body text-sm font-normal text-[#666] leading-[1.6] break-words",
+                          "[&_p]:mb-3 [&_p]:last:mb-0",
+                          "[&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-black [&_h2]:mt-4 [&_h2]:mb-2",
+                          "[&_h3]:text-sm [&_h3]:font-semibold [&_h3]:text-black [&_h3]:mt-3 [&_h3]:mb-1.5",
+                          "[&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3",
+                          "[&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3",
+                          "[&_li]:mb-1",
+                          "[&_strong]:font-semibold [&_strong]:text-[#444]",
+                          "[&_a]:text-black [&_a]:underline",
+                          "[&_br]:content-[''] [&_br]:block [&_br]:mt-2",
+                          "[&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-rd-sm [&_img]:my-3"
+                        )}
+                        dangerouslySetInnerHTML={{ __html: item.content }}
+                      />
                     </div>
                   </div>
                 </div>

@@ -23,6 +23,7 @@ export default defineConfig({
       { find: /^@mui\/system\/styleFunctionSx$/, replacement: path.resolve(__dirname, 'app/lib/muiStyleFunctionSx.ts') },
       { find: /^@mui\/system\/createStyled$/, replacement: path.resolve(__dirname, 'app/lib/muiCreateStyled.ts') },
     ],
+    dedupe: ['react', 'react-dom', 'react-router'],
   },
   optimizeDeps: {
     include: [

@@ -14,8 +14,6 @@ export interface CheckoutLayoutProps {
 }
 
 const STEPS: { key: CheckoutStep; label: string }[] = [
-  { key: "information", label: "Information" },
-  { key: "shipping", label: "Shipping" },
   { key: "payment", label: "Payment" },
 ];
 

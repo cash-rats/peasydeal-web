@@ -1,25 +1,35 @@
+import { useMemo, useCallback } from 'react';
 import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
 import {
   isRouteErrorResponse,
   useLoaderData,
+  useNavigate,
   useRouteError,
   useRouteLoaderData,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 
-import type { TCategoryPreview, TPromotionType } from '~/shared/types';
-import CatalogLayout, { links as catalogLayoutLinks } from '~/components/layouts/CatalogLayout';
-import PromoActivities from '~/components/PromoActivities/PromoActivities';
-import { links as PromoCarouselLink } from '~/components/PromoCarousell';
-import { CategoryPreview } from '~/components/CategoryPreview';
+import type {
+  TCategoryPreview,
+  TPromotionType,
+  Product,
+} from '~/shared/types';
+import { getCanonicalDomain, composeProductDetailURL, isFromGoogleStoreBot } from '~/utils';
 import FiveHundredError from '~/components/FiveHundreError';
-import CategoriesRow from '~/components/CategoriesRow';
-import PromoActivitiesVariant from '~/components/PromoActivitiesVariant';
-import AllTimeCoupon, { links as AllTimeCouponLink } from '~/components/AllTimeCoupon';
-import { getCanonicalDomain } from '~/utils';
-import { fetchLandingPageFeatureProducts } from './api.server';
+import { EmailSubscribeModal } from '~/components/v2/EmailSubscribeModal';
 import type { RootLoaderData } from '~/root';
-import { useCartCount } from '~/routes/hooks';
+
+// v2 components
+import { V2Layout } from '~/components/v2/GlobalLayout';
+import { HeroCarousel } from '~/components/v2/HeroCarousel';
+import { HeroBanner } from '~/components/v2/HeroBanner';
+import { TaglineBanner } from '~/components/v2/TaglineBanner';
+import { CampaignSection } from '~/components/v2/CampaignSection';
+import { TabbedProductGrid } from '~/components/v2/TabbedProductGrid';
+import { CoreProductsCarousel } from '~/components/v2/CoreProductsCarousel';
+import { LifestyleGallery } from '~/components/v2/LifestyleGallery';
+
+import { fetchLandingPageFeatureProducts } from './api.server';
 
 type LoaderData = {
   categoryPreviews: TCategoryPreview[];
@@ -30,9 +40,6 @@ type LoaderData = {
 
 export const links: LinksFunction = () => {
   return [
-    ...catalogLayoutLinks(),
-    ...AllTimeCouponLink(),
-    ...PromoCarouselLink(),
     {
       rel: 'canonical',
       href: getCanonicalDomain(),
@@ -44,7 +51,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   try {
     const userAgent = request.headers.get('user-agent') || '';
 
-    const landingPromise = fetchLandingPageFeatureProducts({
+    const landings = await fetchLandingPageFeatureProducts({
       categoriesPreviewNames: [
         'hardware',
         'vehicles-and-parts',
@@ -55,8 +62,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         'new_trend',
       ],
     });
-
-    const landings = await landingPromise;
 
     return Response.json({
       categoryPreviews: landings.categoryPreviews,
@@ -91,76 +96,292 @@ export function ErrorBoundary() {
   );
 }
 
+/* ─── Static placeholder content ─── */
+
+const heroSlides = [
+  {
+    imageSrc:
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1400&h=600&fit=crop',
+    bgTint: '#D4A99A',
+    subtitle: 'DEALS YOU\'LL LOVE',
+    headline: 'Discover amazing products at unbeatable prices',
+    ctaLabel: 'Shop Now',
+    ctaHref: '/promotion/new_trend',
+  },
+  {
+    imageSrc:
+      'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1400&h=600&fit=crop',
+    bgTint: '#C9D4C5',
+    subtitle: 'NEW ARRIVALS',
+    headline: 'Fresh finds added daily',
+    ctaLabel: 'Explore',
+    ctaHref: '/promotion/new_trend',
+  },
+  {
+    imageSrc:
+      'https://images.unsplash.com/photo-1607082349566-187342175e2f?w=1400&h=600&fit=crop',
+    bgTint: '#E0D5C8',
+    subtitle: 'TOP PICKS',
+    headline: 'Handpicked deals just for you',
+    ctaLabel: 'Discover',
+    ctaHref: '/collection/apparel-and-accessories',
+  },
+];
+
+const lifestyleCategories = [
+  {
+    label: 'Tech & Gadgets',
+    description: 'The latest gadgets and accessories for your everyday life.',
+    photos: [
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=800&fit=crop',
+        aspectRatio: 'portrait' as const,
+      },
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop',
+        aspectRatio: 'square' as const,
+      },
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&h=450&fit=crop',
+        aspectRatio: 'wide' as const,
+      },
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=800&fit=crop',
+        aspectRatio: 'portrait' as const,
+      },
+    ],
+  },
+  {
+    label: 'Home & Living',
+    description:
+      'Upgrade your space with practical and stylish home essentials.',
+    photos: [
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop',
+        aspectRatio: 'portrait' as const,
+      },
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=600&fit=crop',
+        aspectRatio: 'square' as const,
+      },
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=600&h=450&fit=crop',
+        aspectRatio: 'wide' as const,
+      },
+    ],
+  },
+  {
+    label: 'Outdoors',
+    description: 'Gear up for adventure with outdoor essentials.',
+    photos: [
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=800&fit=crop',
+        aspectRatio: 'portrait' as const,
+      },
+      {
+        imageSrc:
+          'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=600&fit=crop',
+        aspectRatio: 'square' as const,
+      },
+    ],
+  },
+];
+
+/* ─── Helpers ─── */
+
+function toCoreProd(p: Product) {
+  return {
+    id: p.productUUID,
+    imageSrc: p.main_pic,
+    name: p.title,
+    description: p.shortDescription || p.description || '',
+    salePrice:
+      p.salePrice < p.retailPrice ? p.salePrice : undefined,
+    retailPrice: p.retailPrice,
+    ctaLabel: 'Shop Now',
+    href: composeProductDetailURL({
+      productName: p.title,
+      productUUID: p.productUUID,
+    }),
+  };
+}
+
+function capitalizeLabel(name: string) {
+  return name
+    .split(/[-_]/)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
+
+/* ─── Component ─── */
+
 export default function LandingPage() {
   const {
     categoryPreviews = [],
     promotionPreviews = [],
     promotions = [],
+    userAgent = '',
   } = useLoaderData<LoaderData>() || {};
+
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const categories = rootData?.categories ?? [];
   const navBarCategories = rootData?.navBarCategories ?? [];
-  const cartCount = useCartCount();
 
-  const handleClickProduct = (productUUID: string) => {
-    console.log('[ga] user clicks on:', productUUID);
-  };
+  const navigate = useNavigate();
+
+  const handleProductClick = useCallback(
+    (product: Product) => {
+      navigate(
+        composeProductDetailURL({
+          productName: product.title,
+          productUUID: product.productUUID,
+        })
+      );
+    },
+    [navigate]
+  );
+
+  // Build hero banner cards from promotions metadata
+  const heroBannerCards = useMemo(() => {
+    const promos = promotions.slice(0, 3);
+    const placeholderImages = [
+      'https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=600&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=400&fit=crop',
+    ];
+    const bgColors = ['#F5EDE4', '#E8EDE5', '#EDE5E8'];
+
+    return promos.map((promo, i) => ({
+      categoryLabel: capitalizeLabel(promo.name),
+      headline: promo.label || promo.desc || capitalizeLabel(promo.name),
+      ctaLabel: 'Shop Now',
+      ctaHref: `/promotion/${promo.name}`,
+      imageSrc: placeholderImages[i] || placeholderImages[0],
+      bgColor: bgColors[i] || bgColors[0],
+    }));
+  }, [promotions]);
+
+  // Build campaign section from first promotionPreview
+  const campaignData = useMemo(() => {
+    console.log("promotionPreviews", promotionPreviews);
+    const firstPromo = promotionPreviews[0];
+    const secondPromo = promotionPreviews[1] || categoryPreviews[0];
+
+    const campaign = firstPromo
+      ? {
+          categoryLabel: capitalizeLabel(firstPromo.name),
+          headline: firstPromo.label || capitalizeLabel(firstPromo.name),
+          ctaLabel: 'Shop Now',
+          ctaHref: firstPromo.type === 'promotion' ? `/promotion/${firstPromo.name}` : `/collection/${firstPromo.name}`,
+          imageSrc: firstPromo.items[0]?.main_pic || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=1000&fit=crop',
+        }
+      : undefined;
+
+    const rows = [firstPromo, secondPromo]
+      .filter(Boolean)
+      .map((preview) => ({
+        title: preview!.label || capitalizeLabel(preview!.name),
+        products: preview!.items.slice(0, 6),
+      }));
+
+    return { campaign, rows };
+  }, [promotionPreviews, categoryPreviews]);
+
+  // Build tabbed grid from all previews
+  const productTabs = useMemo(() => {
+    const allPreviews = promotionPreviews.concat(categoryPreviews);
+    return allPreviews.slice(0, 4).map((preview) => ({
+      label: preview.label || capitalizeLabel(preview.name),
+      products: preview.items.slice(0, 8),
+      href: preview.type === 'promotion'
+        ? `/promotion/${preview.name}`
+        : `/collection/${preview.name}`,
+    }));
+  }, [promotionPreviews, categoryPreviews]);
+
+  // Build core products from top items
+  const coreProducts = useMemo(() => {
+    const allItems = categoryPreviews.flatMap((cp) => cp.items);
+    return allItems.slice(0, 4).map(toCoreProd);
+  }, [categoryPreviews]);
 
   return (
-    <CatalogLayout
-      categories={categories}
-      navBarCategories={navBarCategories}
-      cartCount={cartCount}
-    >
-      <div className="overflow-hidden">
-        <h1 className="absolute top0 left-0 w-[1px] h-[1px] overflow-hidden">
+    <V2Layout categories={categories} navBarCategories={navBarCategories}>
+      <div className="v2 overflow-hidden">
+        <h1 className="absolute top-0 left-0 w-[1px] h-[1px] overflow-hidden">
           Welcome to PeasyDeal - Shop Now and Save Big!
         </h1>
+        <EmailSubscribeModal
+          disableAutoOpen={isFromGoogleStoreBot(userAgent)}
+          onSubscribe={async (email) => {
+            const form = new FormData();
+            form.append('email', email);
+            const resp = await fetch('/api/email-subscribe', { method: 'POST', body: form });
+            const result = await resp.json();
+            if (result?.ok === false || result?.error) {
+              throw new Error(result.error || result.err_msg || 'Failed to subscribe');
+            }
+          }}
+          imageUrl="/Sale-Overlay-Variation.png"
+        />
 
-        <div className="pt-2.5 px-auto flex flex-col justify-center items-center max-w-screen-xl mx-auto">
-          <div className="w-full py-0 mx-2 px-2">
-            <AllTimeCoupon />
-          </div>
-        </div>
+        {/* Hero Carousel */}
+        <HeroCarousel slides={heroSlides} />
 
-        {/*
-        <div className="w-full py-2.5 max-w-screen-xl mx-auto">
-          <PromoCarousell />
-        </div>
-        */}
+        {/* 3-Card Banner */}
+        {heroBannerCards.length >= 3 && (
+          <HeroBanner cards={heroBannerCards} />
+        )}
 
-        <div className="py-0 px-auto flex flex-col justify-center items-center mx-0">
-          <div className="w-full bg-[#F1F1F1]">
-            <PromoActivities promotions={promotions} />
-          </div>
-        </div>
+        {/* Tagline */}
+        <TaglineBanner
+          headline="Discover unbeatable deals on quality products — delivered straight to your door"
+          ctaLabel="Browse all categories"
+          ctaHref="/shop-all"
+        />
 
-        {promotionPreviews
-          .concat(categoryPreviews)
-          .map((category, index) => (
-            <div key={`/collection/${category.name}_${index}`}>
-              <div className="py-0 px-auto flex flex-col justify-center items-center mx-2 md:mx-4">
-                <div className="w-full py-2.5 max-w-screen-xl mx-auto">
-                  <CategoryPreview
-                    key={`${category.name}_${index}`}
-                    category={category}
-                    onClickProduct={handleClickProduct}
-                  />
-                </div>
-              </div>
+        {/* Campaign Section */}
+        {campaignData.rows.length > 0 && (
+          <CampaignSection
+            campaign={campaignData.campaign}
+            rows={campaignData.rows}
+            onProductClick={handleProductClick}
+          />
+        )}
 
-              {index === 0 ? <CategoriesRow categories={categories} /> : null}
+        {/* Tabbed Product Grid */}
+        {productTabs.length > 0 && (
+          <TabbedProductGrid
+            tabs={productTabs}
+            shopAllLabel="Shop All Products"
+            shopAllHref="/shop-all"
+            onProductClick={handleProductClick}
+          />
+        )}
 
-              {index === 1 ? (
-                <div className="py-0 px-auto flex flex-col justify-center items-center bg-slate-50">
-                  <div className="w-full py-6 md:py-2.5 md:px-2.5 lg:px-2.5 xl:px-0 max-w-screen-xl mx-auto">
-                    <PromoActivitiesVariant />
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          ))}
+        {/* Core Products Carousel */}
+        {coreProducts.length > 0 && (
+          <CoreProductsCarousel
+            title="Featured products"
+            products={coreProducts}
+          />
+        )}
+
+        {/* Lifestyle Gallery */}
+        <LifestyleGallery
+          subtitle="CURATED FOR YOU"
+          heading="Products our customers love"
+          categories={lifestyleCategories}
+        />
       </div>
-    </CatalogLayout>
+    </V2Layout>
   );
 }
