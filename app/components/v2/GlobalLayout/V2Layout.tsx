@@ -106,8 +106,8 @@ export function V2Layout({
       {/* Announcement bar */}
       <AnnouncementBar messages={ANNOUNCEMENT_MESSAGES} />
 
-      {/* Header + MegaMenu */}
-      <div className="relative">
+      {/* Header + MegaMenu + Search */}
+      <div className="relative z-[1000]">
         <Header
           navItems={navItems}
           cartCount={cartCount}
@@ -123,6 +123,11 @@ export function V2Layout({
           onMouseEnter={handleMegaMenuEnter}
           onClose={handleMegaMenuClose}
         />
+
+        {/* Desktop search overlay */}
+        {searchOpen && (
+          <SearchDropdown onClose={() => setSearchOpen(false)} />
+        )}
       </div>
 
       {/* Mobile nav drawer */}
@@ -131,11 +136,6 @@ export function V2Layout({
         onClose={() => setMobileNavOpen(false)}
         categories={mobileCategories}
       />
-
-      {/* Desktop search overlay */}
-      {searchOpen && (
-        <SearchDropdown onClose={() => setSearchOpen(false)} />
-      )}
 
       {/* Mobile search fullscreen */}
       <MobileSearch

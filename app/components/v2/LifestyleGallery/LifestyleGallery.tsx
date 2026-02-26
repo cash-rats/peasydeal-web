@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Link } from "react-router";
 import { cn } from "~/lib/utils";
 
 export interface GalleryProduct {
@@ -52,7 +53,7 @@ function PhotoCard({
       ? "aspect-[4/3]"
       : "aspect-[3/4]";
 
-  return (
+  const card = (
     <div
       className={cn(
         "rounded-2xl overflow-hidden relative cursor-pointer group",
@@ -84,15 +85,15 @@ function PhotoCard({
               {photo.product.salePrice != null ? (
                 <>
                   <span className="font-body text-[13px] font-semibold text-[#C75050]">
-                    ${photo.product.salePrice.toFixed(2)}
+                    £{photo.product.salePrice.toFixed(2)}
                   </span>
                   <span className="font-body text-xs text-[#999] line-through">
-                    ${photo.product.price.toFixed(2)}
+                    £{photo.product.price.toFixed(2)}
                   </span>
                 </>
               ) : (
                 <span className="font-body text-[13px] font-semibold text-black">
-                  ${photo.product.price.toFixed(2)}
+                  £{photo.product.price.toFixed(2)}
                 </span>
               )}
             </div>
@@ -102,6 +103,7 @@ function PhotoCard({
             className="w-9 h-9 rounded-full border border-[#E0E0E0] bg-white flex items-center justify-center flex-shrink-0 text-[#666] hover:bg-[#F5F5F5] hover:border-[#CCC] transition-all duration-fast active:scale-90"
             aria-label={`Add ${photo.product.name} to cart`}
             onClick={(e) => {
+              e.preventDefault();
               e.stopPropagation();
               onQuickAdd?.(photo.product!);
             }}
@@ -112,6 +114,13 @@ function PhotoCard({
       )}
     </div>
   );
+
+  // Wrap in Link if product has href
+  if (photo.product?.href) {
+    return <Link to={photo.product.href}>{card}</Link>;
+  }
+
+  return card;
 }
 
 export function LifestyleGallery({

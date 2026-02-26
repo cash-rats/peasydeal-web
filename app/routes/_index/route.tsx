@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react';
+import { useMemo, useCallback, useState } from 'react';
 import type { LinksFunction, LoaderFunctionArgs } from 'react-router';
 import {
   isRouteErrorResponse,
@@ -14,9 +14,13 @@ import type {
   TPromotionType,
   Product,
 } from '~/shared/types';
+import type { ShoppingCartItem } from '~/sessions/types';
+import { useCartContext } from '~/routes/hooks';
 import { getCanonicalDomain, composeProductDetailURL, isFromGoogleStoreBot } from '~/utils';
 import FiveHundredError from '~/components/FiveHundreError';
 import { EmailSubscribeModal } from '~/components/v2/EmailSubscribeModal';
+import { ItemAddedModal } from '~/components/v2/ItemAddedModal';
+import type { GalleryProduct } from '~/components/v2/LifestyleGallery/LifestyleGallery';
 import type { RootLoaderData } from '~/root';
 
 // v2 components
@@ -28,8 +32,11 @@ import { CampaignSection } from '~/components/v2/CampaignSection';
 import { TabbedProductGrid } from '~/components/v2/TabbedProductGrid';
 import { CoreProductsCarousel } from '~/components/v2/CoreProductsCarousel';
 import { LifestyleGallery } from '~/components/v2/LifestyleGallery';
+import { ValuePropsRow } from '~/components/v2/ValuePropsRow';
+import { Truck, ShieldCheck, BadgeCheck, Sparkles } from 'lucide-react';
 
 import { fetchLandingPageFeatureProducts } from './api.server';
+import { StatementBlock } from '~/components/v2/StatementBlock';
 
 type LoaderData = {
   categoryPreviews: TCategoryPreview[];
@@ -128,73 +135,6 @@ const heroSlides = [
   },
 ];
 
-const lifestyleCategories = [
-  {
-    label: 'Tech & Gadgets',
-    description: 'The latest gadgets and accessories for your everyday life.',
-    photos: [
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&h=800&fit=crop',
-        aspectRatio: 'portrait' as const,
-      },
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&h=600&fit=crop',
-        aspectRatio: 'square' as const,
-      },
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&h=450&fit=crop',
-        aspectRatio: 'wide' as const,
-      },
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=800&fit=crop',
-        aspectRatio: 'portrait' as const,
-      },
-    ],
-  },
-  {
-    label: 'Home & Living',
-    description:
-      'Upgrade your space with practical and stylish home essentials.',
-    photos: [
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=800&fit=crop',
-        aspectRatio: 'portrait' as const,
-      },
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=600&fit=crop',
-        aspectRatio: 'square' as const,
-      },
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=600&h=450&fit=crop',
-        aspectRatio: 'wide' as const,
-      },
-    ],
-  },
-  {
-    label: 'Outdoors',
-    description: 'Gear up for adventure with outdoor essentials.',
-    photos: [
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=800&fit=crop',
-        aspectRatio: 'portrait' as const,
-      },
-      {
-        imageSrc:
-          'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=600&h=600&fit=crop',
-        aspectRatio: 'square' as const,
-      },
-    ],
-  },
-];
-
 /* ─── Helpers ─── */
 
 function toCoreProd(p: Product) {
@@ -236,6 +176,8 @@ export default function LandingPage() {
   const navBarCategories = rootData?.navBarCategories ?? [];
 
   const navigate = useNavigate();
+  const { cart, setCart } = useCartContext();
+  const [showItemAdded, setShowItemAdded] = useState(false);
 
   const handleProductClick = useCallback(
     (product: Product) => {
@@ -271,7 +213,6 @@ export default function LandingPage() {
 
   // Build campaign section from first promotionPreview
   const campaignData = useMemo(() => {
-    console.log("promotionPreviews", promotionPreviews);
     const firstPromo = promotionPreviews[0];
     const secondPromo = promotionPreviews[1] || categoryPreviews[0];
 
@@ -312,6 +253,85 @@ export default function LandingPage() {
     const allItems = categoryPreviews.flatMap((cp) => cp.items);
     return allItems.slice(0, 4).map(toCoreProd);
   }, [categoryPreviews]);
+
+  // Build lifestyle gallery from top 5 categories by product count, with shuffled items
+  // Also build a product lookup map keyed by href for quick-add-to-cart
+  const { lifestyleCategories, productByHref } = useMemo(() => {
+    const aspectPatterns = ['portrait', 'square', 'wide', 'portrait'] as const;
+    const lookup = new Map<string, Product>();
+
+    // Sort by count descending, take top 5 with at least 2 items
+    const topCategories = [...categoryPreviews]
+      .filter(cp => cp.items.length >= 2)
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    const cats = topCategories.map(cp => {
+      // Shuffle items to show variety each page load
+      const shuffled = [...cp.items].sort(() => Math.random() - 0.5);
+      return {
+        label: cp.label || capitalizeLabel(cp.name),
+        description: cp.desc || undefined,
+        photos: shuffled.slice(0, 6).map((product, idx) => {
+          const href = composeProductDetailURL({
+            productName: product.title,
+            productUUID: product.productUUID,
+          });
+          lookup.set(href, product);
+          return {
+            imageSrc: product.main_pic,
+            imageAlt: product.title,
+            aspectRatio: aspectPatterns[idx % 4],
+            product: {
+              name: product.title,
+              price: product.retailPrice,
+              salePrice: product.salePrice < product.retailPrice ? product.salePrice : undefined,
+              thumbnailSrc: product.main_pic,
+              href,
+            },
+          };
+        }),
+      };
+    });
+
+    return { lifestyleCategories: cats, productByHref: lookup };
+  }, [categoryPreviews]);
+
+  // Quick-add from LifestyleGallery bag icon
+  const handleGalleryQuickAdd = useCallback(
+    (galleryProduct: GalleryProduct) => {
+      const product = productByHref.get(galleryProduct.href);
+      if (!product) {
+        navigate(galleryProduct.href);
+        return;
+      }
+
+      // If multiple variations, go to PDP to pick one
+      if ((product.variations?.length ?? 0) > 1) {
+        navigate(galleryProduct.href);
+        return;
+      }
+
+      const variationUUID = product.variations?.[0]?.uuid || product.variationID;
+      const cartItem: ShoppingCartItem = {
+        productUUID: product.productUUID,
+        variationUUID,
+        title: product.title,
+        specName: '',
+        image: product.main_pic,
+        salePrice: product.salePrice.toString(),
+        retailPrice: product.retailPrice.toString(),
+        quantity: String(Number(cart[variationUUID]?.quantity || 0) + 1),
+        purchaseLimit: product.variations?.[0]?.purchase_limit?.toString() || '',
+        tagComboTags: product.tabComboType || '',
+        added_time: Date.now().toString(),
+      };
+
+      setCart({ ...cart, [variationUUID]: cartItem });
+      setShowItemAdded(true);
+    },
+    [productByHref, cart, setCart, navigate]
+  );
 
   return (
     <V2Layout categories={categories} navBarCategories={navBarCategories}>
@@ -375,12 +395,63 @@ export default function LandingPage() {
           />
         )}
 
-        {/* Lifestyle Gallery */}
-        <LifestyleGallery
-          subtitle="CURATED FOR YOU"
-          heading="Products our customers love"
-          categories={lifestyleCategories}
+        {/* ValuePropsRow */}
+        <ValuePropsRow
+          items={[
+            {
+              icon: <Truck size={48} strokeWidth={1.5} />,
+              title: "Free Shipping",
+              description: "Free shipping on all orders over £19.99. Fast and reliable delivery to your door.",
+            },
+            {
+              icon: <ShieldCheck size={48} strokeWidth={1.5} />,
+              title: "Secure Payment",
+              description: "SSL encrypted checkout with Stripe and PayPal. Your data is always safe.",
+            },
+            {
+              icon: <BadgeCheck size={48} strokeWidth={1.5} />,
+              title: "Money-Back Guarantee",
+              description: "100% satisfaction guaranteed. Not happy? Full refund within 14 days.",
+            },
+            {
+              icon: <Sparkles size={48} strokeWidth={1.5} />,
+              title: "Daily New Deals",
+              description: "Fresh deals added every day. Great products at unbeatable prices.",
+            },
+          ]}
         />
+
+        {/* Lifestyle Gallery */}
+        {lifestyleCategories.length > 0 && (
+          <LifestyleGallery
+            subtitle="CURATED FOR YOU"
+            heading="Products our customers love"
+            categories={lifestyleCategories}
+            onQuickAdd={handleGalleryQuickAdd}
+          />
+        )}
+
+        {/* Item Added Modal */}
+        <ItemAddedModal
+          open={showItemAdded}
+          onClose={() => setShowItemAdded(false)}
+          onContinueShopping={() => setShowItemAdded(false)}
+          onViewCart={() => {
+            setShowItemAdded(false);
+            navigate('/cart');
+          }}
+        />
+
+        {/* Statement Block */}
+        <div className="border-t-[1px] border-[#E0E0E0]">
+          <StatementBlock
+            tagline="Discover unbeatable deals on quality products — delivered straight to your door"
+            subtitle="CURATED FOR YOU"
+            heading="Products our customers love"
+            body="We offer a wide range of products at unbeatable prices. From electronics to fashion, we have something for everyone."
+            imageSrc="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=1000&fit=crop"
+          />
+        </div>
       </div>
     </V2Layout>
   );

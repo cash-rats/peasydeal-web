@@ -190,14 +190,14 @@ export function Header({
           >
             <SearchIcon />
           </button>
-          <button
+          {/* <button
             type="button"
             className="bg-transparent border-none cursor-pointer p-0 text-black hover:text-[#666] transition-colors duration-fast"
             aria-label="Account"
             onClick={onAccountClick}
           >
             <AccountIcon />
-          </button>
+          </button> */}
           <button
             type="button"
             className="relative bg-transparent border-none cursor-pointer p-0 text-black hover:text-[#666] transition-colors duration-fast"

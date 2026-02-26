@@ -121,6 +121,22 @@
   100% { stroke-dashoffset: 0; }
 }
 
+/* Search overlay animations */
+@keyframes search-scrim-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes search-bar-in {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes search-results-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* Blog prose styling for Contentful rich text */
 .blog-prose p {
   font-family: var(--font-body);
