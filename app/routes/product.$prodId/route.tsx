@@ -52,6 +52,35 @@ import { redirectToNewProductURL } from './loaders';
 
 const RECOMMENDED_PRODUCTS_ENDPOINT = '/api/products/recommendations';
 
+const toDiscountLabel = (variation?: {
+  discount?: number;
+  retail_price?: number;
+  sale_price?: number;
+}): string | null => {
+  if (!variation) return null;
+
+  let discount = variation.discount;
+
+  // Fallback to price-derived discount when backend value is missing/invalid.
+  if (
+    (discount == null || Number.isNaN(discount) || discount <= 0) &&
+    variation.retail_price &&
+    variation.sale_price != null &&
+    variation.retail_price > variation.sale_price
+  ) {
+    discount = (variation.retail_price - variation.sale_price) / variation.retail_price;
+  }
+
+  if (discount == null || Number.isNaN(discount) || discount <= 0) {
+    return null;
+  }
+
+  // API discount is ratio (0~1). Keep compatibility for percentage-style values (>1).
+  const percentage = discount <= 1 ? discount * 100 : discount;
+  const normalized = Number(percentage.toFixed(1));
+  return `-${normalized}%`;
+};
+
 export const loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!params.prodId) {
     throw Response.json(
@@ -211,8 +240,9 @@ function ProductDetailPage() {
       result.push({ variant: 'new', label: 'New' });
     }
     const variation = state.variation;
-    if (variation && variation.discount > 0) {
-      result.push({ variant: 'discount', label: `-${Math.round(variation.discount)}%` });
+    const discountLabel = toDiscountLabel(variation);
+    if (discountLabel) {
+      result.push({ variant: 'discount', label: discountLabel });
     }
     return result;
   }, [hasSuperDeal, state.tags, state.variation]);
