@@ -38,7 +38,6 @@ import { tryCatch } from '~/utils/try-catch';
 import { sortItemsByAddedTime } from '~/routes/cart/utils';
 
 import { CheckoutLayout } from '~/components/v2/CheckoutLayout';
-import { ExpressCheckout } from '~/components/v2/ExpressCheckout';
 import { ContactInfoSection } from '~/components/v2/ContactInfoSection';
 import { ShippingAddressSection } from '~/components/v2/ShippingAddressSection';
 import type { ShippingAddress } from '~/components/v2/ShippingAddressSection/ShippingAddressSection';
@@ -188,10 +187,9 @@ function CheckoutPage() {
     country: 'GB',
     firstName: state.shippingDetailForm.firstname,
     lastName: state.shippingDetailForm.lastname,
-    company: '',
     address: state.shippingDetailForm.address1,
+    address2: state.shippingDetailForm.address2,
     city: state.shippingDetailForm.city,
-    state: state.shippingDetailForm.address2,
     postcode: state.shippingDetailForm.postal,
     phone: state.contactInfoForm.phone_value,
   }), [state.shippingDetailForm, state.contactInfoForm.phone_value]);
@@ -205,8 +203,8 @@ function CheckoutPage() {
       firstName: 'firstname',
       lastName: 'lastname',
       address: 'address1',
+      address2: 'address2',
       city: 'city',
-      state: 'address2',
       postcode: 'postal',
     };
 

@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
 import { useFetcher } from 'react-router';
 
 import type { AddressOption } from '~/routes/api.fetch-address-options-by-postal/types';
@@ -28,14 +28,14 @@ export function useAddressLookup() {
     });
   }, [fetcher.state, fetcher.data]);
 
-  const setPostal = (postal: string) => {
+  const setPostal = useCallback((postal: string) => {
     dispatch({
       type: AddressOptionsActionTypes.on_change_postal,
       payload: postal,
     });
-  };
+  }, []);
 
-  const fetchOptions = (postal?: string) => {
+  const fetchOptions = useCallback((postal?: string) => {
     const nextPostal = postal ?? state.postal;
     if (!nextPostal) return;
 
@@ -47,7 +47,7 @@ export function useAddressLookup() {
         action: '/api/fetch-address-options-by-postal',
       },
     );
-  };
+  }, [fetcher, state.postal]);
 
   const hasNoResults = (
     fetcher.state === 'idle' &&

@@ -1,14 +1,29 @@
-import { cn } from "~/lib/utils";
-import { CheckoutInput, CheckoutSelect } from "~/components/v2/CheckoutInput";
+import { type ChangeEvent, useEffect, useRef } from 'react';
+import { FiHelpCircle } from 'react-icons/fi';
+import MoonLoader from 'react-spinners/MoonLoader';
+
+import TextDropdownField from '~/components/TextDropdownField';
+import type { Option as DropdownOption } from '~/components/TextDropdownField';
+import { Button } from '~/components/ui/button';
+import { Alert, AlertDescription } from '~/components/ui/alert';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '~/components/ui/tooltip';
+import { cn } from '~/lib/utils';
+import type { AddressOption } from '~/routes/api.fetch-address-options-by-postal/types';
+import { useAddressLookup } from '~/routes/checkout/hooks';
+import { CheckoutInput, CheckoutSelect } from '~/components/v2/CheckoutInput';
 
 export interface ShippingAddress {
   country: string;
   firstName: string;
   lastName: string;
-  company: string;
   address: string;
+  address2: string;
   city: string;
-  state: string;
   postcode: string;
   phone: string;
 }
@@ -18,7 +33,6 @@ export interface ShippingAddressSectionProps {
   onChange: (field: keyof ShippingAddress, value: string) => void;
   errors?: Partial<Record<keyof ShippingAddress, string>>;
   countries?: Array<{ label: string; value: string }>;
-  states?: Array<{ label: string; value: string }>;
   saveInfo?: boolean;
   onSaveInfoChange?: (checked: boolean) => void;
   className?: string;
@@ -44,11 +58,121 @@ export function ShippingAddressSection({
   onChange,
   errors = {},
   countries = DEFAULT_COUNTRIES,
-  states = [],
   saveInfo = false,
   onSaveInfoChange,
   className,
 }: ShippingAddressSectionProps) {
+  const {
+    options,
+    setPostal,
+    fetchOptions,
+    isLoading,
+    hasNoResults,
+  } = useAddressLookup();
+
+  const isLoadingRef = useRef<boolean>(false);
+  const lastRequestedPostalRef = useRef<string>('');
+  const pendingPostalRef = useRef<string>('');
+  const fetchWhenIdleRef = useRef<boolean>(false);
+  const suppressNextAutoLookupRef = useRef<boolean>(false);
+  const debounceTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    isLoadingRef.current = isLoading;
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (address.country !== 'GB') return;
+
+    const normalized = (address.postcode ?? '').trim().replace(/\s+/g, ' ');
+
+    if (suppressNextAutoLookupRef.current) {
+      suppressNextAutoLookupRef.current = false;
+      fetchWhenIdleRef.current = false;
+      pendingPostalRef.current = normalized;
+      if (debounceTimerRef.current) {
+        window.clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      return;
+    }
+
+    if (normalized.length < 3) {
+      pendingPostalRef.current = '';
+      lastRequestedPostalRef.current = '';
+      fetchWhenIdleRef.current = false;
+      if (debounceTimerRef.current) {
+        window.clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+      return;
+    }
+
+    pendingPostalRef.current = normalized;
+
+    if (debounceTimerRef.current) {
+      window.clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = window.setTimeout(() => {
+      const pendingPostal = pendingPostalRef.current;
+      if (!pendingPostal) return;
+      if (pendingPostal === lastRequestedPostalRef.current) return;
+
+      if (isLoadingRef.current) {
+        fetchWhenIdleRef.current = true;
+        return;
+      }
+
+      fetchWhenIdleRef.current = false;
+      lastRequestedPostalRef.current = pendingPostal;
+      fetchOptions(pendingPostal);
+    }, 500);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        window.clearTimeout(debounceTimerRef.current);
+        debounceTimerRef.current = null;
+      }
+    };
+  }, [address.country, address.postcode, fetchOptions]);
+
+  useEffect(() => {
+    if (!isLoading && fetchWhenIdleRef.current) {
+      const pendingPostal = pendingPostalRef.current;
+      if (!pendingPostal) return;
+      if (pendingPostal.length < 3) return;
+      if (pendingPostal === lastRequestedPostalRef.current) return;
+
+      fetchWhenIdleRef.current = false;
+      lastRequestedPostalRef.current = pendingPostal;
+      fetchOptions(pendingPostal);
+    }
+  }, [isLoading, fetchOptions]);
+
+  const handleChangePostcode = (evt: ChangeEvent<HTMLInputElement>) => {
+    onChange('postcode', evt.target.value);
+    setPostal(evt.target.value);
+  };
+
+  const handleSearchAddress = () => {
+    fetchOptions(address.postcode);
+  };
+
+  const handleSelectOption = (option: DropdownOption<AddressOption>) => {
+    suppressNextAutoLookupRef.current = true;
+    setPostal(option.value.postal);
+    onChange('postcode', option.value.postal);
+    onChange('address', option.value.line1);
+    onChange(
+      'address2',
+      [option.value.line2, option.value.line3, option.value.county, option.value.country]
+        .filter(Boolean)
+        .join(', '),
+    );
+    onChange('city', option.value.city);
+  };
+
   return (
     <section className={className}>
       <h2 className="font-body text-lg font-semibold text-black mb-4">
@@ -81,68 +205,98 @@ export function ShippingAddressSection({
           />
         </div>
 
-        {/* Company (optional) */}
-        <CheckoutInput
-          label="Company"
-          value={address.company}
-          onChange={(v) => onChange("company", v)}
-          optional
-        />
+        {address.country === 'GB' ? (
+          <div>
+            <TextDropdownField<AddressOption>
+              options={options}
+              required
+              id="postcode"
+              label="Postcode"
+              name="postcode"
+              value={address.postcode}
+              inputClassName="h-12 bg-white text-sm"
+              onSelect={handleSelectOption}
+              onChange={handleChangePostcode}
+              preventSelectChangeValue
+              disabled={isLoading}
+              endAdornment={(
+                <>
+                  {isLoading ? (
+                    <MoonLoader size={20} cssOverride={{ color: '#009378', backgroundColor: 'transparent' }} />
+                  ) : null}
+                  {!isLoading && hasNoResults ? (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <FiHelpCircle className="h-5 w-5 text-emerald-600" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          no address suggestions
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  ) : null}
+                </>
+              )}
+            />
+            <div className="flex items-center py-2 text-sm gap-2">
+              <div className="max-w-[13.5rem]">
+                <Button
+                  type="button"
+                  disabled={!address.postcode || isLoading}
+                  onClick={handleSearchAddress}
+                >
+                  {isLoading ? 'Checking...' : 'Address lookup'}
+                </Button>
+              </div>
+            </div>
+            {!isLoading && hasNoResults ? (
+              <Alert className="items-start gap-2">
+                <FiHelpCircle className="h-4 w-4 mt-[2px] text-emerald-700" />
+                <AlertDescription className="font-normal text-emerald-800">
+                  Address not found in the dropdown. Please complete the address manually below.
+                </AlertDescription>
+              </Alert>
+            ) : null}
+          </div>
+        ) : (
+          <CheckoutInput
+            label="Postcode"
+            value={address.postcode}
+            onChange={(v) => onChange('postcode', v)}
+            error={errors.postcode}
+          />
+        )}
 
         {/* Address */}
         <CheckoutInput
           label="Address"
           value={address.address}
-          onChange={(v) => onChange("address", v)}
+          onChange={(v) => onChange('address', v)}
           error={errors.address}
+        />
+
+        <CheckoutInput
+          label="Address line 2"
+          value={address.address2}
+          onChange={(v) => onChange('address2', v)}
+          optional
         />
 
         {/* City */}
         <CheckoutInput
           label="City"
           value={address.city}
-          onChange={(v) => onChange("city", v)}
+          onChange={(v) => onChange('city', v)}
           error={errors.city}
         />
-
-        {/* State / Postcode row */}
-        <div className="grid grid-cols-1 redesign-sm:grid-cols-3 gap-3">
-          <CheckoutSelect
-            label="Country"
-            value={address.country}
-            onChange={(v) => onChange("country", v)}
-            options={countries}
-          />
-          {states.length > 0 ? (
-            <CheckoutSelect
-              label="State"
-              value={address.state}
-              onChange={(v) => onChange("state", v)}
-              options={states}
-              error={errors.state}
-            />
-          ) : (
-            <CheckoutInput
-              label="State"
-              value={address.state}
-              onChange={(v) => onChange("state", v)}
-              error={errors.state}
-            />
-          )}
-          <CheckoutInput
-            label="Postcode"
-            value={address.postcode}
-            onChange={(v) => onChange("postcode", v)}
-            error={errors.postcode}
-          />
-        </div>
 
         {/* Phone */}
         <CheckoutInput
           label="Phone"
           type="tel"
           value={address.phone}
-          onChange={(v) => onChange("phone", v)}
+          onChange={(v) => onChange('phone', v)}
           error={errors.phone}
           optional
         />
