@@ -1,21 +1,15 @@
-import { type ChangeEvent, useEffect, useRef } from 'react';
-import { FiHelpCircle } from 'react-icons/fi';
-import MoonLoader from 'react-spinners/MoonLoader';
+import { useEffect, useRef } from 'react';
 
-import TextDropdownField from '~/components/TextDropdownField';
-import type { Option as DropdownOption } from '~/components/TextDropdownField';
-import { Button } from '~/components/ui/button';
-import { Alert, AlertDescription } from '~/components/ui/alert';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '~/components/ui/tooltip';
 import { cn } from '~/lib/utils';
 import type { AddressOption } from '~/routes/api.fetch-address-options-by-postal/types';
 import { useAddressLookup } from '~/routes/checkout/hooks';
-import { CheckoutInput, CheckoutSelect } from '~/components/v2/CheckoutInput';
+import { Button } from '~/components/v2/Button';
+import {
+  CheckoutAutocompleteInput,
+  type CheckoutAutocompleteOption,
+  CheckoutInput,
+  CheckoutSelect,
+} from '~/components/v2/CheckoutInput';
 
 export interface ShippingAddress {
   country: string;
@@ -150,16 +144,18 @@ export function ShippingAddressSection({
     }
   }, [isLoading, fetchOptions]);
 
-  const handleChangePostcode = (evt: ChangeEvent<HTMLInputElement>) => {
-    onChange('postcode', evt.target.value);
-    setPostal(evt.target.value);
+  const handleChangePostcode = (postcode: string) => {
+    onChange('postcode', postcode);
+    setPostal(postcode);
   };
 
   const handleSearchAddress = () => {
     fetchOptions(address.postcode);
   };
 
-  const handleSelectOption = (option: DropdownOption<AddressOption>) => {
+  const handleSelectOption = (
+    option: CheckoutAutocompleteOption<AddressOption>,
+  ) => {
     suppressNextAutoLookupRef.current = true;
     setPostal(option.value.postal);
     onChange('postcode', option.value.postal);
@@ -207,56 +203,42 @@ export function ShippingAddressSection({
 
         {address.country === 'GB' ? (
           <div>
-            <TextDropdownField<AddressOption>
+            <CheckoutAutocompleteInput<AddressOption>
               options={options}
               required
               id="postcode"
               label="Postcode"
               name="postcode"
               value={address.postcode}
-              inputClassName="h-12 bg-white text-sm"
+              error={errors.postcode}
               onSelect={handleSelectOption}
               onChange={handleChangePostcode}
-              preventSelectChangeValue
               disabled={isLoading}
-              endAdornment={(
-                <>
-                  {isLoading ? (
-                    <MoonLoader size={20} cssOverride={{ color: '#009378', backgroundColor: 'transparent' }} />
-                  ) : null}
-                  {!isLoading && hasNoResults ? (
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <FiHelpCircle className="h-5 w-5 text-emerald-600" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          no address suggestions
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  ) : null}
-                </>
-              )}
+              loading={isLoading}
             />
-            <div className="flex items-center py-2 text-sm gap-2">
-              <div className="max-w-[13.5rem]">
-                <Button
-                  type="button"
-                  disabled={!address.postcode || isLoading}
-                  onClick={handleSearchAddress}
-                >
-                  {isLoading ? 'Checking...' : 'Address lookup'}
-                </Button>
-              </div>
+
+            <div className="mt-2 flex items-center justify-between gap-3">
+              <p className="font-body text-xs text-[#888]">
+                Enter at least 3 characters to auto-search.
+              </p>
+
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={!address.postcode || isLoading}
+                isLoading={isLoading}
+                onClick={handleSearchAddress}
+                className="h-11 px-4 text-sm font-medium"
+              >
+                Search address
+              </Button>
             </div>
+
             {!isLoading && hasNoResults ? (
-              <Alert className="items-start gap-2">
-                <FiHelpCircle className="h-4 w-4 mt-[2px] text-emerald-700" />
-                <AlertDescription className="font-normal text-emerald-800">
-                  Address not found in the dropdown. Please complete the address manually below.
-                </AlertDescription>
-              </Alert>
+              <p className="mt-2 font-body text-xs text-[#666]">
+                No address suggestions found. Continue entering address manually.
+              </p>
             ) : null}
           </div>
         ) : (
