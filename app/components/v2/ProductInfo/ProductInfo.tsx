@@ -130,16 +130,6 @@ function ShareIcon() {
   );
 }
 
-function QuestionIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M5 5.5C5 4.4 5.9 3.5 7 3.5C8.1 3.5 9 4.4 9 5.5C9 6.6 7 7 7 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <circle cx="7" cy="10" r="0.5" fill="currentColor" />
-    </svg>
-  );
-}
-
 function CheckSmallIcon() {
   return (
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -174,7 +164,6 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
       onBuyNow,
       accordionItems,
       onShare,
-      onAskQuestion,
       priceRef,
       className,
     },
@@ -558,14 +547,6 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
               </div>
             )}
           </div>
-          <button
-            type="button"
-            className="flex items-center gap-1.5 font-body text-[13px] font-normal text-[#888] hover:text-black transition-colors duration-fast"
-            onClick={onAskQuestion}
-          >
-            <QuestionIcon />
-            Ask a question
-          </button>
         </div>
       </div>
     );
