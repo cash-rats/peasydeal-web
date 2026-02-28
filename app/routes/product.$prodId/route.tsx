@@ -209,6 +209,21 @@ function ProductDetailPage() {
     return [...variation, ...shared];
   }, [state.sharedImages, state.variationImages]);
 
+  const commonImages = useMemo(
+    () => state.sharedImages.map(img => img.url),
+    [state.sharedImages],
+  );
+
+  const thumbnailImages = useMemo(
+    () => commonImages.slice(0, 4),
+    [commonImages],
+  );
+
+  const detailImages = useMemo(
+    () => commonImages.slice(4),
+    [commonImages],
+  );
+
   const breadcrumbItems = useMemo(() => {
     const items: Array<{ label: string; href?: string }> = [
       { label: 'Home', href: '/' },
@@ -417,6 +432,8 @@ function ProductDetailPage() {
         <div className="grid grid-cols-1 redesign-sm:grid-cols-2 gap-6 redesign-md:gap-12 items-start">
           <ProductImageGallery
             images={galleryImages}
+            thumbnailImages={thumbnailImages}
+            detailImages={detailImages}
             previewImage={hoveredVariationImage}
             selectedVariationImage={selectedVariationImage}
             productName={state.productDetail.title}

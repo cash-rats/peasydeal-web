@@ -3,6 +3,8 @@ import { cn } from "~/lib/utils";
 
 export interface ProductImageGalleryProps {
   images: string[];
+  thumbnailImages?: string[];
+  detailImages?: string[];
   previewImage?: string;
   selectedVariationImage?: string;
   productName?: string;
@@ -22,6 +24,8 @@ function ZoomIcon() {
 
 export function ProductImageGallery({
   images,
+  thumbnailImages,
+  detailImages,
   previewImage,
   selectedVariationImage,
   productName = "Product",
@@ -54,6 +58,9 @@ export function ProductImageGallery({
 
   if (images.length === 0) return null;
 
+  const upperThumbnailImages = thumbnailImages ?? images.slice(0, 4);
+  const lowerSectionImages = detailImages ?? images.slice(4);
+
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       {/* Desktop: main image + thumbnail grid */}
@@ -78,19 +85,24 @@ export function ProductImageGallery({
         </div>
 
         {/* Thumbnail grid */}
-        {images.length > 1 && (
+        {upperThumbnailImages.length > 0 && (
           <div className="grid grid-cols-2 gap-2">
-            {images.slice(0, 4).map((src, i) => (
+            {upperThumbnailImages.map((src, i) => (
               <button
-                key={i}
+                key={`${src}-${i}`}
                 type="button"
                 className={cn(
                   "aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-colors duration-fast",
-                  i === activeIndex
+                  src === (images[activeIndex] ?? images[0])
                     ? "border-black"
                     : "border-transparent hover:border-[#CCC]"
                 )}
-                onClick={() => setActiveIndex(i)}
+                onClick={() => {
+                  const mappedIndex = images.indexOf(src);
+                  if (mappedIndex >= 0) {
+                    setActiveIndex(mappedIndex);
+                  }
+                }}
                 aria-label={`View image ${i + 1}`}
               >
                 <img
@@ -105,11 +117,11 @@ export function ProductImageGallery({
         )}
 
         {/* Additional full-width images below thumbnails */}
-        {images.slice(4).map((src, i) => (
-          <div key={i + 4} className="w-full rounded-xl overflow-hidden">
+        {lowerSectionImages.map((src, i) => (
+          <div key={`${src}-${i}`} className="w-full rounded-xl overflow-hidden">
             <img
               src={src}
-              alt={`${productName} - Image ${i + 5}`}
+              alt={`${productName} - Image`}
               className="w-full object-cover"
               loading="lazy"
             />
