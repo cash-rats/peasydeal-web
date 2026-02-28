@@ -172,19 +172,29 @@ export function OrderSummary({
             </p>
           )}
           {discountCode && (
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#F0F0F0] rounded-md mt-2.5">
-              <span className="text-[#888]"><DiscountIcon /></span>
-              <span className="font-body text-[13px] font-medium text-black">
-                {discountCode}
-              </span>
-              {onRemoveDiscount ? (
-                <button
-                  type="button"
-                  onClick={onRemoveDiscount}
-                  className="text-[#888] hover:text-black bg-transparent border-none p-0 cursor-pointer transition-colors duration-fast"
-                >
-                  <RemoveIcon />
-                </button>
+            <div className="mt-2.5">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#F0F0F0] rounded-md">
+                <span className="text-[#888]"><DiscountIcon /></span>
+                <span className="font-body text-[13px] font-medium text-[#666]">
+                  Discount code:
+                </span>
+                <span className="font-body text-[13px] font-medium text-black">
+                  {discountCode}
+                </span>
+                {onRemoveDiscount ? (
+                  <button
+                    type="button"
+                    onClick={onRemoveDiscount}
+                    className="text-[#888] hover:text-black bg-transparent border-none p-0 cursor-pointer transition-colors duration-fast"
+                  >
+                    <RemoveIcon />
+                  </button>
+                ) : null}
+              </div>
+              {!onRemoveDiscount ? (
+                <p className="mt-1.5 font-body text-xs text-[#666]">
+                  Promo applied at cart. To change code, return to cart.
+                </p>
               ) : null}
             </div>
           )}
@@ -204,7 +214,9 @@ export function OrderSummary({
         {/* Discount */}
         {discount != null && discount > 0 && (
           <div className="flex justify-between items-center">
-            <span className="font-body text-sm text-[#666]">Discount</span>
+            <span className="font-body text-sm text-[#666]">
+              {discountCode ? 'Promo discount' : 'Discount'}
+            </span>
             <span className="font-body text-sm text-[#4A7C59]">
               -{currency}{discount.toFixed(2)}
             </span>
