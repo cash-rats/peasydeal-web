@@ -1,5 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "~/lib/utils";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
 export interface ProductImageGalleryProps {
   images: string[];
@@ -33,6 +35,8 @@ export function ProductImageGallery({
   className,
 }: ProductImageGalleryProps) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [openLightbox, setOpenLightbox] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const mobileTrackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,13 +60,27 @@ export function ProductImageGallery({
     setActiveIndex(idx);
   }, []);
 
+  const openAtIndex = useCallback((idx: number) => {
+    const safeIndex = idx >= 0 ? idx : 0;
+    setLightboxIndex(safeIndex);
+    setOpenLightbox(true);
+  }, []);
+
   if (images.length === 0) return null;
 
   const upperThumbnailImages = thumbnailImages ?? images.slice(0, 4);
   const lowerSectionImages = detailImages ?? images.slice(4);
+  const currentMainIndex = displayIndex >= 0 ? displayIndex : activeIndex;
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
+      <Lightbox
+        open={openLightbox}
+        close={() => setOpenLightbox(false)}
+        index={lightboxIndex}
+        slides={images.map((src) => ({ src }))}
+      />
+
       {/* Desktop: main image + thumbnail grid */}
       <div className="hidden redesign-sm:flex flex-col gap-2 sticky top-[88px]">
         {/* Main image */}
@@ -70,14 +88,18 @@ export function ProductImageGallery({
           <img
             src={mainImage}
             alt={`${productName} - Image ${imageOrdinal}`}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover cursor-zoom-in"
+            onClick={() => openAtIndex(currentMainIndex)}
           />
           {onZoom && (
             <button
               type="button"
               className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white shadow-[0_2px_8px_rgba(0,0,0,0.10)] flex items-center justify-center text-black hover:bg-[#F5F5F5] transition-colors duration-fast"
               aria-label="Zoom image"
-              onClick={() => onZoom(activeIndex)}
+              onClick={() => {
+                onZoom(activeIndex);
+                openAtIndex(currentMainIndex);
+              }}
             >
               <ZoomIcon />
             </button>
@@ -122,8 +144,14 @@ export function ProductImageGallery({
             <img
               src={src}
               alt={`${productName} - Image`}
-              className="w-full object-cover"
+              className="w-full object-cover cursor-zoom-in"
               loading="lazy"
+              onClick={() => {
+                const mappedIndex = images.indexOf(src);
+                if (mappedIndex >= 0) {
+                  openAtIndex(mappedIndex);
+                }
+              }}
             />
           </div>
         ))}
@@ -142,7 +170,8 @@ export function ProductImageGallery({
                 <img
                   src={src}
                   alt={`${productName} - Image ${i + 1}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover cursor-zoom-in"
+                  onClick={() => openAtIndex(i)}
                 />
               </div>
             </div>
