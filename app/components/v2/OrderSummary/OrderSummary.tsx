@@ -15,6 +15,8 @@ export interface OrderSummaryProps {
   items: OrderItem[];
   subtotal: number;
   shipping?: number | null;
+  shippingCost?: number | null;
+  shippingDiscount?: number;
   shippingLabel?: string;
   tax?: number;
   taxIncluded?: boolean;
@@ -50,6 +52,8 @@ export function OrderSummary({
   items,
   subtotal,
   shipping,
+  shippingCost,
+  shippingDiscount,
   shippingLabel = "Calculated at next step",
   tax,
   taxIncluded,
@@ -199,15 +203,27 @@ export function OrderSummary({
           </div>
         )}
 
-        {/* Shipping */}
+        {/* Shipping cost */}
         <div className="flex justify-between items-center">
-          <span className="font-body text-sm text-[#666]">Shipping</span>
+          <span className="font-body text-sm text-[#666]">Shipping Cost</span>
           <span className="font-body text-sm text-[#888]">
-            {shipping != null
-              ? `${currency}${shipping.toFixed(2)}`
+            {shippingCost != null
+              ? `${currency}${shippingCost.toFixed(2)}`
+              : shipping != null
+                ? `${currency}${shipping.toFixed(2)}`
               : shippingLabel}
           </span>
         </div>
+
+        {/* Shipping discount */}
+        {shippingDiscount != null && shippingDiscount > 0 && (
+          <div className="flex justify-between items-center">
+            <span className="font-body text-sm text-[#666]">Shipping Discount</span>
+            <span className="font-body text-sm text-[#D02E7D]">
+              -{currency}{shippingDiscount.toFixed(2)}
+            </span>
+          </div>
+        )}
 
         {/* Tax */}
         {tax != null && (

@@ -368,6 +368,8 @@ function CheckoutPage() {
       items={orderItems}
       subtotal={priceInfo ? priceInfo.sub_total + priceInfo.tax_amount : 0}
       shipping={priceInfo?.shipping_fee ?? null}
+      shippingCost={priceInfo?.origin_shipping_fee ?? null}
+      shippingDiscount={priceInfo?.shipping_fee_discount}
       discount={priceInfo?.promo_code_discount || undefined}
       discountCode={promoCode || undefined}
       tax={priceInfo?.tax_amount}
