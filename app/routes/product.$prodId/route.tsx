@@ -443,6 +443,7 @@ function ProductDetailPage() {
             priceRef={priceBlockRef}
             badges={badges}
             title={state.productDetail.title}
+            productUUID={state.productDetail.uuid}
             rating={state.productDetail.rating}
             reviewCount={state.productDetail.num_of_raters}
             salePrice={effectiveSalePrice}

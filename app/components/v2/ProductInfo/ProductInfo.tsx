@@ -1,4 +1,4 @@
-import { useState, useCallback, forwardRef } from "react";
+import { useState, useCallback, useEffect, useRef, forwardRef } from "react";
 import { cn } from "~/lib/utils";
 import { Badge } from "~/components/v2/Badge";
 import { QuantityPicker } from "~/components/v2/QuantityPicker";
@@ -21,6 +21,7 @@ export interface ProductInfoProps {
     label: string;
   }>;
   title: string;
+  productUUID?: string;
   rating?: number;
   reviewCount?: number;
   salePrice?: number;
@@ -47,6 +48,30 @@ export interface ProductInfoProps {
   priceRef?: React.Ref<HTMLDivElement>;
   className?: string;
 }
+
+type ShareThis = {
+  initialize?: () => void;
+  href?: string;
+};
+
+const loadShareThisScript = (onLoad?: () => void) => {
+  if (typeof document === "undefined") return;
+  const existingScript = document.getElementById("sharethis");
+  if (existingScript) {
+    onLoad?.();
+    return;
+  }
+
+  const script = document.createElement("script");
+  script.async = true;
+  script.id = "sharethis";
+  if (onLoad) {
+    script.onload = onLoad;
+  }
+  script.src = "https://platform-api.sharethis.com/js/sharethis.js#property=635bb7bc9c9fa7001910fbe2&product=sop";
+  script.type = "text/javascript";
+  document.body.appendChild(script);
+};
 
 function StarIcon({ filled, half }: { filled: boolean; half?: boolean }) {
   if (half) {
@@ -128,6 +153,7 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
     {
       badges,
       title,
+      productUUID,
       rating = 0,
       reviewCount = 0,
       salePrice,
@@ -156,10 +182,54 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
   ) {
     const [descExpanded, setDescExpanded] = useState(false);
     const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+    const [isShareOpen, setIsShareOpen] = useState(false);
+    const sharePopoverRef = useRef<HTMLDivElement>(null);
 
     const toggleAccordion = useCallback((index: number) => {
       setOpenAccordion((prev) => (prev === index ? null : index));
     }, []);
+
+    useEffect(() => {
+      if (!isShareOpen || typeof window === "undefined") return;
+
+      const initializeShare = () => {
+        const st = (window as typeof window & { __sharethis__?: ShareThis }).__sharethis__;
+        if (!st?.initialize) return;
+        st.href = window.location.href;
+        st.initialize();
+      };
+
+      const st = (window as typeof window & { __sharethis__?: ShareThis }).__sharethis__;
+      if (!st) {
+        loadShareThisScript(initializeShare);
+      } else {
+        initializeShare();
+      }
+    }, [isShareOpen, productUUID]);
+
+    useEffect(() => {
+      if (!isShareOpen) return;
+
+      const handleClickOutside = (event: MouseEvent) => {
+        if (!sharePopoverRef.current) return;
+        if (!sharePopoverRef.current.contains(event.target as Node)) {
+          setIsShareOpen(false);
+        }
+      };
+
+      const handleEsc = (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
+          setIsShareOpen(false);
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleEsc);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+        document.removeEventListener("keydown", handleEsc);
+      };
+    }, [isShareOpen]);
 
     const renderStars = () => {
       const stars = [];
@@ -458,14 +528,36 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
 
         {/* Action links */}
         <div className="flex gap-5 pt-4">
-          <button
-            type="button"
-            className="flex items-center gap-1.5 font-body text-[13px] font-normal text-[#888] hover:text-black transition-colors duration-fast"
-            onClick={onShare}
-          >
-            <ShareIcon />
-            Share
-          </button>
+          <div ref={sharePopoverRef} className="relative">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 font-body text-[13px] font-normal text-[#888] hover:text-black transition-colors duration-fast"
+              onClick={() => {
+                onShare?.();
+                setIsShareOpen((prev) => !prev);
+              }}
+              aria-expanded={isShareOpen}
+              aria-haspopup="dialog"
+            >
+              <ShareIcon />
+              Share
+            </button>
+
+            {isShareOpen && (
+              <div
+                className="
+                  absolute left-0 bottom-full mb-2 z-20
+                  min-w-[240px] rounded-xl border border-[#E5E7EB] bg-white p-3
+                  shadow-[0_10px_30px_rgba(17,24,39,0.16)]
+                "
+              >
+                <p className="mb-2 font-body text-xs font-semibold text-black">
+                  Share This Product:
+                </p>
+                <div className="sharethis-inline-share-buttons text-left" />
+              </div>
+            )}
+          </div>
           <button
             type="button"
             className="flex items-center gap-1.5 font-body text-[13px] font-normal text-[#888] hover:text-black transition-colors duration-fast"
