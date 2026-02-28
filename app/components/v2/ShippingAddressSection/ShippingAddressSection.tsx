@@ -1,4 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
+import PhoneInput from 'react-phone-input-2';
+import type { CountryData } from 'react-phone-input-2';
+import 'react-phone-input-2/lib/material.css';
 
 import { cn } from '~/lib/utils';
 import type { AddressOption } from '~/routes/api.fetch-address-options-by-postal/types';
@@ -10,6 +14,7 @@ import {
   CheckoutInput,
   CheckoutSelect,
 } from '~/components/v2/CheckoutInput';
+import { FiHelpCircle } from 'react-icons/fi';
 
 export interface ShippingAddress {
   country: string;
@@ -22,9 +27,18 @@ export interface ShippingAddress {
   phone: string;
 }
 
+export interface ShippingAddressChangeMeta {
+  countryData?: CountryData;
+}
+
 export interface ShippingAddressSectionProps {
   address: ShippingAddress;
-  onChange: (field: keyof ShippingAddress, value: string) => void;
+  onChange: (
+    field: keyof ShippingAddress,
+    value: string,
+    meta?: ShippingAddressChangeMeta,
+  ) => void;
+  phoneCountryCode?: string;
   errors?: Partial<Record<keyof ShippingAddress, string>>;
   countries?: Array<{ label: string; value: string }>;
   saveInfo?: boolean;
@@ -50,6 +64,7 @@ const DEFAULT_COUNTRIES = [
 export function ShippingAddressSection({
   address,
   onChange,
+  phoneCountryCode,
   errors = {},
   countries = DEFAULT_COUNTRIES,
   saveInfo = false,
@@ -70,6 +85,7 @@ export function ShippingAddressSection({
   const fetchWhenIdleRef = useRef<boolean>(false);
   const suppressNextAutoLookupRef = useRef<boolean>(false);
   const debounceTimerRef = useRef<number | null>(null);
+  const [phoneFocused, setPhoneFocused] = useState(false);
 
   useEffect(() => {
     isLoadingRef.current = isLoading;
@@ -167,6 +183,58 @@ export function ShippingAddressSection({
         .join(', '),
     );
     onChange('city', option.value.city);
+  };
+
+  const phoneInfoText = 'Phone number is for shipping purpose only.';
+  const normalizedPhoneCountryCode = (
+    phoneCountryCode?.trim() || address.country || 'GB'
+  ).toLowerCase();
+  const phoneBorderColor = errors.phone
+    ? '#C75050'
+    : phoneFocused
+      ? '#000000'
+      : '#CCCCCC';
+
+  const isCountryData = (data: CountryData | {}): data is CountryData => (
+    typeof (data as CountryData).name === 'string'
+    && typeof (data as CountryData).dialCode === 'string'
+    && typeof (data as CountryData).countryCode === 'string'
+  );
+
+  const handlePhoneChange = (
+    value: string,
+    countryData: CountryData | {},
+    event: ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (event?.target?.setCustomValidity) {
+      event.target.setCustomValidity('');
+    }
+
+    onChange(
+      'phone',
+      value,
+      isCountryData(countryData) ? { countryData } : undefined,
+    );
+  };
+
+  const handlePhoneKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.metaKey || event.ctrlKey || event.altKey) return;
+
+    const allowKeys = [
+      'Backspace',
+      'Delete',
+      'ArrowLeft',
+      'ArrowRight',
+      'Tab',
+      'Home',
+      'End',
+    ];
+
+    if (allowKeys.includes(event.key)) return;
+    if (/^\d$/.test(event.key)) return;
+    if (event.key === '+' && (event.currentTarget.selectionStart ?? 0) === 0) return;
+
+    event.preventDefault();
   };
 
   return (
@@ -274,14 +342,90 @@ export function ShippingAddressSection({
         />
 
         {/* Phone */}
-        <CheckoutInput
-          label="Phone"
-          type="tel"
-          value={address.phone}
-          onChange={(v) => onChange('phone', v)}
-          error={errors.phone}
-          optional
-        />
+        <div className="relative">
+          <label
+            htmlFor="phone"
+            className={cn(
+              'absolute left-[86px] top-2 z-[2] font-body text-[11px] font-normal',
+              errors.phone ? 'text-[#C75050]' : 'text-[#999]',
+            )}
+          >
+            <span className="inline-flex items-center">
+              <span>Phone</span>
+              <span className="ml-1.5 inline-flex items-center">
+                <FiHelpCircle
+                  className="h-[14px] w-[14px] text-[#CCC] cursor-help"
+                  aria-label={phoneInfoText}
+                  title={phoneInfoText}
+                />
+              </span>
+            </span>
+          </label>
+          <PhoneInput
+            country={normalizedPhoneCountryCode}
+            value={address.phone}
+            onChange={handlePhoneChange}
+            specialLabel=""
+            countryCodeEditable
+            enableSearch
+            inputProps={{
+              id: 'phone',
+              name: 'phone',
+              required: true,
+              onFocus: () => setPhoneFocused(true),
+              onBlur: () => setPhoneFocused(false),
+              onKeyDown: handlePhoneKeyDown,
+            }}
+            containerStyle={{ width: '100%' }}
+            buttonStyle={{
+              width: '72px',
+              height: '48px',
+              borderTopLeftRadius: '6px',
+              borderBottomLeftRadius: '6px',
+              borderTopRightRadius: 0,
+              borderBottomRightRadius: 0,
+              border: `1px solid ${phoneBorderColor}`,
+              borderRight: `1px solid ${phoneBorderColor}`,
+              backgroundColor: '#FFFFFF',
+              zIndex: 1,
+            }}
+            inputStyle={{
+              width: '100%',
+              height: '48px',
+              borderRadius: '6px',
+              borderColor: phoneBorderColor,
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              boxShadow: errors.phone
+                ? '0 0 0 1px #C75050'
+                : phoneFocused
+                  ? '0 0 0 1px #000000'
+                  : 'none',
+              fontFamily: 'var(--font-body)',
+              fontSize: '14px',
+              fontWeight: 400,
+              color: '#000000',
+              backgroundColor: '#FFFFFF',
+              paddingTop: '20px',
+              paddingBottom: '4px',
+              paddingRight: '14px',
+              paddingLeft: '86px',
+            }}
+            dropdownStyle={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '14px',
+            }}
+          />
+          {errors.phone && (
+            <p className="flex items-center gap-1 mt-1 font-body text-xs font-normal text-[#C75050]">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="6" cy="6" r="5.5" stroke="currentColor" strokeWidth="1" />
+                <path d="M6 3.5V6.5M6 8V8.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+              </svg>
+              {errors.phone}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Save info checkbox */}

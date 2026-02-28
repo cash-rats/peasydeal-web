@@ -1,13 +1,18 @@
-import { useState, useCallback, useId } from "react";
+import { useState, useId } from "react";
+import type { ReactNode } from 'react';
 import { cn } from "~/lib/utils";
 
 export interface CheckoutInputProps {
+  id?: string;
+  name?: string;
   label: string;
   value: string;
   onChange: (value: string) => void;
   type?: "text" | "email" | "tel" | "number";
   error?: string;
   optional?: boolean;
+  required?: boolean;
+  labelIcon?: ReactNode;
   className?: string;
 }
 
@@ -30,26 +35,36 @@ function ErrorIcon() {
 }
 
 export function CheckoutInput({
+  id,
+  name,
   label,
   value,
   onChange,
   type = "text",
   error,
   optional,
+  required = false,
+  labelIcon,
   className,
 }: CheckoutInputProps) {
   const [focused, setFocused] = useState(false);
-  const id = useId();
+  const generatedId = useId();
+  const inputId = id ?? generatedId;
   const hasValue = value.length > 0;
   const floated = focused || hasValue;
 
   return (
     <div className={cn("relative", className)}>
       <input
-        id={id}
+        id={inputId}
+        name={name}
         type={type}
+        required={required}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          e.currentTarget.setCustomValidity('');
+          onChange(e.target.value);
+        }}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
         className={cn(
@@ -64,16 +79,19 @@ export function CheckoutInput({
         )}
       />
       <label
-        htmlFor={id}
+        htmlFor={inputId}
         className={cn(
-          "absolute left-3.5 pointer-events-none font-body font-normal transition-all duration-fast",
+          "absolute left-3.5 font-body font-normal transition-all duration-fast",
           floated
             ? "top-2 text-[11px]"
             : "top-1/2 -translate-y-1/2 text-sm",
           error ? "text-[#C75050]" : "text-[#999]"
         )}
       >
-        {label}
+        <span className="inline-flex items-center">
+          <span>{label}</span>
+          {labelIcon && <span className="ml-1.5 inline-flex items-center">{labelIcon}</span>}
+        </span>
         {optional && (
           <span className="font-normal text-[#999]"> (optional)</span>
         )}

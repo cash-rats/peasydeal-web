@@ -5,6 +5,7 @@ import {
   useMemo,
   useCallback,
 } from 'react';
+import type { CountryData } from 'react-phone-input-2';
 import {
   type LoaderFunctionArgs,
   type ActionFunctionArgs,
@@ -36,11 +37,15 @@ import type { ActionPayload } from '~/routes/checkout/actions';
 import { getCheckoutSession } from '~/sessions/checkout.session.server';
 import { tryCatch } from '~/utils/try-catch';
 import { sortItemsByAddedTime } from '~/routes/cart/utils';
+import { validatePhoneInput } from '~/routes/checkout/utils';
 
 import { CheckoutLayout } from '~/components/v2/CheckoutLayout';
 import { ContactInfoSection } from '~/components/v2/ContactInfoSection';
 import { ShippingAddressSection } from '~/components/v2/ShippingAddressSection';
-import type { ShippingAddress } from '~/components/v2/ShippingAddressSection/ShippingAddressSection';
+import type {
+  ShippingAddress,
+  ShippingAddressChangeMeta,
+} from '~/components/v2/ShippingAddressSection/ShippingAddressSection';
 import { CheckoutNav } from '~/components/v2/CheckoutNav';
 import { OrderSummary } from '~/components/v2/OrderSummary';
 import type { OrderItem } from '~/components/v2/OrderSummary/OrderSummary';
@@ -120,6 +125,7 @@ function CheckoutPage() {
 
   const reducerState = useRef<StateShape>(state);
   reducerState.current = state;
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   // Stripe PaymentElement ref
   const paymentElement = useRef<StripePaymentElement | null>(null);
@@ -137,7 +143,7 @@ function CheckoutPage() {
 
   const loading = createOrderFetcher.state !== 'idle';
 
-  const assembleContactName = () => {
+  const assembleContactName = useCallback(() => {
     const contactInfo = state.contactInfoForm;
     const shippingInfo = state.shippingDetailForm;
 
@@ -145,9 +151,9 @@ function CheckoutPage() {
       return `${shippingInfo.firstname} ${shippingInfo.lastname}`;
     }
     return contactInfo.contact_name as string;
-  };
+  }, [state.contactInfoForm, state.shippingDetailForm]);
 
-  const composeOrderInfoForSubmission = (paymentMethod: PaymentMethod) => {
+  const composeOrderInfoForSubmission = useCallback((paymentMethod: PaymentMethod) => {
     const contactName = assembleContactName();
     reducerState.current.contactInfoForm.contact_name = contactName;
 
@@ -160,7 +166,7 @@ function CheckoutPage() {
       promo_code: promoCode ?? null,
       payment_method: paymentMethod,
     };
-  };
+  }, [assembleContactName, cartItems, paymentIntendID, priceInfo, promoCode]);
 
   const handleCreateOrder = useCallback(async (paymentMethod: PaymentMethod = 'stripe') => {
     const orderInfo = composeOrderInfoForSubmission(paymentMethod);
@@ -169,9 +175,25 @@ function CheckoutPage() {
       payload: reducerState.current.contactInfoForm,
     });
     await createOrder(orderInfo);
-  }, [createOrder, priceInfo, cartItems, paymentIntendID, promoCode]);
+  }, [composeOrderInfoForSubmission, createOrder]);
+
+  const validateFormBeforePayment = useCallback(() => {
+    if (!formRef.current) return true;
+
+    const phoneInput = formRef.current.querySelector<HTMLInputElement>('#phone');
+    if (!validatePhoneInput(phoneInput)) {
+      formRef.current.reportValidity();
+      return false;
+    }
+
+    return true;
+  }, []);
 
   const handleConfirmPayment = useCallback(() => {
+    if (!validateFormBeforePayment()) {
+      return;
+    }
+
     clearCreateOrderErrorAlert();
     clearStripeErrorAlert();
 
@@ -180,7 +202,7 @@ function CheckoutPage() {
       return;
     }
     stripeConfirmPayment(orderUUID);
-  }, [orderUUID, handleCreateOrder, stripeConfirmPayment, clearCreateOrderErrorAlert, clearStripeErrorAlert]);
+  }, [orderUUID, handleCreateOrder, stripeConfirmPayment, clearCreateOrderErrorAlert, clearStripeErrorAlert, validateFormBeforePayment]);
 
   /* ─── V2 Shipping Address bridge ─── */
   const shippingAddress: ShippingAddress = useMemo(() => ({
@@ -194,7 +216,11 @@ function CheckoutPage() {
     phone: state.contactInfoForm.phone_value,
   }), [state.shippingDetailForm, state.contactInfoForm.phone_value]);
 
-  const handleShippingChange = useCallback((field: keyof ShippingAddress, value: string) => {
+  const handleShippingChange = useCallback((
+    field: keyof ShippingAddress,
+    value: string,
+    meta?: ShippingAddressChangeMeta,
+  ) => {
     clearCreateOrderErrorAlert();
     clearStripeErrorAlert();
 
@@ -209,9 +235,20 @@ function CheckoutPage() {
     };
 
     if (field === 'phone') {
+      const payload: {
+        phone_value: string;
+        country_data?: CountryData;
+      } = {
+        phone_value: value,
+      };
+
+      if (meta?.countryData) {
+        payload.country_data = meta.countryData;
+      }
+
       dispatch({
         type: ReducerActionTypes.update_contact_info_form,
-        payload: { phone_value: value },
+        payload,
       });
       return;
     }
@@ -265,7 +302,7 @@ function CheckoutPage() {
   }, [handleConfirmPayment]);
 
   const leftContent = (
-    <form onSubmit={handleFormSubmit}>
+    <form ref={formRef} onSubmit={handleFormSubmit}>
       {/* Express checkout buttons */}
       {/* <ExpressCheckout /> */}
 
@@ -294,6 +331,7 @@ function CheckoutPage() {
       <ShippingAddressSection
         address={shippingAddress}
         onChange={handleShippingChange}
+        phoneCountryCode={state.contactInfoForm.country_data.countryCode}
         countries={[
           { label: 'United Kingdom', value: 'GB' },
           { label: 'United States', value: 'US' },

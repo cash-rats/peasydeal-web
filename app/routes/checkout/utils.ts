@@ -8,7 +8,13 @@ export const validatePhoneInput = (input: HTMLInputElement | null): boolean => {
   input.setCustomValidity('');
 
   const rawPhone = input.value;
-  const phone = rawPhone.replace(/\s+/g, '');
+  const phone = rawPhone.replace(/[\s()-]/g, '');
+
+  if (!phone.length) {
+    input.setCustomValidity('Phone number is required');
+    input.reportValidity();
+    return false;
+  }
 
   const phoneIsNum = /^\+?[0-9]+$/.test(phone);
   if (!phoneIsNum) {
