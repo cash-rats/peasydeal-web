@@ -82,6 +82,7 @@ export const __paypalCreateOrder = async (form: ActionPayload) => {
     email: contactInfoFormObj.email,
     contact_name: contactInfoFormObj.contact_name,
     phone_value: contactInfoFormObj.phone_value,
+    marketing_opt_in: contactInfoFormObj.marketing_opt_in,
     payment_secret: paymentSecret,
 
     products: trfItemsObj,
@@ -115,6 +116,7 @@ export const __stripeCreateOrder = async (formObj: ActionPayload) => {
     email: contactInfoFormObj.email,
     contact_name: contactInfoFormObj.contact_name,
     phone_value: contactInfoFormObj.phone_value,
+    marketing_opt_in: contactInfoFormObj.marketing_opt_in,
     payment_secret: paymentSecret,
 
     products: trfItemsObj,

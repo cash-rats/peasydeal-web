@@ -36,6 +36,7 @@ export const initState: StateShape = {
     phone_value: '',
     contact_name_same: true,
     contact_name: '',
+    marketing_opt_in: false,
   }
 };
 
@@ -65,6 +66,7 @@ type UpdateContactInfoForm = {
   phone_value?: string,
   contact_name_same?: boolean,
   contact_name?: string,
+  marketing_opt_in?: boolean,
 };
 interface CheckoutAction {
   type: ActionTypes;

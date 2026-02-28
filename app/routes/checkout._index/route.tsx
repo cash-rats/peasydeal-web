@@ -272,6 +272,15 @@ function CheckoutPage() {
     });
   }, [clearCreateOrderErrorAlert, clearStripeErrorAlert]);
 
+  const handleMarketingOptInChange = useCallback((checked: boolean) => {
+    clearCreateOrderErrorAlert();
+    clearStripeErrorAlert();
+    dispatch({
+      type: ReducerActionTypes.update_contact_info_form,
+      payload: { marketing_opt_in: checked },
+    });
+  }, [clearCreateOrderErrorAlert, clearStripeErrorAlert]);
+
   /* ─── Stripe handlers ─── */
   const handlePaymentElementReady = useCallback((element: StripePaymentElement) => {
     paymentElement.current = element;
@@ -323,8 +332,8 @@ function CheckoutPage() {
       <ContactInfoSection
         email={state.contactInfoForm.email}
         onEmailChange={handleEmailChange}
-        marketingOptIn={false}
-        onMarketingOptInChange={() => {}}
+        marketingOptIn={state.contactInfoForm.marketing_opt_in}
+        onMarketingOptInChange={handleMarketingOptInChange}
       />
 
       {/* Shipping address section */}

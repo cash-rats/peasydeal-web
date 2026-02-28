@@ -16,6 +16,7 @@ type CreateOrderParams = {
   products: any;
   contact_name: string;
   phone_value: string;
+  marketing_opt_in: boolean;
   price_info: PriceInfo;
   promo_code?: string | null;
 }
@@ -31,6 +32,7 @@ export const createOrder = async ({
   payment_secret,
   contact_name,
   phone_value,
+  marketing_opt_in,
   products,
   price_info,
   promo_code,
@@ -51,6 +53,7 @@ export const createOrder = async ({
       payment_secret,
       contact_name,
       phone_value,
+      marketing_opt_in,
       products,
       price_info,
       promo_code,

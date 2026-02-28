@@ -15,6 +15,7 @@ export type ContactInfoFormType = {
   phone_value: string,
   contact_name_same: boolean,
   contact_name: string,
+  marketing_opt_in: boolean,
 };
 
 export interface OrderItem {
