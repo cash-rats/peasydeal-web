@@ -115,6 +115,14 @@ function QuestionIcon() {
   );
 }
 
+function CheckSmallIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M2 6L4.5 8.5L10 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
   function ProductInfo(
     {
@@ -281,28 +289,41 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
 
         {/* Variant selector */}
         {variants && variants.length > 0 && (
-          <div className="mb-5">
-            <p className="font-body text-sm font-semibold text-black mb-2.5">
-              Size:{" "}
-              <span className="font-normal">
+          <div className="mb-5 rounded-2xl border border-[#D1D5DB] bg-[#F3F4F6] p-3.5">
+            <div className="flex items-start justify-between gap-3 mb-2.5">
+              <div>
+                <p className="font-body text-sm font-semibold text-black">
+                  Choose option
+                </p>
+              </div>
+            </div>
+
+            <p className="font-body text-sm text-[#374151] mb-2.5">
+              <span className="font-semibold">Current:</span>{" "}
+              <span className="font-medium">
                 {(() => {
                   const label = variants.find((v) => v.value === selectedVariant)?.label ?? "";
                   return label.toLowerCase() === "default title" ? "Default" : label;
                 })()}
               </span>
             </p>
+
             <div className="flex flex-wrap gap-2">
               {variants.map((v) => {
                 const displayLabel = v.label.toLowerCase() === "default title" ? "Default" : v.label;
+                const isSelected = v.value === selectedVariant;
                 return (
                   <button
                     key={v.value}
                     type="button"
+                    aria-pressed={isSelected}
                     className={cn(
-                      "px-5 py-2.5 rounded-lg font-body text-sm font-medium transition-all duration-fast",
-                      v.value === selectedVariant
-                        ? "border-[1.5px] border-black bg-black text-white"
-                        : "border-[1.5px] border-[#E0E0E0] bg-white text-black hover:border-black"
+                      "group px-4 py-2.5 min-h-11 rounded-xl font-body text-sm font-semibold border-2 cursor-pointer",
+                      "transition-all duration-150 ease-out",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/25 focus-visible:ring-offset-2",
+                      isSelected
+                        ? "border-black bg-black text-white shadow-[0_8px_20px_rgba(0,0,0,0.18)]"
+                        : "border-[#9CA3AF] bg-[#E5E7EB] text-[#111827] shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:-translate-y-px hover:border-[#4B5563] hover:bg-[#F9FAFB] hover:shadow-[0_8px_20px_rgba(17,24,39,0.12)] active:translate-y-0 active:shadow-[0_2px_8px_rgba(17,24,39,0.12)]"
                     )}
                     onClick={() => onVariantChange?.(v.value)}
                     onMouseEnter={() => onVariantHoverStart?.(v.value)}
@@ -310,7 +331,10 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
                     onFocus={() => onVariantHoverStart?.(v.value)}
                     onBlur={() => onVariantHoverEnd?.()}
                   >
-                    {displayLabel}
+                    <span className="inline-flex items-center gap-1.5">
+                      {isSelected && <CheckSmallIcon />}
+                      {displayLabel}
+                    </span>
                   </button>
                 );
               })}
