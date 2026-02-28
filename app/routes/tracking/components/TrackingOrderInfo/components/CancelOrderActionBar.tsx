@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import { AiOutlineExclamationCircle } from 'react-icons/ai';
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import SimpleModal from '~/components/SimpleModal';
-import { Button } from '~/components/ui/button';
+import { Modal } from '~/components/v2/Modal';
+import { Button } from '~/components/v2/Button/Button';
 
 export interface CancelReason {
   id?: number;
@@ -24,7 +23,7 @@ const cancelReasons: CancelReason[] = [
   },
 ].map((cr, idx) => ({
   ...cr,
-  id: idx,
+  id: idx + 1,
 }));
 
 interface ICancelOrderActionBar {
@@ -45,96 +44,107 @@ export default function CancelOrderActionBar({
   isLoading = false,
 }: ICancelOrderActionBar) {
   const [selected, setSelected] = useState<CancelReason | null>(null);
-  const handleConfirm = () => onConfirm(selected);
+  const [otherReason, setOtherReason] = useState('');
+  const otherReasonItem = cancelReasons[cancelReasons.length - 1];
+  const isOtherReason = selected?.id === otherReasonItem.id;
+  const canConfirm = selected !== null && (!isOtherReason || otherReason.trim().length > 0);
+  const handleConfirm = () => {
+    if (!selected) return;
+    const reason = isOtherReason && otherReason.trim()
+      ? { ...selected, reason: otherReason.trim() }
+      : selected;
+    onConfirm(reason);
+  };
+  const handleClose = () => {
+    setSelected(null);
+    setOtherReason('');
+    onClose();
+  };
+
+  useEffect(() => {
+    if (!openCancelModal) {
+      setSelected(null);
+      setOtherReason('');
+    }
+  }, [openCancelModal]);
 
   return (
-    <div className="mt-4">
-      <SimpleModal
+    <div>
+      <Modal
         open={openCancelModal}
-        showCloseButton={false}
-        onClose={onClose}
-        closeOnOverlayClick
-        contentClassName="max-w-xl !p-0 shadow-lg"
+        onClose={handleClose}
+        maxWidth="440px"
       >
-          <div className="p-4">
-            <h2 className="font-poppins font-bold text-lg">
-              Please tell us the reason for canceling? (Optional)
-            </h2>
+        <h2 className="mb-5 font-body text-lg font-semibold text-black">
+          Cancel Order
+        </h2>
 
-            <ul className="mt-4 space-y-1.5">
-              {
-                cancelReasons.map((reason) => {
-                  return (
-                    <li
-                      key={`cancel_reason_${reason.id}`}
-                      onClick={() => setSelected(reason)}
-                      className={clsx(
-                        `
-                          w-full min-h-[32px]
-                          flex items-center cursor-pointer
-                          py-[3px] px-[6px] box-border bg-white
-                          transition-colors duration-[200ms] font-poppins
-                          hover:bg-gray-100 hover:border-[#39CCCC] hover:border
-                          hover:py-[2px] hover:px-[5px] hover:rounded-md
-                        `,
-                        {
-                          "bg-gray-100 border-[#39CCCC] border py-[2px] px-[5px] rounded-md": selected?.id === reason.id,
-                        }
-                      )}
-                    >
-                      <AiOutlineExclamationCircle className='text-[#4980c8] mr-2 text-lg' />
-                      {reason.reason}
-                    </li>
-                  )
-                })
-              }
-            </ul>
-
-            {
-              selected?.id === cancelReasons.length - 1 && (
-                <div className="mt-4">
-                  <textarea
-                    className="w-full rounded-md border border-input bg-white px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                    placeholder='Please tell us the reason for canceling'
-                    rows={4}
-                    maxLength={150}
-                  ></textarea>
-
-                  <div className="flex justify-end mt-[2px]">
-                    <small className="font-poppins text-sm">
-                      150 characters limit
-                    </small>
-                  </div>
-                </div>
-              )
-            }
-
-            {/* Actions, Confirm Cancel */}
-            <div
-              className="mt-4 flex flex-row items-center justify-end"
-            >
-              <Button
-                variant='secondary'
-                onClick={handleConfirm}
-                disabled={isLoading}
+        <ul className="space-y-2">
+          {cancelReasons.map((reason) => (
+            <li key={`cancel_reason_${reason.id}`}>
+              <button
+                type="button"
+                onClick={() => setSelected(reason)}
+                className={clsx(
+                  'w-full rounded-rd-sm border px-4 py-3 text-left font-body text-sm transition-all duration-fast',
+                  selected?.id === reason.id
+                    ? 'border-black bg-[#F9F9F9]'
+                    : 'border-rd-border-light hover:border-[#CCCCCC]'
+                )}
               >
-                Confirm
-              </Button>
-            </div>
-          </div>
-      </SimpleModal>
+                {reason.reason}
+              </button>
+            </li>
+          ))}
+        </ul>
 
-      <div
-        className="flex flex-row items-center justify-end"
-      >
+        {isOtherReason ? (
+          <div className="mt-3">
+            <textarea
+              className="h-[100px] w-full resize-none rounded-rd-sm border border-[#CCCCCC] p-3.5 font-body text-sm text-black outline-none transition-all duration-fast focus:border-black focus:shadow-[0_0_0_1px_#000]"
+              placeholder="Please tell us why..."
+              rows={4}
+              maxLength={150}
+              value={otherReason}
+              onChange={(evt) => setOtherReason(evt.target.value)}
+            />
+            <p className="mt-1 text-right font-body text-[11px] text-rd-text-muted">
+              {otherReason.length}/150
+            </p>
+          </div>
+        ) : null}
+
+        <div className="mt-6 flex flex-wrap items-center justify-end gap-3">
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={handleClose}
+            disabled={isLoading}
+          >
+            Go Back
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleConfirm}
+            disabled={!canConfirm || isLoading}
+            isLoading={isLoading}
+            className="!bg-[#C75050] hover:!bg-[#A33E3E]"
+          >
+            Confirm Cancellation
+          </Button>
+        </div>
+      </Modal>
+
+      <div className="mt-2 flex items-center justify-end">
         <Button
+          variant="secondary"
+          size="sm"
           onClick={onOpen}
-          className="bg-[#6366f1] px-6 text-white hover:bg-[#5154d6]"
         >
           Cancel Order
         </Button>
       </div>
     </div>
-
   );
 };

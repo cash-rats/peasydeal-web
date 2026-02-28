@@ -1,9 +1,7 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '~/components/ui/table';
-
 type TrackInfo = {
   trackingNumber: string;
-  carrier: string;
-  trackingLink: string;
+  carrier?: string;
+  trackingLink?: string;
 }
 
 type TrackingTableProps = {
@@ -12,30 +10,50 @@ type TrackingTableProps = {
 
 function TrackingTable({ trackings }: TrackingTableProps) {
   return (
-    <div className="font-poppins w-full">
-      <h1 className="font-medium mb-2">
-        Shipment trackings:
-      </h1>
-      <Table aria-label="shipment tracking table">
-        <TableHeader>
-          <TableRow>
-            <TableHead>Tracking Number</TableHead>
-            <TableHead>Carrier</TableHead>
-            <TableHead>Tracking Link</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+    <div className="mt-5 w-full overflow-x-auto">
+      <table aria-label="shipment tracking table" className="w-full border-collapse">
+        <thead>
+          <tr>
+            <th className="border-b-2 border-black py-2.5 text-left font-body text-xs font-semibold uppercase tracking-[0.5px] text-rd-text-muted">
+              Tracking Number
+            </th>
+            <th className="border-b-2 border-black py-2.5 text-left font-body text-xs font-semibold uppercase tracking-[0.5px] text-rd-text-muted">
+              Carrier
+            </th>
+            <th className="border-b-2 border-black py-2.5 text-left font-body text-xs font-semibold uppercase tracking-[0.5px] text-rd-text-muted">
+              Link
+            </th>
+          </tr>
+        </thead>
+        <tbody>
           {trackings.map((row) => (
-            <TableRow key={row.trackingNumber}>
-              <TableCell className="font-semibold">{row.trackingNumber}</TableCell>
-              <TableCell>{row.carrier}</TableCell>
-              <TableCell className="break-all text-muted-foreground">{row.trackingLink}</TableCell>
-            </TableRow>
+            <tr key={`${row.carrier ?? ''}-${row.trackingNumber}`}>
+              <td className="break-all border-b border-[#F0F0F0] py-3 font-body text-sm text-black">
+                {row.trackingNumber}
+              </td>
+              <td className="border-b border-[#F0F0F0] py-3 font-body text-sm text-black">
+                {row.carrier || '—'}
+              </td>
+              <td className="break-all border-b border-[#F0F0F0] py-3 font-body text-sm text-black">
+                {row.trackingLink ? (
+                  <a
+                    href={row.trackingLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="underline underline-offset-2"
+                  >
+                    {row.trackingLink}
+                  </a>
+                ) : (
+                  '—'
+                )}
+              </td>
+            </tr>
           ))}
-        </TableBody>
-      </Table>
+        </tbody>
+      </table>
     </div>
   );
 }
 
-export default TrackingTable
+export default TrackingTable;

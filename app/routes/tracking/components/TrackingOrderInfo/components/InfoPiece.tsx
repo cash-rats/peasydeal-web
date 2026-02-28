@@ -7,13 +7,12 @@ type InfoPieceProps = {
 
 function InfoPiece({ title, info }: InfoPieceProps) {
   return (
-    <div className="mb-4">
-      <h4 className="text-xs font-semibold uppercase tracking-wide text-gray-500">{title}</h4>
-      <div className="mt-1 text-base font-medium text-gray-900">
+    <div>
+      <h4 className="mb-1 font-body text-xs text-rd-text-muted">{title}</h4>
+      <div className="font-body text-sm font-medium text-black">
         {info}
       </div>
     </div>
-
   );
 }
 

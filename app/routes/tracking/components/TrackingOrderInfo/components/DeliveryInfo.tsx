@@ -19,20 +19,42 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
   ].filter(Boolean).join(', ');
   const paymentStatusWording = useMemo(() => {
     return {
-      [PaymentStatus.Paid]: 'Paid.',
-      [PaymentStatus.Unpaid]: 'Unpaid.',
-      [PaymentStatus.ReviewRefund]: "We are processing refund on cancelled order.",
+      [PaymentStatus.Paid]: 'Paid',
+      [PaymentStatus.Unpaid]: 'Unpaid',
+      [PaymentStatus.ReviewRefund]: 'Processing refund',
       [PaymentStatus.Refunded]: 'Refunded',
     }
   }, []);
+  const trackingRows = useMemo(() => {
+    const uniqTrackings = new Map<string, {
+      trackingNumber: string;
+      carrier?: string;
+      trackingLink?: string;
+    }>();
+
+    for (const product of orderInfo.products) {
+      if (!product.tracking_number) continue;
+      const key = `${product.carrier || ''}-${product.tracking_number}`;
+
+      if (!uniqTrackings.has(key)) {
+        uniqTrackings.set(key, {
+          trackingNumber: product.tracking_number,
+          carrier: product.carrier,
+          trackingLink: product.tracking_link,
+        });
+      }
+    }
+
+    return Array.from(uniqTrackings.values());
+  }, [orderInfo.products]);
 
   return (
-    <div>
-      <h2 className="text-xl font-semibold text-gray-900">
+    <div className="rounded-rd-md border border-rd-border-light p-6">
+      <h2 className="mb-5 font-body text-sm font-semibold uppercase tracking-[0.5px] text-black">
         Delivery Information
       </h2>
 
-      <div className="mt-5 space-y-4 text-sm text-gray-700">
+      <div className="grid grid-cols-1 gap-5 redesign-sm:grid-cols-2">
         <InfoPiece
           title='Contact Name'
           info={contactName || '—'}
@@ -40,11 +62,7 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
 
         <InfoPiece
           title='Address'
-          info={(
-            <p className="text-gray-900">
-              {address || '—'}
-            </p>
-          )}
+          info={address || '—'}
         />
 
         {
@@ -73,21 +91,9 @@ function DeliveryInfo({ orderInfo }: DeliveryInfoProps) {
             )
             : null
         }
-
-        {
-          orderInfo.tracking_number
-            ? (
-              <TrackingTable trackings={[
-                {
-                  carrier: orderInfo.carrier,
-                  trackingNumber: orderInfo.tracking_number,
-                  trackingLink: orderInfo.tracking_link,
-                }
-              ]} />
-            )
-            : null
-        }
       </div>
+
+      {trackingRows.length > 0 ? <TrackingTable trackings={trackingRows} /> : null}
     </div>
   );
 }

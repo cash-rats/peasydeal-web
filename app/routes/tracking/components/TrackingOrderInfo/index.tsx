@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { FaShippingFast } from 'react-icons/fa';
 import { BiCalendarAlt, BiErrorCircle } from 'react-icons/bi';
 import parseISO from 'date-fns/parseISO/index.js';
 import format from 'date-fns/format/index.js';
@@ -7,7 +6,8 @@ import add from 'date-fns/add/index.js';
 import type { LinksFunction } from 'react-router';
 import { useFetcher, useRevalidator } from 'react-router';
 import { useImmerReducer } from 'use-immer';
-import { Button } from '~/components/ui/button';
+import { Badge } from '~/components/v2/Badge';
+import type { BadgeProps } from '~/components/v2/Badge';
 
 import DeliveryInfo from './components/DeliveryInfo';
 import CancelOrderActionBar from './components/CancelOrderActionBar';
@@ -26,17 +26,13 @@ const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => ({
   parsed_created_at: parseISO(order.created_at)
 });
 
-/*
-  Design Reference:
-    - https://bbbootstrap.com/snippets/ecommerce-product-order-details-tracking-63470618
-    - https://www.ownrides.com/search?cities=&country=&days=&page=1&query=
-
-  TODOs:
-    - [x] Search order by order number.
-    - [ ] Deliver & Tax should have tooltips when hover over the icon.
-    - [ ] show payment status.
-    - [ ] Hide.
-*/
+const statusBadgeMap: Record<OrderStatus, { variant: BadgeProps['variant']; label: string }> = {
+  [OrderStatus.OrderReceived]: { variant: 'limited', label: 'Order Received' },
+  [OrderStatus.Processing]: { variant: 'hot', label: 'Processing' },
+  [OrderStatus.Complete]: { variant: 'discount', label: 'Completed' },
+  [OrderStatus.Cancelled]: { variant: 'new', label: 'Cancelled' },
+  [OrderStatus.Hold]: { variant: 'hot', label: 'On Hold' },
+};
 
 export const links: LinksFunction = () => {
   return [...ReviewModalLinks()];
@@ -77,7 +73,7 @@ function TrackingOrderIndex({
           action: '/api/tracking/order-info',
         },
       );
-    }, [state.orderInfo]
+    }, [dispatch, fetcher, state.orderInfo]
   );
 
   const handleClose = (status: string) => {
@@ -121,7 +117,7 @@ function TrackingOrderIndex({
         window.scrollTo(0, 0);
       }, 100);
     }
-  }, [fetcher.state, fetcher.data]);
+  }, [dispatch, fetcher.state, fetcher.data]);
 
   useEffect(
     () => {
@@ -130,13 +126,19 @@ function TrackingOrderIndex({
         payload: parseTrackOrderCreatedAt(orderInfo),
       });
     },
-    [orderInfo],
+    [dispatch, orderInfo],
   );
 
   const prettifyStatus = (status: string) => status ? status.split('_').join(' ') : '';
+  const orderStatusBadge = statusBadgeMap[state.orderInfo.order_status] || {
+    variant: 'limited',
+    label: prettifyStatus(state.orderInfo.order_status),
+  };
+  const orderDate = format(state.orderInfo.parsed_created_at, 'MMM d, yyyy');
+  const estimatedDeliveryDate = format(add(state.orderInfo.parsed_created_at, { days: 10 }), 'MMM d, yyyy');
 
   return (
-    <div className="bg-gray-50">
+    <div className="v2 bg-rd-bg-primary">
       {
         <ReviewModal
           isOpen={isReviewOpen}
@@ -146,24 +148,41 @@ function TrackingOrderIndex({
         />
       }
 
-      <div className="mx-auto max-w-5xl px-4 pb-12 pt-6 sm:px-6 lg:px-8">
-        <h1 className="mb-4 text-2xl font-bold text-gray-900">
-          Order ID: <span className="font-mono text-gray-800">{state.orderInfo.order_uuid}</span>
-        </h1>
+      <div className="mx-auto max-w-[800px] px-[var(--container-padding)] py-12">
+        <div className="mb-8 flex flex-wrap items-start justify-between gap-6 rounded-rd-md bg-rd-bg-card p-8">
+          <div>
+            <p className="font-body text-[13px] font-medium uppercase tracking-[0.5px] text-rd-text-secondary">
+              Order
+            </p>
+            <p className="mt-1 font-heading text-2xl font-bold text-black">
+              {state.orderInfo.order_uuid}
+            </p>
+            <div className="mt-3 flex flex-col gap-1 text-sm text-rd-text-body">
+              <p className="flex items-center gap-2">
+                <BiCalendarAlt className="h-4 w-4" />
+                Ordered {orderDate}
+              </p>
+              <p>Est. delivery: {estimatedDeliveryDate}</p>
+            </div>
+          </div>
 
-        <div className="space-y-4">
-          {/* Cancelled Order warning */}
+          <Badge variant={orderStatusBadge.variant}>
+            {orderStatusBadge.label}
+          </Badge>
+        </div>
+
+        <div>
           {
             state.error
               ? (
-                <div className="flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+                <div className="mb-6 flex items-start gap-2.5 rounded-rd-sm border border-[#FECACA] bg-[#FEF2F2] px-4 py-3.5 text-sm text-[#991B1B]">
                   <BiErrorCircle className="mt-0.5 h-5 w-5" />
-                  <div className="space-y-1">
-                    <p className="text-base font-semibold">There was an error when cancelling this order.</p>
-                    <p>
+                  <div className="space-y-1 font-body">
+                    <p className="font-semibold">There was an error when cancelling this order.</p>
+                    <p className="leading-relaxed">
                       {state.error} For further support, contact us at{' '}
                       <a
-                        className="font-semibold text-[#D02E7D] underline"
+                        className="text-black underline underline-offset-2"
                         href={`mailto:contact@peasydeal.com?subject=Cancelled Order - ${state.orderInfo.order_uuid}`}
                       >
                         contact@peasydeal.com
@@ -178,14 +197,14 @@ function TrackingOrderIndex({
           {
             state.orderInfo.order_status === OrderStatus.Cancelled
               ? (
-                <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-4 text-sm text-blue-800">
+                <div className="mb-6 flex items-start gap-2.5 rounded-rd-sm border border-[#FECACA] bg-[#FEF2F2] px-4 py-3.5 text-sm text-[#991B1B]">
                   <BiErrorCircle className="mt-0.5 h-5 w-5" />
-                  <div className="space-y-1">
-                    <p className="text-base font-semibold">This order has been cancelled.</p>
-                    <p>
+                  <div className="space-y-1 font-body">
+                    <p className="font-semibold">This order has been cancelled.</p>
+                    <p className="leading-relaxed">
                       If payment has been made, it will be refunded. For questions, contact{' '}
                       <a
-                        className="font-semibold text-[#D02E7D] underline"
+                        className="text-black underline underline-offset-2"
                         href={`mailto:contact@peasydeal.com?subject=Cancelled Order - ${state.orderInfo.order_uuid}`}
                       >
                         contact@peasydeal.com
@@ -197,33 +216,7 @@ function TrackingOrderIndex({
               : null
           }
 
-          <section className="rounded-lg bg-white p-6 shadow-sm sm:p-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="text-xl font-bold text-gray-900">Order Summary</h2>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-x-8 gap-y-3 text-sm text-gray-500">
-              <div className="flex items-center gap-2">
-                <BiCalendarAlt className="h-4 w-4" />
-                <span>
-                  Order Date:{' '}
-                  <span className="font-medium text-gray-800">
-                    {format(state.orderInfo.parsed_created_at, 'MMM d, yyyy')}
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FaShippingFast className="h-4 w-4 text-green-500" />
-                <span>
-                  Estimated Delivery:{' '}
-                  <span className="font-medium text-gray-800">
-                    {format(add(state.orderInfo.parsed_created_at, { days: 10 }), 'MMM d, yyyy')}
-                  </span>
-                </span>
-              </div>
-            </div>
-          </section>
-
-          <section className="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white shadow-sm">
+          <section className="mb-8 overflow-hidden rounded-rd-md border border-rd-border-light">
             {
               state
                 .orderInfo
@@ -242,78 +235,80 @@ function TrackingOrderIndex({
                         : OrderStatus.Processing;
                   const statusColor =
                     shippingStatus === 'shipped' || state.orderInfo.order_status === OrderStatus.Complete
-                      ? 'text-green-600'
+                      ? 'text-[#4A7C59]'
                       : state.orderInfo.order_status === OrderStatus.Cancelled
-                        ? 'text-red-600'
-                        : 'text-amber-600';
+                        ? 'text-[#C75050]'
+                        : 'text-rd-text-body';
 
                   return (
                     <div
                       key={`tracking_item_${product.uuid}`}
-                      className="flex flex-col gap-6 p-6 sm:flex-row"
+                      className="flex items-center gap-4 border-b border-[#F0F0F0] px-5 py-4 last:border-b-0"
                     >
                       <img
                         alt={product.title}
                         src={product.url}
-                        className="h-24 w-24 flex-shrink-0 rounded-lg object-cover"
+                        className="h-16 w-16 flex-shrink-0 rounded-rd-sm bg-rd-bg-card object-cover"
                       />
 
-                      <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                        <div className="space-y-2">
-                          <p className="text-lg font-semibold text-gray-900">{product.title}</p>
-                          <p className="text-sm text-gray-500">{product.spec_name}</p>
-                          <div className="space-y-1 text-sm text-gray-600">
-                            {
-                              hasTrackingAll && (
-                                <>
-                                  <p>
-                                    Shipping Vendor:{' '}
-                                    <span className="font-medium text-gray-900">{product.carrier}</span>
-                                  </p>
-                                  <p>
-                                    Tracking Number:{' '}
-                                    <a
-                                      className="font-semibold text-[#6366f1] hover:underline"
-                                      href={product.tracking_link}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      {product.tracking_number}
-                                    </a>
-                                  </p>
-                                </>
-                              )
-                            }
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <p className="font-body text-sm font-medium text-black">
+                          {product.title}
+                        </p>
+                        <p className="mt-0.5 font-body text-[13px] text-rd-text-muted">
+                          {product.spec_name}
+                        </p>
+                        <p className="mt-0.5 font-body text-[13px] text-rd-text-secondary">
+                          Qty: {product.order_quantity}
+                        </p>
+
+                        <div className="mt-1 space-y-1 font-body text-[13px] text-rd-text-body">
+                          <p>
+                            Status:{' '}
+                            <span className={`font-medium capitalize ${statusColor}`}>
+                              {prettifyStatus(shippingStatus)}
+                            </span>
+                          </p>
+
+                          {hasVendorAndNumber ? (
                             <p>
-                              Status:{' '}
-                              <span className={`font-semibold capitalize ${statusColor}`}>
-                                {prettifyStatus(shippingStatus)}
-                              </span>
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-shrink-0 flex-col items-start gap-1 sm:items-end">
-                          <p className="text-lg font-semibold text-gray-900">£{product.sale_price}</p>
-                          <p className="text-sm text-gray-500">Qty: {product.order_quantity}</p>
-
-                          {
-                            product.can_review
-                              ? (
-                                <Button
-                                  variant='ghost'
-                                  className='mt-1 h-auto p-0 text-sm font-semibold text-[#1DA1F2] hover:text-[#0d8ddb]'
-                                  onClick={() => {
-                                    dispatch(reviewOnProduct(product));
-                                    handleOpenReview();
-                                  }}
+                              Tracking:{' '}
+                              {hasTrackingAll ? (
+                                <a
+                                  className="underline underline-offset-2"
+                                  href={product.tracking_link}
+                                  target="_blank"
+                                  rel="noreferrer"
                                 >
-                                  Review
-                                </Button>
-                              )
-                              : null
-                          }
+                                  {product.tracking_number}
+                                </a>
+                              ) : (
+                                <span>{product.tracking_number}</span>
+                              )}
+                              {product.carrier ? ` (${product.carrier})` : ''}
+                            </p>
+                          ) : null}
                         </div>
+                      </div>
+
+                      <div className="ml-4 text-right">
+                        <p className="font-body text-sm font-semibold text-black">£{product.sale_price}</p>
+                        {
+                          product.can_review
+                            ? (
+                              <button
+                                type="button"
+                                className="mt-1 font-body text-[13px] text-black underline underline-offset-[3px]"
+                                onClick={() => {
+                                  dispatch(reviewOnProduct(product));
+                                  handleOpenReview();
+                                }}
+                              >
+                                Review
+                              </button>
+                            )
+                            : null
+                        }
                       </div>
                     </div>
                   )
@@ -321,46 +316,47 @@ function TrackingOrderIndex({
             }
           </section>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <section className="rounded-lg bg-white p-6 shadow-sm sm:p-8">
-              <DeliveryInfo orderInfo={state.orderInfo} />
-            </section>
+          <div className="space-y-8">
+            <DeliveryInfo orderInfo={state.orderInfo} />
 
-            <section className="rounded-lg bg-white p-6 shadow-sm sm:p-8">
-              <h2 className="mb-6 text-xl font-semibold text-gray-900">Order Summary</h2>
-              <div className="space-y-4 text-sm text-gray-700">
-                <div className="flex items-center justify-between">
-                  <span>Subtotal (VAT incl.)</span>
-                  <span className="font-medium">£{state.orderInfo.subtotal}</span>
+            <section className="rounded-rd-md border border-rd-border-light p-6">
+              <h2 className="mb-5 font-body text-sm font-semibold uppercase tracking-[0.5px] text-black">
+                Order Summary
+              </h2>
+              <div className="font-body text-sm">
+                <div className="flex justify-between py-2">
+                  <span className="text-rd-text-body">Subtotal (VAT incl.)</span>
+                  <span className="font-medium text-black">£{state.orderInfo.subtotal}</span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span>Shipping Fee</span>
-                  <span className="font-medium">+ £{state.orderInfo.shipping_fee}</span>
+                <div className="flex justify-between py-2">
+                  <span className="text-rd-text-body">Shipping Fee</span>
+                  <span className="font-medium text-black">£{state.orderInfo.shipping_fee}</span>
                 </div>
                 {
-                  state.orderInfo.tax_amount
+                  state.orderInfo.tax_amount > 0
                     ? (
-                      <div className="flex items-center justify-between">
-                        <span>Tax</span>
-                        <span className="font-medium">£{state.orderInfo.tax_amount}</span>
+                      <div className="flex justify-between py-2">
+                        <span className="text-rd-text-body">Tax</span>
+                        <span className="font-medium text-black">£{state.orderInfo.tax_amount}</span>
                       </div>
                     )
                     : null
                 }
                 {
-                  state.orderInfo.discount_amount
+                  state.orderInfo.discount_amount > 0
                     ? (
-                      <div className="flex items-center justify-between text-gray-600">
-                        <span>Discounts</span>
-                        <span className="font-medium">- £{state.orderInfo.discount_amount}</span>
+                      <div className="flex justify-between py-2">
+                        <span className="text-rd-text-body">Discount</span>
+                        <span className="font-medium text-black">- £{state.orderInfo.discount_amount}</span>
                       </div>
                     )
                     : null
                 }
-                <div className="my-2 border-t border-gray-200" />
-                <div className="flex items-center justify-between text-lg font-semibold text-gray-900">
-                  <span>Total</span>
-                  <span>£{state.orderInfo.total_amount}</span>
+                <div className="mt-2 border-t border-rd-border-light pt-3">
+                  <div className="flex justify-between py-1">
+                    <span className="text-base font-bold text-black">Total</span>
+                    <span className="text-base font-bold text-black">£{state.orderInfo.total_amount}</span>
+                  </div>
                 </div>
               </div>
             </section>
@@ -368,8 +364,9 @@ function TrackingOrderIndex({
 
           {
             state.orderInfo.order_status !== OrderStatus.Cancelled
+              && state.orderInfo.order_status !== OrderStatus.Complete
               ? (
-                <div className="flex justify-end">
+                <div className="mt-2">
                   <CancelOrderActionBar
                     onConfirm={handleConfirm}
                     openCancelModal={openCancelModal}
