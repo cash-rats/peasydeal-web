@@ -85,14 +85,16 @@ export function OrderSummary({
           return (
             <div key={item.id} className="flex items-center gap-4">
               {/* Thumbnail with quantity badge */}
-              <div className="relative w-16 h-16 rounded-lg border border-[#E0E0E0] overflow-hidden flex-shrink-0 bg-white">
-                {item.thumbnailSrc && (
-                  <img
-                    src={item.thumbnailSrc}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                )}
+              <div className="relative w-16 h-16 flex-shrink-0">
+                <div className="w-full h-full rounded-lg border border-[#E0E0E0] overflow-hidden bg-white">
+                  {item.thumbnailSrc && (
+                    <img
+                      src={item.thumbnailSrc}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  )}
+                </div>
                 <span className="absolute -top-1.5 -right-1.5 min-w-5 h-5 rounded-full bg-black/70 text-white font-body text-[11px] font-semibold flex items-center justify-center px-[5px]">
                   {item.quantity}
                 </span>
