@@ -1,5 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from 'react-router';
+import type { LinksFunction, LoaderFunctionArgs, ActionFunctionArgs, MetaFunction } from 'react-router';
 import {
   redirect,
   useRouteError,
@@ -7,10 +6,8 @@ import {
   useLoaderData,
   useFetcher,
   useRouteLoaderData,
-  useRevalidator,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
-import parseISO from 'date-fns/parseISO';
 
 import { composErrorResponse } from '~/utils/error';
 import { getCanonicalDomain, getTrackingTitleText, getTrackingFBSEO } from '~/utils/seo';
@@ -19,21 +16,13 @@ import { V2Layout } from '~/components/v2/GlobalLayout';
 
 import {
   TrackingSearch,
-  OrderHeader,
-  AlertBanner,
-  ProductList,
-  DeliveryInfo,
-  TrackingOrderSummary,
   TrackingError,
-  CancelOrderModal,
-  ReviewModal,
 } from '~/components/v2/Tracking';
-import { Button } from '~/components/v2/Button/Button';
+import TrackingOrderInfo, { links as TrackingOrderInfoLinks } from '~/routes/tracking/components/TrackingOrderInfo';
 
 import { trackOrder } from '~/routes/tracking/api.server';
 import { normalizeTrackingOrder } from '~/routes/tracking/utils';
-import type { TrackOrder, TrackOrderProduct } from '~/routes/tracking/types';
-import { OrderStatus } from '~/routes/tracking/types';
+import type { TrackOrder } from '~/routes/tracking/types';
 
 type LoaderDataType = {
   query: string;
@@ -56,6 +45,12 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => ([
     href: data?.canonicalLink || `${getCanonicalDomain()}/tracking`,
   },
 ]);
+
+export const links: LinksFunction = () => {
+  return [
+    ...TrackingOrderInfoLinks(),
+  ];
+};
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url);
@@ -143,15 +138,10 @@ export function ErrorBoundary() {
   );
 }
 
-const parseTrackOrderCreatedAt = (order: TrackOrder): TrackOrder => ({
-  ...order,
-  parsed_created_at: parseISO(order.created_at),
-});
-
 function TrackingOrder() {
   const {
     query,
-    order: rawOrder,
+    order,
   } = useLoaderData<LoaderDataType>() || {};
 
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
@@ -159,106 +149,12 @@ function TrackingOrder() {
   const navBarCategories = rootData?.navBarCategories ?? [];
 
   const trackOrderFetcher = useFetcher();
-  const cancelFetcher = useFetcher();
-  const revalidator = useRevalidator();
-
-  // Order state
-  const [order, setOrder] = useState<TrackOrder | null>(
-    rawOrder ? parseTrackOrderCreatedAt(rawOrder) : null
-  );
-  const [cancelError, setCancelError] = useState<string | null>(null);
-  const [cancelModalOpen, setCancelModalOpen] = useState(false);
-
-  // Review state
-  const [reviewProduct, setReviewProduct] = useState<TrackOrderProduct | null>(null);
-  const [reviewModalOpen, setReviewModalOpen] = useState(false);
-
-  // Sync order from loader
-  useEffect(() => {
-    if (rawOrder) {
-      setOrder(parseTrackOrderCreatedAt(rawOrder));
-    } else {
-      setOrder(null);
-    }
-  }, [rawOrder]);
-
-  // Handle cancel fetcher completion
-  useEffect(() => {
-    if (cancelFetcher.state === 'idle' && cancelFetcher.data !== undefined) {
-      const errMsg = cancelFetcher.data;
-
-      if (errMsg !== null) {
-        setCancelError(typeof errMsg === 'string' ? errMsg : 'Failed to cancel order');
-        return;
-      }
-
-      setCancelModalOpen(false);
-      setOrder((prev) =>
-        prev ? { ...prev, order_status: OrderStatus.Cancelled } : null
-      );
-      window?.scrollTo(0, 0);
-    }
-  }, [cancelFetcher.state, cancelFetcher.data]);
 
   const handleSearch = (orderId: string) => {
     trackOrderFetcher.submit(
       { query: orderId },
       { method: 'post', action: '/tracking' },
     );
-  };
-
-  const handleCancelConfirm = useCallback((reason: string) => {
-    if (!order) return;
-    setCancelError(null);
-
-    cancelFetcher.submit(
-      {
-        order_uuid: order.order_uuid,
-        cancel_reason: reason,
-      },
-      {
-        method: 'post',
-        action: '/api/tracking/order-info',
-      },
-    );
-  }, [order]);
-
-  const handleReviewSubmit = useCallback(async (data: {
-    name: string;
-    rating: number;
-    review: string;
-    images: File[];
-    productUUID: string;
-    orderUUID: string;
-  }) => {
-    const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('rating', data.rating.toString());
-    formData.append('review', data.review);
-    formData.append('product_uuid', data.productUUID);
-    formData.append('order_uuid', data.orderUUID);
-    data.images.forEach((img) => formData.append('images', img));
-
-    const resp = await fetch(
-      '/api/tracking/order-info/review',
-      { method: 'POST', body: formData },
-    );
-
-    if (!resp.ok) {
-      throw new Error('Failed to submit review');
-    }
-
-    revalidator.revalidate();
-  }, []);
-
-  const handleReviewClose = () => {
-    setReviewModalOpen(false);
-    setReviewProduct(null);
-  };
-
-  const handleReviewClick = (product: TrackOrderProduct) => {
-    setReviewProduct(product);
-    setReviewModalOpen(true);
   };
 
   return (
@@ -270,63 +166,7 @@ function TrackingOrder() {
       />
 
       {!order ? null : (
-        <div className="max-w-[var(--container-max)] mx-auto px-[var(--container-padding)] pb-16">
-          <OrderHeader order={order} />
-
-          {cancelError && (
-            <AlertBanner variant="error">
-              Error cancelling order. {cancelError}{' '}
-              <a
-                href={`mailto:contact@peasydeal.com?subject=Cancelled Order - ${order.order_uuid}`}
-                className="underline"
-              >
-                Contact us
-              </a>
-            </AlertBanner>
-          )}
-
-          {order.order_status === OrderStatus.Cancelled && (
-            <AlertBanner variant="info">
-              This order has been cancelled. If payment was made, it will be refunded.
-            </AlertBanner>
-          )}
-
-          <ProductList
-            products={order.products}
-            onReview={handleReviewClick}
-          />
-
-          <DeliveryInfo order={order} />
-
-          <TrackingOrderSummary order={order} />
-
-          {order.order_status !== OrderStatus.Cancelled && (
-            <div className="flex justify-end">
-              <Button
-                variant="secondary"
-                onClick={() => setCancelModalOpen(true)}
-                className="!text-[#C75050] !border-[#C75050] hover:!bg-[#FEF2F2]"
-              >
-                Cancel Order
-              </Button>
-            </div>
-          )}
-
-          <CancelOrderModal
-            open={cancelModalOpen}
-            onClose={() => setCancelModalOpen(false)}
-            onConfirm={handleCancelConfirm}
-            isLoading={cancelFetcher.state !== 'idle'}
-          />
-
-          <ReviewModal
-            open={reviewModalOpen}
-            onClose={handleReviewClose}
-            product={reviewProduct}
-            orderUUID={order.order_uuid}
-            onSubmit={handleReviewSubmit}
-          />
-        </div>
+        <TrackingOrderInfo orderInfo={order} />
       )}
     </V2Layout>
   );
