@@ -180,6 +180,11 @@ function CheckoutPage() {
   const validateFormBeforePayment = useCallback(() => {
     if (!formRef.current) return true;
 
+    if (!formRef.current.checkValidity()) {
+      formRef.current.reportValidity();
+      return false;
+    }
+
     const phoneInput = formRef.current.querySelector<HTMLInputElement>('#phone');
     if (!validatePhoneInput(phoneInput)) {
       formRef.current.reportValidity();
@@ -328,6 +333,11 @@ function CheckoutPage() {
         </div>
       ) : null}
 
+      {/* Required fields legend */}
+      <p className="mb-4 font-body text-xs text-[#666]">
+        Fields marked with <span className="text-[#C75050]">*</span> are required.
+      </p>
+
       {/* Contact section */}
       <ContactInfoSection
         email={state.contactInfoForm.email}
@@ -353,6 +363,7 @@ function CheckoutPage() {
       <div className="mt-8">
         <h2 className="font-body text-lg font-semibold text-black mb-4">
           Payment
+          <span className="ml-0.5 text-[#C75050]" aria-hidden="true">*</span>
         </h2>
         <StripeCheckout
           loading={loading || isPaying}

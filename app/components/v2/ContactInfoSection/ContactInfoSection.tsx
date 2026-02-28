@@ -48,11 +48,14 @@ export function ContactInfoSection({
 
       {/* Email input */}
       <CheckoutInput
+        id="email"
+        name="email"
         label="Email"
         type="email"
         value={email}
         onChange={onEmailChange}
         error={emailError}
+        required
         className="mb-3"
       />
 

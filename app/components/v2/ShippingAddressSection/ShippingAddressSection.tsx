@@ -246,25 +246,31 @@ export function ShippingAddressSection({
       <div className="flex flex-col gap-3">
         {/* Country */}
         <CheckoutSelect
+          name="country"
           label="Country/Region"
           value={address.country}
           onChange={(v) => onChange("country", v)}
           options={countries}
+          required
           error={errors.country}
         />
 
         {/* Name row */}
         <div className="grid grid-cols-2 gap-3">
           <CheckoutInput
+            name="firstName"
             label="First name"
             value={address.firstName}
             onChange={(v) => onChange("firstName", v)}
+            required
             error={errors.firstName}
           />
           <CheckoutInput
+            name="lastName"
             label="Last name"
             value={address.lastName}
             onChange={(v) => onChange("lastName", v)}
+            required
             error={errors.lastName}
           />
         </div>
@@ -310,18 +316,23 @@ export function ShippingAddressSection({
           </div>
         ) : (
           <CheckoutInput
+            id="postcode"
+            name="postcode"
             label="Postcode"
             value={address.postcode}
             onChange={(v) => onChange('postcode', v)}
+            required
             error={errors.postcode}
           />
         )}
 
         {/* Address */}
         <CheckoutInput
+          name="address"
           label="Address"
           value={address.address}
           onChange={(v) => onChange('address', v)}
+          required
           error={errors.address}
         />
 
@@ -334,9 +345,11 @@ export function ShippingAddressSection({
 
         {/* City */}
         <CheckoutInput
+          name="city"
           label="City"
           value={address.city}
           onChange={(v) => onChange('city', v)}
+          required
           error={errors.city}
         />
 
@@ -351,6 +364,7 @@ export function ShippingAddressSection({
           >
             <span className="inline-flex items-center">
               <span>Phone</span>
+              <span className="ml-0.5 text-[#C75050]" aria-hidden="true">*</span>
               <span className="ml-1.5 inline-flex items-center">
                 <FiHelpCircle
                   className="h-[14px] w-[14px] text-[#CCC] cursor-help"

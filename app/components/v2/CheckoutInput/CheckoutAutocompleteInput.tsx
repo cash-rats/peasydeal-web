@@ -143,7 +143,12 @@ export function CheckoutAutocompleteInput<T>({
           error ? 'text-[#C75050]' : 'text-[#999]',
         )}
       >
-        {label}
+        <span>{label}</span>
+        {required ? (
+          <span className="ml-0.5 text-[#C75050]" aria-hidden="true">
+            *
+          </span>
+        ) : null}
       </label>
 
       <div className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-[#999]">

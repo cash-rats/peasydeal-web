@@ -17,10 +17,13 @@ export interface CheckoutInputProps {
 }
 
 export interface CheckoutSelectProps {
+  id?: string;
+  name?: string;
   label: string;
   value: string;
   onChange: (value: string) => void;
   options: Array<{ label: string; value: string }>;
+  required?: boolean;
   error?: string;
   className?: string;
 }
@@ -90,6 +93,11 @@ export function CheckoutInput({
       >
         <span className="inline-flex items-center">
           <span>{label}</span>
+          {required && !optional && (
+            <span className="ml-0.5 text-[#C75050]" aria-hidden="true">
+              *
+            </span>
+          )}
           {labelIcon && <span className="ml-1.5 inline-flex items-center">{labelIcon}</span>}
         </span>
         {optional && (
@@ -107,22 +115,28 @@ export function CheckoutInput({
 }
 
 export function CheckoutSelect({
+  id,
+  name,
   label,
   value,
   onChange,
   options,
+  required = false,
   error,
   className,
 }: CheckoutSelectProps) {
   const [focused, setFocused] = useState(false);
-  const id = useId();
+  const generatedId = useId();
+  const selectId = id ?? generatedId;
   const hasValue = value.length > 0;
   const floated = focused || hasValue;
 
   return (
     <div className={cn("relative", className)}>
       <select
-        id={id}
+        id={selectId}
+        name={name}
+        required={required}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => setFocused(true)}
@@ -146,7 +160,7 @@ export function CheckoutSelect({
         ))}
       </select>
       <label
-        htmlFor={id}
+        htmlFor={selectId}
         className={cn(
           "absolute left-3.5 pointer-events-none font-body font-normal transition-all duration-fast",
           floated
@@ -155,7 +169,12 @@ export function CheckoutSelect({
           error ? "text-[#C75050]" : "text-[#999]"
         )}
       >
-        {label}
+        <span>{label}</span>
+        {required && (
+          <span className="ml-0.5 text-[#C75050]" aria-hidden="true">
+            *
+          </span>
+        )}
       </label>
       {/* Custom chevron */}
       <svg
