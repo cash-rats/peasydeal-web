@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "~/lib/utils";
 import { QuantityPicker } from "~/components/v2/QuantityPicker";
 
@@ -17,6 +17,15 @@ export interface CartPageItem {
 
 export interface CartPageProps {
   items: CartPageItem[];
+  priceInfo?: {
+    discount_code_valid?: boolean;
+    discount_error_msgs?: string[];
+    promo_code_discount?: number;
+  } | null;
+  appliedPromoCode?: string;
+  onApplyPromoCode?: (code: string) => void;
+  promoApplying?: boolean;
+  promoError?: string;
   onQuantityChange?: (id: string, qty: number) => void;
   onRemoveItem?: (id: string) => void;
   onCheckout?: () => void;
@@ -78,6 +87,11 @@ function RemoveModal({
 
 export function CartPage({
   items,
+  priceInfo = null,
+  appliedPromoCode = "",
+  onApplyPromoCode,
+  promoApplying = false,
+  promoError = "",
   onQuantityChange,
   onRemoveItem,
   onCheckout,
@@ -86,17 +100,39 @@ export function CartPage({
   className,
 }: CartPageProps) {
   const [removingItem, setRemovingItem] = useState<CartPageItem | null>(null);
+  const [promoCodeInput, setPromoCodeInput] = useState(appliedPromoCode);
+  const [promoInputError, setPromoInputError] = useState("");
 
   const subtotal = items.reduce(
     (sum, i) => sum + (i.salePrice ?? i.retailPrice) * i.quantity,
     0
   );
+  const discountCodeValid = Boolean(priceInfo?.discount_code_valid && appliedPromoCode);
+  const discountErrorMsgs = priceInfo?.discount_error_msgs ?? [];
+  const promoCodeDiscount = Number(priceInfo?.promo_code_discount ?? 0);
+  const canApplyPromoCode = Boolean(onApplyPromoCode);
+
+  useEffect(() => {
+    setPromoCodeInput(appliedPromoCode);
+    setPromoInputError("");
+  }, [appliedPromoCode]);
 
   const handleRemoveConfirm = () => {
     if (removingItem) {
       onRemoveItem?.(removingItem.id);
       setRemovingItem(null);
     }
+  };
+
+  const handleApplyPromoCode = () => {
+    const normalized = promoCodeInput.trim().toUpperCase();
+    if (!normalized) {
+      setPromoInputError("You have not enter any promo code");
+      return;
+    }
+
+    setPromoInputError("");
+    onApplyPromoCode?.(normalized);
   };
 
   if (items.length === 0) {
@@ -315,12 +351,80 @@ export function CartPage({
       {/* Cart footer */}
       <div className="flex justify-end mt-8">
         <div className="max-w-[380px] w-full redesign-sm:max-w-[380px] max-sm:max-w-full">
+          {(canApplyPromoCode || discountCodeValid || discountErrorMsgs.length > 0) ? (
+            <div className="mb-5 rounded-lg border border-[#E0E0E0] bg-white p-4">
+              <p className="mb-2 font-body text-sm font-medium text-black">
+                Discount code or gift card
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCodeInput}
+                  onChange={(evt) => {
+                    setPromoCodeInput(evt.target.value.toUpperCase());
+                    setPromoInputError("");
+                  }}
+                  onKeyDown={(evt) => {
+                    if (evt.key === "Enter") {
+                      evt.preventDefault();
+                      handleApplyPromoCode();
+                    }
+                  }}
+                  placeholder="Enter your promo code"
+                  disabled={!canApplyPromoCode || promoApplying}
+                  className="h-11 flex-1 rounded-md border border-[#CCC] px-3 text-sm outline-none focus:border-black focus:shadow-[0_0_0_1px_#000]"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyPromoCode}
+                  disabled={!canApplyPromoCode || promoApplying}
+                  className={cn(
+                    "h-11 rounded-md px-4 text-sm font-medium transition-colors",
+                    !canApplyPromoCode || promoApplying
+                      ? "cursor-not-allowed bg-[#E0E0E0] text-[#888]"
+                      : "bg-black text-white hover:bg-[#333]"
+                  )}
+                >
+                  {promoApplying ? "Checking..." : "Apply"}
+                </button>
+              </div>
+              {promoInputError && (
+                <p className="mt-2 font-body text-xs text-[#C75050]">
+                  {promoInputError}
+                </p>
+              )}
+              {promoError ? (
+                <p className="mt-2 font-body text-xs text-[#C75050]">
+                  {promoError}
+                </p>
+              ) : null}
+              {discountErrorMsgs.length > 0 && discountErrorMsgs.map((msg, idx) => (
+                <p key={`promo-error-${idx}`} className="mt-2 font-body text-xs text-[#C75050]">
+                  {msg}
+                </p>
+              ))}
+              {discountCodeValid && (
+                <p className="mt-2 font-body text-xs text-[#00AF32]">
+                  Promo code {appliedPromoCode} applied successfully!
+                </p>
+              )}
+            </div>
+          ) : null}
+
           <div className="flex justify-between mb-2">
             <span className="font-body text-base text-black">Subtotal</span>
             <span className="font-body text-base font-semibold text-black">
               {currency}{subtotal.toFixed(2)}
             </span>
           </div>
+          {promoCodeDiscount > 0 ? (
+            <div className="flex justify-between mb-2">
+              <span className="font-body text-sm text-[#666]">Promo Discount</span>
+              <span className="font-body text-sm font-semibold text-[#4A7C59]">
+                -{currency}{promoCodeDiscount.toFixed(2)}
+              </span>
+            </div>
+          ) : null}
           <p className="font-body text-[13px] text-[#888] text-right mb-5">
             Taxes and shipping calculated at checkout
           </p>

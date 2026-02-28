@@ -13,9 +13,11 @@ interface UseApplyPromoCodeProps {
 export const useApplyPromoCode = ({ dispatch, shoppingCart }: UseApplyPromoCodeProps) => {
   const fetcher = useFetcher();
   const [applying, setApplying] = useState(false);
+  const [applyError, setApplyError] = useState('');
 
   const handleClickApplyPromoCode = useCallback((code: string) => {
     setApplying(true);
+    setApplyError('');
     dispatch(setPromoCode(code));
 
     fetcher.submit(
@@ -33,14 +35,25 @@ export const useApplyPromoCode = ({ dispatch, shoppingCart }: UseApplyPromoCodeP
   // Update the resulting price info to display when user applied promo code.
   useEffect(() => {
     if (fetcher.state !== 'idle') return;
-    if (!fetcher.data) return;
+    if (!applying) return;
+
+    if (!fetcher.data) {
+      setApplyError('Failed to apply promo code. Please try again.');
+      setApplying(false);
+      return;
+    }
 
     const data = fetcher.data as CartPriceResponse;
-    if (!data || !data.priceInfo) return;
+    if (!data || !data.priceInfo) {
+      setApplyError('Failed to apply promo code. Please try again.');
+      setApplying(false);
+      return;
+    }
 
     dispatch(setPriceInfo(data.priceInfo));
     setApplying(false);
-  }, [fetcher.state, fetcher.data, dispatch]);
+    setApplyError('');
+  }, [fetcher.state, fetcher.data, dispatch, applying]);
 
-  return { handleClickApplyPromoCode, applying };
+  return { handleClickApplyPromoCode, applying, applyError };
 }

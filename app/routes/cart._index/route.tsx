@@ -162,12 +162,17 @@ function Cart() {
     shoppingCart: state.cartItems,
     promoCode: state.promoCode,
   });
+  const { handleClickApplyPromoCode, applying, applyError } = useApplyPromoCode({
+    dispatch,
+    shoppingCart: state.cartItems,
+  });
 
   const isPriceCalculating = (
     updateItemQuantityFetcher.state !== 'idle' ||
     itemRemoveFetcher.state !== 'idle' ||
     cartPriceFetcher.state !== 'idle' ||
     checkoutFetcher.state !== 'idle' ||
+    applying ||
     removing
   );
 
@@ -237,6 +242,11 @@ function Cart() {
 
       <CartPage
         items={cartPageItems}
+        priceInfo={state.priceInfo}
+        appliedPromoCode={state.promoCode}
+        onApplyPromoCode={handleClickApplyPromoCode}
+        promoApplying={applying}
+        promoError={applyError}
         onQuantityChange={handleQuantityChange}
         onRemoveItem={handleRemoveItem}
         onCheckout={handleCheckout}

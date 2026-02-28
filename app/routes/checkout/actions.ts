@@ -17,9 +17,11 @@ import type {
 const parsePromoCode = (promoCode: string): string | null => {
   if (!promoCode) return null;
   try {
-    return JSON.parse(promoCode);
+    const parsed = JSON.parse(promoCode);
+    if (typeof parsed === 'string') return parsed;
+    return promoCode;
   } catch (err) {
-    return null;
+    return promoCode;
   }
 };
 

@@ -67,6 +67,7 @@ export function OrderSummary({
   className,
 }: OrderSummaryProps) {
   const [code, setCode] = useState("");
+  const canApplyDiscount = Boolean(onApplyDiscount);
 
   const handleApply = () => {
     if (code.trim() && onApplyDiscount) {
@@ -134,56 +135,61 @@ export function OrderSummary({
         })}
       </div>
 
-      {/* Discount input */}
-      <div className="py-5 border-b border-[#E0E0E0]">
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="Discount code or gift card"
-            className={cn(
-              "flex-1 h-11 px-3.5 border rounded-md font-body text-sm text-black bg-white outline-none transition-all duration-fast",
-              discountError
-                ? "border-[#C75050] shadow-[0_0_0_1px_#C75050]"
-                : "border-[#CCC] focus:border-black focus:shadow-[0_0_0_1px_#000]"
-            )}
-          />
-          <button
-            type="button"
-            onClick={handleApply}
-            className={cn(
-              "h-11 px-5 rounded-md border-none font-body text-sm font-medium transition-colors duration-fast",
-              code.trim()
-                ? "bg-black text-white cursor-pointer hover:bg-[#333]"
-                : "bg-[#E0E0E0] text-[#888] cursor-default"
-            )}
-            disabled={!code.trim()}
-          >
-            Apply
-          </button>
+      {(canApplyDiscount || discountCode) ? (
+        <div className="py-5 border-b border-[#E0E0E0]">
+          {canApplyDiscount ? (
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="Discount code or gift card"
+                className={cn(
+                  "flex-1 h-11 px-3.5 border rounded-md font-body text-sm text-black bg-white outline-none transition-all duration-fast",
+                  discountError
+                    ? "border-[#C75050] shadow-[0_0_0_1px_#C75050]"
+                    : "border-[#CCC] focus:border-black focus:shadow-[0_0_0_1px_#000]"
+                )}
+              />
+              <button
+                type="button"
+                onClick={handleApply}
+                className={cn(
+                  "h-11 px-5 rounded-md border-none font-body text-sm font-medium transition-colors duration-fast",
+                  code.trim()
+                    ? "bg-black text-white cursor-pointer hover:bg-[#333]"
+                    : "bg-[#E0E0E0] text-[#888] cursor-default"
+                )}
+                disabled={!code.trim()}
+              >
+                Apply
+              </button>
+            </div>
+          ) : null}
+          {discountError && canApplyDiscount && (
+            <p className="font-body text-xs text-[#C75050] mt-1.5">
+              {discountError}
+            </p>
+          )}
+          {discountCode && (
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#F0F0F0] rounded-md mt-2.5">
+              <span className="text-[#888]"><DiscountIcon /></span>
+              <span className="font-body text-[13px] font-medium text-black">
+                {discountCode}
+              </span>
+              {onRemoveDiscount ? (
+                <button
+                  type="button"
+                  onClick={onRemoveDiscount}
+                  className="text-[#888] hover:text-black bg-transparent border-none p-0 cursor-pointer transition-colors duration-fast"
+                >
+                  <RemoveIcon />
+                </button>
+              ) : null}
+            </div>
+          )}
         </div>
-        {discountError && (
-          <p className="font-body text-xs text-[#C75050] mt-1.5">
-            {discountError}
-          </p>
-        )}
-        {discountCode && (
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-[#F0F0F0] rounded-md mt-2.5">
-            <span className="text-[#888]"><DiscountIcon /></span>
-            <span className="font-body text-[13px] font-medium text-black">
-              {discountCode}
-            </span>
-            <button
-              type="button"
-              onClick={onRemoveDiscount}
-              className="text-[#888] hover:text-black bg-transparent border-none p-0 cursor-pointer transition-colors duration-fast"
-            >
-              <RemoveIcon />
-            </button>
-          </div>
-        )}
-      </div>
+      ) : null}
 
       {/* Price breakdown */}
       <div className="pt-5 flex flex-col gap-2.5">
