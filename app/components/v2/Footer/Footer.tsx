@@ -1,6 +1,8 @@
-import { useState, useCallback } from "react";
-import { Link } from "react-router";
+import { useEffect, useState, useCallback } from "react";
+import { Link, useFetcher } from "react-router";
 import { cn } from "~/lib/utils";
+import SubscribeModal from "~/components/EmailSubscribeModal";
+import type { ApiErrorResponse } from "~/shared/types";
 
 export interface FooterLinkGroup {
   heading: string;
@@ -40,7 +42,6 @@ function ArrowRightIcon() {
 export function Footer({
   newsletterHeading = "Join our mailing list",
   newsletterSubtext = "Get exclusive offers and early access to new products.",
-  onNewsletterSubmit,
   linkGroups = [],
   aboutHeading = "About",
   aboutDescription,
@@ -54,26 +55,58 @@ export function Footer({
   paymentIcons = [],
   className,
 }: FooterProps) {
+  const fetcher = useFetcher();
   const [email, setEmail] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [error, setError] = useState<ApiErrorResponse | null>(null);
 
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      if (email.trim() && onNewsletterSubmit) {
-        onNewsletterSubmit(email.trim());
-        setEmail("");
+  useEffect(() => {
+    if (fetcher.state !== "idle") return;
+    if (fetcher.data === undefined) return;
+
+    const result = fetcher.data as
+      | { ok: true }
+      | ({ ok: false } & ApiErrorResponse)
+      | ApiErrorResponse
+      | undefined;
+
+    if (!result) return;
+
+    if ("ok" in result) {
+      if (!result.ok) {
+        setError(result);
+        return;
       }
-    },
-    [email, onNewsletterSubmit]
-  );
+
+      setError(null);
+      setOpenModal(true);
+      return;
+    }
+
+    if (result?.error) {
+      setError(result);
+      return;
+    }
+
+    setError(null);
+    setOpenModal(true);
+  }, [fetcher.data, fetcher.state]);
+
+  const onCloseModal = useCallback(() => {
+    setOpenModal(false);
+    setError(null);
+  }, []);
 
   return (
-    <footer
-      className={cn(
-        "w-full bg-white border-t border-[#E0E0E0]",
-        className
-      )}
-    >
+    <>
+      <SubscribeModal open={openModal} onClose={onCloseModal} error={error} />
+
+      <footer
+        className={cn(
+          "w-full bg-white border-t border-[#E0E0E0]",
+          className
+        )}
+      >
       <div className="mx-auto max-w-[var(--container-max)] px-12 pt-16 pb-8 max-redesign-sm:px-4">
         {/* Main 4-column grid */}
         <div
@@ -91,23 +124,40 @@ export function Footer({
               {newsletterSubtext}
             </p>
 
-            <form onSubmit={handleSubmit} className="flex h-11 rounded-rd-sm border-[1.5px] border-[#E0E0E0] overflow-hidden focus-within:border-black transition-colors duration-fast">
+            <fetcher.Form
+              action="/api/email-subscribe"
+              method="post"
+              className="flex h-11 rounded-rd-sm border-[1.5px] border-[#E0E0E0] overflow-hidden focus-within:border-black transition-colors duration-fast"
+            >
               <input
+                name="email"
                 type="email"
                 placeholder="Your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 px-3.5 border-none bg-white font-body text-[14px] text-black outline-none placeholder:text-[#AAA]"
+                className={cn(
+                  "flex-1 px-3.5 border-none bg-white font-body text-[14px] text-black outline-none placeholder:text-[#AAA]",
+                  error && "ring-1 ring-destructive"
+                )}
+                autoComplete="email"
+                aria-invalid={!!error}
                 required
               />
               <button
                 type="submit"
                 className="w-11 h-full bg-transparent border-none cursor-pointer flex items-center justify-center text-black hover:bg-[#F5F5F5] transition-colors duration-fast"
+                disabled={fetcher.state !== "idle"}
                 aria-label="Subscribe"
               >
                 <ArrowRightIcon />
               </button>
-            </form>
+            </fetcher.Form>
+
+            {error && (
+              <div className="mt-2 text-left text-sm text-red-500">
+                {error.error}
+              </div>
+            )}
 
             <p className="mt-3 font-body text-[12px] font-normal leading-[1.4] text-[#888]">
               By signing up, you agree to our{" "}
@@ -225,6 +275,7 @@ export function Footer({
           </div>
         </div>
       </div>
-    </footer>
+      </footer>
+    </>
   );
 }
