@@ -78,6 +78,11 @@ export function StickyATCBar({
     };
   }, []);
 
+  const getDisplayVariantLabel = useCallback(
+    (label: string) => (label.toLowerCase() === "default title" ? "Default" : label),
+    []
+  );
+
   return (
     <div
       className={cn(
@@ -158,11 +163,18 @@ export function StickyATCBar({
               <select
                 value={selectedVariant ?? ""}
                 onChange={(e) => onVariantChange?.(e.target.value)}
-                className="h-10 pl-3.5 pr-8 border border-[#E0E0E0] rounded-full font-body text-[13px] font-medium text-black bg-white appearance-none cursor-pointer"
+                className="
+                  h-10 pl-3.5 pr-8 border border-[#E0E0E0] rounded-full
+                  font-body text-[13px] font-medium text-black bg-white appearance-none cursor-pointer
+                  transition-colors duration-fast
+                  hover:border-black
+                  hover:bg-[#F5F5F5]
+                  focus-visible:outline-none focus-visible:border-black focus-visible:ring-1 focus-visible:ring-black
+                "
               >
                 {variants.map((v) => (
                   <option key={v.value} value={v.value}>
-                    {v.label}
+                    {getDisplayVariantLabel(v.label)}
                   </option>
                 ))}
               </select>

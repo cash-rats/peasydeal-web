@@ -130,14 +130,6 @@ function ShareIcon() {
   );
 }
 
-function CheckSmallIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <path d="M2 6L4.5 8.5L10 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
   function ProductInfo(
     {
@@ -173,6 +165,10 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
     const [openAccordion, setOpenAccordion] = useState<number | null>(null);
     const [isShareOpen, setIsShareOpen] = useState(false);
     const sharePopoverRef = useRef<HTMLDivElement>(null);
+    const getDisplayVariantLabel = useCallback(
+      (label: string) => (label.toLowerCase() === "default title" ? "Default" : label),
+      []
+    );
 
     const toggleAccordion = useCallback((index: number) => {
       setOpenAccordion((prev) => (prev === index ? null : index));
@@ -348,28 +344,19 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
 
         {/* Variant selector */}
         {variants && variants.length > 0 && (
-          <div className="mb-5 rounded-2xl border border-[#D1D5DB] p-3.5">
-            <div className="flex items-start justify-between gap-3 mb-2.5">
-              <div>
-                <p className="font-body text-sm font-semibold text-black">
-                  Choose option
-                </p>
-              </div>
-            </div>
-
-            <p className="font-body text-sm text-[#374151] mb-2.5">
-              <span className="font-semibold">Current:</span>{" "}
-              <span className="font-medium">
-                {(() => {
-                  const label = variants.find((v) => v.value === selectedVariant)?.label ?? "";
-                  return label.toLowerCase() === "default title" ? "Default" : label;
-                })()}
+          <div className="mb-5">
+            <p className="font-body text-sm font-semibold text-black mb-2.5">
+              Size:{" "}
+              <span className="font-normal">
+                {getDisplayVariantLabel(
+                  variants.find((v) => v.value === selectedVariant)?.label ?? ""
+                )}
               </span>
             </p>
 
             <div className="flex flex-wrap gap-2">
               {variants.map((v) => {
-                const displayLabel = v.label.toLowerCase() === "default title" ? "Default" : v.label;
+                const displayLabel = getDisplayVariantLabel(v.label);
                 const isSelected = v.value === selectedVariant;
                 return (
                   <button
@@ -377,12 +364,12 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
                     type="button"
                     aria-pressed={isSelected}
                     className={cn(
-                      "group px-4 py-2.5 min-h-11 rounded-xl font-body text-sm font-semibold border-2 cursor-pointer",
-                      "transition-all duration-150 ease-out",
+                      "px-5 py-2.5 rounded-lg border-[1.5px] font-body text-sm font-medium cursor-pointer",
+                      "transition-all duration-fast",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/25 focus-visible:ring-offset-2",
                       isSelected
-                        ? "border-black bg-black text-white shadow-[0_8px_20px_rgba(0,0,0,0.18)]"
-                        : "border-[#9CA3AF] bg-[#E5E7EB] text-[#111827] shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:-translate-y-px hover:border-[#4B5563] hover:bg-[#F9FAFB] hover:shadow-[0_8px_20px_rgba(17,24,39,0.12)] active:translate-y-0 active:shadow-[0_2px_8px_rgba(17,24,39,0.12)]"
+                        ? "border-black bg-black text-white hover:bg-[#1A1A1A] active:bg-black"
+                        : "border-[#E0E0E0] bg-white text-black hover:border-black hover:bg-[#F5F5F5] hover:-translate-y-px hover:shadow-[0_2px_8px_rgba(0,0,0,0.10)] active:translate-y-0 active:shadow-none"
                     )}
                     onClick={() => onVariantChange?.(v.value)}
                     onMouseEnter={() => onVariantHoverStart?.(v.value)}
@@ -390,10 +377,7 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
                     onFocus={() => onVariantHoverStart?.(v.value)}
                     onBlur={() => onVariantHoverEnd?.()}
                   >
-                    <span className="inline-flex items-center gap-1.5">
-                      {isSelected && <CheckSmallIcon />}
-                      {displayLabel}
-                    </span>
+                    {displayLabel}
                   </button>
                 );
               })}
