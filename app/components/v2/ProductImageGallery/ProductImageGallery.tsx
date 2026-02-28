@@ -123,6 +123,7 @@ export function ProductImageGallery({
                   const mappedIndex = images.indexOf(src);
                   if (mappedIndex >= 0) {
                     setActiveIndex(mappedIndex);
+                    openAtIndex(mappedIndex);
                   }
                 }}
                 aria-label={`View image ${i + 1}`}
