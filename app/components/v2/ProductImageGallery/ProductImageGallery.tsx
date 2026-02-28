@@ -1,8 +1,10 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { cn } from "~/lib/utils";
 
 export interface ProductImageGalleryProps {
   images: string[];
+  previewImage?: string;
+  selectedVariationImage?: string;
   productName?: string;
   onZoom?: (index: number) => void;
   className?: string;
@@ -20,6 +22,8 @@ function ZoomIcon() {
 
 export function ProductImageGallery({
   images,
+  previewImage,
+  selectedVariationImage,
   productName = "Product",
   onZoom,
   className,
@@ -27,7 +31,17 @@ export function ProductImageGallery({
   const [activeIndex, setActiveIndex] = useState(0);
   const mobileTrackRef = useRef<HTMLDivElement>(null);
 
-  const mainImage = images[activeIndex] ?? images[0];
+  useEffect(() => {
+    if (!selectedVariationImage) return;
+    const selectedIndex = images.indexOf(selectedVariationImage);
+    if (selectedIndex >= 0) {
+      setActiveIndex(selectedIndex);
+    }
+  }, [images, selectedVariationImage]);
+
+  const mainImage = previewImage ?? selectedVariationImage ?? images[activeIndex] ?? images[0];
+  const displayIndex = images.indexOf(mainImage);
+  const imageOrdinal = displayIndex >= 0 ? displayIndex + 1 : activeIndex + 1;
 
   const handleMobileScroll = useCallback(() => {
     const el = mobileTrackRef.current;
@@ -48,7 +62,7 @@ export function ProductImageGallery({
         <div className="relative w-full aspect-[3/4] bg-[#F5F5F5] rounded-2xl overflow-hidden">
           <img
             src={mainImage}
-            alt={`${productName} - Image ${activeIndex + 1}`}
+            alt={`${productName} - Image ${imageOrdinal}`}
             className="w-full h-full object-cover"
           />
           {onZoom && (

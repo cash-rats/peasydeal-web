@@ -34,6 +34,8 @@ export interface ProductInfoProps {
   variants?: ProductVariant[];
   selectedVariant?: string;
   onVariantChange?: (value: string) => void;
+  onVariantHoverStart?: (value: string) => void;
+  onVariantHoverEnd?: () => void;
   quantity?: number;
   onQuantityChange?: (qty: number) => void;
   onAddToCart?: () => void;
@@ -130,6 +132,8 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
       variants,
       selectedVariant,
       onVariantChange,
+      onVariantHoverStart,
+      onVariantHoverEnd,
       quantity = 1,
       onQuantityChange,
       onAddToCart,
@@ -301,6 +305,10 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
                         : "border-[1.5px] border-[#E0E0E0] bg-white text-black hover:border-black"
                     )}
                     onClick={() => onVariantChange?.(v.value)}
+                    onMouseEnter={() => onVariantHoverStart?.(v.value)}
+                    onMouseLeave={() => onVariantHoverEnd?.()}
+                    onFocus={() => onVariantHoverStart?.(v.value)}
+                    onBlur={() => onVariantHoverEnd?.()}
                   >
                     {displayLabel}
                   </button>

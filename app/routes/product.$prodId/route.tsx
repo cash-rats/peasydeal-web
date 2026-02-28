@@ -149,7 +149,7 @@ function ProductDetailPage() {
   const navigation = useNavigation();
 
   const { state, dispatch } = useProductState(loaderData.product);
-  const [variationErr, setVariationErr] = useState<string>('');
+  const [hoveredVariationUUID, setHoveredVariationUUID] = useState<string | null>(null);
   const priceBlockRef = useRef<HTMLDivElement>(null);
 
   // Recommended products fetcher
@@ -252,6 +252,16 @@ function ProductDetailPage() {
     [state.productDetail.variations],
   );
 
+  const selectedVariationImage = useMemo(
+    () => state.variationImages.find(img => img.variation_uuid === state.variation?.uuid)?.url,
+    [state.variationImages, state.variation?.uuid],
+  );
+
+  const hoveredVariationImage = useMemo(() => {
+    if (!hoveredVariationUUID) return undefined;
+    return state.variationImages.find(img => img.variation_uuid === hoveredVariationUUID)?.url;
+  }, [hoveredVariationUUID, state.variationImages]);
+
   const accordionItems = useMemo(() => [
     ...(state.productDetail.description
       ? [{ title: 'About this product', content: state.productDetail.description }]
@@ -290,7 +300,6 @@ function ProductDetailPage() {
 
   const {
     addItemToCart,
-    isAddingToCart,
     openSuccessModal,
     setOpenSuccessModal,
   } = useAddToCart({
@@ -350,19 +359,15 @@ function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!state.variation) {
-      setVariationErr('Please pick a variation');
       return;
     }
-    setVariationErr('');
     addItemToCart();
   };
 
   const handleBuyNow = () => {
     if (!state.variation) {
-      setVariationErr('Please pick a variation');
       return;
     }
-    setVariationErr('');
     addItemToCart();
     navigate('/checkout');
   };
@@ -412,6 +417,8 @@ function ProductDetailPage() {
         <div className="grid grid-cols-1 redesign-sm:grid-cols-2 gap-6 redesign-md:gap-12 items-start">
           <ProductImageGallery
             images={galleryImages}
+            previewImage={hoveredVariationImage}
+            selectedVariationImage={selectedVariationImage}
             productName={state.productDetail.title}
           />
 
@@ -431,6 +438,8 @@ function ProductDetailPage() {
             variants={variants}
             selectedVariant={state.variation?.uuid}
             onVariantChange={handleChangeVariationV2}
+            onVariantHoverStart={setHoveredVariationUUID}
+            onVariantHoverEnd={() => setHoveredVariationUUID(null)}
             quantity={state.quantity}
             onQuantityChange={handleQuantityChange}
             onAddToCart={handleAddToCart}
