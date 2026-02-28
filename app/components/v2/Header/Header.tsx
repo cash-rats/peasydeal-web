@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router";
 import { cn } from "~/lib/utils";
+import PeasyDealLogo from "~/components/Header/components/LogoBar/images/peasydeal_logo.svg";
 
 export interface NavItem {
   label: string;
@@ -128,21 +129,25 @@ export function Header({
         className={cn(
           "mx-auto hidden redesign-sm:grid",
           "max-w-[var(--container-max)] h-[72px] items-center",
-          "grid-cols-[1fr_auto_1fr] px-12"
+          "grid-cols-[220px_1fr_auto] px-12"
         )}
       >
         {/* Logo */}
-        <div className="justify-self-start">
+        <div className="justify-self-start pr-6">
           <Link
             to={logoHref}
-            className="font-heading text-[28px] font-black text-black no-underline tracking-[-0.5px]"
+            className="leading-[20px] flex items-center"
           >
-            {logoText}
+            <picture>
+              <source type="image/svg+xml" srcSet={PeasyDealLogo} />
+              <img alt="PeasyDeal Logo" className="h-[42px] md:h-[60px]" src={PeasyDealLogo} />
+            </picture>
+            <span className="sr-only">{logoText}</span>
           </Link>
         </div>
 
         {/* Nav center */}
-        <nav className="flex items-center gap-8" onMouseLeave={handleNavLeave}>
+        <nav className="flex items-center justify-center gap-6 xl:gap-8" onMouseLeave={handleNavLeave}>
           {navItems.map((item) => (
             <div
               key={item.label}
@@ -251,9 +256,13 @@ export function Header({
 
         <Link
           to={logoHref}
-          className="font-heading text-[22px] font-black text-black no-underline tracking-[-0.5px]"
+          className="leading-[20px] flex items-center"
         >
-          {logoText}
+          <picture>
+            <source type="image/svg+xml" srcSet={PeasyDealLogo} />
+            <img alt="PeasyDeal Logo" className="h-[42px]" src={PeasyDealLogo} />
+          </picture>
+          <span className="sr-only">{logoText}</span>
         </Link>
 
         <button
