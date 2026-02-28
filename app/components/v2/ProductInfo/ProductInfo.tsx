@@ -289,7 +289,7 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
 
         {/* Variant selector */}
         {variants && variants.length > 0 && (
-          <div className="mb-5 rounded-2xl border border-[#D1D5DB] bg-[#F3F4F6] p-3.5">
+          <div className="mb-5 rounded-2xl border border-[#D1D5DB] p-3.5">
             <div className="flex items-start justify-between gap-3 mb-2.5">
               <div>
                 <p className="font-body text-sm font-semibold text-black">
@@ -350,7 +350,13 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
           />
           <Button
             variant="secondary"
-            className="flex-1 h-12"
+            className="
+              flex-1 h-12 border-2 border-[#111827] bg-white text-[#111827]
+              shadow-[0_2px_8px_rgba(17,24,39,0.08)]
+              hover:-translate-y-px hover:bg-[#F9FAFB] hover:shadow-[0_10px_22px_rgba(17,24,39,0.14)]
+              active:translate-y-0 active:scale-[0.99] active:shadow-[0_2px_8px_rgba(17,24,39,0.1)]
+              focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/25 focus-visible:ring-offset-2
+            "
             onClick={onAddToCart}
           >
             Add to Cart
