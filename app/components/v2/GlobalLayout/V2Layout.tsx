@@ -97,6 +97,10 @@ export function V2Layout({
     navigate("/cart");
   }, [navigate]);
 
+  const handleTrackingClick = useCallback(() => {
+    navigate("/tracking");
+  }, [navigate]);
+
   const handleMenuOpen = useCallback(() => {
     setMobileNavOpen(true);
   }, []);
@@ -114,6 +118,7 @@ export function V2Layout({
           onDropdownOpen={handleDropdownOpen}
           onDropdownClose={handleDropdownClose}
           onSearchClick={handleSearchClick}
+          onTrackingClick={handleTrackingClick}
           onCartClick={handleCartClick}
           onMenuOpen={handleMenuOpen}
         />

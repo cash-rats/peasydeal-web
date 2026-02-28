@@ -20,6 +20,7 @@ export interface HeaderProps {
   onDropdownClose?: () => void;
   onSearchClick?: () => void;
   onAccountClick?: () => void;
+  onTrackingClick?: () => void;
   onCartClick?: () => void;
   onMenuOpen?: () => void;
   className?: string;
@@ -34,15 +35,6 @@ function SearchIcon() {
   );
 }
 
-function AccountIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <circle cx="11" cy="8" r="4" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M3 20C3 16.134 6.58 13 11 13C15.42 13 19 16.134 19 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function CartIcon() {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -50,6 +42,17 @@ function CartIcon() {
       <path d="M6 6L5 3H2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       <circle cx="9" cy="18" r="1.5" stroke="currentColor" strokeWidth="1.5" />
       <circle cx="16" cy="18" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function TruckIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M3 6H13V14H3V6Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M13 9H17.2L19 11.2V14H13V9Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <circle cx="7" cy="16.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="16" cy="16.5" r="1.5" stroke="currentColor" strokeWidth="1.5" />
     </svg>
   );
 }
@@ -79,6 +82,7 @@ export function Header({
   onDropdownClose,
   onSearchClick,
   onAccountClick,
+  onTrackingClick,
   onCartClick,
   onMenuOpen,
   className,
@@ -189,6 +193,14 @@ export function Header({
             onClick={onSearchClick}
           >
             <SearchIcon />
+          </button>
+          <button
+            type="button"
+            className="bg-transparent border-none cursor-pointer p-0 text-black hover:text-[#666] transition-colors duration-fast"
+            aria-label="Track Order"
+            onClick={onTrackingClick}
+          >
+            <TruckIcon />
           </button>
           {/* <button
             type="button"
