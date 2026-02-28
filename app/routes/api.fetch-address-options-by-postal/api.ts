@@ -1,8 +1,9 @@
 import httpStatus from 'http-status-codes';
-import { envs } from '~/utils/env';
+import { envs } from '~/utils/env.server';
 
-import { AddressOption } from './types';
-import { getSupabaseAdminClient } from '~/services/supabase.server';
+import type { AddressOption } from './types';
+
+const ADDRESS_SEARCH_TIMEOUT_MS = 5000;
 
 const transformDataToAddressOption = (data: any[]): AddressOption[] => {
   return data.map((item) => {
@@ -33,31 +34,32 @@ const transformDataToAddressOption = (data: any[]): AddressOption[] => {
 export const fetchAddressOptionsByPostal = async ({ postal }: { postal: string }): Promise<AddressOption[]> => {
   const url = new URL(envs.PEASY_DEAL_ENDPOINT);
   url.pathname = '/v2/addresses/search';
-  url.searchParams.append("postcode", postal);
-  url.searchParams.append("limit", "50");
-  url.searchParams.append("offset", "0");
+  url.searchParams.append('postcode', postal.trim());
+  url.searchParams.append('limit', '50');
+  url.searchParams.append('offset', '0');
 
-  const resp = await fetch(url);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, ADDRESS_SEARCH_TIMEOUT_MS);
 
-  const respJSON = await resp.json();
+  try {
+    const resp = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+    const respJSON = await resp.json();
 
-  if (resp.status !== httpStatus.OK) {
-    throw new Error(respJSON);
+    if (resp.status !== httpStatus.OK) {
+      throw new Error(
+        `address-search-api-unexpected-status:${resp.status}`,
+      );
+    }
+
+    return transformDataToAddressOption(Array.isArray(respJSON?.data) ? respJSON.data : []);
+  } finally {
+    clearTimeout(timeoutId);
   }
-
-  return transformDataToAddressOption(respJSON.data);
-};
-
-export const fetchAddressOptionsByPostalViaSupabase = async ({ postal }: { postal: string }): Promise<AddressOption[]> => {
-  const supabase = getSupabaseAdminClient();
-  const { data, error } = await supabase.rpc('search_uk_addresses_by_postcode', {
-    p_input: postal,
-    p_limit: 50,
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return transformDataToAddressOption(Array.isArray(data) ? data : []);
 };

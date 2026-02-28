@@ -281,7 +281,6 @@ export function ShippingAddressSection({
               error={errors.postcode}
               onSelect={handleSelectOption}
               onChange={handleChangePostcode}
-              disabled={isLoading}
               loading={isLoading}
             />
 
