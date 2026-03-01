@@ -311,6 +311,14 @@ function ProductDetailPage() {
     return undefined;
   }, [hasSuperDeal, state.variation?.sale_price]);
 
+  const maxQuantity = useMemo(() => {
+    const purchaseLimit = state.variation?.purchase_limit;
+    if (typeof purchaseLimit !== 'number' || !Number.isFinite(purchaseLimit) || purchaseLimit < 1) {
+      return 99;
+    }
+    return Math.floor(purchaseLimit);
+  }, [state.variation?.purchase_limit]);
+
   // ----- Event handlers -----
 
   const {
@@ -396,9 +404,9 @@ function ProductDetailPage() {
   };
 
   const handleQuantityChange = (qty: number) => {
-    if (state.variation && qty <= state.variation.purchase_limit && qty >= 1) {
-      dispatch(updateQuantity(qty));
-    }
+    if (!state.variation) return;
+    const nextQty = Math.max(1, Math.min(qty, maxQuantity));
+    dispatch(updateQuantity(nextQty));
   };
 
   const handleClickRecommended = (product: Product) => {
@@ -459,6 +467,7 @@ function ProductDetailPage() {
             onVariantHoverStart={setHoveredVariationUUID}
             onVariantHoverEnd={() => setHoveredVariationUUID(null)}
             quantity={state.quantity}
+            maxQuantity={maxQuantity}
             onQuantityChange={handleQuantityChange}
             onAddToCart={handleAddToCart}
             onBuyNow={handleBuyNow}
@@ -486,6 +495,7 @@ function ProductDetailPage() {
         selectedVariant={state.variation?.uuid}
         onVariantChange={handleChangeVariationV2}
         quantity={state.quantity}
+        maxQuantity={maxQuantity}
         onQuantityChange={handleQuantityChange}
         onAddToCart={handleAddToCart}
       />

@@ -38,6 +38,7 @@ export interface ProductInfoProps {
   onVariantHoverStart?: (value: string) => void;
   onVariantHoverEnd?: () => void;
   quantity?: number;
+  maxQuantity?: number;
   onQuantityChange?: (qty: number) => void;
   onAddToCart?: () => void;
   onBuyNow?: () => void;
@@ -151,6 +152,7 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
       onVariantHoverStart,
       onVariantHoverEnd,
       quantity = 1,
+      maxQuantity = 99,
       onQuantityChange,
       onAddToCart,
       onBuyNow,
@@ -389,6 +391,7 @@ export const ProductInfo = forwardRef<HTMLDivElement, ProductInfoProps>(
         <div className="flex gap-3 mb-3">
           <QuantityPicker
             value={quantity}
+            max={maxQuantity}
             onChange={(v) => onQuantityChange?.(v)}
           />
           <Button

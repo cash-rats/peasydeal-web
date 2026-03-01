@@ -1,4 +1,5 @@
 import { cn } from "~/lib/utils";
+import { useEffect, useState } from "react";
 
 export interface QuantityPickerProps {
   value: number;
@@ -51,6 +52,12 @@ export function QuantityPicker({
   size = "default",
   className,
 }: QuantityPickerProps) {
+  const [inputValue, setInputValue] = useState(String(value));
+
+  useEffect(() => {
+    setInputValue(String(value));
+  }, [value]);
+
   const isAtMin = value <= min;
   const isAtMax = value >= max;
 
@@ -64,10 +71,32 @@ export function QuantityPicker({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value.replace(/\D/g, "");
+    setInputValue(raw);
     if (raw === "") return;
+
     const num = parseInt(raw, 10);
     if (num >= min && num <= max) {
       onChange(num);
+    }
+  };
+
+  const handleInputBlur = () => {
+    if (inputValue === "") {
+      setInputValue(String(value));
+      return;
+    }
+
+    const num = parseInt(inputValue, 10);
+    if (Number.isNaN(num)) {
+      setInputValue(String(value));
+      return;
+    }
+
+    const clamped = Math.max(min, Math.min(num, max));
+    if (clamped !== value) {
+      onChange(clamped);
+    } else {
+      setInputValue(String(clamped));
     }
   };
 
@@ -92,8 +121,10 @@ export function QuantityPicker({
         type="text"
         inputMode="numeric"
         pattern="[0-9]*"
-        value={value}
+        value={inputValue}
         onChange={handleInputChange}
+        onBlur={handleInputBlur}
+        onFocus={(e) => e.currentTarget.select()}
         className={cn(
           inputStyles[size],
           "border-none bg-transparent text-black font-body",

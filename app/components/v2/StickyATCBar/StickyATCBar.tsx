@@ -16,6 +16,7 @@ export interface StickyATCBarProps {
   selectedVariant?: string;
   onVariantChange?: (value: string) => void;
   quantity?: number;
+  maxQuantity?: number;
   onQuantityChange?: (qty: number) => void;
   onAddToCart?: () => void;
   className?: string;
@@ -41,6 +42,7 @@ export function StickyATCBar({
   selectedVariant,
   onVariantChange,
   quantity = 1,
+  maxQuantity = 99,
   onQuantityChange,
   onAddToCart,
   className,
@@ -193,6 +195,7 @@ export function StickyATCBar({
           {/* Quantity picker */}
           <QuantityPicker
             value={quantity}
+            max={maxQuantity}
             onChange={(v) => onQuantityChange?.(v)}
             size="pill"
           />
