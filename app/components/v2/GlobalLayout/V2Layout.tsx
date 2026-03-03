@@ -89,8 +89,13 @@ export function V2Layout({
     setMegaOpen(false);
   }, [cancelMegaClose]);
 
-  const handleSearchClick = useCallback(() => {
+  const handleDesktopSearchClick = useCallback(() => {
     setSearchOpen(true);
+  }, []);
+
+  const handleMobileSearchClick = useCallback(() => {
+    setMobileNavOpen(false);
+    setMobileSearchOpen(true);
   }, []);
 
   const handleCartClick = useCallback(() => {
@@ -117,7 +122,8 @@ export function V2Layout({
           cartCount={cartCount}
           onDropdownOpen={handleDropdownOpen}
           onDropdownClose={handleDropdownClose}
-          onSearchClick={handleSearchClick}
+          onSearchClick={handleDesktopSearchClick}
+          onMobileSearchClick={handleMobileSearchClick}
           onTrackingClick={handleTrackingClick}
           onCartClick={handleCartClick}
           onMenuOpen={handleMenuOpen}

@@ -20,6 +20,7 @@ export interface HeaderProps {
   onDropdownOpen?: (label: string) => void;
   onDropdownClose?: () => void;
   onSearchClick?: () => void;
+  onMobileSearchClick?: () => void;
   onAccountClick?: () => void;
   onTrackingClick?: () => void;
   onCartClick?: () => void;
@@ -82,6 +83,7 @@ export function Header({
   onDropdownOpen,
   onDropdownClose,
   onSearchClick,
+  onMobileSearchClick,
   onAccountClick,
   onTrackingClick,
   onCartClick,
@@ -265,26 +267,37 @@ export function Header({
           <span className="sr-only">{logoText}</span>
         </Link>
 
-        <button
-          type="button"
-          className="relative bg-transparent border-none cursor-pointer p-0 text-black"
-          aria-label={`Cart (${cartCount} items)`}
-          onClick={onCartClick}
-        >
-          <CartIcon />
-          {cartCount > 0 && (
-            <span
-              className={cn(
-                "absolute -top-1 -right-1.5",
-                "flex items-center justify-center",
-                "w-4 h-4 rounded-full bg-[#C75050] text-white",
-                "font-body text-[10px] font-bold leading-none"
-              )}
-            >
-              {cartCount > 9 ? "9+" : cartCount}
-            </span>
-          )}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            className="bg-transparent border-none cursor-pointer p-0 text-black"
+            aria-label="Search"
+            onClick={onMobileSearchClick}
+          >
+            <SearchIcon />
+          </button>
+
+          <button
+            type="button"
+            className="relative bg-transparent border-none cursor-pointer p-0 text-black"
+            aria-label={`Cart (${cartCount} items)`}
+            onClick={onCartClick}
+          >
+            <CartIcon />
+            {cartCount > 0 && (
+              <span
+                className={cn(
+                  "absolute -top-1 -right-1.5",
+                  "flex items-center justify-center",
+                  "w-4 h-4 rounded-full bg-[#C75050] text-white",
+                  "font-body text-[10px] font-bold leading-none"
+                )}
+              >
+                {cartCount > 9 ? "9+" : cartCount}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
     </header>
   );
