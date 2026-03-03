@@ -145,6 +145,7 @@ export function V2Layout({
       <MobileNavDrawer
         isOpen={mobileNavOpen}
         onClose={() => setMobileNavOpen(false)}
+        onSearchClick={handleMobileSearchClick}
         categories={mobileCategories}
       />
 

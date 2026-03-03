@@ -11,6 +11,7 @@ export interface MobileNavCategory {
 export interface MobileNavDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onSearchClick?: () => void;
   categories: MobileNavCategory[];
   className?: string;
 }
@@ -31,9 +32,19 @@ function ChevronDownIcon({ className }: { className?: string }) {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="10" cy="10" r="7" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M15 15L20 20" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function MobileNavDrawer({
   isOpen,
   onClose,
+  onSearchClick,
   categories,
   className,
 }: MobileNavDrawerProps) {
@@ -85,6 +96,23 @@ export function MobileNavDrawer({
             onClick={onClose}
           >
             <CloseIcon />
+          </button>
+        </div>
+
+        {/* Search entry */}
+        <div className="px-6 pb-3">
+          <button
+            type="button"
+            className="
+              w-full h-11 rounded-full border border-[#E5E5E5] bg-[#FAFAFA]
+              px-4 flex items-center gap-2 text-[#666]
+              font-body text-sm cursor-pointer
+            "
+            aria-label="Search products"
+            onClick={onSearchClick}
+          >
+            <SearchIcon />
+            <span>Search products</span>
           </button>
         </div>
 
