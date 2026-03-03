@@ -34,3 +34,5 @@ public/robots.txt
 # React Router 7
 .react-router/
 .env.local
+
+out/*
