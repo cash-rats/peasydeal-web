@@ -44,6 +44,17 @@ export function ProductImageGallery({
     const selectedIndex = images.indexOf(selectedVariationImage);
     if (selectedIndex >= 0) {
       setActiveIndex(selectedIndex);
+      // Keep mobile carousel viewport in sync when variant changes.
+      window.requestAnimationFrame(() => {
+        const track = mobileTrackRef.current;
+        if (!track) return;
+        const width = track.clientWidth;
+        if (!width) return;
+        track.scrollTo({
+          left: selectedIndex * width,
+          behavior: "smooth",
+        });
+      });
     }
   }, [images, selectedVariationImage]);
 
