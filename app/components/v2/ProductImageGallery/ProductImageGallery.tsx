@@ -162,16 +162,16 @@ export function ProductImageGallery({
       <div className="block redesign-sm:hidden">
         <div
           ref={mobileTrackRef}
-          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none"
+          className="w-full flex overflow-x-auto snap-x snap-mandatory scrollbar-none"
           onScroll={handleMobileScroll}
         >
           {images.map((src, i) => (
-            <div key={i} className="min-w-full snap-center flex-shrink-0">
-              <div className="aspect-[3/4] bg-[#F5F5F5] overflow-hidden">
+            <div key={i} className="w-full min-w-full basis-full snap-center shrink-0">
+              <div className="w-full h-[68vh] min-h-[280px] max-h-[520px] bg-[#F5F5F5] overflow-hidden rounded-2xl flex items-center justify-center">
                 <img
                   src={src}
                   alt={`${productName} - Image ${i + 1}`}
-                  className="w-full h-full object-cover cursor-zoom-in"
+                  className="w-full h-full object-contain cursor-zoom-in"
                   onClick={() => openAtIndex(i)}
                 />
               </div>
