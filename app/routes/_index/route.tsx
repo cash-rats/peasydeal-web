@@ -161,6 +161,14 @@ function capitalizeLabel(name: string) {
     .join(' ');
 }
 
+function stableHash(input: string) {
+  let hash = 0;
+  for (let i = 0; i < input.length; i += 1) {
+    hash = (hash * 31 + input.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
 /* ─── Component ─── */
 
 export default function LandingPage() {
@@ -267,8 +275,14 @@ export default function LandingPage() {
       .slice(0, 5);
 
     const cats = topCategories.map(cp => {
-      // Shuffle items to show variety each page load
-      const shuffled = [...cp.items].sort(() => Math.random() - 0.5);
+      // Keep ordering deterministic to avoid SSR/client hydration mismatch.
+      const shuffled = [...cp.items]
+        .map((item) => ({
+          item,
+          rank: stableHash(`${cp.name}:${item.productUUID}`),
+        }))
+        .sort((a, b) => a.rank - b.rank || a.item.productUUID.localeCompare(b.item.productUUID))
+        .map(({ item }) => item);
       return {
         label: cp.label || capitalizeLabel(cp.name),
         description: cp.desc || undefined,

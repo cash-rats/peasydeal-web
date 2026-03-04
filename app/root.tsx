@@ -127,16 +127,6 @@ interface DocumentProps {
   children: React.ReactNode;
 }
 
-function getGtmSnippet(containerId: string) {
-  const containerIdJS = JSON.stringify(containerId);
-
-  return `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer',${containerIdJS});`;
-}
-
 function Document({ children }: DocumentProps) {
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const { env: envData, gaSessionID } = rootData || {} as any;
@@ -151,6 +141,30 @@ function Document({ children }: DocumentProps) {
     storeSessionIDToSessionStore(gaSessionID);
   }, [gaSessionID]);
 
+  useEffect(() => {
+    if (!gtmContainerId) return;
+
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      `script[data-loader="GTM"][data-gtm-id="${gtmContainerId}"]`,
+    );
+    if (existingScript) return;
+
+    const dataLayer = ((window as any).dataLayer ||= []);
+    if (Array.isArray(dataLayer)) {
+      dataLayer.push({
+        'gtm.start': new Date().getTime(),
+        event: 'gtm.js',
+      });
+    }
+
+    const gtmScript = document.createElement('script');
+    gtmScript.async = true;
+    gtmScript.src = `https://www.googletagmanager.com/gtm.js?id=${encodeURIComponent(gtmContainerId)}`;
+    gtmScript.setAttribute('data-loader', 'GTM');
+    gtmScript.setAttribute('data-gtm-id', gtmContainerId);
+    document.head.appendChild(gtmScript);
+  }, [gtmContainerId]);
+
   useRudderStackScript({
     enabled: isRudderEnabled,
     writeKey: envData?.RUDDERSTACK_WRITE_KEY,
@@ -163,13 +177,6 @@ function Document({ children }: DocumentProps) {
     <html lang="en">
       <head suppressHydrationWarning>
         <meta charSet="utf-8" />
-        {gtmContainerId ? (
-          <script
-            dangerouslySetInnerHTML={{
-              __html: getGtmSnippet(gtmContainerId),
-            }}
-          />
-        ) : null}
         <Meta />
         <Links />
         <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
