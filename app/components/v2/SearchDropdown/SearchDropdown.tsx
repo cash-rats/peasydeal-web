@@ -1,6 +1,7 @@
 import { useMemo, useCallback, useRef, useEffect } from "react";
 import { Link, useSubmit } from "react-router";
 import type { OnSubmitParams } from "@algolia/autocomplete-core";
+import { cn } from "~/lib/utils";
 import { getSearchClient } from "~/components/Algolia";
 import {
   createProductsSuggestionsPlugin,
