@@ -50,6 +50,7 @@ const serverEnvSchema = z.object({
   CONTENTFUL_ACCESS_TOKEN: z.string().optional(),
 
   // Analytics
+  GTM_CONTAINER_ID: z.string().optional(),
   // RudderStack
   RUDDERSTACK_WRITE_KEY: z.string().optional(),
   RUDDERSTACK_DATAPLANE_URL: z.string().optional(),

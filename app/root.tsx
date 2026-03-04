@@ -127,9 +127,20 @@ interface DocumentProps {
   children: React.ReactNode;
 }
 
+function getGtmSnippet(containerId: string) {
+  const containerIdJS = JSON.stringify(containerId);
+
+  return `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer',${containerIdJS});`;
+}
+
 function Document({ children }: DocumentProps) {
   const rootData = useRouteLoaderData('root') as RootLoaderData | undefined;
   const { env: envData, gaSessionID } = rootData || {} as any;
+  const gtmContainerId = envData?.GTM_CONTAINER_ID;
   const isRudderEnabled = Boolean(
     envData?.VERCEL_ENV === 'production' &&
     envData?.RUDDERSTACK_WRITE_KEY &&
@@ -141,7 +152,7 @@ function Document({ children }: DocumentProps) {
   }, [gaSessionID]);
 
   useRudderStackScript({
-    enabled: true,
+    enabled: isRudderEnabled,
     writeKey: envData?.RUDDERSTACK_WRITE_KEY,
     dataplaneUrl: envData?.RUDDERSTACK_DATAPLANE_URL,
   });
@@ -152,6 +163,13 @@ function Document({ children }: DocumentProps) {
     <html lang="en">
       <head suppressHydrationWarning>
         <meta charSet="utf-8" />
+        {gtmContainerId ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: getGtmSnippet(gtmContainerId),
+            }}
+          />
+        ) : null}
         <Meta />
         <Links />
         <meta name="facebook-domain-verification" content="pfise5cnp4bnc9yh51ib1e9h6av2v8" />
@@ -159,6 +177,17 @@ function Document({ children }: DocumentProps) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body>
+        {gtmContainerId ? (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(gtmContainerId)}`}
+              height="0"
+              width="0"
+              style={{ display: 'none', visibility: 'hidden' }}
+              title="gtm"
+            />
+          </noscript>
+        ) : null}
         <script
           dangerouslySetInnerHTML={{
             __html: `

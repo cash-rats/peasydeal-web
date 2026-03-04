@@ -25,6 +25,7 @@ const publicEnvSchema = z.object({
   MAPBOX_BOX_ACCESS_TOKEN: z.string().default(''),
 
   // Analytics
+  GTM_CONTAINER_ID: z.string().optional(),
   RUDDERSTACK_WRITE_KEY: z.string().optional(),
   RUDDERSTACK_DATAPLANE_URL: z.string().optional(),
 

@@ -1,7 +1,6 @@
-import { useMemo, useState, useCallback, useRef, useEffect } from "react";
+import { useMemo, useCallback, useRef, useEffect } from "react";
 import { Link, useSubmit } from "react-router";
 import type { OnSubmitParams } from "@algolia/autocomplete-core";
-import { cn } from "~/lib/utils";
 import { getSearchClient } from "~/components/Algolia";
 import {
   createProductsSuggestionsPlugin,
@@ -10,6 +9,7 @@ import {
 } from "~/components/Algolia/plugins";
 import type { AutocompleteItem } from "~/components/Algolia/types";
 import useCreateAutocomplete from "~/components/Algolia/hooks/useCreateAutocomplete";
+import { trackEvent } from "~/lib/gtm";
 
 /* ------------------------------------------------------------------ */
 /*  Icons                                                              */
@@ -266,10 +266,7 @@ export function SearchDropdown({ onClose, className }: SearchDropdownProps) {
                             key={item.objectID || item.uuid}
                             to={`/search?query=${encodeURIComponent(item.title)}`}
                             onClick={() => {
-                              window.rudderanalytics?.track(
-                                "search_action_product_hit",
-                                { query: item.title }
-                              );
+                              trackEvent("search_action_product_hit", { query: item.title });
                               onClose();
                             }}
                           >
@@ -319,10 +316,7 @@ export function SearchDropdown({ onClose, className }: SearchDropdownProps) {
                               key={i}
                               to={url}
                               onClick={() => {
-                                window.rudderanalytics?.track(
-                                  "search_action_category_hit",
-                                  { query: catInfo }
-                                );
+                                trackEvent("search_action_category_hit", { query: catInfo });
                                 onClose();
                               }}
                             >
