@@ -2,6 +2,7 @@ import {
   type MetaFunction,
   useLoaderData,
   Link,
+  redirect,
 } from 'react-router';
 import httpStatus from 'http-status-codes';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
@@ -27,6 +28,11 @@ export const loader = async ({ params }: { params: Record<string, string | undef
   try {
     const { blog = '' } = params;
     const res = await fetchContentfulWithSlug({ slug: blog });
+
+    if (!res) {
+      throw redirect('/blog');
+    }
+
     const latest = await fetchContentfulLatestPosts({ total: 6 });
 
     return Response.json({
@@ -35,6 +41,7 @@ export const loader = async ({ params }: { params: Record<string, string | undef
       canonicalLink: `${getCanonicalDomain()}/blog/post/${blog}`,
     });
   } catch (e) {
+    if (e instanceof Response) throw e;
     console.error(e);
 
     throw Response.json(e, {
