@@ -33,7 +33,7 @@ type LoaderData = {
 export const loader = async () => {
   try {
     const [res, latest] = await Promise.all([
-      getStaticProps({ params: { page: 1 } }),
+      getStaticProps({ params: { page: 1 }, extraCount: 1 }),
       fetchContentfulLatestPosts({ total: 6 }),
     ]);
 

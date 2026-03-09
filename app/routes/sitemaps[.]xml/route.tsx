@@ -9,6 +9,7 @@ const SITEMAP_PATHS = [
   'sitemaps.collections.xml',
   'sitemaps.promotions.xml',
   'sitemaps.products.xml',
+  'sitemaps.blog.xml',
 ];
 const XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
 

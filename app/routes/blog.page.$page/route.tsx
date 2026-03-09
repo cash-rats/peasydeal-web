@@ -33,7 +33,7 @@ export const loader = async ({ params }: { params: Record<string, string | undef
     const { page = '1' } = params;
     const pageNum = parseInt(page, 10);
     const [res, latest] = await Promise.all([
-      getStaticProps({ params: { page: pageNum } }),
+      getStaticProps({ params: { page: pageNum }, extraCount: 1 }),
       fetchContentfulLatestPosts({ total: 6 }),
     ]);
 

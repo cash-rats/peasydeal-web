@@ -28,7 +28,7 @@ interface IContentfulRes {
 
 export const contentfulConfig = {
   pagination: {
-    pageSize: 8,
+    pageSize: 9,
   },
 };
 
@@ -75,12 +75,13 @@ export class ContentfulGQLApi {
     return totalPosts;
   }
 
-  static async getPaginatedPostSummaries(page: any) {
-    const skipMultiplier: any = page === 1 ? 0 : page - 1;
-    const skip = skipMultiplier > 0 ? contentfulConfig.pagination.pageSize * skipMultiplier : 0;
+  static async getPaginatedPostSummaries(page: any, { extraCount = 0 }: { extraCount?: number } = {}) {
+    const pageSize = contentfulConfig.pagination.pageSize;
+    const skip = page === 1 ? 0 : (pageSize * (page - 1)) + extraCount;
+    const limit = page === 1 ? pageSize + extraCount : pageSize;
 
     const query = `{
-			blogsCollection(limit: ${contentfulConfig.pagination.pageSize}, skip: ${skip}, order: publishedDate_DESC) {
+			blogsCollection(limit: ${limit}, skip: ${skip}, order: [publishedDate_DESC, sys_firstPublishedAt_DESC]) {
 				total
 				items {
 					sys {
@@ -107,6 +108,23 @@ export class ContentfulGQLApi {
       : { total: 0, items: [] };
 
     return paginatedPostSummaries;
+  }
+
+  static async getAllPostSlugs() {
+    const query = `{
+			blogsCollection(order: publishedDate_DESC, limit: 1000) {
+				items {
+					slug
+					publishedDate
+				}
+			}
+		}`;
+
+    const response = await this.callContentful(query);
+
+    return response.data.blogsCollection
+      ? response.data.blogsCollection.items
+      : [];
   }
 
   static async getLatestPosts(total: Number) {
@@ -171,10 +189,12 @@ export const fetchContentfulWithEntry = async ({
 }
 
 export const getStaticProps = async ({
-  params
-}: { params: { page: Number } }): Promise<IBlogStaticProps> => {
+  params,
+  extraCount = 0,
+}: { params: { page: Number }; extraCount?: number }): Promise<IBlogStaticProps> => {
   const postSummaries = await ContentfulGQLApi.getPaginatedPostSummaries(
     params.page,
+    { extraCount },
   );
   const totalPages = Math.ceil(postSummaries.total / contentfulConfig.pagination.pageSize);
 
